@@ -1,0 +1,10 @@
+# BaseOS crinit series file, specifying which files to parse
+
+TASKS = earlysetup.crinit check_qemu.crinit network-dhcp.crinit sshd.crinit getty.crinit
+
+TASKDIR = /etc/crinit
+DEBUG = NO
+FILE_SIGS_NEEDED = NO
+
+# not yet implemented
+SIG = ""

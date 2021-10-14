@@ -1,0 +1,17 @@
+# Loads sshd with some specialities in case we are in a read-only rootfs under yocto
+
+NAME = sshd
+
+COMMAND[0] = /bin/mkdir -p /var/run/etc/ssh
+COMMAND[1] = /usr/bin/ssh-keygen -A -f /var/run
+COMMAND[2] = /bin/mv /var/run/etc/ssh /var/run/ssh
+COMMAND[3] = /bin/mkdir -p /var/run/sshd
+COMMAND[4] = /usr/sbin/sshd -f /etc/ssh/sshd_config_readonly
+
+DEPENDS = earlysetup:wait
+
+RESPAWN = NO
+# features below not yet implemented
+EXEC = NO
+QM_JAIL = NO
+SIG = ""

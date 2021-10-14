@@ -1,0 +1,51 @@
+@startuml
+node "Rootfs Init Daemon" {
+	component "Task Data Structure" as task_data
+	component "Notification/Service Interface" as notify_if
+	component "Process Dispatcher" as proc_dispatch
+	component "Config Parser" as config_parser
+}
+cloud "Tasks" as tasks
+component "Notfication/Service Library" as notify_lib
+cloud "Task Configurations" as task_configs
+node "BaseOS Monitor" as corb_monitor
+
+notify_if <-down..-> notify_lib : AF_UNIX\nsocket
+notify_if <-..-> corb_monitor
+task_configs -up-> config_parser
+proc_dispatch -right-> tasks
+tasks -right-> notify_lib
+tasks -left-> task_configs
+proc_dispatch <-up-> task_data
+notify_if -left-> task_data
+config_parser <-up-> task_data
+
+note top of notify_if
+    Notifies Task Data Structure of events
+    from SD_NOTIFY library and BaseOS Monitor.
+    Multi-threaded UNIX domain socket server
+    for Notification/Sevice Library.
+end note
+
+note top of task_data
+    "Intelligent" data structure implementing a task database. Keeps
+    track of waiting, running, finished tasks and handles state changes
+    through events. Will notify process dispatcher upon a state change
+    that implies a new task is ready to run.
+end note
+
+note bottom of notify_lib
+    C interface compatible with SD_NOTIFY. Feeds
+    notifications to Task Data Structure as events.
+end note
+
+note top of proc_dispatch
+    Multi-threaded process spawner. Spawns and waits
+    for processes. Notifies Task Data Structure of
+    "spawn" and "wait" events.  SafeSystemStartup
+    parts will be in here to spawn a jailed task
+    according to config.
+end note
+
+@enduml
+

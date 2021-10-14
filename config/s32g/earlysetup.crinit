@@ -1,0 +1,17 @@
+# Performs early mounts that weren't already done as part of crinit initialization
+
+NAME = earlysetup
+
+COMMAND[0] = /bin/mount -t tmpfs none /run
+COMMAND[1] = /bin/mount -t tmpfs none /tmp
+COMMAND[2] = /bin/mkdir -p /var/volatile
+COMMAND[3] = /bin/mount -t tmpfs none /var/volatile
+COMMAND[4] = /bin/hostname eb-arm64
+
+DEPENDS = ""
+
+RESPAWN = NO
+# features below not yet implemented
+EXEC = NO
+QM_JAIL = NO
+SIG = ""

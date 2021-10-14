@@ -1,0 +1,21 @@
+# DHCP config for S32G board
+
+NAME = network-dhcp
+
+COMMAND[0] = /bin/mkdir -p /var/lib/dhcpcd
+COMMAND[1] = /bin/mount -t tmpfs none /var/lib/dhcpcd
+COMMAND[2] = /bin/touch /var/lib/dhcpcd/resolv.conf
+COMMAND[3] = /bin/mount -o bind /var/lib/dhcpcd/resolv.conf /etc/resolv.conf
+COMMAND[4] = /sbin/ifconfig lo up
+COMMAND[5] = /sbin/ifconfig lo 127.0.0.1
+COMMAND[6] = /sbin/dhcpcd -j /var/log/dhcpcd.log eth0
+
+
+# So we only run if we are on the actual S32G board
+DEPENDS = check_qemu:fail earlysetup:wait
+
+RESPAWN = NO
+# features below not yet implemented
+EXEC = NO
+QM_JAIL = NO
+SIG = ""

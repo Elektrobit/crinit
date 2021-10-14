@@ -1,0 +1,13 @@
+# Will fulfill dep check_qemu:wait if run with a static IP as in our QEMU setup, check_qemu:fail otherwise
+
+NAME = check_qemu
+
+COMMAND[0] = /bin/grep -q -E "\bip=[0-9]+" /proc/cmdline
+
+DEPENDS = ""
+
+RESPAWN = NO
+# features below not yet implemented
+EXEC = NO
+QM_JAIL = NO
+SIG = ""
