@@ -1,0 +1,10 @@
+# example series file, specifying which files to parse
+
+TASKS = hello_echo.crinit sleep_one_sec.crinit after_sleep.crinit one_second_respawn.crinit
+
+TASKDIR = /etc/crinit/test
+DEBUG = YES
+FILE_SIGS_NEEDED = NO
+
+# not yet implemented
+SIG = ""

@@ -1,0 +1,14 @@
+# Example hello world config
+
+NAME = one_second_respawn
+
+COMMAND[0] = /bin/sleep 1
+COMMAND[1] = /bin/echo A second is over. (This task should be finished and respawn every 1s.)
+
+DEPENDS = "after_sleep:spawn"
+
+RESPAWN = YES
+# features below not yet implemented
+EXEC = NO
+QM_JAIL = NO
+SIG = ""

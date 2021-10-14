@@ -1,0 +1,17 @@
+# Example config with monitor event dependency
+
+### NAME shall match [a-zA-Z0-9_-], especially '@' is forbidden (see below)
+NAME = after_monitor_event
+
+COMMAND[0] = /bin/echo Sleep task is done and the HIGH_TEMPERATURE event was signaled by the BaseOS monitor
+
+### This will let crinit subscribe to the HIGH_TEMPERATURE event. If HIGH_TEMPERATURE cannot be subscribed to because it
+### is unimplemented or otherwise unavailable, there will be no fatal error but the task will never run and a warning
+### will be logged.
+DEPENDS = sleep_one_sec:wait @ebclmon:HIGH_TEMPERATURE
+
+RESPAWN = NO
+# features below not yet implemented
+EXEC = NO
+QM_JAIL = NO
+SIG = ""
