@@ -16,7 +16,10 @@
 #include "globopt.h"
 #include "logio.h"
 #include "minsetup.h"
+#include "notiserv.h"
 #include "procdip.h"
+#include "rtimcmd.h"
+
 /**
  * Print usage information for Crinit.
  *
@@ -94,6 +97,8 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
+    EBCL_rtimOpMapDebugPrintAll();
+
     ebcl_TaskDB tdb;
     EBCL_taskDBInit(&tdb, EBCL_procDispatchSpawnFunc);
 
@@ -156,6 +161,13 @@ int main(int argc, char *argv[]) {
     }
     EBCL_freeArgvArray(series);
     EBCL_dbgInfoPrint("Done parsing.");
+
+    if (EBCL_startInterfaceServer(&tdb, EBCL_CRINIT_SOCKFILE) == -1) {
+        EBCL_errPrint("Could not start notification and service interface.");
+        EBCL_taskDBDestroy(&tdb);
+        EBCL_globOptDestroy();
+        return EXIT_FAILURE;
+    }
 
     while (true) {
         EBCL_taskDBSpawnReady(&tdb);

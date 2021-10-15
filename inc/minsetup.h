@@ -12,7 +12,7 @@
 #define __MINSETUP_H__
 
 /**
- * Sets up devtmpfs, devpts, sysfs, and procfs.
+ * Sets up devtmpfs, devpts, sysfs, procfs, and a tmpfs on /run
  *
  * Meant to be used during early startup, so that necessary system interfaces are available.
  *

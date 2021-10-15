@@ -1,0 +1,13 @@
+# Example hello world config
+
+NAME = sleep_one_day
+
+COMMAND[0] = /bin/sleep 1d
+
+DEPENDS = ""
+
+RESPAWN = NO
+# features below not yet implemented
+EXEC = NO
+QM_JAIL = NO
+SIG = ""

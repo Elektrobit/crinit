@@ -5,7 +5,7 @@ NAME = one_second_respawn
 COMMAND[0] = /bin/sleep 1
 COMMAND[1] = /bin/echo A second is over. (This task should be finished and respawn every 1s.)
 
-DEPENDS = "after_sleep:spawn"
+DEPENDS = "after_sleep:spawn @ctl:enable"
 
 RESPAWN = YES
 # features below not yet implemented

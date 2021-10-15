@@ -14,6 +14,9 @@
 #include <errno.h>
 #include <stdio.h>
 
+#define EBCL_PRINT_PREFX_MAX_LEN 32
+
+void EBCL_setPrintPrefix(const char *prefx); 
 /**
  * Set FILE stream to use for info messages.
  *

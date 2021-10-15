@@ -1,7 +1,17 @@
 crinit
 crinit_parsecheck
+crinit-ctl
 *.o
 doc/
+lib/
+ci/sshconfig
+result/
+packaging/rpmbuild/SOURCES
+packaging/rpmbuild/BUILD
+packaging/rpmbuild/RPMS
+packaging/rpmbuild/SRPMS
+.ycm*
+*.svg
 
 # Vim temporary files
 # Swap

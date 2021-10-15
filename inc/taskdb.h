@@ -116,6 +116,32 @@ int EBCL_taskDBInsert(ebcl_TaskDB *ctx, const ebcl_Task *t, bool overwrite);
  * @return 0 on success, -1 otherwise
  */
 int EBCL_taskDBFulfillDep(ebcl_TaskDB *ctx, const ebcl_TaskDep *dep);
+/**
+ * Add a dependency to a specific task inside a task database.
+ *
+ * Will search \a ctx for a task with name \a taskName and add \a dep to its ebcl_Task::deps and adjust
+ * ebcl_Task::depsSize.
+ *
+ * @param ctx       The ebcl_taskDb context to work on.
+ * @param dep       The dependency to be added.
+ * @param taskName  The name of the relevant task.
+ *
+ * @return 0 on success, -1 otherweise
+ */
+int EBCL_taskDBAddDepToTask(ebcl_TaskDB *ctx, const ebcl_TaskDep *dep, const char *taskName);
+/**
+ * Remove a dependency from a specific task inside a task database.
+ *
+ * Will search \a ctx for a task with name \a taskName and remove \a dep from its ebcl_Task::deps and adjust
+ * ebcl_Task::depsSize, if such a dependency is present.
+ *
+ * @param ctx       The ebcl_taskDb context to work on.
+ * @param dep       The dependency to be removed.
+ * @param taskName  The name of the relevant task.
+ *
+ * @return 0 on success, -1 otherweise
+ */
+int EBCL_taskDBRemoveDepFromTask(ebcl_TaskDB *ctx, const ebcl_TaskDep *dep, const char *taskName);
 
 /**
  * Set the ebcl_TaskState of a task in a task database

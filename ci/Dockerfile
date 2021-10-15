@@ -10,7 +10,7 @@ RUN apt-get update \
     build-essential git \
     gcc-aarch64-linux-gnu \
     rpm \
-    doxygen graphviz \
+    doxygen graphviz plantuml \
  && rm -rf /var/lib/apt/lists/*
 
 RUN locale-gen en_US.UTF-8 \

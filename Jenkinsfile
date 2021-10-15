@@ -13,7 +13,7 @@ pipeline {
         disableConcurrentBuilds()
     }
     stages {
-        stage ('Build target') {
+        stage ('Build and run demo') {
             agent {
                 dockerfile {
                     dir 'ci'
@@ -25,17 +25,30 @@ pipeline {
                         -e HOME=/home/jenkins"
                 }
             }
-            steps {
-                sh '''#!/bin/bash -xe
-                  env
-                  TMPDIR=
-                  PARALLEL_MAKE="-j 1"
+            stages {
+                stage ('Build') {
+                    steps {
+                        sh '''#!/bin/bash -xe
+                          env
+                          TMPDIR=
+                          PARALLEL_MAKE="-j 1"
 
-                  git clean -xdff
+                          git clean -xdff
 
-                  ci/build.sh
-                  rm -rf build
-                '''
+                          ci/build.sh
+                        '''
+                    }
+                }
+                stage ('Demo') {
+                    steps {
+                        sh '''#!/bin/bash -xe
+                          env
+                          TMPDIR=
+
+                          ci/demo.sh 2>&1 | tee result/demo_output.txt
+                        '''
+                    }
+                }
             }
         }
         stage('Store result') {
