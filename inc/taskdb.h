@@ -199,6 +199,18 @@ int EBCL_taskDBSetTaskPID(ebcl_TaskDB *ctx, pid_t pid, const char *taskName);
 int EBCL_taskDBGetTaskPID(ebcl_TaskDB *ctx, pid_t *pid, const char *taskName);
 
 /**
+ * Set the process spawning function of the TaskDB.
+ *
+ * Setting \a spawnFunc to NULL will inhibit spawning of new processes.
+ *
+ * @param ctx        The ebcl_TaskDB context for which to set the spawning function.
+ * @param spawnFunc  The new spawning function to set, may be NULL.
+ *
+ * @return 0 on success, -1 on error
+ */
+int EBCL_taskDBSetSpawnFunc(ebcl_TaskDB *ctx, int (*spawnFunc)(ebcl_TaskDB *ctx, const ebcl_Task *)); 
+
+/**
  * Run ebcl_TaskDB::spawnFunc for each startable task in a task database.
  *
  * A task is startable if and only if it has no remaining ebcl_Task::deps and it has not been started before according

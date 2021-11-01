@@ -190,6 +190,18 @@ int EBCL_crinitTaskRestart(const char *taskName);
  * @return 0 on success, -1 on error
  */
 int EBCL_crinitTaskGetStatus(ebcl_TaskState *s, pid_t *pid, const char *taskName);
+/**
+ * Request Crinit to initiate an immediate shutdown or reboot.
+ *
+ * Calling process must have the CAP_SYS_BOOT capability or Crinit will refuse with "Permission denied."
+ * The header sys/reboot.h needs to be included for the constants for parameter \a shutdownCmd
+ *
+ * @param shutdownCmd  The shutdown command to be performed, either RB_POWER_OFF (for poweroff) or RB_AUTOBOOT (for
+ *                     reboot).
+ *
+ * @return 0 on success, -1 on error
+ */
+int EBCL_crinitShutdown(int shutdownCmd);
 
 #ifdef __cplusplus
 }

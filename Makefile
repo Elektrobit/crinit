@@ -2,7 +2,7 @@ CC      ?= $(CROSS_COMPILE)gcc
 DOXYGEN ?= doxygen
 PLANTUML ?= plantuml
 
-BINS = crinit crinit_parsecheck crinit-ctl
+BINS = crinit crinit_parsecheck crinit-ctl reboot poweroff
 
 SRCDIR = src
 
@@ -20,7 +20,7 @@ LIBOBJS = $(addprefix $(LIBOBJDIR)/, ${LIBSRCS:.c=.o})
 
 IMGS = $(addprefix $(IMGDIR)/, notiserv_sock_comm_seq.svg  sock_comm_str.svg)
 
-CFLAGS += -O2 -std=c99 -D_DEFAULT_SOURCE -Wall -Werror -pedantic -fstack-protector-strong -ffunction-sections -fdata-sections -D_FORTIFY_SOURCE=2 -I$(INCDIR)
+CFLAGS += -O2 -std=c99 -D_DEFAULT_SOURCE -Wall -Wswitch-enum -Werror -pedantic -fstack-protector-strong -ffunction-sections -fdata-sections -D_FORTIFY_SOURCE=2 -I$(INCDIR)
 LDFLAGS += -L$(LIBDIR) -Wl,--gc-sections
 
 LIBCFLAGS := -fPIC -fvisibility=hidden $(CFLAGS)
@@ -39,7 +39,7 @@ ifeq ($(RPM_TARGET),)
 RPM_TARGET = x86_64
 endif
 
-all: crinit crinit_parsecheck lib/libcrinit-client.so crinit-ctl
+all: crinit crinit_parsecheck lib/libcrinit-client.so crinit-ctl poweroff reboot
 
 crinit: ${OBJS}
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LIBS)
@@ -48,6 +48,12 @@ crinit_parsecheck: $(OBJDIR)/crinit_parsecheck.o $(OBJDIR)/confparse.o $(OBJDIR)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 crinit-ctl: $(OBJDIR)/crinit-ctl.o $(OBJDIR)/logio.o lib/libcrinit-client.so
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(filter-out %.so, $^) $(LIBS) -lcrinit-client
+
+poweroff: $(OBJDIR)/poweroff.o $(OBJDIR)/logio.o lib/libcrinit-client.so
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(filter-out %.so, $^) $(LIBS) -lcrinit-client
+
+reboot: $(OBJDIR)/reboot.o $(OBJDIR)/logio.o lib/libcrinit-client.so
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(filter-out %.so, $^) $(LIBS) -lcrinit-client
 
 lib/libcrinit-client.so: ${LIBOBJS}

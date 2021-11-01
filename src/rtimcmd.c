@@ -10,15 +10,29 @@
  */
 #include "rtimcmd.h"
 
+#include <limits.h>
+#include <pthread.h>
 #include <signal.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/mount.h>
+#include <sys/reboot.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
+#include "globopt.h"
 #include "logio.h"
 #include "procdip.h"
+
+/**
+ * Argument structure for shdnThread().
+ */
+typedef struct ShdnThrArgs {
+    ebcl_TaskDB *ctx;  ///< TaskDB which holds the tasks to be terminated/killed on shutdown.
+    int shutdownCmd;   ///< The command for the reboot() syscall, see documentation of RB_* macros in man 7 reboot.
+} ShdnThrArgs;
 
 /**
  * Internal implementation of the "add" command on an ebcl_TaskDB.
@@ -116,6 +130,36 @@ static int execRtimCmdNotify(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_Rti
  * @return 0 on success, -1 on error
  */
 static int execRtimCmdStatus(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cmd);
+
+/**
+ * Internal implementation of the "shutdown" command.
+ *
+ * For documentation on the command itself, see EBCL_crinitShutdown().
+ *
+ * @param ctx  The currently running ebcl_TaskDB, needed to inhibit spawning of new processes during shutdown.
+ * @param res  Return pointer for response/result.
+ * @param cmd  The ebcl_RtimCmd to execute, used to pass the argument list.
+ *
+ * @return 0 on success, -1 on error
+ */
+static int execRtimCmdShutdown(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cmd);
+/**
+ * Shutdown thread function.
+ *
+ * Run as a pthread, so that execRtimCmdShutdown() may return before the actual shutdown syscall is issued and the
+ * requesting process is not blocked.
+ *
+ * @param args  Argument pointer, see ShdnThrArgs.
+ */
+static void *shdnThread(void *args);
+/**
+ * Wait function using nanosleep for the shutdown grace period.
+ *
+ * @param micros  Number of microseconds to wait.
+ *
+ * @return  0 on success, -1 on error
+ */
+static inline int gracePeriod(unsigned long long micros);
 
 int EBCL_parseRtimCmd(ebcl_RtimCmd *out, const char *cmdStr) {
     if (out == NULL || cmdStr == NULL) {
@@ -226,49 +270,55 @@ int EBCL_execRtimCmd(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cm
     switch (cmd->op) {
         case EBCL_RTIMCMD_C_ADDTASK:
             if (execRtimCmdAdd(ctx, res, cmd) == -1) {
-                EBCL_errPrint("Could not execute runtime command \'ADD\'.", cmd->op);
+                EBCL_errPrint("Could not execute runtime command \'ADDTASK\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_ENABLE:
             if (execRtimCmdEnable(ctx, res, cmd) == -1) {
-                EBCL_errPrint("Could not execute runtime command \'ENABLE\'.", cmd->op);
+                EBCL_errPrint("Could not execute runtime command \'ENABLE\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_DISABLE:
             if (execRtimCmdDisable(ctx, res, cmd) == -1) {
-                EBCL_errPrint("Could not execute runtime command \'DISABLE\'.", cmd->op);
+                EBCL_errPrint("Could not execute runtime command \'DISABLE\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_STOP:
             if (execRtimCmdStop(ctx, res, cmd) == -1) {
-                EBCL_errPrint("Could not execute runtime command \'STOP\'.", cmd->op);
+                EBCL_errPrint("Could not execute runtime command \'STOP\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_KILL:
             if (execRtimCmdKill(ctx, res, cmd) == -1) {
-                EBCL_errPrint("Could not execute runtime command \'KILL\'.", cmd->op);
+                EBCL_errPrint("Could not execute runtime command \'KILL\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_RESTART:
             if (execRtimCmdRestart(ctx, res, cmd) == -1) {
-                EBCL_errPrint("Could not execute runtime command \'RESTART\'.", cmd->op);
+                EBCL_errPrint("Could not execute runtime command \'RESTART\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_NOTIFY:
             if (execRtimCmdNotify(ctx, res, cmd) == -1) {
-                EBCL_errPrint("Could not execute runtime command \'NOTIFY\'.", cmd->op);
+                EBCL_errPrint("Could not execute runtime command \'NOTIFY\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_STATUS:
             if (execRtimCmdStatus(ctx, res, cmd) == -1) {
-                EBCL_errPrint("Could not execute runtime command \'STATUS\'.", cmd->op);
+                EBCL_errPrint("Could not execute runtime command \'STATUS\'.");
+                return -1;
+            }
+            return 0;
+        case EBCL_RTIMCMD_C_SHUTDOWN:
+            if (execRtimCmdShutdown(ctx, res, cmd) == -1) {
+                EBCL_errPrint("Could not execute runtime command \'SHUTDOWN\'.");
                 return -1;
             }
             return 0;
@@ -280,6 +330,7 @@ int EBCL_execRtimCmd(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cm
         case EBCL_RTIMCMD_R_RESTART:
         case EBCL_RTIMCMD_R_NOTIFY:
         case EBCL_RTIMCMD_R_STATUS:
+        case EBCL_RTIMCMD_R_SHUTDOWN:
         default:
             EBCL_errPrint("Could not execute opcode %d. This is an unknown opcode or a response code.", cmd->op);
             return -1;
@@ -636,6 +687,104 @@ static int execRtimCmdStatus(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_Rti
         return -1;
     }
     free(resStr);
+    return 0;
+}
+
+static int execRtimCmdShutdown(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cmd) {
+    if (ctx == NULL || res == NULL || cmd == NULL) {
+        EBCL_errPrint("Pointer parameters must not be NULL");
+        return -1;
+    }
+    ShdnThrArgs *thrArgs = malloc(sizeof(ShdnThrArgs));
+    if (thrArgs == NULL) {
+        EBCL_errnoPrint("Could not allocate memory for shutdown thread arguments.");
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_SHUTDOWN, 2, EBCL_RTIMCMD_RES_ERR, "Memory allocation error.");
+    }
+
+    if (cmd->argc != 1) {
+        free(thrArgs);
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_SHUTDOWN, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+    }
+
+    thrArgs->ctx = ctx;
+    errno = 0;
+    thrArgs->shutdownCmd = (int)strtol(cmd->args[0], NULL, 16);
+    if (thrArgs->shutdownCmd != RB_AUTOBOOT && thrArgs->shutdownCmd != RB_POWER_OFF) {
+        free(thrArgs);
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_SHUTDOWN, 2, EBCL_RTIMCMD_RES_ERR, "Invalid argument.");
+    }
+
+    pthread_t shdnThreadRef;
+    pthread_attr_t thrAttrs;
+    pthread_attr_init(&thrAttrs);
+    pthread_attr_setstacksize(&thrAttrs, EBCL_RTIMCMD_SHDN_THREAD_STACK_SIZE);
+    pthread_attr_setdetachstate(&thrAttrs, PTHREAD_CREATE_DETACHED);
+    errno = pthread_create(&shdnThreadRef, &thrAttrs, shdnThread, thrArgs);
+    pthread_attr_destroy(&thrAttrs);
+    if (errno != 0) {
+        EBCL_errnoPrint("Could not start shutdown thread");
+        free(thrArgs);
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_SHUTDOWN, 2, EBCL_RTIMCMD_RES_ERR,
+                                 "Could not start shutdown thread.");
+    }
+
+    return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_SHUTDOWN, 1, EBCL_RTIMCMD_RES_OK);
+}
+
+static void *shdnThread(void *args) {
+    ShdnThrArgs *a = (ShdnThrArgs *)args;
+    ebcl_TaskDB *ctx = a->ctx;
+    int shutdownCmd = a->shutdownCmd;
+    free(args);
+
+    if (EBCL_taskDBSetSpawnFunc(ctx, NULL) == -1) {
+        EBCL_errPrint("Could not set spawning function of TaskDB to NULL. Continuing anyway.");
+    }
+
+    unsigned long long gpMicros = EBCL_GLOBOPT_DEFAULT_SHDGRACEP;
+    if (EBCL_globOptGetUnsignedLL(EBCL_GLOBOPT_SHDGRACEP, &gpMicros) == -1) {
+        gpMicros = EBCL_GLOBOPT_DEFAULT_SHDGRACEP;
+        EBCL_errPrint("Could not read global option for shutdown grace period, using default: %lluus.", gpMicros);
+    }
+
+    kill(-1, SIGCONT);
+    kill(-1, SIGTERM);
+    if (gracePeriod(gpMicros) == -1) {
+        EBCL_errPrint("Could not wait out the shutdown grace period, continuing anyway.");
+    }
+    kill(-1, SIGKILL);
+    if (gracePeriod(100000ULL) == -1) {
+        EBCL_errPrint("Could not wait an additional 100ms after sending SIGKILL to all processes, continuing anyway.");
+    }
+    if (mount(NULL, "/", NULL, MS_REMOUNT | MS_RDONLY, NULL) == -1) {
+        EBCL_errnoPrint("Could not remount rootfs read-only, continuing anyway. Filesystem may be dirty on boot.");
+    }
+    sync();
+
+    if (reboot(shutdownCmd) == -1) {
+        EBCL_errnoPrint("Reboot syscall failed.");
+    }
+    return NULL;
+}
+
+static inline int gracePeriod(unsigned long long micros) {
+    struct timespec t;
+    if (clock_gettime(CLOCK_MONOTONIC, &t) == -1) {
+        EBCL_errnoPrint("Could not get current time from monotonic clock.");
+        return -1;
+    }
+    t.tv_sec += (time_t)(micros / 1000000ULL);
+    unsigned long long nsec = ((micros % 1000000ULL) * 1000ULL) + (unsigned long long)t.tv_nsec;
+    t.tv_sec += (time_t)(nsec / 1000000000ULL);
+    t.tv_nsec = (long)(nsec % 1000000000ULL);
+    int ret = 0;
+    do {
+        ret = clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &t, NULL);
+    } while (ret == -1 && errno == EINTR);
+    if (ret == -1) {
+        EBCL_errnoPrint("Could not sleep for %lluus.", micros);
+        return -1;
+    }
     return 0;
 }
 

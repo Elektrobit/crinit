@@ -43,7 +43,7 @@ typedef struct ebcl_ConfKvList {
 int EBCL_parseConf(ebcl_ConfKvList **confList, const char *filename);
 
 /**
- * Frees memory allocated for an ebcl_ConfKvList by EBCL_parseConf().
+ * Frees memory allocated for a ebcl_ConfKvList by EBCL_parseConf().
  *
  * @param confList Pointer to ebcl_ConfKvList allocated by EBCL_parseConf() and not freed before. If
  *                 confList is NULL, EBCL_freeConfList() will return without freeing any memory.
@@ -108,14 +108,29 @@ int EBCL_confListSetValWithIdx(const char *val, const char *key, size_t keyArrIn
  *
  * @param out  Pointer to a boolean to be set according to the value found.
  * @param key  String with the key to search for in \a in.
- * @param in   Pointer to a ebcl_ConfKvList containing a values for \a key.
+ * @param in   Pointer to a ebcl_ConfKvList containing a value for \a key.
  *
  * @return 0 on success, -1 on error.
  */
 int EBCL_confListExtractBoolean(bool *out, const char *key, const ebcl_ConfKvList *in);
 
 /**
- * Extract an array of strings from the value mapped to a key in an ebcl_ConfKvList.
+ * Extract an unsigned long long value from an ebcl_ConfKvList.
+ *
+ * Given a ebcl_ConfKvList \a in containing a key \a key with a value representing an unsigned long long (with base \a
+ * base), set \a out to the corresponding value.
+ *
+ * @param out   Pointer to an unsigned long long to be set according to the value found.
+ * @param base  Numerical base of the value, e.g. 10 for a decimal number or 16 for hexadecimal.
+ * @param key   String with the key to search for in \a in.
+ * @param in    Pointer to an ebcl_ConfKvList containing a value for \a key.
+ *
+ * @return 0 on success, -1 on error.
+ */
+int EBCL_confListExtractUnsignedLL(unsigned long long *out, int base, const char *key, const ebcl_ConfKvList *in);
+
+/**
+ * Extract an Array of strings from an ebcl_ConfKvList
  *
  * Maps to a call of EBCL_confExtractArgvArrayWithIdx() with \a keyArrIndex set to 0. Meant to be used with singular
  * (non-array) keys.

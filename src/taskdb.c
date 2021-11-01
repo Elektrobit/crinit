@@ -159,7 +159,9 @@ int EBCL_taskDBSpawnReady(ebcl_TaskDB *ctx) {
         EBCL_errnoPrint("Could not queue up for mutex lock.");
         return -1;
     }
-
+    if (ctx->spawnFunc == NULL) {
+        goto success;
+    }
     for (size_t i = 0; i < ctx->taskSetItems; i++) {
         ebcl_Task *pTask = &ctx->taskSet[i];
         if (taskReady(pTask)) {
@@ -174,6 +176,7 @@ int EBCL_taskDBSpawnReady(ebcl_TaskDB *ctx) {
         }
     }
 
+success:
     pthread_mutex_unlock(&ctx->lock);
     return 0;
 fail:
@@ -272,6 +275,21 @@ int EBCL_taskDBGetTaskPID(ebcl_TaskDB *ctx, pid_t *pid, const char *taskName) {
     pthread_mutex_unlock(&ctx->lock);
     EBCL_errPrint("Could not get TaskState of Task \'%s\' as it does not exist in TaskDB.", taskName);
     return -1;
+}
+
+int EBCL_taskDBSetSpawnFunc(ebcl_TaskDB *ctx, int (*spawnFunc)(ebcl_TaskDB *ctx, const ebcl_Task *)) {
+    if (ctx == NULL) {
+        EBCL_errPrint("The TaskDB context must not be NULL.");
+        return -1;
+    }
+
+    if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
+        EBCL_errnoPrint("Could not queue up for mutex lock.");
+        return -1;
+    }
+    ctx->spawnFunc = spawnFunc;
+    pthread_mutex_unlock(&ctx->lock);
+    return 0;
 }
 
 int EBCL_taskDBAddDepToTask(ebcl_TaskDB *ctx, const ebcl_TaskDep *dep, const char *taskName) {

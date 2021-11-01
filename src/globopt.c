@@ -36,12 +36,18 @@ int EBCL_globOptInitDefault(void) {
                     EBCL_errPrint("Could not set default value for global option \'FILE_SIGS_NEEDED\'.");
                     return -1;
                 }
-
             } break;
             case EBCL_GLOBOPT_TASKDIR:
                 if (EBCL_globOptSetString(i, EBCL_GLOBOPT_DEFAULT_TASKDIR) == -1) {
                     EBCL_errPrint("Could not set default value for global option \'TASKDIR\'.");
                 }
+                break;
+            case EBCL_GLOBOPT_SHDGRACEP: {
+                unsigned long long def = EBCL_GLOBOPT_DEFAULT_SHDGRACEP;
+                if (EBCL_globOptSetUnsignedLL(i, &def) == -1) {
+                    EBCL_errPrint("Could not set default value for global option \'SHUTDOWN_GRACE_PERIOD_US\'.");
+                }
+            } break;
             case EBCL_GLOBOPT_START:
             default:
                 if (EBCL_globOptSet(i, NULL, 0) == -1) {
