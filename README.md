@@ -26,9 +26,10 @@ The central Task Data Structure (`ebcl_TaskDB` in `taskdb.h`), Config Parser (`c
 (`procdip.h/.c`), Notification/Service interface (`notiserv.h/.c`, `rtimcmd.h/.c`), Client library
 (`crinit-client.h/.c`) have been preliminarily implemented and are functioning. In addition, the implementation contains
 a simple encapsulated storage for global options (`globopt.h/.c`), some minimal PID 1 setup code which cannot be
-"sourced out" into a task configuration (`minsetup.h/.c`), debug/log output functionality (`logio.h/.c`), and a CLI
-control program showcasing the client API (crinit-ctl.c). For detailed explanations of the inner workings please
-refer to the Doxygen-generated documentation of the individual header and source files.
+"sourced out" into a task configuration (`minsetup.h/.c`), debug/log output functionality (`logio.h/.c`), a CLI 
+control program showcasing the the client API (`crinit-ctl.c`) and implementations of the `poweroff` and `reboot` system
+commands, also based on the client API. For detailed explanations of the inner workings please refer to the
+Doxygen-generated documentation of the individual header and source files.
 
 The client API is documented in the Doxygen documentation of `crinit-client.h`. The API is implemented as a shared
 library (`libcrinit-client.so`).
@@ -55,6 +56,8 @@ TASKDIR = /etc/crinit
 DEBUG = NO
 FILE_SIGS_NEEDED = NO
 
+SHUTDOWN_GRACE_PERIOD_US = 100000
+
 # not yet implemented
 SIG = ""
 ```
@@ -64,6 +67,7 @@ SIG = ""
 - **DEBUG** -- If crinit should be verbose in its ouput. Either `YES` or `NO`.
 - **FILE_SIGS_NEEDED** -- If each task configuration needs its own signature. As signature checking is not yet
   implemented, this is parsed but does nothing.
+- **SHUTDOWN_GRACE_PERIOD_US** -- The amount of microseconds to wait between `SIGTERM` and `SIGKILL` on shutdown/reboot.
 - **SIG** -- The signature of this file. Currently unimplemented and can be left empty.
 
 ### Example Task Configuration
