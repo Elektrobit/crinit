@@ -13,7 +13,7 @@ INCDIR = inc
 IMGDIR = images
 
 SRCS =  crinit.c confparse.c taskdb.c procdip.c logio.c globopt.c minsetup.c thrpool.c notiserv.c rtimcmd.c rtimopmap.c
-LIBSRCS = $(SRCS) crinit-client.c sockcom.c
+LIBSRCS = crinit-client.c logio.c rtimcmd.c rtimopmap.c globopt.c sockcom.c
 
 OBJS = $(addprefix $(OBJDIR)/, ${SRCS:.c=.o})
 LIBOBJS = $(addprefix $(LIBOBJDIR)/, ${LIBSRCS:.c=.o})
