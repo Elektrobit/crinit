@@ -5,7 +5,7 @@
 
 cleanup() {
     # Terminate Crinit on exit.
-    sudo kill $(ps -o pid= --ppid ${@})
+    sudo kill ${@}
     # Delete temporary config.
     rm -f ${CONFDIR}/demo.series
 }
@@ -23,12 +23,15 @@ cat config/test/local.series | sed "s#TASKDIR = .*#TASKDIR = ${CONFDIR}#" > ${CO
 
 echo Will run: $ sudo crinit ${CONFDIR}/demo.series &
 sudo ${BINDIR}/crinit ${CONFDIR}/demo.series &
-CRINIT_PID="$!"
+SUDO_PID="$!"
+sleep 1
+CRINIT_PID=$(ps -o pid= --ppid ${SUDO_PID})
 trap "cleanup ${CRINIT_PID}" EXIT
+sleep 1
 echo Crinit started with PID ${CRINIT_PID}.
 
 echo ""
-echo Now we sleep 3 seconds, so everything has settled...
+echo Now we sleep 3 more seconds, so everything has settled...
 sleep 3
 
 echo ""
@@ -65,9 +68,10 @@ else
     exit 1
 fi
 
+sleep 1
 echo ""
-echo Now we should see a /bin/sleep process in ps, which will sleep a whole day if we would let it.
-ps aux
+echo Now Crinit should have a /bin/sleep child process which will sleep a whole day if we let it.
+ps --ppid ${CRINIT_PID} ## Will return 1 if no processes found.
 
 echo ""
 echo "Now let's check the status of sleep_one_day. As it is currently running, the status should be 2 and the PID the same as in ps above."
