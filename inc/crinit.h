@@ -14,7 +14,7 @@
 /**
  * Prefix to put in front of log/info/error messages.
  */
-#define EBCL_CRINIT_PRINT_PREFX "[CRINIT] "
+#define EBCL_CRINIT_PRINT_PREFIX "[CRINIT] "
 
 /**
  * The default series file. Used if nothing is specified on command line.

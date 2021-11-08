@@ -17,8 +17,8 @@
 #include "crinit.h"
 #include "globopt.h"
 
-/** Holds the Prefix to put in front of every printed line, defaults to #EBCL_CRINIT_PRINT_PREFX **/
-static char printPrefix[EBCL_PRINT_PREFX_MAX_LEN] = EBCL_CRINIT_PRINT_PREFX;
+/** Holds the Prefix to put in front of every printed line, defaults to #EBCL_CRINIT_PRINT_PREFIX **/
+static char printPrefix[EBCL_PRINT_PREFIX_MAX_LEN] = EBCL_CRINIT_PRINT_PREFIX;
 
 static FILE *infoStream = NULL;  ///< holds the stream to use for info messages.
 static FILE *errStream = NULL;   ///< holds the stream to use for error messages.
@@ -37,9 +37,9 @@ static pthread_mutex_t logLock = PTHREAD_MUTEX_INITIALIZER;
  */
 static char *threadSafeStrerror(int errnum);
 
-void EBCL_setPrintPrefix(const char *prefx) {
+void EBCL_setPrintPrefix(const char *prefix) {
     pthread_mutex_lock(&logLock);
-    strncpy(printPrefix, (prefx==NULL) ? EBCL_CRINIT_PRINT_PREFX : prefx, EBCL_PRINT_PREFX_MAX_LEN);
+    strncpy(printPrefix, (prefix==NULL) ? EBCL_CRINIT_PRINT_PREFIX : prefix, EBCL_PRINT_PREFIX_MAX_LEN);
     pthread_mutex_unlock(&logLock);
 }
 
