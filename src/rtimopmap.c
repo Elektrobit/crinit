@@ -17,6 +17,9 @@
 
 const ebcl_RtimOpMap EBCL_rtimOps[] = {EBCL_genOpMap(EBCL_genOpStruct)};
 
+/**  The number of elements in the generated map. **/
+#define EBCL_RTIMOPMAP_ELEMENTS sizeof(EBCL_rtimOps) / sizeof(ebcl_RtimOpMap)
+
 void EBCL_rtimOpMapDebugPrintAll(void) {
     EBCL_dbgInfoPrint("List of available API Operations:");
     for (size_t i = 0; i < EBCL_RTIMOPMAP_ELEMENTS; i++) {

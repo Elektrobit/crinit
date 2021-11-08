@@ -45,10 +45,6 @@ typedef struct ebcl_RtimOpMap {
  * The string/opcode map for all opcodes, initialized in rtimopmap.c.
  */
 extern const ebcl_RtimOpMap EBCL_rtimOps[];
-/**
- * The number of elements in the generated map.
- */
-#define EBCL_RTIMOPMAP_ELEMENTS sizeof(EBCL_rtimOps) / sizeof(ebcl_RtimOpMap)
 
 /**
  * Given its string representation, find the correct opcode.
