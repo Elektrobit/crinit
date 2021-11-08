@@ -2,7 +2,7 @@
 
 NAME = sleep_one_day
 
-COMMAND[0] = /bin/sleep 1d
+COMMAND[0] = /bin/sleep 86400
 
 DEPENDS = ""
 
