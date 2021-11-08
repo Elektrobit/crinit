@@ -46,7 +46,7 @@ static void *dispatchThreadFunc(void *args);
 /**
  * Builds a new environment array from #environ, adding the task name for sd_notify().
  *
- * Memory is allocated for the outer array and each string. When no longer needed, all pointer should be passed to
+ * Memory is allocated for the outer array and each string. When no longer needed, all pointers should be passed to
  * free() individually.
  *
  * @param newEnv    Return pointer for the new environment.

@@ -40,7 +40,7 @@ int EBCL_crinitSend(int sockFd, const ebcl_RtimCmd *cmd);
 /**
  * Receive a response from Crinit.
  *
- * iReceives a string using the same protocol as sendStr()/recvStr() in notiserv.c and then uses EBCL_parseRtimCmd() to
+ * Receives a string using the same protocol as sendStr()/recvStr() in notiserv.c and then uses EBCL_parseRtimCmd() to
  * generate an equivalent ebcl_RtimCmd.
  *
  * First, a binary size_t with the string size is received, memory allocation made accordingly, and then the string

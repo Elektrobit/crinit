@@ -27,14 +27,14 @@ The central Task Data Structure (`ebcl_TaskDB` in `taskdb.h`), Config Parser (`c
 (`crinit-client.h/.c`) have been preliminarily implemented and are functioning. In addition, the implementation contains
 a simple encapsulated storage for global options (`globopt.h/.c`), some minimal PID 1 setup code which cannot be
 "sourced out" into a task configuration (`minsetup.h/.c`), debug/log output functionality (`logio.h/.c`), and a CLI
-control program showcasing the the client API (crinit-ctl.c). For detailed explanations of the inner workings please
+control program showcasing the client API (crinit-ctl.c). For detailed explanations of the inner workings please
 refer to the Doxygen-generated documentation of the individual header and source files.
 
 The client API is documented in the Doxygen documentation of `crinit-client.h`. The API is implemented as a shared
 library (`libcrinit-client.so`).
 
 Not currently implemented is the SafeSystemStartup-like jailing functionality of the Process Dispatcher, as well as the
-cryptographic features of the Config Parser. Also,  The Notification and Service interface does not yet support handling
+cryptographic features of the Config Parser. Also, the Notification and Service interface does not yet support handling
 of BaseOS monitor events.
 
 ## Configuration
