@@ -76,7 +76,7 @@ int EBCL_confListGetVal(char **val, const char *key, const ebcl_ConfKvList *c);
  * @return 0 if key is found, -1 otherwise
  *
  */
-int EBCL_confListSetVal(const char *val, const char *key, ebcl_ConfKvList *c); 
+int EBCL_confListSetVal(const char *val, const char *key, ebcl_ConfKvList *c);
 
 /**
  * Extract a boolean value from a ebcl_ConfKvList.

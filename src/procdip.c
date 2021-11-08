@@ -39,7 +39,7 @@ extern char **environ;
  * Function to be started as a pthread from EBCL_procDispatchThread().
  *
  * Takes care of process spawning/waiting and ebcl_TaskDB status updates.
- * 
+ *
  * @param args  See dispThrArgs.
  */
 static void *dispatchThreadFunc(void *args);
@@ -53,7 +53,7 @@ static void *dispatchThreadFunc(void *args);
  * @param taskName  The task name to add to the environment.
  *
  * @return 0 on success, -1 on error
- */ 
+ */
 static int buildEnv(char ***newEnv, const char *taskName);
 
 int EBCL_procDispatchSpawnFunc(ebcl_TaskDB *ctx, const ebcl_Task *t) {

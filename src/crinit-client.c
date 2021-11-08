@@ -20,9 +20,9 @@
  */
 #define LIB_EXPORTED __attribute__((visibility("default")))
 /** Attribute macro for a function executed on loading of the shared library. **/
-#define LIB_CONSTRUCTOR __attribute__((constructor)) 
+#define LIB_CONSTRUCTOR __attribute__((constructor))
 /** Attribute macro for a function executed on program exit if the shared library has been loaded before. **/
-#define LIB_DESTRUCTOR __attribute__((destructor)) 
+#define LIB_DESTRUCTOR __attribute__((destructor))
 /** String to be used if no task name for sd_notify() is currently set. **/
 #define EBCL_CRINIT_ENV_NOTIFY_NAME_UNDEF "@undefined"
 

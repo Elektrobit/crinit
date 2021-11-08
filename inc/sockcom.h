@@ -27,7 +27,7 @@ int EBCL_crinitConnect(int *sockFd, const char *sockFile);
  *
  * Uses EBCL_rtimCmdToMsgStr() to generate a string and sends it using the same protocol as sendStr()/recvStr() in
  * notiserv.c. First, a binary size_t with the string size is sent, then the string itself in a second message/packet.
- * 
+ *
  * The following diagram illustrates the low-level protocol:
  * \image html sock_comm_str.svg
  *
@@ -42,10 +42,10 @@ int EBCL_crinitSend(int sockFd, const ebcl_RtimCmd *cmd);
  *
  * iReceives a string using the same protocol as sendStr()/recvStr() in notiserv.c and then uses EBCL_parseRtimCmd() to
  * generate an equivalent ebcl_RtimCmd.
- * 
+ *
  * First, a binary size_t with the string size is received, memory allocation made accordingly, and then the string
  * itself in a second message/packet is received.
- * 
+ *
  * The following diagram illustrates the low-level protocol:
  * \image html sock_comm_str.svg
  *

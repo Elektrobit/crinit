@@ -38,7 +38,7 @@ all: crinit crinit_parsecheck lib/libcrinit-client.so crinit-ctl
 crinit: ${OBJS}
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LIBS)
 
-crinit_parsecheck: $(OBJDIR)/crinit_parsecheck.o $(OBJDIR)/confparse.o $(OBJDIR)/taskdb.o $(OBJDIR)/logio.o 
+crinit_parsecheck: $(OBJDIR)/crinit_parsecheck.o $(OBJDIR)/confparse.o $(OBJDIR)/taskdb.o $(OBJDIR)/logio.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 crinit-ctl: $(OBJDIR)/crinit-ctl.o $(OBJDIR)/logio.o lib/libcrinit-client.so
@@ -52,7 +52,7 @@ lib/libcrinit-client.so: ${LIBOBJS}
 $(OBJDIR)/%.o : $(SRCDIR)/%.c
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-$(LIBOBJDIR)/%.o : $(SRCDIR)/%.c 
+$(LIBOBJDIR)/%.o : $(SRCDIR)/%.c
 	$(CC) -c -o $@ $< $(LIBCFLAGS)
 
 $(IMGDIR)/%.svg : $(IMGDIR)/%.plantuml

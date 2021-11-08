@@ -137,7 +137,7 @@ int EBCL_crinitTaskAdd(const char *configFilePath, bool overwrite, const char *f
  * to implement starting on command.
  *
  * @param taskName  The name of the task.
- * 
+ *
  * @return 0 on success, -1 on error
  */
 int EBCL_crinitTaskEnable(const char *taskName);
@@ -150,7 +150,7 @@ int EBCL_crinitTaskEnable(const char *taskName);
  * temporarily or permanently.
  *
  * @param taskName  The name of the task.
- * 
+ *
  * @return 0 on success, -1 on error
  */
 int EBCL_crinitTaskDisable(const char *taskName);
@@ -178,7 +178,7 @@ int EBCL_crinitTaskStop(const char *taskName);
 int EBCL_crinitTaskKill(const char *taskName);
 /**
  * Request Crinit to reset the state of a task within the TaskDB.
- * 
+ *
  * State will be reset to 0 it is currently #EBCL_TASK_STATE_DONE or #EBCL_TASK_STATE_FAILED. If the task has no
  * unfulfilled dependencies, this will cause an immediate restart.
  *

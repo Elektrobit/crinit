@@ -194,7 +194,7 @@ int EBCL_rtimCmdToMsgStr(char **out, size_t *outLen, const ebcl_RtimCmd *cmd) {
         EBCL_errPrint("Pointer parameters must not be NULL.");
         return -1;
     }
-  
+
     char *opStr = NULL;
     if (EBCL_opStrGetByRtimOp(&opStr, cmd->op) == -1) {
         EBCL_errPrint("Could not get a string representation of the command's opcode.");

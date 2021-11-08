@@ -26,7 +26,7 @@ The central Task Data Structure (`ebcl_TaskDB` in `taskdb.h`), Config Parser (`c
 (`procdip.h/.c`), Notification/Service interface (`notiserv.h/.c`, `rtimcmd.h/.c`), Client library
 (`crinit-client.h/.c`) have been preliminarily implemented and are functioning. In addition, the implementation contains
 a simple encapsulated storage for global options (`globopt.h/.c`), some minimal PID 1 setup code which cannot be
-"sourced out" into a task configuration (`minsetup.h/.c`), debug/log output functionality (`logio.h/.c`), and a CLI 
+"sourced out" into a task configuration (`minsetup.h/.c`), debug/log output functionality (`logio.h/.c`), and a CLI
 control program showcasing the the client API (crinit-ctl.c). For detailed explanations of the inner workings please
 refer to the Doxygen-generated documentation of the individual header and source files.
 
@@ -167,7 +167,7 @@ ci/demo.sh
 ```
 for a short local demonstration of `crinit`'s client API using `crinit-ctl`.
 
-If a quick native test build is desired, it is fine to simply run 
+If a quick native test build is desired, it is fine to simply run
 ```
 make clean && make
 ```

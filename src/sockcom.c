@@ -65,7 +65,7 @@ int EBCL_crinitSend(int sockFd, const ebcl_RtimCmd *cmd) {
         EBCL_errPrint("Could not transform RtimCmd into sendable string.");
         return -1;
     }
- 
+
     struct iovec iov;
     struct msghdr mHdr;
     memset(&mHdr, 0, sizeof(struct msghdr));
