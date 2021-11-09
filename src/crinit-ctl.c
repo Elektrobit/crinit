@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
 
     while (true) {
         int optionIndex = 0;
-        opt = getopt_long(argc - 1, argv + 1, "qhd:fiv", longOptions, &optionIndex);
+        opt = getopt_long(argc - 1, argv + 1, "hd:fiv", longOptions, &optionIndex);
         if (opt == -1) {
             break;
         }
