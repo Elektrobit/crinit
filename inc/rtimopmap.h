@@ -58,14 +58,14 @@ int EBCL_rtimOpGetByOpStr(ebcl_RtimOp *out, const char *opStr);
 /**
  * Given an ebcl_RtimOp opcode, obtain its string representation.
  *
- * Memory for the return string will be allocated using malloc() and should be free()'d once no longer used.
+ * The returned point points to static memory that shall not be changed.
  *
  * @param out    Return pointer for the string representation.
  * @param opCode  The opcode.
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_opStrGetByRtimOp(char **out, ebcl_RtimOp opCode);
+int EBCL_opStrGetByRtimOp(const char **out, ebcl_RtimOp opCode);
 /**
  * List available opcodes.
  *

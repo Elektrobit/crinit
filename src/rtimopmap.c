@@ -43,7 +43,7 @@ int EBCL_rtimOpGetByOpStr(ebcl_RtimOp *out, const char *opStr) {
     return -1;
 }
 
-int EBCL_opStrGetByRtimOp(char **out, ebcl_RtimOp opCode) {
+int EBCL_opStrGetByRtimOp(const char **out, ebcl_RtimOp opCode) {
     if (out == NULL) {
         EBCL_errPrint("Return pointer must not be NULL.");
         return -1;
@@ -51,14 +51,7 @@ int EBCL_opStrGetByRtimOp(char **out, ebcl_RtimOp opCode) {
 
     for (size_t i = 0; i < EBCL_RTIMOPMAP_ELEMENTS; i++) {
         if (EBCL_rtimOps[i].opCode == opCode) {
-            const char *pSrc = EBCL_rtimOps[i].opStr;
-            size_t copySz = strlen(pSrc) + 1;
-            *out = malloc(copySz);
-            if (*out == NULL) {
-                EBCL_errnoPrint("Could not allocate memory for output string of size %lu Bytes", copySz);
-                return -1;
-            }
-            memcpy(*out, pSrc, copySz);
+            *out = EBCL_rtimOps[i].opStr;
             return 0;
         }
     }

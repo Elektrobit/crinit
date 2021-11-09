@@ -195,7 +195,7 @@ int EBCL_rtimCmdToMsgStr(char **out, size_t *outLen, const ebcl_RtimCmd *cmd) {
         return -1;
     }
 
-    char *opStr = NULL;
+    const char *opStr = NULL;
     if (EBCL_opStrGetByRtimOp(&opStr, cmd->op) == -1) {
         EBCL_errPrint("Could not get a string representation of the command's opcode.");
         return -1;
@@ -208,7 +208,6 @@ int EBCL_rtimCmdToMsgStr(char **out, size_t *outLen, const ebcl_RtimCmd *cmd) {
     *out = malloc(*outLen);
     if (*out == NULL) {
         EBCL_errPrint("Could not allocate memory (%lu Bytes) for string representation of runtime command.", *outLen);
-        free(opStr);
         *outLen = 0;
         return -1;
     }
@@ -224,7 +223,6 @@ int EBCL_rtimCmdToMsgStr(char **out, size_t *outLen, const ebcl_RtimCmd *cmd) {
         runner += argLen;
     }
     *runner = '\0';
-    free(opStr);
     return 0;
 }
 
