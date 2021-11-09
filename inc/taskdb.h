@@ -132,8 +132,9 @@ int EBCL_taskDBAddDepToTask(ebcl_TaskDB *ctx, const ebcl_TaskDep *dep, const cha
 /**
  * Remove a dependency from a specific task inside a task database.
  *
- * Will search \a ctx for a task with name \a taskName and remove \a dep from its ebcl_Task::deps and adjust
- * ebcl_Task::depsSize, if such a dependency is present.
+ * Will search \a ctx for a task with name \a taskName and remove a dependency equal to \a dep from its ebcl_Task::deps
+ * and adjust ebcl_Task::depsSize, if such a dependency is present. The equality condition between two ebcl_TaskDep
+ * instances is the same as in EBCL_taskDBFulfillDep(), i.e. their contents are lexicographically equal.
  *
  * @param ctx       The ebcl_taskDb context to work on.
  * @param dep       The dependency to be removed.
