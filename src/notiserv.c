@@ -43,7 +43,6 @@ typedef struct ConnThrArgs {
 
 static ebcl_ThreadPool workers;                                 ///< The worker thread pool to run connThread() in.
 static ebcl_TaskDB *tdbRef;                                     ///< Pointer to the ebcl_TaskDB to operate on.
-static pthread_mutex_t conAccLock = PTHREAD_MUTEX_INITIALIZER;  ///< Mutex protecting accept() from multiple threads.
 
 /**
  * The worker thread function for handling a connection to a client.
@@ -242,9 +241,7 @@ static void *connThread(void *args) {
     EBCL_dbgInfoPrint("(TID %d) Connection worker thread ready.", threadId);
     while (true) {
         connSockFd = -1;
-        pthread_mutex_lock(&conAccLock);
         connSockFd = accept(servSockFd, NULL, NULL);
-        pthread_mutex_unlock(&conAccLock);
         EBCL_threadPoolThreadBusyCallback(a->tpRef);
 
         if (connSockFd == -1) {
