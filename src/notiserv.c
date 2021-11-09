@@ -138,20 +138,32 @@ static inline int sendStr(int sockFd, const char *str);
  */
 static inline int recvStr(int sockFd, char **str, struct ucred *passedCreds);
 
+/**
+ * Recursive mkdir(), equivalent to `mkdir -p`.
+ *
+ * Note: Will modify the input \a pathname during execution to seperate paths.
+ *
+ * @param pathname  The complete path to recursively generate.
+ * @param mode      The mode passed to mkdir().
+ *
+ * @return 0 on success, -1 on error
+ */
+static inline int mkdirp(char *pathname, mode_t mode);
+
 int EBCL_startInterfaceServer(ebcl_TaskDB *ctx, const char *sockFile) {
     if (ctx == NULL || sockFile == NULL) {
         EBCL_errPrint("Given arguments must not be NULL.");
         return -1;
     }
     tdbRef = ctx;
-    char *sockFileTmp = malloc(strlen(sockFile) + 1);
+    char *sockFileTmp = strdup(sockFile);
     if (sockFileTmp == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for temporary string buffer.");
+        EBCL_errnoPrint("Could not duplicate string.");
         return -1;
     }
-    memcpy(sockFileTmp, sockFile, strlen(sockFile) + 1);
+
     char *sockDir = dirname(sockFileTmp);
-    if (mkdir(sockDir, 0777) == -1 && errno != EEXIST) {
+    if (mkdirp(sockDir, 0777) == -1) {
         EBCL_errnoPrint("Could not create directory \'%s\'.", sockDir);
         free(sockFileTmp);
         return -1;
@@ -170,6 +182,35 @@ int EBCL_startInterfaceServer(ebcl_TaskDB *ctx, const char *sockFile) {
         return -1;
     }
 
+    return 0;
+}
+
+static inline int mkdirp(char *pathName, mode_t mode) {
+    if (pathName == NULL) {
+        EBCL_errPrint("Input path name must not be NULL");
+        return -1;
+    }
+
+    char *runner = pathName;
+    while (*runner != '\0' && *runner == '/') {
+        runner++;
+    }
+
+    // Run mkdir for every slash-delimited substring of the path from front to back, ignoring already existing parts.
+    while (runner != NULL) {
+        runner = strchr(runner, '/');
+        if (runner != NULL) {
+            *runner = '\0';
+        }
+        if (mkdir(pathName, mode) == -1 && errno != EEXIST) {
+            EBCL_errnoPrint("Could not create directory \'%s\'.", pathName);
+            return -1;
+        }
+        if (runner != NULL) {
+            *runner = '/';
+            runner++;
+        }
+    }
     return 0;
 }
 
