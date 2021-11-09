@@ -35,6 +35,11 @@ make rpmbuild
 cp -a packaging/rpmbuild/RPMS $BASEDIR/result
 cp -a packaging/rpmbuild/SRPMS $BASEDIR/result
 
+# build and copy aarch64 rpm
+make clean
+CFLAGS="-mcpu=cortex-a53 -march=armv8-a+crc" CC=aarch64-linux-gnu-gcc make rpmbuild
+cp -a packaging/rpmbuild/RPMS $BASEDIR/result
+
 # build and copy documentation
 make doxygen
 cp -a doc $BASEDIR/result

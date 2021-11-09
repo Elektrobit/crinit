@@ -33,6 +33,12 @@ GIT_REVISION = $(shell git rev-parse --short HEAD)
 DIRS = $(OBJDIR) $(LIBOBJDIR) $(LIBDIR)
 $(shell mkdir -p $(DIRS))
 
+# If we're cross-compiling for aarch64, set the RPM target accordingly
+RPM_TARGET = $(findstring aarch64, $(CC))
+ifeq ($(RPM_TARGET),)
+RPM_TARGET = x86_64
+endif
+
 all: crinit crinit_parsecheck lib/libcrinit-client.so crinit-ctl
 
 crinit: ${OBJS}
@@ -66,7 +72,7 @@ doxygen: $(IMGS)
 rpmbuild: clean
 	mkdir -p packaging/rpmbuild/SOURCES
 	tar czf packaging/rpmbuild/SOURCES/crinit-git-$(GIT_REVISION).tar.gz src/ inc/ config/ images/ Makefile Doxyfile README.md
-	cd packaging/rpmbuild && rpmbuild --define "_topdir $(shell pwd)/packaging/rpmbuild" --define "gitrev_ $(GIT_REVISION)" -v -ba SPECS/crinit-git.spec
+	cd packaging/rpmbuild && rpmbuild --target $(RPM_TARGET) --define "_topdir $(shell pwd)/packaging/rpmbuild" --define "gitrev_ $(GIT_REVISION)" -v -ba SPECS/crinit-git.spec
 
 clean:
 	rm -rvf $(BINS) $(DIRS) $(IMGS)

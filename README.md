@@ -158,7 +158,7 @@ Inside the container, it is sufficient to run
 ```
 ci/build.sh
 ```
-which will compile `crinit`, the client library and crinit-ctl for ARM64 and for x86_64 as well as an x86_64 RPM. The
+which will compile `crinit`, the client library and crinit-ctl for ARM64 and for x86_64 as well as a suite of RPMs. The
 doxygen documentation is built as well. The script will copy relevant build artifacts to `result/`.
 
 Afterwards, it is possible to run (also inside the container)
