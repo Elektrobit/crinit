@@ -189,32 +189,34 @@ int EBCL_confListSetVal(const char *val, const char *key, ebcl_ConfKvList *c) {
     if (val == NULL || key == NULL || c == NULL) {
         return -1;
     }
-    size_t ksize = strlen(key) + 1;
-    char *tk = malloc(ksize);
-    if (tk == NULL) {
+
+    const char *pKey = key;
+    while (*pKey != '\0' && isspace(*pKey)) {
+        pKey++;
+    }
+
+    size_t kLen = strlen(pKey);
+    while (kLen > 0 && isspace(key[kLen - 1])) {
+        kLen--;
+    }
+    if (kLen == 0) {
         return -1;
     }
-    char *tkmemptr = tk;
-    memcpy(tk, key, ksize);
-    trimWhitespace(&tk);
+
     while (c != NULL) {
-        if (!strcmp(tk, c->key)) {
+        if (!strncmp(pKey, c->key, kLen)) {
             break;
         }
         c = c->next;
     }
     if (c == NULL) {
-        free(tkmemptr);
         return -1;
     }
-    free(tkmemptr);
     free(c->val);
-    size_t newValLen = strlen(val) + 1;
-    c->val = malloc(newValLen);
+    c->val = strdup(val);
     if (c->val == NULL) {
         return -1;
     }
-    memcpy(c->val, val, newValLen);
     return 0;
 }
 
