@@ -111,12 +111,8 @@ LIB_EXPORTED void EBCL_crinitSetSocketPath(const char *sockFile) {
 }
 
 LIB_EXPORTED int sd_notify(int unset_environment, const char *state) {
-    return sd_notifyf(unset_environment, state);
-}
-
-LIB_EXPORTED int sd_notifyf(int unset_environment, const char *format, ...) {
-    if (format == NULL) {
-        EBCL_errPrint("Format string must not be NULL");
+    if (state == NULL) {
+        EBCL_errPrint("State string must not be NULL");
         return -1;
     }
 
@@ -124,27 +120,11 @@ LIB_EXPORTED int sd_notifyf(int unset_environment, const char *format, ...) {
         EBCL_errPrint("SD_NOTIFY: unset_environment is unimplemented.");
     }
 
-    va_list vargs, vargsCopy;
-    va_start(vargs, format);
-    va_copy(vargsCopy, vargs);
-    size_t n = vsnprintf(NULL, 0, format, vargs) + 1;
-    va_end(vargs);
-    char *argStr = malloc(n);
-    if (argStr == NULL) {
-        EBCL_errPrint("Could not allocate memory for SD_NOTIFY command string.");
-        return -1;
-    }
-    vsnprintf(argStr, n, format, vargsCopy);
-    va_end(vargsCopy);
-
     ebcl_RtimCmd cmd, res;
-    if (EBCL_buildRtimCmd(&cmd, EBCL_RTIMCMD_C_NOTIFY, 2, notifyName, argStr) == -1) {
-        free(argStr);
+    if (EBCL_buildRtimCmd(&cmd, EBCL_RTIMCMD_C_NOTIFY, 2, notifyName, state) == -1) {
         EBCL_errPrint("Could not build RtimCmd to send to Crinit.");
         return -1;
     }
-    free(argStr);
-
     if (crinitXfer(&res, &cmd) == -1) {
         EBCL_destroyRtimCmd(&cmd);
         EBCL_errPrint("Could not complete data transfer from/to Crinit.");
@@ -155,8 +135,31 @@ LIB_EXPORTED int sd_notifyf(int unset_environment, const char *format, ...) {
     int ret = crinitResponseCheck(&res, EBCL_RTIMCMD_R_NOTIFY);
     EBCL_destroyRtimCmd(&res);
     return ret;
+}
 
-    return 0;
+LIB_EXPORTED int sd_notifyf(int unset_environment, const char *format, ...) {
+    if (format == NULL) {
+        EBCL_errPrint("Format string must not be NULL");
+        return -1;
+    }
+
+    va_list vargs, vargsCopy;
+    va_start(vargs, format);
+    va_copy(vargsCopy, vargs);
+    size_t n = vsnprintf(NULL, 0, format, vargs) + 1;
+    va_end(vargs);
+    char *stateStr = malloc(n);
+    if (stateStr == NULL) {
+        EBCL_errPrint("Could not allocate memory for SD_NOTIFY command string.");
+        return -1;
+    }
+    vsnprintf(stateStr, n, format, vargsCopy);
+    va_end(vargsCopy);
+
+    int ret = sd_notify(unset_environment, stateStr);
+
+    free(stateStr);
+    return ret;
 }
 
 LIB_EXPORTED int EBCL_crinitTaskAdd(const char *configFilePath, bool overwrite, const char *forceDeps) {
