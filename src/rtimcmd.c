@@ -465,7 +465,7 @@ static int execRtimCmdStop(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimC
 
     pid_t taskPid = 0;
     if (EBCL_taskDBGetTaskPID(ctx, &taskPid, cmd->args[0]) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, EBCL_RTIMCMD_RES_ERR, "Could not find PID for task.");
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, EBCL_RTIMCMD_RES_ERR, "Could not access task.");
     }
 
     if (taskPid <= 0) {
@@ -489,7 +489,7 @@ static int execRtimCmdKill(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimC
 
     pid_t taskPid = 0;
     if (EBCL_taskDBGetTaskPID(ctx, &taskPid, cmd->args[0]) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_KILL, 2, EBCL_RTIMCMD_RES_ERR, "Could not find PID for task.");
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_KILL, 2, EBCL_RTIMCMD_RES_ERR, "Could not access task.");
     }
 
     if (taskPid <= 0) {
@@ -604,7 +604,7 @@ static int execRtimCmdStatus(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_Rti
     }
 
     if (EBCL_taskDBGetTaskPID(ctx, &pid, cmd->args[0]) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 2, EBCL_RTIMCMD_RES_ERR, "Could not get PID of task.");
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 2, EBCL_RTIMCMD_RES_ERR, "Could not access task.");
     }
 
     size_t resStrLen = snprintf(NULL, 0, "%lu\n%d", s, pid) + 1;
