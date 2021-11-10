@@ -117,6 +117,8 @@ int EBCL_crinitRecv(int sockFd, ebcl_RtimCmd *res) {
         EBCL_errPrint("Received data of unexpected length from Crinit: '%ld' Bytes", bytesRead);
         return -1;
     }
+    // force terminating zero
+    recvStr[recvLen - 1] = '\0';
     EBCL_dbgInfoPrint("Received message of %d Bytes. Content:\n\'%s\'", bytesRead, recvStr);
 
     if (EBCL_parseRtimCmd(res, recvStr) == -1) {

@@ -435,6 +435,8 @@ static inline int recvStr(int sockFd, char **str, struct ucred *passedCreds) {
                       dataLen);
         goto fail;
     }
+    // force terminating zero
+    (*str)[dataLen - 1] = '\0';
     EBCL_dbgInfoPrint("(TID %d) Received message of %d Bytes. Content:\n\'%s\'", threadId, bytesRead, *str);
 
     cmHdr = CMSG_FIRSTHDR(&mHdr);
