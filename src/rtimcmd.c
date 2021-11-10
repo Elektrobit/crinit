@@ -205,16 +205,12 @@ int EBCL_rtimCmdToMsgStr(char **out, size_t *outLen, const ebcl_RtimCmd *cmd) {
         *outLen = 0;
         return -1;
     }
-    char *runner = *out;;
-    size_t opStrLen = strlen(opStr);
-    memcpy(runner, opStr, opStrLen);
-    runner += opStrLen;
+    char *runner = *out;
+    runner = stpcpy(runner, opStr);
     for (int i = 0; i < cmd->argc; i++) {
         *runner = EBCL_RTIMCMD_ARGDELIM;
         runner++;
-        size_t argLen = strlen(cmd->args[i]);
-        memcpy(runner, cmd->args[i], argLen);
-        runner += argLen;
+        runner = stpcpy(runner, cmd->args[i]);
     }
     *runner = '\0';
     return 0;
