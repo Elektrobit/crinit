@@ -223,22 +223,28 @@ threadExit:
 static int buildEnv(char ***newEnv, const char *taskName) {
     size_t envCount = 0;
     char **pEnv = environ;
-    // check size of current environment
+    *newEnv = NULL;
+    // Check size of current environment and make sure EBCL_CRINIT_ENV_NOTIFY_NAME is not already in there.
     while (*pEnv != NULL) {
+        if (strncmp(*pEnv, EBCL_CRINIT_ENV_NOTIFY_NAME, sizeof(EBCL_CRINIT_ENV_NOTIFY_NAME) - 1) == 0) {
+            EBCL_errPrint("Environment already contains a value for \'%s\'.", EBCL_CRINIT_ENV_NOTIFY_NAME);
+            return -1;
+        }
         envCount++;
         pEnv++;
     }
     // make space for one more
     envCount++;
     // allocate for envCount elements plus the terminating NULL pointer
-    *newEnv = calloc(envCount+1, sizeof(char *));
+    *newEnv = calloc(envCount + 1, sizeof(char *));
     if (newEnv == NULL) {
         EBCL_errnoPrint("Could not allocate memory for new process environment.");
         return -1;
     }
     char **pNew = *newEnv;
     // copy everything
-    for (size_t i = 0; i < envCount - 1; i++) {
+    size_t i;
+    for (i = 0; i < envCount - 1; i++) {
         pNew[i] = strdup(environ[i]);
         if (pNew[i] == NULL) {
             EBCL_errnoPrint("Could not duplicate environment string \'%s\'.", environ[i]);
@@ -249,15 +255,15 @@ static int buildEnv(char ***newEnv, const char *taskName) {
     size_t envPrefixLen = strlen(EBCL_CRINIT_ENV_NOTIFY_NAME "=");
     size_t envSuffixLen = strlen(taskName);
     size_t envSize = envPrefixLen + envSuffixLen + 1;
-    pNew[envCount - 1] = calloc(envSize, sizeof(char));
-    if (pNew[envCount - 1] == NULL) {
+    pNew[i] = calloc(envSize, sizeof(char));
+    if (pNew[i] == NULL) {
         EBCL_errnoPrint("Could not allocate %lu Bytes of memory for environment variable \'%s\'.", envSize,
                         EBCL_CRINIT_ENV_NOTIFY_NAME);
         return -1;
     }
-    memcpy(pNew[envCount - 1], EBCL_CRINIT_ENV_NOTIFY_NAME "=", envPrefixLen);
-    memcpy(pNew[envCount - 1]+envPrefixLen, taskName, envSuffixLen);
-    pNew[envCount - 1][envPrefixLen + envSuffixLen] = '\0';
+    memcpy(pNew[i], EBCL_CRINIT_ENV_NOTIFY_NAME "=", envPrefixLen);
+    memcpy(pNew[i] + envPrefixLen, taskName, envSuffixLen);
+    pNew[i][envPrefixLen + envSuffixLen] = '\0';
     pNew[envCount] = NULL;
     return 0;
 }
