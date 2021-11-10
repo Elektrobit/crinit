@@ -20,6 +20,15 @@ const ebcl_RtimOpMap EBCL_rtimOps[] = {EBCL_genOpMap(EBCL_genOpStruct)};
 /**  The number of elements in the generated map. **/
 #define EBCL_RTIMOPMAP_ELEMENTS sizeof(EBCL_rtimOps) / sizeof(ebcl_RtimOpMap)
 
+/**
+ * Gives the length of a string, delimited either by terminating zero or #EBCL_RTIMCMD_ARGDELIM.
+ *
+ * @param str  The string. Must be at least one of: null-terminated #EBCL_RTIMCMD_ARGDELIM-terminated.
+ *
+ * @return  The length of \a str, not including the delimiting character (or the terminating zero).
+ */
+static inline size_t delimitedStrlen(const char *str);
+
 void EBCL_rtimOpMapDebugPrintAll(void) {
     EBCL_dbgInfoPrint("List of available API Operations:");
     for (size_t i = 0; i < EBCL_RTIMOPMAP_ELEMENTS; i++) {
@@ -32,8 +41,9 @@ int EBCL_rtimOpGetByOpStr(ebcl_RtimOp *out, const char *opStr) {
         EBCL_errPrint("Pointer arguments must not be NULL.");
         return -1;
     }
+    size_t n = delimitedStrlen(opStr);
     for (size_t i = 0; i < EBCL_RTIMOPMAP_ELEMENTS; i++) {
-        if (strcmp(EBCL_rtimOps[i].opStr, opStr) == 0) {
+        if (strncmp(EBCL_rtimOps[i].opStr, opStr, n) == 0) {
             *out = EBCL_rtimOps[i].opCode;
             return 0;
         }
@@ -58,5 +68,14 @@ int EBCL_opStrGetByRtimOp(const char **out, ebcl_RtimOp opCode) {
 
     EBCL_errPrint("RtimOp %d not mapped to a string.", opCode);
     return -1;
+}
+
+static inline size_t delimitedStrlen(const char *str) {
+   size_t len = 0;
+   while(*str != '\0' && *str != EBCL_RTIMCMD_ARGDELIM) {
+       len++;
+       str++;
+   }
+   return len;
 }
 

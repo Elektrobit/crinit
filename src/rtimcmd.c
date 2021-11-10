@@ -119,28 +119,18 @@ int EBCL_parseRtimCmd(ebcl_RtimCmd *out, const char *cmdStr) {
         EBCL_errPrint("Pointer parameters must not be NULL.");
         return -1;
     }
+    if (EBCL_rtimOpGetByOpStr(&out->op, cmdStr) == -1) {
+        EBCL_errPrint("Could not parse runtime command. Unknown or invalid opcode string.");
+        return -1;
+    }
+
     size_t cmdStrLen = strlen(cmdStr);
     const char *argStart = cmdStr;
     while (*argStart != EBCL_RTIMCMD_ARGDELIM && *argStart != '\0') {
         argStart++;
     }
     const char *argEnd = &cmdStr[cmdStrLen];
-    size_t opStrLen = argStart - cmdStr;
 
-    char *tempOpStr = malloc(opStrLen + 1);
-    if (tempOpStr == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for temporary string of %lu Bytes.", opStrLen);
-        return -1;
-    }
-    memcpy(tempOpStr, cmdStr, opStrLen);
-    tempOpStr[opStrLen] = '\0';
-    if (EBCL_rtimOpGetByOpStr(&out->op, tempOpStr) == -1) {
-        EBCL_errPrint("Could not parse runtime command. Unknown or invalid opcode string \'%s\'.", tempOpStr);
-        free(tempOpStr);
-        return -1;
-    }
-    free(tempOpStr);
-    tempOpStr = NULL;
     size_t argCount = 0;
     if (argStart < argEnd) {
         const char *runner = argStart;

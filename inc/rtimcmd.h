@@ -14,8 +14,6 @@
 #include "rtimopmap.h"
 #include "taskdb.h"
 
-#define EBCL_RTIMCMD_ARGDELIM '\n'  ///< Delimiting character between arguments of a response or command message.
-
 #define EBCL_RTIMCMD_RES_OK "RES_OK"    ///< Value of first argument in a positive (successful) response message.
 #define EBCL_RTIMCMD_RES_ERR "RES_ERR"  ///< Value of first argument in a negative (unsuccessful) response message.
 

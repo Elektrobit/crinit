@@ -11,6 +11,8 @@
 #ifndef __RTIMOPMAP_H__
 #define __RTIMOPMAP_H__
 
+#define EBCL_RTIMCMD_ARGDELIM '\n'  ///< Delimiting character between arguments of a response or command message.
+
 /**
  * Macro to generate a mapping array for the specified commands.
  */
