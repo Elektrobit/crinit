@@ -14,8 +14,11 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/wait.h>
+#include <sys/types.h>
 
 #include "logio.h"
+#include "procdip.h"
 
 /**
  * Internal implementation of the "add" command on an ebcl_TaskDB.
@@ -462,18 +465,24 @@ static int execRtimCmdStop(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimC
     if (cmd->argc != 1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
-
+    if (EBCL_setInhibitWait(true) == -1) {
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, EBCL_RTIMCMD_RES_ERR,
+                                 "Could not inhibit waiting for processes.");
+    }
     pid_t taskPid = 0;
     if (EBCL_taskDBGetTaskPID(ctx, &taskPid, cmd->args[0]) == -1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, EBCL_RTIMCMD_RES_ERR, "Could not access task.");
     }
-
     if (taskPid <= 0) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, EBCL_RTIMCMD_RES_ERR, "No PID registered for task.");
     }
-
     if (kill(taskPid, SIGTERM) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, EBCL_RTIMCMD_RES_ERR, "Could not send SIGTERM to task.");
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, EBCL_RTIMCMD_RES_ERR,
+                                 "Could not send SIGTERM to process.");
+    }
+    if (EBCL_setInhibitWait(false) == -1) {
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, EBCL_RTIMCMD_RES_ERR,
+                                 "Could not reactivate waiting for processes.");
     }
     return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 1, EBCL_RTIMCMD_RES_OK);
 }
@@ -487,17 +496,24 @@ static int execRtimCmdKill(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimC
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_KILL, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
 
+    if (EBCL_setInhibitWait(true) == -1) {
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, EBCL_RTIMCMD_RES_ERR,
+                                 "Could not inhibit waiting for processes.");
+    }
     pid_t taskPid = 0;
     if (EBCL_taskDBGetTaskPID(ctx, &taskPid, cmd->args[0]) == -1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_KILL, 2, EBCL_RTIMCMD_RES_ERR, "Could not access task.");
     }
-
     if (taskPid <= 0) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_KILL, 2, EBCL_RTIMCMD_RES_ERR, "No PID registered for task.");
     }
-
     if (kill(taskPid, SIGKILL) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_KILL, 2, EBCL_RTIMCMD_RES_ERR, "Could not send SIGKILL to task.");
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_KILL, 2, EBCL_RTIMCMD_RES_ERR,
+                                 "Could not send SIGKILL to Process.");
+    }
+    if (EBCL_setInhibitWait(false) == -1) {
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, EBCL_RTIMCMD_RES_ERR,
+                                 "Could not reactivate waiting for processes.");
     }
     return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_KILL, 1, EBCL_RTIMCMD_RES_OK);
 }

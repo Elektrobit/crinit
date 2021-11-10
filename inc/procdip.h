@@ -35,4 +35,16 @@
  */
 int EBCL_procDispatchSpawnFunc(ebcl_TaskDB *ctx, const ebcl_Task *t);
 
+/**
+ * Turn waiting for child processes on or off.
+ *
+ * If \a inh is set to true, the process dispatch threads will block before waiting for a child process until
+ * waiting is reactivated, leaving terminated child processes as zombies for the time being.
+ *
+ * @param inh  Set true to inhibit waiting or false to reactivate waiting.
+ *
+ * @return 0 on success, -1 on error
+ */
+int EBCL_setInhibitWait(bool inh);
+
 #endif /* __PROCDIP_H__ */
