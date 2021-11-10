@@ -129,6 +129,10 @@ int EBCL_parseRtimCmd(ebcl_RtimCmd *out, const char *cmdStr) {
     while (*argStart != EBCL_RTIMCMD_ARGDELIM && *argStart != '\0') {
         argStart++;
     }
+    // Ignore multiple EBCL_RTIMCMD_ARGDELIM in a row.
+    while (*argStart != '\0' && *(argStart + 1) == EBCL_RTIMCMD_ARGDELIM) {
+        argStart++;
+    }
     const char *argEnd = &cmdStr[cmdStrLen];
 
     size_t argCount = 0;
