@@ -66,27 +66,13 @@ int EBCL_crinitSend(int sockFd, const ebcl_RtimCmd *cmd) {
         return -1;
     }
 
-    struct iovec iov;
-    struct msghdr mHdr;
-    memset(&mHdr, 0, sizeof(struct msghdr));
-    mHdr.msg_name = NULL;
-    mHdr.msg_namelen = 0;
-    mHdr.msg_iov = &iov;
-    mHdr.msg_iovlen = 1;
-
-    iov.iov_base = &sendLen;
-    iov.iov_len = sizeof(size_t);
-
-    if (sendmsg(sockFd, &mHdr, 0) == -1) {
+    if (send(sockFd, &sendLen, sizeof(size_t), 0) == -1) {
         EBCL_errnoPrint("Could not send length packet (\'%lu\') of string \'%s\' to client.", sendLen, sendStr);
         free(sendStr);
         return -1;
     }
 
-    iov.iov_base = sendStr;
-    iov.iov_len = sendLen;
-
-    if (sendmsg(sockFd, &mHdr, 0) == -1) {
+    if (send(sockFd, sendStr, sendLen, 0) == -1) {
         EBCL_errnoPrint("Could not send string \'%s\' to client.", sendStr);
         free(sendStr);
         return -1;
@@ -102,24 +88,15 @@ int EBCL_crinitRecv(int sockFd, ebcl_RtimCmd *res) {
         return -1;
     }
 
-    struct iovec iov;
-    struct msghdr mHdr;
-    memset(&mHdr, 0, sizeof(struct msghdr));
-    mHdr.msg_name = NULL;
-    mHdr.msg_namelen = 0;
-    mHdr.msg_iov = &iov;
-    mHdr.msg_iovlen = 1;
-
     size_t recvLen = 0;
-    iov.iov_base = &recvLen;
-    iov.iov_len = sizeof(size_t);
-
-    mHdr.msg_control = NULL;
-    mHdr.msg_controllen = 0;
     ssize_t bytesRead = -1;
-    bytesRead = recvmsg(sockFd, &mHdr, 0);
+    bytesRead = recv(sockFd, &recvLen, sizeof(size_t), 0);
     if (bytesRead == -1) {
         EBCL_errnoPrint("Could not receive string length message via socket.");
+        return -1;
+    }
+    if (bytesRead != sizeof(size_t)) {
+        EBCL_errPrint("Received data of unexpected length from Crinit: '%ld' Bytes", bytesRead);
         return -1;
     }
     EBCL_dbgInfoPrint("Received message of %d Bytes. Content:\n\'%lu\'", bytesRead, recvLen);
@@ -129,13 +106,15 @@ int EBCL_crinitRecv(int sockFd, ebcl_RtimCmd *res) {
         EBCL_errnoPrint("Could not allocate receive buffer of size %lu Bytes.", recvLen);
         return -1;
     }
-    iov.iov_base = recvStr;
-    iov.iov_len = recvLen;
 
-    bytesRead = recvmsg(sockFd, &mHdr, 0);
+    bytesRead = recv(sockFd, recvStr, recvLen, 0);
     if (bytesRead == -1) {
         free(recvStr);
         EBCL_errnoPrint("Could not receive string data message of size %lu Bytes via socket.", recvLen);
+        return -1;
+    }
+    if (bytesRead != recvLen) {
+        EBCL_errPrint("Received data of unexpected length from Crinit: '%ld' Bytes", bytesRead);
         return -1;
     }
     EBCL_dbgInfoPrint("Received message of %d Bytes. Content:\n\'%s\'", bytesRead, recvStr);
@@ -150,47 +129,37 @@ int EBCL_crinitRecv(int sockFd, ebcl_RtimCmd *res) {
 }
 
 static int waitForRTR(int sockFd) {
-    while (true) {
-        struct iovec iov;
-        struct msghdr mHdr;
-        memset(&mHdr, 0, sizeof(struct msghdr));
-        mHdr.msg_name = NULL;
-        mHdr.msg_namelen = 0;
-        mHdr.msg_iov = &iov;
-        mHdr.msg_iovlen = 1;
-
-        size_t recvLen = 0;
-        iov.iov_base = &recvLen;
-        iov.iov_len = sizeof(size_t);
-
-        mHdr.msg_control = NULL;
-        mHdr.msg_controllen = 0;
-        ssize_t bytesRead = -1;
-        bytesRead = recvmsg(sockFd, &mHdr, 0);
-        if (bytesRead == -1) {
-            EBCL_errnoPrint("Could not receive string length message via socket.");
-            return -1;
-        }
-        EBCL_dbgInfoPrint("Received message of %d Bytes. Content:\n\'%lu\'", bytesRead, recvLen);
-
-        char *recvStr = malloc(recvLen);
-        if (recvStr == NULL) {
-            EBCL_errnoPrint("Could not allocate receive buffer of size %lu Bytes.", recvLen);
-            return -1;
-        }
-        iov.iov_base = recvStr;
-        iov.iov_len = recvLen;
-
-        bytesRead = recvmsg(sockFd, &mHdr, 0);
-        if (bytesRead == -1) {
-            free(recvStr);
-            EBCL_errnoPrint("Could not receive string data message of size %lu Bytes via socket.", recvLen);
-            return -1;
-        }
-        EBCL_dbgInfoPrint("Received message of %d Bytes. Content:\n\'%s\'", bytesRead, recvStr);
-        if (strncmp(recvStr, "RTR", strlen("RTR")) == 0) {
-            free(recvStr);
-            return 0;
-        }
+    char RtrBuf[sizeof("RTR")] = {'\0'};
+    size_t recvLen = 0;
+    ssize_t bytesRead = recv(sockFd, &recvLen, sizeof(size_t), 0);
+    if (bytesRead == -1) {
+        EBCL_errnoPrint("Could not receive string length message via socket.");
+        return -1;
     }
+    if (bytesRead != sizeof(size_t)) {
+        EBCL_errPrint("Received data of unexpected length from Crinit: '%ld' Bytes", bytesRead);
+        return -1;
+    }
+    EBCL_dbgInfoPrint("Received message of %d Bytes. Content:\n\'%lu\'", bytesRead, recvLen);
+    if (recvLen != sizeof("RTR")) {
+        EBCL_errPrint("Received unexpected string length for RTR: '%lu' Bytes", recvLen);
+        return -1;
+    }
+
+    bytesRead = recv(sockFd, RtrBuf, recvLen, 0);
+    if (bytesRead == -1) {
+        EBCL_errnoPrint("Could not receive string data message of size %lu Bytes via socket.", recvLen);
+        return -1;
+    }
+    if (bytesRead != recvLen) {
+        EBCL_errPrint("Received data of unexpected length from Crinit: '%ld' Bytes", bytesRead);
+        return -1;
+    }
+    RtrBuf[sizeof(RtrBuf) - 1] = '\0';
+    EBCL_dbgInfoPrint("Received message of %d Bytes. Content:\n\'%s\'", bytesRead, RtrBuf);
+    if (strncmp(RtrBuf, "RTR", strlen("RTR")) != 0) {
+        EBCL_errPrint("Received \'%s\' rather than \'RTR\'.", RtrBuf);
+        return -1;
+    }
+    return 0;
 }

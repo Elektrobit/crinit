@@ -41,8 +41,8 @@ typedef struct ConnThrArgs {
                              ///< EBCL_threadPoolThreadAvailCallback() and EBCL_threadPoolThreadBusyCallback().
 } ConnThrArgs;
 
-static ebcl_ThreadPool workers;                                 ///< The worker thread pool to run connThread() in.
-static ebcl_TaskDB *tdbRef;                                     ///< Pointer to the ebcl_TaskDB to operate on.
+static ebcl_ThreadPool workers;  ///< The worker thread pool to run connThread() in.
+static ebcl_TaskDB *tdbRef;      ///< Pointer to the ebcl_TaskDB to operate on.
 
 /**
  * The worker thread function for handling a connection to a client.
@@ -354,44 +354,19 @@ static inline int sendStr(int sockFd, const char *str) {
         EBCL_errPrint("(TID %d) String to send must not be NULL.", threadId);
         return -1;
     }
-    struct iovec iov;
-    struct msghdr mHdr;
-    memset(&mHdr, 0, sizeof(struct msghdr));
-    mHdr.msg_name = NULL;
-    mHdr.msg_namelen = 0;
-    mHdr.msg_iov = &iov;
-    mHdr.msg_iovlen = 1;
-    mHdr.msg_control = NULL;
-    mHdr.msg_controllen = 0;
 
     size_t dataLen = strlen(str) + 1;
-    char *dataBuf = malloc(dataLen);
-    if (dataBuf == NULL) {
-        EBCL_errnoPrint("(TID %d) Could not allocate memory for temporary send buffer.", threadId);
-        return -1;
-    }
-    memcpy(dataBuf, str, dataLen);
-
-    iov.iov_base = &dataLen;
-    iov.iov_len = sizeof(size_t);
-
-    if (sendmsg(sockFd, &mHdr, 0) == -1) {
+    if (send(sockFd, &dataLen, sizeof(size_t), 0) == -1) {
         EBCL_errnoPrint("(TID %d) Could not send length packet (\'%lu\') of string \'%s\' to client. %d", threadId,
-                        dataLen, dataBuf, sockFd);
-        free(dataBuf);
+                        dataLen, str, sockFd);
         return -1;
     }
 
-    iov.iov_base = dataBuf;
-    iov.iov_len = dataLen;
-
-    if (sendmsg(sockFd, &mHdr, 0) == -1) {
-        EBCL_errnoPrint("(TID %d) Could not send string \'%s\' to client.", threadId, dataBuf);
-        free(dataBuf);
+    if (send(sockFd, str, dataLen, 0) == -1) {
+        EBCL_errnoPrint("(TID %d) Could not send string \'%s\' to client.", threadId, str);
         return -1;
     }
 
-    free(dataBuf);
     return 0;
 }
 
@@ -428,6 +403,10 @@ static inline int recvStr(int sockFd, char **str, struct ucred *passedCreds) {
         EBCL_errnoPrint("(TID %d) Could not receive string length message via socket.", threadId);
         return -1;
     }
+    if (bytesRead != sizeof(size_t)) {
+        EBCL_errPrint("Received data of unexpected length from client: %ld Bytes", bytesRead);
+        return -1;
+    }
     EBCL_dbgInfoPrint("(TID %d) Received message of %d Bytes. Content:\n\'%lu\'", threadId, bytesRead, dataLen);
 
     struct cmsghdr *cmHdr = CMSG_FIRSTHDR(&mHdr);
@@ -449,14 +428,19 @@ static inline int recvStr(int sockFd, char **str, struct ucred *passedCreds) {
     if (bytesRead == -1) {
         EBCL_errnoPrint("(TID %d) Could not receive string data message of size %lu Bytes via socket.", threadId,
                         dataLen);
-        return -1;
+        goto fail;
+    }
+    if (bytesRead != dataLen) {
+        EBCL_errPrint("Received data of unexpected length from client: %ld Bytes vs. announced %lu Bytes ", bytesRead,
+                      dataLen);
+        goto fail;
     }
     EBCL_dbgInfoPrint("(TID %d) Received message of %d Bytes. Content:\n\'%s\'", threadId, bytesRead, *str);
 
     cmHdr = CMSG_FIRSTHDR(&mHdr);
     if (!cmsgHdrCheck(cmHdr)) {
         EBCL_errPrint("(TID %d) Control message header of received ancillary data is invalid.", threadId);
-        return -1;
+        goto fail;
     }
     memcpy(&scmCreds[1], CMSG_DATA(cmHdr), sizeof(struct ucred));
 
@@ -464,11 +448,15 @@ static inline int recvStr(int sockFd, char **str, struct ucred *passedCreds) {
         EBCL_errPrint(
             "(TID %d) Ancillary credential data of the length and data parts of the string message do not match.",
             threadId);
-        return -1;
+        goto fail;
     }
 
     memcpy(passedCreds, scmCreds, sizeof(struct ucred));
     return 0;
+fail:
+    free(*str);
+    *str = NULL;
+    return -1;
 }
 
 static inline bool ucredCheckEqual(const struct ucred *a, const struct ucred *b) {
