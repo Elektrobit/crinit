@@ -12,6 +12,7 @@
 #include "notiserv.h"
 
 #include <libgen.h>
+#include <signal.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
@@ -154,6 +155,10 @@ int EBCL_startInterfaceServer(ebcl_TaskDB *ctx, const char *sockFile) {
         EBCL_errPrint("Given arguments must not be NULL.");
         return -1;
     }
+
+    // Prevent SIGPIPE from killing us if a client hangs up unexpectedly.
+    signal(SIGPIPE, SIG_IGN);
+
     tdbRef = ctx;
     char *sockFileTmp = strdup(sockFile);
     if (sockFileTmp == NULL) {
