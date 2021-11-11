@@ -310,7 +310,6 @@ int EBCL_taskDBAddDepToTask(ebcl_TaskDB *ctx, const ebcl_TaskDep *dep, const cha
             if (pTask->deps[lastIdx].name == NULL) {
                 EBCL_errnoPrint("Could not allocate memory for dependency backing string for task \'%s\'.", taskName);
                 pTask->depsSize--;
-                pTask->deps = realloc(pTask->deps, pTask->depsSize * sizeof(ebcl_TaskDep));
                 pthread_mutex_unlock(&ctx->lock);
                 return -1;
             }
