@@ -41,6 +41,15 @@ static int threadPoolGrow(ebcl_ThreadPool *ctx, size_t newSize);
  */
 static void *dryPoolWatchdog(void *thrpool);
 
+/**
+ * Function macro to calculate threshold value at and below which point the pool is considerd "dry".
+ *
+ * @param poolSize  The current total size of the worker thread pool.
+ *
+ * @return  The threshold value.
+ */
+#define DRY_POOL_THRESHOLD(poolSize) ((poolSize) / 10)
+
 int EBCL_threadPoolInit(ebcl_ThreadPool *ctx, size_t initialSize, void *(*threadFunc)(void *), const void *thrArgs,
                         size_t thrArgsSize) {
     if (ctx == NULL) {
@@ -166,7 +175,9 @@ int EBCL_threadPoolThreadBusyCallback(ebcl_ThreadPool *ctx) {
         return -1;
     }
     ctx->threadAvail--;
-    pthread_cond_signal(&ctx->threadAvailChanged);
+    if (ctx->threadAvail <= DRY_POOL_THRESHOLD(ctx->poolSize)) {
+        pthread_cond_signal(&ctx->threadAvailChanged);
+    }
     pthread_mutex_unlock(&ctx->lock);
     return 0;
 }
@@ -182,7 +193,6 @@ int EBCL_threadPoolThreadAvailCallback(ebcl_ThreadPool *ctx) {
     }
     ctx->threadAvail++;
 
-    pthread_cond_signal(&ctx->threadAvailChanged);
     pthread_mutex_unlock(&ctx->lock);
     return 0;
 }
@@ -261,7 +271,7 @@ static void *dryPoolWatchdog(void *thrpool) {
             return NULL;
         }
         pthread_cond_wait(&ctx->threadAvailChanged, &ctx->lock);
-        if (ctx->threadAvail <= (ctx->poolSize / 10)) {
+        if (ctx->threadAvail <= DRY_POOL_THRESHOLD(ctx->poolSize)) {
             size_t newSize = ctx->poolSize + ctx->poolSizeIncrement;
             pthread_mutex_unlock(&ctx->lock);
             threadPoolGrow(ctx, newSize);
