@@ -294,7 +294,7 @@ int EBCL_taskDBAddDepToTask(ebcl_TaskDB *ctx, const ebcl_TaskDep *dep, const cha
                 }
             }
             pTask->depsSize++;
-            ebcl_TaskDep *pTempDeps = realloc(pTask->deps, (pTask->depsSize + 1) * sizeof(ebcl_TaskDep));
+            ebcl_TaskDep *pTempDeps = realloc(pTask->deps, pTask->depsSize * sizeof(ebcl_TaskDep));
             if (pTempDeps == NULL) {
                 EBCL_errnoPrint("Could not reallocate memory of dependency array for task \'%s\'.", taskName);
                 pTask->depsSize--;
@@ -310,7 +310,7 @@ int EBCL_taskDBAddDepToTask(ebcl_TaskDB *ctx, const ebcl_TaskDep *dep, const cha
             if (pTask->deps[lastIdx].name == NULL) {
                 EBCL_errnoPrint("Could not allocate memory for dependency backing string for task \'%s\'.", taskName);
                 pTask->depsSize--;
-                pTask->deps = realloc(pTask->deps, (pTask->depsSize + 1) * sizeof(ebcl_TaskDep));
+                pTask->deps = realloc(pTask->deps, pTask->depsSize * sizeof(ebcl_TaskDep));
                 pthread_mutex_unlock(&ctx->lock);
                 return -1;
             }
@@ -489,10 +489,15 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task **out, const ebcl_ConfKvList *in) {
         goto fail;
     }
     pTask->depsSize = (size_t)tempDepsSize;
-    pTask->deps = malloc((pTask->depsSize + 1) * sizeof(ebcl_TaskDep));
-    if (pTask->deps == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for %lu dependencies in task \'%s\'.", pTask->depsSize, pTask->name);
-        goto fail;
+    if (pTask->depsSize > 0) {
+        pTask->deps = malloc(pTask->depsSize * sizeof(ebcl_TaskDep));
+        if (pTask->deps == NULL) {
+            EBCL_errnoPrint("Could not allocate memory for %lu TaskDeps during copy of Task \'%s\'.", pTask->depsSize,
+                            pTask->name);
+            goto fail;
+        }
+    } else {
+        pTask->deps = NULL;
     }
 
     for (size_t i = 0; i < pTask->depsSize; i++) {
@@ -598,11 +603,15 @@ int EBCL_taskDup(ebcl_Task **out, const ebcl_Task *orig) {
     }
 
     pTask->depsSize = orig->depsSize;
-    pTask->deps = malloc((pTask->depsSize + 1) * sizeof(ebcl_TaskDep));
-    if (pTask->deps == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for %lu TaskDeps during copy of Task \'%s\'.", pTask->depsSize,
-                        orig->name);
-        goto fail;
+    if (pTask->depsSize > 0) {
+        pTask->deps = malloc(pTask->depsSize * sizeof(ebcl_TaskDep));
+        if (pTask->deps == NULL) {
+            EBCL_errnoPrint("Could not allocate memory for %lu TaskDeps during copy of Task \'%s\'.", pTask->depsSize,
+                            orig->name);
+            goto fail;
+        }
+    } else {
+        pTask->deps = NULL;
     }
 
     for (size_t i = 0; i < pTask->depsSize; i++) {
