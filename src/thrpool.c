@@ -58,7 +58,6 @@ int EBCL_threadPoolInit(ebcl_ThreadPool *ctx, size_t initialSize, void *(*thread
     }
     ctx->threadAvail = 0;
     ctx->poolSize = 0;
-    ctx->pool = NULL;
     ctx->threadFunc = NULL;
     ctx->thrArgs = NULL;
     ctx->thrArgsSize = 0;
@@ -72,14 +71,7 @@ int EBCL_threadPoolInit(ebcl_ThreadPool *ctx, size_t initialSize, void *(*thread
         initialSize = EBCL_THREADPOOL_DEFAULT_INITIAL_SIZE;
     }
 
-    ctx->pool = malloc(initialSize * sizeof(pthread_t));
-    if (ctx->pool == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for thread pool of size %lu.", initialSize);
-        goto fail;
-    }
-    ctx->poolSize = initialSize;
     ctx->poolSizeIncrement = initialSize;
-    ctx->threadAvail = initialSize;
 
     ctx->thrArgs = malloc(thrArgsSize);
     if (ctx->thrArgs == NULL) {
@@ -123,29 +115,20 @@ int EBCL_threadPoolInit(ebcl_ThreadPool *ctx, size_t initialSize, void *(*thread
         goto fail;
     }
     EBCL_dbgInfoPrint("Created dry pool watchdog.");
-
-    for (size_t i = 0; i < ctx->poolSize; i++) {
-        if ((errno = pthread_create(&ctx->pool[i], &thrAttrs, ctx->threadFunc, ctx->thrArgs)) != 0) {
-            EBCL_errnoPrint("Could not create thread pool pthread number %lu.", i);
-            pthread_cancel(ctx->dryPoolWdRef);
-            pthread_mutex_unlock(&ctx->lock);
-            pthread_attr_destroy(&thrAttrs);
-            goto fail;
-        }
-        EBCL_dbgInfoPrint("Created worker thread %lu. Function pointer %p.", i, ctx->threadFunc);
-    }
-
     pthread_mutex_unlock(&ctx->lock);
     pthread_attr_destroy(&thrAttrs);
+
+    if (threadPoolGrow(ctx, initialSize) == -1) {
+        EBCL_errPrint("Could not create worker threads.");
+        goto fail;
+    }
+    EBCL_dbgInfoPrint("Created %lu worker threads.", initialSize);
     return 0;
 
 fail:
-    free(ctx->pool);
-    ctx->pool = NULL;
     free(ctx->thrArgs);
     ctx->thrArgs = NULL;
     ctx->thrArgsSize = 0;
-    pthread_mutex_destroy(&ctx->lock);
     return -1;
 }
 
@@ -155,13 +138,8 @@ int EBCL_threadPoolDestroy(ebcl_ThreadPool *ctx) {
         return -1;
     }
     pthread_cancel(ctx->dryPoolWdRef);
-    free(ctx->pool);
     ctx->poolSize = 0;
     ctx->threadAvail = 0;
-    if ((errno = pthread_mutex_destroy(&ctx->lock)) != 0) {
-        EBCL_errnoPrint("Could not destroy mutex during destruction of thread pool.");
-        return -1;
-    }
     return 0;
 }
 
@@ -214,14 +192,6 @@ static int threadPoolGrow(ebcl_ThreadPool *ctx, size_t newSize) {
         return -1;
     }
 
-    pthread_t *newPool = realloc(ctx->pool, newSize * sizeof(pthread_t));
-    if (newPool == NULL) {
-        EBCL_errnoPrint("Could not allocate additional memory to grow the thread pool from size %lu to size %lu.",
-                        ctx->poolSize, newSize);
-        pthread_mutex_unlock(&ctx->lock);
-        return -1;
-    }
-
     pthread_attr_t thrAttrs;
     if ((errno = pthread_attr_init(&thrAttrs)) != 0) {
         EBCL_errnoPrint("Could not initialize pthread attributes.");
@@ -241,16 +211,20 @@ static int threadPoolGrow(ebcl_ThreadPool *ctx, size_t newSize) {
         return -1;
     }
 
-    for (size_t i = 0; i < ctx->poolSize; i++) {
-        if ((errno = pthread_create(&ctx->pool[i], &thrAttrs, ctx->threadFunc, ctx->thrArgs)) != 0) {
+    pthread_t thr;
+    size_t oldSize = ctx->poolSize;
+    for (size_t i = oldSize; i < newSize; i++) {
+        if ((errno = pthread_create(&thr, &thrAttrs, ctx->threadFunc, ctx->thrArgs)) != 0) {
             EBCL_errnoPrint("Could not create thread pool pthread number %lu.", i);
+            pthread_mutex_unlock(&ctx->lock);
+            pthread_attr_destroy(&thrAttrs);
+            return -1;
         } else {
             EBCL_dbgInfoPrint("Created worker thread %lu. Function pointer %p.", i, ctx->threadFunc);
+            ctx->poolSize++;
+            ctx->threadAvail++;
         }
     }
-    ctx->pool = newPool;
-    ctx->poolSize = newSize;
-    ctx->threadAvail = newSize;
 
     pthread_mutex_unlock(&ctx->lock);
     pthread_attr_destroy(&thrAttrs);
@@ -274,7 +248,9 @@ static void *dryPoolWatchdog(void *thrpool) {
         if (ctx->threadAvail <= DRY_POOL_THRESHOLD(ctx->poolSize)) {
             size_t newSize = ctx->poolSize + ctx->poolSizeIncrement;
             pthread_mutex_unlock(&ctx->lock);
-            threadPoolGrow(ctx, newSize);
+            if (threadPoolGrow(ctx, newSize) == -1) {
+                EBCL_errPrint("Could not grow thread pool.");
+            }
         } else {
             pthread_mutex_unlock(&ctx->lock);
         }
