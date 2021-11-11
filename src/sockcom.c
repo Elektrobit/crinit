@@ -36,7 +36,14 @@ int EBCL_crinitConnect(int *sockFd, const char *sockFile) {
     }
     struct sockaddr_un crinitServAddr;
     crinitServAddr.sun_family = AF_UNIX;
-    strncpy(crinitServAddr.sun_path, sockFile, sizeof(crinitServAddr.sun_path) - 1);
+    size_t sockPathLen = strnlen(sockFile, sizeof(crinitServAddr.sun_path));
+    if (sockPathLen == sizeof(crinitServAddr.sun_path)) {
+        EBCL_errPrint("Path to socket file is longer than %lu characters.", sizeof(crinitServAddr.sun_path) - 1);
+        close(*sockFd);
+        return -1;
+    }
+    strcpy(crinitServAddr.sun_path, sockFile);
+
     if (connect(*sockFd, (struct sockaddr *)&crinitServAddr, sizeof(struct sockaddr_un)) == -1) {
         EBCL_errnoPrint("Could not connect to Crinit through %s.", crinitServAddr.sun_path);
         close(*sockFd);
