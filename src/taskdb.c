@@ -354,8 +354,8 @@ int EBCL_taskDBRemoveDepFromTask(ebcl_TaskDB *ctx, const ebcl_TaskDep *dep, cons
             return 0;
         }
     }
-    pthread_cond_broadcast(&ctx->changed);
     pthread_mutex_unlock(&ctx->lock);
+    EBCL_errPrint("Could not find task \'%s\' in TaskDB.", taskName);
     return -1;
 }
 
