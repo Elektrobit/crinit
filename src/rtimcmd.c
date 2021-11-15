@@ -215,7 +215,6 @@ int EBCL_rtimCmdToMsgStr(char **out, size_t *outLen, const ebcl_RtimCmd *cmd) {
         runner++;
         runner = stpcpy(runner, cmd->args[i]);
     }
-    *runner = '\0';
     return 0;
 }
 
