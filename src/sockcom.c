@@ -73,13 +73,13 @@ int EBCL_crinitSend(int sockFd, const ebcl_RtimCmd *cmd) {
         return -1;
     }
 
-    if (send(sockFd, &sendLen, sizeof(size_t), 0) == -1) {
+    if (send(sockFd, &sendLen, sizeof(size_t), MSG_NOSIGNAL) == -1) {
         EBCL_errnoPrint("Could not send length packet (\'%lu\') of string \'%s\' to client.", sendLen, sendStr);
         free(sendStr);
         return -1;
     }
 
-    if (send(sockFd, sendStr, sendLen, 0) == -1) {
+    if (send(sockFd, sendStr, sendLen, MSG_NOSIGNAL) == -1) {
         EBCL_errnoPrint("Could not send string \'%s\' to client.", sendStr);
         free(sendStr);
         return -1;

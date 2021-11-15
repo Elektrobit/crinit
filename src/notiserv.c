@@ -156,9 +156,6 @@ int EBCL_startInterfaceServer(ebcl_TaskDB *ctx, const char *sockFile) {
         return -1;
     }
 
-    // Prevent SIGPIPE from killing us if a client hangs up unexpectedly.
-    signal(SIGPIPE, SIG_IGN);
-
     tdbRef = ctx;
     char *sockFileTmp = strdup(sockFile);
     if (sockFileTmp == NULL) {
@@ -361,13 +358,13 @@ static inline int sendStr(int sockFd, const char *str) {
     }
 
     size_t dataLen = strlen(str) + 1;
-    if (send(sockFd, &dataLen, sizeof(size_t), 0) == -1) {
+    if (send(sockFd, &dataLen, sizeof(size_t), MSG_NOSIGNAL) == -1) {
         EBCL_errnoPrint("(TID %d) Could not send length packet (\'%lu\') of string \'%s\' to client. %d", threadId,
                         dataLen, str, sockFd);
         return -1;
     }
 
-    if (send(sockFd, str, dataLen, 0) == -1) {
+    if (send(sockFd, str, dataLen, MSG_NOSIGNAL) == -1) {
         EBCL_errnoPrint("(TID %d) Could not send string \'%s\' to client.", threadId, str);
         return -1;
     }
