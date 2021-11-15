@@ -204,7 +204,7 @@ int EBCL_confListSetVal(const char *val, const char *key, ebcl_ConfKvList *c) {
     }
 
     while (c != NULL) {
-        if (!strncmp(pKey, c->key, kLen)) {
+        if (!strncmp(pKey, c->key, kLen) && c->key[kLen] == '\0') {
             break;
         }
         c = c->next;
