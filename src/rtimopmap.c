@@ -43,7 +43,7 @@ int EBCL_rtimOpGetByOpStr(ebcl_RtimOp *out, const char *opStr) {
     }
     size_t n = delimitedStrlen(opStr);
     for (size_t i = 0; i < EBCL_RTIMOPMAP_ELEMENTS; i++) {
-        if (strncmp(EBCL_rtimOps[i].opStr, opStr, n) == 0) {
+        if (n == strlen(EBCL_rtimOps[i].opStr) && strncmp(EBCL_rtimOps[i].opStr, opStr, n) == 0) {
             *out = EBCL_rtimOps[i].opCode;
             return 0;
         }
