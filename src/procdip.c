@@ -32,9 +32,6 @@ typedef struct dispThrArgs {
     const ebcl_Task *t;  ///< The task to run.
 } dispThrArgs;
 
-/** POSIX variable declaration pointing to the current process environment **/
-extern char **environ;
-
 /** Mutex to guard #waitInhibit **/
 static pthread_mutex_t waitInhibitLock = PTHREAD_MUTEX_INITIALIZER;
 /** Condition variable to signal threads waiting for #waitInhibit to become `false`. **/
@@ -51,17 +48,18 @@ static bool waitInhibit = false;
  */
 static void *dispatchThreadFunc(void *args);
 /**
- * Builds a new environment array from #environ, adding the task name for sd_notify().
+ * Builds the standard environment for a new task.
  *
- * Memory is allocated for the outer array and each string. When no longer needed, all pointers should be passed to
- * free() individually.
+ * Currently, this contains only the required task name for sd_notify().
  *
- * @param newEnv    Return pointer for the new environment.
+ * Memory is allocated for the string. When no longer needed, the string should be freed.
+ *
+ * @param taskEnv   An array of char pointers of size 2 or more.
  * @param taskName  The task name to add to the environment.
  *
  * @return 0 on success, -1 on error
  */
-static int buildEnv(char ***newEnv, const char *taskName);
+static int buildEnv(char **taskEnv, const char *taskName);
 
 /**
  * Block calling thread until #waitInhibit becomes false.
@@ -131,7 +129,7 @@ static void *dispatchThreadFunc(void *args) {
     ebcl_TaskDB *ctx = a->ctx;
     const ebcl_Task *t = a->t;
     ebcl_Task *tCopy = NULL;
-    char **taskEnv = NULL;
+    char *taskEnv[2] = {NULL, NULL};
     pid_t threadId = gettid();
     pid_t pid = -1;
 
@@ -151,7 +149,7 @@ static void *dispatchThreadFunc(void *args) {
     pthread_mutex_unlock(&ctx->lock);
     EBCL_dbgInfoPrint("(TID: %d) Will spawn Task \'%s\'.", threadId, tCopy->name);
 
-    if(buildEnv(&taskEnv, tCopy->name) == -1) {
+    if (buildEnv(taskEnv, tCopy->name) == -1) {
         EBCL_errPrint("(TID: %d) Could not build new environment for task \'%s\'.", threadId, tCopy->name);
         goto threadExit;
     }
@@ -260,14 +258,7 @@ static void *dispatchThreadFunc(void *args) {
 threadExit:
     EBCL_freeTask(tCopy);
     free(args);
-    if (taskEnv != NULL) {
-        char **pEnv = taskEnv;
-        while (*pEnv != NULL) {
-            free(*pEnv);
-            pEnv++;
-        }
-    }
-    free(taskEnv);
+    free(taskEnv[0]);
     return NULL;
 }
 
@@ -293,51 +284,28 @@ int EBCL_setInhibitWait(bool inh) {
     return ret;
 }
 
-static int buildEnv(char ***newEnv, const char *taskName) {
-    size_t envCount = 0;
-    char **pEnv = environ;
-    *newEnv = NULL;
-    // Check size of current environment and make sure EBCL_CRINIT_ENV_NOTIFY_NAME is not already in there.
-    while (*pEnv != NULL) {
-        if (strncmp(*pEnv, EBCL_CRINIT_ENV_NOTIFY_NAME, sizeof(EBCL_CRINIT_ENV_NOTIFY_NAME) - 1) == 0) {
-            EBCL_errPrint("Environment already contains a value for \'%s\'.", EBCL_CRINIT_ENV_NOTIFY_NAME);
-            return -1;
-        }
-        envCount++;
-        pEnv++;
-    }
-    // make space for one more
-    envCount++;
-    // allocate for envCount elements plus the terminating NULL pointer
-    *newEnv = calloc(envCount + 1, sizeof(char *));
-    if (newEnv == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for new process environment.");
+static int buildEnv(char **taskEnv, const char *taskName) {
+    if (taskEnv == NULL || taskName == NULL) {
+        EBCL_errPrint("Pointer arguments must not be NULL.");
+        taskEnv[0] = NULL;
+        taskEnv[1] = NULL;
         return -1;
-    }
-    char **pNew = *newEnv;
-    // copy everything
-    size_t i;
-    for (i = 0; i < envCount - 1; i++) {
-        pNew[i] = strdup(environ[i]);
-        if (pNew[i] == NULL) {
-            EBCL_errnoPrint("Could not duplicate environment string \'%s\'.", environ[i]);
-            return -1;
-        }
     }
     // Add task name for sd_notify()
     size_t envPrefixLen = strlen(EBCL_CRINIT_ENV_NOTIFY_NAME "=");
     size_t envSuffixLen = strlen(taskName);
     size_t envSize = envPrefixLen + envSuffixLen + 1;
-    pNew[i] = calloc(envSize, sizeof(char));
-    if (pNew[i] == NULL) {
+    taskEnv[0] = calloc(envSize, sizeof(char));
+    if (taskEnv[0] == NULL) {
         EBCL_errnoPrint("Could not allocate %lu Bytes of memory for environment variable \'%s\'.", envSize,
                         EBCL_CRINIT_ENV_NOTIFY_NAME);
+        taskEnv[1] = NULL;
         return -1;
     }
-    memcpy(pNew[i], EBCL_CRINIT_ENV_NOTIFY_NAME "=", envPrefixLen);
-    memcpy(pNew[i] + envPrefixLen, taskName, envSuffixLen);
-    pNew[i][envPrefixLen + envSuffixLen] = '\0';
-    pNew[envCount] = NULL;
+    memcpy(taskEnv[0], EBCL_CRINIT_ENV_NOTIFY_NAME "=", envPrefixLen);
+    memcpy(taskEnv[0] + envPrefixLen, taskName, envSuffixLen);
+    taskEnv[0][envPrefixLen + envSuffixLen] = '\0';
+    taskEnv[1] = NULL;
     return 0;
 }
 
