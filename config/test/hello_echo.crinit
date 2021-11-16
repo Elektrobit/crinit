@@ -2,8 +2,8 @@
 
 NAME = hello_world
 
-COMMAND[0] = /bin/echo -ne "Hello, World!\n"
-COMMAND[1] = /bin/echo This second line is echo'd after the first.
+COMMAND[] = /bin/echo -ne "Hello, World!\n"
+COMMAND[] = /bin/echo This second line is echo'd after the first.
 
 DEPENDS = ""
 

@@ -75,6 +75,9 @@ int EBCL_parseConf(ebcl_ConfKvList **confList, const char *filename) {
     // Parse config line by line
     ebcl_ConfKvList *pList = *confList;
     ebcl_ConfKvList *last = *confList;
+    size_t keyArrayCount = 0;
+    char keyArrayStr[16] = {'\0'};
+    size_t keyArrayStrLen = 0;
     while (fgets(line, sizeof(line), cf) != NULL) {
         char *ptr = line;
         // Jump over whitespace at beginning
@@ -101,22 +104,63 @@ int EBCL_parseConf(ebcl_ConfKvList **confList, const char *filename) {
         trimWhitespace(&sk);
         trimWhitespace(&sv);
 
+        size_t skLen = strlen(sk);
+        size_t svLen = strlen(sv);
+
         // If the value is enclosed in double quotes, discard those
-        if (sv[0] == '\"' && sv[strlen(sv) - 1] == '\"') {
-            sv[strlen(sv) - 1] = '\0';
+        if (sv[0] == '\"' && sv[svLen - 1] == '\"') {
+            sv[svLen - 1] = '\0';
             sv++;
+            svLen -= 2;
+        }
+
+        bool autoArray = false;
+        // Handle empty key array subscript
+        if (skLen > 2 && sk[skLen - 2] == '[' && sk[skLen - 1] == ']') {
+            // If this is a beginning of an array declaration, set counter to 0
+            if (last != pList && strncmp(sk, last->key, skLen - 2)) {
+                keyArrayCount = 0;
+            }
+            autoArray = true;
+            keyArrayStrLen = snprintf(keyArrayStr, sizeof(keyArrayStr), "[%lu]", keyArrayCount);
+            if (keyArrayStrLen >= sizeof(keyArrayStr)) {
+                EBCL_errPrint("Array subscript in config file too large.");
+                fclose(cf);
+                return -1;
+            }
+            skLen -= 2;
+            keyArrayCount++;
         }
 
         // Copy to list
-        pList->key = malloc(strlen(sk) + 1);
-        pList->val = malloc(strlen(sv) + 1);
+        size_t keyAllocLen = (autoArray) ? (skLen + keyArrayStrLen + 1) : (skLen + 1);
+        pList->key = malloc(keyAllocLen);
+        pList->val = malloc(svLen + 1);
         if (pList->key == NULL || pList->val == NULL) {
             EBCL_errnoPrint("Could not allocate memory for a ConfKVList.");
+            pList->next = NULL;
             fclose(cf);
             return -1;
         }
-        memcpy(pList->key, sk, strlen(sk) + 1);
-        memcpy(pList->val, sv, strlen(sv) + 1);
+        if (autoArray) {
+            memcpy(pList->key, sk, skLen);
+            memcpy(pList->key + skLen, keyArrayStr, keyArrayStrLen + 1);
+        } else {
+            memcpy(pList->key, sk, keyAllocLen);
+        }
+        memcpy(pList->val, sv, svLen + 1);
+
+        // Check for duplicate key
+        ebcl_ConfKvList *pSrch = *confList;
+        while (pSrch != NULL && pSrch != pList) {
+            if (strcmp(pList->key, pSrch->key) == 0) {
+                EBCL_errPrint("Found duplicate key \'%s\' in config.", pSrch->key);
+                pList->next = NULL;
+                fclose(cf);
+                return -1;
+            }
+            pSrch = pSrch->next;
+        }
 
         // Grow list
         last = pList;
