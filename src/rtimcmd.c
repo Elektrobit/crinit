@@ -224,7 +224,7 @@ int EBCL_execRtimCmd(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cm
         return -1;
     }
     switch (cmd->op) {
-        case EBCL_RTIMCMD_C_ADD:
+        case EBCL_RTIMCMD_C_ADDTASK:
             if (execRtimCmdAdd(ctx, res, cmd) == -1) {
                 EBCL_errPrint("Could not execute runtime command \'ADD\'.", cmd->op);
                 return -1;
@@ -272,7 +272,7 @@ int EBCL_execRtimCmd(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cm
                 return -1;
             }
             return 0;
-        case EBCL_RTIMCMD_R_ADD:
+        case EBCL_RTIMCMD_R_ADDTASK:
         case EBCL_RTIMCMD_R_ENABLE:
         case EBCL_RTIMCMD_R_DISABLE:
         case EBCL_RTIMCMD_R_STOP:
@@ -357,25 +357,25 @@ static int execRtimCmdAdd(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCm
     }
 
     if (cmd->argc != 3) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADD, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
 
     ebcl_ConfKvList *c;
     if (EBCL_parseConf(&c, cmd->args[0]) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADD, 2, EBCL_RTIMCMD_RES_ERR, "Could not parse given config.");
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR, "Could not parse given config.");
     }
     EBCL_dbgInfoPrint("File \'%s\' loaded.", cmd->args[0]);
 
     if (strcmp(cmd->args[2], "@unchanged") != 0) {
         if (strcmp(cmd->args[2], "@empty") == 0) {
             if (EBCL_confListSetVal("", "DEPENDS", c) == -1) {
-                return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADD, 2, EBCL_RTIMCMD_RES_ERR,
+                return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR,
                                          "Could not set dependencies to empty.");
             }
         } else {
             if (EBCL_confListSetVal(cmd->args[2], "DEPENDS", c) == -1) {
                 EBCL_freeConfList(c);
-                return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADD, 2, EBCL_RTIMCMD_RES_ERR,
+                return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR,
                                          "Could not set dependencies to given string.");
             }
         }
@@ -384,7 +384,7 @@ static int execRtimCmdAdd(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCm
     ebcl_Task *t = NULL;
     if (EBCL_taskCreateFromConfKvList(&t, c) == -1) {
         EBCL_freeConfList(c);
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADD, 2, EBCL_RTIMCMD_RES_ERR,
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR,
                                  "Could not create task from config.");
     }
     EBCL_freeConfList(c);
@@ -397,11 +397,11 @@ static int execRtimCmdAdd(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCm
 
     if (EBCL_taskDBInsert(ctx, t, overwrite) == -1) {
         EBCL_freeTask(t);
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADD, 2, EBCL_RTIMCMD_RES_ERR,
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR,
                                  "Could not insert new task into TaskDB.");
     }
     EBCL_freeTask(t);
-    return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADD, 1, EBCL_RTIMCMD_RES_OK);
+    return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 1, EBCL_RTIMCMD_RES_OK);
 }
 
 static int execRtimCmdEnable(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cmd) {

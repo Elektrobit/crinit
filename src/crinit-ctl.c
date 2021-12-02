@@ -7,7 +7,7 @@
  * ~~~
  * USAGE: crinit-ctl <ACTION> [OPTIONS] <PARAMETER> [PARAMETERS...]
  * where ACTION must be exactly one of (including specific options/parameters):
- *        add [-f/--overwrite] [-i/--ignore-deps] [-d/--override-deps "depA:eventA depB:eventB [...]"] <PATH>
+ *    addtask [-f/--overwrite] [-i/--ignore-deps] [-d/--override-deps "depA:eventA depB:eventB [...]"] <PATH>
  *            - Will add a task defined in the task configuration file at <PATH> (absolute) to Crinit's task database.
  *              '-f/--overwrite' - Lets Crinit know it is fine to overwrite if it has already loaded a task
  *                   with the same name.
@@ -117,7 +117,7 @@ int main(int argc, char *argv[]) {
     if (ignoreDeps) {
         overDeps = "@empty";
     }
-    if (strcmp(argv[1], "add") == 0) {
+    if (strcmp(argv[1], "addtask") == 0) {
         if (argv[optind] == NULL) {
             printUsage(argv[0]);
             return EXIT_FAILURE;
@@ -224,7 +224,7 @@ static void printUsage(const char *basename) {
         stderr,
         "USAGE: %s <ACTION> [OPTIONS] <PARAMETER> [PARAMETERS...]\n"
         "  where ACTION must be exactly one of (including specific options/parameters):\n"
-        "         add [-f/--overwrite] [-i/--ignore-deps] [-d/--override-deps \"depA:eventA depB:eventB [...]\"] "
+        "     addtask [-f/--overwrite] [-i/--ignore-deps] [-d/--override-deps \"depA:eventA depB:eventB [...]\"] "
         "<PATH>\n"
         "             - Will add a task defined in the task configuration file at <PATH> (absolute) to Crinit's task "
         "database.\n"

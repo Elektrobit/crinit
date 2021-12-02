@@ -119,7 +119,7 @@ Below is its help output:
 ```
 USAGE: crinit-ctl <ACTION> [OPTIONS] <PARAMETER> [PARAMETERS...]
   where ACTION must be exactly one of (including specific options/parameters):
-         add [-f/--overwrite] [-i/--ignore-deps] [-d/--override-deps "depA:eventA depB:eventB [...]"] <PATH>
+     addtask [-f/--overwrite] [-i/--ignore-deps] [-d/--override-deps "depA:eventA depB:eventB [...]"] <PATH>
              - Will add a task defined in the task configuration file at <PATH> (absolute) to Crinit's task database.
                '-f/--overwrite' - Lets Crinit know it is fine to overwrite if it has already loaded a task
                     with the same name.

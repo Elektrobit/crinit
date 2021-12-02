@@ -41,9 +41,9 @@ ${BINDIR}/crinit-ctl status after_sleep
 
 echo ""
 echo Now we check if Crinit lets us do forbidden things. Will try to add a task as an unprivileged user. This should fail.
-echo Will run: $ crinit-ctl add ${CONFDIR}/sleep_one_day.crinit
+echo Will run: $ crinit-ctl addtask ${CONFDIR}/sleep_one_day.crinit
 RETURNCODE=0
-${BINDIR}/crinit-ctl add ${CONFDIR}/sleep_one_day.crinit || RETURNCODE=$?
+${BINDIR}/crinit-ctl addtask ${CONFDIR}/sleep_one_day.crinit || RETURNCODE=$?
 if [ "$RETURNCODE" -ne "0" ]; then
     echo "Permission was denied as expected."
 else
@@ -53,14 +53,14 @@ fi
 
 echo ""
 echo Now we try the same thing again but with sudo.
-echo Will run: $ sudo crinit-ctl add ${CONFDIR}/sleep_one_day.crinit
-sudo LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ${BINDIR}/crinit-ctl add ${CONFDIR}/sleep_one_day.crinit
+echo Will run: $ sudo crinit-ctl addtask ${CONFDIR}/sleep_one_day.crinit
+sudo LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ${BINDIR}/crinit-ctl addtask ${CONFDIR}/sleep_one_day.crinit
 
 echo ""
 echo "This should not work a second time (unless we specify -f/--overwrite to overwrite the existing entry in the TaskDB)."
-echo "Will run (again): $ sudo crinit-ctl add ${CONFDIR}/sleep_one_day.crinit"
+echo "Will run (again): $ sudo crinit-ctl addtask ${CONFDIR}/sleep_one_day.crinit"
 RETURNCODE=0
-sudo LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ${BINDIR}/crinit-ctl add ${CONFDIR}/sleep_one_day.crinit || RETURNCODE=$?
+sudo LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ${BINDIR}/crinit-ctl addtask ${CONFDIR}/sleep_one_day.crinit || RETURNCODE=$?
 if [ "$RETURNCODE" -ne "0" ]; then
     echo "Crinit-ctl returned an error as expected."
 else

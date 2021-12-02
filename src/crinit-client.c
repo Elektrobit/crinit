@@ -178,7 +178,7 @@ LIB_EXPORTED int EBCL_crinitTaskAdd(const char *configFilePath, bool overwrite, 
         forceDeps = "@empty";
     }
 
-    if (EBCL_buildRtimCmd(&cmd, EBCL_RTIMCMD_C_ADD, 3, configFilePath, overwrStr, forceDeps) == -1) {
+    if (EBCL_buildRtimCmd(&cmd, EBCL_RTIMCMD_C_ADDTASK, 3, configFilePath, overwrStr, forceDeps) == -1) {
         EBCL_errPrint("Could not build RtimCmd to send to Crinit.");
         return -1;
     }
@@ -190,7 +190,7 @@ LIB_EXPORTED int EBCL_crinitTaskAdd(const char *configFilePath, bool overwrite, 
     }
     EBCL_destroyRtimCmd(&cmd);
 
-    int ret = crinitResponseCheck(&res, EBCL_RTIMCMD_R_ADD);
+    int ret = crinitResponseCheck(&res, EBCL_RTIMCMD_R_ADDTASK);
     EBCL_destroyRtimCmd(&res);
     return ret;
 }
