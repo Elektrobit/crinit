@@ -14,11 +14,6 @@
 #include "taskdb.h"
 
 /**
- * The standard path of the socket file to create/bind to for the Notification/Service Interface.
- */
-#define EBCL_CRINIT_SOCKFILE "/run/crinit/crinit.sock"
-
-/**
  * Starts the Notification and Service interface socket server.
  *
  * Will create the AF_UNIX socket for clients to connect to and spawn a number of worker threads to service incoming

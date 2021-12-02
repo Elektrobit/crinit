@@ -16,22 +16,11 @@
 #include <stdarg.h>
 #include <stdbool.h>
 
+#include "crinit-sdefs.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#define EBCL_CRINIT_SOCKFILE "/run/crinit/crinit.sock"  ///< Default path to Crinit's AF_UNIX communication socket.
-#define EBCL_CRINIT_ENV_NOTIFY_NAME \
-    "CRINIT_TASK_NAME"  ///< Name of the environment variable containing the task name for sd_notify().
-
-#ifndef __CRINIT_CLIENT_INTERNAL_H__
-typedef unsigned long ebcl_TaskState;  ///< Type to store Task state bitmask.
-
-#define EBCL_TASK_STATE_STARTING (1 << 0)  ///< Task state bitmask indicating the task currently spawns a new process.
-#define EBCL_TASK_STATE_RUNNING (1 << 1)   ///< Bitmask indicating the task has spawned a process and is running.
-#define EBCL_TASK_STATE_DONE (1 << 2)      ///< Bitmask indicating a task has finished without error.
-#define EBCL_TASK_STATE_FAILED (1 << 3)    ///< Bitmask indicating a task has finished with an error code.
-#endif                                     /* __CRINIT_CLIENT_INTERNAL_H__ */
 
 /**
  * Selects the stream on which to output error messages.

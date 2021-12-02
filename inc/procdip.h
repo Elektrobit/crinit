@@ -19,10 +19,6 @@
  * Stack size for process dispatch threads.
  */
 #define EBCL_PROC_DISPATCH_THREAD_STACK_SIZE (8 * PTHREAD_STACK_MIN)
-/**
- * The name/key of the environment variable Crinit passes to child processes for sd_notify().
- */
-#define EBCL_CRINIT_ENV_NOTIFY_NAME "CRINIT_TASK_NAME"
 
 /**
  * Process dispatcher function to spawn a task that is ready.

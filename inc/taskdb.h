@@ -15,21 +15,16 @@
 #include <stddef.h>
 
 #include "confparse.h"
+#include "crinit-sdefs.h"
 
 #define EBCL_MONITOR_DEP_NAME "@ebclmon"  ///< Special dependency name to depend on monitor events (not yet impl.).
 #define EBCL_TASKDB_INITIAL_SIZE 256      ///< Default initial size of the taskSet within an ebcl_TaskDB.
 
 typedef unsigned long ebcl_TaskOpts;   ///< Type to store Task option bitmask.
-typedef unsigned long ebcl_TaskState;  ///< Type to store Task state bitmask.
 
 #define EBCL_TASK_OPT_EXEC (1 << 0)     ///< EXEC task option bitmask (not yet implemnted).
 #define EBCL_TASK_OPT_QM_JAIL (1 << 1)  ///< QM_JAIL task option bitmask (not yet implemented).
 #define EBCL_TASK_OPT_RESPAWN (1 << 2)  ///< RESPAWN task option bitmask.
-
-#define EBCL_TASK_STATE_STARTING (1 << 0)  ///< Task state bitmask indicating the task currently spawns a new process.
-#define EBCL_TASK_STATE_RUNNING (1 << 1)   ///< Bitmask indicating the task has spawned a process and is running.
-#define EBCL_TASK_STATE_DONE (1 << 2)      ///< Bitmask indicating a task has finished without error.
-#define EBCL_TASK_STATE_FAILED (1 << 3)    ///< Bitmask indicating a task has finished with an error code.
 
 #define EBCL_TASK_EVENT_RUNNING "spawn"  ///< Dependency event that fires when a task reaches the RUNNING state.
 #define EBCL_TASK_EVENT_DONE "wait"      ///< Dependency event that fires when a task reaches the DONE state.

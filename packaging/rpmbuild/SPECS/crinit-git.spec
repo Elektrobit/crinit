@@ -54,6 +54,7 @@ install -D -m 0644 config/test/*.series %{buildroot}/%{_sysconfdir}/crinit/test
 # devel
 mkdir -p %{buildroot}/%{_includedir}
 install -m 0644 inc/crinit-client.h %{buildroot}/%{_includedir}
+install -m 0644 inc/crinit-sdefs.h %{buildroot}/%{_includedir}
 
 %ifarch aarch64
 # conf-s32g
@@ -74,6 +75,7 @@ install -D -m 0644 config/s32g/*.series %{buildroot}/%{_sysconfdir}/crinit
 
 %files devel
 %{_includedir}/crinit-client.h
+%{_includedir}/crinit-sdefs.h
 
 %ifarch aarch64
 %files conf-s32g

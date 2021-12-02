@@ -44,6 +44,7 @@ cp -a packaging/rpmbuild/RPMS $BASEDIR/result
 make doxygen
 cp -a doc $BASEDIR/result
 
-# copy client API header
+# copy client API headers
 cp inc/crinit-client.h $BASEDIR/result/include
+cp inc/crinit-sdefs.h $BASEDIR/result/include
 

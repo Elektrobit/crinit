@@ -8,11 +8,15 @@
  *            All rights exclusively reserved for Elektrobit Automotive GmbH,
  *            unless otherwise expressly agreed
  */
+#include "crinit-client.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
-#include "crinit-client-internal.h"
+#include "globopt.h"
+#include "logio.h"
+#include "sockcom.h"
 
 /**
  * Attribute macro for exported/visible functions, used together with -fvisibility=hidden to export only selected
