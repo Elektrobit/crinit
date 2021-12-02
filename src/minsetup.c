@@ -83,6 +83,18 @@ int EBCL_setupSystemFs(void) {
         EBCL_errnoPrint("Could not mount devpts.");
         return -1;
     }
+
+    if (mkdir("/run", 0777) == -1) {
+        if (errno != EEXIST) {
+            EBCL_errnoPrint("Could not create /run directory: ");
+            return -1;
+        }
+    }
+    if (mount("none", "/run", "tmpfs", MS_NODEV | MS_NOEXEC | MS_NOSUID, NULL) == -1) {
+        EBCL_errnoPrint("Could not mount tmpfs on /run.");
+        return -1;
+    }
+
     umask(0022);
     return 0;
 }
