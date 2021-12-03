@@ -22,25 +22,23 @@
  *
  * Each command gets a command (`C_`) and a result/response (`R_`) opcode.
  */
-#define EBCL_genOpEnum(x) EBCL_RTIMCMD_C_ ## x, EBCL_RTIMCMD_R_ ## x,
+#define EBCL_genOpEnum(x) EBCL_RTIMCMD_C_##x, EBCL_RTIMCMD_R_##x,
 /**
  * Macro to generate the opcode-to-string mapping for EBCL_genOpMap().
  */
-#define EBCL_genOpStruct(x) { EBCL_RTIMCMD_C_ ## x, "C_" #x} , { EBCL_RTIMCMD_R_ ## x, "R_" #x },
+#define EBCL_genOpStruct(x) {EBCL_RTIMCMD_C_##x, "C_" #x}, {EBCL_RTIMCMD_R_##x, "R_" #x},
 
 /**
  * Enum of the available opcodes, including commands and results/responses.
  */
-typedef enum ebcl_RtimOp {
-    EBCL_genOpMap(EBCL_genOpEnum)
-} ebcl_RtimOp;
+typedef enum ebcl_RtimOp { EBCL_genOpMap(EBCL_genOpEnum) } ebcl_RtimOp;
 
 /**
  * Structure holding a single mapping between opcode and string representation.
  */
 typedef struct ebcl_RtimOpMap {
-    ebcl_RtimOp opCode; ///< opcode
-    const char *opStr;  ///< equivalent string representation
+    ebcl_RtimOp opCode;  ///< opcode
+    const char *opStr;   ///< equivalent string representation
 } ebcl_RtimOpMap;
 
 /**

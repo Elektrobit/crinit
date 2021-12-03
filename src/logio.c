@@ -39,7 +39,7 @@ static char *threadSafeStrerror(int errnum);
 
 void EBCL_setPrintPrefix(const char *prefix) {
     pthread_mutex_lock(&logLock);
-    strncpy(printPrefix, (prefix==NULL) ? EBCL_CRINIT_PRINT_PREFIX : prefix, EBCL_PRINT_PREFIX_MAX_LEN);
+    strncpy(printPrefix, (prefix == NULL) ? EBCL_CRINIT_PRINT_PREFIX : prefix, EBCL_PRINT_PREFIX_MAX_LEN);
     pthread_mutex_unlock(&logLock);
 }
 

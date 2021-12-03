@@ -287,8 +287,8 @@ int EBCL_taskDBAddDepToTask(ebcl_TaskDB *ctx, const ebcl_TaskDep *dep, const cha
         ebcl_Task *pTask = &ctx->taskSet[i];
         if (strcmp(pTask->name, taskName) == 0) {
             // Return immediately if dependency is already present
-            for(size_t j = 0; j<pTask->depsSize; j++) {
-                if(strcmp(pTask->deps[j].name, dep->name) == 0 && strcmp(pTask->deps[j].event, dep->event) == 0) {
+            for (size_t j = 0; j < pTask->depsSize; j++) {
+                if (strcmp(pTask->deps[j].name, dep->name) == 0 && strcmp(pTask->deps[j].event, dep->event) == 0) {
                     pthread_mutex_unlock(&ctx->lock);
                     return 0;
                 }

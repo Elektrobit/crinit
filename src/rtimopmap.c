@@ -71,11 +71,11 @@ int EBCL_opStrGetByRtimOp(const char **out, ebcl_RtimOp opCode) {
 }
 
 static inline size_t delimitedStrlen(const char *str) {
-   size_t len = 0;
-   while(*str != '\0' && *str != EBCL_RTIMCMD_ARGDELIM) {
-       len++;
-       str++;
-   }
-   return len;
+    size_t len = 0;
+    while (*str != '\0' && *str != EBCL_RTIMCMD_ARGDELIM) {
+        len++;
+        str++;
+    }
+    return len;
 }
 

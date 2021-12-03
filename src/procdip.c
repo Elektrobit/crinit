@@ -265,19 +265,19 @@ threadExit:
 int EBCL_setInhibitWait(bool inh) {
     int ret = 0;
     errno = pthread_mutex_lock(&waitInhibitLock);
-    if(errno != 0) {
+    if (errno != 0) {
         EBCL_errnoPrint("Could not lock on mutex.");
         return -1;
     }
     waitInhibit = inh;
-    if(!inh) {
+    if (!inh) {
         errno = pthread_cond_broadcast(&waitInhibitCond);
-        if(errno != 0) {
+        if (errno != 0) {
             ret = -1;
             EBCL_errnoPrint("Could not broadcast on condition variable.");
         }
     }
-    if(pthread_mutex_unlock(&waitInhibitLock)) {
+    if (pthread_mutex_unlock(&waitInhibitLock)) {
         ret = -1;
         EBCL_errnoPrint("Could not unlock mutex.");
     }
@@ -309,18 +309,18 @@ static int buildEnv(char **taskEnv, const char *taskName) {
 
 static int blockOnWaitInhibit(void) {
     errno = pthread_mutex_lock(&waitInhibitLock);
-    if(errno != 0) {
+    if (errno != 0) {
         EBCL_errnoPrint("Could not lock on mutex.");
         return -1;
     }
-    while(waitInhibit) {
+    while (waitInhibit) {
         errno = pthread_cond_wait(&waitInhibitCond, &waitInhibitLock);
-        if(errno != 0) {
+        if (errno != 0) {
             EBCL_errnoPrint("Could not wait on condition variable.");
             return -1;
         }
     }
-    if(pthread_mutex_unlock(&waitInhibitLock)) {
+    if (pthread_mutex_unlock(&waitInhibitLock)) {
         EBCL_errnoPrint("Could not unlock mutex.");
         return -1;
     }

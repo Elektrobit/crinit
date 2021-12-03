@@ -20,7 +20,7 @@
 #define EBCL_MONITOR_DEP_NAME "@ebclmon"  ///< Special dependency name to depend on monitor events (not yet impl.).
 #define EBCL_TASKDB_INITIAL_SIZE 256      ///< Default initial size of the taskSet within an ebcl_TaskDB.
 
-typedef unsigned long ebcl_TaskOpts;   ///< Type to store Task option bitmask.
+typedef unsigned long ebcl_TaskOpts;  ///< Type to store Task option bitmask.
 
 #define EBCL_TASK_OPT_EXEC (1 << 0)     ///< EXEC task option bitmask (not yet implemnted).
 #define EBCL_TASK_OPT_QM_JAIL (1 << 1)  ///< QM_JAIL task option bitmask (not yet implemented).

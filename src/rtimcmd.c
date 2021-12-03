@@ -14,8 +14,8 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/wait.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 
 #include "logio.h"
 #include "procdip.h"
@@ -175,7 +175,7 @@ int EBCL_parseRtimCmd(ebcl_RtimCmd *out, const char *cmdStr) {
     char *token = NULL;
     char *start = out->args[0];
     int i = 0;
-    char tokenList[2] = { EBCL_RTIMCMD_ARGDELIM, '\0' };
+    char tokenList[2] = {EBCL_RTIMCMD_ARGDELIM, '\0'};
     while ((token = strtok_r(start, tokenList, &strtokState)) != NULL && i < argCount) {
         start = NULL;
         out->args[i] = token;
