@@ -190,14 +190,14 @@ static void *dispatchThreadFunc(void *args) {
             EBCL_dbgInfoPrint("(TID: %d) Dependency \'%s:%s\' fulfilled.", threadId, spawnDep.name, spawnDep.event);
         }
 
-        errno = 0;
+        int wret;
         siginfo_t status;
         // Check if process has exited, but leave zombie.
         do {
-            waitid(P_PID, pid, &status, WEXITED | WNOWAIT);
-        } while (errno == EINTR);
+            wret = waitid(P_PID, pid, &status, WEXITED | WNOWAIT);
+        } while (wret != 0 && errno == EINTR);
 
-        if (errno || status.si_code != CLD_EXITED || status.si_status != 0) {
+        if (wret != 0 || status.si_code != CLD_EXITED || status.si_status != 0) {
             // There was some error, either Crinit-internal or the task returned an error code or the task was killed
             if (errno) {
                 EBCL_errnoPrint("(TID: %d) Failed to wait for Task \'%s\' (PID %d).", threadId, tCopy->name, pid);
