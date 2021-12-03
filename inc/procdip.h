@@ -18,7 +18,7 @@
 /**
  * Stack size for process dispatch threads.
  */
-#define EBCL_PROC_DISPATCH_THREAD_STACK_SIZE (8 * PTHREAD_STACK_MIN)
+#define EBCL_PROC_DISPATCH_THREAD_STACK_SIZE (PTHREAD_STACK_MIN + 112 * 1024)
 
 /**
  * Process dispatcher function to spawn a task that is ready.

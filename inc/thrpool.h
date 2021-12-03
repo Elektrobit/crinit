@@ -38,7 +38,7 @@ typedef struct ebcl_ThreadPool {
 /**
  * Stack size of the threads within the thread pool.
  */
-#define EBCL_THREADPOOL_THREAD_STACK_SIZE 8 * PTHREAD_STACK_MIN
+#define EBCL_THREADPOOL_THREAD_STACK_SIZE (PTHREAD_STACK_MIN + 112 * 1024)
 
 /**
  * Initialize an ebcl_ThreadPool.
