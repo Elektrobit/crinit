@@ -132,17 +132,6 @@ fail:
     return -1;
 }
 
-int EBCL_threadPoolDestroy(ebcl_ThreadPool *ctx) {
-    if (ctx == NULL) {
-        EBCL_errPrint("Could not destroy thread pool because the pointer given to it was NULL.");
-        return -1;
-    }
-    pthread_cancel(ctx->dryPoolWdRef);
-    ctx->poolSize = 0;
-    ctx->threadAvail = 0;
-    return 0;
-}
-
 int EBCL_threadPoolThreadBusyCallback(ebcl_ThreadPool *ctx) {
     if (ctx == NULL) {
         EBCL_errPrint("The given thread pool context must not be NULL.");

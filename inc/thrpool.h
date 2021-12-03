@@ -54,16 +54,6 @@ typedef struct ebcl_ThreadPool {
  */
 int EBCL_threadPoolInit(ebcl_ThreadPool *ctx, size_t initialSize, void *(*threadFunc)(void *), const void *thrArgs,
                         size_t thrArgsSize);
-/**
- * Free memory used by an ebcl_ThreadPool.
- *
- * Should only be used once administration of worker threads and dry pool handling is no longer necessary.
- *
- * @param ctx  The ebcl_ThreadPool from which to free the memory.
- *
- * @return 0 on success, -1 otherwise
- */
-int EBCL_threadPoolDestroy(ebcl_ThreadPool *ctx);
 
 /**
  * Callback to be used by the worker thread function signalling it is busy/unavailable.
