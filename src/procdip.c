@@ -157,7 +157,7 @@ static void *dispatchThreadFunc(void *args) {
     for (size_t i = 0; i < tCopy->cmdsSize; i++) {
         pid = fork();
         if (pid == -1) {
-            EBCL_errnoPrint("(TID: %d) Could not fork new process for command %lu of Task \'%s\'", threadId, i,
+            EBCL_errnoPrint("(TID: %d) Could not fork new process for command %zu of Task \'%s\'", threadId, i,
                             tCopy->name);
             goto threadExit;
         }
@@ -170,7 +170,7 @@ static void *dispatchThreadFunc(void *args) {
             }
         }
         // parent process
-        EBCL_infoPrint("(TID: %d) Started new process %d for command %lu of Task \'%s\' (\'%s\').", threadId, pid, i,
+        EBCL_infoPrint("(TID: %d) Started new process %d for command %zu of Task \'%s\' (\'%s\').", threadId, pid, i,
                        tCopy->name, tCopy->cmds[i].argv[0]);
         if (i == 0) {
             if (EBCL_taskDBSetTaskState(ctx, EBCL_TASK_STATE_RUNNING, tCopy->name) == -1) {
@@ -295,7 +295,7 @@ static int buildEnv(char **taskEnv, const char *taskName) {
     size_t envSize = envPrefixLen + envSuffixLen + 1;
     taskEnv[0] = calloc(envSize, sizeof(char));
     if (taskEnv[0] == NULL) {
-        EBCL_errnoPrint("Could not allocate %lu Bytes of memory for environment variable \'%s\'.", envSize,
+        EBCL_errnoPrint("Could not allocate %zu Bytes of memory for environment variable \'%s\'.", envSize,
                         EBCL_CRINIT_ENV_NOTIFY_NAME);
         taskEnv[1] = NULL;
         return -1;

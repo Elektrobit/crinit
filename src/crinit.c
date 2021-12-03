@@ -245,9 +245,9 @@ static void taskPrint(const ebcl_Task *t) {
     EBCL_dbgInfoPrint("Data Structure:");
     EBCL_dbgInfoPrint("---------------");
     EBCL_dbgInfoPrint("NAME: %s", t->name);
-    EBCL_dbgInfoPrint("Number of COMMANDs: %lu", t->cmdsSize);
+    EBCL_dbgInfoPrint("Number of COMMANDs: %zu", t->cmdsSize);
     for (size_t i = 0; i < t->cmdsSize; i++) {
-        EBCL_dbgInfoPrint("cmds[%lu]:", i);
+        EBCL_dbgInfoPrint("cmds[%zu]:", i);
         for (int j = 0; j <= t->cmds[i].argc; j++) {
             if (t->cmds[i].argv[j] != NULL) {
                 EBCL_dbgInfoPrint("    argv[%d] = \'%s\'", j, t->cmds[i].argv[j]);
@@ -257,9 +257,9 @@ static void taskPrint(const ebcl_Task *t) {
         }
     }
 
-    EBCL_dbgInfoPrint("Number of dependencies: %lu", t->depsSize);
+    EBCL_dbgInfoPrint("Number of dependencies: %zu", t->depsSize);
     for (size_t i = 0; i < t->depsSize; i++) {
-        EBCL_dbgInfoPrint("deps[%lu]: name=\'%s\' event=\'%s\'", i, t->deps[i].name, t->deps[i].event);
+        EBCL_dbgInfoPrint("deps[%zu]: name=\'%s\' event=\'%s\'", i, t->deps[i].name, t->deps[i].event);
     }
 
     EBCL_dbgInfoPrint("TaskOpts:");

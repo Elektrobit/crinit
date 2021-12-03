@@ -38,7 +38,7 @@ int EBCL_crinitConnect(int *sockFd, const char *sockFile) {
     crinitServAddr.sun_family = AF_UNIX;
     size_t sockPathLen = strnlen(sockFile, sizeof(crinitServAddr.sun_path));
     if (sockPathLen == sizeof(crinitServAddr.sun_path)) {
-        EBCL_errPrint("Path to socket file is longer than %lu characters.", sizeof(crinitServAddr.sun_path) - 1);
+        EBCL_errPrint("Path to socket file is longer than %zu characters.", sizeof(crinitServAddr.sun_path) - 1);
         close(*sockFd);
         return -1;
     }
@@ -74,7 +74,7 @@ int EBCL_crinitSend(int sockFd, const ebcl_RtimCmd *cmd) {
     }
 
     if (send(sockFd, &sendLen, sizeof(size_t), MSG_NOSIGNAL) == -1) {
-        EBCL_errnoPrint("Could not send length packet (\'%lu\') of string \'%s\' to client.", sendLen, sendStr);
+        EBCL_errnoPrint("Could not send length packet (\'%zu\') of string \'%s\' to client.", sendLen, sendStr);
         free(sendStr);
         return -1;
     }
@@ -106,18 +106,18 @@ int EBCL_crinitRecv(int sockFd, ebcl_RtimCmd *res) {
         EBCL_errPrint("Received data of unexpected length from Crinit: '%ld' Bytes", bytesRead);
         return -1;
     }
-    EBCL_dbgInfoPrint("Received message of %d Bytes. Content:\n\'%lu\'", bytesRead, recvLen);
+    EBCL_dbgInfoPrint("Received message of %d Bytes. Content:\n\'%zu\'", bytesRead, recvLen);
 
     char *recvStr = malloc(recvLen);
     if (recvStr == NULL) {
-        EBCL_errnoPrint("Could not allocate receive buffer of size %lu Bytes.", recvLen);
+        EBCL_errnoPrint("Could not allocate receive buffer of size %zu Bytes.", recvLen);
         return -1;
     }
 
     bytesRead = recv(sockFd, recvStr, recvLen, 0);
     if (bytesRead == -1) {
         free(recvStr);
-        EBCL_errnoPrint("Could not receive string data message of size %lu Bytes via socket.", recvLen);
+        EBCL_errnoPrint("Could not receive string data message of size %zu Bytes via socket.", recvLen);
         return -1;
     }
     if (bytesRead != recvLen) {
@@ -149,15 +149,15 @@ static int waitForRTR(int sockFd) {
         EBCL_errPrint("Received data of unexpected length from Crinit: '%ld' Bytes", bytesRead);
         return -1;
     }
-    EBCL_dbgInfoPrint("Received message of %d Bytes. Content:\n\'%lu\'", bytesRead, recvLen);
+    EBCL_dbgInfoPrint("Received message of %d Bytes. Content:\n\'%zu\'", bytesRead, recvLen);
     if (recvLen != sizeof("RTR")) {
-        EBCL_errPrint("Received unexpected string length for RTR: '%lu' Bytes", recvLen);
+        EBCL_errPrint("Received unexpected string length for RTR: '%zu' Bytes", recvLen);
         return -1;
     }
 
     bytesRead = recv(sockFd, RtrBuf, recvLen, 0);
     if (bytesRead == -1) {
-        EBCL_errnoPrint("Could not receive string data message of size %lu Bytes via socket.", recvLen);
+        EBCL_errnoPrint("Could not receive string data message of size %zu Bytes via socket.", recvLen);
         return -1;
     }
     if (bytesRead != recvLen) {

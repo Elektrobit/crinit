@@ -122,7 +122,7 @@ int EBCL_threadPoolInit(ebcl_ThreadPool *ctx, size_t initialSize, void *(*thread
         EBCL_errPrint("Could not create worker threads.");
         goto fail;
     }
-    EBCL_dbgInfoPrint("Created %lu worker threads.", initialSize);
+    EBCL_dbgInfoPrint("Created %zu worker threads.", initialSize);
     return 0;
 
 fail:
@@ -187,7 +187,7 @@ static int threadPoolGrow(ebcl_ThreadPool *ctx, size_t newSize) {
     }
 
     if (newSize <= ctx->poolSize) {
-        EBCL_errPrint("New size of thread pool (%lu) must be larger than the old size (%lu).", newSize, ctx->poolSize);
+        EBCL_errPrint("New size of thread pool (%zu) must be larger than the old size (%zu).", newSize, ctx->poolSize);
         pthread_mutex_unlock(&ctx->lock);
         return -1;
     }
@@ -215,12 +215,12 @@ static int threadPoolGrow(ebcl_ThreadPool *ctx, size_t newSize) {
     size_t oldSize = ctx->poolSize;
     for (size_t i = oldSize; i < newSize; i++) {
         if ((errno = pthread_create(&thr, &thrAttrs, ctx->threadFunc, ctx->thrArgs)) != 0) {
-            EBCL_errnoPrint("Could not create thread pool pthread number %lu.", i);
+            EBCL_errnoPrint("Could not create thread pool pthread number %zu.", i);
             pthread_mutex_unlock(&ctx->lock);
             pthread_attr_destroy(&thrAttrs);
             return -1;
         } else {
-            EBCL_dbgInfoPrint("Created worker thread %lu. Function pointer %p.", i, ctx->threadFunc);
+            EBCL_dbgInfoPrint("Created worker thread %zu. Function pointer %p.", i, ctx->threadFunc);
             ctx->poolSize++;
             ctx->threadAvail++;
         }

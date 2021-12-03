@@ -151,7 +151,7 @@ int EBCL_parseRtimCmd(ebcl_RtimCmd *out, const char *cmdStr) {
     }
     out->args = malloc((argCount + 1) * sizeof(char *));
     if (out->args == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for runtime commmand argument array with %lu arguments.", argCount);
+        EBCL_errnoPrint("Could not allocate memory for runtime commmand argument array with %zu arguments.", argCount);
         return -1;
     }
     if (argCount == 0) {
@@ -204,7 +204,7 @@ int EBCL_rtimCmdToMsgStr(char **out, size_t *outLen, const ebcl_RtimCmd *cmd) {
 
     *out = malloc(*outLen);
     if (*out == NULL) {
-        EBCL_errPrint("Could not allocate memory (%lu Bytes) for string representation of runtime command.", *outLen);
+        EBCL_errPrint("Could not allocate memory (%zu Bytes) for string representation of runtime command.", *outLen);
         *outLen = 0;
         return -1;
     }

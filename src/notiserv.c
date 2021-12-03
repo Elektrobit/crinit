@@ -359,7 +359,7 @@ static inline int sendStr(int sockFd, const char *str) {
 
     size_t dataLen = strlen(str) + 1;
     if (send(sockFd, &dataLen, sizeof(size_t), MSG_NOSIGNAL) == -1) {
-        EBCL_errnoPrint("(TID %d) Could not send length packet (\'%lu\') of string \'%s\' to client. %d", threadId,
+        EBCL_errnoPrint("(TID %d) Could not send length packet (\'%zu\') of string \'%s\' to client. %d", threadId,
                         dataLen, str, sockFd);
         return -1;
     }
@@ -409,7 +409,7 @@ static inline int recvStr(int sockFd, char **str, struct ucred *passedCreds) {
         EBCL_errPrint("Received data of unexpected length from client: %ld Bytes", bytesRead);
         return -1;
     }
-    EBCL_dbgInfoPrint("(TID %d) Received message of %d Bytes. Content:\n\'%lu\'", threadId, bytesRead, dataLen);
+    EBCL_dbgInfoPrint("(TID %d) Received message of %d Bytes. Content:\n\'%zu\'", threadId, bytesRead, dataLen);
 
     struct cmsghdr *cmHdr = CMSG_FIRSTHDR(&mHdr);
     if (!cmsgHdrCheck(cmHdr)) {
@@ -420,7 +420,7 @@ static inline int recvStr(int sockFd, char **str, struct ucred *passedCreds) {
 
     *str = malloc(dataLen);
     if (*str == NULL) {
-        EBCL_errnoPrint("(TID %d) Could not allocate receive buffer of size %lu Bytes.", threadId, dataLen);
+        EBCL_errnoPrint("(TID %d) Could not allocate receive buffer of size %zu Bytes.", threadId, dataLen);
         return -1;
     }
     iov.iov_base = *str;
@@ -428,12 +428,12 @@ static inline int recvStr(int sockFd, char **str, struct ucred *passedCreds) {
 
     bytesRead = recvmsg(sockFd, &mHdr, 0);
     if (bytesRead == -1) {
-        EBCL_errnoPrint("(TID %d) Could not receive string data message of size %lu Bytes via socket.", threadId,
+        EBCL_errnoPrint("(TID %d) Could not receive string data message of size %zu Bytes via socket.", threadId,
                         dataLen);
         goto fail;
     }
     if (bytesRead != dataLen) {
-        EBCL_errPrint("Received data of unexpected length from client: %ld Bytes vs. announced %lu Bytes ", bytesRead,
+        EBCL_errPrint("Received data of unexpected length from client: %ld Bytes vs. announced %zu Bytes ", bytesRead,
                       dataLen);
         goto fail;
     }
