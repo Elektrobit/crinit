@@ -158,6 +158,9 @@ int EBCL_confListGetVal(char **val, const char *key, const ebcl_ConfKvList *c) {
     }
     size_t ksize = strlen(key) + 1;
     char *tk = malloc(ksize);
+    if (tk == NULL) {
+        return -1;
+    }
     char *tkmemptr = tk;
     memcpy(tk, key, ksize);
     trimWhitespace(&tk);
@@ -179,6 +182,41 @@ int EBCL_confListGetVal(char **val, const char *key, const ebcl_ConfKvList *c) {
         trimWhitespace(val);
     }
     free(tkmemptr);
+    return 0;
+}
+
+int EBCL_confListSetVal(const char *val, const char *key, ebcl_ConfKvList *c) {
+    if (val == NULL || key == NULL || c == NULL) {
+        return -1;
+    }
+
+    const char *pKey = key;
+    while (*pKey != '\0' && isspace(*pKey)) {
+        pKey++;
+    }
+
+    size_t kLen = strlen(pKey);
+    while (kLen > 0 && isspace(key[kLen - 1])) {
+        kLen--;
+    }
+    if (kLen == 0) {
+        return -1;
+    }
+
+    while (c != NULL) {
+        if (!strncmp(pKey, c->key, kLen) && c->key[kLen] == '\0') {
+            break;
+        }
+        c = c->next;
+    }
+    if (c == NULL) {
+        return -1;
+    }
+    free(c->val);
+    c->val = strdup(val);
+    if (c->val == NULL) {
+        return -1;
+    }
     return 0;
 }
 
@@ -287,10 +325,12 @@ int EBCL_confListExtractArgvArray(int *outArgc, char ***outArgv, const char *key
 }
 
 void EBCL_freeArgvArray(char **inArgv) {
-    // free the backing string
-    free(*inArgv);
-    // free the outer array
-    free(inArgv);
+    if (inArgv != NULL) {
+        // free the backing string
+        free(*inArgv);
+        // free the outer array
+        free(inArgv);
+    }
 }
 
 static void trimWhitespace(char **str) {

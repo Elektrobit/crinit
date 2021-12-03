@@ -1,0 +1,8 @@
+@startuml
+participant "Sender" as send
+participant "Receiver" as recv
+
+send -> recv : binary ""size_t strlen(msg)+1""
+recv -> recv : allocate memory
+send -> recv : ASCII ""msg""
+@enduml

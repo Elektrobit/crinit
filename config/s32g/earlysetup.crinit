@@ -2,11 +2,10 @@
 
 NAME = earlysetup
 
-COMMAND[0] = /bin/mount -t tmpfs none /run
-COMMAND[1] = /bin/mount -t tmpfs none /tmp
-COMMAND[2] = /bin/mkdir -p /var/volatile
-COMMAND[3] = /bin/mount -t tmpfs none /var/volatile
-COMMAND[4] = /bin/hostname eb-arm64
+COMMAND[0] = /bin/mount -t tmpfs none /tmp
+COMMAND[1] = /bin/mkdir -p /var/volatile
+COMMAND[2] = /bin/mount -t tmpfs none /var/volatile
+COMMAND[3] = /bin/hostname eb-arm64
 
 DEPENDS = ""
 

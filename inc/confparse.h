@@ -53,16 +53,30 @@ void EBCL_freeConfList(ebcl_ConfKvList *confList);
  * Searches for key in \a confList and writes its value's address to \a *val. If key is not found, \a *val
  * is NULL and -1 is returned.
  *
- * @param val Pointer to a pointer which will point to a string containing the value after execution or NULL if the
- *            value is not found. If \a val is NULL, the function will search for \a key as normal and return
- *            accordingly but nothing will be written to \a *val.
- * @param key The key to search for.
- * @param c   Pointer to the ebcl_ConfKvList to search in.
+ * @param val  Pointer to a pointer which will point to a string containing the value after execution or NULL if the
+ *             value is not found. If \a val is NULL, the function will search for \a key as normal and return
+ *             accordingly but nothing will be written to \a *val.
+ * @param key  The key to search for.
+ * @param c    Pointer to the ebcl_ConfKvList to search in.
  *
  * @return 0 if key is found, -1 otherwise
  *
  */
 int EBCL_confListGetVal(char **val, const char *key, const ebcl_ConfKvList *c);
+/**
+ * Set value mapped to key in a ebcl_ConfKvList.
+ *
+ * Searches for key in \a confList and replaces its value with val. Memory is de-/allocated as needed. If key is not
+ * found, \a *val is NULL and -1 is returned.
+ *
+ * @param val  The value to write.
+ * @param key  The key to search for.
+ * @param c    Pointer to the ebcl_ConfKvList to search in.
+ *
+ * @return 0 if key is found, -1 otherwise
+ *
+ */
+int EBCL_confListSetVal(const char *val, const char *key, ebcl_ConfKvList *c);
 
 /**
  * Extract a boolean value from a ebcl_ConfKvList.

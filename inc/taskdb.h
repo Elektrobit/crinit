@@ -15,21 +15,16 @@
 #include <stddef.h>
 
 #include "confparse.h"
+#include "crinit-sdefs.h"
 
 #define EBCL_MONITOR_DEP_NAME "@ebclmon"  ///< Special dependency name to depend on monitor events (not yet impl.).
 #define EBCL_TASKDB_INITIAL_SIZE 256      ///< Default initial size of the taskSet within an ebcl_TaskDB.
 
-typedef unsigned long ebcl_TaskOpts;   ///< Type to store Task option bitmask.
-typedef unsigned long ebcl_TaskState;  ///< Type to store Task state bitmask.
+typedef unsigned long ebcl_TaskOpts;  ///< Type to store Task option bitmask.
 
 #define EBCL_TASK_OPT_EXEC (1 << 0)     ///< EXEC task option bitmask (not yet implemnted).
 #define EBCL_TASK_OPT_QM_JAIL (1 << 1)  ///< QM_JAIL task option bitmask (not yet implemented).
 #define EBCL_TASK_OPT_RESPAWN (1 << 2)  ///< RESPAWN task option bitmask.
-
-#define EBCL_TASK_STATE_STARTING (1 << 0)  ///< Task state bitmask indicating the task currently spawns a new process.
-#define EBCL_TASK_STATE_RUNNING (1 << 1)   ///< Bitmask indicating the task has spawned a process and is running.
-#define EBCL_TASK_STATE_DONE (1 << 2)      ///< Bitmask indicating a task has finished without error.
-#define EBCL_TASK_STATE_FAILED (1 << 3)    ///< Bitmask indicating a task has finished with an error code.
 
 #define EBCL_TASK_EVENT_RUNNING "spawn"  ///< Dependency event that fires when a task reaches the RUNNING state.
 #define EBCL_TASK_EVENT_DONE "wait"      ///< Dependency event that fires when a task reaches the DONE state.
@@ -116,6 +111,33 @@ int EBCL_taskDBInsert(ebcl_TaskDB *ctx, const ebcl_Task *t, bool overwrite);
  * @return 0 on success, -1 otherwise
  */
 int EBCL_taskDBFulfillDep(ebcl_TaskDB *ctx, const ebcl_TaskDep *dep);
+/**
+ * Add a dependency to a specific task inside a task database.
+ *
+ * Will search \a ctx for a task with name \a taskName and add \a dep to its ebcl_Task::deps and adjust
+ * ebcl_Task::depsSize.
+ *
+ * @param ctx       The ebcl_taskDb context to work on.
+ * @param dep       The dependency to be added.
+ * @param taskName  The name of the relevant task.
+ *
+ * @return 0 on success, -1 otherweise
+ */
+int EBCL_taskDBAddDepToTask(ebcl_TaskDB *ctx, const ebcl_TaskDep *dep, const char *taskName);
+/**
+ * Remove a dependency from a specific task inside a task database.
+ *
+ * Will search \a ctx for a task with name \a taskName and remove a dependency equal to \a dep from its ebcl_Task::deps
+ * and adjust ebcl_Task::depsSize, if such a dependency is present. The equality condition between two ebcl_TaskDep
+ * instances is the same as in EBCL_taskDBFulfillDep(), i.e. their contents are lexicographically equal.
+ *
+ * @param ctx       The ebcl_taskDb context to work on.
+ * @param dep       The dependency to be removed.
+ * @param taskName  The name of the relevant task.
+ *
+ * @return 0 on success, -1 otherweise
+ */
+int EBCL_taskDBRemoveDepFromTask(ebcl_TaskDB *ctx, const ebcl_TaskDep *dep, const char *taskName);
 
 /**
  * Set the ebcl_TaskState of a task in a task database

@@ -22,15 +22,20 @@ signature.
 
 ## Current Implementation
 
-The central Task Data Structure (`ebcl_TaskDB` in `taskdb.h`), Config Parser (`confparse.h/.c`), and Process Dispatcher
-(`procdip.h/.c`) have been preliminarily implemented and are functioning. In addition, the implementation contains a
-simple encapsulated storage for global options (`globopt.h/.c`), some minimal PID 1 setup code which cannot be "sourced
-out" into a task configuration (`minsetup.h/.c`), and debug/log output functionality (`logio.h/.c`). For detailed
-explanations of the inner workings please refer to the Doxygen-generated documentation of the individual header and
-source files.
+The central Task Data Structure (`ebcl_TaskDB` in `taskdb.h`), Config Parser (`confparse.h/.c`), Process Dispatcher
+(`procdip.h/.c`), Notification/Service interface (`notiserv.h/.c`, `rtimcmd.h/.c`), Client library
+(`crinit-client.h/.c`) have been preliminarily implemented and are functioning. In addition, the implementation contains
+a simple encapsulated storage for global options (`globopt.h/.c`), some minimal PID 1 setup code which cannot be
+"sourced out" into a task configuration (`minsetup.h/.c`), debug/log output functionality (`logio.h/.c`), and a CLI
+control program showcasing the client API (crinit-ctl.c). For detailed explanations of the inner workings please
+refer to the Doxygen-generated documentation of the individual header and source files.
 
-Not currently implemented is the Notification/Service Interface and Library, the SafeSystemStartup-like
-jailing functionality of the Process Dispatcher, as well as the cryptographic features of the Config Parser. 
+The client API is documented in the Doxygen documentation of `crinit-client.h`. The API is implemented as a shared
+library (`libcrinit-client.so`).
+
+Not currently implemented is the SafeSystemStartup-like jailing functionality of the Process Dispatcher, as well as the
+cryptographic features of the Config Parser. Also, the Notification and Service interface does not yet support handling
+of BaseOS monitor events.
 
 ## Configuration
 
@@ -106,27 +111,65 @@ SIG = ""
   environment created by SafeSystemStartup. (Not yet implemented.)
 - **SIG** -- The signature of this file. Currently unimplemented and can be left empty.
 
+## crinit-ctl Usage Info
+
+`crinit-ctl` is a CLI control program for `crinit` wrapping the client API functionality.
+
+Below is its help output:
+```
+USAGE: crinit-ctl <ACTION> [OPTIONS] <PARAMETER> [PARAMETERS...]
+  where ACTION must be exactly one of (including specific options/parameters):
+     addtask [-f/--overwrite] [-i/--ignore-deps] [-d/--override-deps "depA:eventA depB:eventB [...]"] <PATH>
+             - Will add a task defined in the task configuration file at <PATH> (absolute) to Crinit's task database.
+               '-f/--overwrite' - Lets Crinit know it is fine to overwrite if it has already loaded a task
+                    with the same name.
+               '-d/--override-deps <dependency-list>' - Will override the DEPENDS field of the config file
+                    with what is given as the parameter.
+               '-i/--ignore-deps' - Shortcut for '--override-deps ""'.
+      enable <TASK_NAME>
+             - Removes dependency '@ctl:enable' from the dependency list of <TASK_NAME> if it is present.
+     disable <TASK_NAME>
+             - Adds dependency '@ctl:enable' to the dependency list of <TASK_NAME>.
+        stop <TASK_NAME>
+             - Sends SIGTERM to the PID of <TASK_NAME> if the PID is currently known.
+        kill <TASK_NAME>
+             - Sends SIGKILL to the PID of <TASK_NAME> if the PID is currently known.
+     restart <TASK_NAME>
+             - Resets the status bits of <TASK_NAME> if it is DONE or FAILED.
+      status <TASK_NAME>
+             - Queries status bits and PID of <TASK_NAME>.
+      notify <TASK_NAME> <"SD_NOTIFY_STRING">
+             - Will send an sd_notify-style status report to Crinit. Only MAINPID and READY are
+               implemented. See the sd_notify documentation for their meaning.
+  General Options:
+        --verbose/-v - Be verbose.
+        --help/-h    - Print this help.
+```
+
 ## Build Instructions
 Executing
 ```
 ci/docker-run.sh
 ```
-will start a Docker container with all necessary programs to build Crinit and its Doxygen documentation.
+will start a Docker container with all necessary programs to build Crinit and its Doxygen documentation and to run a
+short local demonstration.
 
 Inside the container, it is sufficient to run
 ```
 ci/build.sh
 ```
-which will compile `crinit` for ARM64, as used for the S32G board, as well as an RPM for the native architecture the
-build is run on. The script will copy relevant build artifacts to `result/`.
+which will compile `crinit`, the client library and crinit-ctl for ARM64 and for x86_64 as well as a suite of RPMs. The
+doxygen documentation is built as well. The script will copy relevant build artifacts to `result/`.
 
-If a quick native test build is desired, it is fine to simply run 
+Afterwards, it is possible to run (also inside the container)
+```
+ci/demo.sh
+```
+for a short local demonstration of `crinit`'s client API using `crinit-ctl`.
+
+If a quick native test build is desired, it is fine to simply run
 ```
 make clean && make
-```
-inside the container. After the native build a local demonstration is possible by executing
-```
-./crinit /base/config/test/local.series
 ```
 inside the container.
 

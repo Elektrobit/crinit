@@ -14,6 +14,14 @@
 #include <errno.h>
 #include <stdio.h>
 
+#define EBCL_PRINT_PREFIX_MAX_LEN 32
+
+/**
+ * Set prefix to put in front of error and info message lines.
+ *
+ * @param prefix  The prefix to use.
+ */
+void EBCL_setPrintPrefix(const char *prefix);
 /**
  * Set FILE stream to use for info messages.
  *

@@ -17,6 +17,9 @@
 #include "crinit.h"
 #include "globopt.h"
 
+/** Holds the Prefix to put in front of every printed line, defaults to #EBCL_CRINIT_PRINT_PREFIX **/
+static char printPrefix[EBCL_PRINT_PREFIX_MAX_LEN] = EBCL_CRINIT_PRINT_PREFIX;
+
 static FILE *infoStream = NULL;  ///< holds the stream to use for info messages.
 static FILE *errStream = NULL;   ///< holds the stream to use for error messages.
 
@@ -33,6 +36,12 @@ static pthread_mutex_t logLock = PTHREAD_MUTEX_INITIALIZER;
  * @returns Pointer to a thread-local static memory location with a fitting error message.
  */
 static char *threadSafeStrerror(int errnum);
+
+void EBCL_setPrintPrefix(const char *prefix) {
+    pthread_mutex_lock(&logLock);
+    strncpy(printPrefix, (prefix == NULL) ? EBCL_CRINIT_PRINT_PREFIX : prefix, EBCL_PRINT_PREFIX_MAX_LEN);
+    pthread_mutex_unlock(&logLock);
+}
 
 void EBCL_setInfoStream(FILE *stream) {
     pthread_mutex_lock(&logLock);
@@ -62,7 +71,7 @@ int EBCL_dbgInfoPrint(const char *format, ...) {
     if (infoStream == NULL) {
         infoStream = stdout;
     }
-    if ((ret = fprintf(infoStream, EBCL_CRINIT_PRINT_PREFX)) < 0) {
+    if ((ret = fprintf(infoStream, "%s", printPrefix)) < 0) {
         pthread_mutex_unlock(&logLock);
         return ret;
     }
@@ -92,7 +101,7 @@ int EBCL_infoPrint(const char *format, ...) {
     if (infoStream == NULL) {
         infoStream = stdout;
     }
-    if ((ret = fprintf(infoStream, EBCL_CRINIT_PRINT_PREFX)) < 0) {
+    if ((ret = fprintf(infoStream, "%s", printPrefix)) < 0) {
         pthread_mutex_unlock(&logLock);
         return ret;
     }
@@ -122,7 +131,7 @@ int EBCL_errPrintFFL(const char *file, const char *func, int line, const char *f
     if (errStream == NULL) {
         errStream = stderr;
     }
-    if ((ret = fprintf(errStream, EBCL_CRINIT_PRINT_PREFX "(%s:%s:%d) Error: ", file, func, line)) < 0) {
+    if ((ret = fprintf(errStream, "%s(%s:%s:%d) Error: ", printPrefix, file, func, line)) < 0) {
         pthread_mutex_unlock(&logLock);
         return ret;
     }
@@ -152,7 +161,7 @@ int EBCL_errnoPrintFFL(const char *file, const char *func, int line, const char 
     if (errStream == NULL) {
         errStream = stderr;
     }
-    if ((ret = fprintf(errStream, EBCL_CRINIT_PRINT_PREFX "(%s:%s:%d) Error: ", file, func, line)) < 0) {
+    if ((ret = fprintf(errStream, "%s(%s:%s:%d) Error: ", printPrefix, file, func, line)) < 0) {
         pthread_mutex_unlock(&logLock);
         return ret;
     }
