@@ -287,8 +287,6 @@ int EBCL_setInhibitWait(bool inh) {
 static int buildEnv(char **taskEnv, const char *taskName) {
     if (taskEnv == NULL || taskName == NULL) {
         EBCL_errPrint("Pointer arguments must not be NULL.");
-        taskEnv[0] = NULL;
-        taskEnv[1] = NULL;
         return -1;
     }
     // Add task name for sd_notify()
