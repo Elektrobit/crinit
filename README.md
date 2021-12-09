@@ -95,7 +95,7 @@ SIG = ""
 - **NAME** -- The name given to this task configuration. Relevant if other tasks want to depend on this one.
 - **COMMAND[]** -- The commands to be executed in series. Executable paths must be absolute. Execution will stop if
   one of them fails and the whole task will be considered failed. The whole task is considered finished (i.e.
-  `the network-dhcp:wait` dependency is fulfilled) if the last command has successfully returned. May also be written
+  the `network-dhcp:wait` dependency is fulfilled) if the last command has successfully returned. May also be written
   as a series of **COMMAND[n]** keys. In this case, **n** needs to start at zero and be monotonically incremented by
   1. When using the syntax with empty brackets, all commands must be written as consecutive lines. Mixing both 
   forms (**[]** and **[n]**) is unsupported and may lead to lines being lost or a duplicate key error.
