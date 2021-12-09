@@ -79,6 +79,10 @@ int EBCL_parseConf(ebcl_ConfKvList **confList, const char *filename) {
     char keyArrayStr[16] = {'\0'};
     size_t keyArrayStrLen = 0;
     while (fgets(line, sizeof(line), cf) != NULL) {
+        pList->key = NULL;
+        pList->next = NULL;
+        pList->val = NULL;
+
         char *ptr = line;
         // Jump over whitespace at beginning
         while (isspace(*ptr)) {
@@ -126,6 +130,7 @@ int EBCL_parseConf(ebcl_ConfKvList **confList, const char *filename) {
             if (keyArrayStrLen >= sizeof(keyArrayStr)) {
                 EBCL_errPrint("Array subscript in config file too large.");
                 fclose(cf);
+                EBCL_freeConfList(*confList);
                 return -1;
             }
             skLen -= 2;
@@ -138,8 +143,8 @@ int EBCL_parseConf(ebcl_ConfKvList **confList, const char *filename) {
         pList->val = malloc(svLen + 1);
         if (pList->key == NULL || pList->val == NULL) {
             EBCL_errnoPrint("Could not allocate memory for a ConfKVList.");
-            pList->next = NULL;
             fclose(cf);
+            EBCL_freeConfList(*confList);
             return -1;
         }
         if (autoArray) {
@@ -155,8 +160,8 @@ int EBCL_parseConf(ebcl_ConfKvList **confList, const char *filename) {
         while (pSrch != NULL && pSrch != pList) {
             if (strcmp(pList->key, pSrch->key) == 0) {
                 EBCL_errPrint("Found duplicate key \'%s\' in config.", pSrch->key);
-                pList->next = NULL;
                 fclose(cf);
+                EBCL_freeConfList(*confList);
                 return -1;
             }
             pSrch = pSrch->next;
@@ -167,6 +172,7 @@ int EBCL_parseConf(ebcl_ConfKvList **confList, const char *filename) {
         if ((pList->next = malloc(sizeof(ebcl_ConfKvList))) == NULL) {
             EBCL_errnoPrint("Could not allocate memory for a ConfKVList.");
             fclose(cf);
+            EBCL_freeConfList(*confList);
             return -1;
         }
         pList = pList->next;
