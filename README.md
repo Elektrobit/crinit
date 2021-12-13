@@ -96,9 +96,11 @@ SIG = ""
 - **COMMAND[]** -- The commands to be executed in series. Executable paths must be absolute. Execution will stop if
   one of them fails and the whole task will be considered failed. The whole task is considered finished (i.e.
   the `network-dhcp:wait` dependency is fulfilled) if the last command has successfully returned. May also be written
-  as a series of **COMMAND[n]** keys. In this case, **n** needs to start at zero and be monotonically incremented by
-  1. When using the syntax with empty brackets, all commands must be written as consecutive lines. Mixing both 
-  forms (**[]** and **[n]**) is unsupported and may lead to lines being lost or a duplicate key error.
+  as a series of **COMMAND[n]** keys. In this case, the indices must form a monotonically increasing (by 1) sequence
+  starting at 0. When using the syntax with empty brackets, all commands must be written as consecutive lines. Mixing
+  both  forms (**[]** and **[n]**) is unsupported and may lead to errors during parsing/loading due to duplicate or
+  missing keys. There are a few examples of correct and incorrect usage in the `config/test` directory which are used by
+  `ci/demo.sh` to check the parser.
 - **DEPENDS** -- A list of dependencies which need to be fulfilled before this task is considered "ready-to-start".
   Semantics are `<taskname>:{fail,wait,spawn}`, where `spawn` is fulfilled when (the first command of) a task has been
   started, `wait` if it has successfully completed, and `fail` if it has failed somewhere along the way. Here we can see
