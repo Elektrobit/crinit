@@ -1,0 +1,19 @@
+# Example config for an incorrect COMMAND chain using numbers with a duplicate
+
+NAME = chain_err3
+
+COMMAND[0] = /bin/echo 0
+COMMAND[1] = /bin/echo 1
+COMMAND[2] = /bin/echo 2
+# comment
+
+COMMAND[3] = /bin/echo 3
+COMMAND[3] = /bin/echo 4
+
+DEPENDS = ""
+
+RESPAWN = NO
+# features below not yet implemented
+EXEC = NO
+QM_JAIL = NO
+SIG = ""

@@ -112,6 +112,71 @@ sudo LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ${BINDIR}/crinit-ctl disable one_second_
 sleep 5
 
 echo ""
-echo "If there was no or just one more output from one_second_respawn, all is well. Goodbye."
-exit 0
+echo "If there was no or just one more output from one_second_respawn, all is well."
 
+echo ""
+echo Now we\'ll check parsing of correct and incorrect COMMAND chains in the config files. We will try to load 6 task \
+    configurations, 2 of which are correct and 4 of which shall cause an error during parsing/loading.
+
+echo ""
+echo The first task config is correctly using empty brackets and should result in the numbers 0-4 to be printed in \
+    separate lines.
+echo Will run: $ sudo crinit-ctl addtask ${CONFDIR}/chain_ebrk.crinit
+sudo LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ${BINDIR}/crinit-ctl addtask ${CONFDIR}/chain_ebrk.crinit
+sleep 1
+
+echo ""
+echo The second task config is correctly using numbered brackets and should result in the numbers 0-4 to be printed in \
+    separate lines.
+echo Will run: $ sudo crinit-ctl addtask ${CONFDIR}/chain_num.crinit
+sudo LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ${BINDIR}/crinit-ctl addtask ${CONFDIR}/chain_num.crinit
+sleep 1
+
+echo ""
+echo The third task config is incorrectly using empty brackets and should result in an error.
+echo Will run: $ sudo crinit-ctl addtask ${CONFDIR}/chain_err1.crinit
+sudo LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ${BINDIR}/crinit-ctl addtask ${CONFDIR}/chain_err1.crinit || RETURNCODE=$?
+if [ "$RETURNCODE" -ne "0" ]; then
+    echo "Crinit-ctl reported an error as expected."
+else
+    echo "Crinit-ctl reported no error which is unexpected."
+    exit 1
+fi
+
+echo ""
+echo The fourth task config is incorrectly using a mix of empty and numbered brackets and should result in an error.
+echo Will run: $ sudo crinit-ctl addtask ${CONFDIR}/chain_err2.crinit
+sudo LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ${BINDIR}/crinit-ctl addtask ${CONFDIR}/chain_err2.crinit || RETURNCODE=$?
+if [ "$RETURNCODE" -ne "0" ]; then
+    echo "Crinit-ctl reported an error as expected."
+else
+    echo "Crinit-ctl reported no error which is unexpected."
+    exit 1
+fi
+
+echo ""
+echo The fifth task config is incorrectly using numbered brackets \(with a duplicate\) and should result in an error.
+echo Will run: $ sudo crinit-ctl addtask ${CONFDIR}/chain_err3.crinit
+sudo LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ${BINDIR}/crinit-ctl addtask ${CONFDIR}/chain_err3.crinit || RETURNCODE=$?
+if [ "$RETURNCODE" -ne "0" ]; then
+    echo "Crinit-ctl reported an error as expected."
+else
+    echo "Crinit-ctl reported no error which is unexpected."
+    exit 1
+fi
+
+echo ""
+echo The sixth task config is incorrectly using numbered brackets \(with a missing number\) and should result in an \
+    error.
+echo Will run: $ sudo crinit-ctl addtask ${CONFDIR}/chain_err4.crinit
+sudo LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ${BINDIR}/crinit-ctl addtask ${CONFDIR}/chain_err4.crinit || RETURNCODE=$?
+if [ "$RETURNCODE" -ne "0" ]; then
+    echo "Crinit-ctl reported an error as expected."
+else
+    echo "Crinit-ctl reported no error which is unexpected."
+    exit 1
+fi
+
+echo ""
+echo "All commands/checks returned as expected."
+exit 0

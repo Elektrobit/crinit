@@ -1,0 +1,19 @@
+# Example config for a correct COMMAND chain using brackets with numbering
+
+NAME = chain_num
+
+COMMAND[0] = /bin/echo 0
+COMMAND[1] = /bin/echo 1
+COMMAND[2] = /bin/echo 2
+# comment
+DEPENDS = ""
+# As we're using numbers the order of the COMMAND[n] statements does not matter at all as long as we have a contiguous
+# sequence.
+COMMAND[4] = /bin/echo 4
+COMMAND[3] = /bin/echo 3
+
+RESPAWN = NO
+# features below not yet implemented
+EXEC = NO
+QM_JAIL = NO
+SIG = ""
