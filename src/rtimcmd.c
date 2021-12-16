@@ -10,6 +10,7 @@
  */
 #include "rtimcmd.h"
 
+#include <fcntl.h>
 #include <limits.h>
 #include <pthread.h>
 #include <signal.h>
@@ -33,6 +34,14 @@ typedef struct ShdnThrArgs {
     ebcl_TaskDB *ctx;  ///< TaskDB which holds the tasks to be terminated/killed on shutdown.
     int shutdownCmd;   ///< The command for the reboot() syscall, see documentation of RB_* macros in man 7 reboot.
 } ShdnThrArgs;
+
+/**
+ * A linked list to organize mount points that need to be handled before shutdown/reboot.
+ */
+typedef struct UnMountList {
+    struct UnMountList *next;  ///< Pointer to next element.
+    char target[PATH_MAX];     ///< A mount point path.
+} UnMountList;
 
 /**
  * Internal implementation of the "add" command on an ebcl_TaskDB.
@@ -160,6 +169,37 @@ static void *shdnThread(void *args);
  * @return  0 on success, -1 on error
  */
 static inline int gracePeriod(unsigned long long micros);
+/**
+ * Prepares mounted filesystems for shutdown.
+ *
+ * Performs MNT_DETACH if the file systems are not the root mount. The root mount is remounted read-only if it was
+ * writable before.
+ *
+ * @return  0 on success, -1 on error
+ */
+static inline int fsPrepareShutdown(void);
+/**
+ * Generates a list of mount points that should be unmounted before shutdown/reboot.
+ *
+ * The resulting list will include all entries from `/proc/mounts` whose source is not `none` and which are not the root
+ * node. The list will be ordered newest mount first. Memory for the list elements will be allocated and needs to be
+ * freed using freeUnMountList() when no longer in use.
+ *
+ * Additionally, genUnMountList() checks if the root mount entry is read-only, setting \a rootfsIsRo to true in that
+ * case.
+ *
+ * @param um          Return pointer for the UnMountList.
+ * @param rootfsIsRo  Return pointer indicating if we are on a read-only rootfs.
+ *
+ * @return  0 on success, -1 on error
+ */
+static inline int genUnMountList(UnMountList **um, bool *rootfsIsRo);
+/**
+ * Frees memory allocated for an UnMountList by genUnMountList()
+ *
+ * @param um  The UnMountList to free.
+ */
+static inline void freeUnMountList(UnMountList *um);
 
 int EBCL_parseRtimCmd(ebcl_RtimCmd *out, const char *cmdStr) {
     if (out == NULL || cmdStr == NULL) {
@@ -749,18 +789,20 @@ static void *shdnThread(void *args) {
 
     kill(-1, SIGCONT);
     kill(-1, SIGTERM);
+    EBCL_dbgInfoPrint("Sending SIGTERM to all processes.");
     if (gracePeriod(gpMicros) == -1) {
         EBCL_errPrint("Could not wait out the shutdown grace period, continuing anyway.");
     }
     kill(-1, SIGKILL);
+    EBCL_dbgInfoPrint("Sending SIGKILL to all processes.");
     if (gracePeriod(100000ULL) == -1) {
         EBCL_errPrint("Could not wait an additional 100ms after sending SIGKILL to all processes, continuing anyway.");
     }
-    if (mount(NULL, "/", NULL, MS_REMOUNT | MS_RDONLY, NULL) == -1) {
-        EBCL_errnoPrint("Could not remount rootfs read-only, continuing anyway. Filesystem may be dirty on boot.");
+    if (fsPrepareShutdown() == -1) {
+        EBCL_errPrint(
+            "Could not un- or remount filesystems cleanly, continuing anyway. Some filesystems may be dirty on next "
+            "boot.");
     }
-    sync();
-
     if (reboot(shutdownCmd) == -1) {
         EBCL_errnoPrint("Reboot syscall failed.");
     }
@@ -786,5 +828,118 @@ static inline int gracePeriod(unsigned long long micros) {
         return -1;
     }
     return 0;
+}
+
+static inline int genUnMountList(UnMountList **ml, bool *rootfsIsRo) {
+    if (ml == NULL || rootfsIsRo == NULL) {
+        EBCL_errPrint("Input parameters must not be NULL.");
+        return -1;
+    }
+    *rootfsIsRo = false;
+    FILE *mountListStream = fopen("/proc/mounts", "r");
+    if (mountListStream == NULL) {
+        EBCL_errnoPrint("Could not open \'/proc/mounts\' for reading.");
+        return -1;
+    }
+    UnMountList *pList = malloc(sizeof(UnMountList));
+    if (pList == NULL) {
+        EBCL_errnoPrint("Could not allocate memory for list of mount points to be unmounted.");
+        fclose(mountListStream);
+        return -1;
+    }
+    pList->next = NULL;
+    while (fgets(pList->target, PATH_MAX, mountListStream) != NULL) {
+        char *strtokState = NULL;
+        pList->target[PATH_MAX - 1] = '\0';
+        // Filter out things like tmpfs, proc, sysfs mounted from 'none'.
+        char *runner = strtok_r(pList->target, " ", &strtokState);
+        if (runner == NULL || strcmp(runner, "none") == 0) {
+            pList->target[0] = '\0';
+            continue;
+        }
+        // Mountpoint
+        runner = strtok_r(NULL, " ", &strtokState);
+        if (runner == NULL) {
+            pList->target[0] = '\0';
+            continue;
+        }
+
+        // If it is the root mount...
+        if (strcmp(runner, "/") == 0) {
+            // jump over fstype...
+            runner = strtok_r(NULL, " ", &strtokState);
+            if (runner == NULL) {
+                pList->target[0] = '\0';
+                continue;
+            }
+            // and check if it's already mounted read-only.
+            runner = strtok_r(NULL, " ", &strtokState);
+            if (runner == NULL || strncmp(runner, "ro,", 3) != 0) {
+                pList->target[0] = '\0';
+                continue;
+            }
+            *rootfsIsRo = true;
+        } else {
+            // Put the mount point into the list in reverse order so we're beginning with the newest entry.
+            memmove(pList->target, runner, strlen(runner) + 1);
+            UnMountList *new = malloc(sizeof(UnMountList));
+            if (new == NULL) {
+                EBCL_errnoPrint("Could not allocate memory for list of mount points to be unmounted.");
+                fclose(mountListStream);
+                freeUnMountList(pList);
+                return -1;
+            }
+            new->next = pList;
+            new->target[0] = '\0';
+            pList = new;
+        }
+    }
+    *ml = pList;
+    fclose(mountListStream);
+    return 0;
+}
+
+static inline void freeUnMountList(UnMountList *ml) {
+    UnMountList *prev;
+    while (ml != NULL) {
+        prev = ml;
+        ml = ml->next;
+        free(prev);
+    }
+}
+
+static inline int fsPrepareShutdown(void) {
+    int out = 0;
+    UnMountList *um = NULL;
+    bool rootfsIsRo;
+
+    if (genUnMountList(&um, &rootfsIsRo) == -1) {
+        EBCL_errPrint(
+            "Could not generate list of targets to unmount. Will at least try to remount root filesystem as "
+            "read-only.");
+        rootfsIsRo = false;
+        out = -1;
+    } else {
+        UnMountList *runner = um;
+        while (runner != NULL) {
+            if (runner->target[0] != '\0') {
+                EBCL_dbgInfoPrint("Will unmount target \'%s\'.", runner->target);
+                // Perform a lazy unmount of all targets in the list (does not include root node).
+                if (umount2(runner->target, MNT_DETACH) == -1) {
+                    EBCL_errnoPrint("Could not umount (detach) mountpoint \'%s\'. Continuing anyway.", runner->target);
+                    out = -1;
+                }
+            }
+            runner = runner->next;
+        }
+        freeUnMountList(um);
+    }
+    // If it is (possibly) an rw rootfs, try remounting it ro.
+    if (!rootfsIsRo && mount(NULL, "/", NULL, MS_REMOUNT | MS_RDONLY, NULL) == -1) {
+        EBCL_errnoPrint("Could not remount rootfs read-only, continuing anyway. Filesystem may be dirty on boot.");
+        out = -1;
+    }
+    sync();
+    return out;
 }
 
