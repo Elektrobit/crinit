@@ -200,6 +200,7 @@ void EBCL_freeConfList(ebcl_ConfKvList *confList) {
 
 int EBCL_confListGetValWithIdx(char **val, const char *key, size_t keyArrIndex, const ebcl_ConfKvList *c) {
     if (val == NULL || key == NULL || c == NULL) {
+        EBCL_errPrint("Input parameters must not be NULL.");
         return -1;
     }
 
@@ -234,6 +235,7 @@ int EBCL_confListGetValWithIdx(char **val, const char *key, size_t keyArrIndex, 
 
 int EBCL_confListSetValWithIdx(const char *val, const char *key, size_t keyArrIndex, ebcl_ConfKvList *c) {
     if (val == NULL || key == NULL || c == NULL) {
+        EBCL_errPrint("Input Parameters must not be NULL.");
         return -1;
     }
 
