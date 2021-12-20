@@ -98,7 +98,7 @@ SIG = ""
   the `network-dhcp:wait` dependency is fulfilled) if the last command has successfully returned. May also be written
   as a series of **COMMAND[n]** keys. In this case, the indices must form a monotonically increasing (by 1) sequence
   starting at 0. When using the syntax with empty brackets, all commands must be written as consecutive lines. Mixing
-  both  forms (**[]** and **[n]**) is unsupported and may lead to errors during parsing/loading due to duplicate or
+  both forms (**[]** and **[n]**) is unsupported and may lead to errors during parsing/loading due to duplicate or
   missing keys. There are a few examples of correct and incorrect usage in the `config/test` directory which are used by
   `ci/demo.sh` to check the parser.
 - **DEPENDS** -- A list of dependencies which need to be fulfilled before this task is considered "ready-to-start".
