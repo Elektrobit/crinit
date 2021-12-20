@@ -210,7 +210,7 @@ int EBCL_confListGetValWithIdx(char **val, const char *key, size_t keyArrIndex, 
     }
 
     size_t kLen = strlen(pKey);
-    while (kLen > 0 && isspace(key[kLen - 1])) {
+    while (kLen > 0 && isspace(pKey[kLen - 1])) {
         kLen--;
     }
     if (kLen == 0) {
@@ -245,7 +245,7 @@ int EBCL_confListSetValWithIdx(const char *val, const char *key, size_t keyArrIn
     }
 
     size_t kLen = strlen(pKey);
-    while (kLen > 0 && isspace(key[kLen - 1])) {
+    while (kLen > 0 && isspace(pKey[kLen - 1])) {
         kLen--;
     }
     if (kLen == 0) {
@@ -394,7 +394,7 @@ ssize_t EBCL_confListKeyGetMaxIdx(const ebcl_ConfKvList *c, const char *key) {
     }
 
     size_t kLen = strlen(pKey);
-    while (kLen > 0 && isspace(key[kLen - 1])) {
+    while (kLen > 0 && isspace(pKey[kLen - 1])) {
         kLen--;
     }
     if (kLen == 0) {
