@@ -53,11 +53,9 @@ void EBCL_freeConfList(ebcl_ConfKvList *confList);
  * Get value mapped to a key with an index in an ebcl_ConfKvList.
  *
  * Searches for \a key with index \a keyArrIndex in \a confList and writes its value's address to \a *val. If a \a key
- * with that index is not found, \a *val is NULL and -1 is returned.
+ * with that index is not found, \a *val is unchanged and -1 is returned.
  *
- * @param val          String return pointer containing the value after execution or NULL if the value is not found. If
- *                     \a val is NULL, the function will search for \a key as normal and return accordingly but nothing
- *                     will be written to \a *val.
+ * @param val          String return pointer containing the value after execution if it was found.
  * @param key          The key to search for.
  * @param keyArrIndex  The index of the key to search for. The index of a singular (non-array) key is 0.
  * @param c            Pointer to the ebcl_ConfKvList to search in.
