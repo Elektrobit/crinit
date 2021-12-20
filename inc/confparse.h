@@ -21,7 +21,8 @@ typedef struct ebcl_ConfKvList {
     struct ebcl_ConfKvList *next;  ///< Pointer to next element
     char *key;                     ///< string with "KEY"
     char *val;                     ///< string with "VALUE"
-    size_t keyArrIndex;  ///< Index if this is a key array (e.g. COMMAND[keyArrIndex]), always 0 for singular keys
+    size_t keyArrIndex;            ///< Index if this is a key array (e.g. COMMAND[keyArrIndex]), always 0 for
+                                   ///< singular keys
 } ebcl_ConfKvList;
 
 /**
