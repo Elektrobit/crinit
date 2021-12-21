@@ -448,17 +448,13 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task **out, const ebcl_ConfKvList *in) {
     }
     pTask->opts |= (tempYesNo) ? EBCL_TASK_OPT_RESPAWN : 0;
 
-    char cmdKey[64];
-    do {
-        snprintf(cmdKey, 64, "COMMAND[%zu]", pTask->cmdsSize);
-        pTask->cmdsSize++;
-    } while (EBCL_confListGetVal(NULL, cmdKey, in) == 0);
-    pTask->cmdsSize--;
-    if (pTask->cmdsSize == 0) {
-        EBCL_errPrint("Could not parse task config. Are you missing a \'COMMAND[0] = something\'?");
+    ssize_t cmdArrSize = EBCL_confListKeyGetMaxIdx(in, "COMMAND");
+    if (cmdArrSize == -1) {
+        EBCL_errPrint("Could not get maximum index of COMMAND array.");
         goto fail;
     }
 
+    pTask->cmdsSize = (size_t)(cmdArrSize + 1);
     pTask->cmds = malloc(sizeof(ebcl_TaskCmd) * pTask->cmdsSize);
     if (pTask->cmds == NULL) {
         EBCL_errnoPrint("Could not allocate memory for %zu commands in task %s.", pTask->cmdsSize, tempName);
@@ -471,8 +467,8 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task **out, const ebcl_ConfKvList *in) {
     }
 
     for (size_t i = 0; i < pTask->cmdsSize; i++) {
-        snprintf(cmdKey, 64, "COMMAND[%zu]", i);
-        if (EBCL_confListExtractArgvArray(&(pTask->cmds[i].argc), &(pTask->cmds[i].argv), cmdKey, in, true) == -1) {
+        if (EBCL_confListExtractArgvArrayWithIdx(&(pTask->cmds[i].argc), &(pTask->cmds[i].argv), "COMMAND", i, in,
+                                                 true) == -1) {
             EBCL_errPrint(
                 "Could not extract argv/argc from COMMAND[%zu] in config for task "
                 "\'%s\'.",

@@ -1,0 +1,18 @@
+# Example config for an incorrect COMMAND chain using empty brackets
+
+NAME = chain_err1
+
+COMMAND[] = /bin/echo 0
+COMMAND[] = /bin/echo 1
+COMMAND[] = /bin/echo 2
+# comment
+DEPENDS = ""
+# This would only work with explicit numbering!
+COMMAND[] = /bin/echo 3
+COMMAND[] = /bin/echo 4
+
+RESPAWN = NO
+# features below not yet implemented
+EXEC = NO
+QM_JAIL = NO
+SIG = ""

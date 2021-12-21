@@ -1,0 +1,19 @@
+# Example config for an incorrect COMMAND chain using numbers with a non-contiguous sequence
+
+NAME = chain_err4
+
+COMMAND[0] = /bin/echo 0
+COMMAND[1] = /bin/echo 1
+COMMAND[3] = /bin/echo 3
+# comment
+
+COMMAND[4] = /bin/echo 4
+COMMAND[5] = /bin/echo 5
+
+DEPENDS = ""
+
+RESPAWN = NO
+# features below not yet implemented
+EXEC = NO
+QM_JAIL = NO
+SIG = ""

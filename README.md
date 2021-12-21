@@ -73,13 +73,13 @@ The `network-dhcp.crinit` from above looks like this:
 
 NAME = network-dhcp
 
-COMMAND[0] = /bin/mkdir -p /var/lib/dhcpcd
-COMMAND[1] = /bin/mount -t tmpfs none /var/lib/dhcpcd
-COMMAND[2] = /bin/touch /var/lib/dhcpcd/resolv.conf
-COMMAND[3] = /bin/mount -o bind /var/lib/dhcpcd/resolv.conf /etc/resolv.conf
-COMMAND[4] = /sbin/ifconfig lo up
-COMMAND[5] = /sbin/ifconfig lo 127.0.0.1
-COMMAND[6] = /sbin/dhcpcd -j /var/log/dhcpcd.log eth0
+COMMAND[] = /bin/mkdir -p /var/lib/dhcpcd
+COMMAND[] = /bin/mount -t tmpfs none /var/lib/dhcpcd
+COMMAND[] = /bin/touch /var/lib/dhcpcd/resolv.conf
+COMMAND[] = /bin/mount -o bind /var/lib/dhcpcd/resolv.conf /etc/resolv.conf
+COMMAND[] = /sbin/ifconfig lo up
+COMMAND[] = /sbin/ifconfig lo 127.0.0.1
+COMMAND[] = /sbin/dhcpcd -j /var/log/dhcpcd.log eth0
 
 
 # So we only run if we are on the actual S32G board
@@ -93,9 +93,14 @@ SIG = ""
 ```
 #### Explanation
 - **NAME** -- The name given to this task configuration. Relevant if other tasks want to depend on this one.
-- **COMMAND[n]** -- The commands to be executed in series. Executable paths must be absolute. Execution will stop if
+- **COMMAND[]** -- The commands to be executed in series. Executable paths must be absolute. Execution will stop if
   one of them fails and the whole task will be considered failed. The whole task is considered finished (i.e.
-  `the network-dhcp:wait` dependency is fulfilled) if the last command has successfully returned.
+  the `network-dhcp:wait` dependency is fulfilled) if the last command has successfully returned. May also be written
+  as a series of **COMMAND[n]** keys. In this case, the indices must form a monotonically increasing (by 1) sequence
+  starting at 0. When using the syntax with empty brackets, all commands must be written as consecutive lines. Mixing
+  both forms (**[]** and **[n]**) is unsupported and may lead to errors during parsing/loading due to duplicate or
+  missing keys. There are a few examples of correct and incorrect usage in the `config/test` directory which are used by
+  `ci/demo.sh` to check the parser.
 - **DEPENDS** -- A list of dependencies which need to be fulfilled before this task is considered "ready-to-start".
   Semantics are `<taskname>:{fail,wait,spawn}`, where `spawn` is fulfilled when (the first command of) a task has been
   started, `wait` if it has successfully completed, and `fail` if it has failed somewhere along the way. Here we can see

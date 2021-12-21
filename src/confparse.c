@@ -75,7 +75,13 @@ int EBCL_parseConf(ebcl_ConfKvList **confList, const char *filename) {
     // Parse config line by line
     ebcl_ConfKvList *pList = *confList;
     ebcl_ConfKvList *last = *confList;
+    size_t keyArrayCount = 0;
     while (fgets(line, sizeof(line), cf) != NULL) {
+        pList->key = NULL;
+        pList->next = NULL;
+        pList->val = NULL;
+        pList->keyArrIndex = 0;
+
         char *ptr = line;
         // Jump over whitespace at beginning
         while (isspace(*ptr)) {
@@ -94,6 +100,7 @@ int EBCL_parseConf(ebcl_ConfKvList **confList, const char *filename) {
         if (sk == NULL || sv == NULL) {
             EBCL_errPrint("Could not parse line: \'%s\'", line);
             fclose(cf);
+            EBCL_freeConfList(*confList);
             return -1;
         }
 
@@ -101,28 +108,77 @@ int EBCL_parseConf(ebcl_ConfKvList **confList, const char *filename) {
         trimWhitespace(&sk);
         trimWhitespace(&sv);
 
+        size_t skLen = strlen(sk);
+        size_t svLen = strlen(sv);
+
         // If the value is enclosed in double quotes, discard those
-        if (sv[0] == '\"' && sv[strlen(sv) - 1] == '\"') {
-            sv[strlen(sv) - 1] = '\0';
+        if (sv[0] == '\"' && sv[svLen - 1] == '\"') {
+            sv[svLen - 1] = '\0';
             sv++;
+            svLen -= 2;
+        }
+
+        bool autoArray = false;
+        // Handle empty key array subscript
+        if (skLen > 2 && sk[skLen - 2] == '[' && sk[skLen - 1] == ']') {
+            // If this is a beginning of an array declaration, set counter to 0
+            if (last != pList && (skLen - 2 != strlen(last->key) || strncmp(sk, last->key, skLen - 2))) {
+                keyArrayCount = 0;
+            }
+            autoArray = true;
+            pList->keyArrIndex = keyArrayCount;
+            skLen -= 2;
+            keyArrayCount++;
+            sk[skLen] = '\0';
+        }
+
+        // Handle non-empty key array subscript
+        if (!autoArray) {
+            char *brck = strchr(sk, '[');
+            if (brck != NULL) {
+                char *pEnd = NULL;
+                pList->keyArrIndex = strtoul(brck + 1, &pEnd, 10);
+                if (pEnd == brck + 1 || *pEnd != ']') {
+                    EBCL_errPrint("Could not interpret configuration key array subscript: \'%s\'", sk);
+                    fclose(cf);
+                    EBCL_freeConfList(*confList);
+                    return -1;
+                }
+                skLen -= strlen(brck);
+                *brck = '\0';
+            }
         }
 
         // Copy to list
-        pList->key = malloc(strlen(sk) + 1);
-        pList->val = malloc(strlen(sv) + 1);
+        pList->key = malloc(skLen + 1);
+        pList->val = malloc(svLen + 1);
         if (pList->key == NULL || pList->val == NULL) {
             EBCL_errnoPrint("Could not allocate memory for a ConfKVList.");
             fclose(cf);
+            EBCL_freeConfList(*confList);
             return -1;
         }
-        memcpy(pList->key, sk, strlen(sk) + 1);
-        memcpy(pList->val, sv, strlen(sv) + 1);
+        memcpy(pList->key, sk, skLen + 1);
+        memcpy(pList->val, sv, svLen + 1);
+
+        // Check for duplicate key
+        ebcl_ConfKvList *pSrch = *confList;
+        while (pSrch != NULL && pSrch != pList) {
+            if (pList->keyArrIndex == pSrch->keyArrIndex && strcmp(pList->key, pSrch->key) == 0) {
+                EBCL_errPrint("Found duplicate key \'%s\' (index %zu) in config.", pSrch->key, pSrch->keyArrIndex);
+                fclose(cf);
+                EBCL_freeConfList(*confList);
+                return -1;
+            }
+            pSrch = pSrch->next;
+        }
 
         // Grow list
         last = pList;
         if ((pList->next = malloc(sizeof(ebcl_ConfKvList))) == NULL) {
             EBCL_errnoPrint("Could not allocate memory for a ConfKVList.");
             fclose(cf);
+            EBCL_freeConfList(*confList);
             return -1;
         }
         pList = pList->next;
@@ -130,7 +186,6 @@ int EBCL_parseConf(ebcl_ConfKvList **confList, const char *filename) {
     // Trim the list's tail
     free(last->next);
     last->next = NULL;
-
     fclose(cf);
     return 0;
 }
@@ -150,43 +205,9 @@ void EBCL_freeConfList(ebcl_ConfKvList *confList) {
     } while (confList != NULL);
 }
 
-/* Searches for key in confList and writes its value to val. If key is not found, val is NULL and
- * -1 is returned. */
-int EBCL_confListGetVal(char **val, const char *key, const ebcl_ConfKvList *c) {
-    if (key == NULL || c == NULL) {
-        return -1;
-    }
-    size_t ksize = strlen(key) + 1;
-    char *tk = malloc(ksize);
-    if (tk == NULL) {
-        return -1;
-    }
-    char *tkmemptr = tk;
-    memcpy(tk, key, ksize);
-    trimWhitespace(&tk);
-    while (c != NULL) {
-        if (!strcmp(tk, c->key)) {
-            break;
-        }
-        c = c->next;
-    }
-    if (c == NULL) {
-        if (val != NULL) {
-            *val = NULL;
-        }
-        free(tkmemptr);
-        return -1;
-    }
-    if (val != NULL) {
-        *val = c->val;
-        trimWhitespace(val);
-    }
-    free(tkmemptr);
-    return 0;
-}
-
-int EBCL_confListSetVal(const char *val, const char *key, ebcl_ConfKvList *c) {
+int EBCL_confListGetValWithIdx(char **val, const char *key, size_t keyArrIndex, const ebcl_ConfKvList *c) {
     if (val == NULL || key == NULL || c == NULL) {
+        EBCL_errPrint("Input parameters must not be NULL.");
         return -1;
     }
 
@@ -196,7 +217,7 @@ int EBCL_confListSetVal(const char *val, const char *key, ebcl_ConfKvList *c) {
     }
 
     size_t kLen = strlen(pKey);
-    while (kLen > 0 && isspace(key[kLen - 1])) {
+    while (kLen > 0 && isspace(pKey[kLen - 1])) {
         kLen--;
     }
     if (kLen == 0) {
@@ -204,7 +225,42 @@ int EBCL_confListSetVal(const char *val, const char *key, ebcl_ConfKvList *c) {
     }
 
     while (c != NULL) {
-        if (!strncmp(pKey, c->key, kLen) && c->key[kLen] == '\0') {
+        if (!strncmp(pKey, c->key, kLen) && c->key[kLen] == '\0' && c->keyArrIndex == keyArrIndex) {
+            break;
+        }
+        c = c->next;
+    }
+    if (c == NULL) {
+        return -1;
+    }
+    *val = c->val;
+    if (*val == NULL) {
+        return -1;
+    }
+    return 0;
+}
+
+int EBCL_confListSetValWithIdx(const char *val, const char *key, size_t keyArrIndex, ebcl_ConfKvList *c) {
+    if (val == NULL || key == NULL || c == NULL) {
+        EBCL_errPrint("Input Parameters must not be NULL.");
+        return -1;
+    }
+
+    const char *pKey = key;
+    while (*pKey != '\0' && isspace(*pKey)) {
+        pKey++;
+    }
+
+    size_t kLen = strlen(pKey);
+    while (kLen > 0 && isspace(pKey[kLen - 1])) {
+        kLen--;
+    }
+    if (kLen == 0) {
+        return -1;
+    }
+
+    while (c != NULL) {
+        if (!strncmp(pKey, c->key, kLen) && c->key[kLen] == '\0' && c->keyArrIndex == keyArrIndex) {
             break;
         }
         c = c->next;
@@ -242,15 +298,15 @@ int EBCL_confListExtractBoolean(bool *out, const char *key, const ebcl_ConfKvLis
     return -1;
 }
 
-int EBCL_confListExtractArgvArray(int *outArgc, char ***outArgv, const char *key, const ebcl_ConfKvList *in,
-                                  bool double_quoting) {
+int EBCL_confListExtractArgvArrayWithIdx(int *outArgc, char ***outArgv, const char *key, size_t keyArrIndex,
+                                         const ebcl_ConfKvList *in, bool double_quoting) {
     if (key == NULL || in == NULL || outArgc == NULL || outArgv == NULL) {
         EBCL_errPrint("\'key\', \'in\', outArgv, and \'outArgc\' parameters must not be NULL.");
         return -1;
     }
     char *val = NULL;
-    if (EBCL_confListGetVal(&val, key, in) == -1) {
-        EBCL_errPrint("Could not get value for \"%s\".", key);
+    if (EBCL_confListGetValWithIdx(&val, key, keyArrIndex, in) == -1) {
+        EBCL_errPrint("Could not get value for key \"%s\" (index %zu).", key, keyArrIndex);
         return -1;
     }
 
@@ -333,6 +389,35 @@ void EBCL_freeArgvArray(char **inArgv) {
     }
 }
 
+ssize_t EBCL_confListKeyGetMaxIdx(const ebcl_ConfKvList *c, const char *key) {
+    if (c == NULL || key == NULL) {
+        EBCL_errPrint("Parameters must not be NULL.");
+        return -1;
+    }
+
+    const char *pKey = key;
+    while (*pKey != '\0' && isspace(*pKey)) {
+        pKey++;
+    }
+
+    size_t kLen = strlen(pKey);
+    while (kLen > 0 && isspace(pKey[kLen - 1])) {
+        kLen--;
+    }
+    if (kLen == 0) {
+        return -1;
+    }
+
+    size_t maxIdx = 0;
+    while (c != NULL) {
+        if (!strncmp(pKey, c->key, kLen) && c->key[kLen] == '\0' && c->keyArrIndex > maxIdx) {
+            maxIdx = c->keyArrIndex;
+        }
+        c = c->next;
+    }
+    return (ssize_t)maxIdx;
+}
+
 static void trimWhitespace(char **str) {
     if (*str == NULL) {
         return;
@@ -394,4 +479,3 @@ static void quoteRestoreTokens(char *str, char token, char placeholder) {
         str++;
     }
 }
-
