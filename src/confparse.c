@@ -136,7 +136,14 @@ int EBCL_parseConf(ebcl_ConfKvList **confList, const char *filename) {
         if (!autoArray) {
             char *brck = strchr(sk, '[');
             if (brck != NULL) {
-                pList->keyArrIndex = strtoul(brck + 1, NULL, 10);
+                char *pEnd = NULL;
+                pList->keyArrIndex = strtoul(brck + 1, &pEnd, 10);
+                if (pEnd == brck + 1 || *pEnd != ']') {
+                    EBCL_errPrint("Could not interpret configuration key array subscript: \'%s\'", sk);
+                    fclose(cf);
+                    EBCL_freeConfList(*confList);
+                    return -1;
+                }
                 skLen -= strlen(brck);
                 *brck = '\0';
             }
