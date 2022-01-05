@@ -30,115 +30,115 @@
 /**
  * Argument structure for shdnThread().
  */
-typedef struct ShdnThrArgs {
-    ebcl_TaskDB *ctx;  ///< TaskDB which holds the tasks to be terminated/killed on shutdown.
-    int shutdownCmd;   ///< The command for the reboot() syscall, see documentation of RB_* macros in man 7 reboot.
-} ShdnThrArgs;
+typedef struct ebcl_ShdnThrArgs_t {
+    ebcl_TaskDB_t *ctx;  ///< TaskDB which holds the tasks to be terminated/killed on shutdown.
+    int shutdownCmd;     ///< The command for the reboot() syscall, see documentation of RB_* macros in man 7 reboot.
+} ebcl_ShdnThrArgs_t;
 
 /**
  * A linked list to organize mount points that need to be handled before shutdown/reboot.
  */
-typedef struct UnMountList {
-    struct UnMountList *next;  ///< Pointer to next element.
-    char target[PATH_MAX];     ///< A mount point path.
-} UnMountList;
+typedef struct ebcl_UnMountList_t {
+    struct ebcl_UnMountList_t *next;  ///< Pointer to next element.
+    char target[PATH_MAX];            ///< A mount point path.
+} ebcl_UnMountList_t;
 
 /**
- * Internal implementation of the "add" command on an ebcl_TaskDB.
+ * Internal implementation of the "add" command on an ebcl_TaskDB_t.
  *
  * For documentation on the command itself, see EBCL_crinitTaskAdd().
  *
- * @param ctx  The ebcl_TaskDB to operate on.
+ * @param ctx  The ebcl_TaskDB_t to operate on.
  * @param res  Return pointer for response/result.
- * @param cmd  The ebcl_RtimCmd to execute, used to pass the argument list.
+ * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int execRtimCmdAdd(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cmd);
+static int EBCL_execRtimCmdAdd(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
 /**
- * Internal implementation of the "enable" command on an ebcl_TaskDB.
+ * Internal implementation of the "enable" command on an ebcl_TaskDB_t.
  *
  * For documentation on the command itself, see EBCL_crinitTaskEnable().
  *
- * @param ctx  The ebcl_TaskDB to operate on.
+ * @param ctx  The ebcl_TaskDB_t to operate on.
  * @param res  Return pointer for response/result.
- * @param cmd  The ebcl_RtimCmd to execute, used to pass the argument list.
+ * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int execRtimCmdEnable(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cmd);
+static int EBCL_execRtimCmdEnable(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
 /**
- * Internal implementation of the "disable" command on an ebcl_TaskDB.
+ * Internal implementation of the "disable" command on an ebcl_TaskDB_t.
  *
  * For documentation on the command itself, see EBCL_crinitTaskDisable().
  *
- * @param ctx  The ebcl_TaskDB to operate on.
+ * @param ctx  The ebcl_TaskDB_t to operate on.
  * @param res  Return pointer for response/result.
- * @param cmd  The ebcl_RtimCmd to execute, used to pass the argument list.
+ * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int execRtimCmdDisable(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cmd);
+static int EBCL_execRtimCmdDisable(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
 /**
- * Internal implementation of the "stop" command on an ebcl_TaskDB.
+ * Internal implementation of the "stop" command on an ebcl_TaskDB_t.
  *
  * For documentation on the command itself, see EBCL_crinitTaskStop().
  *
- * @param ctx  The ebcl_TaskDB to operate on.
+ * @param ctx  The ebcl_TaskDB_t to operate on.
  * @param res  Return pointer for response/result.
- * @param cmd  The ebcl_RtimCmd to execute, used to pass the argument list.
+ * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int execRtimCmdStop(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cmd);
+static int EBCL_execRtimCmdStop(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
 /**
- * Internal implementation of the "kill" command on an ebcl_TaskDB.
+ * Internal implementation of the "kill" command on an ebcl_TaskDB_t.
  *
  * For documentation on the command itself, see EBCL_crinitTaskKill().
  *
- * @param ctx  The ebcl_TaskDB to operate on.
+ * @param ctx  The ebcl_TaskDB_t to operate on.
  * @param res  Return pointer for response/result.
- * @param cmd  The ebcl_RtimCmd to execute, used to pass the argument list.
+ * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int execRtimCmdKill(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cmd);
+static int EBCL_execRtimCmdKill(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
 /**
- * Internal implementation of the "restart" command on an ebcl_TaskDB.
+ * Internal implementation of the "restart" command on an ebcl_TaskDB_t.
  *
  * For documentation on the command itself, see EBCL_crinitTaskRestart().
  *
- * @param ctx  The ebcl_TaskDB to operate on.
+ * @param ctx  The ebcl_TaskDB_t to operate on.
  * @param res  Return pointer for response/result.
- * @param cmd  The ebcl_RtimCmd to execute, used to pass the argument list.
+ * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int execRtimCmdRestart(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cmd);
+static int EBCL_execRtimCmdRestart(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
 /**
- * Internal implementation of the "notify" command on an ebcl_TaskDB.
+ * Internal implementation of the "notify" command on an ebcl_TaskDB_t.
  *
  * For documentation on the command itself, see sd_notify() and sd_notifyf().
  *
- * @param ctx  The ebcl_TaskDB to operate on.
+ * @param ctx  The ebcl_TaskDB_t to operate on.
  * @param res  Return pointer for response/result.
- * @param cmd  The ebcl_RtimCmd to execute, used to pass the argument list.
+ * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int execRtimCmdNotify(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cmd);
+static int EBCL_execRtimCmdNotify(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
 /**
- * Internal implementation of the "status" command on an ebcl_TaskDB.
+ * Internal implementation of the "status" command on an ebcl_TaskDB_t.
  *
  * For documentation on the command itself, see EBCL_crinitTaskGetStatus().
  *
- * @param ctx  The ebcl_TaskDB to operate on.
+ * @param ctx  The ebcl_TaskDB_t to operate on.
  * @param res  Return pointer for response/result.
- * @param cmd  The ebcl_RtimCmd to execute, used to pass the argument list.
+ * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int execRtimCmdStatus(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cmd);
+static int EBCL_execRtimCmdStatus(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
 
 /**
  * Internal implementation of the "shutdown" command.
@@ -151,16 +151,16 @@ static int execRtimCmdStatus(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_Rti
  *
  * @return 0 on success, -1 on error
  */
-static int execRtimCmdShutdown(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cmd);
+static int EBCL_execRtimCmdShutdown(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
 /**
  * Shutdown thread function.
  *
- * Run as a pthread, so that execRtimCmdShutdown() may return before the actual shutdown syscall is issued and the
+ * Run as a pthread, so that EBCL_execRtimCmdShutdown() may return before the actual shutdown syscall is issued and the
  * requesting process is not blocked.
  *
  * @param args  Argument pointer, see ShdnThrArgs.
  */
-static void *shdnThread(void *args);
+static void *EBCL_shdnThread(void *args);
 /**
  * Wait function using nanosleep for the shutdown grace period.
  *
@@ -168,7 +168,7 @@ static void *shdnThread(void *args);
  *
  * @return  0 on success, -1 on error
  */
-static inline int gracePeriod(unsigned long long micros);
+static inline int EBCL_gracePeriod(unsigned long long micros);
 /**
  * Prepares mounted filesystems for shutdown.
  *
@@ -177,31 +177,31 @@ static inline int gracePeriod(unsigned long long micros);
  *
  * @return  0 on success, -1 on error
  */
-static inline int fsPrepareShutdown(void);
+static inline int EBCL_fsPrepareShutdown(void);
 /**
  * Generates a list of mount points that should be unmounted before shutdown/reboot.
  *
  * The resulting list will include all entries from `/proc/mounts` whose source is not `none` and which are not the root
  * node. The list will be ordered newest mount first. Memory for the list elements will be allocated and needs to be
- * freed using freeUnMountList() when no longer in use.
+ * freed using EBCL_freeUnMountList() when no longer in use.
  *
- * Additionally, genUnMountList() checks if the root mount entry is read-only, setting \a rootfsIsRo to true in that
- * case.
+ * Additionally, EBCL_genUnMountList() checks if the root mount entry is read-only, setting \a rootfsIsRo to true in
+ * that case.
  *
  * @param um          Return pointer for the UnMountList.
  * @param rootfsIsRo  Return pointer indicating if we are on a read-only rootfs.
  *
  * @return  0 on success, -1 on error
  */
-static inline int genUnMountList(UnMountList **um, bool *rootfsIsRo);
+static inline int EBCL_genUnMountList(ebcl_UnMountList_t **um, bool *rootfsIsRo);
 /**
- * Frees memory allocated for an UnMountList by genUnMountList()
+ * Frees memory allocated for an ebcl_UnMountList_t by EBCL_genUnMountList()
  *
- * @param um  The UnMountList to free.
+ * @param um  The ebcl_UnMountList_t to free.
  */
-static inline void freeUnMountList(UnMountList *um);
+static inline void EBCL_freeUnMountList(ebcl_UnMountList_t *um);
 
-int EBCL_parseRtimCmd(ebcl_RtimCmd *out, const char *cmdStr) {
+int EBCL_parseRtimCmd(ebcl_RtimCmd_t *out, const char *cmdStr) {
     if (out == NULL || cmdStr == NULL) {
         EBCL_errPrint("Pointer parameters must not be NULL.");
         return -1;
@@ -270,7 +270,7 @@ int EBCL_parseRtimCmd(ebcl_RtimCmd *out, const char *cmdStr) {
     return 0;
 }
 
-int EBCL_rtimCmdToMsgStr(char **out, size_t *outLen, const ebcl_RtimCmd *cmd) {
+int EBCL_rtimCmdToMsgStr(char **out, size_t *outLen, const ebcl_RtimCmd_t *cmd) {
     if (out == NULL || outLen == NULL || cmd == NULL) {
         EBCL_errPrint("Pointer parameters must not be NULL.");
         return -1;
@@ -302,62 +302,62 @@ int EBCL_rtimCmdToMsgStr(char **out, size_t *outLen, const ebcl_RtimCmd *cmd) {
     return 0;
 }
 
-int EBCL_execRtimCmd(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cmd) {
+int EBCL_execRtimCmd(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     if (res == NULL || cmd == NULL) {
         EBCL_errPrint("Pointer parameters must not be NULL.");
         return -1;
     }
     switch (cmd->op) {
         case EBCL_RTIMCMD_C_ADDTASK:
-            if (execRtimCmdAdd(ctx, res, cmd) == -1) {
+            if (EBCL_execRtimCmdAdd(ctx, res, cmd) == -1) {
                 EBCL_errPrint("Could not execute runtime command \'ADDTASK\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_ENABLE:
-            if (execRtimCmdEnable(ctx, res, cmd) == -1) {
+            if (EBCL_execRtimCmdEnable(ctx, res, cmd) == -1) {
                 EBCL_errPrint("Could not execute runtime command \'ENABLE\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_DISABLE:
-            if (execRtimCmdDisable(ctx, res, cmd) == -1) {
+            if (EBCL_execRtimCmdDisable(ctx, res, cmd) == -1) {
                 EBCL_errPrint("Could not execute runtime command \'DISABLE\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_STOP:
-            if (execRtimCmdStop(ctx, res, cmd) == -1) {
+            if (EBCL_execRtimCmdStop(ctx, res, cmd) == -1) {
                 EBCL_errPrint("Could not execute runtime command \'STOP\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_KILL:
-            if (execRtimCmdKill(ctx, res, cmd) == -1) {
+            if (EBCL_execRtimCmdKill(ctx, res, cmd) == -1) {
                 EBCL_errPrint("Could not execute runtime command \'KILL\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_RESTART:
-            if (execRtimCmdRestart(ctx, res, cmd) == -1) {
+            if (EBCL_execRtimCmdRestart(ctx, res, cmd) == -1) {
                 EBCL_errPrint("Could not execute runtime command \'RESTART\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_NOTIFY:
-            if (execRtimCmdNotify(ctx, res, cmd) == -1) {
+            if (EBCL_execRtimCmdNotify(ctx, res, cmd) == -1) {
                 EBCL_errPrint("Could not execute runtime command \'NOTIFY\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_STATUS:
-            if (execRtimCmdStatus(ctx, res, cmd) == -1) {
+            if (EBCL_execRtimCmdStatus(ctx, res, cmd) == -1) {
                 EBCL_errPrint("Could not execute runtime command \'STATUS\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_SHUTDOWN:
-            if (execRtimCmdShutdown(ctx, res, cmd) == -1) {
+            if (EBCL_execRtimCmdShutdown(ctx, res, cmd) == -1) {
                 EBCL_errPrint("Could not execute runtime command \'SHUTDOWN\'.");
                 return -1;
             }
@@ -378,7 +378,7 @@ int EBCL_execRtimCmd(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cm
     return 0;
 }
 
-int EBCL_buildRtimCmd(ebcl_RtimCmd *c, ebcl_RtimOp op, int argc, ...) {
+int EBCL_buildRtimCmd(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, int argc, ...) {
     if (c == NULL) {
         EBCL_errPrint("Return pointer must not be NULL.");
         return -1;
@@ -427,7 +427,7 @@ int EBCL_buildRtimCmd(ebcl_RtimCmd *c, ebcl_RtimOp op, int argc, ...) {
     return 0;
 }
 
-int EBCL_destroyRtimCmd(ebcl_RtimCmd *c) {
+int EBCL_destroyRtimCmd(ebcl_RtimCmd_t *c) {
     if (c == NULL) {
         EBCL_errPrint("RtimCmd pointer must not be NULL.");
         return -1;
@@ -437,7 +437,7 @@ int EBCL_destroyRtimCmd(ebcl_RtimCmd *c) {
     return 0;
 }
 
-static int execRtimCmdAdd(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cmd) {
+static int EBCL_execRtimCmdAdd(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     if (ctx == NULL || res == NULL || cmd == NULL) {
         EBCL_errPrint("Pointer parameters must not be NULL.");
     }
@@ -451,7 +451,7 @@ static int execRtimCmdAdd(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCm
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
 
-    ebcl_ConfKvList *c;
+    ebcl_ConfKvList_t *c;
     if (EBCL_parseConf(&c, cmd->args[0]) == -1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR, "Could not parse given config.");
     }
@@ -472,7 +472,7 @@ static int execRtimCmdAdd(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCm
         }
     }
 
-    ebcl_Task *t = NULL;
+    ebcl_Task_t *t = NULL;
     if (EBCL_taskCreateFromConfKvList(&t, c) == -1) {
         EBCL_freeConfList(c);
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR,
@@ -495,7 +495,7 @@ static int execRtimCmdAdd(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCm
     return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 1, EBCL_RTIMCMD_RES_OK);
 }
 
-static int execRtimCmdEnable(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cmd) {
+static int EBCL_execRtimCmdEnable(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     EBCL_dbgInfoPrint("Will execute runtime command \'ENABLE\' with following arguments:");
     for (int i = 0; i < cmd->argc; i++) {
         EBCL_dbgInfoPrint("    args[%d] = %s", i, cmd->args[i]);
@@ -504,7 +504,7 @@ static int execRtimCmdEnable(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_Rti
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ENABLE, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
     const char depStr[] = "@ctl\0enable";
-    ebcl_TaskDep tempDep = {NULL, NULL};
+    ebcl_TaskDep_t tempDep = {NULL, NULL};
     tempDep.name = malloc(sizeof(depStr));
     if (tempDep.name == NULL) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ENABLE, 2, EBCL_RTIMCMD_RES_ERR, "Memory allocation error.");
@@ -521,7 +521,7 @@ static int execRtimCmdEnable(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_Rti
     return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ENABLE, 1, EBCL_RTIMCMD_RES_OK);
 }
 
-static int execRtimCmdDisable(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cmd) {
+static int EBCL_execRtimCmdDisable(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     EBCL_dbgInfoPrint("Will execute runtime command \'DISABLE\' with following arguments:");
     for (int i = 0; i < cmd->argc; i++) {
         EBCL_dbgInfoPrint("    args[%d] = %s", i, cmd->args[i]);
@@ -530,7 +530,7 @@ static int execRtimCmdDisable(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_Rt
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_DISABLE, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
     const char newDepStr[] = "@ctl\0enable";
-    ebcl_TaskDep tempDep = {NULL, NULL};
+    ebcl_TaskDep_t tempDep = {NULL, NULL};
     tempDep.name = malloc(sizeof(newDepStr));
     if (tempDep.name == NULL) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_DISABLE, 2, EBCL_RTIMCMD_RES_ERR, "Memory allocation error.");
@@ -547,7 +547,7 @@ static int execRtimCmdDisable(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_Rt
     return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_DISABLE, 1, EBCL_RTIMCMD_RES_OK);
 }
 
-static int execRtimCmdStop(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cmd) {
+static int EBCL_execRtimCmdStop(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     EBCL_dbgInfoPrint("Will execute runtime command \'STOP\' with following arguments:");
     for (int i = 0; i < cmd->argc; i++) {
         EBCL_dbgInfoPrint("    args[%d] = %s", i, cmd->args[i]);
@@ -577,7 +577,7 @@ static int execRtimCmdStop(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimC
     return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 1, EBCL_RTIMCMD_RES_OK);
 }
 
-static int execRtimCmdKill(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cmd) {
+static int EBCL_execRtimCmdKill(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     EBCL_dbgInfoPrint("Will execute runtime command \'KILL\' with following arguments:");
     for (int i = 0; i < cmd->argc; i++) {
         EBCL_dbgInfoPrint("    args[%d] = %s", i, cmd->args[i]);
@@ -608,7 +608,7 @@ static int execRtimCmdKill(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimC
     return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_KILL, 1, EBCL_RTIMCMD_RES_OK);
 }
 
-static int execRtimCmdRestart(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cmd) {
+static int EBCL_execRtimCmdRestart(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     EBCL_dbgInfoPrint("Will execute runtime command \'RESTART\' with following arguments:");
     for (int i = 0; i < cmd->argc; i++) {
         EBCL_dbgInfoPrint("    args[%d] = %s", i, cmd->args[i]);
@@ -617,7 +617,7 @@ static int execRtimCmdRestart(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_Rt
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_RESTART, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
 
-    ebcl_TaskState s = 0;
+    ebcl_TaskState_t s = 0;
     if (EBCL_taskDBGetTaskState(ctx, &s, cmd->args[0]) == -1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_RESTART, 2, EBCL_RTIMCMD_RES_ERR,
                                  "Could not get task state from TaskDB.");
@@ -634,7 +634,7 @@ static int execRtimCmdRestart(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_Rt
     return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_RESTART, 1, EBCL_RTIMCMD_RES_OK);
 }
 
-static int execRtimCmdNotify(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cmd) {
+static int EBCL_execRtimCmdNotify(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     EBCL_dbgInfoPrint("Will execute runtime command \'NOTIFY\' with following arguments:");
     for (int i = 0; i < cmd->argc; i++) {
         EBCL_dbgInfoPrint("    args[%d] = %s", i, cmd->args[i]);
@@ -694,7 +694,7 @@ static int execRtimCmdNotify(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_Rti
     return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 1, EBCL_RTIMCMD_RES_OK);
 }
 
-static int execRtimCmdStatus(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cmd) {
+static int EBCL_execRtimCmdStatus(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     EBCL_dbgInfoPrint("Will execute runtime command \'STATUS\' with following arguments:");
     for (int i = 0; i < cmd->argc; i++) {
         EBCL_dbgInfoPrint("    args[%d] = %s", i, cmd->args[i]);
@@ -702,7 +702,7 @@ static int execRtimCmdStatus(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_Rti
     if (cmd->argc != 1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
-    ebcl_TaskState s = 0;
+    ebcl_TaskState_t s = 0;
     pid_t pid = -1;
 
     if (EBCL_taskDBGetTaskState(ctx, &s, cmd->args[0]) == -1) {
@@ -730,12 +730,12 @@ static int execRtimCmdStatus(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_Rti
     return 0;
 }
 
-static int execRtimCmdShutdown(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_RtimCmd *cmd) {
+static int EBCL_execRtimCmdShutdown(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     if (ctx == NULL || res == NULL || cmd == NULL) {
         EBCL_errPrint("Pointer parameters must not be NULL");
         return -1;
     }
-    ShdnThrArgs *thrArgs = malloc(sizeof(ShdnThrArgs));
+    ebcl_ShdnThrArgs_t *thrArgs = malloc(sizeof(ebcl_ShdnThrArgs_t));
     if (thrArgs == NULL) {
         EBCL_errnoPrint("Could not allocate memory for shutdown thread arguments.");
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_SHUTDOWN, 2, EBCL_RTIMCMD_RES_ERR, "Memory allocation error.");
@@ -759,7 +759,7 @@ static int execRtimCmdShutdown(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_R
     pthread_attr_init(&thrAttrs);
     pthread_attr_setstacksize(&thrAttrs, EBCL_RTIMCMD_SHDN_THREAD_STACK_SIZE);
     pthread_attr_setdetachstate(&thrAttrs, PTHREAD_CREATE_DETACHED);
-    errno = pthread_create(&shdnThreadRef, &thrAttrs, shdnThread, thrArgs);
+    errno = pthread_create(&shdnThreadRef, &thrAttrs, EBCL_shdnThread, thrArgs);
     pthread_attr_destroy(&thrAttrs);
     if (errno != 0) {
         EBCL_errnoPrint("Could not start shutdown thread");
@@ -771,9 +771,9 @@ static int execRtimCmdShutdown(ebcl_TaskDB *ctx, ebcl_RtimCmd *res, const ebcl_R
     return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_SHUTDOWN, 1, EBCL_RTIMCMD_RES_OK);
 }
 
-static void *shdnThread(void *args) {
-    ShdnThrArgs *a = (ShdnThrArgs *)args;
-    ebcl_TaskDB *ctx = a->ctx;
+static void *EBCL_shdnThread(void *args) {
+    ebcl_ShdnThrArgs_t *a = (ebcl_ShdnThrArgs_t *)args;
+    ebcl_TaskDB_t *ctx = a->ctx;
     int shutdownCmd = a->shutdownCmd;
     free(args);
 
@@ -790,12 +790,12 @@ static void *shdnThread(void *args) {
     kill(-1, SIGCONT);
     kill(-1, SIGTERM);
     EBCL_dbgInfoPrint("Sending SIGTERM to all processes.");
-    if (gracePeriod(gpMicros) == -1) {
+    if (EBCL_gracePeriod(gpMicros) == -1) {
         EBCL_errPrint("Could not wait out the shutdown grace period, continuing anyway.");
     }
     kill(-1, SIGKILL);
     EBCL_dbgInfoPrint("Sending SIGKILL to all processes.");
-    if (fsPrepareShutdown() == -1) {
+    if (EBCL_fsPrepareShutdown() == -1) {
         EBCL_errPrint(
             "Could not un- or remount filesystems cleanly, continuing anyway. Some filesystems may be dirty on next "
             "boot.");
@@ -806,7 +806,7 @@ static void *shdnThread(void *args) {
     return NULL;
 }
 
-static inline int gracePeriod(unsigned long long micros) {
+static inline int EBCL_gracePeriod(unsigned long long micros) {
     struct timespec t;
     if (clock_gettime(CLOCK_MONOTONIC, &t) == -1) {
         EBCL_errnoPrint("Could not get current time from monotonic clock.");
@@ -827,7 +827,7 @@ static inline int gracePeriod(unsigned long long micros) {
     return 0;
 }
 
-static inline int genUnMountList(UnMountList **ml, bool *rootfsIsRo) {
+static inline int EBCL_genUnMountList(ebcl_UnMountList_t **ml, bool *rootfsIsRo) {
     if (ml == NULL || rootfsIsRo == NULL) {
         EBCL_errPrint("Input parameters must not be NULL.");
         return -1;
@@ -838,7 +838,7 @@ static inline int genUnMountList(UnMountList **ml, bool *rootfsIsRo) {
         EBCL_errnoPrint("Could not open \'/proc/mounts\' for reading.");
         return -1;
     }
-    UnMountList *pList = malloc(sizeof(UnMountList));
+    ebcl_UnMountList_t *pList = malloc(sizeof(ebcl_UnMountList_t));
     if (pList == NULL) {
         EBCL_errnoPrint("Could not allocate memory for list of mount points to be unmounted.");
         fclose(mountListStream);
@@ -879,11 +879,11 @@ static inline int genUnMountList(UnMountList **ml, bool *rootfsIsRo) {
         } else {
             // Put the mount point into the list in reverse order so we're beginning with the newest entry.
             memmove(pList->target, runner, strlen(runner) + 1);
-            UnMountList *new = malloc(sizeof(UnMountList));
+            ebcl_UnMountList_t *new = malloc(sizeof(ebcl_UnMountList_t));
             if (new == NULL) {
                 EBCL_errnoPrint("Could not allocate memory for list of mount points to be unmounted.");
                 fclose(mountListStream);
-                freeUnMountList(pList);
+                EBCL_freeUnMountList(pList);
                 return -1;
             }
             new->next = pList;
@@ -896,8 +896,8 @@ static inline int genUnMountList(UnMountList **ml, bool *rootfsIsRo) {
     return 0;
 }
 
-static inline void freeUnMountList(UnMountList *ml) {
-    UnMountList *prev;
+static inline void EBCL_freeUnMountList(ebcl_UnMountList_t *ml) {
+    ebcl_UnMountList_t *prev;
     while (ml != NULL) {
         prev = ml;
         ml = ml->next;
@@ -905,19 +905,19 @@ static inline void freeUnMountList(UnMountList *ml) {
     }
 }
 
-static inline int fsPrepareShutdown(void) {
+static inline int EBCL_fsPrepareShutdown(void) {
     int out = 0;
-    UnMountList *um = NULL;
+    ebcl_UnMountList_t *um = NULL;
     bool rootfsIsRo;
 
-    if (genUnMountList(&um, &rootfsIsRo) == -1) {
+    if (EBCL_genUnMountList(&um, &rootfsIsRo) == -1) {
         EBCL_errPrint(
             "Could not generate list of targets to unmount. Will at least try to remount root filesystem as "
             "read-only.");
         rootfsIsRo = false;
         out = -1;
     } else {
-        UnMountList *runner = um;
+        ebcl_UnMountList_t *runner = um;
         while (runner != NULL) {
             if (runner->target[0] != '\0') {
                 EBCL_dbgInfoPrint("Will unmount target \'%s\'.", runner->target);
@@ -929,7 +929,7 @@ static inline int fsPrepareShutdown(void) {
             }
             runner = runner->next;
         }
-        freeUnMountList(um);
+        EBCL_freeUnMountList(um);
     }
     // If it is (possibly) an rw rootfs, try remounting it ro.
     if (!rootfsIsRo && mount(NULL, "/", NULL, MS_REMOUNT | MS_RDONLY, NULL) == -1) {

@@ -14,10 +14,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "crinit.h"
 #include "logio.h"
 
-typedef enum { STATE_UNQUOTED, STATE_QUOTED } ebcl_QuotingState;
+typedef enum { STATE_UNQUOTED, STATE_QUOTED } ebcl_QuotingState_t;
 
 /**
  * Trim leading and trailing whitespaces in-place.
@@ -28,7 +27,7 @@ typedef enum { STATE_UNQUOTED, STATE_QUOTED } ebcl_QuotingState;
  * @param str The string to be trimmed in-place, may be NULL in which case trimWhitespace() will
  *            return without doing anything.
  */
-static void trimWhitespace(char **str);
+static void EBCL_trimWhitespace(char **str);
 
 /**
  * Swap out character tokens situated between quotation delimeters for a placeholder
@@ -44,7 +43,7 @@ static void trimWhitespace(char **str);
  *
  * @return 0 on success, -1 on error
  */
-static int quoteProtectTokens(char *str, char quoteDelim, char token, char placeholder);
+static int EBCL_quoteProtectTokens(char *str, char quoteDelim, char token, char placeholder);
 
 /**
  * Restore tokens swapped out by quoteProtectTokens()
@@ -55,11 +54,11 @@ static int quoteProtectTokens(char *str, char quoteDelim, char token, char place
  * @param token        The token to be restored.
  * @param placeholder  The placeholder character to be swapped out for \a token.
  */
-static void quoteRestoreTokens(char *str, char token, char placeholder);
+static void EBCL_quoteRestoreTokens(char *str, char token, char placeholder);
 
 /* Parses config file and fills confList. confList is dynamically allocated and needs to be freed
  * using EBCL_freeConfList() */
-int EBCL_parseConf(ebcl_ConfKvList **confList, const char *filename) {
+int EBCL_parseConf(ebcl_ConfKvList_t **confList, const char *filename) {
     char line[4096];  // This should be large if we use lists in a single line
     FILE *cf = fopen(filename, "re");
     if (cf == NULL) {
@@ -67,14 +66,14 @@ int EBCL_parseConf(ebcl_ConfKvList **confList, const char *filename) {
         return -1;
     }
     // Alloc first element
-    if ((*confList = malloc(sizeof(ebcl_ConfKvList))) == NULL) {
+    if ((*confList = malloc(sizeof(ebcl_ConfKvList_t))) == NULL) {
         EBCL_errnoPrint("Could not allocate memory for a ConfKVList.");
         fclose(cf);
         return -1;
     }
     // Parse config line by line
-    ebcl_ConfKvList *pList = *confList;
-    ebcl_ConfKvList *last = *confList;
+    ebcl_ConfKvList_t *pList = *confList;
+    ebcl_ConfKvList_t *last = *confList;
     size_t keyArrayCount = 0;
     while (fgets(line, sizeof(line), cf) != NULL) {
         pList->key = NULL;
@@ -93,9 +92,9 @@ int EBCL_parseConf(ebcl_ConfKvList **confList, const char *filename) {
         }
 
         // Parse line like "KEY = value"
-        char *strtok_state = NULL;
-        char *sk = strtok_r(ptr, "=\n", &strtok_state);
-        char *sv = strtok_r(NULL, "\n", &strtok_state);
+        char *strtokState = NULL;
+        char *sk = strtok_r(ptr, "=\n", &strtokState);
+        char *sv = strtok_r(NULL, "\n", &strtokState);
 
         if (sk == NULL || sv == NULL) {
             EBCL_errPrint("Could not parse line: \'%s\'", line);
@@ -105,8 +104,8 @@ int EBCL_parseConf(ebcl_ConfKvList **confList, const char *filename) {
         }
 
         // Trim leading/trailing whitespaces
-        trimWhitespace(&sk);
-        trimWhitespace(&sv);
+        EBCL_trimWhitespace(&sk);
+        EBCL_trimWhitespace(&sv);
 
         size_t skLen = strlen(sk);
         size_t svLen = strlen(sv);
@@ -162,7 +161,7 @@ int EBCL_parseConf(ebcl_ConfKvList **confList, const char *filename) {
         memcpy(pList->val, sv, svLen + 1);
 
         // Check for duplicate key
-        ebcl_ConfKvList *pSrch = *confList;
+        ebcl_ConfKvList_t *pSrch = *confList;
         while (pSrch != NULL && pSrch != pList) {
             if (pList->keyArrIndex == pSrch->keyArrIndex && strcmp(pList->key, pSrch->key) == 0) {
                 EBCL_errPrint("Found duplicate key \'%s\' (index %zu) in config.", pSrch->key, pSrch->keyArrIndex);
@@ -175,7 +174,7 @@ int EBCL_parseConf(ebcl_ConfKvList **confList, const char *filename) {
 
         // Grow list
         last = pList;
-        if ((pList->next = malloc(sizeof(ebcl_ConfKvList))) == NULL) {
+        if ((pList->next = malloc(sizeof(ebcl_ConfKvList_t))) == NULL) {
             EBCL_errnoPrint("Could not allocate memory for a ConfKVList.");
             fclose(cf);
             EBCL_freeConfList(*confList);
@@ -191,11 +190,11 @@ int EBCL_parseConf(ebcl_ConfKvList **confList, const char *filename) {
 }
 
 /* Goes through all parts of config list and frees mem */
-void EBCL_freeConfList(ebcl_ConfKvList *confList) {
+void EBCL_freeConfList(ebcl_ConfKvList_t *confList) {
     if (confList == NULL) {
         return;
     }
-    ebcl_ConfKvList *last;
+    ebcl_ConfKvList_t *last;
     do {
         free(confList->key);
         free(confList->val);
@@ -205,7 +204,7 @@ void EBCL_freeConfList(ebcl_ConfKvList *confList) {
     } while (confList != NULL);
 }
 
-int EBCL_confListGetValWithIdx(char **val, const char *key, size_t keyArrIndex, const ebcl_ConfKvList *c) {
+int EBCL_confListGetValWithIdx(char **val, const char *key, size_t keyArrIndex, const ebcl_ConfKvList_t *c) {
     if (val == NULL || key == NULL || c == NULL) {
         EBCL_errPrint("Input parameters must not be NULL.");
         return -1;
@@ -240,7 +239,7 @@ int EBCL_confListGetValWithIdx(char **val, const char *key, size_t keyArrIndex, 
     return 0;
 }
 
-int EBCL_confListSetValWithIdx(const char *val, const char *key, size_t keyArrIndex, ebcl_ConfKvList *c) {
+int EBCL_confListSetValWithIdx(const char *val, const char *key, size_t keyArrIndex, ebcl_ConfKvList_t *c) {
     if (val == NULL || key == NULL || c == NULL) {
         EBCL_errPrint("Input Parameters must not be NULL.");
         return -1;
@@ -276,7 +275,7 @@ int EBCL_confListSetValWithIdx(const char *val, const char *key, size_t keyArrIn
     return 0;
 }
 
-int EBCL_confListExtractBoolean(bool *out, const char *key, const ebcl_ConfKvList *in) {
+int EBCL_confListExtractBoolean(bool *out, const char *key, const ebcl_ConfKvList_t *in) {
     if (key == NULL || in == NULL || out == NULL) {
         EBCL_errPrint("Input parameters must not be NULL.");
         return -1;
@@ -298,7 +297,7 @@ int EBCL_confListExtractBoolean(bool *out, const char *key, const ebcl_ConfKvLis
     return -1;
 }
 
-int EBCL_confListExtractUnsignedLL(unsigned long long *out, int base, const char *key, const ebcl_ConfKvList *in) {
+int EBCL_confListExtractUnsignedLL(unsigned long long *out, int base, const char *key, const ebcl_ConfKvList_t *in) {
     if (key == NULL || in == NULL || out == NULL) {
         EBCL_errPrint("Input parameters must not be NULL.");
         return -1;
@@ -327,7 +326,7 @@ int EBCL_confListExtractUnsignedLL(unsigned long long *out, int base, const char
 }
 
 int EBCL_confListExtractArgvArrayWithIdx(int *outArgc, char ***outArgv, const char *key, size_t keyArrIndex,
-                                         const ebcl_ConfKvList *in, bool double_quoting) {
+                                         const ebcl_ConfKvList_t *in, bool doubleQuoting) {
     if (key == NULL || in == NULL || outArgc == NULL || outArgv == NULL) {
         EBCL_errPrint("\'key\', \'in\', outArgv, and \'outArgc\' parameters must not be NULL.");
         return -1;
@@ -346,8 +345,8 @@ int EBCL_confListExtractArgvArrayWithIdx(int *outArgc, char ***outArgv, const ch
     }
     memcpy(backbuf, val, valLen);
 
-    if (double_quoting && (quoteProtectTokens(backbuf, '\"', ' ', -1) == -1)) {
-        quoteRestoreTokens(backbuf, ' ', -1);
+    if (doubleQuoting && (EBCL_quoteProtectTokens(backbuf, '\"', ' ', -1) == -1)) {
+        EBCL_quoteRestoreTokens(backbuf, ' ', -1);
         EBCL_errPrint("Could not parse quotations in string: \'%s\'", backbuf);
         free(backbuf);
         return -1;
@@ -394,9 +393,9 @@ int EBCL_confListExtractArgvArrayWithIdx(int *outArgc, char ***outArgv, const ch
     }
     pOut[*outArgc] = NULL;
 
-    if (double_quoting) {
+    if (doubleQuoting) {
         for (int i = 0; i < *outArgc; i++) {
-            quoteRestoreTokens(pOut[i], ' ', -1);
+            EBCL_quoteRestoreTokens(pOut[i], ' ', -1);
             // If the value is enclosed in double quotes, discard those
             if (pOut[i][0] == '\"' && pOut[i][strlen(pOut[i]) - 1] == '\"') {
                 pOut[i][strlen(pOut[i]) - 1] = '\0';
@@ -417,7 +416,7 @@ void EBCL_freeArgvArray(char **inArgv) {
     }
 }
 
-ssize_t EBCL_confListKeyGetMaxIdx(const ebcl_ConfKvList *c, const char *key) {
+ssize_t EBCL_confListKeyGetMaxIdx(const ebcl_ConfKvList_t *c, const char *key) {
     if (c == NULL || key == NULL) {
         EBCL_errPrint("Parameters must not be NULL.");
         return -1;
@@ -446,7 +445,7 @@ ssize_t EBCL_confListKeyGetMaxIdx(const ebcl_ConfKvList *c, const char *key) {
     return (ssize_t)maxIdx;
 }
 
-static void trimWhitespace(char **str) {
+static void EBCL_trimWhitespace(char **str) {
     if (*str == NULL) {
         return;
     }
@@ -466,13 +465,13 @@ static void trimWhitespace(char **str) {
     *end = '\0';
 }
 
-static int quoteProtectTokens(char *str, char quoteDelim, char token, char placeholder) {
+static int EBCL_quoteProtectTokens(char *str, char quoteDelim, char token, char placeholder) {
     if (str == NULL) {
         EBCL_errPrint("Input string may not be NULL.");
         return -1;
     }
 
-    ebcl_QuotingState state = STATE_UNQUOTED;
+    ebcl_QuotingState_t state = STATE_UNQUOTED;
     while (*str != '\0') {
         if (*str == quoteDelim) {
             switch (state) {
@@ -498,7 +497,7 @@ static int quoteProtectTokens(char *str, char quoteDelim, char token, char place
     return 0;
 }
 
-static void quoteRestoreTokens(char *str, char token, char placeholder) {
+static void EBCL_quoteRestoreTokens(char *str, char token, char placeholder) {
     if (str == NULL) return;
     while (*str != '\0') {
         if (*str == placeholder) {

@@ -13,27 +13,26 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "crinit.h"
 #include "logio.h"
 
 /**
- * Frees memory for internal members of an ebcl_Task
+ * Frees memory for internal members of an ebcl_Task_t
  *
  * @param t  The task whose members shall be freed.
  */
-static void destroyTask(ebcl_Task *t);
+static void EBCL_destroyTask(ebcl_Task_t *t);
 /**
- * Find index of a task in the ebcl_TaskDB::taskSet of an ebcl_TaskDB by name.
+ * Find index of a task in the ebcl_TaskDB_t::taskSet of an ebcl_TaskDB_t by name.
  *
  * @param idx       Pointer to return the index with.
- * @param taskName  The ebcl_Task::name to search for.
- * @param in        The ebcl_TaskDB to search in.
+ * @param taskName  The ebcl_Task_t::name to search for.
+ * @param in        The ebcl_TaskDB_t_t to search in.
  *
  * @return 0 on success, -1 otherwise
  */
-static int findInTaskDB(ssize_t *idx, const char *taskName, const ebcl_TaskDB *in);
+static int EBCL_findInTaskDb(ssize_t *idx, const char *taskName, const ebcl_TaskDB_t *in);
 /**
- * Check if an ebcl_Task is considered ready to be started (startable).
+ * Check if an ebcl_Task_t is considered ready to be started (startable).
  *
  * See EBCL_taskDBSpawnReady() for further explanation.
  *
@@ -41,24 +40,24 @@ static int findInTaskDB(ssize_t *idx, const char *taskName, const ebcl_TaskDB *i
  *
  * @return true if \a t is ready, false otherwise
  */
-static bool taskReady(const ebcl_Task *t);
+static bool EBCL_taskReady(const ebcl_Task_t *t);
 
-int EBCL_taskDBInitWithSize(ebcl_TaskDB *ctx, int (*spawnFunc)(ebcl_TaskDB *ctx, const ebcl_Task *),
-                            size_t initial_size) {
+int EBCL_taskDBInitWithSize(ebcl_TaskDB_t *ctx, int (*spawnFunc)(ebcl_TaskDB_t *ctx, const ebcl_Task_t *),
+                            size_t initialSize) {
     if (ctx == NULL) {
-        EBCL_errPrint("Given ebcl_TaskDB to initialize must not be NULL.");
+        EBCL_errPrint("Given ebcl_TaskDB_t to initialize must not be NULL.");
         return -1;
     }
-    if (initial_size < 1) {
+    if (initialSize < 1) {
         EBCL_errPrint("Given initial size of task set in TaskDB must be at least 1.");
         return -1;
     }
     ctx->taskSetSize = 0;
     ctx->taskSetItems = 0;
     ctx->spawnFunc = NULL;
-    ctx->taskSet = malloc(sizeof(ebcl_Task) * initial_size);
+    ctx->taskSet = malloc(sizeof(ebcl_Task_t) * initialSize);
     if (ctx->taskSet == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for Task set of size %zu in TaskDB.", initial_size);
+        EBCL_errnoPrint("Could not allocate memory for Task set of size %zu in TaskDB.", initialSize);
         return -1;
     }
     if ((errno = pthread_mutex_init(&ctx->lock, NULL)) != 0) {
@@ -71,7 +70,7 @@ int EBCL_taskDBInitWithSize(ebcl_TaskDB *ctx, int (*spawnFunc)(ebcl_TaskDB *ctx,
         goto fail;
     }
 
-    ctx->taskSetSize = initial_size;
+    ctx->taskSetSize = initialSize;
     ctx->spawnFunc = spawnFunc;
     return 0;
 fail:
@@ -80,15 +79,15 @@ fail:
     return -1;
 }
 
-int EBCL_taskDBDestroy(ebcl_TaskDB *ctx) {
+int EBCL_taskDBDestroy(ebcl_TaskDB_t *ctx) {
     if (ctx == NULL) {
-        EBCL_errPrint("Given ebcl_TaskDB to destroy must not be NULL.");
+        EBCL_errPrint("Given ebcl_TaskDB_t to destroy must not be NULL.");
         return -1;
     }
     ctx->spawnFunc = NULL;
     ctx->taskSetSize = 0;
     for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        destroyTask(&ctx->taskSet[i]);
+        EBCL_destroyTask(&ctx->taskSet[i]);
     }
     ctx->taskSetItems = 0;
 
@@ -102,7 +101,7 @@ int EBCL_taskDBDestroy(ebcl_TaskDB *ctx) {
     return 0;
 }
 
-int EBCL_taskDBInsert(ebcl_TaskDB *ctx, const ebcl_Task *t, bool overwrite) {
+int EBCL_taskDBInsert(ebcl_TaskDB_t *ctx, const ebcl_Task_t *t, bool overwrite) {
     if (ctx == NULL || t == NULL) {
         EBCL_errPrint("The TaskDB context and the Task to search must not be NULL.");
         return -1;
@@ -112,9 +111,9 @@ int EBCL_taskDBInsert(ebcl_TaskDB *ctx, const ebcl_Task *t, bool overwrite) {
         return -1;
     }
     ssize_t idx = -1;
-    if (findInTaskDB(&idx, t->name, ctx) == 0) {
+    if (EBCL_findInTaskDb(&idx, t->name, ctx) == 0) {
         if (overwrite) {
-            destroyTask(&ctx->taskSet[idx]);
+            EBCL_destroyTask(&ctx->taskSet[idx]);
         } else {
             EBCL_errPrint("Found task with name \'%s\' already in TaskDB but will not overwrite", t->name);
             goto fail;
@@ -122,7 +121,7 @@ int EBCL_taskDBInsert(ebcl_TaskDB *ctx, const ebcl_Task *t, bool overwrite) {
     }
     if (idx == -1 && ctx->taskSetItems == ctx->taskSetSize) {
         // We need to grow the backing array
-        ebcl_Task *newSet = realloc(ctx->taskSet, ctx->taskSetSize * 2 * sizeof(ebcl_Task));
+        ebcl_Task_t *newSet = realloc(ctx->taskSet, ctx->taskSetSize * 2 * sizeof(ebcl_Task_t));
         if (newSet == NULL) {
             EBCL_errnoPrint("Could not allocate additional memory for more Task elements.");
             goto fail;
@@ -134,12 +133,12 @@ int EBCL_taskDBInsert(ebcl_TaskDB *ctx, const ebcl_Task *t, bool overwrite) {
         idx = ctx->taskSetItems++;
     }
 
-    ebcl_Task *tempDuplicate = NULL;
+    ebcl_Task_t *tempDuplicate = NULL;
     if (EBCL_taskDup(&tempDuplicate, t) == -1) {
         EBCL_errnoPrint("Could not duplicate new Task into temporary variable.");
         goto fail;
     }
-    memcpy(&ctx->taskSet[idx], tempDuplicate, sizeof(ebcl_Task));
+    memcpy(&ctx->taskSet[idx], tempDuplicate, sizeof(ebcl_Task_t));
     free(tempDuplicate);
 
     pthread_cond_broadcast(&ctx->changed);
@@ -150,7 +149,7 @@ fail:
     return -1;
 }
 
-int EBCL_taskDBSpawnReady(ebcl_TaskDB *ctx) {
+int EBCL_taskDBSpawnReady(ebcl_TaskDB_t *ctx) {
     if (ctx == NULL) {
         EBCL_errPrint("The TaskDB context must not be NULL.");
         return -1;
@@ -163,8 +162,8 @@ int EBCL_taskDBSpawnReady(ebcl_TaskDB *ctx) {
         goto success;
     }
     for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        ebcl_Task *pTask = &ctx->taskSet[i];
-        if (taskReady(pTask)) {
+        ebcl_Task_t *pTask = &ctx->taskSet[i];
+        if (EBCL_taskReady(pTask)) {
             EBCL_dbgInfoPrint("Task \'%s\' ready to spawn.", pTask->name);
             pTask->state = EBCL_TASK_STATE_STARTING;
 
@@ -184,7 +183,7 @@ fail:
     return -1;
 }
 
-int EBCL_taskDBSetTaskState(ebcl_TaskDB *ctx, ebcl_TaskState s, const char *taskName) {
+int EBCL_taskDBSetTaskState(ebcl_TaskDB_t *ctx, ebcl_TaskState_t s, const char *taskName) {
     if (ctx == NULL || taskName == NULL) {
         EBCL_errPrint("The TaskDB context and the taskName must not be NULL.");
         return -1;
@@ -195,7 +194,7 @@ int EBCL_taskDBSetTaskState(ebcl_TaskDB *ctx, ebcl_TaskState s, const char *task
         return -1;
     }
     for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        ebcl_Task *pTask = &ctx->taskSet[i];
+        ebcl_Task_t *pTask = &ctx->taskSet[i];
         if (strcmp(pTask->name, taskName) == 0) {
             pTask->state = s;
             pthread_cond_broadcast(&ctx->changed);
@@ -208,7 +207,7 @@ int EBCL_taskDBSetTaskState(ebcl_TaskDB *ctx, ebcl_TaskState s, const char *task
     return -1;
 }
 
-int EBCL_taskDBGetTaskState(ebcl_TaskDB *ctx, ebcl_TaskState *s, const char *taskName) {
+int EBCL_taskDBGetTaskState(ebcl_TaskDB_t *ctx, ebcl_TaskState_t *s, const char *taskName) {
     if (ctx == NULL || taskName == NULL || s == NULL) {
         EBCL_errPrint("The TaskDB context, taskName, and result pointer must not be NULL.");
         return -1;
@@ -219,7 +218,7 @@ int EBCL_taskDBGetTaskState(ebcl_TaskDB *ctx, ebcl_TaskState *s, const char *tas
         return -1;
     }
     for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        ebcl_Task *pTask = &ctx->taskSet[i];
+        ebcl_Task_t *pTask = &ctx->taskSet[i];
         if (strcmp(pTask->name, taskName) == 0) {
             *s = pTask->state;
             pthread_mutex_unlock(&ctx->lock);
@@ -231,7 +230,7 @@ int EBCL_taskDBGetTaskState(ebcl_TaskDB *ctx, ebcl_TaskState *s, const char *tas
     return -1;
 }
 
-int EBCL_taskDBSetTaskPID(ebcl_TaskDB *ctx, pid_t pid, const char *taskName) {
+int EBCL_taskDBSetTaskPID(ebcl_TaskDB_t *ctx, pid_t pid, const char *taskName) {
     if (ctx == NULL || taskName == NULL) {
         EBCL_errPrint("The TaskDB context and the taskName must not be NULL.");
         return -1;
@@ -242,7 +241,7 @@ int EBCL_taskDBSetTaskPID(ebcl_TaskDB *ctx, pid_t pid, const char *taskName) {
         return -1;
     }
     for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        ebcl_Task *pTask = &ctx->taskSet[i];
+        ebcl_Task_t *pTask = &ctx->taskSet[i];
         if (strcmp(pTask->name, taskName) == 0) {
             pTask->pid = pid;
             pthread_mutex_unlock(&ctx->lock);
@@ -254,7 +253,7 @@ int EBCL_taskDBSetTaskPID(ebcl_TaskDB *ctx, pid_t pid, const char *taskName) {
     return -1;
 }
 
-int EBCL_taskDBGetTaskPID(ebcl_TaskDB *ctx, pid_t *pid, const char *taskName) {
+int EBCL_taskDBGetTaskPID(ebcl_TaskDB_t *ctx, pid_t *pid, const char *taskName) {
     if (ctx == NULL || taskName == NULL || pid == NULL) {
         EBCL_errPrint("The TaskDB context, taskName, and result pointer must not be NULL.");
         return -1;
@@ -265,7 +264,7 @@ int EBCL_taskDBGetTaskPID(ebcl_TaskDB *ctx, pid_t *pid, const char *taskName) {
         return -1;
     }
     for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        ebcl_Task *pTask = &ctx->taskSet[i];
+        ebcl_Task_t *pTask = &ctx->taskSet[i];
         if (strcmp(pTask->name, taskName) == 0) {
             *pid = pTask->pid;
             pthread_mutex_unlock(&ctx->lock);
@@ -277,7 +276,7 @@ int EBCL_taskDBGetTaskPID(ebcl_TaskDB *ctx, pid_t *pid, const char *taskName) {
     return -1;
 }
 
-int EBCL_taskDBSetSpawnFunc(ebcl_TaskDB *ctx, int (*spawnFunc)(ebcl_TaskDB *ctx, const ebcl_Task *)) {
+int EBCL_taskDBSetSpawnFunc(ebcl_TaskDB_t *ctx, int (*spawnFunc)(ebcl_TaskDB_t *ctx, const ebcl_Task_t *)) {
     if (ctx == NULL) {
         EBCL_errPrint("The TaskDB context must not be NULL.");
         return -1;
@@ -292,7 +291,7 @@ int EBCL_taskDBSetSpawnFunc(ebcl_TaskDB *ctx, int (*spawnFunc)(ebcl_TaskDB *ctx,
     return 0;
 }
 
-int EBCL_taskDBAddDepToTask(ebcl_TaskDB *ctx, const ebcl_TaskDep *dep, const char *taskName) {
+int EBCL_taskDBAddDepToTask(ebcl_TaskDB_t *ctx, const ebcl_TaskDep_t *dep, const char *taskName) {
     if (ctx == NULL || dep == NULL || taskName == NULL) {
         EBCL_errPrint("The TaskDB context, the TaskDep to add, and the task name to search for must not be NULL.");
         return -1;
@@ -302,7 +301,7 @@ int EBCL_taskDBAddDepToTask(ebcl_TaskDB *ctx, const ebcl_TaskDep *dep, const cha
         return -1;
     }
     for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        ebcl_Task *pTask = &ctx->taskSet[i];
+        ebcl_Task_t *pTask = &ctx->taskSet[i];
         if (strcmp(pTask->name, taskName) == 0) {
             // Return immediately if dependency is already present
             for (size_t j = 0; j < pTask->depsSize; j++) {
@@ -312,7 +311,7 @@ int EBCL_taskDBAddDepToTask(ebcl_TaskDB *ctx, const ebcl_TaskDep *dep, const cha
                 }
             }
             pTask->depsSize++;
-            ebcl_TaskDep *pTempDeps = realloc(pTask->deps, pTask->depsSize * sizeof(ebcl_TaskDep));
+            ebcl_TaskDep_t *pTempDeps = realloc(pTask->deps, pTask->depsSize * sizeof(ebcl_TaskDep_t));
             if (pTempDeps == NULL) {
                 EBCL_errnoPrint("Could not reallocate memory of dependency array for task \'%s\'.", taskName);
                 pTask->depsSize--;
@@ -343,7 +342,7 @@ int EBCL_taskDBAddDepToTask(ebcl_TaskDB *ctx, const ebcl_TaskDep *dep, const cha
     return -1;
 }
 
-int EBCL_taskDBRemoveDepFromTask(ebcl_TaskDB *ctx, const ebcl_TaskDep *dep, const char *taskName) {
+int EBCL_taskDBRemoveDepFromTask(ebcl_TaskDB_t *ctx, const ebcl_TaskDep_t *dep, const char *taskName) {
     if (ctx == NULL || dep == NULL || taskName == NULL) {
         EBCL_errPrint("The TaskDB context, the TaskDep to remove, and the task name to search for must not be NULL.");
         return -1;
@@ -355,7 +354,7 @@ int EBCL_taskDBRemoveDepFromTask(ebcl_TaskDB *ctx, const ebcl_TaskDep *dep, cons
     }
 
     for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        ebcl_Task *pTask = &ctx->taskSet[i];
+        ebcl_Task_t *pTask = &ctx->taskSet[i];
         if (strcmp(pTask->name, taskName) == 0) {
             for (size_t j = 0; j < pTask->depsSize; j++) {
                 if ((strcmp(pTask->deps[j].name, dep->name) == 0) && (strcmp(pTask->deps[j].event, dep->event) == 0)) {
@@ -377,7 +376,7 @@ int EBCL_taskDBRemoveDepFromTask(ebcl_TaskDB *ctx, const ebcl_TaskDep *dep, cons
     return -1;
 }
 
-int EBCL_taskDBFulfillDep(ebcl_TaskDB *ctx, const ebcl_TaskDep *dep) {
+int EBCL_taskDBFulfillDep(ebcl_TaskDB_t *ctx, const ebcl_TaskDep_t *dep) {
     if (ctx == NULL || dep == NULL) {
         EBCL_errPrint("The TaskDB context and the TaskDep to fulfill must not be NULL.");
         return -1;
@@ -389,7 +388,7 @@ int EBCL_taskDBFulfillDep(ebcl_TaskDB *ctx, const ebcl_TaskDep *dep) {
     }
 
     for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        ebcl_Task *pTask = &ctx->taskSet[i];
+        ebcl_Task_t *pTask = &ctx->taskSet[i];
         for (size_t j = 0; j < pTask->depsSize; j++) {
             if ((strcmp(pTask->deps[j].name, dep->name) == 0) && (strcmp(pTask->deps[j].event, dep->event) == 0)) {
                 EBCL_dbgInfoPrint("Removing fulfilled dependency \'%s:%s\' in \'%s\'.", dep->name, dep->event,
@@ -407,18 +406,18 @@ int EBCL_taskDBFulfillDep(ebcl_TaskDB *ctx, const ebcl_TaskDep *dep) {
     return 0;
 }
 
-int EBCL_taskCreateFromConfKvList(ebcl_Task **out, const ebcl_ConfKvList *in) {
+int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in) {
     if (in == NULL) {
         EBCL_errPrint("The parameter \'in\' must not be NULL.");
         return -1;
     }
 
-    *out = malloc(sizeof(ebcl_Task));
+    *out = malloc(sizeof(ebcl_Task_t));
     if (*out == NULL) {
         EBCL_errnoPrint("Could not allocate memory for ebcl_Task.");
         return -1;
     }
-    ebcl_Task *pTask = *out;
+    ebcl_Task_t *pTask = *out;
     pTask->name = NULL;
     pTask->deps = NULL;
     pTask->depsSize = 0;
@@ -473,7 +472,7 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task **out, const ebcl_ConfKvList *in) {
     }
 
     pTask->cmdsSize = (size_t)(cmdArrSize + 1);
-    pTask->cmds = malloc(sizeof(ebcl_TaskCmd) * pTask->cmdsSize);
+    pTask->cmds = malloc(sizeof(ebcl_TaskCmd_t) * pTask->cmdsSize);
     if (pTask->cmds == NULL) {
         EBCL_errnoPrint("Could not allocate memory for %zu commands in task %s.", pTask->cmdsSize, tempName);
         goto fail;
@@ -503,7 +502,7 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task **out, const ebcl_ConfKvList *in) {
     }
     pTask->depsSize = (size_t)tempDepsSize;
     if (pTask->depsSize > 0) {
-        pTask->deps = malloc(pTask->depsSize * sizeof(ebcl_TaskDep));
+        pTask->deps = malloc(pTask->depsSize * sizeof(ebcl_TaskDep_t));
         if (pTask->deps == NULL) {
             EBCL_errnoPrint("Could not allocate memory for %zu TaskDeps during copy of Task \'%s\'.", pTask->depsSize,
                             pTask->name);
@@ -547,13 +546,13 @@ fail:
     return -1;
 }
 
-int EBCL_taskDup(ebcl_Task **out, const ebcl_Task *orig) {
-    *out = malloc(sizeof(ebcl_Task));
+int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
+    *out = malloc(sizeof(ebcl_Task_t));
     if (*out == NULL) {
         EBCL_errnoPrint("Could not allocate memory for duplicate of Task \'%s\'.", orig->name);
         return -1;
     }
-    ebcl_Task *pTask = *out;
+    ebcl_Task_t *pTask = *out;
     pTask->name = NULL;
     pTask->deps = NULL;
     pTask->depsSize = 0;
@@ -572,7 +571,7 @@ int EBCL_taskDup(ebcl_Task **out, const ebcl_Task *orig) {
     memcpy(pTask->name, orig->name, nameLen);
 
     pTask->cmdsSize = orig->cmdsSize;
-    pTask->cmds = malloc(pTask->cmdsSize * sizeof(ebcl_TaskCmd));
+    pTask->cmds = malloc(pTask->cmdsSize * sizeof(ebcl_TaskCmd_t));
     if (pTask->cmds == NULL) {
         EBCL_errnoPrint("Could not allocate memory for %zu COMMANDs during copy of Task \'%s\'.", pTask->cmdsSize,
                         orig->name);
@@ -617,7 +616,7 @@ int EBCL_taskDup(ebcl_Task **out, const ebcl_Task *orig) {
 
     pTask->depsSize = orig->depsSize;
     if (pTask->depsSize > 0) {
-        pTask->deps = malloc(pTask->depsSize * sizeof(ebcl_TaskDep));
+        pTask->deps = malloc(pTask->depsSize * sizeof(ebcl_TaskDep_t));
         if (pTask->deps == NULL) {
             EBCL_errnoPrint("Could not allocate memory for %zu TaskDeps during copy of Task \'%s\'.", pTask->depsSize,
                             orig->name);
@@ -660,15 +659,15 @@ fail:
     return -1;
 }
 
-void EBCL_freeTask(ebcl_Task *t) {
+void EBCL_freeTask(ebcl_Task_t *t) {
     if (t == NULL) {
         return;
     }
-    destroyTask(t);
+    EBCL_destroyTask(t);
     free(t);
 }
 
-static void destroyTask(ebcl_Task *t) {
+static void EBCL_destroyTask(ebcl_Task_t *t) {
     if (t == NULL) return;
     free(t->name);
     if (t->cmds != NULL) {
@@ -685,7 +684,7 @@ static void destroyTask(ebcl_Task *t) {
     free(t->deps);
 }
 
-static int findInTaskDB(ssize_t *idx, const char *taskName, const ebcl_TaskDB *in) {
+static int EBCL_findInTaskDb(ssize_t *idx, const char *taskName, const ebcl_TaskDB_t *in) {
     if (taskName == NULL || in == NULL) {
         return -1;
     }
@@ -703,7 +702,7 @@ static int findInTaskDB(ssize_t *idx, const char *taskName, const ebcl_TaskDB *i
     return -1;
 }
 
-static bool taskReady(const ebcl_Task *t) {
+static bool EBCL_taskReady(const ebcl_Task_t *t) {
     if (t == NULL) {
         return false;
     }

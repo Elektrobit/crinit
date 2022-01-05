@@ -14,7 +14,15 @@
 #include <errno.h>
 #include <stdio.h>
 
+/**
+ * Maximum size of prefix set with EBCL_setPrintPrefix()
+ */
 #define EBCL_PRINT_PREFIX_MAX_LEN 32
+
+/**
+ * Default prefix to put in front of log/info/error messages.
+ */
+#define EBCL_CRINIT_PRINT_PREFIX "[CRINIT] "
 
 /**
  * Set prefix to put in front of error and info message lines.

@@ -11,16 +11,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "crinit.h"
 #include "logio.h"
 #include "taskdb.h"
 
 /**
- * Print out the contents of an ebcl_Task structure in a readable format using EBCL_infoPrint().
+ * Print out the contents of an ebcl_Task_t structure in a readable format using EBCL_infoPrint().
  *
  * @param t  The task to be printed.
  */
-static void taskPrint(const ebcl_Task *t) {
+static void EBCL_taskPrint(const ebcl_Task_t *t) {
     EBCL_infoPrint("---------------");
     EBCL_infoPrint("Data Structure:");
     EBCL_infoPrint("---------------");
@@ -55,7 +54,7 @@ static void taskPrint(const ebcl_Task *t) {
  */
 int main(int argc, char *argv[], char *envp[]) {
     for (int n = 1; n < argc; n++) {
-        ebcl_ConfKvList *c;
+        ebcl_ConfKvList_t *c;
         if (EBCL_parseConf(&c, argv[n]) == -1) {
             EBCL_errPrint("Could not parse file \'%s\'.", argv[n]);
             return EXIT_FAILURE;
@@ -64,7 +63,7 @@ int main(int argc, char *argv[], char *envp[]) {
         EBCL_infoPrint("---------");
         EBCL_infoPrint("Contents:");
         EBCL_infoPrint("---------");
-        ebcl_ConfKvList *runner = c;
+        ebcl_ConfKvList_t *runner = c;
         do {
             if (runner->key != NULL && runner->val != NULL) {
                 if (strncmp(runner->key, "COMMAND", 7) == 0) {
@@ -88,7 +87,7 @@ int main(int argc, char *argv[], char *envp[]) {
         } while (runner != NULL);
         EBCL_infoPrint("");
         EBCL_infoPrint("Will now attempt to extract a Task out of the config.");
-        ebcl_Task *t = NULL;
+        ebcl_Task_t *t = NULL;
         if (EBCL_taskCreateFromConfKvList(&t, c) == -1) {
             EBCL_errPrint("Could not extract task from ConfKvList.");
             EBCL_freeConfList(c);
@@ -97,16 +96,16 @@ int main(int argc, char *argv[], char *envp[]) {
         EBCL_freeConfList(c);
 
         EBCL_infoPrint("Task extracted without error.");
-        taskPrint(t);
+        EBCL_taskPrint(t);
 
         EBCL_infoPrint("Will now attempt to duplicate the task and print out its (hopefully equal) contents.");
-        ebcl_Task *u = NULL;
+        ebcl_Task_t *u = NULL;
         if (EBCL_taskDup(&u, t) == -1) {
             EBCL_errPrint("Could not duplicate the task.");
             return EXIT_FAILURE;
         }
         EBCL_freeTask(t);
-        taskPrint(u);
+        EBCL_taskPrint(u);
         EBCL_freeTask(u);
     }
     EBCL_infoPrint("Done.");

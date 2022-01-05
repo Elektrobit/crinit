@@ -24,7 +24,7 @@ typedef enum {
     EBCL_GLOBOPT_TASKDIR,    ///< TASKDIR global option.
     EBCL_GLOBOPT_SHDGRACEP,  ///< SHUTDOWN_GRACE_PERIOD_US global option
     EBCL_GLOBOPT_END         ///< Marker for end of enum, used to calculate number of elements.
-} ebcl_GlobOptKey;
+} ebcl_GlobOptKey_t;
 
 #define EBCL_GLOBOPT_DEFAULT_DEBUG false            ///< Default value for DEBUG global option.
 #define EBCL_GLOBOPT_DEFAULT_FILESIGS true          ///< Default value for FILE_SIGS_NEEDED global option.
@@ -66,7 +66,7 @@ void EBCL_globOptDestroy(void);
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_globOptSet(ebcl_GlobOptKey key, const void *val, size_t sz);
+int EBCL_globOptSet(ebcl_GlobOptKey_t key, const void *val, size_t sz);
 
 /**
  * Retrieves a global option value.
@@ -82,7 +82,7 @@ int EBCL_globOptSet(ebcl_GlobOptKey key, const void *val, size_t sz);
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_globOptGet(ebcl_GlobOptKey key, void *val, size_t sz);
+int EBCL_globOptGet(ebcl_GlobOptKey_t key, void *val, size_t sz);
 
 /**
  * Function macro to store a bool type option value using EBCL_globOptSet().
@@ -131,7 +131,7 @@ int EBCL_globOptGet(ebcl_GlobOptKey key, void *val, size_t sz);
  *
  * @return 0 on success, -1 on error
  */
-int EBCL_globOptSetString(ebcl_GlobOptKey key, const char *str);
+int EBCL_globOptSetString(ebcl_GlobOptKey_t key, const char *str);
 
 /**
  * Retrieves a string value stores for a global option.
@@ -146,6 +146,6 @@ int EBCL_globOptSetString(ebcl_GlobOptKey key, const char *str);
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_globOptGetString(ebcl_GlobOptKey key, char **str);
+int EBCL_globOptGetString(ebcl_GlobOptKey_t key, char **str);
 
 #endif /* __GLOBOPT_H__ */

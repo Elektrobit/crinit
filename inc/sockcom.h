@@ -36,12 +36,12 @@ int EBCL_crinitConnect(int *sockFd, const char *sockFile);
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_crinitSend(int sockFd, const ebcl_RtimCmd *cmd);
+int EBCL_crinitSend(int sockFd, const ebcl_RtimCmd_t *cmd);
 /**
  * Receive a response from Crinit.
  *
  * Receives a string using the same protocol as sendStr()/recvStr() in notiserv.c and then uses EBCL_parseRtimCmd() to
- * generate an equivalent ebcl_RtimCmd.
+ * generate an equivalent ebcl_RtimCmd_t.
  *
  * First, a binary size_t with the string size is received, memory allocation made accordingly, and then the string
  * itself in a second message/packet is received.
@@ -54,6 +54,6 @@ int EBCL_crinitSend(int sockFd, const ebcl_RtimCmd *cmd);
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_crinitRecv(int sockFd, ebcl_RtimCmd *res);
+int EBCL_crinitRecv(int sockFd, ebcl_RtimCmd_t *res);
 
 #endif /* __SOCKCOM_H__ */
