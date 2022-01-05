@@ -7,10 +7,11 @@ ARG GID=1000
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
  && apt-get install -y sudo locales vim screen libncurses-dev \
-    build-essential git \
+    build-essential git python3-minimal \
     gcc-aarch64-linux-gnu \
     rpm \
     doxygen graphviz plantuml \
+    clang llvm clang-tidy bear \
  && rm -rf /var/lib/apt/lists/*
 
 RUN locale-gen en_US.UTF-8 \
