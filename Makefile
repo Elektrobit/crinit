@@ -23,12 +23,13 @@ IMGS = $(addprefix $(IMGDIR)/, notiserv_sock_comm_seq.svg  sock_comm_str.svg)
 CFLAGS += -O2 -std=c99 -D_DEFAULT_SOURCE -Wall -Wswitch-enum -Werror -pedantic -fstack-protector-strong -ffunction-sections -fdata-sections -D_FORTIFY_SOURCE=2 -I$(INCDIR)
 LDFLAGS += -L$(LIBDIR) -Wl,--gc-sections
 
+GIT_REVISION = $(shell git rev-parse --short HEAD)
+VERSION = $(shell cat VERSION)
+
 LIBCFLAGS := -fPIC -fvisibility=hidden $(CFLAGS)
-LIBLDFLAGS := $(LDFLAGS)
+LIBLDFLAGS := $(LDFLAGS) -Wl,-soname,libcrinit-client.so.$(VERSION)
 
 LIBS = -pthread
-
-GIT_REVISION = $(shell git rev-parse --short HEAD)
 
 DIRS = $(OBJDIR) $(LIBOBJDIR) $(LIBDIR)
 $(shell mkdir -p $(DIRS))
@@ -50,10 +51,13 @@ crinit_parsecheck: $(OBJDIR)/crinit_parsecheck.o $(OBJDIR)/confparse.o $(OBJDIR)
 crinit-ctl: $(OBJDIR)/crinit-ctl.o $(OBJDIR)/logio.o lib/libcrinit-client.so
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(filter-out %.so, $^) $(LIBS) -lcrinit-client
 
-lib/libcrinit-client.so: ${LIBOBJS}
+lib/libcrinit-client.so.$(VERSION): ${LIBOBJS}
 	$(CC) -shared $(LIBCFLAGS) -o $@ $^ $(LIBLDFLAGS)
 	@echo "Symbols in library:"
 	@nm -D $@
+
+lib/libcrinit-client.so: lib/libcrinit-client.so.$(VERSION)
+	ln -sr lib/libcrinit-client.so.$(VERSION) lib/libcrinit-client.so
 
 $(OBJDIR)/%.o : $(SRCDIR)/%.c
 	$(CC) -c -o $@ $< $(CFLAGS)
@@ -71,8 +75,14 @@ doxygen: $(IMGS)
 
 rpmbuild: clean
 	mkdir -p packaging/rpmbuild/SOURCES
-	tar czf packaging/rpmbuild/SOURCES/crinit-git-$(GIT_REVISION).tar.gz src/ inc/ config/ images/ Makefile Doxyfile README.md
-	cd packaging/rpmbuild && rpmbuild --target $(RPM_TARGET) --define "_topdir $(shell pwd)/packaging/rpmbuild" --define "gitrev_ $(GIT_REVISION)" -v -ba SPECS/crinit-git.spec
+	tar czf packaging/rpmbuild/SOURCES/crinit-$(VERSION)git$(GIT_REVISION).tar.gz \
+		src/ inc/ config/ images/ VERSION Makefile Doxyfile README.md
+	cd packaging/rpmbuild && \
+		rpmbuild --target $(RPM_TARGET) \
+		    --define "_topdir $(shell pwd)/packaging/rpmbuild" \
+		    --define "crinit_version_ $(VERSION)" \
+		    --define "gitrev_ $(GIT_REVISION)" \
+		    -v -ba SPECS/crinit-git.spec
 
 clean:
 	rm -rvf $(BINS) $(DIRS) $(IMGS)
