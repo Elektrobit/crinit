@@ -14,6 +14,11 @@
  *              '-d/--override-deps <dependency-list>' - Will override the DEPENDS field of the config file
  *                   with what is given as the parameter.
  *              '-i/--ignore-deps' - Shortcut for '--override-deps ""'.
+ *  addseries [-f/--overwrite] <PATH>
+ *            - Will load a series file from <PATH>. Options set in the new series file take precedence over
+ *              current settings.
+ *              '-f/--overwrite' - Lets Crinit know it is fine to overwrite if it has already loaded tasks
+ *                   with the same name as those in the new series file.
  *     enable <TASK_NAME>
  *            - Removes dependency '@ctl:enable' from the dependency list of <TASK_NAME> if it is present.
  *    disable <TASK_NAME>
@@ -146,10 +151,24 @@ int main(int argc, char *argv[]) {
         }
         return EXIT_SUCCESS;
     }
-
+    if (strcmp(getoptArgv[0], "addseries") == 0) {
+        if (getoptArgv[optind] == NULL) {
+            EBCL_printUsage(getoptArgv[0]);
+            return EXIT_FAILURE;
+        }
+        if (!EBCL_isAbsPath(getoptArgv[optind])) {
+            EBCL_errPrint("The path to the series config to load must be absolute.");
+            return EXIT_FAILURE;
+        }
+        if (EBCL_crinitSeriesAdd(getoptArgv[optind], overwrite) == -1) {
+            EBCL_errPrint("Loading series file \'%s\' failed.", getoptArgv[optind]);
+            return EXIT_FAILURE;
+        }
+        return EXIT_SUCCESS;
+    }
     if (strcmp(getoptArgv[0], "enable") == 0) {
         if (getoptArgv[optind] == NULL) {
-            EBCL_printUsage(argv[0]);
+            EBCL_printUsage(getoptArgv[0]);
             return EXIT_FAILURE;
         }
         if (EBCL_crinitTaskEnable(getoptArgv[optind]) == -1) {
@@ -277,6 +296,11 @@ static void EBCL_printUsage(char *prgmPath) {
         "               \'-d/--override-deps <dependency-list>\' - Will override the DEPENDS field of the config file\n"
         "                    with what is given as the parameter.\n"
         "               \'-i/--ignore-deps\' - Shortcut for \'--override-deps \"\"\'.\n"
+        "   addseries [-f/--overwrite] <PATH>\n"
+        "             - Will load a series file from <PATH>. Options set in the new series file take precedence over\n"
+        "               current settings.\n"
+        "               \'-f/--overwrite\' - Lets Crinit know it is fine to overwrite if it has already loaded tasks\n"
+        "                    with the same name as those in the new series file.\n"
         "      enable <TASK_NAME>\n"
         "             - Removes dependency \'@ctl:enable\' from the dependency list of <TASK_NAME> if it is present.\n"
         "     disable <TASK_NAME>\n"

@@ -182,4 +182,18 @@ void EBCL_freeArgvArray(char **inArgv);
  */
 ssize_t EBCL_confListKeyGetMaxIdx(const ebcl_ConfKvList_t *c, const char *key);
 
+/**
+ * Parse a series file.
+ *
+ * Will return the task config files to be loaded in \a series. Will also set any global options specified in the series
+ * file.
+ *
+ * @param seriesLen  Returns how many task configs there are in \a series.
+ * @param series     Returns the paths to the task configs specified in the series file.
+ * @param filename   The path to the series file to load.
+ *
+ * @return 0 on success, -1 on failure
+ */
+int EBCL_loadSeriesConf(int *seriesLen, char ***series, const char *filename);
+
 #endif /* __CONFPARSE_H__ */

@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "globopt.h"
 #include "logio.h"
 
 typedef enum { STATE_UNQUOTED, STATE_QUOTED } ebcl_QuotingState_t;
@@ -55,6 +56,14 @@ static int EBCL_quoteProtectTokens(char *str, char quoteDelim, char token, char 
  * @param placeholder  The placeholder character to be swapped out for \a token.
  */
 static void EBCL_quoteRestoreTokens(char *str, char token, char placeholder);
+/**
+ * Check if \a path is absolute (i.e. starts with '/').
+ *
+ * @param path  The path to check.
+ *
+ * @return true if path is absolute, false otherwise
+ */
+static inline bool EBCL_isAbsPath(const char *path);
 
 /* Parses config file and fills confList. confList is dynamically allocated and needs to be freed
  * using EBCL_freeConfList() */
@@ -445,6 +454,66 @@ ssize_t EBCL_confListKeyGetMaxIdx(const ebcl_ConfKvList_t *c, const char *key) {
     return (ssize_t)maxIdx;
 }
 
+int EBCL_loadSeriesConf(int *seriesLen, char ***series, const char *filename) {
+    if (seriesLen == NULL || series == NULL || !EBCL_isAbsPath(filename)) {
+        EBCL_errPrint("Parameters must not be NULL and filename must be an absolute path.");
+        return -1;
+    }
+    ebcl_ConfKvList_t *c;
+    if (EBCL_parseConf(&c, filename) == -1) {
+        EBCL_errPrint("Could not parse file \'%s\'.", filename);
+        return -1;
+    }
+    if (EBCL_confListExtractArgvArray(seriesLen, series, "TASKS", c, true) == -1) {
+        EBCL_errPrint("Could not extract value for key \'TASKS\' from \'%s\'.", filename);
+        return -1;
+    }
+
+    bool confDbg = false;
+    if (EBCL_confListExtractBoolean(&confDbg, EBCL_GLOBOPT_KEYSTR_DEBUG, c) == 0) {
+        if (EBCL_globOptSetBoolean(EBCL_GLOBOPT_DEBUG, &confDbg) == -1) {
+            EBCL_errPrint("Could not store global boolean option value for \'%s\'.", EBCL_GLOBOPT_KEYSTR_DEBUG);
+            EBCL_freeConfList(c);
+            EBCL_freeArgvArray(*series);
+            return -1;
+        }
+    }
+
+    bool confFsigs = false;
+    if (EBCL_confListExtractBoolean(&confDbg, EBCL_GLOBOPT_KEYSTR_FILESIGS, c) == 0) {
+        if (EBCL_globOptSetBoolean(EBCL_GLOBOPT_FILESIGS, &confFsigs) == -1) {
+            EBCL_errPrint("Could not store global boolean option value for \'%s\'.", EBCL_GLOBOPT_KEYSTR_FILESIGS);
+            EBCL_freeConfList(c);
+            EBCL_freeArgvArray(*series);
+            return -1;
+        }
+    }
+
+    char *taskDir = NULL;
+    if (EBCL_confListGetVal(&taskDir, EBCL_GLOBOPT_KEYSTR_TASKDIR, c) == 0) {
+        if (EBCL_globOptSetString(EBCL_GLOBOPT_TASKDIR, taskDir) == -1) {
+            EBCL_errPrint("Could not store global string option values for \'%s\'.", EBCL_GLOBOPT_KEYSTR_TASKDIR);
+            EBCL_freeConfList(c);
+            EBCL_freeArgvArray(*series);
+            return -1;
+        }
+    }
+
+    unsigned long long shdnGracePeriodUs = 0;
+    if (EBCL_confListExtractUnsignedLL(&shdnGracePeriodUs, 10, EBCL_GLOBOPT_KEYSTR_SHDGRACEP, c) == 0) {
+        if (EBCL_globOptSetUnsignedLL(EBCL_GLOBOPT_SHDGRACEP, &shdnGracePeriodUs) == -1) {
+            EBCL_errPrint("Could not store global unsigned long long option values for \'%s\'.",
+                          EBCL_GLOBOPT_KEYSTR_SHDGRACEP);
+            EBCL_freeConfList(c);
+            EBCL_freeArgvArray(*series);
+            return -1;
+        }
+    }
+
+    EBCL_freeConfList(c);
+    return 0;
+}
+
 static void EBCL_trimWhitespace(char **str) {
     if (*str == NULL) {
         return;
@@ -506,3 +575,9 @@ static void EBCL_quoteRestoreTokens(char *str, char token, char placeholder) {
         str++;
     }
 }
+
+static inline bool EBCL_isAbsPath(const char *path) {
+    if (path == NULL) return false;
+    return (path[0] == '/');
+}
+
