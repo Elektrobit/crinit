@@ -1,0 +1,13 @@
+# Task config 1/3 to use with add.series
+
+NAME = task_add_chain1
+
+COMMAND[] = /bin/echo "Task from added series file 1/3."
+
+DEPENDS = ""
+
+RESPAWN = NO
+# features below not yet implemented
+EXEC = NO
+QM_JAIL = NO
+SIG = ""
