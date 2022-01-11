@@ -874,7 +874,7 @@ static inline int genUnMountList(UnMountList **ml, bool *rootfsIsRo) {
             }
             // and check if it's already mounted read-only.
             runner = strtok_r(NULL, " ", &strtokState);
-            if (runner == NULL || strncmp(runner, "ro,", 3) != 0) {
+            if (runner == NULL || (strncmp(runner, "ro,", 3) != 0 && strncmp(runner, "ro ", 3) != 0)) {
                 pList->target[0] = '\0';
                 continue;
             }
