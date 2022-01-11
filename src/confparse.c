@@ -308,10 +308,19 @@ int EBCL_confListExtractUnsignedLL(unsigned long long *out, int base, const char
         EBCL_errPrint("Could not get value for \"%s\".", key);
         return -1;
     }
+    if (*val == '\0') {
+        EBCL_errPrint("Could not convert string to unsigned long long. String is empty.");
+        return -1;
+    }
+    char *endptr = NULL;
     errno = 0;
-    *out = strtoull(val, NULL, base);
-    if(errno != 0) {
+    *out = strtoull(val, &endptr, base);
+    if (errno != 0) {
         EBCL_errnoPrint("Could not convert string to unsigned long long.");
+        return -1;
+    }
+    if (*endptr != '\0') {
+        EBCL_errPrint("Could not convert string to unsigned long long. Non-numeric characters present in string.");
         return -1;
     }
     return 0;
