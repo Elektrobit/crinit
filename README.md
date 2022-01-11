@@ -27,9 +27,9 @@ The central Task Data Structure (`ebcl_TaskDB` in `taskdb.h`), Config Parser (`c
 (`crinit-client.h/.c`) have been preliminarily implemented and are functioning. In addition, the implementation contains
 a simple encapsulated storage for global options (`globopt.h/.c`), some minimal PID 1 setup code which cannot be
 "sourced out" into a task configuration (`minsetup.h/.c`), debug/log output functionality (`logio.h/.c`), a CLI 
-control program showcasing the the client API (`crinit-ctl.c`) and implementations of the `poweroff` and `reboot` system
-commands, also based on the client API. For detailed explanations of the inner workings please refer to the
-Doxygen-generated documentation of the individual header and source files.
+control program showcasing the the client API (`crinit-ctl.c`) including `reboot` and `poweroff` functionality. 
+For detailed explanations of the inner workings please refer to the Doxygen-generated documentation of the individual
+header and source files.
 
 The client API is documented in the Doxygen documentation of `crinit-client.h`. The API is implemented as a shared
 library (`libcrinit-client.so`).
@@ -150,6 +150,11 @@ USAGE: crinit-ctl <ACTION> [OPTIONS] <PARAMETER> [PARAMETERS...]
       notify <TASK_NAME> <"SD_NOTIFY_STRING">
              - Will send an sd_notify-style status report to Crinit. Only MAINPID and READY are
                implemented. See the sd_notify documentation for their meaning.
+      reboot
+             - Will request Crinit to perform a graceful system reboot. crinit-ctl can be symlinked to
+               reboot as a shortcut which will invoke this command automatically.
+    poweroff
+             - Will request Crinit to perform a graceful system reboot. crinit-ctl can be symlinked to                                                                                                                                                              poweroff as a shortcut which will invoke this command automatically.
   General Options:
         --verbose/-v - Be verbose.
         --help/-h    - Print this help.

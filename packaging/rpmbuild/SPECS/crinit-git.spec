@@ -55,8 +55,8 @@ install -m 0755 lib/*.so  %{buildroot}/%{_libdir}
 
 # shutdown
 mkdir -p %{buildroot}/sbin
-install -m 0755 poweroff %{buildroot}/sbin
-install -m 0755 reboot %{buildroot}/sbin
+ln -sf /%{_bindir}/crinit-ctl %{buildroot}/sbin/poweroff
+ln -sf /%{_bindir}/crinit-ctl %{buildroot}/sbin/reboot
 
 # conf-example
 mkdir -p %{buildroot}/%{_sysconfdir}/crinit/test
