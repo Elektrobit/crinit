@@ -848,9 +848,9 @@ static inline int genUnMountList(UnMountList **ml, bool *rootfsIsRo) {
         return -1;
     }
     pList->next = NULL;
-    while (fgets(pList->target, PATH_MAX, mountListStream) != NULL) {
+    while (fgets(pList->target, sizeof(pList->target), mountListStream) != NULL) {
         char *strtokState = NULL;
-        pList->target[PATH_MAX - 1] = '\0';
+        pList->target[sizeof(pList->target) - 1] = '\0';
         // Filter out things like tmpfs, proc, sysfs mounted from 'none'.
         char *runner = strtok_r(pList->target, " ", &strtokState);
         if (runner == NULL || strcmp(runner, "none") == 0) {
