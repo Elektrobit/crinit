@@ -208,7 +208,7 @@ int EBCL_taskDBGetTaskPID(ebcl_TaskDB *ctx, pid_t *pid, const char *taskName);
  *
  * @return 0 on success, -1 on error
  */
-int EBCL_taskDBSetSpawnFunc(ebcl_TaskDB *ctx, int (*spawnFunc)(ebcl_TaskDB *ctx, const ebcl_Task *)); 
+int EBCL_taskDBSetSpawnFunc(ebcl_TaskDB *ctx, int (*spawnFunc)(ebcl_TaskDB *ctx, const ebcl_Task *));
 
 /**
  * Run ebcl_TaskDB::spawnFunc for each startable task in a task database.

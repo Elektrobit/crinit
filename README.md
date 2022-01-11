@@ -154,7 +154,8 @@ USAGE: crinit-ctl <ACTION> [OPTIONS] <PARAMETER> [PARAMETERS...]
              - Will request Crinit to perform a graceful system reboot. crinit-ctl can be symlinked to
                reboot as a shortcut which will invoke this command automatically.
     poweroff
-             - Will request Crinit to perform a graceful system reboot. crinit-ctl can be symlinked to                                                                                                                                                              poweroff as a shortcut which will invoke this command automatically.
+             - Will request Crinit to perform a graceful system reboot. crinit-ctl can be symlinked to
+               poweroff as a shortcut which will invoke this command automatically.
   General Options:
         --verbose/-v - Be verbose.
         --help/-h    - Print this help.
