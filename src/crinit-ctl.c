@@ -78,6 +78,10 @@ int main(int argc, char *argv[]) {
     EBCL_setPrintPrefix("");
 
     if (strcmp(basename(argv[0]), "poweroff") != 0 && strcmp(basename(argv[0]), "reboot") != 0) {
+        if (argc < 2) {
+            printUsage(argv[0]);
+            return EXIT_FAILURE;
+        }
         getoptArgc--;
         getoptArgv++;
     }
