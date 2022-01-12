@@ -236,6 +236,17 @@ static int loadSeriesConf(int *seriesLen, char ***series, const char *filename) 
         }
     }
 
+    unsigned long long shdnGracePeriodUs = 0;
+    if (EBCL_confListExtractUnsignedLL(&shdnGracePeriodUs, 10, EBCL_GLOBOPT_KEYSTR_SHDGRACEP, c) == 0) {
+        if (EBCL_globOptSetUnsignedLL(EBCL_GLOBOPT_SHDGRACEP, &shdnGracePeriodUs) == -1) {
+            EBCL_errPrint("Could not store global unsigned long long option values for \'%s\'.",
+                          EBCL_GLOBOPT_KEYSTR_SHDGRACEP);
+            EBCL_freeConfList(c);
+            EBCL_freeArgvArray(*series);
+            return -1;
+        }
+    }
+
     EBCL_freeConfList(c);
     return 0;
 }

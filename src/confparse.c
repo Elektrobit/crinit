@@ -298,6 +298,34 @@ int EBCL_confListExtractBoolean(bool *out, const char *key, const ebcl_ConfKvLis
     return -1;
 }
 
+int EBCL_confListExtractUnsignedLL(unsigned long long *out, int base, const char *key, const ebcl_ConfKvList *in) {
+    if (key == NULL || in == NULL || out == NULL) {
+        EBCL_errPrint("Input parameters must not be NULL.");
+        return -1;
+    }
+    char *val = NULL;
+    if (EBCL_confListGetVal(&val, key, in) == -1) {
+        EBCL_errPrint("Could not get value for \"%s\".", key);
+        return -1;
+    }
+    if (*val == '\0') {
+        EBCL_errPrint("Could not convert string to unsigned long long. String is empty.");
+        return -1;
+    }
+    char *endptr = NULL;
+    errno = 0;
+    *out = strtoull(val, &endptr, base);
+    if (errno != 0) {
+        EBCL_errnoPrint("Could not convert string to unsigned long long.");
+        return -1;
+    }
+    if (*endptr != '\0') {
+        EBCL_errPrint("Could not convert string to unsigned long long. Non-numeric characters present in string.");
+        return -1;
+    }
+    return 0;
+}
+
 int EBCL_confListExtractArgvArrayWithIdx(int *outArgc, char ***outArgv, const char *key, size_t keyArrIndex,
                                          const ebcl_ConfKvList *in, bool double_quoting) {
     if (key == NULL || in == NULL || outArgc == NULL || outArgv == NULL) {

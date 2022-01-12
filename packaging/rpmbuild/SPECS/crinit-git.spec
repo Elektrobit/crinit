@@ -9,6 +9,13 @@ License: Closed
 %description
 The EB BaseOS Configurable Rootfs Init Daemon including the client API shared library and the crinit-ctl CLI interface.
 
+%package shutdown
+Summary: EB BaseOS poweroff/reboot
+Group: System/Base
+
+%description shutdown
+Reboot and poweroff binaries using Crinit's client API.
+
 %package conf-example
 Summary: EB BaseOS example/test configuration files
 Group: System/Base
@@ -46,6 +53,11 @@ install -m 0755 crinit %{buildroot}/%{_bindir}
 install -m 0755 crinit-ctl  %{buildroot}/%{_bindir}
 install -m 0755 lib/*.so  %{buildroot}/%{_libdir}
 
+# shutdown
+mkdir -p %{buildroot}/sbin
+ln -sf /%{_bindir}/crinit-ctl %{buildroot}/sbin/poweroff
+ln -sf /%{_bindir}/crinit-ctl %{buildroot}/sbin/reboot
+
 # conf-example
 mkdir -p %{buildroot}/%{_sysconfdir}/crinit/test
 install -D -m 0644 config/test/*.crinit %{buildroot}/%{_sysconfdir}/crinit/test
@@ -68,6 +80,10 @@ install -D -m 0644 config/s32g/*.series %{buildroot}/%{_sysconfdir}/crinit
 %{_bindir}/crinit
 %{_bindir}/crinit-ctl
 %{_libdir}/*.so
+
+%files shutdown
+/sbin/poweroff
+/sbin/reboot
 
 %files conf-example
 %{_sysconfdir}/crinit/test/*.crinit

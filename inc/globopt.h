@@ -18,20 +18,24 @@
  * Type to specify a global option (set in the series file)
  */
 typedef enum {
-    EBCL_GLOBOPT_START,     ///< Marker for beginning of enum, used to calculate number of elements.
-    EBCL_GLOBOPT_DEBUG,     ///< DEBUG global option.
-    EBCL_GLOBOPT_FILESIGS,  ///< FILE_SIGS_NEEDED global option (function unimplemented).
-    EBCL_GLOBOPT_TASKDIR,   ///< TASKDIR global option.
-    EBCL_GLOBOPT_END        ///< Marker for end of enum, used to calculate number of elements.
+    EBCL_GLOBOPT_START,      ///< Marker for beginning of enum, used to calculate number of elements.
+    EBCL_GLOBOPT_DEBUG,      ///< DEBUG global option.
+    EBCL_GLOBOPT_FILESIGS,   ///< FILE_SIGS_NEEDED global option (function unimplemented).
+    EBCL_GLOBOPT_TASKDIR,    ///< TASKDIR global option.
+    EBCL_GLOBOPT_SHDGRACEP,  ///< SHUTDOWN_GRACE_PERIOD_US global option
+    EBCL_GLOBOPT_END         ///< Marker for end of enum, used to calculate number of elements.
 } ebcl_GlobOptKey;
 
 #define EBCL_GLOBOPT_DEFAULT_DEBUG false            ///< Default value for DEBUG global option.
 #define EBCL_GLOBOPT_DEFAULT_FILESIGS true          ///< Default value for FILE_SIGS_NEEDED global option.
 #define EBCL_GLOBOPT_DEFAULT_TASKDIR "/etc/crinit"  ///< Default value for TASKDIR global option.
+#define EBCL_GLOBOPT_DEFAULT_SHDGRACEP 100000ULL    ///< Default value for SHUTDOWN_GRACE_PERIOD_US global option
 
 #define EBCL_GLOBOPT_KEYSTR_DEBUG "DEBUG"                ///< Config file key for DEBUG global option.
 #define EBCL_GLOBOPT_KEYSTR_FILESIGS "FILE_SIGS_NEEDED"  ///< Config file key for FILE_SIGS_NEEDED global option.
 #define EBCL_GLOBOPT_KEYSTR_TASKDIR "TASKDIR"            ///< Config file key for TASKDIR global option.
+#define EBCL_GLOBOPT_KEYSTR_SHDGRACEP \
+    "SHUTDOWN_GRACE_PERIOD_US"  ///< Config file key for SHUTDOWN_GRACE_PERIOD_US global option
 
 /**
  * Sets global options to their default values.
@@ -106,6 +110,15 @@ int EBCL_globOptGet(ebcl_GlobOptKey key, void *val, size_t sz);
  * Function macro to retrieve an unsigned long int type option value EBCL_globOptGet().
  */
 #define EBCL_globOptGetUnsigned(key, pVal) EBCL_globOptGet(key, pVal, sizeof(unsigned long))
+
+/**
+ * Function macro to store an unsigned long long type option value using EBCL_globOptSet().
+ */
+#define EBCL_globOptSetUnsignedLL(key, pVal) EBCL_globOptSet(key, pVal, sizeof(unsigned long long))
+/**
+ * Function macro to retrieve an unsigned long long type option value EBCL_globOptGet().
+ */
+#define EBCL_globOptGetUnsignedLL(key, pVal) EBCL_globOptGet(key, pVal, sizeof(unsigned long long))
 
 /**
  * Stores a string value for a global option.

@@ -14,6 +14,11 @@
 #include "rtimopmap.h"
 #include "taskdb.h"
 
+/**
+ * Stack size for the shutdown/reboot handling thread.
+ */
+#define EBCL_RTIMCMD_SHDN_THREAD_STACK_SIZE (PTHREAD_STACK_MIN + 112 * 1024)
+
 #define EBCL_RTIMCMD_RES_OK "RES_OK"    ///< Value of first argument in a positive (successful) response message.
 #define EBCL_RTIMCMD_RES_ERR "RES_ERR"  ///< Value of first argument in a negative (unsuccessful) response message.
 

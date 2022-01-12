@@ -24,10 +24,10 @@ cp lib/*.so $BASEDIR/result/lib/x86_64/
 # build and copy aarch64 binaries
 make clean
 CFLAGS="-mcpu=cortex-a53 -march=armv8-a+crc" CC=aarch64-linux-gnu-gcc make
-cp crinit $BASEDIR/result/bin/aarch64
-cp crinit-ctl $BASEDIR/result/bin/aarch64
-cp crinit_parsecheck $BASEDIR/result/bin/aarch64
-cp lib/*.so $BASEDIR/result/lib/aarch64
+cp crinit $BASEDIR/result/bin/aarch64/
+cp crinit-ctl $BASEDIR/result/bin/aarch64/
+cp crinit_parsecheck $BASEDIR/result/bin/aarch64/
+cp lib/*.so $BASEDIR/result/lib/aarch64/
 
 # build and copy x86-64 rpm
 make clean

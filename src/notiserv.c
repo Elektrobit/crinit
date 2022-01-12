@@ -12,6 +12,7 @@
 #include "notiserv.h"
 
 #include <libgen.h>
+#include <linux/capability.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
@@ -137,6 +138,26 @@ static inline int sendStr(int sockFd, const char *str);
  * @return 0 on success, -1 otherwise
  */
 static inline int recvStr(int sockFd, char **str, struct ucred *passedCreds);
+/**
+ * Checks if given process credentials imply permission to execute remote command.
+ *
+ * @param op           The opcode of the command the process requests to execute.
+ * @param passedCreds  The credentials of the requesting process obtained via SCM_CREDENTIALS.
+ *
+ * @return true if \a passedCreds imply the sending process is permitted to execute \a op. Returns false otherwise, also
+ * on errors.
+ */
+static inline bool checkPerm(ebcl_RtimOp op, const struct ucred *passedCreds);
+/**
+ * Gets capabilities of process specified by PID.
+ *
+ * @param out  Return pointer for capabilities. Note, that the Linux API defines cap_user_data_t as a pointer to
+ *             struct __user_cap_header_struct. The given pointer needs to point to at least two elements.
+ * @param pid  PID of the process from which to get the capabilities.
+ *
+ * @return 0 on success, -1 on error
+ */
+static inline int procCapget(cap_user_data_t out, pid_t pid);
 
 /**
  * Recursive mkdir(), equivalent to `mkdir -p`.
@@ -282,7 +303,7 @@ static void *connThread(void *args) {
             continue;
         }
         free(clientMsg);
-        if (cmd.op != EBCL_RTIMCMD_C_STATUS && msgCreds.uid != 0) {
+        if (!checkPerm(cmd.op, &msgCreds)) {
             EBCL_errPrint("(TID %d) Client does not have permission to issue command.", threadId);
             if (EBCL_buildRtimCmd(&res, cmd.op + 1, 2, EBCL_RTIMCMD_RES_ERR, "Permission denied.") == -1) {
                 EBCL_errPrint("Could not generate response to client.");
@@ -465,5 +486,55 @@ fail:
 
 static inline bool ucredCheckEqual(const struct ucred *a, const struct ucred *b) {
     return (a->pid == b->pid) && (a->uid == b->uid) && (a->gid == b->gid);
+}
+
+static inline bool checkPerm(ebcl_RtimOp op, const struct ucred *passedCreds) {
+    if (passedCreds == NULL) {
+        EBCL_errPrint("Pointer arguments must not be NULL.");
+        return false;
+    }
+
+    struct __user_cap_data_struct capdata[2];
+    switch (op) {
+        case EBCL_RTIMCMD_C_ADDTASK:
+        case EBCL_RTIMCMD_C_ENABLE:
+        case EBCL_RTIMCMD_C_DISABLE:
+        case EBCL_RTIMCMD_C_STOP:
+        case EBCL_RTIMCMD_C_KILL:
+        case EBCL_RTIMCMD_C_RESTART:
+        case EBCL_RTIMCMD_C_NOTIFY:
+            return passedCreds->uid == 0;
+        case EBCL_RTIMCMD_C_STATUS:
+            return true;
+        case EBCL_RTIMCMD_C_SHUTDOWN:
+            if (procCapget(capdata, passedCreds->pid) == -1) {
+                EBCL_errPrint("Could not get process capabilities.");
+                return false;
+            }
+            return (capdata[CAP_TO_INDEX(CAP_SYS_BOOT)].effective & CAP_TO_MASK(CAP_SYS_BOOT)) != 0;
+        case EBCL_RTIMCMD_R_ADDTASK:
+        case EBCL_RTIMCMD_R_ENABLE:
+        case EBCL_RTIMCMD_R_DISABLE:
+        case EBCL_RTIMCMD_R_STOP:
+        case EBCL_RTIMCMD_R_KILL:
+        case EBCL_RTIMCMD_R_RESTART:
+        case EBCL_RTIMCMD_R_NOTIFY:
+        case EBCL_RTIMCMD_R_STATUS:
+        case EBCL_RTIMCMD_R_SHUTDOWN:
+        default:
+            EBCL_errPrint("Unknown or unsupported opcode.");
+            return false;
+    }
+
+    return false;
+}
+
+static inline int procCapget(cap_user_data_t out, pid_t pid) {
+    struct __user_cap_header_struct caphdr = {_LINUX_CAPABILITY_VERSION_3, pid};
+    if (syscall(SYS_capget, &caphdr, out) == -1) {
+        EBCL_errPrint("Could not get capabilities of process with PID %d.", pid);
+        return -1;
+    }
+    return 0;
 }
 

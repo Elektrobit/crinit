@@ -20,7 +20,7 @@ LIBOBJS = $(addprefix $(LIBOBJDIR)/, ${LIBSRCS:.c=.o})
 
 IMGS = $(addprefix $(IMGDIR)/, notiserv_sock_comm_seq.svg  sock_comm_str.svg)
 
-CFLAGS += -O2 -std=c99 -D_DEFAULT_SOURCE -Wall -Werror -pedantic -fstack-protector-strong -ffunction-sections -fdata-sections -D_FORTIFY_SOURCE=2 -I$(INCDIR)
+CFLAGS += -O2 -std=c99 -D_DEFAULT_SOURCE -Wall -Wswitch-enum -Werror -pedantic -fstack-protector-strong -ffunction-sections -fdata-sections -D_FORTIFY_SOURCE=2 -I$(INCDIR)
 LDFLAGS += -L$(LIBDIR) -Wl,--gc-sections
 
 LIBCFLAGS := -fPIC -fvisibility=hidden $(CFLAGS)

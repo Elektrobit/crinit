@@ -347,6 +347,27 @@ LIB_EXPORTED int EBCL_crinitTaskGetStatus(ebcl_TaskState *s, pid_t *pid, const c
     return -1;
 }
 
+LIB_EXPORTED int EBCL_crinitShutdown(int shutdownCmd) {
+    ebcl_RtimCmd cmd, res;
+    char shdCmdStr[16] = {0};
+    snprintf(shdCmdStr, 16, "0x%x", shutdownCmd);
+    if (EBCL_buildRtimCmd(&cmd, EBCL_RTIMCMD_C_SHUTDOWN, 1, shdCmdStr) == -1) {
+        EBCL_errPrint("Could not build RtimCmd to send to Crinit.");
+        return -1;
+    }
+
+    if (crinitXfer(&res, &cmd) == -1) {
+        EBCL_destroyRtimCmd(&cmd);
+        EBCL_errPrint("Could not complete data transfer from/to Crinit.");
+        return -1;
+    }
+    EBCL_destroyRtimCmd(&cmd);
+
+    int ret = crinitResponseCheck(&res, EBCL_RTIMCMD_R_SHUTDOWN);
+    EBCL_destroyRtimCmd(&res);
+    return ret;
+}
+
 static inline int crinitXfer(ebcl_RtimCmd *res, const ebcl_RtimCmd *cmd) {
     if (res == NULL || cmd == NULL) {
         EBCL_errPrint("Pointer arguments must not be NULL");

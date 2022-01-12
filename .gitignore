@@ -1,6 +1,8 @@
 crinit
 crinit_parsecheck
 crinit-ctl
+poweroff
+reboot
 *.o
 doc/
 lib/
