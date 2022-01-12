@@ -795,9 +795,6 @@ static void *shdnThread(void *args) {
     }
     kill(-1, SIGKILL);
     EBCL_dbgInfoPrint("Sending SIGKILL to all processes.");
-    if (gracePeriod(100000ULL) == -1) {
-        EBCL_errPrint("Could not wait an additional 100ms after sending SIGKILL to all processes, continuing anyway.");
-    }
     if (fsPrepareShutdown() == -1) {
         EBCL_errPrint(
             "Could not un- or remount filesystems cleanly, continuing anyway. Some filesystems may be dirty on next "
