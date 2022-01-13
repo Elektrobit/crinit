@@ -115,6 +115,7 @@ LIB_EXPORTED void EBCL_crinitSetSocketPath(const char *sockFile) {
 }
 
 LIB_EXPORTED int sd_notify(int unset_environment, const char *state) {  // NOLINT(readability-identifier-naming)
+                                                                        // Rationale: Naming determined by external API.
     if (state == NULL) {
         EBCL_errPrint("State string must not be NULL");
         return -1;
@@ -142,6 +143,8 @@ LIB_EXPORTED int sd_notify(int unset_environment, const char *state) {  // NOLIN
 }
 
 LIB_EXPORTED int sd_notifyf(int unset_environment, const char *format, ...) {  // NOLINT(readability-identifier-naming)
+                                                                               // Rationale: Naming determined by
+                                                                               //            external API.
     if (format == NULL) {
         EBCL_errPrint("Format string must not be NULL");
         return -1;
