@@ -37,7 +37,7 @@ pipeline {
                 stage ('clang-tidy') {
                     steps {
                         sh '''#!/bin/bash -xe
-                          ci/cltidy.sh
+                          ci/clang-tidy.sh
                         '''
                     }
                 }
