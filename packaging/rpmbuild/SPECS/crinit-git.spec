@@ -1,9 +1,9 @@
 Summary: EB BaseOS Configurable Rootfs Init
 Name: crinit
 Group: System/Base
-Version: 0.2git%{gitrev_}
+Version: %{crinit_version_}git%{gitrev_}
 Release: 1%{?dist}
-Source0: crinit-git-%{gitrev_}.tar.gz
+Source0: crinit-%{crinit_version_}git%{gitrev_}.tar.gz
 License: Closed
 
 %description
@@ -34,11 +34,11 @@ The configuration files for the EB BaseOS Configurable Rootfs Init Daemon used o
 %endif
 
 %package devel
-Summary: EB BaseOS Configurable Rootfs Init - Client development headers
+Summary: EB BaseOS Configurable Rootfs Init - Client development files
 Group:  Development/Languages/C and C++
 
 %description devel
-Development headers for client programs willing to use the client API of the Configurable Rootfs Init Daemon.
+Development files for client programs willing to use the client API of the Configurable Rootfs Init Daemon.
 
 %prep
 %setup -q -c
@@ -51,7 +51,7 @@ mkdir -p %{buildroot}/%{_bindir}
 mkdir -p %{buildroot}/%{_libdir}
 install -m 0755 crinit %{buildroot}/%{_bindir}
 install -m 0755 crinit-ctl  %{buildroot}/%{_bindir}
-install -m 0755 lib/*.so  %{buildroot}/%{_libdir}
+install -m 0755 lib/libcrinit-client.so.%{crinit_version_}  %{buildroot}/%{_libdir}
 
 # shutdown
 mkdir -p %{buildroot}/sbin
@@ -65,8 +65,10 @@ install -D -m 0644 config/test/*.series %{buildroot}/%{_sysconfdir}/crinit/test
 
 # devel
 mkdir -p %{buildroot}/%{_includedir}
+mkdir -p %{buildroot}/%{_libdir}
 install -m 0644 inc/crinit-client.h %{buildroot}/%{_includedir}
 install -m 0644 inc/crinit-sdefs.h %{buildroot}/%{_includedir}
+ln -sf /%{_libdir}/libcrinit-client.so.%{crinit_version_}  %{buildroot}/%{_libdir}/libcrinit-client.so
 
 %ifarch aarch64
 # conf-s32g
@@ -79,7 +81,7 @@ install -D -m 0644 config/s32g/*.series %{buildroot}/%{_sysconfdir}/crinit
 %doc README.md
 %{_bindir}/crinit
 %{_bindir}/crinit-ctl
-%{_libdir}/*.so
+%{_libdir}/libcrinit-client.so.%{crinit_version_}
 
 %files shutdown
 /sbin/poweroff
@@ -92,6 +94,7 @@ install -D -m 0644 config/s32g/*.series %{buildroot}/%{_sysconfdir}/crinit
 %files devel
 %{_includedir}/crinit-client.h
 %{_includedir}/crinit-sdefs.h
+%{_libdir}/libcrinit-client.so
 
 %ifarch aarch64
 %files conf-s32g
