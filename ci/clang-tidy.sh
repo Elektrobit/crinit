@@ -20,4 +20,6 @@ cp compile_commands.json result/clang-tidy/
 
 # run clang-tidy
 clang-tidy -dump-config  -header-filter='inc\/*.h' inc/*.h src/*.c > result/clang-tidy/config
+# catch errors even though we use a pipe to tee
+set -o pipefail
 clang-tidy -header-filter='inc\/*.h' inc/*.h src/*.c 2>&1 | tee result/clang-tidy/report
