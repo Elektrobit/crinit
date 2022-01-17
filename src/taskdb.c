@@ -584,6 +584,10 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
     }
 
     for (size_t i = 0; i < pTask->cmdsSize; i++) {
+        if (orig->cmds[i].argc < 1) {
+            EBCL_errPrint("COMMANDs must have at least one argument.");
+            goto fail;
+        }
         pTask->cmds[i].argc = orig->cmds[i].argc;
         pTask->cmds[i].argv = malloc((pTask->cmds[i].argc + 1) * sizeof(char *));
         if (pTask->cmds[i].argv == NULL) {
