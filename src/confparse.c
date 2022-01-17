@@ -121,7 +121,7 @@ int EBCL_parseConf(ebcl_ConfKvList_t **confList, const char *filename) {
         // Handle empty key array subscript
         if (skLen > 2 && sk[skLen - 2] == '[' && sk[skLen - 1] == ']') {
             // If this is a beginning of an array declaration, set counter to 0
-            if (last != pList && (skLen - 2 != strlen(last->key) || strncmp(sk, last->key, skLen - 2))) {
+            if (last != pList && (skLen - 2 != strlen(last->key) || strncmp(sk, last->key, skLen - 2) != 0)) {
                 keyArrayCount = 0;
             }
             autoArray = true;
