@@ -31,20 +31,20 @@
 /**
  * Enum of the available opcodes, including commands and results/responses.
  */
-typedef enum ebcl_RtimOp { EBCL_genOpMap(EBCL_genOpEnum) } ebcl_RtimOp;
+typedef enum ebcl_RtimOp_t { EBCL_genOpMap(EBCL_genOpEnum) } ebcl_RtimOp_t;
 
 /**
  * Structure holding a single mapping between opcode and string representation.
  */
-typedef struct ebcl_RtimOpMap {
-    ebcl_RtimOp opCode;  ///< opcode
-    const char *opStr;   ///< equivalent string representation
-} ebcl_RtimOpMap;
+typedef struct ebcl_RtimOpMap_t {
+    ebcl_RtimOp_t opCode;  ///< opcode
+    const char *opStr;     ///< equivalent string representation
+} ebcl_RtimOpMap_t;
 
 /**
  * The string/opcode map for all opcodes, initialized in rtimopmap.c.
  */
-extern const ebcl_RtimOpMap EBCL_rtimOps[];
+extern const ebcl_RtimOpMap_t EBCL_rtimOps[];
 
 /**
  * Given its string representation, find the correct opcode.
@@ -54,9 +54,9 @@ extern const ebcl_RtimOpMap EBCL_rtimOps[];
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_rtimOpGetByOpStr(ebcl_RtimOp *out, const char *opStr);
+int EBCL_rtimOpGetByOpStr(ebcl_RtimOp_t *out, const char *opStr);
 /**
- * Given an ebcl_RtimOp opcode, obtain its string representation.
+ * Given an ebcl_RtimOp_t opcode, obtain its string representation.
  *
  * The returned point points to static memory that shall not be changed.
  *
@@ -65,7 +65,7 @@ int EBCL_rtimOpGetByOpStr(ebcl_RtimOp *out, const char *opStr);
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_opStrGetByRtimOp(const char **out, ebcl_RtimOp opCode);
+int EBCL_opStrGetByRtimOp(const char **out, ebcl_RtimOp_t opCode);
 /**
  * List available opcodes.
  *

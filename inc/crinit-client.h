@@ -87,13 +87,15 @@ int EBCL_crinitSetVerbose(bool v);
  *
  * @return 0 on success, -1 otherwise
  */
-int sd_notify(int unset_environment, const char *state);
+int sd_notify(int unset_environment, const char *state);  // NOLINT(readability-identifier-naming)
+                                                          // Rationale: Naming determined by external API.
 /**
  * Notifies Crinit of task state changes.
  *
  * Like sd_notify() but uses printf-style formatting for the input string.
  */
-int sd_notifyf(int unset_environment, const char *format, ...);
+int sd_notifyf(int unset_environment, const char *format, ...);  // NOLINT(readability-identifier-naming)
+                                                                 // Rationale: Naming determined by external API.
 
 /**
  * Requests Crinit to add a task from a given task config.
@@ -189,7 +191,7 @@ int EBCL_crinitTaskRestart(const char *taskName);
  *
  * @return 0 on success, -1 on error
  */
-int EBCL_crinitTaskGetStatus(ebcl_TaskState *s, pid_t *pid, const char *taskName);
+int EBCL_crinitTaskGetStatus(ebcl_TaskState_t *s, pid_t *pid, const char *taskName);
 /**
  * Request Crinit to initiate an immediate shutdown or reboot.
  *

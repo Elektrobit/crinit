@@ -24,7 +24,7 @@
  *
  * @return 0 on success, -1 otherwise
  */
-static int waitForRTR(int sockFd);
+static int EBCL_waitForRtr(int sockFd);
 
 int EBCL_crinitConnect(int *sockFd, const char *sockFile) {
     EBCL_dbgInfoPrint("Sending message to server at \'%s\'.", sockFile);
@@ -51,7 +51,7 @@ int EBCL_crinitConnect(int *sockFd, const char *sockFile) {
     }
     EBCL_dbgInfoPrint("Connected to Crinit.");
     EBCL_dbgInfoPrint("Waiting for RTR.");
-    if (waitForRTR(*sockFd) == -1) {
+    if (EBCL_waitForRtr(*sockFd) == -1) {
         EBCL_errPrint("Could not wait for RTR.");
         close(*sockFd);
         return -1;
@@ -60,7 +60,7 @@ int EBCL_crinitConnect(int *sockFd, const char *sockFile) {
     return 0;
 }
 
-int EBCL_crinitSend(int sockFd, const ebcl_RtimCmd *cmd) {
+int EBCL_crinitSend(int sockFd, const ebcl_RtimCmd_t *cmd) {
     if (cmd == NULL) {
         EBCL_errPrint("Pointer arguments must not be NULL");
         return -1;
@@ -89,7 +89,7 @@ int EBCL_crinitSend(int sockFd, const ebcl_RtimCmd *cmd) {
     return 0;
 }
 
-int EBCL_crinitRecv(int sockFd, ebcl_RtimCmd *res) {
+int EBCL_crinitRecv(int sockFd, ebcl_RtimCmd_t *res) {
     if (res == NULL) {
         EBCL_errPrint("Return pointer must not be NULL.");
         return -1;
@@ -137,8 +137,8 @@ int EBCL_crinitRecv(int sockFd, ebcl_RtimCmd *res) {
     return 0;
 }
 
-static int waitForRTR(int sockFd) {
-    char RtrBuf[sizeof("RTR")] = {'\0'};
+static int EBCL_waitForRtr(int sockFd) {
+    char rtrBuf[sizeof("RTR")] = {'\0'};
     size_t recvLen = 0;
     ssize_t bytesRead = recv(sockFd, &recvLen, sizeof(size_t), 0);
     if (bytesRead == -1) {
@@ -155,7 +155,7 @@ static int waitForRTR(int sockFd) {
         return -1;
     }
 
-    bytesRead = recv(sockFd, RtrBuf, recvLen, 0);
+    bytesRead = recv(sockFd, rtrBuf, recvLen, 0);
     if (bytesRead == -1) {
         EBCL_errnoPrint("Could not receive string data message of size %zu Bytes via socket.", recvLen);
         return -1;
@@ -164,10 +164,10 @@ static int waitForRTR(int sockFd) {
         EBCL_errPrint("Received data of unexpected length from Crinit: '%ld' Bytes", bytesRead);
         return -1;
     }
-    RtrBuf[sizeof(RtrBuf) - 1] = '\0';
-    EBCL_dbgInfoPrint("Received message of %d Bytes. Content:\n\'%s\'", bytesRead, RtrBuf);
-    if (strncmp(RtrBuf, "RTR", strlen("RTR")) != 0) {
-        EBCL_errPrint("Received \'%s\' rather than \'RTR\'.", RtrBuf);
+    rtrBuf[sizeof(rtrBuf) - 1] = '\0';
+    EBCL_dbgInfoPrint("Received message of %d Bytes. Content:\n\'%s\'", bytesRead, rtrBuf);
+    if (strncmp(rtrBuf, "RTR", strlen("RTR")) != 0) {
+        EBCL_errPrint("Received \'%s\' rather than \'RTR\'.", rtrBuf);
         return -1;
     }
     return 0;

@@ -16,12 +16,12 @@
 #include "logio.h"
 
 /** Array to hold pointers to the global option values, one pointer per global option. **/
-static void *globOptArr[EBCL_GLOBOPT_END - EBCL_GLOBOPT_START] = {NULL};
+static void *EBCL_globOptArr[EBCL_GLOBOPT_END - EBCL_GLOBOPT_START] = {NULL};
 /** Mutex to synchronize access to globOptArr **/
-static pthread_mutex_t optLock = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t EBCL_optLock = PTHREAD_MUTEX_INITIALIZER;
 
 int EBCL_globOptInitDefault(void) {
-    for (ebcl_GlobOptKey i = EBCL_GLOBOPT_START; i < EBCL_GLOBOPT_END; i++) {
+    for (ebcl_GlobOptKey_t i = EBCL_GLOBOPT_START; i < EBCL_GLOBOPT_END; i++) {
         switch (i) {
             case EBCL_GLOBOPT_DEBUG: {
                 bool def = EBCL_GLOBOPT_DEFAULT_DEBUG;
@@ -61,51 +61,51 @@ int EBCL_globOptInitDefault(void) {
     return 0;
 }
 
-int EBCL_globOptSet(ebcl_GlobOptKey key, const void *val, size_t sz) {
-    if ((errno = pthread_mutex_lock(&optLock)) == -1) {
+int EBCL_globOptSet(ebcl_GlobOptKey_t key, const void *val, size_t sz) {
+    if ((errno = pthread_mutex_lock(&EBCL_optLock)) == -1) {
         EBCL_errnoPrint("Could not wait for global option array mutex lock.");
         return -1;
     }
     size_t idx = (size_t)key;
-    if (globOptArr[idx] != NULL) {
-        free(globOptArr[idx]);
+    if (EBCL_globOptArr[idx] != NULL) {
+        free(EBCL_globOptArr[idx]);
     }
     if (val == NULL || sz == 0) {
-        globOptArr[idx] = NULL;
+        EBCL_globOptArr[idx] = NULL;
     } else {
-        globOptArr[idx] = malloc(sz);
-        if (globOptArr[idx] == NULL) {
+        EBCL_globOptArr[idx] = malloc(sz);
+        if (EBCL_globOptArr[idx] == NULL) {
             EBCL_errPrint("Could not allocate memory for global option.");
-            pthread_mutex_unlock(&optLock);
+            pthread_mutex_unlock(&EBCL_optLock);
             return -1;
         }
-        memcpy(globOptArr[idx], val, sz);
+        memcpy(EBCL_globOptArr[idx], val, sz);
     }
-    pthread_mutex_unlock(&optLock);
+    pthread_mutex_unlock(&EBCL_optLock);
     return 0;
 }
 
-int EBCL_globOptGet(ebcl_GlobOptKey key, void *val, size_t sz) {
+int EBCL_globOptGet(ebcl_GlobOptKey_t key, void *val, size_t sz) {
     if (val == NULL || sz == 0) {
         EBCL_errPrint("Return value pointer must not be NULL and at least 1 Byte must be read.");
         return -1;
     }
-    if ((errno = pthread_mutex_lock(&optLock)) == -1) {
+    if ((errno = pthread_mutex_lock(&EBCL_optLock)) == -1) {
         EBCL_errnoPrint("Could not wait for global option array mutex lock.");
         return -1;
     }
     size_t idx = (size_t)key;
-    if (globOptArr[idx] == NULL) {
+    if (EBCL_globOptArr[idx] == NULL) {
         EBCL_errPrint("Could not read global option as it is uninitialized.");
-        pthread_mutex_unlock(&optLock);
+        pthread_mutex_unlock(&EBCL_optLock);
         return -1;
     }
-    memcpy(val, globOptArr[idx], sz);
-    pthread_mutex_unlock(&optLock);
+    memcpy(val, EBCL_globOptArr[idx], sz);
+    pthread_mutex_unlock(&EBCL_optLock);
     return 0;
 }
 
-int EBCL_globOptSetString(ebcl_GlobOptKey key, const char *str) {
+int EBCL_globOptSetString(ebcl_GlobOptKey_t key, const char *str) {
     if (str == NULL) {
         EBCL_errPrint("Input string must not be NULL.");
         return -1;
@@ -127,7 +127,7 @@ int EBCL_globOptSetString(ebcl_GlobOptKey key, const char *str) {
     return 0;
 }
 
-int EBCL_globOptGetString(ebcl_GlobOptKey key, char **str) {
+int EBCL_globOptGetString(ebcl_GlobOptKey_t key, char **str) {
     size_t len = 0;
     if (EBCL_globOptGet(key, &len, sizeof(size_t)) == -1 || len == 0) {
         EBCL_errPrint("Could not get global option string.");
@@ -155,16 +155,16 @@ int EBCL_globOptGetString(ebcl_GlobOptKey key, char **str) {
 }
 
 void EBCL_globOptDestroy(void) {
-    if (pthread_mutex_lock(&optLock) == -1) {
+    if (pthread_mutex_lock(&EBCL_optLock) == -1) {
         EBCL_errnoPrint("Could not wait for global option array mutex lock during deinitialization.");
         return;
     }
 
-    for (ebcl_GlobOptKey i = EBCL_GLOBOPT_START; i < EBCL_GLOBOPT_END; i++) {
-        if (globOptArr[i] != NULL) {
-            free(globOptArr[i]);
+    for (ebcl_GlobOptKey_t i = EBCL_GLOBOPT_START; i < EBCL_GLOBOPT_END; i++) {
+        if (EBCL_globOptArr[i] != NULL) {
+            free(EBCL_globOptArr[i]);
         }
     }
-    pthread_mutex_unlock(&optLock);
+    pthread_mutex_unlock(&EBCL_optLock);
 }
 

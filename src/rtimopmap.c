@@ -15,10 +15,10 @@
 
 #include "logio.h"
 
-const ebcl_RtimOpMap EBCL_rtimOps[] = {EBCL_genOpMap(EBCL_genOpStruct)};
+const ebcl_RtimOpMap_t EBCL_rtimOps[] = {EBCL_genOpMap(EBCL_genOpStruct)};
 
 /**  The number of elements in the generated map. **/
-#define EBCL_RTIMOPMAP_ELEMENTS sizeof(EBCL_rtimOps) / sizeof(ebcl_RtimOpMap)
+#define EBCL_RTIMOPMAP_ELEMENTS sizeof(EBCL_rtimOps) / sizeof(ebcl_RtimOpMap_t)
 
 /**
  * Gives the length of a string, delimited either by terminating zero or #EBCL_RTIMCMD_ARGDELIM.
@@ -27,7 +27,7 @@ const ebcl_RtimOpMap EBCL_rtimOps[] = {EBCL_genOpMap(EBCL_genOpStruct)};
  *
  * @return  The length of \a str, not including the delimiting character (or the terminating zero).
  */
-static inline size_t delimitedStrlen(const char *str);
+static inline size_t EBCL_delimitedStrlen(const char *str);
 
 void EBCL_rtimOpMapDebugPrintAll(void) {
     EBCL_dbgInfoPrint("List of available API Operations:");
@@ -36,12 +36,12 @@ void EBCL_rtimOpMapDebugPrintAll(void) {
     }
 }
 
-int EBCL_rtimOpGetByOpStr(ebcl_RtimOp *out, const char *opStr) {
+int EBCL_rtimOpGetByOpStr(ebcl_RtimOp_t *out, const char *opStr) {
     if (out == NULL || opStr == NULL) {
         EBCL_errPrint("Pointer arguments must not be NULL.");
         return -1;
     }
-    size_t n = delimitedStrlen(opStr);
+    size_t n = EBCL_delimitedStrlen(opStr);
     for (size_t i = 0; i < EBCL_RTIMOPMAP_ELEMENTS; i++) {
         if (n == strlen(EBCL_rtimOps[i].opStr) && strncmp(EBCL_rtimOps[i].opStr, opStr, n) == 0) {
             *out = EBCL_rtimOps[i].opCode;
@@ -53,7 +53,7 @@ int EBCL_rtimOpGetByOpStr(ebcl_RtimOp *out, const char *opStr) {
     return -1;
 }
 
-int EBCL_opStrGetByRtimOp(const char **out, ebcl_RtimOp opCode) {
+int EBCL_opStrGetByRtimOp(const char **out, ebcl_RtimOp_t opCode) {
     if (out == NULL) {
         EBCL_errPrint("Return pointer must not be NULL.");
         return -1;
@@ -70,7 +70,7 @@ int EBCL_opStrGetByRtimOp(const char **out, ebcl_RtimOp opCode) {
     return -1;
 }
 
-static inline size_t delimitedStrlen(const char *str) {
+static inline size_t EBCL_delimitedStrlen(const char *str) {
     size_t len = 0;
     while (*str != '\0' && *str != EBCL_RTIMCMD_ARGDELIM) {
         len++;

@@ -8,8 +8,6 @@
  *            All rights exclusively reserved for Elektrobit Automotive GmbH,
  *            unless otherwise expressly agreed
  */
-#include "crinit.h"
-
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -21,11 +19,16 @@
 #include "rtimcmd.h"
 
 /**
+ * The default series file. Used if nothing is specified on command line.
+ */
+#define EBCL_CRINIT_DEFAULT_CONFIG_SERIES "/etc/crinit/default.series"
+
+/**
  * Print usage information for Crinit.
  *
  * @param basename  The name of this executable, according to argv[0].
  */
-static void printUsage(const char *basename);
+static void EBCL_printUsage(const char *basename);
 /**
  * Check if \a path is absolute (i.e. starts with '/').
  *
@@ -33,7 +36,7 @@ static void printUsage(const char *basename);
  *
  * @return true if path is absolute, false otherwise
  */
-static bool isAbsPath(const char *path);
+static bool EBCL_isAbsPath(const char *path);
 /**
  * Parse a series file.
  *
@@ -46,13 +49,13 @@ static bool isAbsPath(const char *path);
  *
  * @return 0 on success, -1 on failure
  */
-static int loadSeriesConf(int *seriesLen, char ***series, const char *filename);
+static int EBCL_loadSeriesConf(int *seriesLen, char ***series, const char *filename);
 /**
- * Print out the contents of an ebcl_Task structure in a readable format using EBCL_dbgInfoPrint().
+ * Print out the contents of an ebcl_Task_t structure in a readable format using EBCL_dbgInfoPrint().
  *
  * @param t  The task to be printed.
  */
-static void taskPrint(const ebcl_Task *t);
+static void EBCL_taskPrint(const ebcl_Task_t *t);
 
 /**
  * Main function of crinit.
@@ -64,12 +67,12 @@ int main(int argc, char *argv[]) {
     const char *seriesFname = EBCL_CRINIT_DEFAULT_CONFIG_SERIES;
     if (argc > 1) {
         if (strcmp(argv[1], "-h") == 0) {
-            printUsage(argv[0]);
+            EBCL_printUsage(argv[0]);
             return EXIT_FAILURE;
         }
-        if (!isAbsPath(argv[1])) {
+        if (!EBCL_isAbsPath(argv[1])) {
             EBCL_errPrint("Program argument must be an absolute path.");
-            printUsage(argv[0]);
+            EBCL_printUsage(argv[0]);
             return EXIT_FAILURE;
         }
         seriesFname = argv[1];
@@ -91,7 +94,7 @@ int main(int argc, char *argv[]) {
 
     char **series = NULL;
     int seriesLen = 0;
-    if (loadSeriesConf(&seriesLen, &series, seriesFname) == -1) {
+    if (EBCL_loadSeriesConf(&seriesLen, &series, seriesFname) == -1) {
         EBCL_errPrint("Could not load series file \'%s\'.", seriesFname);
         EBCL_globOptDestroy();
         return EXIT_FAILURE;
@@ -99,7 +102,7 @@ int main(int argc, char *argv[]) {
 
     EBCL_rtimOpMapDebugPrintAll();
 
-    ebcl_TaskDB tdb;
+    ebcl_TaskDB_t tdb;
     EBCL_taskDBInit(&tdb, EBCL_procDispatchSpawnFunc);
 
     char *taskdir;
@@ -112,7 +115,7 @@ int main(int argc, char *argv[]) {
     for (int n = 0; n < seriesLen; n++) {
         char *confFn = series[n];
         bool confFnAllocated = false;
-        if (!isAbsPath(confFn)) {
+        if (!EBCL_isAbsPath(confFn)) {
             size_t prefixLen = strlen(taskdir);
             size_t suffixLen = strlen(series[n]);
             confFn = malloc(prefixLen + suffixLen + 2);
@@ -127,7 +130,7 @@ int main(int argc, char *argv[]) {
             memcpy(confFn + prefixLen + 1, series[n], suffixLen + 1);
             confFnAllocated = true;
         }
-        ebcl_ConfKvList *c;
+        ebcl_ConfKvList_t *c;
         if (EBCL_parseConf(&c, confFn) == -1) {
             EBCL_errPrint("Could not parse file \'%s\'.", confFn);
             EBCL_globOptDestroy();
@@ -143,7 +146,7 @@ int main(int argc, char *argv[]) {
         }
         EBCL_dbgInfoPrint("Will now attempt to extract a Task out of the config.");
 
-        ebcl_Task *t = NULL;
+        ebcl_Task_t *t = NULL;
         if (EBCL_taskCreateFromConfKvList(&t, c) == -1) {
             EBCL_errPrint("Could not extract task from ConfKvList.");
             EBCL_freeConfList(c);
@@ -154,7 +157,7 @@ int main(int argc, char *argv[]) {
         EBCL_freeConfList(c);
 
         EBCL_dbgInfoPrint("Task extracted without error.");
-        taskPrint(t);
+        EBCL_taskPrint(t);
 
         EBCL_taskDBInsert(&tdb, t, false);
         EBCL_freeTask(t);
@@ -181,22 +184,22 @@ int main(int argc, char *argv[]) {
     return EXIT_SUCCESS;
 }
 
-static void printUsage(const char *basename) {
+static void EBCL_printUsage(const char *basename) {
     fprintf(stderr, "USAGE: %s [path/to/config.series]\n", basename);
     fprintf(stderr, "If nothing is specified, the default path \'%s\' is used.\n", EBCL_CRINIT_DEFAULT_CONFIG_SERIES);
 }
 
-static bool isAbsPath(const char *path) {
+static bool EBCL_isAbsPath(const char *path) {
     if (path == NULL) return false;
     return (path[0] == '/');
 }
 
-static int loadSeriesConf(int *seriesLen, char ***series, const char *filename) {
-    if (seriesLen == NULL || series == NULL || !isAbsPath(filename)) {
+static int EBCL_loadSeriesConf(int *seriesLen, char ***series, const char *filename) {
+    if (seriesLen == NULL || series == NULL || !EBCL_isAbsPath(filename)) {
         EBCL_errPrint("Parameters must not be NULL and filename must be an absolute path.");
         return -1;
     }
-    ebcl_ConfKvList *c;
+    ebcl_ConfKvList_t *c;
     if (EBCL_parseConf(&c, filename) == -1) {
         EBCL_errPrint("Could not parse file \'%s\'.", filename);
         return -1;
@@ -251,7 +254,7 @@ static int loadSeriesConf(int *seriesLen, char ***series, const char *filename) 
     return 0;
 }
 
-static void taskPrint(const ebcl_Task *t) {
+static void EBCL_taskPrint(const ebcl_Task_t *t) {
     EBCL_dbgInfoPrint("---------------");
     EBCL_dbgInfoPrint("Data Structure:");
     EBCL_dbgInfoPrint("---------------");

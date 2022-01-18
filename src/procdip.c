@@ -16,7 +16,6 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#include "crinit.h"
 #include "logio.h"
 
 #ifndef SYS_gettid
@@ -24,29 +23,29 @@
 #endif
 
 /** Macro wrapper for the gettid syscall in case glibc is not new enough to contain one itself **/
-#define gettid() ((pid_t)syscall(SYS_gettid))
+#define EBCL_gettid() ((pid_t)syscall(SYS_gettid))
 
 /** Struct wrapper for arguments to dispatchThreadFunc **/
-typedef struct dispThrArgs {
-    ebcl_TaskDB *ctx;    ///< The TaskDB context to update on task state changes.
-    const ebcl_Task *t;  ///< The task to run.
-} dispThrArgs;
+typedef struct ebcl_DispThrArgs_t {
+    ebcl_TaskDB_t *ctx;    ///< The TaskDB context to update on task state changes.
+    const ebcl_Task_t *t;  ///< The task to run.
+} ebcl_DispThrArgs_t;
 
-/** Mutex to guard #waitInhibit **/
-static pthread_mutex_t waitInhibitLock = PTHREAD_MUTEX_INITIALIZER;
-/** Condition variable to signal threads waiting for #waitInhibit to become `false`. **/
-static pthread_cond_t waitInhibitCond = PTHREAD_COND_INITIALIZER;
-/** If true, all terminated child processes will be kept around as zombies (see blocOnWaitInhibit()). **/
-static bool waitInhibit = false;
+/** Mutex to guard #EBCL_waitInhibit **/
+static pthread_mutex_t EBCL_waitInhibitLock = PTHREAD_MUTEX_INITIALIZER;
+/** Condition variable to signal threads waiting for #EBCL_waitInhibit to become `false`. **/
+static pthread_cond_t EBCL_waitInhibitCond = PTHREAD_COND_INITIALIZER;
+/** If true, all terminated child processes will be kept around as zombies (see EBCL_blockOnWaitInhibit()). **/
+static bool EBCL_waitInhibit = false;
 
 /**
  * Function to be started as a pthread from EBCL_procDispatchThread().
  *
- * Takes care of process spawning/waiting and ebcl_TaskDB status updates.
+ * Takes care of process spawning/waiting and ebcl_TaskDB_t status updates.
  *
- * @param args  See dispThrArgs.
+ * @param args  See ebcl_DispThrArgs_t.
  */
-static void *dispatchThreadFunc(void *args);
+static void *EBCL_dispatchThreadFunc(void *args);
 /**
  * Builds the standard environment for a new task.
  *
@@ -59,16 +58,16 @@ static void *dispatchThreadFunc(void *args);
  *
  * @return 0 on success, -1 on error
  */
-static int buildEnv(char **taskEnv, const char *taskName);
+static int EBCL_buildEnv(char **taskEnv, const char *taskName);
 
 /**
- * Block calling thread until #waitInhibit becomes false.
+ * Block calling thread until #EBCL_waitInhibit becomes false.
  *
  * Called by dispatcher threads to delay reaping of zombie processes if needed.
  *
  * @return 0 on success, -1 on error
  */
-static int blockOnWaitInhibit(void);
+static int EBCL_blockOnWaitInhibit(void);
 /**
  * Reap a zombie process.
  *
@@ -78,12 +77,12 @@ static int blockOnWaitInhibit(void);
  *
  * @return 0 on success, -1 on error
  */
-static int reapPid(pid_t pid);
+static int EBCL_reapPid(pid_t pid);
 
-int EBCL_procDispatchSpawnFunc(ebcl_TaskDB *ctx, const ebcl_Task *t) {
+int EBCL_procDispatchSpawnFunc(ebcl_TaskDB_t *ctx, const ebcl_Task_t *t) {
     pthread_t dispatchThread;
     pthread_attr_t dispatchThreadAttr;
-    dispThrArgs *threadArgs = malloc(sizeof(dispThrArgs));
+    ebcl_DispThrArgs_t *threadArgs = malloc(sizeof(ebcl_DispThrArgs_t));
     if (threadArgs == NULL) {
         EBCL_errnoPrint("Could not allocate memory for thread arguments. Meant to create thread for task \'%s\'.",
                         t->name);
@@ -111,7 +110,7 @@ int EBCL_procDispatchSpawnFunc(ebcl_TaskDB *ctx, const ebcl_Task *t) {
     }
 
     EBCL_dbgInfoPrint("Creating new thread for Task \'%s\'.", t->name);
-    if ((errno = pthread_create(&dispatchThread, &dispatchThreadAttr, dispatchThreadFunc, threadArgs)) != 0) {
+    if ((errno = pthread_create(&dispatchThread, &dispatchThreadAttr, EBCL_dispatchThreadFunc, threadArgs)) != 0) {
         EBCL_errnoPrint("Could not create pthread for task \'%s\'.", t->name);
         goto fail;
     }
@@ -124,13 +123,13 @@ fail:
     return -1;
 }
 
-static void *dispatchThreadFunc(void *args) {
-    dispThrArgs *a = (dispThrArgs *)args;
-    ebcl_TaskDB *ctx = a->ctx;
-    const ebcl_Task *t = a->t;
-    ebcl_Task *tCopy = NULL;
+static void *EBCL_dispatchThreadFunc(void *args) {
+    ebcl_DispThrArgs_t *a = (ebcl_DispThrArgs_t *)args;
+    ebcl_TaskDB_t *ctx = a->ctx;
+    const ebcl_Task_t *t = a->t;
+    ebcl_Task_t *tCopy = NULL;
     char *taskEnv[2] = {NULL, NULL};
-    pid_t threadId = gettid();
+    pid_t threadId = EBCL_gettid();
     pid_t pid = -1;
 
     EBCL_dbgInfoPrint("(TID: %d) New thread started.", threadId);
@@ -149,7 +148,7 @@ static void *dispatchThreadFunc(void *args) {
     pthread_mutex_unlock(&ctx->lock);
     EBCL_dbgInfoPrint("(TID: %d) Will spawn Task \'%s\'.", threadId, tCopy->name);
 
-    if (buildEnv(taskEnv, tCopy->name) == -1) {
+    if (EBCL_buildEnv(taskEnv, tCopy->name) == -1) {
         EBCL_errPrint("(TID: %d) Could not build new environment for task \'%s\'.", threadId, tCopy->name);
         goto threadExit;
     }
@@ -182,7 +181,7 @@ static void *dispatchThreadFunc(void *args) {
                 goto threadExit;
             }
             char depEvent[sizeof(EBCL_TASK_EVENT_RUNNING)] = EBCL_TASK_EVENT_RUNNING;
-            ebcl_TaskDep spawnDep = {tCopy->name, depEvent};
+            ebcl_TaskDep_t spawnDep = {tCopy->name, depEvent};
             if (EBCL_taskDBFulfillDep(ctx, &spawnDep) == -1) {
                 EBCL_errPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, spawnDep.name, spawnDep.event);
                 goto threadExit;
@@ -218,12 +217,12 @@ static void *dispatchThreadFunc(void *args) {
                 goto threadExit;
             }
             // Reap zombie of failed command.
-            if (reapPid(pid) == -1) {
+            if (EBCL_reapPid(pid) == -1) {
                 EBCL_errnoPrint("(TID: %d) Could not reap zombie for task \'%s\'.", threadId, tCopy->name);
             }
 
             char depEvent[sizeof(EBCL_TASK_EVENT_FAILED)] = EBCL_TASK_EVENT_FAILED;
-            ebcl_TaskDep failDep = {tCopy->name, depEvent};
+            ebcl_TaskDep_t failDep = {tCopy->name, depEvent};
             if (EBCL_taskDBFulfillDep(ctx, &failDep) == -1) {
                 EBCL_errPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, failDep.name, failDep.event);
             }
@@ -237,7 +236,7 @@ static void *dispatchThreadFunc(void *args) {
             goto threadExit;
         }
         // Reap zombie of successful command.
-        if (reapPid(pid) == -1) {
+        if (EBCL_reapPid(pid) == -1) {
             EBCL_errnoPrint("(TID: %d) Could not reap zombie for task \'%s\'.", threadId, tCopy->name);
         }
     }
@@ -249,7 +248,7 @@ static void *dispatchThreadFunc(void *args) {
         goto threadExit;
     }
     char depEvent[sizeof(EBCL_TASK_EVENT_DONE)] = EBCL_TASK_EVENT_DONE;
-    ebcl_TaskDep doneDep = {tCopy->name, depEvent};
+    ebcl_TaskDep_t doneDep = {tCopy->name, depEvent};
     if (EBCL_taskDBFulfillDep(ctx, &doneDep) == -1) {
         EBCL_errPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, doneDep.name, doneDep.event);
     }
@@ -264,27 +263,27 @@ threadExit:
 
 int EBCL_setInhibitWait(bool inh) {
     int ret = 0;
-    errno = pthread_mutex_lock(&waitInhibitLock);
+    errno = pthread_mutex_lock(&EBCL_waitInhibitLock);
     if (errno != 0) {
         EBCL_errnoPrint("Could not lock on mutex.");
         return -1;
     }
-    waitInhibit = inh;
+    EBCL_waitInhibit = inh;
     if (!inh) {
-        errno = pthread_cond_broadcast(&waitInhibitCond);
+        errno = pthread_cond_broadcast(&EBCL_waitInhibitCond);
         if (errno != 0) {
             ret = -1;
             EBCL_errnoPrint("Could not broadcast on condition variable.");
         }
     }
-    if (pthread_mutex_unlock(&waitInhibitLock)) {
+    if (pthread_mutex_unlock(&EBCL_waitInhibitLock)) {
         ret = -1;
         EBCL_errnoPrint("Could not unlock mutex.");
     }
     return ret;
 }
 
-static int buildEnv(char **taskEnv, const char *taskName) {
+static int EBCL_buildEnv(char **taskEnv, const char *taskName) {
     if (taskEnv == NULL || taskName == NULL) {
         EBCL_errPrint("Pointer arguments must not be NULL.");
         return -1;
@@ -307,28 +306,28 @@ static int buildEnv(char **taskEnv, const char *taskName) {
     return 0;
 }
 
-static int blockOnWaitInhibit(void) {
-    errno = pthread_mutex_lock(&waitInhibitLock);
+static int EBCL_blockOnWaitInhibit(void) {
+    errno = pthread_mutex_lock(&EBCL_waitInhibitLock);
     if (errno != 0) {
         EBCL_errnoPrint("Could not lock on mutex.");
         return -1;
     }
-    while (waitInhibit) {
-        errno = pthread_cond_wait(&waitInhibitCond, &waitInhibitLock);
+    while (EBCL_waitInhibit) {
+        errno = pthread_cond_wait(&EBCL_waitInhibitCond, &EBCL_waitInhibitLock);
         if (errno != 0) {
             EBCL_errnoPrint("Could not wait on condition variable.");
             return -1;
         }
     }
-    if (pthread_mutex_unlock(&waitInhibitLock)) {
+    if (pthread_mutex_unlock(&EBCL_waitInhibitLock)) {
         EBCL_errnoPrint("Could not unlock mutex.");
         return -1;
     }
     return 0;
 }
 
-static int reapPid(pid_t pid) {
-    if (blockOnWaitInhibit() == -1) {
+static int EBCL_reapPid(pid_t pid) {
+    if (EBCL_blockOnWaitInhibit() == -1) {
         EBCL_errPrint("Could not block on wait inhibition condition.");
         return -1;
     }

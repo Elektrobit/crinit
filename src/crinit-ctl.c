@@ -63,13 +63,13 @@
  *
  * @return true if path is absolute, false otherwise
  */
-static bool isAbsPath(const char *path);
+static bool EBCL_isAbsPath(const char *path);
 /**
  * Print usage information.
  *
  * @param prgmPath  The path to the program, usually found in argv[0].
  */
-static void printUsage(char *prgmPath);
+static void EBCL_printUsage(char *prgmPath);
 
 int main(int argc, char *argv[]) {
     int getoptArgc = argc;
@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
 
     if (strcmp(basename(argv[0]), "poweroff") != 0 && strcmp(basename(argv[0]), "reboot") != 0) {
         if (argc < 2) {
-            printUsage(argv[0]);
+            EBCL_printUsage(argv[0]);
             return EXIT_FAILURE;
         }
         getoptArgc--;
@@ -120,7 +120,7 @@ int main(int argc, char *argv[]) {
             case 'h':
             case '?':
             default:
-                printUsage(argv[0]);
+                EBCL_printUsage(argv[0]);
                 return EXIT_FAILURE;
         }
     }
@@ -133,10 +133,10 @@ int main(int argc, char *argv[]) {
 
     if (strcmp(getoptArgv[0], "addtask") == 0) {
         if (getoptArgv[optind] == NULL) {
-            printUsage(argv[0]);
+            EBCL_printUsage(argv[0]);
             return EXIT_FAILURE;
         }
-        if (!isAbsPath(getoptArgv[optind])) {
+        if (!EBCL_isAbsPath(getoptArgv[optind])) {
             EBCL_errPrint("The path to the task config to load must be absolute.");
             return EXIT_FAILURE;
         }
@@ -149,7 +149,7 @@ int main(int argc, char *argv[]) {
 
     if (strcmp(getoptArgv[0], "enable") == 0) {
         if (getoptArgv[optind] == NULL) {
-            printUsage(argv[0]);
+            EBCL_printUsage(argv[0]);
             return EXIT_FAILURE;
         }
         if (EBCL_crinitTaskEnable(getoptArgv[optind]) == -1) {
@@ -160,7 +160,7 @@ int main(int argc, char *argv[]) {
     }
     if (strcmp(getoptArgv[0], "disable") == 0) {
         if (getoptArgv[optind] == NULL) {
-            printUsage(argv[0]);
+            EBCL_printUsage(argv[0]);
             return EXIT_FAILURE;
         }
         if (EBCL_crinitTaskDisable(getoptArgv[optind]) == -1) {
@@ -171,7 +171,7 @@ int main(int argc, char *argv[]) {
     }
     if (strcmp(getoptArgv[0], "stop") == 0) {
         if (getoptArgv[optind] == NULL) {
-            printUsage(argv[0]);
+            EBCL_printUsage(argv[0]);
             return EXIT_FAILURE;
         }
         if (EBCL_crinitTaskStop(getoptArgv[optind]) == -1) {
@@ -182,7 +182,7 @@ int main(int argc, char *argv[]) {
     }
     if (strcmp(getoptArgv[0], "kill") == 0) {
         if (getoptArgv[optind] == NULL) {
-            printUsage(argv[0]);
+            EBCL_printUsage(argv[0]);
             return EXIT_FAILURE;
         }
         if (EBCL_crinitTaskKill(getoptArgv[optind]) == -1) {
@@ -193,7 +193,7 @@ int main(int argc, char *argv[]) {
     }
     if (strcmp(getoptArgv[0], "restart") == 0) {
         if (getoptArgv[optind] == NULL) {
-            printUsage(argv[0]);
+            EBCL_printUsage(argv[0]);
             return EXIT_FAILURE;
         }
         if (EBCL_crinitTaskRestart(getoptArgv[optind]) == -1) {
@@ -204,10 +204,10 @@ int main(int argc, char *argv[]) {
     }
     if (strcmp(getoptArgv[0], "status") == 0) {
         if (getoptArgv[optind] == NULL) {
-            printUsage(argv[0]);
+            EBCL_printUsage(argv[0]);
             return EXIT_FAILURE;
         }
-        ebcl_TaskState s = 0;
+        ebcl_TaskState_t s = 0;
         pid_t pid = -1;
         if (EBCL_crinitTaskGetStatus(&s, &pid, getoptArgv[optind]) == -1) {
             EBCL_errPrint("Querying status of task \'%s\' failed.", getoptArgv[optind]);
@@ -218,7 +218,7 @@ int main(int argc, char *argv[]) {
     }
     if (strcmp(getoptArgv[0], "notify") == 0) {
         if (getoptArgv[optind] == NULL || argv[optind + 1] == NULL) {
-            printUsage(argv[0]);
+            EBCL_printUsage(argv[0]);
             return EXIT_FAILURE;
         }
         EBCL_crinitSetNotifyTaskName(getoptArgv[optind]);
@@ -243,11 +243,11 @@ int main(int argc, char *argv[]) {
         }
         return EXIT_SUCCESS;
     }
-    printUsage(argv[0]);
+    EBCL_printUsage(argv[0]);
     return EXIT_FAILURE;
 }
 
-static void printUsage(char *prgmPath) {
+static void EBCL_printUsage(char *prgmPath) {
     if (strcmp(basename(prgmPath), "reboot") == 0) {
         fprintf(stderr,
                 "USAGE: %s [-v/--verbose]\n"
@@ -304,7 +304,7 @@ static void printUsage(char *prgmPath) {
         prgmPath);
 }
 
-static bool isAbsPath(const char *path) {
+static bool EBCL_isAbsPath(const char *path) {
     if (path == NULL) return false;
     return (path[0] == '/');
 }

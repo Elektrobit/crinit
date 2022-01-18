@@ -18,18 +18,18 @@
 /**
  * Structure holding a worker thread pool.
  */
-typedef struct ebcl_ThreadPool {
+typedef struct ebcl_ThreadPool_t {
     size_t poolSize;                    ///< Current size of the pool.
     size_t poolSizeIncrement;           ///< How many new threads to create if the pool runs dry.
     size_t threadAvail;                 ///< Number of available worker threads.
     pthread_mutex_t lock;               ///< Mutex protecting changes to the thread pool structure.
-    pthread_cond_t threadAvailChanged;  ///< Condition variable signalled if ebcl_ThreadPool::threadAvail is changed.
+    pthread_cond_t threadAvailChanged;  ///< Condition variable signalled if ebcl_ThreadPool_t::threadAvail is changed.
     pthread_t dryPoolWdRef;  ///< Reference to the dry pool watchdog thread, see dryPoolWatchdog() in thrpool.c.
 
     void *(*threadFunc)(void *args);  ///< Thread function for all worker threads.
     void *thrArgs;                    ///< Arguments to the thread function.
-    size_t thrArgsSize;               ///< Number of arguments in ebcl_ThreadPool::thrArgs.
-} ebcl_ThreadPool;
+    size_t thrArgsSize;               ///< Number of arguments in ebcl_ThreadPool_t::thrArgs.
+} ebcl_ThreadPool_t;
 
 /**
  * Default initial size (in number of threads) of the thread pool
@@ -41,9 +41,9 @@ typedef struct ebcl_ThreadPool {
 #define EBCL_THREADPOOL_THREAD_STACK_SIZE (PTHREAD_STACK_MIN + 112 * 1024)
 
 /**
- * Initialize an ebcl_ThreadPool.
+ * Initialize an ebcl_ThreadPool_t.
  *
- * @param ctx          The ebcl_ThreadPool to initialize.
+ * @param ctx          The ebcl_ThreadPool_t to initialize.
  * @param initialSize  Initial size (in number of threads) of the pool.
  * @param threadFunc   Worker thread function to use.
  * @param thrArgs      Arguments to the worker thread function. Will be copied and saved in case more threads need to be
@@ -52,24 +52,24 @@ typedef struct ebcl_ThreadPool {
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_threadPoolInit(ebcl_ThreadPool *ctx, size_t initialSize, void *(*threadFunc)(void *), const void *thrArgs,
+int EBCL_threadPoolInit(ebcl_ThreadPool_t *ctx, size_t initialSize, void *(*threadFunc)(void *), const void *thrArgs,
                         size_t thrArgsSize);
 
 /**
  * Callback to be used by the worker thread function signalling it is busy/unavailable.
  *
- * @param ctx  The ebcl_ThreadPool context.
+ * @param ctx  The ebcl_ThreadPool_t context.
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_threadPoolThreadBusyCallback(ebcl_ThreadPool *ctx);
+int EBCL_threadPoolThreadBusyCallback(ebcl_ThreadPool_t *ctx);
 /**
  * Callback to be used by the worker thread function signalling it is idle/available.
  *
- * @param ctx  The ebcl_ThreadPool context.
+ * @param ctx  The ebcl_ThreadPool_t context.
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_threadPoolThreadAvailCallback(ebcl_ThreadPool *ctx);
+int EBCL_threadPoolThreadAvailCallback(ebcl_ThreadPool_t *ctx);
 
 #endif /* __THRPOOL_H__ */

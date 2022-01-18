@@ -182,6 +182,12 @@ ci/demo.sh
 ```
 for a short local demonstration of `crinit`'s client API using `crinit-ctl`.
 
+A `clang-tidy` analysis of the source can be performed using
+```
+ci/clang-tidy.sh
+```
+This will also generate a `compile_commands.json`. The output will be saved to `results/clang-tidy`.
+
 If a quick native test build is desired, it is fine to simply run
 ```
 make clean && make
