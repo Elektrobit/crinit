@@ -48,7 +48,7 @@ static void *EBCL_dryPoolWatchdog(void *thrpool);
  *
  * @return  The threshold value.
  */
-#define DRY_POOL_THRESHOLD(poolSize) ((poolSize) / 10)
+#define EBCL_dryPoolThreshold(poolSize) ((poolSize) / 10)
 
 int EBCL_threadPoolInit(ebcl_ThreadPool_t *ctx, size_t initialSize, void *(*threadFunc)(void *), const void *thrArgs,
                         size_t thrArgsSize) {
@@ -142,7 +142,7 @@ int EBCL_threadPoolThreadBusyCallback(ebcl_ThreadPool_t *ctx) {
         return -1;
     }
     ctx->threadAvail--;
-    if (ctx->threadAvail <= DRY_POOL_THRESHOLD(ctx->poolSize)) {
+    if (ctx->threadAvail <= EBCL_dryPoolThreshold(ctx->poolSize)) {
         pthread_cond_signal(&ctx->threadAvailChanged);
     }
     pthread_mutex_unlock(&ctx->lock);
@@ -234,7 +234,7 @@ static void *EBCL_dryPoolWatchdog(void *thrpool) {
             return NULL;
         }
         pthread_cond_wait(&ctx->threadAvailChanged, &ctx->lock);
-        if (ctx->threadAvail <= DRY_POOL_THRESHOLD(ctx->poolSize)) {
+        if (ctx->threadAvail <= EBCL_dryPoolThreshold(ctx->poolSize)) {
             size_t newSize = ctx->poolSize + ctx->poolSizeIncrement;
             pthread_mutex_unlock(&ctx->lock);
             if (EBCL_threadPoolGrow(ctx, newSize) == -1) {

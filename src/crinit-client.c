@@ -22,11 +22,11 @@
  * Attribute macro for exported/visible functions, used together with -fvisibility=hidden to export only selected
  * functions
  */
-#define LIB_EXPORTED __attribute__((visibility("default")))
+#define EBCL_LIB_EXPORTED __attribute__((visibility("default")))
 /** Attribute macro for a function executed on loading of the shared library. **/
-#define LIB_CONSTRUCTOR __attribute__((constructor))
+#define EBCL_LIB_CONSTRUCTOR __attribute__((constructor))
 /** Attribute macro for a function executed on program exit if the shared library has been loaded before. **/
-#define LIB_DESTRUCTOR __attribute__((destructor))
+#define EBCL_LIB_DESTRUCTOR __attribute__((destructor))
 /** String to be used if no task name for sd_notify() is currently set. **/
 #define EBCL_CRINIT_ENV_NOTIFY_NAME_UNDEF "@undefined"
 
@@ -65,10 +65,10 @@ static inline int EBCL_crinitResponseCheck(const ebcl_RtimCmd_t *res, ebcl_RtimO
 /**
  * Library initialization function.
  *
- * Gets called on shared object loading through #LIB_CONSTRUCTOR attribute. Initializes options to default values and
- * tries to get the task name for sd_notify() from the environment if it is present.
+ * Gets called on shared object loading through #EBCL_LIB_CONSTRUCTOR attribute. Initializes options to default values
+ * and tries to get the task name for sd_notify() from the environment if it is present.
  */
-static LIB_CONSTRUCTOR void EBCL_libInit(void) {
+static EBCL_LIB_CONSTRUCTOR void EBCL_libInit(void) {
     bool v = false;
     EBCL_setPrintPrefix("");
     EBCL_globOptSetBoolean(EBCL_GLOBOPT_DEBUG, &v);
@@ -83,39 +83,40 @@ static LIB_CONSTRUCTOR void EBCL_libInit(void) {
 /**
  * Library cleanup function.
  *
- * Gets called on program end through #LIB_DESTRUCTOR attribute if the shared library was loaded. Frees global option
- * memory allocated as a consequence of EBCL_libInit().
+ * Gets called on program end through #EBCL_LIB_DESTRUCTOR attribute if the shared library was loaded. Frees global
+ * option memory allocated as a consequence of EBCL_libInit().
  */
-static LIB_DESTRUCTOR void EBCL_libDestroy(void) {
+static EBCL_LIB_DESTRUCTOR void EBCL_libDestroy(void) {
     EBCL_globOptDestroy();
 }
 
-LIB_EXPORTED int EBCL_crinitSetVerbose(bool v) {
+EBCL_LIB_EXPORTED int EBCL_crinitSetVerbose(bool v) {
     return EBCL_globOptSetBoolean(EBCL_GLOBOPT_DEBUG, &v);
 }
 
-LIB_EXPORTED void EBCL_crinitSetErrStream(FILE *errStream) {
+EBCL_LIB_EXPORTED void EBCL_crinitSetErrStream(FILE *errStream) {
     EBCL_setErrStream(errStream);
 }
 
-LIB_EXPORTED void EBCL_crinitSetInfoStream(FILE *infoStream) {
+EBCL_LIB_EXPORTED void EBCL_crinitSetInfoStream(FILE *infoStream) {
     EBCL_setInfoStream(infoStream);
 }
 
-LIB_EXPORTED void EBCL_crinitSetNotifyTaskName(const char *taskName) {
+EBCL_LIB_EXPORTED void EBCL_crinitSetNotifyTaskName(const char *taskName) {
     if (taskName != NULL) {
         EBCL_notifyName = taskName;
     }
 }
 
-LIB_EXPORTED void EBCL_crinitSetSocketPath(const char *sockFile) {
+EBCL_LIB_EXPORTED void EBCL_crinitSetSocketPath(const char *sockFile) {
     if (sockFile != NULL) {
         EBCL_crinitSockFile = sockFile;
     }
 }
 
-LIB_EXPORTED int sd_notify(int unset_environment, const char *state) {  // NOLINT(readability-identifier-naming)
-                                                                        // Rationale: Naming determined by external API.
+EBCL_LIB_EXPORTED int sd_notify(int unset_environment, const char *state) {  // NOLINT(readability-identifier-naming)
+                                                                             // Rationale: Naming determined by
+                                                                             // external API.
     if (state == NULL) {
         EBCL_errPrint("State string must not be NULL");
         return -1;
@@ -142,9 +143,9 @@ LIB_EXPORTED int sd_notify(int unset_environment, const char *state) {  // NOLIN
     return ret;
 }
 
-LIB_EXPORTED int sd_notifyf(int unset_environment, const char *format, ...) {  // NOLINT(readability-identifier-naming)
-                                                                               // Rationale: Naming determined by
-                                                                               //            external API.
+EBCL_LIB_EXPORTED int sd_notifyf(                      // NOLINT(readability-identifier-naming)
+    int unset_environment, const char *format, ...) {  // NOLINT(readability-identifier-naming)
+                                                       // Rationale (both): Naming determined by external API.
     if (format == NULL) {
         EBCL_errPrint("Format string must not be NULL");
         return -1;
@@ -169,7 +170,7 @@ LIB_EXPORTED int sd_notifyf(int unset_environment, const char *format, ...) {  /
     return ret;
 }
 
-LIB_EXPORTED int EBCL_crinitTaskAdd(const char *configFilePath, bool overwrite, const char *forceDeps) {
+EBCL_LIB_EXPORTED int EBCL_crinitTaskAdd(const char *configFilePath, bool overwrite, const char *forceDeps) {
     if (configFilePath == NULL) {
         EBCL_errPrint("Config file path must not be NULL");
         return -1;
@@ -202,7 +203,7 @@ LIB_EXPORTED int EBCL_crinitTaskAdd(const char *configFilePath, bool overwrite, 
     return ret;
 }
 
-LIB_EXPORTED int EBCL_crinitTaskEnable(const char *taskName) {
+EBCL_LIB_EXPORTED int EBCL_crinitTaskEnable(const char *taskName) {
     if (taskName == NULL) {
         EBCL_errPrint("Task name must not be NULL");
         return -1;
@@ -226,7 +227,7 @@ LIB_EXPORTED int EBCL_crinitTaskEnable(const char *taskName) {
     return ret;
 }
 
-LIB_EXPORTED int EBCL_crinitTaskDisable(const char *taskName) {
+EBCL_LIB_EXPORTED int EBCL_crinitTaskDisable(const char *taskName) {
     if (taskName == NULL) {
         EBCL_errPrint("Task name must not be NULL");
         return -1;
@@ -249,7 +250,7 @@ LIB_EXPORTED int EBCL_crinitTaskDisable(const char *taskName) {
     return ret;
 }
 
-LIB_EXPORTED int EBCL_crinitTaskStop(const char *taskName) {
+EBCL_LIB_EXPORTED int EBCL_crinitTaskStop(const char *taskName) {
     if (taskName == NULL) {
         EBCL_errPrint("Task name must not be NULL");
         return -1;
@@ -273,7 +274,7 @@ LIB_EXPORTED int EBCL_crinitTaskStop(const char *taskName) {
     return ret;
 }
 
-LIB_EXPORTED int EBCL_crinitTaskKill(const char *taskName) {
+EBCL_LIB_EXPORTED int EBCL_crinitTaskKill(const char *taskName) {
     if (taskName == NULL) {
         EBCL_errPrint("Task name must not be NULL");
         return -1;
@@ -297,7 +298,7 @@ LIB_EXPORTED int EBCL_crinitTaskKill(const char *taskName) {
     return ret;
 }
 
-LIB_EXPORTED int EBCL_crinitTaskRestart(const char *taskName) {
+EBCL_LIB_EXPORTED int EBCL_crinitTaskRestart(const char *taskName) {
     if (taskName == NULL) {
         EBCL_errPrint("Task name must not be NULL");
         return -1;
@@ -321,7 +322,7 @@ LIB_EXPORTED int EBCL_crinitTaskRestart(const char *taskName) {
     return ret;
 }
 
-LIB_EXPORTED int EBCL_crinitTaskGetStatus(ebcl_TaskState_t *s, pid_t *pid, const char *taskName) {
+EBCL_LIB_EXPORTED int EBCL_crinitTaskGetStatus(ebcl_TaskState_t *s, pid_t *pid, const char *taskName) {
     if (taskName == NULL || s == NULL) {
         EBCL_errPrint("Pointer arguments must not be NULL");
         return -1;
@@ -350,7 +351,7 @@ LIB_EXPORTED int EBCL_crinitTaskGetStatus(ebcl_TaskState_t *s, pid_t *pid, const
     return -1;
 }
 
-LIB_EXPORTED int EBCL_crinitShutdown(int shutdownCmd) {
+EBCL_LIB_EXPORTED int EBCL_crinitShutdown(int shutdownCmd) {
     ebcl_RtimCmd_t cmd, res;
     char shdCmdStr[16] = {0};
     snprintf(shdCmdStr, 16, "0x%x", shutdownCmd);

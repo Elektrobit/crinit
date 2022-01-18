@@ -31,7 +31,7 @@
 #endif
 
 /** Macro wrapper for the gettid syscall in case glibc is not new enough to contain one itself **/
-#define gettid() ((pid_t)syscall(SYS_gettid))
+#define EBCL_gettid() ((pid_t)syscall(SYS_gettid))
 
 /** Maximum number of unserviced connections until the server starts refusing **/
 #define MAX_CONN_BACKLOG 100
@@ -253,7 +253,7 @@ static inline bool EBCL_cmsgHdrCheck(const struct cmsghdr *cmh) {
 }
 
 static void *EBCL_connThread(void *args) {
-    pid_t threadId = gettid();
+    pid_t threadId = EBCL_gettid();
     if (args == NULL) {
         EBCL_errPrint("(TID %d) Argument to connection worker thread must not be NULL.", threadId);
         return NULL;
@@ -372,7 +372,7 @@ static int EBCL_createSockFile(int *sockFd, const char *path) {
 }
 
 static inline int EBCL_sendStr(int sockFd, const char *str) {
-    pid_t threadId = gettid();
+    pid_t threadId = EBCL_gettid();
     if (str == NULL) {
         EBCL_errPrint("(TID %d) String to send must not be NULL.", threadId);
         return -1;
@@ -394,7 +394,7 @@ static inline int EBCL_sendStr(int sockFd, const char *str) {
 }
 
 static inline int EBCL_recvStr(int sockFd, char **str, struct ucred *passedCreds) {
-    pid_t threadId = gettid();
+    pid_t threadId = EBCL_gettid();
     if (str == NULL || passedCreds == NULL) {
         EBCL_errPrint("(TID %d) Pointer arguments must not be NULL.", threadId);
         return -1;
