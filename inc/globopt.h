@@ -29,7 +29,7 @@ typedef enum {
 #define EBCL_GLOBOPT_DEFAULT_DEBUG false            ///< Default value for DEBUG global option.
 #define EBCL_GLOBOPT_DEFAULT_FILESIGS true          ///< Default value for FILE_SIGS_NEEDED global option.
 #define EBCL_GLOBOPT_DEFAULT_TASKDIR "/etc/crinit"  ///< Default value for TASKDIR global option.
-#define EBCL_GLOBOPT_DEFAULT_SHDGRACEP 100000ULL    ///< Default value for SHUTDOWN_GRACE_PERIOD_US global option
+#define EBCL_GLOBOPT_DEFAULT_SHDGRACEP 100000uLL    ///< Default value for SHUTDOWN_GRACE_PERIOD_US global option
 
 #define EBCL_GLOBOPT_KEYSTR_DEBUG "DEBUG"                ///< Config file key for DEBUG global option.
 #define EBCL_GLOBOPT_KEYSTR_FILESIGS "FILE_SIGS_NEEDED"  ///< Config file key for FILE_SIGS_NEEDED global option.

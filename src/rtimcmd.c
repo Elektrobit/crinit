@@ -812,10 +812,10 @@ static inline int EBCL_gracePeriod(unsigned long long micros) {
         EBCL_errnoPrint("Could not get current time from monotonic clock.");
         return -1;
     }
-    t.tv_sec += (time_t)(micros / 1000000ULL);
-    unsigned long long nsec = ((micros % 1000000ULL) * 1000ULL) + (unsigned long long)t.tv_nsec;
-    t.tv_sec += (time_t)(nsec / 1000000000ULL);
-    t.tv_nsec = (long)(nsec % 1000000000ULL);
+    t.tv_sec += (time_t)(micros / 1000000uLL);
+    unsigned long long nsec = ((micros % 1000000uLL) * 1000uLL) + (unsigned long long)t.tv_nsec;
+    t.tv_sec += (time_t)(nsec / 1000000000uLL);
+    t.tv_nsec = (long)(nsec % 1000000000uLL);
     int ret = 0;
     do {
         ret = clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &t, NULL);

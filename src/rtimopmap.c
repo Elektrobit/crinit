@@ -18,7 +18,7 @@
 const ebcl_RtimOpMap_t EBCL_rtimOps[] = {EBCL_genOpMap(EBCL_genOpStruct)};
 
 /**  The number of elements in the generated map. **/
-#define EBCL_RTIMOPMAP_ELEMENTS sizeof(EBCL_rtimOps) / sizeof(ebcl_RtimOpMap_t)
+#define EBCL_RTIMOPMAP_ELEMENTS (sizeof(EBCL_rtimOps) / sizeof(ebcl_RtimOpMap_t))
 
 /**
  * Gives the length of a string, delimited either by terminating zero or #EBCL_RTIMCMD_ARGDELIM.
