@@ -406,9 +406,14 @@ int EBCL_confListExtractArgvArrayWithIdx(int *outArgc, char ***outArgv, const ch
         for (int i = 0; i < *outArgc; i++) {
             EBCL_quoteRestoreTokens(pOut[i], ' ', -1);
             // If the value is enclosed in double quotes, discard those
-            if (pOut[i][0] == '\"' && pOut[i][strlen(pOut[i]) - 1] == '\"') {
-                pOut[i][strlen(pOut[i]) - 1] = '\0';
-                pOut[i]++;
+            size_t argLen = strlen(pOut[i]);
+            if (pOut[i][0] == '\"' && pOut[i][argLen - 1] == '\"') {
+                pOut[i][argLen - 1] = '\0';
+                if (i == 0) {
+                    memmove(pOut[0], pOut[0] + 1, argLen - 1);
+                } else {
+                    pOut[i]++;
+                }
             }
         }
     }
@@ -466,6 +471,7 @@ int EBCL_loadSeriesConf(int *seriesLen, char ***series, const char *filename) {
     }
     if (EBCL_confListExtractArgvArray(seriesLen, series, "TASKS", c, true) == -1) {
         EBCL_errPrint("Could not extract value for key \'TASKS\' from \'%s\'.", filename);
+        EBCL_freeConfList(c);
         return -1;
     }
 
