@@ -497,6 +497,7 @@ static inline bool EBCL_checkPerm(ebcl_RtimOp_t op, const struct ucred *passedCr
     struct __user_cap_data_struct capdata[2];
     switch (op) {
         case EBCL_RTIMCMD_C_ADDTASK:
+        case EBCL_RTIMCMD_C_ADDSERIES:
         case EBCL_RTIMCMD_C_ENABLE:
         case EBCL_RTIMCMD_C_DISABLE:
         case EBCL_RTIMCMD_C_STOP:
@@ -513,6 +514,7 @@ static inline bool EBCL_checkPerm(ebcl_RtimOp_t op, const struct ucred *passedCr
             }
             return (capdata[CAP_TO_INDEX(CAP_SYS_BOOT)].effective & CAP_TO_MASK(CAP_SYS_BOOT)) != 0;
         case EBCL_RTIMCMD_R_ADDTASK:
+        case EBCL_RTIMCMD_R_ADDSERIES:
         case EBCL_RTIMCMD_R_ENABLE:
         case EBCL_RTIMCMD_R_DISABLE:
         case EBCL_RTIMCMD_R_STOP:

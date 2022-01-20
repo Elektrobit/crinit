@@ -122,6 +122,25 @@ int sd_notifyf(int unset_environment, const char *format, ...);  // NOLINT(reada
  */
 int EBCL_crinitTaskAdd(const char *configFilePath, bool overwrite, const char *forceDeps);
 /**
+ * Requests Crinit to load tasks and options from a series file.
+ *
+ * If successful, the task configurations and options in the series file will be loaded same as if the series file was
+ * specified on startup. Already loaded tasks from a prior series file or loaded via crinit-ctl with the same names will
+ * be overwritten if and only if \a overwriteTasks is set to `true`. Otherwise, task name collisions are an error.
+ * 
+ * Config options from the newly loaded file generally take precedence over the existing values.
+ *
+ * Crinit will spawn no new processes during loading of a series file in order to preserve ordering through
+ * dependencies.
+ *
+ * @param seriesFilePath  **Absolute** path to the series file.
+ * @param overwriteTasks  If true, tasks with the same name already in the TaskDB will be overwritten.
+ *
+ * @return  0 on success, -1 otherwise
+ */
+int EBCL_crinitSeriesAdd(const char *seriesFilePath, bool overwriteTasks);
+
+/**
  * Requests Crinit to remove the dependency `"@ctl:enable"` from a specific task.
  *
  * This can be used in tandem with EBCL_crinitTaskDisable() or config files which already contain the above dependency

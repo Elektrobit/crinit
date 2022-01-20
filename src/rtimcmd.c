@@ -44,7 +44,7 @@ typedef struct ebcl_UnMountList_t {
 } ebcl_UnMountList_t;
 
 /**
- * Internal implementation of the "add" command on an ebcl_TaskDB_t.
+ * Internal implementation of the "addtask" command on an ebcl_TaskDB_t.
  *
  * For documentation on the command itself, see EBCL_crinitTaskAdd().
  *
@@ -54,7 +54,19 @@ typedef struct ebcl_UnMountList_t {
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_execRtimCmdAdd(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+static int EBCL_execRtimCmdAddTask(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+/**
+ * Internal implementation of the "addseries" command on an ebcl_TaskDB.
+ *
+ * For documentation on the command itself, see EBCL_crinitSeriesAdd().
+ *
+ * @param ctx  The ebcl_TaskDB_t to operate on.
+ * @param res  Return pointer for response/result.
+ * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
+ *
+ * @return 0 on success, -1 on error
+ */
+static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
 /**
  * Internal implementation of the "enable" command on an ebcl_TaskDB_t.
  *
@@ -200,6 +212,14 @@ static inline int EBCL_genUnMountList(ebcl_UnMountList_t **um, bool *rootfsIsRo)
  * @param um  The ebcl_UnMountList_t to free.
  */
 static inline void EBCL_freeUnMountList(ebcl_UnMountList_t *um);
+/**
+ * Check if \a path is absolute (i.e. starts with '/').
+ *
+ * @param path  The path to check.
+ *
+ * @return true if path is absolute, false otherwise
+ */
+static inline bool EBCL_isAbsPath(const char *path);
 
 int EBCL_parseRtimCmd(ebcl_RtimCmd_t *out, const char *cmdStr) {
     if (out == NULL || cmdStr == NULL) {
@@ -309,8 +329,14 @@ int EBCL_execRtimCmd(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd
     }
     switch (cmd->op) {
         case EBCL_RTIMCMD_C_ADDTASK:
-            if (EBCL_execRtimCmdAdd(ctx, res, cmd) == -1) {
+            if (EBCL_execRtimCmdAddTask(ctx, res, cmd) == -1) {
                 EBCL_errPrint("Could not execute runtime command \'ADDTASK\'.");
+                return -1;
+            }
+            return 0;
+        case EBCL_RTIMCMD_C_ADDSERIES:
+            if (EBCL_execRtimCmdAddSeries(ctx, res, cmd) == -1) {
+                EBCL_errPrint("Could not execute runtime command \'ADDSERIES\'.");
                 return -1;
             }
             return 0;
@@ -363,6 +389,7 @@ int EBCL_execRtimCmd(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd
             }
             return 0;
         case EBCL_RTIMCMD_R_ADDTASK:
+        case EBCL_RTIMCMD_R_ADDSERIES:
         case EBCL_RTIMCMD_R_ENABLE:
         case EBCL_RTIMCMD_R_DISABLE:
         case EBCL_RTIMCMD_R_STOP:
@@ -437,12 +464,13 @@ int EBCL_destroyRtimCmd(ebcl_RtimCmd_t *c) {
     return 0;
 }
 
-static int EBCL_execRtimCmdAdd(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+
+static int EBCL_execRtimCmdAddTask(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     if (ctx == NULL || res == NULL || cmd == NULL) {
         EBCL_errPrint("Pointer parameters must not be NULL.");
     }
 
-    EBCL_dbgInfoPrint("Will execute runtime command \'ADD\' with following arguments:");
+    EBCL_dbgInfoPrint("Will execute runtime command \'ADDTASK\' with following arguments:");
     for (int i = 0; i < cmd->argc; i++) {
         EBCL_dbgInfoPrint("    args[%d] = %s", i, cmd->args[i]);
     }
@@ -493,6 +521,110 @@ static int EBCL_execRtimCmdAdd(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const eb
     }
     EBCL_freeTask(t);
     return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 1, EBCL_RTIMCMD_RES_OK);
+}
+
+static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+    if (ctx == NULL || res == NULL || cmd == NULL) {
+        EBCL_errPrint("Pointer parameters must not be NULL.");
+    }
+
+    EBCL_dbgInfoPrint("Will execute runtime command \'ADDSERIES\' with following arguments:");
+    for (int i = 0; i < cmd->argc; i++) {
+        EBCL_dbgInfoPrint("    args[%d] = %s", i, cmd->args[i]);
+    }
+
+    if (cmd->argc != 2) {
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+    }
+
+    if (!EBCL_isAbsPath(cmd->args[0])) {
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
+                                 "Path to series file must be absolute.");
+    }
+
+    if (EBCL_taskDBSetSpawnInhibit(ctx, true) == -1) {
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
+                                 "Could not inhibit process spawning to load new series file.");
+    }
+
+    char **series = NULL;
+    int seriesLen = 0;
+    if (EBCL_loadSeriesConf(&seriesLen, &series, cmd->args[0]) == -1) {
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR, "Could not load series file.");
+    }
+
+    char *taskdir;
+    if (EBCL_globOptGetString(EBCL_GLOBOPT_TASKDIR, &taskdir) == -1) {
+        EBCL_taskDBSetSpawnInhibit(ctx, false);
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
+                                 "Could not access \'TASKDIR\' global option.");
+    }
+
+    bool overwriteTasks = false;
+    if (strcmp(cmd->args[1], "true") == 0) {
+        overwriteTasks = true;
+    }
+
+    for (int n = 0; n < seriesLen; n++) {
+        char *confFn = series[n];
+        bool confFnAllocated = false;
+        if (!EBCL_isAbsPath(confFn)) {
+            size_t prefixLen = strlen(taskdir);
+            size_t suffixLen = strlen(series[n]);
+            confFn = malloc(prefixLen + suffixLen + 2);
+            if (confFn == NULL) {
+                EBCL_freeArgvArray(series);
+                EBCL_taskDBSetSpawnInhibit(ctx, false);
+                return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
+                                         "Memory allocation error.");
+            }
+            memcpy(confFn, taskdir, prefixLen);
+            confFn[prefixLen] = '/';
+            memcpy(confFn + prefixLen + 1, series[n], suffixLen + 1);
+            confFnAllocated = true;
+        }
+        ebcl_ConfKvList_t *c;
+        if (EBCL_parseConf(&c, confFn) == -1) {
+            EBCL_errPrint("Could not parse file \'%s\'.", confFn);
+            if (confFnAllocated) {
+                free(confFn);
+            }
+            EBCL_freeArgvArray(series);
+            EBCL_taskDBSetSpawnInhibit(ctx, false);
+            return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
+                                     "Could not parse config file.");
+        }
+        EBCL_infoPrint("File \'%s\' loaded.", confFn);
+        if (confFnAllocated) {
+            free(confFn);
+        }
+
+        ebcl_Task_t *t = NULL;
+        if (EBCL_taskCreateFromConfKvList(&t, c) == -1) {
+            EBCL_freeConfList(c);
+            EBCL_freeArgvArray(series);
+            EBCL_taskDBSetSpawnInhibit(ctx, false);
+            return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
+                                     "Could not create task from config file.");
+        }
+
+        EBCL_freeConfList(c);
+        if (EBCL_taskDBInsert(ctx, t, overwriteTasks) == -1) {
+            EBCL_freeTask(t);
+            EBCL_freeArgvArray(series);
+            return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR,
+                                     "Could not insert new task into TaskDB.");
+        }
+
+        EBCL_freeTask(t);
+    }
+
+    EBCL_freeArgvArray(series);
+    if (EBCL_taskDBSetSpawnInhibit(ctx, false) == -1) {
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
+                                 "Could not re-enable spawning of processes.");
+    }
+    return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 1, EBCL_RTIMCMD_RES_OK);
 }
 
 static int EBCL_execRtimCmdEnable(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
@@ -777,8 +909,8 @@ static void *EBCL_shdnThread(void *args) {
     int shutdownCmd = a->shutdownCmd;
     free(args);
 
-    if (EBCL_taskDBSetSpawnFunc(ctx, NULL) == -1) {
-        EBCL_errPrint("Could not set spawning function of TaskDB to NULL. Continuing anyway.");
+    if (EBCL_taskDBSetSpawnInhibit(ctx, true) == -1) {
+        EBCL_errPrint("Could not inhibit spawning of new tasks. Continuing anyway.");
     }
 
     unsigned long long gpMicros = EBCL_GLOBOPT_DEFAULT_SHDGRACEP;
@@ -938,5 +1070,10 @@ static inline int EBCL_fsPrepareShutdown(void) {
     }
     sync();
     return out;
+}
+
+static inline bool EBCL_isAbsPath(const char *path) {
+    if (path == NULL) return false;
+    return (path[0] == '/');
 }
 

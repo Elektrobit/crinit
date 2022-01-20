@@ -71,8 +71,11 @@ typedef struct ebcl_TaskDB_t {
     /** Pointer specifying a function for spawning ready tasks, used by EBCL_taskDBSpawnReady() **/
     int (*spawnFunc)(struct ebcl_TaskDB_t *ctx, const ebcl_Task_t *);
 
-    pthread_mutex_t lock;    ///< Mutex to lock the TaskDB, shall be used for any operations on the taskSet.
-    pthread_cond_t changed;  ///< Condition variable to be signalled if taskSet is changed.
+    bool spawnInhibit;  ///< Specifies if process spawning is currently inhibited, respected by EBCL_taskDBSpawnReady().
+
+    pthread_mutex_t lock;    ///< Mutex to lock the TaskDB, shall be used for any operations on the data structure if
+                             ///< multiple threads are involved.
+    pthread_cond_t changed;  ///< Condition variable to be signalled if taskSet or spawnInhibit is changed.
 } ebcl_TaskDB_t;
 
 /**
@@ -201,28 +204,31 @@ int EBCL_taskDBSetTaskPID(ebcl_TaskDB_t *ctx, pid_t pid, const char *taskName);
 int EBCL_taskDBGetTaskPID(ebcl_TaskDB_t *ctx, pid_t *pid, const char *taskName);
 
 /**
- * Set the process spawning function of the TaskDB.
- *
- * Setting \a spawnFunc to NULL will inhibit spawning of new processes.
- *
- * @param ctx        The ebcl_TaskDB context for which to set the spawning function.
- * @param spawnFunc  The new spawning function to set, may be NULL.
- *
- * @return 0 on success, -1 on error
- */
-int EBCL_taskDBSetSpawnFunc(ebcl_TaskDB_t *ctx, int (*spawnFunc)(ebcl_TaskDB_t *ctx, const ebcl_Task_t *));
-
-/**
  * Run ebcl_TaskDB_t::spawnFunc for each startable task in a task database.
  *
  * A task is startable if and only if it has no remaining ebcl_TaskDB_t::deps and it has not been started before
  * according to ebcl_TaskDB_t::state. The function uses ebcl_TaskDB_t::lock for synchronization and is thread-safe.
+ *
+ * If ebcl_TaskDB::spawnInhibit is true, no tasks are considered startable and this function will return successfully
+ * without starting anything.
  *
  * @param ctx  The TaskDB context from which tasks will be started.
  *
  * @return 0 on success, -1 otherwise
  */
 int EBCL_taskDBSpawnReady(ebcl_TaskDB_t *ctx);
+/**
+ * Inhibit or un-inhibit spawning of processes by setting ebcl_TaskDB_t::spawnInhibit.
+ *
+ * The function uses ebcl_TaskDB_t::lock for synchronization and is thread-safe. It will also signal
+ * ebcl_TaskDB_t::changed if ebcl_TaskDB_t::spawnInhibit was changed to false.
+ *
+ * @param ctx  The TaskDB context in which to set the variable.
+ * @param inh  The value which ebcl_TaskDB_t:spawnInhibit shall be set to.
+ *
+ * @return 0 on success, -1 otherwise
+ */
+int EBCL_taskDBSetSpawnInhibit(ebcl_TaskDB_t *ctx, bool inh);
 
 /**
  *  Initialize the internals of an ebcl_TaskDB_t with a specified initial size for ebcl_TaskDB_t::taskSet.

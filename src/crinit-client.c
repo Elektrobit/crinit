@@ -203,6 +203,32 @@ EBCL_LIB_EXPORTED int EBCL_crinitTaskAdd(const char *configFilePath, bool overwr
     return ret;
 }
 
+EBCL_LIB_EXPORTED int EBCL_crinitSeriesAdd(const char *seriesFilePath, bool overwriteTasks) {
+    if (seriesFilePath == NULL) {
+        EBCL_errPrint("Series file path must not be NULL");
+        return -1;
+    }
+
+    ebcl_RtimCmd_t cmd, res;
+    const char *overwrStr = (overwriteTasks) ? "true" : "false";
+
+    if (EBCL_buildRtimCmd(&cmd, EBCL_RTIMCMD_C_ADDSERIES, 2, seriesFilePath, overwrStr) == -1) {
+        EBCL_errPrint("Could not build RtimCmd to send to Crinit.");
+        return -1;
+    }
+
+    if (EBCL_crinitXfer(&res, &cmd) == -1) {
+        EBCL_destroyRtimCmd(&cmd);
+        EBCL_errPrint("Could not complete data transfer from/to Crinit.");
+        return -1;
+    }
+    EBCL_destroyRtimCmd(&cmd);
+
+    int ret = EBCL_crinitResponseCheck(&res, EBCL_RTIMCMD_R_ADDSERIES);
+    EBCL_destroyRtimCmd(&res);
+    return ret;
+}
+
 EBCL_LIB_EXPORTED int EBCL_crinitTaskEnable(const char *taskName) {
     if (taskName == NULL) {
         EBCL_errPrint("Task name must not be NULL");

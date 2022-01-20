@@ -135,6 +135,11 @@ USAGE: crinit-ctl <ACTION> [OPTIONS] <PARAMETER> [PARAMETERS...]
                '-d/--override-deps <dependency-list>' - Will override the DEPENDS field of the config file
                     with what is given as the parameter.
                '-i/--ignore-deps' - Shortcut for '--override-deps ""'.
+   addseries [-f/--overwrite] <PATH>
+             - Will load a series file from <PATH>. Options set in the new series file take precedence over
+               current settings.
+               '-f/--overwrite' - Lets Crinit know it is fine to overwrite if it has already loaded tasks
+                    with the same name as those in the new series file.
       enable <TASK_NAME>
              - Removes dependency '@ctl:enable' from the dependency list of <TASK_NAME> if it is present.
      disable <TASK_NAME>

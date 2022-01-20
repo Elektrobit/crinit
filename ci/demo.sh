@@ -8,6 +8,7 @@ cleanup() {
     sudo kill ${@}
     # Delete temporary config.
     rm -f ${CONFDIR}/demo.series
+    rm -f ${CONFDIR}/addseries/demoadd.series
 }
 
 CMDPATH=$(cd $(dirname $0) && pwd)
@@ -20,6 +21,7 @@ export LD_LIBRARY_PATH="${LIBDIR}"
 cd $BASEDIR
 
 cat config/test/local.series | sed "s#TASKDIR = .*#TASKDIR = ${CONFDIR}#" > ${CONFDIR}/demo.series
+cat config/test/addseries/add.series | sed "s#TASKDIR = .*#TASKDIR = ${CONFDIR}/addseries#" > ${CONFDIR}/addseries/demoadd.series
 
 echo Will run: $ sudo crinit ${CONFDIR}/demo.series &
 sudo ${BINDIR}/crinit ${CONFDIR}/demo.series &
@@ -113,6 +115,14 @@ sleep 5
 
 echo ""
 echo "If there was no or just one more output from one_second_respawn, all is well."
+
+echo ""
+echo Now we\'ll try loading a second series file containing 3 tasks, forming a chain of dependencies. Three lines \
+    should be echo\'d, one after the other.
+echo ""
+echo Will run: $ sudo crinit-ctl addseries ${CONFDIR}/addseries/add.series
+sudo LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ${BINDIR}/crinit-ctl addseries ${CONFDIR}/addseries/demoadd.series
+sleep 1
 
 echo ""
 echo Now we\'ll check parsing of correct and incorrect COMMAND chains in the config files. We will try to load 6 task \

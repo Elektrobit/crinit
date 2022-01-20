@@ -3,7 +3,7 @@
 NAME = hello_world
 
 COMMAND[] = /bin/echo -ne "Hello, World!\n"
-COMMAND[] = /bin/echo This second line is echo'd after the first.
+COMMAND[] = "/bin/echo" This second line is echo'd after the first.
 
 DEPENDS = ""
 
