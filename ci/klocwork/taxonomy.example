@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<errors language="Any" version="1.4">
+    <categories name="emlix" locale="en">
+        <category name="eb-baseos-crinit">
+		<error id="FMM.MIGHT"/>
+		<error id="FMM.MUST"/>
+		<error id="FNH.MIGHT"/>
+		<error id="FNH.MUST"/>
+		<error id="FUM.GEN.MIGHT"/>
+		<error id="FUM.GEN.MUST"/>
+		<error id="MISRA.ASSIGN.OVERLAP"/>
+		<error id="MISRA.FILE_PTR.DEREF.2012"/>
+		<error id="MISRA.FILE_PTR.DEREF.CAST.2012"/>
+		<error id="MISRA.FILE_PTR.DEREF.INDIRECT.2012"/>
+		<error id="MISRA.FILE_PTR.DEREF.RETURN.2012"/>
+		<error id="MISRA.FUNC.NODECL.CALL.2012"/>
+		<error id="MISRA.RESOURCES.FILE.READ_ONLY_WRITE.2012"/>
+		<error id="MISRA.RESOURCES.FILE.USE_AFTER_CLOSE.2012"/>
+		<error id="MISRA.SIZEOF.SIDE_EFFECT"/>
+		<error id="UNINIT.HEAP.MIGHT"/>
+		<error id="UNINIT.HEAP.MUST"/>
+		<error id="UNINIT.STACK.ARRAY.MIGHT"/>
+		<error id="UNINIT.STACK.ARRAY.MUST"/>
+		<error id="UNINIT.STACK.ARRAY.PARTIAL.MUST"/>
+		<error id="UNINIT.STACK.MIGHT"/>
+		<error id="UNINIT.STACK.MUST"/>
+        </category>
+    </categories>
+</errors>
