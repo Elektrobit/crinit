@@ -15,7 +15,7 @@ mkdir -p $BASEDIR/result/include
 cd $BASEDIR
 # build and copy x86-64 binaries
 make clean
-make
+source ci/host-native.env && make
 cp crinit $BASEDIR/result/bin/x86_64/
 cp crinit-ctl $BASEDIR/result/bin/x86_64/
 cp crinit_parsecheck $BASEDIR/result/bin/x86_64/
@@ -23,7 +23,7 @@ cp -a lib/*.so* $BASEDIR/result/lib/x86_64/
 
 # build and copy aarch64 binaries
 make clean
-CFLAGS="-mcpu=cortex-a53 -march=armv8-a+crc" CC=aarch64-linux-gnu-gcc make
+source ci/cross.env && make
 cp crinit $BASEDIR/result/bin/aarch64/
 cp crinit-ctl $BASEDIR/result/bin/aarch64/
 cp crinit_parsecheck $BASEDIR/result/bin/aarch64/
@@ -31,13 +31,13 @@ cp -a lib/*.so* $BASEDIR/result/lib/aarch64/
 
 # build and copy x86-64 rpm
 make clean
-make rpmbuild
+source ci/host-native.env && make rpmbuild
 cp -a packaging/rpmbuild/RPMS $BASEDIR/result
 cp -a packaging/rpmbuild/SRPMS $BASEDIR/result
 
 # build and copy aarch64 rpm
 make clean
-CFLAGS="-mcpu=cortex-a53 -march=armv8-a+crc" CC=aarch64-linux-gnu-gcc make rpmbuild
+source ci/cross.env && make rpmbuild
 cp -a packaging/rpmbuild/RPMS $BASEDIR/result
 
 # build and copy documentation

@@ -13,7 +13,7 @@ pipeline {
         disableConcurrentBuilds()
     }
     stages {
-        stage ('Build and run demo') {
+        stage ('Setup') {
             agent {
                 dockerfile {
                     dir 'ci'
@@ -22,6 +22,8 @@ pipeline {
                         --build-arg UID=${UID} --build-arg GID=${GID}"
                     args "--privileged \
                         -v /home/jenkins/.ssh:/home/jenkins/.ssh \
+                        -v /home/jenkins/.klocwork:/home/jenkins/.klocwork \
+                        --tmpfs ${TMPDIR}:rw,size=787448k,mode=1777 \
                         -e HOME=/home/jenkins"
                 }
             }
@@ -34,10 +36,17 @@ pipeline {
                         '''
                     }
                 }
-                stage ('clang-tidy') {
+                stage ('Analyse: clang-tidy') {
                     steps {
                         sh '''#!/bin/bash -xe
                           ci/clang-tidy.sh
+                        '''
+                    }
+                }
+                stage ('Analyse: klocwork') {
+                    steps {
+                        sh '''#!/bin/bash -xe
+                          ci/klocwork/run.sh
                         '''
                     }
                 }
@@ -55,6 +64,13 @@ pipeline {
                 archiveArtifacts 'result/**'
             }
         }
+        stage('Check success') {
+            steps {
+                sh 'test -e result/klocwork/issues.csv'
+                sh 'test ! -s result/klocwork/issues.csv'
+            }
+        }
+
     }
 }
 
