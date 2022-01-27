@@ -1,3 +1,15 @@
+/**
+ * @file utest-crinit-set-verbose-success.c
+ * @brief Implementation of a unit test for EBCL_crinitSetVerbose(), under the assumption no internal function calls
+ *        fail.
+ *
+ * @author emlix GmbH, 37083 Göttingen, Germany
+ *
+ * @copyright 2021-2022 Elektrobit Automotive GmbH
+ *            All rights exclusively reserved for Elektrobit Automotive GmbH,
+ *            unless otherwise expressly agreed
+ */
+
 // clang-format off
 #include <setjmp.h>
 #include <stdarg.h>

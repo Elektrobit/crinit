@@ -1,3 +1,14 @@
+/**
+ * @file utest-crinit-set-verbose-globopt-error.c
+ * @brief Implementation of a unit test for EBCL_crinitSetVerbose() with the assumption EBCL_globOptSet() fails.
+ *
+ * @author emlix GmbH, 37083 Göttingen, Germany
+ *
+ * @copyright 2021-2022 Elektrobit Automotive GmbH
+ *            All rights exclusively reserved for Elektrobit Automotive GmbH,
+ *            unless otherwise expressly agreed
+ */
+
 // clang-format off
 #include <setjmp.h>
 #include <stdarg.h>
