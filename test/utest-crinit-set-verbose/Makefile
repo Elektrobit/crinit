@@ -9,15 +9,4 @@ OBJS = utest-crinit-set-verbose.o \
 LDFLAGS += -Wl,--wrap=EBCL_globOptSet
 CFLAGS += -DEBCL_LIB_CONSTRUCTOR="" -DEBCL_LIB_DESTRUCTOR="" -Wno-unused-function
 
-all: $(BINS)
-
-$(BINS): $(OBJS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LIBS)
-
-%.o: %.c
-	$(CC) -c -o $@ $< $(CFLAGS)
-
-clean:
-	rm -fv $(BINS) *.o
-
-.PHONY: all clean
+include ../common.mk

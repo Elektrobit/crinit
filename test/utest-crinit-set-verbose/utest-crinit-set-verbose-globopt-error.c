@@ -9,18 +9,10 @@
  *            unless otherwise expressly agreed
  */
 
-// clang-format off
-#include <setjmp.h>
-#include <stdarg.h>
-#include <stddef.h>
-#include <stdint.h>
-#include <cmocka.h>
-// clang-format on
-// Rationale: Specific order of includes needed by cmocka.h.
-
 #include "common.h"
 #include "crinit-client.h"
 #include "mock_globopt_set.h"
+#include "unit_test.h"
 #include "utest-crinit-set-verbose.h"
 
 void EBCL_crinitSetVerboseTestGlobOptError(void **state) {
