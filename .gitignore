@@ -14,6 +14,7 @@ packaging/rpmbuild/RPMS
 packaging/rpmbuild/SRPMS
 .ycm*
 *.svg
+compile_commands.json
 
 # Vim temporary files
 # Swap
