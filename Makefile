@@ -4,7 +4,7 @@ PLANTUML ?= plantuml
 
 BINS = crinit crinit_parsecheck crinit-ctl
 
-SRCDIR = src
+SRCDIR = $(realpath src)
 
 OBJDIR = obj
 LIBOBJDIR = lobj
@@ -20,7 +20,7 @@ LIBOBJS = $(addprefix $(LIBOBJDIR)/, ${LIBSRCS:.c=.o})
 
 IMGS = $(addprefix $(IMGDIR)/, notiserv_sock_comm_seq.svg  sock_comm_str.svg)
 
-CFLAGS += -O2 -std=c99 -D_DEFAULT_SOURCE -Wall -Wswitch-enum -Werror -pedantic -fstack-protector-strong -ffunction-sections -fdata-sections -D_FORTIFY_SOURCE=2 -I$(INCDIR)
+CFLAGS += -O2 -std=c99 -D_DEFAULT_SOURCE -Wall -Wswitch-enum -Werror -pedantic -fstack-protector-strong -ffunction-sections -fdata-sections -D_FORTIFY_SOURCE=2 -I$(realpath $(INCDIR))
 LDFLAGS += -L$(LIBDIR) -Wl,--gc-sections
 
 GIT_REVISION = $(shell git rev-parse --short HEAD)
@@ -40,9 +40,11 @@ ifeq ($(RPM_TARGET),)
 RPM_TARGET = x86_64
 endif
 
+export AR CC CFLAGS LDFLAGS SRCDIR
+
 all: crinit crinit_parsecheck lib/libcrinit-client.so crinit-ctl
 
-crinit: ${OBJS}
+crinit: $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 crinit_parsecheck: $(OBJDIR)/crinit_parsecheck.o $(OBJDIR)/confparse.o $(OBJDIR)/taskdb.o $(OBJDIR)/logio.o
@@ -51,7 +53,7 @@ crinit_parsecheck: $(OBJDIR)/crinit_parsecheck.o $(OBJDIR)/confparse.o $(OBJDIR)
 crinit-ctl: $(OBJDIR)/crinit-ctl.o $(OBJDIR)/logio.o lib/libcrinit-client.so
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(filter-out %.so, $^) $(LIBS) -lcrinit-client
 
-lib/libcrinit-client.so.$(VERSION): ${LIBOBJS}
+lib/libcrinit-client.so.$(VERSION): $(LIBOBJS)
 	$(CC) -shared $(LIBCFLAGS) -o $@ $^ $(LIBLDFLAGS)
 	@echo "Symbols in library:"
 	@nm -D $@
@@ -64,6 +66,9 @@ $(OBJDIR)/%.o : $(SRCDIR)/%.c
 
 $(LIBOBJDIR)/%.o : $(SRCDIR)/%.c
 	$(CC) -c -o $@ $< $(LIBCFLAGS)
+
+tests:
+	$(MAKE) -C test
 
 $(IMGDIR)/%.svg : $(IMGDIR)/%.plantuml
 	$(PLANTUML) -tsvg $<
@@ -85,7 +90,7 @@ rpmbuild: clean
 		    -v -ba SPECS/crinit-git.spec
 
 clean:
-	rm -rvf $(BINS) $(DIRS) $(IMGS)
+	rm -rvf $(BINS) $(DIRS) $(IMGS) $(SRCDIR)/*.o
 	rm -rf ./doc/*
 	rm -rf \
 		packaging/rpmbuild/SOURCES \
@@ -93,4 +98,6 @@ clean:
 		packaging/rpmbuild/BUILDROOT \
 		packaging/rpmbuild/RPMS \
 		packaging/rpmbuild/SRPMS
+	$(MAKE) -C test clean
+
 .PHONY: all clean doxygen rpmbuild

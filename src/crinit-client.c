@@ -23,10 +23,17 @@
  * functions
  */
 #define EBCL_LIB_EXPORTED __attribute__((visibility("default")))
+
+#ifndef EBCL_LIB_CONSTRUCTOR // Guard so unit tests can define as empty.
 /** Attribute macro for a function executed on loading of the shared library. **/
 #define EBCL_LIB_CONSTRUCTOR __attribute__((constructor))
+#endif
+
+#ifndef EBCL_LIB_DESTRUCTOR // Guard so unit tests can define as empty.
 /** Attribute macro for a function executed on program exit if the shared library has been loaded before. **/
 #define EBCL_LIB_DESTRUCTOR __attribute__((destructor))
+#endif
+
 /** String to be used if no task name for sd_notify() is currently set. **/
 #define EBCL_CRINIT_ENV_NOTIFY_NAME_UNDEF "@undefined"
 

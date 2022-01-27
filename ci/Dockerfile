@@ -8,11 +8,12 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN dpkg --add-architecture i386
 RUN apt-get update \
  && apt-get install -y sudo locales vim screen libncurses-dev \
-    build-essential git python3-minimal \
+    build-essential git python3-minimal cmake \
     gcc-aarch64-linux-gnu \
     rpm \
     doxygen graphviz plantuml \
     clang llvm clang-tidy bear \
+    qemu-user-static \
     libc6:i386 \
  && rm -rf /var/lib/apt/lists/*
 

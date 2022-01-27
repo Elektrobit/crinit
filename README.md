@@ -193,6 +193,11 @@ ci/clang-tidy.sh
 ```
 This will also generate a `compile_commands.json`. The output will be saved to `results/clang-tidy`.
 
+Unit tests can be built and run using
+```
+ci/run-test.sh
+```
+
 If a quick native test build is desired, it is fine to simply run
 ```
 make clean && make

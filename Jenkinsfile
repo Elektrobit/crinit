@@ -50,6 +50,13 @@ pipeline {
                         '''
                     }
                 }
+                stage ('Analyse: Unit Tests') {
+                    steps {
+                        sh '''#!/bin/bash -xe
+                          ci/run-utests.sh
+                        '''
+                    }
+                }
                 stage ('Demo') {
                     steps {
                         sh '''#!/bin/bash -xe
