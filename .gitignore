@@ -4,6 +4,7 @@ crinit-ctl
 poweroff
 reboot
 *.o
+build/
 doc/
 lib/
 ci/sshconfig

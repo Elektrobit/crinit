@@ -39,21 +39,31 @@ fi
 
 # build
 cd $BASEDIR
+
 # build and copy x86-64 binaries
-make clean
-source ci/host-native.env && make
-cp crinit $BASEDIR/result/bin/x86_64/
-cp crinit-ctl $BASEDIR/result/bin/x86_64/
-cp crinit_parsecheck $BASEDIR/result/bin/x86_64/
-cp -a lib/*.so* $BASEDIR/result/lib/x86_64/
+mkdir -p $BASEDIR/build/x86_64
+cmake -B $BASEDIR/build/x86_64 \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_VERBOSE_MAKEFILE=On \
+    $BASEDIR
+make -C $BASEDIR/build/x86_64
+cp $BASEDIR/build/x86_64/src/crinit $BASEDIR/result/bin/x86_64/
+cp $BASEDIR/build/x86_64/src/crinit-ctl $BASEDIR/result/bin/x86_64/
+cp $BASEDIR/build/x86_64/src/crinit_parsecheck $BASEDIR/result/bin/x86_64/
+cp -a $BASEDIR/build/x86_64/src/*.so* $BASEDIR/result/lib/x86_64/
 
 # build and copy aarch64 binaries
-make clean
-source ci/cross.env && make
-cp crinit $BASEDIR/result/bin/aarch64/
-cp crinit-ctl $BASEDIR/result/bin/aarch64/
-cp crinit_parsecheck $BASEDIR/result/bin/aarch64/
-cp -a lib/*.so* $BASEDIR/result/lib/aarch64/
+mkdir -p $BASEDIR/build/aarch64
+cmake -B $BASEDIR/build/aarch64 \
+    -DCMAKE_TOOLCHAIN_FILE=$BASEDIR/ci/aarch64-toolchain.cmake \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_VERBOSE_MAKEFILE=On \
+    $BASEDIR
+make -C $BASEDIR/build/aarch64
+cp $BASEDIR/build/aarch64/src/crinit $BASEDIR/result/bin/aarch64/
+cp $BASEDIR/build/aarch64/src/crinit-ctl $BASEDIR/result/bin/aarch64/
+cp $BASEDIR/build/aarch64/src/crinit_parsecheck $BASEDIR/result/bin/aarch64/
+cp -a $BASEDIR/build/aarch64/src/*.so* $BASEDIR/result/lib/aarch64/
 
 # build and copy x86-64 rpm
 make clean
@@ -67,7 +77,7 @@ source ci/cross.env && make rpmbuild
 cp -a packaging/rpmbuild/RPMS $BASEDIR/result
 
 # build and copy documentation
-make doxygen
+make -C $BASEDIR/build/x86_64 doxygen
 cp -a doc $BASEDIR/result
 
 # copy client API headers
