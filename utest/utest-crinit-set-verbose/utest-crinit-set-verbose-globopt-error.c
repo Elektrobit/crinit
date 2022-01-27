@@ -18,8 +18,6 @@
 // clang-format on
 // Rationale: Specific order of includes needed by cmocka.h.
 
-#include <sys/mount.h>
-
 #include "common.h"
 #include "crinit-client.h"
 #include "mock_globopt_set.h"
