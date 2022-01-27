@@ -67,8 +67,8 @@ $(OBJDIR)/%.o : $(SRCDIR)/%.c
 $(LIBOBJDIR)/%.o : $(SRCDIR)/%.c
 	$(CC) -c -o $@ $< $(LIBCFLAGS)
 
-utests: $(OBJS)
-	$(MAKE) -C utest
+tests:
+	$(MAKE) -C test
 
 $(IMGDIR)/%.svg : $(IMGDIR)/%.plantuml
 	$(PLANTUML) -tsvg $<
@@ -98,6 +98,6 @@ clean:
 		packaging/rpmbuild/BUILDROOT \
 		packaging/rpmbuild/RPMS \
 		packaging/rpmbuild/SRPMS
-	$(MAKE) -C utest clean
+	$(MAKE) -C test clean
 
 .PHONY: all clean doxygen rpmbuild

@@ -17,10 +17,10 @@ fi
 
 # build tests
 make clean
-source $BASEDIR/ci/cross.env && make utests
+source $BASEDIR/ci/cross.env && make tests
 
-mkdir -p $BASEDIR/result/bin/aarch64/utests
+mkdir -p $BASEDIR/result/bin/aarch64/tests
 # run tests and copy artifacts
-find $BASEDIR/utest -executable -type f -exec sh -c \
-    "echo \$(basename {}); cp {} $BASEDIR/result/bin/aarch64/utests/; qemu-aarch64-static -L /usr/aarch64-linux-gnu {}" \; 2>&1 \
+find $BASEDIR/test -executable -type f -exec sh -c \
+    "echo \$(basename {}); cp {} $BASEDIR/result/bin/aarch64/tests/; qemu-aarch64-static -L /usr/aarch64-linux-gnu {}" \; 2>&1 \
     | tee -a $BASEDIR/result/utest_report.txt

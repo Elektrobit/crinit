@@ -17,17 +17,17 @@ CC=clang \
     bear make $(ls src/*.c | sed s/\.c$/.o/g | sed s#src/#obj/#g)
 
 # append tests to compile_commands.json
-for d in $BASEDIR/utest/utest-*/ ; do
+for d in $BASEDIR/test/utest-*/ ; do
 CC=clang \
     CFLAGS="-target aarch64-linux-gnu -mcpu=cortex-a53 -march=armv8-a+crc " \
-    CFLAGS+="-isystem /usr/aarch64-linux-gnu/include/ -I$BASEDIR/utest/mocks" \
+    CFLAGS+="-isystem /usr/aarch64-linux-gnu/include/ -I$BASEDIR/test/mocks" \
     bear -a make $(ls $d/*.c | sed s/\.c$/.o/g)
 done
 
 # append mocks to compile_commands.json
 CC=clang \
     CFLAGS="-target aarch64-linux-gnu -mcpu=cortex-a53 -march=armv8-a+crc -isystem /usr/aarch64-linux-gnu/include/" \
-    bear -a make $(ls $BASEDIR/utest/mocks/*.c | sed s/\.c$/.o/g)
+    bear -a make $(ls $BASEDIR/test/mocks/*.c | sed s/\.c$/.o/g)
 
 cp compile_commands.json result/clang-tidy/
 
@@ -37,11 +37,11 @@ clang-tidy -dump-config  -header-filter='inc\/*.h' inc/*.h src/*.c > result/clan
 set -o pipefail
 clang-tidy -header-filter='inc\/*.h' inc/*.h src/*.c 2>&1 | tee result/clang-tidy/report-crinit
 
-# run clang-tidy for tests
-for d in $BASEDIR/utest/utest-*/ ; do
+# run clang-tidy for unit tests
+for d in $BASEDIR/test/utest-*/ ; do
     SUBDIR=$d
     clang-tidy -header-filter='inc\/*.h' $SUBDIR/*.c 2>&1 | tee result/clang-tidy/report-$(basename $SUBDIR)
 done
 
 # run clang-tidy for mocks
-clang-tidy -header-filter='inc\/*.h' $BASEDIR/utest/mocks/*.c 2>&1 | tee result/clang-tidy/report-mocks
+clang-tidy -header-filter='inc\/*.h' $BASEDIR/test/mocks/*.c 2>&1 | tee result/clang-tidy/report-mocks
