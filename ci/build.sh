@@ -66,14 +66,13 @@ cp $BASEDIR/build/aarch64/src/crinit_parsecheck $BASEDIR/result/bin/aarch64/
 cp -a $BASEDIR/build/aarch64/src/*.so* $BASEDIR/result/lib/aarch64/
 
 # build and copy x86-64 rpm
-make clean
-source ci/host-native.env && make rpmbuild
+make -C $BASEDIR/build/x86_64 rpmbuild
 cp -a packaging/rpmbuild/RPMS $BASEDIR/result
 cp -a packaging/rpmbuild/SRPMS $BASEDIR/result
 
 # build and copy aarch64 rpm
-make clean
-source ci/cross.env && make rpmbuild
+CMAKE_TOOLCHAIN_FILE=$BASEDIR/ci/aarch64-toolchain.cmake \
+    make -C $BASEDIR/build/aarch64 rpmbuild
 cp -a packaging/rpmbuild/RPMS $BASEDIR/result
 
 # build and copy documentation

@@ -5,6 +5,7 @@ Version: %{crinit_version_}git%{gitrev_}
 Release: 1%{?dist}
 Source0: crinit-%{crinit_version_}git%{gitrev_}.tar.gz
 License: Closed
+BuildRequires: cmake
 
 %description
 The EB BaseOS Configurable Rootfs Init Daemon including the client API shared library and the crinit-ctl CLI interface.
@@ -44,14 +45,16 @@ Development files for client programs willing to use the client API of the Confi
 %setup -q -c
 
 %build
+cmake . -DUNIT_TESTS=Off
 make
 
 %install
 mkdir -p %{buildroot}/%{_bindir}
 mkdir -p %{buildroot}/%{_libdir}
-install -m 0755 crinit %{buildroot}/%{_bindir}
-install -m 0755 crinit-ctl  %{buildroot}/%{_bindir}
-install -m 0755 lib/libcrinit-client.so.%{crinit_version_}  %{buildroot}/%{_libdir}
+install -m 0755 src/crinit %{buildroot}/%{_bindir}
+install -m 0755 src/crinit-ctl %{buildroot}/%{_bindir}
+install -m 0755 src/libcrinit-client.so.%{crinit_version_} %{buildroot}/%{_libdir}
+ln -sf libcrinit-client.so.%{crinit_version_} %{buildroot}/%{_libdir}/libcrinit-client.so.%{crinit_soversion_}
 
 # shutdown
 mkdir -p %{buildroot}/sbin
@@ -68,7 +71,7 @@ mkdir -p %{buildroot}/%{_includedir}
 mkdir -p %{buildroot}/%{_libdir}
 install -m 0644 inc/crinit-client.h %{buildroot}/%{_includedir}
 install -m 0644 inc/crinit-sdefs.h %{buildroot}/%{_includedir}
-ln -sf /%{_libdir}/libcrinit-client.so.%{crinit_version_}  %{buildroot}/%{_libdir}/libcrinit-client.so
+ln -sf libcrinit-client.so.%{crinit_soversion_} %{buildroot}/%{_libdir}/libcrinit-client.so
 
 %ifarch aarch64
 # conf-s32g
@@ -82,6 +85,7 @@ install -D -m 0644 config/s32g/*.series %{buildroot}/%{_sysconfdir}/crinit
 %{_bindir}/crinit
 %{_bindir}/crinit-ctl
 %{_libdir}/libcrinit-client.so.%{crinit_version_}
+%{_libdir}/libcrinit-client.so.%{crinit_soversion_}
 
 %files shutdown
 /sbin/poweroff

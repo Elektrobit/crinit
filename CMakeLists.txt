@@ -1,4 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
+if(NOT DEFINED CMAKE_TOOLCHAIN_FILE AND DEFINED ENV{CMAKE_TOOLCHAIN_FILE})
+  set(CMAKE_TOOLCHAIN_FILE $ENV{CMAKE_TOOLCHAIN_FILE})
+endif()
 project(crinit)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_EXTENSIONS NO)
@@ -52,5 +55,22 @@ find_package(Doxygen)
 add_custom_target(
   doxygen
   COMMAND doxygen
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+)
+
+add_custom_target(
+  rpmbuild
+  COMMAND
+    mkdir -p packaging/rpmbuild/SOURCES &&
+    tar czf packaging/rpmbuild/SOURCES/crinit-${PKG_VERSION}git${CRINIT_VERSION_GIT}.tar.gz src/ inc/ test/ config/ images/ CMakeLists.txt Doxyfile README.md &&
+    cd packaging/rpmbuild &&
+    rpmbuild
+      --target aarch64
+      --nodeps
+      --define "_topdir ${PROJECT_SOURCE_DIR}/packaging/rpmbuild"
+      --define "crinit_version_ ${PKG_VERSION}"
+      --define "crinit_soversion_ ${CRINIT_VERSION_MAJOR}"
+      --define "gitrev_ ${CRINIT_VERSION_GIT}"
+      -v -ba SPECS/crinit-git.spec
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
