@@ -2,8 +2,6 @@
 #
 # project build script
 #
-# run with '--no-deps' to avoid rebuilding dependencies after it has been done once.
-#
 CMDPATH=$(cd $(dirname $0) && pwd)
 BASEDIR=${CMDPATH%/*}
 
@@ -12,30 +10,6 @@ rm -rf $BASEDIR/result
 mkdir -p $BASEDIR/result/bin/x86_64 $BASEDIR/result/bin/aarch64
 mkdir -p $BASEDIR/result/lib/x86_64 $BASEDIR/result/lib/aarch64
 mkdir -p $BASEDIR/result/include
-
-# cmocka needs to be installed for unit tests (and their clang-tidy check).
-function build_deps {
-    # fetch submodules
-    git submodule update --init
-
-    # build and install cmocka for aarch64-linux-gnu
-    rm -rf $BASEDIR/cmocka/build
-    mkdir $BASEDIR/cmocka/build
-    cd $BASEDIR/cmocka/build
-    cmake \
-        -DCMAKE_TOOLCHAIN_FILE=../../ci/aarch64-cmocka-toolchain.cmake \
-        -DPICKY_DEVELOPER=ON \
-        -DBUILD_SHARED_LIBS=ON \
-        -DWITH_EXAMPLES=OFF \
-        -DCMAKE_INSTALL_PREFIX=/usr/aarch64-linux-gnu \
-        ..
-    make
-    sudo make install
-}
-
-if [ "$1" != "--no-deps" ]; then
-    build_deps
-fi
 
 # build
 cd $BASEDIR
