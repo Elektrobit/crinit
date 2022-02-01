@@ -9,6 +9,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 cmake_policy(SET CMP0065 NEW)
 include(GNUInstallDirs)
 
+option(UNIT_TESTS "Build unit tests" ON)
+
 find_package(Git REQUIRED)
 set(CRINIT_VERSION_MAJOR 0)
 set(CRINIT_VERSION_MINOR 3)
@@ -50,6 +52,10 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 add_subdirectory(src/)
+if(UNIT_TESTS)
+  enable_testing()
+  add_subdirectory(test/)
+endif(UNIT_TESTS)
 
 find_package(Doxygen)
 add_custom_target(

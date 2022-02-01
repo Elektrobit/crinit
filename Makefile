@@ -81,7 +81,7 @@ doxygen: $(IMGS)
 rpmbuild: clean
 	mkdir -p packaging/rpmbuild/SOURCES
 	tar czf packaging/rpmbuild/SOURCES/crinit-$(VERSION)git$(GIT_REVISION).tar.gz \
-		src/ inc/ config/ images/ VERSION CMakeLists.txt Doxyfile README.md
+		src/ inc/ test/ config/ images/ VERSION CMakeLists.txt Doxyfile README.md
 	cd packaging/rpmbuild && \
 		rpmbuild --target $(RPM_TARGET) \
 		    --define "_topdir $(shell pwd)/packaging/rpmbuild" \

@@ -16,10 +16,6 @@ then
     exit 1
 fi
 
-# build tests
-make clean
-source "$BASEDIR"/ci/cross.env && make tests
-
 mkdir -p "$BASEDIR"/result/bin/aarch64/tests
 rm -f "$UTEST_REPORT"
 # run tests and copy artifacts
@@ -33,7 +29,7 @@ while IFS= read -r -d '' t; do
     if [ $RETURNCODE != 0 ]; then
         TESTERROR=true
     fi
-done < <(find "$BASEDIR"/test -executable -type f -print0)
+done < <(find "$BASEDIR"/build/aarch64/test -executable -type f -print0)
 
 if [ $TESTERROR = true ]; then
     exit 1

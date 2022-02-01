@@ -19,6 +19,7 @@ mkdir -p $BASEDIR/build/x86_64
 cmake -B $BASEDIR/build/x86_64 \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_VERBOSE_MAKEFILE=On \
+    -DUNIT_TESTS=Off \
     $BASEDIR
 make -C $BASEDIR/build/x86_64
 cp $BASEDIR/build/x86_64/src/crinit $BASEDIR/result/bin/x86_64/
@@ -32,6 +33,7 @@ cmake -B $BASEDIR/build/aarch64 \
     -DCMAKE_TOOLCHAIN_FILE=$BASEDIR/ci/aarch64-toolchain.cmake \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_VERBOSE_MAKEFILE=On \
+    -DUNIT_TESTS=On \
     $BASEDIR
 make -C $BASEDIR/build/aarch64
 cp $BASEDIR/build/aarch64/src/crinit $BASEDIR/result/bin/aarch64/
