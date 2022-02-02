@@ -58,10 +58,26 @@ if(UNIT_TESTS)
 endif(UNIT_TESTS)
 
 find_package(Doxygen)
+file(GLOB images "images/*.plantuml")
+foreach(img ${images})
+    get_filename_component(output ${img} NAME_WLE)
+    add_custom_command(
+      OUTPUT
+        ${CMAKE_SOURCE_DIR}/doc/html/images/${output}.svg
+      COMMAND
+        plantuml -o ${CMAKE_SOURCE_DIR}/doc/html/images -tsvg ${img}
+      MAIN_DEPENDENCY
+        ${img}
+      COMMENT
+       "Running plantuml to generate: ${output}"
+    )
+    list(APPEND doxygen_images ${CMAKE_SOURCE_DIR}/doc/html/images/${output}.svg)
+endforeach()
 add_custom_target(
   doxygen
   COMMAND doxygen
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+  DEPENDS ${doxygen_images}
 )
 
 add_custom_target(
