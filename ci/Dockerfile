@@ -12,7 +12,7 @@ RUN apt-get update \
     gcc-aarch64-linux-gnu \
     rpm \
     doxygen graphviz plantuml \
-    clang llvm clang-tidy bear \
+    clang llvm clang-tidy \
     qemu-user-static \
     libc6:i386 \
  && rm -rf /var/lib/apt/lists/*
