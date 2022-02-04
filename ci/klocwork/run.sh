@@ -62,8 +62,16 @@ function kw_setup()
 
 function kw_analyse()
 {
-	make clean
-	source ci/cross.env && kwshell make
+	rm -rf build/klocwork
+	mkdir -p build/klocwork
+	cmake -B build/klocwork \
+		-DCMAKE_TOOLCHAIN_FILE=ci/aarch64-toolchain.cmake \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_VERBOSE_MAKEFILE=On \
+		-DUNIT_TESTS=Off \
+		-DENABLE_COVERAGE=Off \
+		$BASEDIR
+	kwshell make -C build/klocwork
 
 	kwcheck run -F ${OUT_FMT}
 }
