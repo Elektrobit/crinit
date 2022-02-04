@@ -191,20 +191,20 @@ A `clang-tidy` analysis of the source can be performed using
 ```
 ci/clang-tidy.sh
 ```
-This will also generate a `compile_commands.json`. The output will be saved to `results/clang-tidy`.
+This will also generate a `compile_commands.json`. The output will be saved to `result/clang-tidy`.
 
 Unit tests can be built and run using
 ```
-ci/run-test.sh
+ci/run-utest.sh
 ```
 
 If a quick native test build is desired, it is fine to simply run
 ```
-make clean && make
+make -C build/x86_64 clean && make -C build/x86_64
 ```
 inside the container.
 
 The Doxygen documentation alone can be built using
 ```
-make doxygen
+make -C build/x86_64 doxygen
 ```
