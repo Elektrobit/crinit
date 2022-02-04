@@ -198,11 +198,13 @@ Unit tests can be built and run using
 ci/run-utest.sh
 ```
 
-If a quick native test build is desired, it is fine to simply run
+If a manual test build is desired, running the following command sequence 
+inside the container will setup the build system and build native binaries.
 ```
-make -C build/x86_64 clean && make -C build/x86_64
+mkdir -p build/x86_64
+cmake -B build/x86_64 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=On -DUNIT_TESTS=On
+make -C build/x86_64
 ```
-inside the container.
 
 The Doxygen documentation alone can be built using
 ```
