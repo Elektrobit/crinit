@@ -39,4 +39,7 @@ function(create_unit_test)
 endfunction()
 
 add_subdirectory(mocks)
-add_subdirectory(utest-crinit-set-verbose)
+file(GLOB utests RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} utest-*)
+foreach(utest ${utests})
+    add_subdirectory(${utest})
+endforeach()
