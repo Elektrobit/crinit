@@ -278,7 +278,7 @@ int EBCL_parseRtimCmd(ebcl_RtimCmd_t *out, const char *cmdStr) {
     char *strtokState = NULL;
     char *token = NULL;
     char *start = out->args[0];
-    int i = 0;
+    size_t i = 0;
     char tokenList[2] = {EBCL_RTIMCMD_ARGDELIM, '\0'};
     while ((token = strtok_r(start, tokenList, &strtokState)) != NULL && i < argCount) {
         start = NULL;

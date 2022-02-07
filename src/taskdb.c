@@ -688,13 +688,13 @@ static void EBCL_destroyTask(ebcl_Task_t *t) {
     if (t == NULL) return;
     free(t->name);
     if (t->cmds != NULL) {
-        for (int i = 0; i < t->cmdsSize; i++) {
+        for (size_t i = 0; i < t->cmdsSize; i++) {
             EBCL_freeArgvArray(t->cmds[i].argv);
         }
     }
     free(t->cmds);
     if (t->deps != NULL) {
-        for (int i = 0; i < t->depsSize; i++) {
+        for (size_t i = 0; i < t->depsSize; i++) {
             free(t->deps[i].name);
         }
     }

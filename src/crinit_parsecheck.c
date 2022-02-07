@@ -52,7 +52,7 @@ static void EBCL_taskPrint(const ebcl_Task_t *t) {
  *
  * Will try to parse and print out all task configurations given on the command line.
  */
-int main(int argc, char *argv[], char *envp[]) {
+int main(int argc, char *argv[]) {
     for (int n = 1; n < argc; n++) {
         ebcl_ConfKvList_t *c;
         if (EBCL_parseConf(&c, argv[n]) == -1) {
