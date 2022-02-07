@@ -448,12 +448,12 @@ static inline int EBCL_recvStr(int sockFd, char **str, struct ucred *passedCreds
     iov.iov_len = dataLen;
 
     bytesRead = recvmsg(sockFd, &mHdr, 0);
-    if (bytesRead == -1) {
+    if (bytesRead < 0) {
         EBCL_errnoPrint("(TID %d) Could not receive string data message of size %zu Bytes via socket.", threadId,
                         dataLen);
         goto fail;
     }
-    if (bytesRead != dataLen) {
+    if ((size_t)bytesRead != dataLen) {
         EBCL_errPrint("Received data of unexpected length from client: %ld Bytes vs. announced %zu Bytes ", bytesRead,
                       dataLen);
         goto fail;

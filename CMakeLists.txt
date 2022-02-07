@@ -40,7 +40,7 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--gc-sections")
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--gc-sections")
 
 add_compile_options(
-  -Wall -Wswitch-enum -Werror -pedantic
+  -Wall -Wextra -Wswitch-enum -Werror -pedantic
   -fstack-protector-strong
   -ffunction-sections -fdata-sections
   -D_DEFAULT_SOURCE
