@@ -20,4 +20,11 @@ function(create_mock_lib)
   )
 endfunction()
 
-create_mock_lib(NAME libmockfunctions SOURCES mock_globopt_set.c INCLUDES ${CMAKE_CURRENT_SOURCE_DIR})
+create_mock_lib(
+  NAME
+    libmockfunctions
+  SOURCES
+    mock-glob-opt-set.c
+  INCLUDES
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)

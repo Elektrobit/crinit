@@ -1,7 +1,6 @@
 /**
- * @file utest-crinit-set-verbose-success.c
- * @brief Implementation of a unit test for EBCL_crinitSetVerbose(), under the assumption no internal function calls
- *        fail.
+ * @file case-glob-opt-error.c
+ * @brief Implementation of a unit test for EBCL_crinitSetVerbose() with the assumption EBCL_globOptSet() fails.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -9,13 +8,14 @@
  *            All rights exclusively reserved for Elektrobit Automotive GmbH,
  *            unless otherwise expressly agreed
  */
+
 #include "common.h"
 #include "crinit-client.h"
-#include "mock_globopt_set.h"
+#include "mock-glob-opt-set.h"
 #include "unit_test.h"
 #include "utest-crinit-set-verbose.h"
 
-void EBCL_crinitSetVerboseTestSuccess(void **state) {
+void EBCL_crinitSetVerboseTestGlobOptError(void **state) {
     EBCL_PARAM_UNUSED(state);
     const bool t = true;
     const bool f = false;
@@ -24,14 +24,14 @@ void EBCL_crinitSetVerboseTestSuccess(void **state) {
     expect_value(__wrap_EBCL_globOptSet, key, EBCL_GLOBOPT_DEBUG);
     expect_memory(__wrap_EBCL_globOptSet, val, &t, sizeof(bool));
     expect_value(__wrap_EBCL_globOptSet, sz, sizeof(bool));
-    will_return(__wrap_EBCL_globOptSet, 0);
-    assert_int_equal(EBCL_crinitSetVerbose(true), 0);
+    will_return(__wrap_EBCL_globOptSet, -1);
+    assert_int_equal(EBCL_crinitSetVerbose(true), -1);
 
     // case for input == false
     expect_value(__wrap_EBCL_globOptSet, key, EBCL_GLOBOPT_DEBUG);
     expect_memory(__wrap_EBCL_globOptSet, val, &f, sizeof(bool));
     expect_value(__wrap_EBCL_globOptSet, sz, sizeof(bool));
-    will_return(__wrap_EBCL_globOptSet, 0);
-    assert_int_equal(EBCL_crinitSetVerbose(false), 0);
+    will_return(__wrap_EBCL_globOptSet, -1);
+    assert_int_equal(EBCL_crinitSetVerbose(false), -1);
 }
 

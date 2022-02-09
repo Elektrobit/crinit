@@ -3,8 +3,8 @@ create_unit_test(
     utest-crinit-set-verbose
   SOURCES
     utest-crinit-set-verbose.c
-    utest-crinit-set-verbose-success.c
-    utest-crinit-set-verbose-globopt-error.c
+    case-success.c
+    case-glob-opt-error.c
     ${PROJECT_SOURCE_DIR}/src/crinit-client.c
     ${PROJECT_SOURCE_DIR}/src/globopt.c
     ${PROJECT_SOURCE_DIR}/src/logio.c

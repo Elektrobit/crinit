@@ -1,5 +1,5 @@
 /**
- * @file mock_globopt_set.h
+ * @file mock-glob-opt-set.h
  * @brief Header declaring a mock function for EBCL_globOptSet().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
