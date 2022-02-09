@@ -25,6 +25,7 @@ create_mock_lib(
     libmockfunctions
   SOURCES
     mock-glob-opt-set.c
+    mock-set-err-stream.c
   INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
