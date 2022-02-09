@@ -9,16 +9,10 @@ create_unit_test(
     ${PROJECT_SOURCE_DIR}/src/globopt.c
     ${PROJECT_SOURCE_DIR}/src/logio.c
   DEFINITIONS
-    -DEBCL_LIB_CONSTRUCTOR=
-    -DEBCL_LIB_DESTRUCTOR=
+    "-DEBCL_LIB_CONSTRUCTOR=__attribute__((unused))"
+    "-DEBCL_LIB_DESTRUCTOR=__attribute__((unused))"
   LIBRARIES
     libmockfunctions
   WRAPS
     -Wl,--wrap=EBCL_globOptSet
-)
-# FIXME: -DFOO="" quoting
-# FIXME: -Wno-unused-function
-target_compile_options(
-    utest-crinit-set-verbose
-    PRIVATE -Wno-unused-function
 )
