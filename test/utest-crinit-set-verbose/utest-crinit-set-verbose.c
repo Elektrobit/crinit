@@ -11,9 +11,6 @@
 
 #include "utest-crinit-set-verbose.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "unit_test.h"
 
 /**
