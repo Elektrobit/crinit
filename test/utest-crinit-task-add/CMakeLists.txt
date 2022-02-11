@@ -1,0 +1,31 @@
+create_unit_test(
+  NAME
+    utest-crinit-task-add
+  SOURCES
+    utest-crinit-task-add.c
+    case-success.c
+    case-confpath-null.c
+    #case-forcedeps-null.c
+    #case-forcedeps-empty.c
+    #case-overwrite-true.c
+    #case-overwrite-false.c
+    #case-build-rtim-cmd-error.c
+    #case-crinit-xfer-error.c
+    #case-crinit-response-error.c
+    ${PROJECT_SOURCE_DIR}/src/crinit-client.c
+    ${PROJECT_SOURCE_DIR}/src/globopt.c
+    ${PROJECT_SOURCE_DIR}/src/logio.c
+    ${PROJECT_SOURCE_DIR}/src/rtimcmd.c
+    ${PROJECT_SOURCE_DIR}/src/rtimopmap.c
+    ${PROJECT_SOURCE_DIR}/src/sockcom.c
+  DEFINITIONS
+    "-DEBCL_LIB_CONSTRUCTOR=__attribute__((unused))"
+    "-DEBCL_LIB_DESTRUCTOR=__attribute__((unused))"
+  LIBRARIES
+    libmockfunctions
+  WRAPS
+    -Wl,--wrap=EBCL_buildRtimCmd
+    -Wl,--wrap=EBCL_crinitXfer
+    -Wl,--wrap=EBCL_destroyRtimCmd
+)
+
