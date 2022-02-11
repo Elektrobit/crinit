@@ -1,5 +1,5 @@
 /**
- * @file mock_globopt_set.c
+ * @file mock-glob-opt-set.c
  * @brief Implementation of a mock function for EBCL_globOptSet().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
@@ -8,7 +8,7 @@
  *            All rights exclusively reserved for Elektrobit Automotive GmbH,
  *            unless otherwise expressly agreed
  */
-#include "mock_globopt_set.h"
+#include "mock-glob-opt-set.h"
 
 #include "unit_test.h"
 

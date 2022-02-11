@@ -1,6 +1,6 @@
 /**
  * @file utest-crinit-set-verbose.h
- * @brief Header declaring a the unit tests for EBCL_crinitSetVerbose().
+ * @brief Header declaring the unit tests for EBCL_crinitSetVerbose().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *

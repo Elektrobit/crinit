@@ -1,10 +1,9 @@
 create_unit_test(
   NAME
-    utest-crinit-set-verbose
+    utest-crinit-set-info-stream
   SOURCES
-    utest-crinit-set-verbose.c
-    case-success.c
-    case-glob-opt-error.c
+    utest-crinit-set-info-stream.c
+    case-set.c
     ${PROJECT_SOURCE_DIR}/src/crinit-client.c
     ${PROJECT_SOURCE_DIR}/src/globopt.c
     ${PROJECT_SOURCE_DIR}/src/logio.c
@@ -14,5 +13,5 @@ create_unit_test(
   LIBRARIES
     libmockfunctions
   WRAPS
-    -Wl,--wrap=EBCL_globOptSet
+    -Wl,--wrap=EBCL_setInfoStream
 )
