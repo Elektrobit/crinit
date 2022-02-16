@@ -84,15 +84,12 @@ add_custom_target(
   rpmbuild
   COMMAND
     mkdir -p packaging/rpmbuild/SOURCES &&
-    tar czf packaging/rpmbuild/SOURCES/crinit-${PKG_VERSION}git${CRINIT_VERSION_GIT}.tar.gz src/ inc/ test/ config/ images/ CMakeLists.txt Doxyfile README.md &&
+    tar -czf packaging/rpmbuild/SOURCES/crinit-${PKG_VERSION}.tar.gz --transform "s,^,crinit-${PKG_VERSION}/," src/ inc/ test/ config/ images/ CMakeLists.txt Doxyfile README.md &&
     cd packaging/rpmbuild &&
     rpmbuild
-      --target aarch64
+      --target ${CMAKE_SYSTEM_PROCESSOR}
       --nodeps
       --define "_topdir ${PROJECT_SOURCE_DIR}/packaging/rpmbuild"
-      --define "crinit_version_ ${PKG_VERSION}"
-      --define "crinit_soversion_ ${CRINIT_VERSION_MAJOR}"
-      --define "gitrev_ ${CRINIT_VERSION_GIT}"
       -v -ba SPECS/crinit-git.spec
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
