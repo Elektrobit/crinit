@@ -11,9 +11,14 @@ function(create_unit_test)
   target_link_libraries(
     ${PARSED_ARGS_NAME}
     PRIVATE
-    ${PARSED_ARGS_WRAPS}
     ${PARSED_ARGS_LIBRARIES}
     cmocka
+  )
+
+  target_link_options(
+    ${PARSED_ARGS_NAME}
+    PRIVATE
+    ${PARSED_ARGS_WRAPS}
   )
 
   target_include_directories(
