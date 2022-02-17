@@ -37,7 +37,10 @@ int EBCL_checkRtimCmd(const uintmax_t value, const uintmax_t context) {
  */
 int main(void) {
     const struct CMUnitTest tests[] = {cmocka_unit_test(EBCL_crinitTaskAddTestSuccess),
-                                       cmocka_unit_test(EBCL_crinitTaskAddTestConfPathNull)};
+                                       cmocka_unit_test(EBCL_crinitTaskAddTestConfPathNull),
+                                       cmocka_unit_test(EBCL_crinitTaskAddTestForceDepsNull),
+                                       cmocka_unit_test(EBCL_crinitTaskAddTestForceDepsEmpty)
+                                      };
 
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

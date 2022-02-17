@@ -84,10 +84,17 @@ int EBCL_checkRtimCmd(const uintmax_t value, const uintmax_t context);
  * Unit test for EBCL_crinitTaskAdd(), successful.
  */
 void EBCL_crinitTaskAddTestSuccess(void **state);
-
 /**
- * Unit test for EBCL_crinitTaskAdd() with arguments as NULL.
+ * Unit test for EBCL_crinitTaskAdd() with confFilePath as NULL.
  */
 void EBCL_crinitTaskAddTestConfPathNull(void **state);
+/**
+ * Unit test for EBCL_crinitTaskAdd() with forceDeps as NULL.
+ */
+void EBCL_crinitTaskAddTestForceDepsNull(void **state);
+/**
+ * Unit test for EBCL_crinitTaskAdd() with forceDeps as empty string.
+ */
+void EBCL_crinitTaskAddTestForceDepsEmpty(void **state);
 
 #endif /* __UTEST_CRINIT_TASK_ADD_H__ */

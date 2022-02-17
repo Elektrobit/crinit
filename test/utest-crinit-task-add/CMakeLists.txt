@@ -5,8 +5,8 @@ create_unit_test(
     utest-crinit-task-add.c
     case-success.c
     case-confpath-null.c
-    #case-forcedeps-null.c
-    #case-forcedeps-empty.c
+    case-forcedeps-null.c
+    case-forcedeps-empty.c
     #case-overwrite-true.c
     #case-overwrite-false.c
     #case-build-rtim-cmd-error.c
