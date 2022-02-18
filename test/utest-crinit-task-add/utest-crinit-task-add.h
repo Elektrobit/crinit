@@ -96,5 +96,9 @@ void EBCL_crinitTaskAddTestForceDepsNull(void **state);
  * Unit test for EBCL_crinitTaskAdd() with forceDeps as empty string.
  */
 void EBCL_crinitTaskAddTestForceDepsEmpty(void **state);
+/**
+ * Unit test for EBCL_crinitTaskAdd() testing overwrite is passed on correctly.
+ */
+void EBCL_crinitTaskAddTestOverwriteBoolToString(void **state);
 
 #endif /* __UTEST_CRINIT_TASK_ADD_H__ */

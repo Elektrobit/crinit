@@ -36,11 +36,13 @@ int EBCL_checkRtimCmd(const uintmax_t value, const uintmax_t context) {
  * Runs the unit test group for EBCL_crinitTaskAdd using the cmocka API.
  */
 int main(void) {
-    const struct CMUnitTest tests[] = {cmocka_unit_test(EBCL_crinitTaskAddTestSuccess),
-                                       cmocka_unit_test(EBCL_crinitTaskAddTestConfPathNull),
-                                       cmocka_unit_test(EBCL_crinitTaskAddTestForceDepsNull),
-                                       cmocka_unit_test(EBCL_crinitTaskAddTestForceDepsEmpty)
-                                      };
+    const struct CMUnitTest tests[] = {
+        cmocka_unit_test(EBCL_crinitTaskAddTestSuccess),
+        cmocka_unit_test(EBCL_crinitTaskAddTestConfPathNull),
+        cmocka_unit_test(EBCL_crinitTaskAddTestForceDepsNull),
+        cmocka_unit_test(EBCL_crinitTaskAddTestForceDepsEmpty),
+        cmocka_unit_test(EBCL_crinitTaskAddTestOverwriteBoolToString)
+    };
 
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

@@ -7,8 +7,7 @@ create_unit_test(
     case-confpath-null.c
     case-forcedeps-null.c
     case-forcedeps-empty.c
-    #case-overwrite-true.c
-    #case-overwrite-false.c
+    case-overwrite-bool-to-string.c
     #case-build-rtim-cmd-error.c
     #case-crinit-xfer-error.c
     #case-crinit-response-error.c
