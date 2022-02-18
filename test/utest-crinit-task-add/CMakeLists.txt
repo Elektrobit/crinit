@@ -8,7 +8,7 @@ create_unit_test(
     case-forcedeps-null.c
     case-forcedeps-empty.c
     case-overwrite-bool-to-string.c
-    #case-build-rtim-cmd-error.c
+    case-build-rtim-cmd-error.c
     #case-crinit-xfer-error.c
     #case-crinit-response-error.c
     ${PROJECT_SOURCE_DIR}/src/crinit-client.c
