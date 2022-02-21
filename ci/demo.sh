@@ -9,6 +9,7 @@ cleanup() {
     # Delete temporary config.
     rm -f ${CONFDIR}/demo.series
     rm -f ${CONFDIR}/addseries/demoadd.series
+    rm -f ${CONFDIR}/crinit_recursive.crinit
 }
 
 CMDPATH=$(cd $(dirname $0) && pwd)
@@ -17,6 +18,9 @@ BINDIR=${BASEDIR}/result/bin/x86_64
 LIBDIR=${BASEDIR}/result/lib/x86_64
 CONFDIR=${BASEDIR}/config/test
 export LD_LIBRARY_PATH="${LIBDIR}"
+
+# Remove the socket if we have run crinit before during this docker session.
+sudo rm -f /run/crinit/crinit.sock
 
 cd $BASEDIR
 
@@ -115,6 +119,30 @@ sleep 5
 
 echo ""
 echo "If there was no or just one more output from one_second_respawn, all is well."
+
+echo ""
+echo Now we\'ll try loading crinit through a crinit task which should work for crinit-ctl but the new crinit should \
+    detect the already used socket and fail.
+echo Creating crinit task file as \'${CONFDIR}/crinit_recursive.crinit\'.
+echo -e "NAME = crinit_recursive\nCOMMAND[0] = ${BINDIR}/crinit ${CONFDIR}/demo.series\n" \
+    "DEPENDS = \"\"\nRESPAWN = NO\nEXEC = NO\nQM_JAIL = NO\nSIG = \"\"" > ${CONFDIR}/crinit_recursive.crinit
+echo Will run: $ sudo crinit-ctl addtask ${CONFDIR}/crinit_recursive.crinit
+sudo LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ${BINDIR}/crinit-ctl addtask ${CONFDIR}/crinit_recursive.crinit
+sleep 1
+
+echo ""
+echo The status should show that crinit-recursive has failed.
+echo Will run: $ crinit-ctl status crinit_recursive
+CRINIT_REC_STATUS=$(${BINDIR}/crinit-ctl status crinit_recursive)
+echo $CRINIT_REC_STATUS
+
+# Use sh magic to check if the output begins with "Status: 8,"
+if case $CRINIT_REC_STATUS in "Status: 8,"*) ;; *) false;; esac; then
+    echo Status is reported to be 8 as expected.
+else
+    echo Status is not 8 which is unexpected.
+    exit 1
+fi
 
 echo ""
 echo Now we\'ll try loading a second series file containing 3 tasks, forming a chain of dependencies. Three lines \
