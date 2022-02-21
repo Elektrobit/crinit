@@ -1,7 +1,7 @@
 Summary: EB BaseOS Configurable Rootfs Init
 Name: crinit
 Group: System/Base
-Version: 0.3.0
+Version: 0.3.1
 %global soversion_ 0
 Release: 1
 Source0: crinit-%{version}.tar.gz
