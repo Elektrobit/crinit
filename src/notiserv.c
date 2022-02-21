@@ -358,9 +358,12 @@ static int EBCL_createSockFile(int *sockFd, const char *path) {
     servAddr.sun_family = AF_UNIX;
     strncpy(servAddr.sun_path, path, sizeof(servAddr.sun_path) - 1);
 
-    unlink(path);
     if (bind(*sockFd, (struct sockaddr *)&servAddr, sizeof(struct sockaddr_un)) == -1) {
-        EBCL_errnoPrint("Could not bind to server socket.");
+        EBCL_errnoPrint("Could not bind to server socket.", errno);
+        if (errno == EADDRINUSE) {
+            EBCL_errPrint(
+                "A crinit socket file already exists. Starting crinit recursively is not currently supported.");
+        }
         return -1;
     }
 
