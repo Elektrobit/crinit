@@ -171,13 +171,15 @@ static void *EBCL_dispatchThreadFunc(void *args) {
         // parent process
         EBCL_infoPrint("(TID: %d) Started new process %d for command %zu of Task \'%s\' (\'%s\').", threadId, pid, i,
                        tCopy->name, tCopy->cmds[i].argv[0]);
+
+        if (EBCL_taskDBSetTaskPID(ctx, pid, tCopy->name) == -1) {
+            EBCL_errPrint("(TID: %d) Could not set PID of Task \'%s\' to %d.", threadId, tCopy->name, pid);
+            goto threadExit;
+        }
+
         if (i == 0) {
             if (EBCL_taskDBSetTaskState(ctx, EBCL_TASK_STATE_RUNNING, tCopy->name) == -1) {
                 EBCL_errPrint("(TID: %d) Could not set state of Task \'%s\' to running.", threadId, tCopy->name);
-                goto threadExit;
-            }
-            if (EBCL_taskDBSetTaskPID(ctx, pid, tCopy->name) == -1) {
-                EBCL_errPrint("(TID: %d) Could not set PID of Task \'%s\' to %d.", threadId, tCopy->name, pid);
                 goto threadExit;
             }
             char depEvent[sizeof(EBCL_TASK_EVENT_RUNNING)] = EBCL_TASK_EVENT_RUNNING;
