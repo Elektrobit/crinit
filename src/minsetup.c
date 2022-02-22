@@ -41,6 +41,7 @@ int EBCL_forkZombieReaper(void) {
 
 int EBCL_setupSystemFs(void) {
     umask(0);
+
     if (mkdir("/dev", 0777) == -1) {
         if (errno != EEXIST) {
             EBCL_errnoPrint("Could not create /dev directory: ");
@@ -48,8 +49,11 @@ int EBCL_setupSystemFs(void) {
         }
     }
     if (mount("none", "/dev", "devtmpfs", MS_NOEXEC | MS_NOSUID, NULL) == -1) {
-        EBCL_errnoPrint("Could not mount devtmpfs.");
-        return -1;
+        if (errno != EBUSY) {
+            EBCL_errnoPrint("Could not mount devtmpfs.");
+            return -1;
+        }
+        EBCL_infoPrint("/dev is already mounted. Skipping.");
     }
 
     if (mkdir("/proc", 0777) == -1) {
@@ -59,8 +63,11 @@ int EBCL_setupSystemFs(void) {
         }
     }
     if (mount("none", "/proc", "proc", MS_NODEV | MS_NOEXEC | MS_NOSUID, NULL) == -1) {
-        EBCL_errnoPrint("Could not mount procfs.");
-        return -1;
+        if (errno != EBUSY) {
+            EBCL_errnoPrint("Could not mount procfs.");
+            return -1;
+        }
+        EBCL_infoPrint("/proc is already mounted. Skipping.");
     }
 
     if (mkdir("/sys", 0777) == -1) {
@@ -70,9 +77,13 @@ int EBCL_setupSystemFs(void) {
         }
     }
     if (mount("none", "/sys", "sysfs", MS_NODEV | MS_NOEXEC | MS_NOSUID, NULL) == -1) {
-        EBCL_errnoPrint("Could not mount sysfs.");
-        return -1;
+        if (errno != EBUSY) {
+            EBCL_errnoPrint("Could not mount sysfs.");
+            return -1;
+        }
+        EBCL_infoPrint("/sys is already mounted. Skipping.");
     }
+
     if (mkdir("/dev/pts", 0755) == -1) {
         if (errno != EEXIST) {
             EBCL_errnoPrint("Could not create /dev/pts directory: ");
@@ -80,8 +91,11 @@ int EBCL_setupSystemFs(void) {
         }
     }
     if (mount("none", "/dev/pts", "devpts", MS_NOEXEC | MS_NOSUID, "mode=0620,ptmxmode=0666,gid=5") == -1) {
-        EBCL_errnoPrint("Could not mount devpts.");
-        return -1;
+        if (errno != EBUSY) {
+            EBCL_errnoPrint("Could not mount devpts.");
+            return -1;
+        }
+        EBCL_infoPrint("/dev/pts is already mounted. Skipping.");
     }
 
     if (mkdir("/run", 0777) == -1) {
@@ -91,8 +105,11 @@ int EBCL_setupSystemFs(void) {
         }
     }
     if (mount("none", "/run", "tmpfs", MS_NODEV | MS_NOEXEC | MS_NOSUID, NULL) == -1) {
-        EBCL_errnoPrint("Could not mount tmpfs on /run.");
-        return -1;
+        if (errno != EBUSY) {
+            EBCL_errnoPrint("Could not mount tmpfs on /run.");
+            return -1;
+        }
+        EBCL_infoPrint("/run is already mounted. Skipping.");
     }
 
     umask(0022);
