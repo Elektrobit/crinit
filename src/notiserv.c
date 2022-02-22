@@ -429,7 +429,7 @@ static inline int EBCL_recvStr(int sockFd, char **str, struct ucred *passedCreds
         EBCL_errPrint("Received data of unexpected length from client: %ld Bytes", bytesRead);
         return -1;
     }
-    EBCL_dbgInfoPrint("(TID %d) Received message of %d Bytes. Content:\n\'%zu\'", threadId, bytesRead, dataLen);
+    EBCL_dbgInfoPrint("(TID %d) Received message of %ld Bytes. Content:\n\'%zu\'", threadId, bytesRead, dataLen);
 
     struct cmsghdr *cmHdr = CMSG_FIRSTHDR(&mHdr);
     if (!EBCL_cmsgHdrCheck(cmHdr)) {
@@ -459,7 +459,7 @@ static inline int EBCL_recvStr(int sockFd, char **str, struct ucred *passedCreds
     }
     // force terminating zero
     (*str)[dataLen - 1] = '\0';
-    EBCL_dbgInfoPrint("(TID %d) Received message of %d Bytes. Content:\n\'%s\'", threadId, bytesRead, *str);
+    EBCL_dbgInfoPrint("(TID %d) Received message of %ld Bytes. Content:\n\'%s\'", threadId, bytesRead, *str);
 
     cmHdr = CMSG_FIRSTHDR(&mHdr);
     if (!EBCL_cmsgHdrCheck(cmHdr)) {

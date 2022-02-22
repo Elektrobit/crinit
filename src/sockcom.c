@@ -84,7 +84,7 @@ int EBCL_crinitSend(int sockFd, const ebcl_RtimCmd_t *cmd) {
         free(sendStr);
         return -1;
     }
-    EBCL_dbgInfoPrint("Sent message of %d Bytes. Content:\n\'%s\'", sendLen, sendStr);
+    EBCL_dbgInfoPrint("Sent message of %zu Bytes. Content:\n\'%s\'", sendLen, sendStr);
     free(sendStr);
     return 0;
 }
@@ -106,7 +106,7 @@ int EBCL_crinitRecv(int sockFd, ebcl_RtimCmd_t *res) {
         EBCL_errPrint("Received data of unexpected length from Crinit: '%ld' Bytes", bytesRead);
         return -1;
     }
-    EBCL_dbgInfoPrint("Received message of %d Bytes. Content:\n\'%zu\'", bytesRead, recvLen);
+    EBCL_dbgInfoPrint("Received message of %ld Bytes. Content:\n\'%zu\'", bytesRead, recvLen);
 
     char *recvStr = malloc(recvLen);
     if (recvStr == NULL) {
@@ -126,7 +126,7 @@ int EBCL_crinitRecv(int sockFd, ebcl_RtimCmd_t *res) {
     }
     // force terminating zero
     recvStr[recvLen - 1] = '\0';
-    EBCL_dbgInfoPrint("Received message of %d Bytes. Content:\n\'%s\'", bytesRead, recvStr);
+    EBCL_dbgInfoPrint("Received message of %ld Bytes. Content:\n\'%s\'", bytesRead, recvStr);
 
     if (EBCL_parseRtimCmd(res, recvStr) == -1) {
         free(recvStr);
@@ -149,7 +149,7 @@ static int EBCL_waitForRtr(int sockFd) {
         EBCL_errPrint("Received data of unexpected length from Crinit: '%ld' Bytes", bytesRead);
         return -1;
     }
-    EBCL_dbgInfoPrint("Received message of %d Bytes. Content:\n\'%zu\'", bytesRead, recvLen);
+    EBCL_dbgInfoPrint("Received message of %ld Bytes. Content:\n\'%zu\'", bytesRead, recvLen);
     if (recvLen != sizeof("RTR")) {
         EBCL_errPrint("Received unexpected string length for RTR: '%zu' Bytes", recvLen);
         return -1;
@@ -165,7 +165,7 @@ static int EBCL_waitForRtr(int sockFd) {
         return -1;
     }
     rtrBuf[sizeof(rtrBuf) - 1] = '\0';
-    EBCL_dbgInfoPrint("Received message of %d Bytes. Content:\n\'%s\'", bytesRead, rtrBuf);
+    EBCL_dbgInfoPrint("Received message of %ld Bytes. Content:\n\'%s\'", bytesRead, rtrBuf);
     if (strncmp(rtrBuf, "RTR", strlen("RTR")) != 0) {
         EBCL_errPrint("Received \'%s\' rather than \'RTR\'.", rtrBuf);
         return -1;
