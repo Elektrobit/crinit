@@ -123,9 +123,8 @@ echo "If there was no or just one more output from one_second_respawn, all is we
 echo ""
 echo Now we\'ll try loading crinit through a crinit task which should work for crinit-ctl but the new crinit should \
     detect the already used socket and fail.
-echo Creating crinit task file as \'${CONFDIR}/crinit_recursive.crinit\'.
-echo -e "NAME = crinit_recursive\nCOMMAND[0] = ${BINDIR}/crinit ${CONFDIR}/demo.series\n" \
-    "DEPENDS = \"\"\nRESPAWN = NO\nEXEC = NO\nQM_JAIL = NO\nSIG = \"\"" > ${CONFDIR}/crinit_recursive.crinit
+sed -e "s:\${BINDIR}:${BINDIR}:g" -e "s:\${CONFDIR}:${CONFDIR}:g" ${CONFDIR}/crinit_recursive.crinit.in \
+    > ${CONFDIR}/crinit_recursive.crinit
 echo Will run: $ sudo crinit-ctl addtask ${CONFDIR}/crinit_recursive.crinit
 sudo LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ${BINDIR}/crinit-ctl addtask ${CONFDIR}/crinit_recursive.crinit
 sleep 1
