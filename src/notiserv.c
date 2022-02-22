@@ -360,10 +360,6 @@ static int EBCL_createSockFile(int *sockFd, const char *path) {
 
     if (bind(*sockFd, (struct sockaddr *)&servAddr, sizeof(struct sockaddr_un)) == -1) {
         EBCL_errnoPrint("Could not bind to server socket.");
-        if (errno == EADDRINUSE) {
-            EBCL_errPrint(
-                "A crinit socket file already exists. Starting crinit recursively is not currently supported.");
-        }
         return -1;
     }
 
