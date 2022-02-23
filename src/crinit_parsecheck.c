@@ -85,7 +85,7 @@ int main(int argc, char *argv[]) {
             }
             runner = runner->next;
         } while (runner != NULL);
-        EBCL_infoPrint(" ");
+        EBCL_infoPrint(EBCL_PRINT_EMPTY_LINE);
         EBCL_infoPrint("Will now attempt to extract a Task out of the config.");
         ebcl_Task_t *t = NULL;
         if (EBCL_taskCreateFromConfKvList(&t, c) == -1) {

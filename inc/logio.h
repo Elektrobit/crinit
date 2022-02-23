@@ -25,6 +25,13 @@
 #define EBCL_CRINIT_PRINT_PREFIX "[CRINIT] "
 
 /**
+ * Constant to use if one wishes to output an empty line using an output function, e.g.
+ * EBCL_infoPrint(EBCL_PRINT_EMPTY_LINE). The output will still contain everything the output function adds, e.g.
+ * prefix, line number, etc.
+ */
+#define EBCL_PRINT_EMPTY_LINE "%s", ""
+
+/**
  * Set prefix to put in front of error and info message lines.
  *
  * @param prefix  The prefix to use.
