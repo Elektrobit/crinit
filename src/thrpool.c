@@ -101,7 +101,7 @@ int EBCL_threadPoolInit(ebcl_ThreadPool_t *ctx, size_t initialSize, void *(*thre
     }
 
     if ((errno = pthread_attr_setstacksize(&thrAttrs, EBCL_THREADPOOL_THREAD_STACK_SIZE)) != 0) {
-        EBCL_errnoPrint("Could not set pthread stack size to %lu.", EBCL_THREADPOOL_THREAD_STACK_SIZE);
+        EBCL_errnoPrint("Could not set pthread stack size to %d.", EBCL_THREADPOOL_THREAD_STACK_SIZE);
         pthread_mutex_unlock(&ctx->lock);
         pthread_attr_destroy(&thrAttrs);
         goto fail;
@@ -194,7 +194,7 @@ static int EBCL_threadPoolGrow(ebcl_ThreadPool_t *ctx, size_t newSize) {
         return -1;
     }
     if ((errno = pthread_attr_setstacksize(&thrAttrs, EBCL_THREADPOOL_THREAD_STACK_SIZE)) != 0) {
-        EBCL_errnoPrint("Could not set pthread stack size to %lu.", EBCL_THREADPOOL_THREAD_STACK_SIZE);
+        EBCL_errnoPrint("Could not set pthread stack size to %d.", EBCL_THREADPOOL_THREAD_STACK_SIZE);
         pthread_mutex_unlock(&ctx->lock);
         pthread_attr_destroy(&thrAttrs);
         return -1;
@@ -209,7 +209,7 @@ static int EBCL_threadPoolGrow(ebcl_ThreadPool_t *ctx, size_t newSize) {
             pthread_attr_destroy(&thrAttrs);
             return -1;
         } else {
-            EBCL_dbgInfoPrint("Created worker thread %zu. Function pointer %p.", i, ctx->threadFunc);
+            EBCL_dbgInfoPrint("Created worker thread %zu.", i);
             ctx->poolSize++;
             ctx->threadAvail++;
         }

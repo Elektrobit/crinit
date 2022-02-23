@@ -25,6 +25,13 @@
 #define EBCL_CRINIT_PRINT_PREFIX "[CRINIT] "
 
 /**
+ * Constant to use if one wishes to output an empty line using an output function, e.g.
+ * EBCL_infoPrint(EBCL_PRINT_EMPTY_LINE). The output will still contain everything the output function adds, e.g.
+ * prefix, line number, etc.
+ */
+#define EBCL_PRINT_EMPTY_LINE "%s", ""
+
+/**
  * Set prefix to put in front of error and info message lines.
  *
  * @param prefix  The prefix to use.
@@ -64,7 +71,7 @@ void EBCL_setErrStream(FILE *stream);
  *
  * @return The number of characters printed.
  */
-int EBCL_infoPrint(const char *format, ...);
+int EBCL_infoPrint(const char *format, ...) __attribute__((format(printf, 1, 2)));
 /**
  * Print an info message if DEBUG global option is set.
  *
@@ -75,7 +82,7 @@ int EBCL_infoPrint(const char *format, ...);
  *
  * @return The number of characters printed.
  */
-int EBCL_dbgInfoPrint(const char *format, ...);
+int EBCL_dbgInfoPrint(const char *format, ...) __attribute__((format(printf, 1, 2)));
 
 /**
  * Macro to print an error message including the offending source file, function, and line using EBCL_errPrintFFL().
@@ -93,7 +100,8 @@ int EBCL_dbgInfoPrint(const char *format, ...);
  *
  * @return The number of characters printed.
  */
-int EBCL_errPrintFFL(const char *file, const char *func, int line, const char *format, ...);
+int EBCL_errPrintFFL(const char *file, const char *func, int line, const char *format, ...)
+    __attribute__((format(printf, 4, 5)));
 
 /**
  * Macro to print an error message using EBCL_errnoPrintFFL() including the offending source file, function, and line,
@@ -114,6 +122,7 @@ int EBCL_errPrintFFL(const char *file, const char *func, int line, const char *f
  *
  * @return The number of characters printed.
  */
-int EBCL_errnoPrintFFL(const char *file, const char *func, int line, const char *format, ...);
+int EBCL_errnoPrintFFL(const char *file, const char *func, int line, const char *format, ...)
+    __attribute__((format(printf, 4, 5)));
 
 #endif /* __LOGIO_H__ */

@@ -232,7 +232,7 @@ int main(int argc, char *argv[]) {
             EBCL_errPrint("Querying status of task \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
         }
-        EBCL_infoPrint("Status: %d, PID: %d", s, pid);
+        EBCL_infoPrint("Status: %lu, PID: %d", s, pid);
         return EXIT_SUCCESS;
     }
     if (strcmp(getoptArgv[0], "notify") == 0) {

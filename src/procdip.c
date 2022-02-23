@@ -104,7 +104,7 @@ int EBCL_procDispatchSpawnFunc(ebcl_TaskDB_t *ctx, const ebcl_Task_t *t) {
     }
 
     if ((errno = pthread_attr_setstacksize(&dispatchThreadAttr, EBCL_PROC_DISPATCH_THREAD_STACK_SIZE)) != 0) {
-        EBCL_errnoPrint("Could not set pthread stack size to %lu. Meant to create thread for task \'%s\'.",
+        EBCL_errnoPrint("Could not set pthread stack size to %d. Meant to create thread for task \'%s\'.",
                         EBCL_PROC_DISPATCH_THREAD_STACK_SIZE, t->name);
         goto fail;
     }
