@@ -10,7 +10,8 @@ create_unit_test(
     case-overwrite-bool-to-string.c
     case-build-rtim-cmd-error.c
     case-crinit-xfer-error.c
-    #case-crinit-response-error.c
+    case-crinit-response-code-error.c
+    case-crinit-response-cmd-error.c
     ${PROJECT_SOURCE_DIR}/src/crinit-client.c
     ${PROJECT_SOURCE_DIR}/src/globopt.c
     ${PROJECT_SOURCE_DIR}/src/logio.c

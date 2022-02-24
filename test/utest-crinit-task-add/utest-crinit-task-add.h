@@ -108,5 +108,13 @@ void EBCL_crinitTaskAddTestBuildRtimCmdError(void **state);
  * Unit test for EBCL_crinitTaskAdd() testing error handling for EBCL_crinitXfer().
  */
 void EBCL_crinitTaskAddTestCrinitXferError(void **state);
+/**
+ * Unit test for EBCL_crinitTaskAdd() testing error handling for error code response.
+ */
+void EBCL_crinitTaskAddTestCrinitResponseCodeError(void **state);
+/**
+ * Unit test for EBCL_crinitTaskAdd() testing error handling for wrong command in response.
+ */
+void EBCL_crinitTaskAddTestCrinitResponseCmdError(void **state);
 
 #endif /* __UTEST_CRINIT_TASK_ADD_H__ */

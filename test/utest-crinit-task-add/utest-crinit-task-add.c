@@ -44,6 +44,8 @@ int main(void) {
         cmocka_unit_test(EBCL_crinitTaskAddTestOverwriteBoolToString),
         cmocka_unit_test(EBCL_crinitTaskAddTestBuildRtimCmdError),
         cmocka_unit_test(EBCL_crinitTaskAddTestCrinitXferError),
+        cmocka_unit_test(EBCL_crinitTaskAddTestCrinitResponseCodeError),
+        cmocka_unit_test(EBCL_crinitTaskAddTestCrinitResponseCmdError),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);
