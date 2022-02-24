@@ -43,6 +43,7 @@ int main(void) {
         cmocka_unit_test(EBCL_crinitTaskAddTestForceDepsEmpty),
         cmocka_unit_test(EBCL_crinitTaskAddTestOverwriteBoolToString),
         cmocka_unit_test(EBCL_crinitTaskAddTestBuildRtimCmdError),
+        cmocka_unit_test(EBCL_crinitTaskAddTestCrinitXferError),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);

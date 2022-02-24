@@ -104,5 +104,9 @@ void EBCL_crinitTaskAddTestOverwriteBoolToString(void **state);
  * Unit test for EBCL_crinitTaskAdd() testing error handling for EBCL_buildRtimCmd().
  */
 void EBCL_crinitTaskAddTestBuildRtimCmdError(void **state);
+/**
+ * Unit test for EBCL_crinitTaskAdd() testing error handling for EBCL_crinitXfer().
+ */
+void EBCL_crinitTaskAddTestCrinitXferError(void **state);
 
 #endif /* __UTEST_CRINIT_TASK_ADD_H__ */
