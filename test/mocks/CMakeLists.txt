@@ -27,6 +27,9 @@ create_mock_lib(
     mock-glob-opt-set.c
     mock-set-err-stream.c
     mock-set-info-stream.c
+    mock-build-rtim-cmd.c
+    mock-destroy-rtim-cmd.c
+    mock-crinit-xfer.c
   INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
