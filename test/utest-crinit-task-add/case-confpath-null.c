@@ -14,7 +14,7 @@
 #include "unit_test.h"
 #include "utest-crinit-task-add.h"
 
-#define TEST_FORCE_DEPS "@foobar"
+#define TEST_FORCE_DEPS "foo:wait"
 
 void EBCL_crinitTaskAddTestConfPathNull(void **state) {
     EBCL_PARAM_UNUSED(state);

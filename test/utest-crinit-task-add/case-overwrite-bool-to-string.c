@@ -16,7 +16,7 @@
 #include "utest-crinit-task-add.h"
 
 #define TEST_CONFIG_FILE "/test/config/file"
-#define TEST_FORCE_DEPS "@foobar"
+#define TEST_FORCE_DEPS "foo:wait"
 
 static ebcl_RtimCmd_t *EBCL_buildRtimArgCmd;
 static ebcl_RtimCmd_t *EBCL_crinitXferArgRes;
