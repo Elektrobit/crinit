@@ -1,6 +1,6 @@
 /**
  * @file case-forcedeps-empty.c
- * @brief Implementation of a unit test for EBCL_crinitTaskAdd().
+ * @brief Unit test for EBCL_crinitTaskAdd() with forceDeps as empty string.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *

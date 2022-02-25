@@ -1,6 +1,6 @@
 /**
  * @file case-confpath-null.c
- * @brief Implementation of a unit test for EBCL_crinitTaskAdd() with an invalid config file path parameter.
+ * @brief Unit test for EBCL_crinitTaskAdd() with confFilePath as NULL.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *

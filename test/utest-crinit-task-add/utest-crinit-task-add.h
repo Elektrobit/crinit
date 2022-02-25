@@ -81,7 +81,7 @@ int EBCL_storeRtimCmdContext(const uintmax_t value, const uintmax_t context);
 int EBCL_checkRtimCmd(const uintmax_t value, const uintmax_t context);
 
 /**
- * Unit test for EBCL_crinitTaskAdd(), successful.
+ * Unit test for EBCL_crinitTaskAdd(), successful execution.
  */
 void EBCL_crinitTaskAddTestSuccess(void **state);
 /**

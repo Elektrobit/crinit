@@ -1,6 +1,6 @@
 /**
  * @file case-success.c
- * @brief Implementation of a unit test for EBCL_crinitTaskAdd().
+ * @brief Unit test for EBCL_crinitTaskAdd(), successful execution.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *

@@ -1,6 +1,6 @@
 /**
  * @file case-crinit-response-cmd-error.c
- * @brief Implementation of a unit test for EBCL_crinitTaskAdd().
+ * @brief Unit test for EBCL_crinitTaskAdd() testing error handling for wrong command in response.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *

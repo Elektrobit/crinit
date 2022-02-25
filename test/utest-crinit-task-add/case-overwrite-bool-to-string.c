@@ -1,6 +1,6 @@
 /**
  * @file case-overwrite-bool-to-string.c
- * @brief Implementation of a unit test for EBCL_crinitTaskAdd().
+ * @brief Unit test for EBCL_crinitTaskAdd() testing overwrite is passed on correctly.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *

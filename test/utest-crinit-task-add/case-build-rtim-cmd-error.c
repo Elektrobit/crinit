@@ -1,6 +1,6 @@
 /**
  * @file case-build-rtim-cmd-error.c
- * @brief Implementation of a unit test for EBCL_crinitTaskAdd().
+ * @brief Unit test for EBCL_crinitTaskAdd() testing error handling for EBCL_buildRtimCmd().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
