@@ -58,6 +58,10 @@ typedef struct ebcl_Task_t {
     ebcl_TaskOpts_t opts;    ///< Task options.
     ebcl_TaskState_t state;  ///< Task state.
     pid_t pid;               ///< PID of currently running process subordinate to the task, if any.
+    int maxRetries;          ///< If ebcl_Task_t::opts includes #EBCL_TASK_OPT_RESPAWN, this variable specifies a
+                             ///< maximum consecutive number of respawns after failure (default: -1 for infinite).
+    int failCount;           ///< Counts consecutive respawns after failure (see ebcl_TaskOpts_t::maxRetries). Resets
+                             ///< on a successful completion (i.e. all COMMANDs in the task have returned 0).
 } ebcl_Task_t;
 
 /**
@@ -147,9 +151,11 @@ int EBCL_taskDBRemoveDepFromTask(ebcl_TaskDB_t *ctx, const ebcl_TaskDep_t *dep, 
 /**
  * Set the ebcl_TaskState_t of a task in a task database
  *
- * Will search \a ctx for an ebcl_Task_t with ebcl_TaskDB_t::name lexicographically equal to \a taskName and set its
- * ebcl_TaskDB_t::state to \a s. If such a task does not exit in \a ctx, an error is returned. The function uses
- * ebcl_TaskDB_t::lock for synchronization and is thread-safe.
+ * Will search \a ctx for an ebcl_Task_t with ebcl_Task_t::name lexicographically equal to \a taskName and set its
+ * ebcl_TaskDB_t::state to \a s. If such a task does not exist in \a ctx, an error is returned. If \a s equals
+ * #EBCL_TASK_STATE_FAILED, ebcl_Task_t::failCount will be incremented by 1. If \a s equals #EBCL_TASK_STATE_FAILED,
+ * ebcl_Task_t::failCount will be reset to 0. The function uses ebcl_TaskDB_t::lock for synchronization and is
+ * thread-safe.
  *
  * @param ctx       The ebcl_TaskDB_t context in which the task is held.
  * @param s         The task's new state.
@@ -161,8 +167,8 @@ int EBCL_taskDBSetTaskState(ebcl_TaskDB_t *ctx, ebcl_TaskState_t s, const char *
 /**
  * Get the ebcl_TaskState_t of a task in a task database
  *
- * Will search \a ctx for an ebcl_Task_t with ebcl_TaskDB_t::name lexicographically equal to \a taskName and write its
- * ebcl_TaskDB_t::state to \a s. If such a task does not exit in \a ctx, an error is returned. The function uses
+ * Will search \a ctx for an ebcl_Task_t with ebcl_Task_t::name lexicographically equal to \a taskName and write its
+ * ebcl_TaskDB_t::state to \a s. If such a task does not exist in \a ctx, an error is returned. The function uses
  * ebcl_TaskDB_t::lock for synchronization and is thread-safe.
  *
  * @param ctx       The ebcl_TaskDB_t context in which the task is held.
@@ -206,8 +212,11 @@ int EBCL_taskDBGetTaskPID(ebcl_TaskDB_t *ctx, pid_t *pid, const char *taskName);
 /**
  * Run ebcl_TaskDB_t::spawnFunc for each startable task in a task database.
  *
- * A task is startable if and only if it has no remaining ebcl_TaskDB_t::deps and it has not been started before
- * according to ebcl_TaskDB_t::state. The function uses ebcl_TaskDB_t::lock for synchronization and is thread-safe.
+ * A task is startable if and only if it has no remaining ebcl_TaskDB_t::deps and it has either not been started before
+ * according to ebcl_TaskDB_t::state or it should be respawned. A task should be respawned if and only if
+ * ebcl_Task_t::opts contains the flag #EBCL_TASK_OPT_RESPAWN and either ebcl_Task_t::maxRetries is -1 or
+ * ebcl_Task_t::failCount is less than ebcl_Task_t::maxRetries. The function uses ebcl_TaskDB_t::lock for
+ * synchronization and is thread-safe.
  *
  * If ebcl_TaskDB::spawnInhibit is true, no tasks are considered startable and this function will return successfully
  * without starting anything.
