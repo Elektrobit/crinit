@@ -1,0 +1,15 @@
+# Configuration with a dummy fail-and-respawn loop to test RESPAWN_RETRIES
+
+NAME = fail_loop
+
+COMMAND[] = /bin/echo This task always fails.
+COMMAND[] = /bin/false
+
+DEPENDS = "@ctl:enable"
+
+RESPAWN = YES
+RESPAWN_RETRIES = 5
+# features below not yet implemented
+EXEC = NO
+QM_JAIL = NO
+SIG = ""
