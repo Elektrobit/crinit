@@ -284,15 +284,20 @@ int EBCL_confListSetValWithIdx(const char *val, const char *key, size_t keyArrIn
     return 0;
 }
 
-int EBCL_confListExtractBoolean(bool *out, const char *key, const ebcl_ConfKvList_t *in) {
+int EBCL_confListExtractBoolean(bool *out, const char *key, bool mandatory, const ebcl_ConfKvList_t *in) {
     if (key == NULL || in == NULL || out == NULL) {
         EBCL_errPrint("Input parameters must not be NULL.");
         return -1;
     }
     char *val = NULL;
     if (EBCL_confListGetVal(&val, key, in) == -1) {
-        EBCL_errPrint("Could not get value for \"%s\".", key);
-        return -1;
+        if (mandatory) {
+            EBCL_errPrint("Could not get value for mandatory key \"%s\".", key);
+            return -1;
+        } else {
+            // leave *out untouched and return successfully if key is optional
+            return 0;
+        }
     }
     if (strncmp(val, "YES", 3) == 0) {
         *out = true;
@@ -306,15 +311,54 @@ int EBCL_confListExtractBoolean(bool *out, const char *key, const ebcl_ConfKvLis
     return -1;
 }
 
-int EBCL_confListExtractUnsignedLL(unsigned long long *out, int base, const char *key, const ebcl_ConfKvList_t *in) {
+int EBCL_confListExtractSignedInt(int *out, int base, const char *key, bool mandatory, const ebcl_ConfKvList_t *in) {
     if (key == NULL || in == NULL || out == NULL) {
         EBCL_errPrint("Input parameters must not be NULL.");
         return -1;
     }
     char *val = NULL;
     if (EBCL_confListGetVal(&val, key, in) == -1) {
-        EBCL_errPrint("Could not get value for \"%s\".", key);
+        if (mandatory) {
+            EBCL_errPrint("Could not get value for mandatory key \"%s\".", key);
+            return -1;
+        } else {
+            // leave *out untouched and return successfully if key is optional
+            return 0;
+        }
+    }
+    if (*val == '\0') {
+        EBCL_errPrint("Could not convert string to int. String is empty.");
         return -1;
+    }
+    char *endptr = NULL;
+    errno = 0;
+    *out = strtol(val, &endptr, base);
+    if (errno != 0) {
+        EBCL_errnoPrint("Could not convert string to int.");
+        return -1;
+    }
+    if (*endptr != '\0') {
+        EBCL_errPrint("Could not convert string to int. Non-numeric characters present in string.");
+        return -1;
+    }
+    return 0;
+}
+
+int EBCL_confListExtractUnsignedLL(unsigned long long *out, int base, const char *key, bool mandatory,
+                                   const ebcl_ConfKvList_t *in) {
+    if (key == NULL || in == NULL || out == NULL) {
+        EBCL_errPrint("Input parameters must not be NULL.");
+        return -1;
+    }
+    char *val = NULL;
+    if (EBCL_confListGetVal(&val, key, in) == -1) {
+        if (mandatory) {
+            EBCL_errPrint("Could not get value for mandatory key \"%s\".", key);
+            return -1;
+        } else {
+            // leave *out untouched and return successfully if key is optional
+            return 0;
+        }
     }
     if (*val == '\0') {
         EBCL_errPrint("Could not convert string to unsigned long long. String is empty.");
@@ -475,45 +519,65 @@ int EBCL_loadSeriesConf(int *seriesLen, char ***series, const char *filename) {
         return -1;
     }
 
-    bool confDbg = false;
-    if (EBCL_confListExtractBoolean(&confDbg, EBCL_GLOBOPT_KEYSTR_DEBUG, c) == 0) {
-        if (EBCL_globOptSetBoolean(EBCL_GLOBOPT_DEBUG, &confDbg) == -1) {
-            EBCL_errPrint("Could not store global boolean option value for \'%s\'.", EBCL_GLOBOPT_KEYSTR_DEBUG);
-            EBCL_freeConfList(c);
-            EBCL_freeArgvArray(*series);
-            return -1;
-        }
+    bool confDbg = EBCL_GLOBOPT_DEFAULT_DEBUG;
+    if (EBCL_confListExtractBoolean(&confDbg, EBCL_GLOBOPT_KEYSTR_DEBUG, false, c) == -1) {
+        EBCL_errPrint("Failed to search for non-mandatory key \'%s\' in series config \'%s\'.",
+                      EBCL_GLOBOPT_KEYSTR_DEBUG, filename);
+        EBCL_freeConfList(c);
+        EBCL_freeArgvArray(*series);
+        return -1;
+    }
+    if (EBCL_globOptSetBoolean(EBCL_GLOBOPT_DEBUG, &confDbg) == -1) {
+        EBCL_errPrint("Could not store global boolean option value for \'%s\'.", EBCL_GLOBOPT_KEYSTR_DEBUG);
+        EBCL_freeConfList(c);
+        EBCL_freeArgvArray(*series);
+        return -1;
     }
 
-    bool confFsigs = false;
-    if (EBCL_confListExtractBoolean(&confDbg, EBCL_GLOBOPT_KEYSTR_FILESIGS, c) == 0) {
-        if (EBCL_globOptSetBoolean(EBCL_GLOBOPT_FILESIGS, &confFsigs) == -1) {
-            EBCL_errPrint("Could not store global boolean option value for \'%s\'.", EBCL_GLOBOPT_KEYSTR_FILESIGS);
-            EBCL_freeConfList(c);
-            EBCL_freeArgvArray(*series);
-            return -1;
-        }
+    bool confFsigs = EBCL_GLOBOPT_DEFAULT_FILESIGS;
+    if (EBCL_confListExtractBoolean(&confDbg, EBCL_GLOBOPT_KEYSTR_FILESIGS, false, c) == -1) {
+        EBCL_errPrint("Failed to search for non-mandatory key \'%s\' in series config \'%s\'.",
+                      EBCL_GLOBOPT_KEYSTR_FILESIGS, filename);
+        EBCL_freeConfList(c);
+        EBCL_freeArgvArray(*series);
+        return -1;
+    }
+    if (EBCL_globOptSetBoolean(EBCL_GLOBOPT_FILESIGS, &confFsigs) == -1) {
+        EBCL_errPrint("Could not store global boolean option value for \'%s\'.", EBCL_GLOBOPT_KEYSTR_FILESIGS);
+        EBCL_freeConfList(c);
+        EBCL_freeArgvArray(*series);
+        return -1;
     }
 
     char *taskDir = NULL;
-    if (EBCL_confListGetVal(&taskDir, EBCL_GLOBOPT_KEYSTR_TASKDIR, c) == 0) {
-        if (EBCL_globOptSetString(EBCL_GLOBOPT_TASKDIR, taskDir) == -1) {
-            EBCL_errPrint("Could not store global string option values for \'%s\'.", EBCL_GLOBOPT_KEYSTR_TASKDIR);
-            EBCL_freeConfList(c);
-            EBCL_freeArgvArray(*series);
-            return -1;
-        }
+    if (EBCL_confListGetVal(&taskDir, EBCL_GLOBOPT_KEYSTR_TASKDIR, c) == -1) {
+        EBCL_errPrint("Could not get value for mandatory key \'%s\' in series config \'%s\'.",
+                      EBCL_GLOBOPT_KEYSTR_TASKDIR, filename);
+        EBCL_freeConfList(c);
+        EBCL_freeArgvArray(*series);
+        return -1;
+    }
+    if (EBCL_globOptSetString(EBCL_GLOBOPT_TASKDIR, taskDir) == -1) {
+        EBCL_errPrint("Could not store global string option values for \'%s\'.", EBCL_GLOBOPT_KEYSTR_TASKDIR);
+        EBCL_freeConfList(c);
+        EBCL_freeArgvArray(*series);
+        return -1;
     }
 
-    unsigned long long shdnGracePeriodUs = 0;
-    if (EBCL_confListExtractUnsignedLL(&shdnGracePeriodUs, 10, EBCL_GLOBOPT_KEYSTR_SHDGRACEP, c) == 0) {
-        if (EBCL_globOptSetUnsignedLL(EBCL_GLOBOPT_SHDGRACEP, &shdnGracePeriodUs) == -1) {
-            EBCL_errPrint("Could not store global unsigned long long option values for \'%s\'.",
-                          EBCL_GLOBOPT_KEYSTR_SHDGRACEP);
-            EBCL_freeConfList(c);
-            EBCL_freeArgvArray(*series);
-            return -1;
-        }
+    unsigned long long shdnGracePeriodUs = EBCL_GLOBOPT_DEFAULT_SHDGRACEP;
+    if (EBCL_confListExtractUnsignedLL(&shdnGracePeriodUs, 10, EBCL_GLOBOPT_KEYSTR_SHDGRACEP, false, c) == -1) {
+        EBCL_errPrint("Failed to search for non-mandatory key \'%s\' in series config \'%s\'.",
+                      EBCL_GLOBOPT_KEYSTR_SHDGRACEP, filename);
+        EBCL_freeConfList(c);
+        EBCL_freeArgvArray(*series);
+        return -1;
+    }
+    if (EBCL_globOptSetUnsignedLL(EBCL_GLOBOPT_SHDGRACEP, &shdnGracePeriodUs) == -1) {
+        EBCL_errPrint("Could not store global unsigned long long option values for \'%s\'.",
+                      EBCL_GLOBOPT_KEYSTR_SHDGRACEP);
+        EBCL_freeConfList(c);
+        EBCL_freeArgvArray(*series);
+        return -1;
     }
 
     EBCL_freeConfList(c);

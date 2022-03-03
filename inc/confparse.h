@@ -106,13 +106,15 @@ int EBCL_confListSetValWithIdx(const char *val, const char *key, size_t keyArrIn
  * Given a ebcl_ConfKvList_t \a in containing a boolean ("YES"/"NO") key \a key, set \a out to
  * the corresponding truth value ("YES"==true and "NO"==false).
  *
- * @param out  Pointer to a boolean to be set according to the value found.
- * @param key  String with the key to search for in \a in.
- * @param in   Pointer to a ebcl_ConfKvList_t containing a values for \a key.
+ * @param out        Pointer to a boolean to be set according to the value found.
+ * @param key        String with the key to search for in \a in.
+ * @param mandatory  If true, this function will return an error if \a key is not found in \a in. If false, a
+ *                   non-existent \a key will result in successful return and \a out being left untouched.
+ * @param in         Pointer to an ebcl_ConfKvList_t to search in.
  *
  * @return 0 on success, -1 on error.
  */
-int EBCL_confListExtractBoolean(bool *out, const char *key, const ebcl_ConfKvList_t *in);
+int EBCL_confListExtractBoolean(bool *out, const char *key, bool mandatory, const ebcl_ConfKvList_t *in);
 
 /**
  * Extract an unsigned long long value from an ebcl_ConfKvList.
@@ -120,14 +122,34 @@ int EBCL_confListExtractBoolean(bool *out, const char *key, const ebcl_ConfKvLis
  * Given an ebcl_ConfKvList_t \a in containing a key \a key with a value representing an unsigned long long (with base
  * \a base), set \a out to the corresponding value.
  *
- * @param out   Pointer to an unsigned long long to be set according to the value found.
- * @param base  Numerical base of the value, e.g. 10 for a decimal number or 16 for hexadecimal.
- * @param key   String with the key to search for in \a in.
- * @param in    Pointer to an ebcl_ConfKvList containing a value for \a key.
+ * @param out        Pointer to an unsigned long long to be set according to the value found.
+ * @param base       Numerical base of the value, e.g. 10 for a decimal number or 16 for hexadecimal.
+ * @param key        String with the key to search for in \a in.
+ * @param mandatory  If true, this function will return an error if \a key is not found in \a in. If false, a
+ *                   non-existent \a key will result in successful return and \a out being left untouched.
+ * @param in         Pointer to an ebcl_ConfKvList to search in..
  *
  * @return 0 on success, -1 on error.
  */
-int EBCL_confListExtractUnsignedLL(unsigned long long *out, int base, const char *key, const ebcl_ConfKvList_t *in);
+int EBCL_confListExtractUnsignedLL(unsigned long long *out, int base, const char *key, bool mandatory,
+                                   const ebcl_ConfKvList_t *in);
+
+/**
+ * Extract a signed integer value from an ebcl_ConfKvList.
+ *
+ * Given an ebcl_ConfKvList_t \a in containing a key \a key with a value representing an Integer (with base \a base),
+ * set \a out to the corresponding value.
+ *
+ * @param out        Pointer to an int to be set according to the value found.
+ * @param base       Numerical base of the value, e.g. 10 for a decimal number or 16 for hexadecimal.
+ * @param key        String with the key to search for in \a in.
+ * @param mandatory  If true, this function will return an error if \a key is not found in \a in. If false, a
+ *                   non-existent \a key will result in successful return and \a out being left untouched.
+ * @param in         Pointer to an ebcl_ConfKvList to search in.
+ *
+ * @return 0 on success, -1 on error.
+ */
+int EBCL_confListExtractSignedInt(int *out, int base, const char *key, bool mandatory, const ebcl_ConfKvList_t *in);
 
 /**
  * Extract an array of strings from the value mapped to a key in an ebcl_ConfKvList_t.

@@ -225,6 +225,11 @@ int EBCL_taskDBSetTaskState(ebcl_TaskDB_t *ctx, ebcl_TaskState_t s, const char *
         ebcl_Task_t *pTask = &ctx->taskSet[i];
         if (strcmp(pTask->name, taskName) == 0) {
             pTask->state = s;
+            if (s == EBCL_TASK_STATE_FAILED) {
+                pTask->failCount++;
+            } else if (s == EBCL_TASK_STATE_DONE) {
+                pTask->failCount = 0;
+            }
             pthread_cond_broadcast(&ctx->changed);
             pthread_mutex_unlock(&ctx->lock);
             return 0;
@@ -439,6 +444,8 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in
     pTask->opts = 0;
     pTask->state = 0;
     pTask->pid = -1;
+    pTask->maxRetries = -1;
+    pTask->failCount = 0;
 
     char *tempName = NULL;
     size_t nameLen = 0;
@@ -456,27 +463,28 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in
     memcpy(pTask->name, tempName, nameLen);
 
     bool tempYesNo = false;
-    if (EBCL_confListExtractBoolean(&tempYesNo, "EXEC", in) == -1) {
+    if (EBCL_confListExtractBoolean(&tempYesNo, "EXEC", true, in) == -1) {
         EBCL_errPrint("Could not extract mandatory boolean key \'EXEC\' from task config file.");
         goto fail;
     }
     pTask->opts |= (tempYesNo) ? EBCL_TASK_OPT_EXEC : 0;
 
-    if (EBCL_confListExtractBoolean(&tempYesNo, "QM_JAIL", in) == -1) {
-        EBCL_errPrint(
-            "Could not extract mandatory boolean key \'QM_JAIL\' from task config "
-            "file.");
+    if (EBCL_confListExtractBoolean(&tempYesNo, "QM_JAIL", true, in) == -1) {
+        EBCL_errPrint("Could not extract mandatory boolean key \'QM_JAIL\' from task config file.");
         goto fail;
     }
     pTask->opts |= (tempYesNo) ? EBCL_TASK_OPT_QM_JAIL : 0;
 
-    if (EBCL_confListExtractBoolean(&tempYesNo, "RESPAWN", in) == -1) {
-        EBCL_errPrint(
-            "Could not extract mandatory boolean key \'RESPAWN\' from task config "
-            "file.");
+    if (EBCL_confListExtractBoolean(&tempYesNo, "RESPAWN", true, in) == -1) {
+        EBCL_errPrint("Could not extract mandatory boolean key \'RESPAWN\' from task config file.");
         goto fail;
     }
     pTask->opts |= (tempYesNo) ? EBCL_TASK_OPT_RESPAWN : 0;
+
+    if (EBCL_confListExtractSignedInt(&pTask->maxRetries, 10, "RESPAWN_RETRIES", false, in) == -1) {
+        EBCL_errPrint("Failed to parse integer value for non-mandatory key \'RESPAWN_RETRIES\' from task config file.");
+        goto fail;
+    }
 
     ssize_t cmdArrSize = EBCL_confListKeyGetMaxIdx(in, "COMMAND");
     if (cmdArrSize == -1) {
@@ -574,6 +582,8 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
     pTask->opts = 0;
     pTask->state = 0;
     pTask->pid = -1;
+    pTask->maxRetries = -1;
+    pTask->failCount = 0;
 
     size_t nameLen = strlen(orig->name) + 1;
     pTask->name = malloc(nameLen);
@@ -667,6 +677,8 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
 
     pTask->opts = orig->opts;
     pTask->state = orig->state;
+    pTask->maxRetries = orig->maxRetries;
+    pTask->failCount = orig->failCount;
 
     return 0;
 
@@ -729,8 +741,13 @@ static bool EBCL_taskReady(const ebcl_Task_t *t) {
     if (t->state & (EBCL_TASK_STATE_RUNNING | EBCL_TASK_STATE_STARTING)) {
         return false;
     }
-    if ((t->state & (EBCL_TASK_STATE_FAILED | EBCL_TASK_STATE_DONE)) && !(t->opts & EBCL_TASK_OPT_RESPAWN)) {
-        return false;
+    if (t->state & (EBCL_TASK_STATE_FAILED | EBCL_TASK_STATE_DONE)) {
+        if (!(t->opts & EBCL_TASK_OPT_RESPAWN)) {
+            return false;
+        }
+        if (t->maxRetries != -1 && t->failCount > t->maxRetries) {
+            return false;
+        }
     }
     return true;
 }

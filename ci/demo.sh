@@ -121,6 +121,14 @@ echo ""
 echo "If there was no or just one more output from one_second_respawn, all is well."
 
 echo ""
+echo Now we\'ll try out the RESPAWN_RETRIES functionality, the fail_loop task should not be respawned after 5 unsuccessful \
+	retries.
+echo Will run: $ sudo crinit-ctl enable fail_loop
+sudo LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ${BINDIR}/crinit-ctl enable fail_loop
+sleep 1
+echo "There should be six consecutive outputs from fail_loop now (1 initial run + 5 respawns)."
+
+echo ""
 echo Now we\'ll try loading crinit through a crinit task which should work for crinit-ctl but the new crinit should \
     detect the already used socket and fail.
 sed -e "s:\${BINDIR}:${BINDIR}:g" -e "s:\${CONFDIR}:${CONFDIR}:g" ${CONFDIR}/crinit_recursive.crinit.in \

@@ -62,12 +62,14 @@ SHUTDOWN_GRACE_PERIOD_US = 100000
 SIG = ""
 ```
 #### Explanation
-- **TASKS** -- The task configurations to load
+- **TASKS** -- The task configurations to load. This is a mandatory setting.
 - **TASKDIR** -- Where to find the task configurations, will be prepended to the filenames in **TASKS**.
-- **DEBUG** -- If crinit should be verbose in its ouput. Either `YES` or `NO`.
+                 This is a mandatory setting.
+- **DEBUG** -- If crinit should be verbose in its output. Either `YES` or `NO`. Default: `NO`
 - **FILE_SIGS_NEEDED** -- If each task configuration needs its own signature. As signature checking is not yet
-  implemented, this is parsed but does nothing.
+  implemented, this is parsed but does nothing. Default: `YES`
 - **SHUTDOWN_GRACE_PERIOD_US** -- The amount of microseconds to wait between `SIGTERM` and `SIGKILL` on shutdown/reboot.
+                                  Default: 100000
 - **SIG** -- The signature of this file. Currently unimplemented and can be left empty.
 
 ### Example Task Configuration
@@ -90,13 +92,15 @@ COMMAND[] = /sbin/dhcpcd -j /var/log/dhcpcd.log eth0
 DEPENDS = check_qemu:fail earlysetup:wait
 
 RESPAWN = NO
+RESPAWN_RETRIES = -1
 # features below not yet implemented
 EXEC = NO
 QM_JAIL = NO
 SIG = ""
 ```
 #### Explanation
-- **NAME** -- The name given to this task configuration. Relevant if other tasks want to depend on this one.
+- **NAME** -- The name given to this task configuration. Relevant if other tasks want to depend on this one. This is a
+  mandatory setting.
 - **COMMAND[]** -- The commands to be executed in series. Executable paths must be absolute. Execution will stop if
   one of them fails and the whole task will be considered failed. The whole task is considered finished (i.e.
   the `network-dhcp:wait` dependency is fulfilled) if the last command has successfully returned. May also be written
@@ -104,20 +108,24 @@ SIG = ""
   starting at 0. When using the syntax with empty brackets, all commands must be written as consecutive lines. Mixing
   both forms (**[]** and **[n]**) is unsupported and may lead to errors during parsing/loading due to duplicate or
   missing keys. There are a few examples of correct and incorrect usage in the `config/test` directory which are used by
-  `ci/demo.sh` to check the parser.
+  `ci/demo.sh` to check the parser. At least one `COMMAND` is mandatory.
 - **DEPENDS** -- A list of dependencies which need to be fulfilled before this task is considered "ready-to-start".
   Semantics are `<taskname>:{fail,wait,spawn}`, where `spawn` is fulfilled when (the first command of) a task has been
   started, `wait` if it has successfully completed, and `fail` if it has failed somewhere along the way. Here we can see
   this task is only run if and after the `earlysetup` (setup of system directories, etc.) has fully completed and the
   `check_qemu` task has determined we are _not_ running inside the emulator and therefore exited with an error code.
+  This is a mandatory setting but may be left empty using `""` which is interpreted as "no dependencies".
   _Not yet implemented:_ Once the interface to the
   [Monitor](https://gitlabintern.emlix.com/elektrobit/base-os/corbos-tools) has been implemented, it will be possible to
   depend on a monitor event by adding `@ebclmon:<event_name>` to `DEPENDS`.
 - **RESPAWN** -- If set to `YES`, the task will be restarted on failure or completion. Useful for daemons like `getty`.
+  This is a mandatory setting.
+- **RESPAWN_RETRIES** -- Number of times a respawned task may fail *in a row* before it is not started again. The
+  special value `-1` is interpreted as "unlimited". Default: -1
 - **EXEC** -- If set to `YES`, `crinit` will exec into the first `COMMAND` of this task instead of spawning a process.
-  (Not yet implemented.)
+  This is a mandatory setting. (Not yet implemented.)
 - **QM_JAIL** -- If set to `YES`, all `COMMAND`s will be spawned inside a restricted environment such as the non-SIL/QM
-  environment created by SafeSystemStartup. (Not yet implemented.)
+  environment created by SafeSystemStartup. This is a mandatory setting. (Not yet implemented.)
 - **SIG** -- The signature of this file. Currently unimplemented and can be left empty.
 
 ## crinit-ctl Usage Info
