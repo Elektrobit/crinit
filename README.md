@@ -120,7 +120,7 @@ SIG = ""
   depend on a monitor event by adding `@ebclmon:<event_name>` to `DEPENDS`.
 - **RESPAWN** -- If set to `YES`, the task will be restarted on failure or completion. Useful for daemons like `getty`.
   This is a mandatory setting.
-- **RESPAWN_RETRIES** -- Number of times a respawned taks may fail *in a row* before it is not started again. The
+- **RESPAWN_RETRIES** -- Number of times a respawned task may fail *in a row* before it is not started again. The
   special value `-1` is interpreted as "unlimited". Default: -1
 - **EXEC** -- If set to `YES`, `crinit` will exec into the first `COMMAND` of this task instead of spawning a process.
   This is a mandatory setting. (Not yet implemented.)
