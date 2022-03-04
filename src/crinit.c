@@ -11,12 +11,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "common.h"
 #include "globopt.h"
 #include "logio.h"
 #include "minsetup.h"
 #include "notiserv.h"
 #include "procdip.h"
 #include "rtimcmd.h"
+#include "version.h"
 
 /**
  * The default series file. Used if nothing is specified on command line.
@@ -24,7 +26,13 @@
 #define EBCL_CRINIT_DEFAULT_CONFIG_SERIES "/etc/crinit/default.series"
 
 /**
- * Print usage information for Crinit.
+ * Prints a message indicating Crinit's version to stderr.
+ */
+static void EBCL_printVersion(void);
+/**
+ * Print usage information for Crinit to stderr.
+ *
+ * Includes version message via EBCL_printVersion().
  *
  * @param basename  The name of this executable, according to argv[0].
  */
@@ -53,9 +61,15 @@ static void EBCL_taskPrint(const ebcl_Task_t *t);
 int main(int argc, char *argv[]) {
     const char *seriesFname = EBCL_CRINIT_DEFAULT_CONFIG_SERIES;
     if (argc > 1) {
-        if (strcmp(argv[1], "-h") == 0) {
-            EBCL_printUsage(argv[0]);
-            return EXIT_FAILURE;
+        for (int i = 0; i < argc; i++) {
+            if (EBCL_paramCheck(argv[i], "-V", "--version")) {
+                EBCL_printVersion();
+                return EXIT_FAILURE;
+            }
+            if (EBCL_paramCheck(argv[i], "-h", "--help")) {
+                EBCL_printUsage(argv[0]);
+                return EXIT_FAILURE;
+            }
         }
         if (!EBCL_isAbsPath(argv[1])) {
             EBCL_errPrint("Program argument must be an absolute path.");
@@ -64,6 +78,7 @@ int main(int argc, char *argv[]) {
         }
         seriesFname = argv[1];
     }
+    EBCL_infoPrint("Crinit daemon version %s started.", EBCL_getVersionString());
     if (getpid() == 1) {
         if (EBCL_forkZombieReaper() == -1) {
             EBCL_errPrint("I am PID 1 but failed to create a zombie reaper process.");
@@ -171,7 +186,12 @@ int main(int argc, char *argv[]) {
     return EXIT_SUCCESS;
 }
 
+static void EBCL_printVersion(void) {
+    fprintf(stderr, "Crinit version %s\n", EBCL_getVersionString());
+}
+
 static void EBCL_printUsage(const char *basename) {
+    EBCL_printVersion();
     fprintf(stderr, "USAGE: %s [path/to/config.series]\n", basename);
     fprintf(stderr, "If nothing is specified, the default path \'%s\' is used.\n", EBCL_CRINIT_DEFAULT_CONFIG_SERIES);
 }

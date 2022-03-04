@@ -1,0 +1,29 @@
+/**
+ * @file version.c.in
+ * @brief Implementation of fucntionality related to component versioning.
+ *
+ * @author emlix GmbH, 37083 Göttingen, Germany
+ *
+ * @copyright 2021-2022 Elektrobit Automotive GmbH
+ *            All rights exclusively reserved for Elektrobit Automotive GmbH,
+ *            unless otherwise expressly agreed
+ */
+#include <string.h>
+
+#include "version.h"
+
+// clang-format off
+//     Rationale: clang-format does not play nice with the CMake variables.
+const ebcl_Version_t EBCL_CRINIT_VERSION = {
+    .major = @CRINIT_VERSION_MAJOR@,
+    .minor = @CRINIT_VERSION_MINOR@,
+    .micro = @CRINIT_VERSION_MICRO@,
+    .git = "@CRINIT_VERSION_GIT@",
+};
+// clang-format on
+
+const char *EBCL_getVersionString(void) {
+    return (sizeof("@CRINIT_VERSION_GIT@") > 1)
+               ? "@CRINIT_VERSION_MAJOR@.@CRINIT_VERSION_MINOR@.@CRINIT_VERSION_MICRO@.@CRINIT_VERSION_GIT@"
+               : "@CRINIT_VERSION_MAJOR@.@CRINIT_VERSION_MINOR@.@CRINIT_VERSION_MICRO@";
+}

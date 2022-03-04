@@ -24,12 +24,12 @@
  */
 #define EBCL_LIB_EXPORTED __attribute__((visibility("default")))
 
-#ifndef EBCL_LIB_CONSTRUCTOR // Guard so unit tests can define as empty.
+#ifndef EBCL_LIB_CONSTRUCTOR  // Guard so unit tests can define as empty.
 /** Attribute macro for a function executed on loading of the shared library. **/
 #define EBCL_LIB_CONSTRUCTOR __attribute__((constructor))
 #endif
 
-#ifndef EBCL_LIB_DESTRUCTOR // Guard so unit tests can define as empty.
+#ifndef EBCL_LIB_DESTRUCTOR  // Guard so unit tests can define as empty.
 /** Attribute macro for a function executed on program exit if the shared library has been loaded before. **/
 #define EBCL_LIB_DESTRUCTOR __attribute__((destructor))
 #endif
@@ -102,6 +102,10 @@ EBCL_LIB_EXPORTED void EBCL_crinitSetSocketPath(const char *sockFile) {
     if (sockFile != NULL) {
         EBCL_crinitSockFile = sockFile;
     }
+}
+
+EBCL_LIB_EXPORTED const ebcl_Version_t *EBCL_crinitLibGetVersion(void) {
+    return &EBCL_CRINIT_VERSION;
 }
 
 EBCL_LIB_EXPORTED int sd_notify(int unset_environment, const char *state) {  // NOLINT(readability-identifier-naming)
@@ -384,6 +388,62 @@ EBCL_LIB_EXPORTED int EBCL_crinitShutdown(int shutdownCmd) {
     EBCL_destroyRtimCmd(&cmd);
 
     int ret = EBCL_crinitResponseCheck(&res, EBCL_RTIMCMD_R_SHUTDOWN);
+    EBCL_destroyRtimCmd(&res);
+    return ret;
+}
+
+EBCL_LIB_EXPORTED int EBCL_crinitGetVersion(ebcl_Version_t *v) {
+    if (v == NULL) {
+        EBCL_errPrint("Return pointer must not be NULL.");
+        return -1;
+    }
+    ebcl_RtimCmd_t cmd, res;
+
+    if (EBCL_buildRtimCmd(&cmd, EBCL_RTIMCMD_C_GETVER, 0) == -1) {
+        EBCL_errPrint("Could not build RtimCmd to send to Crinit.");
+        return -1;
+    }
+
+    if (EBCL_crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+        EBCL_destroyRtimCmd(&cmd);
+        EBCL_errPrint("Could not complete data transfer from/to Crinit.");
+        return -1;
+    }
+    EBCL_destroyRtimCmd(&cmd);
+
+    int ret = EBCL_crinitResponseCheck(&res, EBCL_RTIMCMD_R_GETVER);
+    if (ret == 0) {
+        if (res.argc != 5) {
+            EBCL_errPrint("Got unexpected response length from Crinit.");
+            EBCL_destroyRtimCmd(&res);
+            return -1;
+        }
+
+        char *endPtr = NULL;
+
+        v->major = (uint8_t)strtoul(res.args[1], &endPtr, 10);
+        if (endPtr == res.args[1]) {
+            EBCL_errPrint("Could not convert major version number to integer.");
+            EBCL_destroyRtimCmd(&res);
+            return -1;
+        }
+
+        v->minor = (uint8_t)strtoul(res.args[2], &endPtr, 10);
+        if (endPtr == res.args[2]) {
+            EBCL_errPrint("Could not convert minor version number to integer.");
+            EBCL_destroyRtimCmd(&res);
+            return -1;
+        }
+        v->micro = (uint8_t)strtoul(res.args[3], &endPtr, 10);
+        if (endPtr == res.args[3]) {
+            EBCL_errPrint("Could not convert micro version number to integer.");
+            EBCL_destroyRtimCmd(&res);
+            return -1;
+        }
+
+        strncpy(v->git, res.args[4], sizeof(v->git) - 1);
+    }
+
     EBCL_destroyRtimCmd(&res);
     return ret;
 }

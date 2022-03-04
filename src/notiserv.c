@@ -505,6 +505,7 @@ static inline bool EBCL_checkPerm(ebcl_RtimOp_t op, const struct ucred *passedCr
         case EBCL_RTIMCMD_C_NOTIFY:
             return passedCreds->uid == 0;
         case EBCL_RTIMCMD_C_STATUS:
+        case EBCL_RTIMCMD_C_GETVER:
             return true;
         case EBCL_RTIMCMD_C_SHUTDOWN:
             if (EBCL_procCapget(capdata, passedCreds->pid) == -1) {
@@ -521,6 +522,7 @@ static inline bool EBCL_checkPerm(ebcl_RtimOp_t op, const struct ucred *passedCr
         case EBCL_RTIMCMD_R_RESTART:
         case EBCL_RTIMCMD_R_NOTIFY:
         case EBCL_RTIMCMD_R_STATUS:
+        case EBCL_RTIMCMD_R_GETVER:
         case EBCL_RTIMCMD_R_SHUTDOWN:
         default:
             EBCL_errPrint("Unknown or unsupported opcode.");

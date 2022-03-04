@@ -17,6 +17,7 @@
 #include <stdbool.h>
 
 #include "crinit-sdefs.h"
+#include "version.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,6 +43,25 @@ void EBCL_crinitSetErrStream(FILE *errStream);
  * @param infoStream  The stream to use.
  */
 void EBCL_crinitSetInfoStream(FILE *infoStream);
+
+/**
+ * Queries the version of the crinit daemon.
+ *
+ * See also ebcl_Version_t. Depending on the build environment, ebcl_Version_t::git may be an empty string.
+ *
+ * @param v  Return pointer to an ebcl_Version_t in which the crinit daemon's version will be written if the query is successful.
+ *
+ * @return 0 on success, -1 otherwise
+ */
+int EBCL_crinitGetVersion(ebcl_Version_t *v);
+/**
+ * Returns version information for the crinit-client shared library.
+ *
+ * See also ebcl_Version_t. Depending on the build environment, ebcl_Version_t::git may be an empty string.
+ *
+ * @return  A pointer to an ebcl_Version_t constant containing this library's version info.
+ */
+const ebcl_Version_t *EBCL_crinitLibGetVersion(void);
 
 /**
  * Sets the task name reported to Crinit by sd_notify().

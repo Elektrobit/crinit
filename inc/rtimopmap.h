@@ -17,7 +17,7 @@
  * Macro to generate a mapping array for the specified commands.
  */
 #define EBCL_genOpMap(f) \
-    f(ADDTASK) f(ADDSERIES) f(ENABLE) f(DISABLE) f(STOP) f(KILL) f(RESTART) f(NOTIFY) f(STATUS) f(SHUTDOWN)
+    f(ADDTASK) f(ADDSERIES) f(ENABLE) f(DISABLE) f(STOP) f(KILL) f(RESTART) f(NOTIFY) f(STATUS) f(SHUTDOWN) f(GETVER)
 /**
  * Macro to generate the opcode enum for EBCL_genOpMap().
  *

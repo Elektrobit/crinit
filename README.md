@@ -172,6 +172,8 @@ USAGE: crinit-ctl <ACTION> [OPTIONS] <PARAMETER> [PARAMETERS...]
   General Options:
         --verbose/-v - Be verbose.
         --help/-h    - Print this help.
+        --version/-V - Print version information about crinit-ctl, the crinit-client library,
+                       and -- if connection is successful -- the crinit daemon.
 ```
 
 ## Build Instructions
