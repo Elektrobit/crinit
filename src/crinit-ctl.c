@@ -43,6 +43,8 @@
  * General Options:
  *       --verbose/-v - Be verbose.
  *       --help/-h    - Print this help.
+ *       --version/-V - Print version information about crinit-ctl, the crinit-client library,
+ *                      and -- if connection is successful -- the crinit daemon.
  * ~~~
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
@@ -58,8 +60,10 @@
 #include <sys/reboot.h>
 #include <unistd.h>
 
+#include "common.h"
 #include "crinit-client.h"
 #include "logio.h"
+#include "version.h"
 
 /**
  * Check if \a path is absolute (i.e. starts with '/').
@@ -76,6 +80,12 @@ static bool EBCL_isAbsPath(const char *path);
  */
 static void EBCL_printUsage(char *prgmPath);
 
+/**
+ * Prints a message indicating the versions of crinit-ctl, the client library, and (if connection is successful) the
+ * Crinit daemon to stderr.
+ */
+static void EBCL_printVersion(void);
+
 int main(int argc, char *argv[]) {
     int getoptArgc = argc;
     char **getoptArgv = argv;
@@ -86,6 +96,14 @@ int main(int argc, char *argv[]) {
         if (argc < 2) {
             EBCL_printUsage(argv[0]);
             return EXIT_FAILURE;
+        } else {
+            // We need to do this before getopt as we might not have an <ACTION> specified.
+            for (int i = 0; i < argc; i++) {
+                if (EBCL_paramCheck(argv[i], "-V", "--version")) {
+                    EBCL_printVersion();
+                    return EXIT_FAILURE;
+                }
+            }
         }
         getoptArgc--;
         getoptArgv++;
@@ -324,8 +342,24 @@ static void EBCL_printUsage(char *prgmPath) {
         "               poweroff as a shortcut which will invoke this command automatically.\n"
         "  General Options:\n"
         "        --verbose/-v - Be verbose.\n"
-        "        --help/-h    - Print this help.\n",
+        "        --help/-h    - Print this help.\n"
+        "        --version/-V - Print version information about crinit-ctl, the crinit-client library,\n"
+        "                       and -- if connection is successful -- the crinit daemon.\n",
         prgmPath);
+}
+
+static void EBCL_printVersion(void) {
+    fprintf(stderr, "crinit-ctl version %s\n", EBCL_getVersionString());
+    const ebcl_Version_t *libVer = EBCL_crinitLibGetVersion();
+    fprintf(stderr, "crinit-client library version %u.%u.%u%s%s\n", libVer->major, libVer->minor, libVer->micro,
+            (strlen(libVer->git) == 0) ? "" : ".", libVer->git);
+    ebcl_Version_t daemonVer;
+    if (EBCL_crinitGetVersion(&daemonVer) == -1) {
+        EBCL_errPrint("Could not get version of Crinit daemon.");
+        return;
+    }
+    fprintf(stderr, "crinit daemon version %u.%u.%u%s%s\n", daemonVer.major, daemonVer.minor, daemonVer.micro,
+            (strlen(daemonVer.git) == 0) ? "" : ".", daemonVer.git);
 }
 
 static bool EBCL_isAbsPath(const char *path) {

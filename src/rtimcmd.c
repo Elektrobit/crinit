@@ -26,6 +26,7 @@
 #include "globopt.h"
 #include "logio.h"
 #include "procdip.h"
+#include "version.h"
 
 /**
  * Argument structure for shdnThread().
@@ -151,6 +152,19 @@ static int EBCL_execRtimCmdNotify(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
  * @return 0 on success, -1 on error
  */
 static int EBCL_execRtimCmdStatus(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+
+/**
+ * Internal implementation of the version query from the client library to crinit.
+ *
+ * For documentation on the command itself, see EBCL_crinitGetVersion().
+ *
+ * @param ctx  The ebcl_TaskDB_t to operate on.
+ * @param res  Return pointer for response/result.
+ * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
+ *
+ * @return 0 on success, -1 on error
+ */
+static int EBCL_execRtimCmdGetVer(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
 
 /**
  * Internal implementation of the "shutdown" command.
@@ -388,6 +402,13 @@ int EBCL_execRtimCmd(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd
                 return -1;
             }
             return 0;
+        case EBCL_RTIMCMD_C_GETVER:
+            if (EBCL_execRtimCmdGetVer(ctx, res, cmd) == -1) {
+                EBCL_errPrint("Could not execute runtime command \'GETVER\'.");
+                return -1;
+            }
+            return 0;
+
         case EBCL_RTIMCMD_R_ADDTASK:
         case EBCL_RTIMCMD_R_ADDSERIES:
         case EBCL_RTIMCMD_R_ENABLE:
@@ -398,6 +419,7 @@ int EBCL_execRtimCmd(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd
         case EBCL_RTIMCMD_R_NOTIFY:
         case EBCL_RTIMCMD_R_STATUS:
         case EBCL_RTIMCMD_R_SHUTDOWN:
+        case EBCL_RTIMCMD_R_GETVER:
         default:
             EBCL_errPrint("Could not execute opcode %d. This is an unknown opcode or a response code.", cmd->op);
             return -1;
@@ -463,7 +485,6 @@ int EBCL_destroyRtimCmd(ebcl_RtimCmd_t *c) {
     free(c->args);
     return 0;
 }
-
 
 static int EBCL_execRtimCmdAddTask(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     if (ctx == NULL || res == NULL || cmd == NULL) {
@@ -862,6 +883,26 @@ static int EBCL_execRtimCmdStatus(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
     return 0;
 }
 
+static int EBCL_execRtimCmdGetVer(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+    if (ctx == NULL || res == NULL || cmd == NULL) {
+        EBCL_errPrint("Pointer parameters must not be NULL");
+        return -1;
+    }
+
+    EBCL_dbgInfoPrint("Will execute runtime command \'GETVER\'.");
+    if (cmd->argc != 0) {
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_GETVER, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+    }
+
+    char major[8] = {'\0'}, minor[8] = {'\0'}, micro[8] = {'\0'};
+    snprintf(major, sizeof(major) - 1, "%u", EBCL_CRINIT_VERSION.major);
+    snprintf(minor, sizeof(minor) - 1, "%u", EBCL_CRINIT_VERSION.minor);
+    snprintf(micro, sizeof(micro) - 1, "%u", EBCL_CRINIT_VERSION.micro);
+
+    return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_GETVER, 5, EBCL_RTIMCMD_RES_OK, major, minor, micro,
+                             EBCL_CRINIT_VERSION.git);
+}
+
 static int EBCL_execRtimCmdShutdown(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     if (ctx == NULL || res == NULL || cmd == NULL) {
         EBCL_errPrint("Pointer parameters must not be NULL");
@@ -1076,4 +1117,3 @@ static inline bool EBCL_isAbsPath(const char *path) {
     if (path == NULL) return false;
     return (path[0] == '/');
 }
-

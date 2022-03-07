@@ -23,4 +23,19 @@
         (void)(par);           \
     } while (0)
 
+/**
+ * Checks if a string is equal to at least one of two comparison literals.
+ *
+ * Meant to be used in a loop to check argv for long and short options. Parameters must not be NULL.
+ *
+ * @param inputParam  pointer to a c string to be compared, may be const
+ * @param cmpShort    first comparison string literal, meant for the short form of the option
+ * @param cmpLong     second comparison string literal, meant for the long form of the option
+ *
+ * @return  true if \a inputParam is lexicographically equal to at least one of \a cmpShort and \a cmpLong, false
+ *          otherwise
+ */
+#define EBCL_paramCheck(inputParam, cmpShort, cmpLong) \
+    ((strncmp(inputParam, cmpShort, sizeof(cmpShort)) == 0) || (strncmp(inputParam, cmpLong, sizeof(cmpLong)) == 0))
+
 #endif /* __COMMON_H__ */

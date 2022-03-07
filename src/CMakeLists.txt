@@ -1,6 +1,7 @@
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
+configure_file(version.c.in version.c)
 
 # crinit
 
@@ -17,6 +18,7 @@ add_executable(
   notiserv.c
   rtimcmd.c
   rtimopmap.c
+  ${CMAKE_CURRENT_BINARY_DIR}/version.c
 )
 
 target_include_directories(
@@ -39,6 +41,7 @@ add_library(
   rtimopmap.c
   globopt.c
   sockcom.c
+  ${CMAKE_CURRENT_BINARY_DIR}/version.c
 )
 
 target_include_directories(
@@ -57,6 +60,7 @@ add_executable(
   crinit-ctl
   crinit-ctl.c
   logio.c
+  ${CMAKE_CURRENT_BINARY_DIR}/version.c
 )
 
 target_include_directories(
