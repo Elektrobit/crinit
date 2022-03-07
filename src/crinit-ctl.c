@@ -123,7 +123,7 @@ int main(int argc, char *argv[]) {
     bool verbose = false;
 
     while (true) {
-        opt = getopt_long(getoptArgc, getoptArgv, "hd:fivV", longOptions, NULL);
+        opt = getopt_long(getoptArgc, getoptArgv, "hd:fiv", longOptions, NULL);
         if (opt == -1) {
             break;
         }
