@@ -434,6 +434,7 @@ EBCL_LIB_EXPORTED int EBCL_crinitGetVersion(ebcl_Version_t *v) {
             EBCL_destroyRtimCmd(&res);
             return -1;
         }
+
         v->micro = (uint8_t)strtoul(res.args[3], &endPtr, 10);
         if (endPtr == res.args[3]) {
             EBCL_errPrint("Could not convert micro version number to integer.");

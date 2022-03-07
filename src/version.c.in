@@ -1,6 +1,6 @@
 /**
  * @file version.c.in
- * @brief Implementation of fucntionality related to component versioning.
+ * @brief Implementation of functionality related to component versioning.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *

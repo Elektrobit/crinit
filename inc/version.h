@@ -36,7 +36,7 @@ extern const ebcl_Version_t EBCL_CRINIT_VERSION;
 /**
  * Returns a const char pointer to a formatted human-readable version string for this software component.
  *
- * Generated via CMake in version.c.in. Format is `MAJOR.MINOR.MICRO.GIT` if a git commit hash exists
+ * Generated via CMake in version.c.in. Format is `MAJOR.MINOR.MICRO.GIT` if a git commit hash exists or
  * `MAJOR.MINOR.MICRO` if the git hash is an empty string.
  *
  * @return  Pointer to a version string constant.
