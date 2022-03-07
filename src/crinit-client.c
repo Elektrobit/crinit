@@ -443,6 +443,7 @@ EBCL_LIB_EXPORTED int EBCL_crinitGetVersion(ebcl_Version_t *v) {
         }
 
         strncpy(v->git, res.args[4], sizeof(v->git) - 1);
+        v->git[sizeof(v->git) - 1] = '\0';
     }
 
     EBCL_destroyRtimCmd(&res);
