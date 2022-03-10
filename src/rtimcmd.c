@@ -895,12 +895,12 @@ static int EBCL_execRtimCmdGetVer(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
     }
 
     char major[8] = {'\0'}, minor[8] = {'\0'}, micro[8] = {'\0'};
-    snprintf(major, sizeof(major) - 1, "%u", EBCL_CRINIT_VERSION.major);
-    snprintf(minor, sizeof(minor) - 1, "%u", EBCL_CRINIT_VERSION.minor);
-    snprintf(micro, sizeof(micro) - 1, "%u", EBCL_CRINIT_VERSION.micro);
+    snprintf(major, sizeof(major) - 1, "%u", EBCL_crinitVersion.major);
+    snprintf(minor, sizeof(minor) - 1, "%u", EBCL_crinitVersion.minor);
+    snprintf(micro, sizeof(micro) - 1, "%u", EBCL_crinitVersion.micro);
 
     return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_GETVER, 5, EBCL_RTIMCMD_RES_OK, major, minor, micro,
-                             EBCL_CRINIT_VERSION.git);
+                             EBCL_crinitVersion.git);
 }
 
 static int EBCL_execRtimCmdShutdown(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {

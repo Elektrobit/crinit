@@ -105,7 +105,7 @@ EBCL_LIB_EXPORTED void EBCL_crinitSetSocketPath(const char *sockFile) {
 }
 
 EBCL_LIB_EXPORTED const ebcl_Version_t *EBCL_crinitLibGetVersion(void) {
-    return &EBCL_CRINIT_VERSION;
+    return &EBCL_crinitVersion;
 }
 
 EBCL_LIB_EXPORTED int sd_notify(int unset_environment, const char *state) {  // NOLINT(readability-identifier-naming)
