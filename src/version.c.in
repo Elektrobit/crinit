@@ -14,7 +14,7 @@
 
 // clang-format off
 //     Rationale: clang-format does not play nice with the CMake variables.
-const ebcl_Version_t EBCL_CRINIT_VERSION = {
+const ebcl_Version_t EBCL_crinitVersion = {
     .major = @CRINIT_VERSION_MAJOR@,
     .minor = @CRINIT_VERSION_MINOR@,
     .micro = @CRINIT_VERSION_MICRO@,

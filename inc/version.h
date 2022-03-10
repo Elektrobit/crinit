@@ -31,7 +31,7 @@ typedef struct ebcl_Version_t {
 /**
  * Crinit software component version. Generated via CMake in version.c.in.
  */
-extern const ebcl_Version_t EBCL_CRINIT_VERSION;
+extern const ebcl_Version_t EBCL_crinitVersion;
 
 /**
  * Returns a const char pointer to a formatted human-readable version string for this software component.
