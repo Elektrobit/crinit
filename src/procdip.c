@@ -10,6 +10,7 @@
  */
 #include "procdip.h"
 
+#include <spawn.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/syscall.h>
@@ -154,21 +155,11 @@ static void *EBCL_dispatchThreadFunc(void *args) {
     }
 
     for (size_t i = 0; i < tCopy->cmdsSize; i++) {
-        pid = fork();
-        if (pid == -1) {
-            EBCL_errnoPrint("(TID: %d) Could not fork new process for command %zu of Task \'%s\'", threadId, i,
+        if (posix_spawn(&pid, tCopy->cmds[i].argv[0], NULL, NULL, tCopy->cmds[i].argv, taskEnv) == -1) {
+            EBCL_errnoPrint("(TID: %d) Could not spawn new process for command %zu of Task \'%s\'", threadId, i,
                             tCopy->name);
             goto threadExit;
         }
-        if (pid == 0) {  // child process
-            if (execve(tCopy->cmds[i].argv[0], tCopy->cmds[i].argv, taskEnv) == -1) {
-                EBCL_errnoPrint("(PID: %d) Could not exec into \'%s\'.", getpid(), tCopy->cmds[i].argv[0]);
-                free(args);
-                EBCL_freeTask(tCopy);
-                exit(EXIT_FAILURE);
-            }
-        }
-        // parent process
         EBCL_infoPrint("(TID: %d) Started new process %d for command %zu of Task \'%s\' (\'%s\').", threadId, pid, i,
                        tCopy->name, tCopy->cmds[i].argv[0]);
 
