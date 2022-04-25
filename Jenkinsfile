@@ -36,10 +36,13 @@ pipeline {
                         '''
                     }
                 }
-                stage ('Analyse: clang-tidy') {
+                stage ('Analyse: Lint') {
                     steps {
                         sh '''#!/bin/bash -xe
                           ci/clang-tidy.sh
+                        '''
+                        sh '''#!/bin/bash -xe
+                          ci/checkversion.sh
                         '''
                     }
                 }
