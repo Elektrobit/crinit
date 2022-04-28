@@ -79,12 +79,19 @@ static bool EBCL_isAbsPath(const char *path);
  * @param prgmPath  The path to the program, usually found in argv[0].
  */
 static void EBCL_printUsage(char *prgmPath);
-
 /**
  * Prints a message indicating the versions of crinit-ctl, the client library, and (if connection is successful) the
  * Crinit daemon to stderr.
  */
 static void EBCL_printVersion(void);
+/**
+ * Convert a task state code to a string.
+ *
+ * @param s  The task state code to convert.
+ *
+ * @return a string representing the given task status code.
+ */
+static const char *EBCL_taskStateToStr(ebcl_TaskState_t s);
 
 int main(int argc, char *argv[]) {
     int getoptArgc = argc;
@@ -246,11 +253,13 @@ int main(int argc, char *argv[]) {
         }
         ebcl_TaskState_t s = 0;
         pid_t pid = -1;
+        const char *state;
         if (EBCL_crinitTaskGetStatus(&s, &pid, getoptArgv[optind]) == -1) {
             EBCL_errPrint("Querying status of task \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
         }
-        EBCL_infoPrint("Status: %lu, PID: %d", s, pid);
+        state = EBCL_taskStateToStr(s);
+        EBCL_infoPrint("Status: %s, PID: %d", state, pid);
         return EXIT_SUCCESS;
     }
     if (strcmp(getoptArgv[0], "notify") == 0) {
@@ -367,3 +376,26 @@ static bool EBCL_isAbsPath(const char *path) {
     return (path[0] == '/');
 }
 
+static const char *EBCL_taskStateToStr(ebcl_TaskState_t s) {
+    const char *state = NULL;
+
+    switch (s) {
+        case EBCL_TASK_STATE_STARTING:
+            state = "starting";
+            break;
+        case EBCL_TASK_STATE_RUNNING:
+            state = "running";
+            break;
+        case EBCL_TASK_STATE_DONE:
+            state = "done";
+            break;
+        case EBCL_TASK_STATE_FAILED:
+            state = "failed";
+            break;
+        default:
+            state = "(invalid)";
+            break;
+    }
+
+    return state;
+}

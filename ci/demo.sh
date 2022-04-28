@@ -90,7 +90,7 @@ echo Will run: $ sudo crinit-ctl kill sleep_one_day
 sudo LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ${BINDIR}/crinit-ctl kill sleep_one_day
 
 echo ""
-echo "sleep_one_day should now have exited with an error code. We can check by querying its status. Status 8 means \"failed\""
+echo "sleep_one_day should now have exited with an error code. We can check by querying its status and look for \"failed\""
 echo Will run: $ crinit-ctl status sleep_one_day
 ${BINDIR}/crinit-ctl status sleep_one_day
 
@@ -100,7 +100,7 @@ echo Will run: $ sudo crinit-ctl notify sleep_one_day '"$(echo -ne "READY=1\nMAI
 sudo LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ${BINDIR}/crinit-ctl notify sleep_one_day "$(echo -ne "READY=1\nMAINPID=666")"
 
 echo ""
-echo "We can check if it has worked, it should now read as \"Status: 2, PID: 666\"."
+echo "We can check if it has worked, it should now read as \"Status: running, PID: 666\"."
 echo Will run: $ crinit-ctl status sleep_one_day
 ${BINDIR}/crinit-ctl status sleep_one_day
 
@@ -143,11 +143,11 @@ echo Will run: $ crinit-ctl status crinit_recursive
 CRINIT_REC_STATUS=$(${BINDIR}/crinit-ctl status crinit_recursive)
 echo $CRINIT_REC_STATUS
 
-# Use sh magic to check if the output begins with "Status: 8,"
-if case $CRINIT_REC_STATUS in "Status: 8,"*) ;; *) false;; esac; then
-    echo Status is reported to be 8 as expected.
+# Use sh magic to check if the output begins with "Status: failed,"
+if case $CRINIT_REC_STATUS in "Status: failed,"*) ;; *) false;; esac; then
+    echo Status is reported to be "failed" as expected.
 else
-    echo Status is not 8 which is unexpected.
+    echo Status is not "failed" which is unexpected.
     exit 1
 fi
 
