@@ -41,6 +41,11 @@ echo Now we sleep 3 more seconds, so everything has settled...
 sleep 3
 
 echo ""
+echo Now we check the list of tasks.
+echo Will run: $ crinit-ctl list
+${BINDIR}/crinit-ctl list
+
+echo ""
 echo Now we check the status/PID of after_sleep.
 echo Will run: $ crinit-ctl status after_sleep
 ${BINDIR}/crinit-ctl status after_sleep
