@@ -34,6 +34,8 @@
  *     notify <TASK_NAME> <"SD_NOTIFY_STRING">
  *            - Will send an sd_notify-style status report to Crinit. Only MAINPID and READY are
  *              implemented. See the sd_notify documentation for their meaning.
+ *       list
+ *            - Print the list of loaded tasks and their status.
  *     reboot
  *            - Will request Crinit to perform a graceful system reboot. crinit-ctl can be symlinked to
  *              reboot as a shortcut which will invoke this command automatically.
@@ -275,6 +277,23 @@ int main(int argc, char *argv[]) {
         }
         return EXIT_SUCCESS;
     }
+    if (strcmp(getoptArgv[0], "list") == 0) {
+        if (getoptArgv[optind] != NULL) {
+            EBCL_printUsage(argv[0]);
+            return EXIT_FAILURE;
+        }
+        ebcl_TaskList_t *tl;
+        if (EBCL_crinitGetTaskList(&tl) == -1) {
+            EBCL_errPrint("Querying list of task \'%s\' failed.", getoptArgv[optind]);
+            return EXIT_FAILURE;
+        }
+        for (size_t i = 0; i < tl->numTasks; i++) {
+            const char *state = EBCL_taskStateToStr(tl->tasks[i].state);
+            EBCL_infoPrint("%s\t%d\t%s", tl->tasks[i].name, tl->tasks[i].pid, state);
+        }
+        EBCL_crinitFreeTaskList(tl);
+        return EXIT_SUCCESS;
+    }
     if (strcmp(basename(getoptArgv[0]), "poweroff") == 0) {
         if (EBCL_crinitShutdown(RB_POWER_OFF) == -1) {
             EBCL_errPrint("System poweroff request failed.");
@@ -343,6 +362,8 @@ static void EBCL_printUsage(char *prgmPath) {
         "      notify <TASK_NAME> <\"SD_NOTIFY_STRING\">\n"
         "             - Will send an sd_notify-style status report to Crinit. Only MAINPID and READY are\n"
         "               implemented. See the sd_notify documentation for their meaning.\n"
+        "        list\n"
+        "             - Print the list of loaded tasks and their status.\n"
         "      reboot\n"
         "             - Will request Crinit to perform a graceful system reboot. crinit-ctl can be symlinked to\n"
         "               reboot as a shortcut which will invoke this command automatically.\n"
