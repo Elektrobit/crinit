@@ -272,6 +272,20 @@ int EBCL_taskDBInitWithSize(ebcl_TaskDB_t *ctx, int (*spawnFunc)(ebcl_TaskDB_t *
 int EBCL_taskDBDestroy(ebcl_TaskDB_t *ctx);
 
 /**
+ * Export the list of task names currently in the task database.
+ *
+ * The function allocates an array of strings as \a tasks and returns the number of array elements in \a numTasks.
+ * Each entry in the \a tasks array will be allocated separately and needs to be freed by the caller.
+ *
+ * @param ctx       The TaskDB context from which to get the list of task names.
+ * @param tasks     The return pointer for the array of task names.
+ * @param numTasks  The return pointer for the number of array entries.
+ *
+ * @return 0 on success, -1 on error
+ */
+int EBCL_taskDBExportTaskNamesToArray(ebcl_TaskDB_t *ctx, char **tasks[], size_t *numTasks);
+
+/**
  * Given an ebcl_ConfKvList_t created from a task config, build an equivalent ebcl_Task.
  *
  * The ebcl_Task returned via \a out is dynamically allocated and should be freed using EBCL_freeTask if no longer

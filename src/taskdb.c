@@ -424,6 +424,51 @@ int EBCL_taskDBFulfillDep(ebcl_TaskDB_t *ctx, const ebcl_TaskDep_t *dep) {
     return 0;
 }
 
+int EBCL_taskDBExportTaskNamesToArray(ebcl_TaskDB_t *ctx, char **tasks[], size_t *numTasks) {
+    int ret = 0;
+
+    if (ctx == NULL || tasks == NULL || numTasks == NULL) {
+        EBCL_errPrint("The TaskDB context and the output array pointer must not be NULL.");
+        return -1;
+    }
+
+    if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
+        EBCL_errnoPrint("Could not queue up for mutex lock.");
+        return -1;
+    }
+
+    *numTasks = 0;
+    *tasks = malloc(ctx->taskSetItems * sizeof(*tasks));
+    if (*tasks == NULL) {
+        EBCL_errnoPrint("Could not allocate memory for task array.");
+        pthread_mutex_unlock(&ctx->lock);
+        return -1;
+    }
+
+    for (size_t i = 0; i < ctx->taskSetItems; i++) {
+        ebcl_Task_t *pTask = &ctx->taskSet[i];
+        (*tasks)[i] = strdup(pTask->name);
+        if ((*tasks)[i] == NULL) {
+            EBCL_errnoPrint("Could not allocate memory for task name.");
+            ret = -1;
+            goto fail;
+        }
+        (*numTasks)++;
+    }
+
+    goto success;
+fail:
+    for (size_t i = 0; i < *numTasks; i++) {
+        free((*tasks)[i]);
+    }
+    free(*tasks);
+    *tasks = NULL;
+    *numTasks = 0;
+success:
+    pthread_mutex_unlock(&ctx->lock);
+    return ret;
+}
+
 int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in) {
     if (in == NULL) {
         EBCL_errPrint("The parameter \'in\' must not be NULL.");
