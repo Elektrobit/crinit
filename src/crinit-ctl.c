@@ -401,6 +401,9 @@ static const char *EBCL_taskStateToStr(ebcl_TaskState_t s) {
     const char *state = NULL;
 
     switch (s) {
+        case EBCL_TASK_STATE_LOADED:
+            state = "loaded";
+            break;
         case EBCL_TASK_STATE_STARTING:
             state = "starting";
             break;

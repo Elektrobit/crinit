@@ -20,6 +20,7 @@
 #define EBCL_CRINIT_ENV_NOTIFY_NAME "CRINIT_TASK_NAME"
 
 typedef unsigned long ebcl_TaskState_t;    ///< Type to store Task state bitmask.
+#define EBCL_TASK_STATE_LOADED (0 << 0)    ///< Task state bitmask indicating the task was loaded, but never ran.
 #define EBCL_TASK_STATE_STARTING (1 << 0)  ///< Task state bitmask indicating the task currently spawns a new process.
 #define EBCL_TASK_STATE_RUNNING (1 << 1)   ///< Bitmask indicating the task has spawned a process and is running.
 #define EBCL_TASK_STATE_DONE (1 << 2)      ///< Bitmask indicating a task has finished without error.
