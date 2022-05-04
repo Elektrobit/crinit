@@ -331,10 +331,12 @@ static void *EBCL_connThread(void *args) {
         EBCL_dbgInfoPrint("(TID %d) Will send response message \'%s\' to client.", threadId, resStr);
         if (EBCL_sendStr(connSockFd, resStr) == -1) {
             EBCL_errPrint("(TID %d) Could not send response message to client.", threadId);
+            free(resStr);
             close(connSockFd);
             continue;
         }
 
+        free(resStr);
         close(connSockFd);
         EBCL_threadPoolThreadAvailCallback(a->tpRef);
     }
