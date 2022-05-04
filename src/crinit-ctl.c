@@ -39,7 +39,7 @@
  *     reboot
  *            - Will request Crinit to perform a graceful system reboot. crinit-ctl can be symlinked to
  *              reboot as a shortcut which will invoke this command automatically.
- *     poweroff
+ *   poweroff
  *            - Will request Crinit to perform a graceful system reboot. crinit-ctl can be symlinked to
  *              poweroff as a shortcut which will invoke this command automatically.
  * General Options:
@@ -367,7 +367,7 @@ static void EBCL_printUsage(char *prgmPath) {
         "      reboot\n"
         "             - Will request Crinit to perform a graceful system reboot. crinit-ctl can be symlinked to\n"
         "               reboot as a shortcut which will invoke this command automatically.\n"
-        "      poweroff\n"
+        "    poweroff\n"
         "             - Will request Crinit to perform a graceful system reboot. crinit-ctl can be symlinked to\n"
         "               poweroff as a shortcut which will invoke this command automatically.\n"
         "  General Options:\n"
