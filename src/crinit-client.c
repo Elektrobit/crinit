@@ -412,7 +412,7 @@ EBCL_LIB_EXPORTED int EBCL_crinitGetTaskList(ebcl_TaskList_t **tlptr) {
         goto fail_status;
     }
 
-    for (int i = 0; i < res.argc - 1; i++) {
+    for (size_t i = 0; i < res.argc - 1; i++) {
         const char *name = res.args[i + 1];
         pid_t pid = -1;
         ebcl_TaskState_t state = 0;

@@ -27,7 +27,7 @@
  */
 typedef struct ebcl_RtimCmd_t {
     ebcl_RtimOp_t op;  ///< The command or response opcode (see rtimopmap.h).
-    int argc;          ///< The number of arguments.
+    size_t argc;       ///< The number of arguments.
     char **args;       ///< String array of arguments.
 } ebcl_RtimCmd_t;
 
