@@ -11,6 +11,8 @@
 #ifndef __CRINIT_SDEFS_H__
 #define __CRINIT_SDEFS_H__
 
+#include <sys/types.h>
+
 /** Default path to Crinit's AF_UNIX communication socket. **/
 #define EBCL_CRINIT_SOCKFILE "/run/crinit/crinit.sock"
 
@@ -22,5 +24,18 @@ typedef unsigned long ebcl_TaskState_t;    ///< Type to store Task state bitmask
 #define EBCL_TASK_STATE_RUNNING (1 << 1)   ///< Bitmask indicating the task has spawned a process and is running.
 #define EBCL_TASK_STATE_DONE (1 << 2)      ///< Bitmask indicating a task has finished without error.
 #define EBCL_TASK_STATE_FAILED (1 << 3)    ///< Bitmask indicating a task has finished with an error code.
+
+typedef struct ebcl_TaskListEntry_t  ///< Type to represent an entry in a task list.
+{
+    char *name;              ///< Task name.
+    pid_t pid;               ///< PID of currently running process subordinate to the task, if any.
+    ebcl_TaskState_t state;  ///< Task state.
+} ebcl_TaskListEntry_t;
+
+typedef struct ebcl_TaskList_t  ///< Type to represent a list of tasks.
+{
+    size_t numTasks;              ///< Number of elements in the \a tasks array.
+    ebcl_TaskListEntry_t *tasks;  ///< Array of task entries.
+} ebcl_TaskList_t;
 
 #endif /* __CRINIT_SDEFS_H__ */

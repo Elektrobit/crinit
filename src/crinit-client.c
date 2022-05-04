@@ -371,6 +371,89 @@ EBCL_LIB_EXPORTED int EBCL_crinitTaskGetStatus(ebcl_TaskState_t *s, pid_t *pid, 
     return -1;
 }
 
+EBCL_LIB_EXPORTED int EBCL_crinitGetTaskList(ebcl_TaskList_t **tlptr) {
+    if (tlptr == NULL) {
+        EBCL_errPrint("Pointer arguments must not be NULL");
+        return -1;
+    }
+
+    ebcl_RtimCmd_t cmd, res;
+    if (EBCL_buildRtimCmd(&cmd, EBCL_RTIMCMD_C_TASKLIST, 0) == -1) {
+        EBCL_errPrint("Could not build RtimCmd to send to Crinit.");
+        return -1;
+    }
+
+    if (EBCL_crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+        EBCL_destroyRtimCmd(&cmd);
+        EBCL_errPrint("Could not complete data transfer from/to Crinit.");
+        return -1;
+    }
+    EBCL_destroyRtimCmd(&cmd);
+
+    if (EBCL_crinitResponseCheck(&res, EBCL_RTIMCMD_R_TASKLIST) == -1) {
+        EBCL_destroyRtimCmd(&res);
+        return -1;
+    }
+
+    int ret = 0;
+
+    *tlptr = malloc(sizeof(ebcl_TaskList_t));
+    if (*tlptr == NULL) {
+        EBCL_errPrint("Could not allocate memory for task list.");
+        EBCL_destroyRtimCmd(&res);
+        return -1;
+    }
+    ebcl_TaskList_t *tl = *tlptr;
+    tl->numTasks = 0;
+    tl->tasks = malloc((res.argc - 1) * sizeof(*(tl->tasks)));
+    if (tl->tasks == NULL) {
+        EBCL_errPrint("Could not allocate memory for task list entries.");
+        ret = -1;
+        goto fail_status;
+    }
+
+    for (int i = 0; i < res.argc - 1; i++) {
+        const char *name = res.args[i + 1];
+        pid_t pid = -1;
+        ebcl_TaskState_t state = 0;
+
+        if (EBCL_crinitTaskGetStatus(&state, &pid, name) == -1) {
+            EBCL_errPrint("Querying status of task \'%s\' failed.", name);
+            ret = -1;
+            goto fail_status;
+        }
+
+        tl->tasks[i].name = strdup(name);
+        if (tl->tasks[i].name == NULL) {
+            EBCL_errPrint("Could not allocate memory for task list entry name.");
+            ret = -1;
+            goto fail_status;
+        }
+        tl->tasks[i].pid = pid;
+        tl->tasks[i].state = state;
+        tl->numTasks++;
+    }
+
+    EBCL_destroyRtimCmd(&res);
+    return 0;
+
+fail_status:
+    EBCL_crinitFreeTaskList(tl);
+    EBCL_destroyRtimCmd(&res);
+    return ret;
+}
+
+EBCL_LIB_EXPORTED void EBCL_crinitFreeTaskList(ebcl_TaskList_t *tl) {
+    if (tl == NULL) {
+        return;
+    }
+    for (size_t i = 0; i < tl->numTasks; i++) {
+        free(tl->tasks[i].name);
+    }
+    free(tl->tasks);
+    free(tl);
+}
+
 EBCL_LIB_EXPORTED int EBCL_crinitShutdown(int shutdownCmd) {
     ebcl_RtimCmd_t cmd, res;
     char shdCmdStr[16] = {0};

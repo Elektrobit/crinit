@@ -232,6 +232,22 @@ int EBCL_crinitTaskRestart(const char *taskName);
  */
 int EBCL_crinitTaskGetStatus(ebcl_TaskState_t *s, pid_t *pid, const char *taskName);
 /**
+ * Request Crinit to report the list of task names from its TaskDB.
+ *
+ * The returned object should be freed with EBCL_crinitFreeTaskList().
+ *
+ * @param tl    Return pointer for the list of tasks.
+ *
+ * @return 0 on success, -1 on error
+ */
+int EBCL_crinitGetTaskList(ebcl_TaskList_t **tl);
+/**
+ * Free the list of tasks obtained from EBCL_crinitGetTaskList().
+ *
+ * @param tl    The list of tasks.
+ */
+void EBCL_crinitFreeTaskList(ebcl_TaskList_t *tl);
+/**
  * Request Crinit to initiate an immediate shutdown or reboot.
  *
  * Calling process must have the CAP_SYS_BOOT capability or Crinit will refuse with "Permission denied."
