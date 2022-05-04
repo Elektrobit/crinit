@@ -44,7 +44,7 @@ typedef struct ebcl_RtimCmd_t {
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_buildRtimCmd(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, int argc, ...);
+int EBCL_buildRtimCmd(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, size_t argc, ...);
 /**
  * Free memory in an ebcl_RtimCmd_t allocated by EBCL_buildRtimCmd() or EBCL_parseRtimCmd().
  *

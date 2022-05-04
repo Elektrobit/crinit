@@ -446,7 +446,7 @@ int EBCL_execRtimCmd(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd
     return 0;
 }
 
-int EBCL_buildRtimCmd(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, int argc, ...) {
+int EBCL_buildRtimCmd(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, size_t argc, ...) {
     if (c == NULL) {
         EBCL_errPrint("Return pointer must not be NULL.");
         return -1;
@@ -464,7 +464,7 @@ int EBCL_buildRtimCmd(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, int argc, ...) {
     va_list vargsCopy;
     va_copy(vargsCopy, vargs);
     size_t sumStrSize = 0;
-    for (int i = 0; i < argc; i++) {
+    for (size_t i = 0; i < argc; i++) {
         const char *str = va_arg(vargs, const char *);
         sumStrSize += strlen(str) + 1;
     }
@@ -480,7 +480,7 @@ int EBCL_buildRtimCmd(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, int argc, ...) {
     }
 
     char *runner = c->args[0];
-    for (int i = 0; i < argc; i++) {
+    for (size_t i = 0; i < argc; i++) {
         const char *str = va_arg(vargsCopy, const char *);
         size_t copyLen = strlen(str) + 1;
         memcpy(runner, str, copyLen);
