@@ -919,12 +919,9 @@ static int EBCL_execRtimCmdStatus(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
     ebcl_TaskState_t s = 0;
     pid_t pid = -1;
 
-    if (EBCL_taskDBGetTaskState(ctx, &s, cmd->args[0]) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 2, EBCL_RTIMCMD_RES_ERR, "Could not get state of task.");
-    }
-
-    if (EBCL_taskDBGetTaskPID(ctx, &pid, cmd->args[0]) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 2, EBCL_RTIMCMD_RES_ERR, "Could not access task.");
+    if (EBCL_taskDBGetTaskStateAndPID(ctx, &s, &pid, cmd->args[0]) == -1) {
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 2, EBCL_RTIMCMD_RES_ERR,
+                                 "Could not get state and PID of task.");
     }
 
     size_t resStrLen = snprintf(NULL, 0, "%lu\n%d", s, pid) + 1;

@@ -210,6 +210,23 @@ int EBCL_taskDBSetTaskPID(ebcl_TaskDB_t *ctx, pid_t pid, const char *taskName);
 int EBCL_taskDBGetTaskPID(ebcl_TaskDB_t *ctx, pid_t *pid, const char *taskName);
 
 /**
+ * Get the ebcl_TaskState_t and the PID of a task in a task database
+ *
+ * Will search \a ctx for an ebcl_Task_t with ebcl_Task_t::name lexicographically equal to \a taskName and write its
+ * ebcl_Task_t::state to \a s and its PID to \a pid. If such a task does not exist in \a ctx, an error is returned. If
+ * the task does not currently have a running process, \a pid will be -1 but the function will indicate success. The
+ * function uses ebcl_TaskDB_t::lock for synchronization and is thread-safe.
+ *
+ * @param ctx       The ebcl_TaskDB_t context in which the task is held.
+ * @param s         Pointer to store the returned ebcl_TaskState_t.
+ * @param pid       Pointer to store the returned PID.
+ * @param taskName  The task's name.
+ *
+ * @return 0 on success, -1 otherwise.
+ */
+int EBCL_taskDBGetTaskStateAndPID(ebcl_TaskDB_t *ctx, ebcl_TaskState_t *s, pid_t *pid, const char *taskName);
+
+/**
  * Run ebcl_TaskDB_t::spawnFunc for each startable task in a task database.
  *
  * A task is startable if and only if it has no remaining ebcl_Task_t::deps and it has either not been started before
