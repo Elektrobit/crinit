@@ -287,9 +287,16 @@ int main(int argc, char *argv[]) {
             EBCL_errPrint("Querying list of task \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
         }
+        int maxNameLen = 0;
+        for (size_t i = 0; i < tl->numTasks; i++) {
+            int len = strlen(tl->tasks[i].name);
+            if (len > maxNameLen) {
+                maxNameLen = len;
+            }
+        }
         for (size_t i = 0; i < tl->numTasks; i++) {
             const char *state = EBCL_taskStateToStr(tl->tasks[i].state);
-            EBCL_infoPrint("%s\t%d\t%s", tl->tasks[i].name, tl->tasks[i].pid, state);
+            EBCL_infoPrint("%-*s  %4d  %s", maxNameLen, tl->tasks[i].name, tl->tasks[i].pid, state);
         }
         EBCL_crinitFreeTaskList(tl);
         return EXIT_SUCCESS;
