@@ -294,6 +294,7 @@ int main(int argc, char *argv[]) {
                 maxNameLen = len;
             }
         }
+        EBCL_infoPrint("%-*s  %4s  %s", maxNameLen, "NAME", "PID", "STATUS");
         for (size_t i = 0; i < tl->numTasks; i++) {
             const char *state = EBCL_taskStateToStr(tl->tasks[i].state);
             EBCL_infoPrint("%-*s  %4d  %s", maxNameLen, tl->tasks[i].name, tl->tasks[i].pid, state);
