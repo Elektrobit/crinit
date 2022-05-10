@@ -93,7 +93,15 @@ target_link_libraries(
   PRIVATE Threads::Threads
 )
 
+# machine-id-gen
+if(MACHINE_ID_EXAMPLE)
+ add_executable(
+    machine-id-gen
+    machine-id-gen.c
+ )
+endif(MACHINE_ID_EXAMPLE)
+
 # install
 
-install(TARGETS crinit crinit-ctl crinit_parsecheck DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(TARGETS crinit crinit-ctl crinit_parsecheck machine-id-gen DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(TARGETS crinit-client DESTINATION ${CMAKE_INSTALL_LIBDIR})

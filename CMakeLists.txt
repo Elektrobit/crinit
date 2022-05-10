@@ -10,6 +10,7 @@ cmake_policy(SET CMP0065 NEW)
 include(GNUInstallDirs)
 
 option(UNIT_TESTS "Build unit tests" ON)
+option(MACHINE_ID_EXAMPLE "Build machine-id-gen example application" ON)
 
 find_package(Git REQUIRED)
 set(CRINIT_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
