@@ -34,10 +34,12 @@
  *     notify <TASK_NAME> <"SD_NOTIFY_STRING">
  *            - Will send an sd_notify-style status report to Crinit. Only MAINPID and READY are
  *              implemented. See the sd_notify documentation for their meaning.
+ *       list
+ *            - Print the list of loaded tasks and their status.
  *     reboot
  *            - Will request Crinit to perform a graceful system reboot. crinit-ctl can be symlinked to
  *              reboot as a shortcut which will invoke this command automatically.
- *     poweroff
+ *   poweroff
  *            - Will request Crinit to perform a graceful system reboot. crinit-ctl can be symlinked to
  *              poweroff as a shortcut which will invoke this command automatically.
  * General Options:
@@ -79,12 +81,19 @@ static bool EBCL_isAbsPath(const char *path);
  * @param prgmPath  The path to the program, usually found in argv[0].
  */
 static void EBCL_printUsage(char *prgmPath);
-
 /**
  * Prints a message indicating the versions of crinit-ctl, the client library, and (if connection is successful) the
  * Crinit daemon to stderr.
  */
 static void EBCL_printVersion(void);
+/**
+ * Convert a task state code to a string.
+ *
+ * @param s  The task state code to convert.
+ *
+ * @return a string representing the given task status code.
+ */
+static const char *EBCL_taskStateToStr(ebcl_TaskState_t s);
 
 int main(int argc, char *argv[]) {
     int getoptArgc = argc;
@@ -246,11 +255,13 @@ int main(int argc, char *argv[]) {
         }
         ebcl_TaskState_t s = 0;
         pid_t pid = -1;
+        const char *state;
         if (EBCL_crinitTaskGetStatus(&s, &pid, getoptArgv[optind]) == -1) {
             EBCL_errPrint("Querying status of task \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
         }
-        EBCL_infoPrint("Status: %lu, PID: %d", s, pid);
+        state = EBCL_taskStateToStr(s);
+        EBCL_infoPrint("Status: %s, PID: %d", state, pid);
         return EXIT_SUCCESS;
     }
     if (strcmp(getoptArgv[0], "notify") == 0) {
@@ -264,6 +275,31 @@ int main(int argc, char *argv[]) {
                           getoptArgv[optind + 1]);
             return EXIT_FAILURE;
         }
+        return EXIT_SUCCESS;
+    }
+    if (strcmp(getoptArgv[0], "list") == 0) {
+        if (getoptArgv[optind] != NULL) {
+            EBCL_printUsage(argv[0]);
+            return EXIT_FAILURE;
+        }
+        ebcl_TaskList_t *tl;
+        if (EBCL_crinitGetTaskList(&tl) == -1) {
+            EBCL_errPrint("Querying list of task \'%s\' failed.", getoptArgv[optind]);
+            return EXIT_FAILURE;
+        }
+        int maxNameLen = 0;
+        for (size_t i = 0; i < tl->numTasks; i++) {
+            int len = strlen(tl->tasks[i].name);
+            if (len > maxNameLen) {
+                maxNameLen = len;
+            }
+        }
+        EBCL_infoPrint("%-*s  %4s  %s", maxNameLen, "NAME", "PID", "STATUS");
+        for (size_t i = 0; i < tl->numTasks; i++) {
+            const char *state = EBCL_taskStateToStr(tl->tasks[i].state);
+            EBCL_infoPrint("%-*s  %4d  %s", maxNameLen, tl->tasks[i].name, tl->tasks[i].pid, state);
+        }
+        EBCL_crinitFreeTaskList(tl);
         return EXIT_SUCCESS;
     }
     if (strcmp(basename(getoptArgv[0]), "poweroff") == 0) {
@@ -334,10 +370,12 @@ static void EBCL_printUsage(char *prgmPath) {
         "      notify <TASK_NAME> <\"SD_NOTIFY_STRING\">\n"
         "             - Will send an sd_notify-style status report to Crinit. Only MAINPID and READY are\n"
         "               implemented. See the sd_notify documentation for their meaning.\n"
+        "        list\n"
+        "             - Print the list of loaded tasks and their status.\n"
         "      reboot\n"
         "             - Will request Crinit to perform a graceful system reboot. crinit-ctl can be symlinked to\n"
         "               reboot as a shortcut which will invoke this command automatically.\n"
-        "      poweroff\n"
+        "    poweroff\n"
         "             - Will request Crinit to perform a graceful system reboot. crinit-ctl can be symlinked to\n"
         "               poweroff as a shortcut which will invoke this command automatically.\n"
         "  General Options:\n"
@@ -367,3 +405,29 @@ static bool EBCL_isAbsPath(const char *path) {
     return (path[0] == '/');
 }
 
+static const char *EBCL_taskStateToStr(ebcl_TaskState_t s) {
+    const char *state = NULL;
+
+    switch (s) {
+        case EBCL_TASK_STATE_LOADED:
+            state = "loaded";
+            break;
+        case EBCL_TASK_STATE_STARTING:
+            state = "starting";
+            break;
+        case EBCL_TASK_STATE_RUNNING:
+            state = "running";
+            break;
+        case EBCL_TASK_STATE_DONE:
+            state = "done";
+            break;
+        case EBCL_TASK_STATE_FAILED:
+            state = "failed";
+            break;
+        default:
+            state = "(invalid)";
+            break;
+    }
+
+    return state;
+}

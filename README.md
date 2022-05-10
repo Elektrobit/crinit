@@ -163,6 +163,8 @@ USAGE: crinit-ctl <ACTION> [OPTIONS] <PARAMETER> [PARAMETERS...]
       notify <TASK_NAME> <"SD_NOTIFY_STRING">
              - Will send an sd_notify-style status report to Crinit. Only MAINPID and READY are
                implemented. See the sd_notify documentation for their meaning.
+        list
+             - Print the list of loaded tasks and their status.
       reboot
              - Will request Crinit to perform a graceful system reboot. crinit-ctl can be symlinked to
                reboot as a shortcut which will invoke this command automatically.

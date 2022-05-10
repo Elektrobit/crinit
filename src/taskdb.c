@@ -309,6 +309,31 @@ int EBCL_taskDBGetTaskPID(ebcl_TaskDB_t *ctx, pid_t *pid, const char *taskName) 
     return -1;
 }
 
+int EBCL_taskDBGetTaskStateAndPID(ebcl_TaskDB_t *ctx, ebcl_TaskState_t *s, pid_t *pid, const char *taskName) {
+    if (ctx == NULL || taskName == NULL || s == NULL || pid == NULL) {
+        EBCL_errPrint("The TaskDB context, taskName, and result pointers must not be NULL.");
+        return -1;
+    }
+    *s = 0;
+    *pid = 0;
+    if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
+        EBCL_errnoPrint("Could not queue up for mutex lock.");
+        return -1;
+    }
+    for (size_t i = 0; i < ctx->taskSetItems; i++) {
+        ebcl_Task_t *pTask = &ctx->taskSet[i];
+        if (strcmp(pTask->name, taskName) == 0) {
+            *s = pTask->state;
+            *pid = pTask->pid;
+            pthread_mutex_unlock(&ctx->lock);
+            return 0;
+        }
+    }
+    pthread_mutex_unlock(&ctx->lock);
+    EBCL_errPrint("Could not get TaskState of Task \'%s\' as it does not exist in TaskDB.", taskName);
+    return -1;
+}
+
 int EBCL_taskDBAddDepToTask(ebcl_TaskDB_t *ctx, const ebcl_TaskDep_t *dep, const char *taskName) {
     if (ctx == NULL || dep == NULL || taskName == NULL) {
         EBCL_errPrint("The TaskDB context, the TaskDep to add, and the task name to search for must not be NULL.");
@@ -422,6 +447,51 @@ int EBCL_taskDBFulfillDep(ebcl_TaskDB_t *ctx, const ebcl_TaskDep_t *dep) {
     pthread_cond_broadcast(&ctx->changed);
     pthread_mutex_unlock(&ctx->lock);
     return 0;
+}
+
+int EBCL_taskDBExportTaskNamesToArray(ebcl_TaskDB_t *ctx, char **tasks[], size_t *numTasks) {
+    int ret = 0;
+
+    if (ctx == NULL || tasks == NULL || numTasks == NULL) {
+        EBCL_errPrint("The TaskDB context and the output array pointer must not be NULL.");
+        return -1;
+    }
+
+    if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
+        EBCL_errnoPrint("Could not queue up for mutex lock.");
+        return -1;
+    }
+
+    *numTasks = 0;
+    *tasks = malloc(ctx->taskSetItems * sizeof(*tasks));
+    if (*tasks == NULL) {
+        EBCL_errnoPrint("Could not allocate memory for task array.");
+        pthread_mutex_unlock(&ctx->lock);
+        return -1;
+    }
+
+    for (size_t i = 0; i < ctx->taskSetItems; i++) {
+        ebcl_Task_t *pTask = &ctx->taskSet[i];
+        (*tasks)[i] = strdup(pTask->name);
+        if ((*tasks)[i] == NULL) {
+            EBCL_errnoPrint("Could not allocate memory for task name.");
+            ret = -1;
+            goto fail;
+        }
+        (*numTasks)++;
+    }
+
+    goto success;
+fail:
+    for (size_t i = 0; i < *numTasks; i++) {
+        free((*tasks)[i]);
+    }
+    free(*tasks);
+    *tasks = NULL;
+    *numTasks = 0;
+success:
+    pthread_mutex_unlock(&ctx->lock);
+    return ret;
 }
 
 int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in) {

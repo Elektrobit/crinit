@@ -331,10 +331,12 @@ static void *EBCL_connThread(void *args) {
         EBCL_dbgInfoPrint("(TID %d) Will send response message \'%s\' to client.", threadId, resStr);
         if (EBCL_sendStr(connSockFd, resStr) == -1) {
             EBCL_errPrint("(TID %d) Could not send response message to client.", threadId);
+            free(resStr);
             close(connSockFd);
             continue;
         }
 
+        free(resStr);
         close(connSockFd);
         EBCL_threadPoolThreadAvailCallback(a->tpRef);
     }
@@ -505,6 +507,7 @@ static inline bool EBCL_checkPerm(ebcl_RtimOp_t op, const struct ucred *passedCr
         case EBCL_RTIMCMD_C_NOTIFY:
             return passedCreds->uid == 0;
         case EBCL_RTIMCMD_C_STATUS:
+        case EBCL_RTIMCMD_C_TASKLIST:
         case EBCL_RTIMCMD_C_GETVER:
             return true;
         case EBCL_RTIMCMD_C_SHUTDOWN:
@@ -522,6 +525,7 @@ static inline bool EBCL_checkPerm(ebcl_RtimOp_t op, const struct ucred *passedCr
         case EBCL_RTIMCMD_R_RESTART:
         case EBCL_RTIMCMD_R_NOTIFY:
         case EBCL_RTIMCMD_R_STATUS:
+        case EBCL_RTIMCMD_R_TASKLIST:
         case EBCL_RTIMCMD_R_GETVER:
         case EBCL_RTIMCMD_R_SHUTDOWN:
         default:

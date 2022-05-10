@@ -152,6 +152,18 @@ static int EBCL_execRtimCmdNotify(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
  * @return 0 on success, -1 on error
  */
 static int EBCL_execRtimCmdStatus(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+/**
+ * Internal implementation of the "list" command on an ebcl_TaskDB_t.
+ *
+ * For documentation on the command itself, see EBCL_crinitGetTaskList().
+ *
+ * @param ctx  The ebcl_TaskDB_t to operate on.
+ * @param res  Return pointer for response/result.
+ * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
+ *
+ * @return 0 on success, -1 on error
+ */
+static int EBCL_execRtimCmdTaskList(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
 
 /**
  * Internal implementation of the version query from the client library to crinit.
@@ -316,7 +328,7 @@ int EBCL_rtimCmdToMsgStr(char **out, size_t *outLen, const ebcl_RtimCmd_t *cmd) 
         return -1;
     }
     *outLen = strlen(opStr) + 1;
-    for (int i = 0; i < cmd->argc; i++) {
+    for (size_t i = 0; i < cmd->argc; i++) {
         *outLen += strlen(cmd->args[i]) + 1;
     }
 
@@ -328,7 +340,7 @@ int EBCL_rtimCmdToMsgStr(char **out, size_t *outLen, const ebcl_RtimCmd_t *cmd) 
     }
     char *runner = *out;
     runner = stpcpy(runner, opStr);
-    for (int i = 0; i < cmd->argc; i++) {
+    for (size_t i = 0; i < cmd->argc; i++) {
         *runner = EBCL_RTIMCMD_ARGDELIM;
         runner++;
         runner = stpcpy(runner, cmd->args[i]);
@@ -396,6 +408,12 @@ int EBCL_execRtimCmd(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd
                 return -1;
             }
             return 0;
+        case EBCL_RTIMCMD_C_TASKLIST:
+            if (EBCL_execRtimCmdTaskList(ctx, res, cmd) == -1) {
+                EBCL_errPrint("Could not execute runtime command \'TASKLIST\'.");
+                return -1;
+            }
+            return 0;
         case EBCL_RTIMCMD_C_SHUTDOWN:
             if (EBCL_execRtimCmdShutdown(ctx, res, cmd) == -1) {
                 EBCL_errPrint("Could not execute runtime command \'SHUTDOWN\'.");
@@ -418,6 +436,7 @@ int EBCL_execRtimCmd(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd
         case EBCL_RTIMCMD_R_RESTART:
         case EBCL_RTIMCMD_R_NOTIFY:
         case EBCL_RTIMCMD_R_STATUS:
+        case EBCL_RTIMCMD_R_TASKLIST:
         case EBCL_RTIMCMD_R_SHUTDOWN:
         case EBCL_RTIMCMD_R_GETVER:
         default:
@@ -427,7 +446,7 @@ int EBCL_execRtimCmd(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd
     return 0;
 }
 
-int EBCL_buildRtimCmd(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, int argc, ...) {
+int EBCL_buildRtimCmd(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, size_t argc, ...) {
     if (c == NULL) {
         EBCL_errPrint("Return pointer must not be NULL.");
         return -1;
@@ -445,7 +464,7 @@ int EBCL_buildRtimCmd(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, int argc, ...) {
     va_list vargsCopy;
     va_copy(vargsCopy, vargs);
     size_t sumStrSize = 0;
-    for (int i = 0; i < argc; i++) {
+    for (size_t i = 0; i < argc; i++) {
         const char *str = va_arg(vargs, const char *);
         sumStrSize += strlen(str) + 1;
     }
@@ -461,7 +480,7 @@ int EBCL_buildRtimCmd(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, int argc, ...) {
     }
 
     char *runner = c->args[0];
-    for (int i = 0; i < argc; i++) {
+    for (size_t i = 0; i < argc; i++) {
         const char *str = va_arg(vargsCopy, const char *);
         size_t copyLen = strlen(str) + 1;
         memcpy(runner, str, copyLen);
@@ -469,6 +488,48 @@ int EBCL_buildRtimCmd(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, int argc, ...) {
         runner += copyLen;
     }
     va_end(vargsCopy);
+
+    c->op = op;
+    c->argc = argc;
+
+    return 0;
+}
+
+int EBCL_buildRtimCmdArray(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, int argc, const char *args[]) {
+    if (c == NULL) {
+        EBCL_errPrint("Return pointer must not be NULL.");
+        return -1;
+    }
+
+    c->args = malloc((argc + 1) * sizeof(char *));
+    if (c->args == NULL) {
+        EBCL_errPrint("Could not allocate memory for RtimCmd argument array.");
+        return -1;
+    }
+    c->args[argc] = NULL;
+
+    size_t sumStrSize = 0;
+    for (int i = 0; i < argc; i++) {
+        const char *str = args[i];
+        sumStrSize += strlen(str) + 1;
+    }
+
+    c->args[0] = malloc(sumStrSize);
+    if (c->args[0] == NULL) {
+        EBCL_errPrint("Could not allocate memory for RtimCmd argument array backing string.");
+        free(c->args);
+        c->args = NULL;
+        return -1;
+    }
+
+    char *runner = c->args[0];
+    for (int i = 0; i < argc; i++) {
+        const char *str = args[i];
+        size_t copyLen = strlen(str) + 1;
+        memcpy(runner, str, copyLen);
+        c->args[i] = runner;
+        runner += copyLen;
+    }
 
     c->op = op;
     c->argc = argc;
@@ -492,8 +553,8 @@ static int EBCL_execRtimCmdAddTask(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
     }
 
     EBCL_dbgInfoPrint("Will execute runtime command \'ADDTASK\' with following arguments:");
-    for (int i = 0; i < cmd->argc; i++) {
-        EBCL_dbgInfoPrint("    args[%d] = %s", i, cmd->args[i]);
+    for (size_t i = 0; i < cmd->argc; i++) {
+        EBCL_dbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
 
     if (cmd->argc != 3) {
@@ -550,8 +611,8 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
     }
 
     EBCL_dbgInfoPrint("Will execute runtime command \'ADDSERIES\' with following arguments:");
-    for (int i = 0; i < cmd->argc; i++) {
-        EBCL_dbgInfoPrint("    args[%d] = %s", i, cmd->args[i]);
+    for (size_t i = 0; i < cmd->argc; i++) {
+        EBCL_dbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
 
     if (cmd->argc != 2) {
@@ -650,8 +711,8 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
 
 static int EBCL_execRtimCmdEnable(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     EBCL_dbgInfoPrint("Will execute runtime command \'ENABLE\' with following arguments:");
-    for (int i = 0; i < cmd->argc; i++) {
-        EBCL_dbgInfoPrint("    args[%d] = %s", i, cmd->args[i]);
+    for (size_t i = 0; i < cmd->argc; i++) {
+        EBCL_dbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
     if (cmd->argc != 1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ENABLE, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
@@ -676,8 +737,8 @@ static int EBCL_execRtimCmdEnable(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
 
 static int EBCL_execRtimCmdDisable(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     EBCL_dbgInfoPrint("Will execute runtime command \'DISABLE\' with following arguments:");
-    for (int i = 0; i < cmd->argc; i++) {
-        EBCL_dbgInfoPrint("    args[%d] = %s", i, cmd->args[i]);
+    for (size_t i = 0; i < cmd->argc; i++) {
+        EBCL_dbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
     if (cmd->argc != 1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_DISABLE, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
@@ -702,8 +763,8 @@ static int EBCL_execRtimCmdDisable(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
 
 static int EBCL_execRtimCmdStop(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     EBCL_dbgInfoPrint("Will execute runtime command \'STOP\' with following arguments:");
-    for (int i = 0; i < cmd->argc; i++) {
-        EBCL_dbgInfoPrint("    args[%d] = %s", i, cmd->args[i]);
+    for (size_t i = 0; i < cmd->argc; i++) {
+        EBCL_dbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
     if (cmd->argc != 1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
@@ -732,8 +793,8 @@ static int EBCL_execRtimCmdStop(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const e
 
 static int EBCL_execRtimCmdKill(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     EBCL_dbgInfoPrint("Will execute runtime command \'KILL\' with following arguments:");
-    for (int i = 0; i < cmd->argc; i++) {
-        EBCL_dbgInfoPrint("    args[%d] = %s", i, cmd->args[i]);
+    for (size_t i = 0; i < cmd->argc; i++) {
+        EBCL_dbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
     if (cmd->argc != 1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_KILL, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
@@ -763,8 +824,8 @@ static int EBCL_execRtimCmdKill(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const e
 
 static int EBCL_execRtimCmdRestart(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     EBCL_dbgInfoPrint("Will execute runtime command \'RESTART\' with following arguments:");
-    for (int i = 0; i < cmd->argc; i++) {
-        EBCL_dbgInfoPrint("    args[%d] = %s", i, cmd->args[i]);
+    for (size_t i = 0; i < cmd->argc; i++) {
+        EBCL_dbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
     if (cmd->argc != 1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_RESTART, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
@@ -789,8 +850,8 @@ static int EBCL_execRtimCmdRestart(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
 
 static int EBCL_execRtimCmdNotify(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     EBCL_dbgInfoPrint("Will execute runtime command \'NOTIFY\' with following arguments:");
-    for (int i = 0; i < cmd->argc; i++) {
-        EBCL_dbgInfoPrint("    args[%d] = %s", i, cmd->args[i]);
+    for (size_t i = 0; i < cmd->argc; i++) {
+        EBCL_dbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
 
     // Notify library will need to send task name. So process dispatch will need to set it in an environment for
@@ -803,7 +864,7 @@ static int EBCL_execRtimCmdNotify(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
     int ready = -1;
     int stopping = -1;
 
-    for (int i = 1; i < cmd->argc; i++) {
+    for (size_t i = 1; i < cmd->argc; i++) {
         size_t argLen = strlen(cmd->args[i]);
         const char *delim = strchr(cmd->args[i], '=');
         if (delim != NULL) {
@@ -849,8 +910,8 @@ static int EBCL_execRtimCmdNotify(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
 
 static int EBCL_execRtimCmdStatus(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     EBCL_dbgInfoPrint("Will execute runtime command \'STATUS\' with following arguments:");
-    for (int i = 0; i < cmd->argc; i++) {
-        EBCL_dbgInfoPrint("    args[%d] = %s", i, cmd->args[i]);
+    for (size_t i = 0; i < cmd->argc; i++) {
+        EBCL_dbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
     if (cmd->argc != 1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
@@ -858,12 +919,9 @@ static int EBCL_execRtimCmdStatus(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
     ebcl_TaskState_t s = 0;
     pid_t pid = -1;
 
-    if (EBCL_taskDBGetTaskState(ctx, &s, cmd->args[0]) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 2, EBCL_RTIMCMD_RES_ERR, "Could not get state of task.");
-    }
-
-    if (EBCL_taskDBGetTaskPID(ctx, &pid, cmd->args[0]) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 2, EBCL_RTIMCMD_RES_ERR, "Could not access task.");
+    if (EBCL_taskDBGetTaskStateAndPID(ctx, &s, &pid, cmd->args[0]) == -1) {
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 2, EBCL_RTIMCMD_RES_ERR,
+                                 "Could not get state and PID of task.");
     }
 
     size_t resStrLen = snprintf(NULL, 0, "%lu\n%d", s, pid) + 1;
@@ -881,6 +939,46 @@ static int EBCL_execRtimCmdStatus(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
     }
     free(resStr);
     return 0;
+}
+
+static int EBCL_execRtimCmdTaskList(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+    EBCL_dbgInfoPrint("Will execute runtime command \'TASKLIST\' with following arguments:");
+    for (size_t i = 0; i < cmd->argc; i++) {
+        EBCL_dbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
+    }
+    if (cmd->argc != 0) {
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_TASKLIST, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+    }
+
+    int ret = 0;
+    size_t numTasks;
+    char **tasks;
+
+    if (EBCL_taskDBExportTaskNamesToArray(ctx, &tasks, &numTasks) == -1) {
+        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 2, EBCL_RTIMCMD_RES_ERR, "Memory allocation error.");
+    }
+
+    const char **args = malloc((numTasks + 1) * sizeof(*args));
+    if (args == NULL) {
+        ret = EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 2, EBCL_RTIMCMD_RES_ERR, "Memory allocation error.");
+        goto out;
+    }
+
+    args[0] = EBCL_RTIMCMD_RES_OK;
+    for (size_t i = 0; i < numTasks; i++) {
+        args[i + 1] = tasks[i];
+    }
+
+    ret = EBCL_buildRtimCmdArray(res, EBCL_RTIMCMD_R_TASKLIST, numTasks + 1, args);
+
+out:
+    free(args);
+    for (size_t i = 0; i < numTasks; i++) {
+        free(tasks[i]);
+    }
+    free(tasks);
+
+    return ret;
 }
 
 static int EBCL_execRtimCmdGetVer(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {

@@ -210,6 +210,23 @@ int EBCL_taskDBSetTaskPID(ebcl_TaskDB_t *ctx, pid_t pid, const char *taskName);
 int EBCL_taskDBGetTaskPID(ebcl_TaskDB_t *ctx, pid_t *pid, const char *taskName);
 
 /**
+ * Get the ebcl_TaskState_t and the PID of a task in a task database
+ *
+ * Will search \a ctx for an ebcl_Task_t with ebcl_Task_t::name lexicographically equal to \a taskName and write its
+ * ebcl_Task_t::state to \a s and its PID to \a pid. If such a task does not exist in \a ctx, an error is returned. If
+ * the task does not currently have a running process, \a pid will be -1 but the function will indicate success. The
+ * function uses ebcl_TaskDB_t::lock for synchronization and is thread-safe.
+ *
+ * @param ctx       The ebcl_TaskDB_t context in which the task is held.
+ * @param s         Pointer to store the returned ebcl_TaskState_t.
+ * @param pid       Pointer to store the returned PID.
+ * @param taskName  The task's name.
+ *
+ * @return 0 on success, -1 otherwise.
+ */
+int EBCL_taskDBGetTaskStateAndPID(ebcl_TaskDB_t *ctx, ebcl_TaskState_t *s, pid_t *pid, const char *taskName);
+
+/**
  * Run ebcl_TaskDB_t::spawnFunc for each startable task in a task database.
  *
  * A task is startable if and only if it has no remaining ebcl_Task_t::deps and it has either not been started before
@@ -270,6 +287,20 @@ int EBCL_taskDBInitWithSize(ebcl_TaskDB_t *ctx, int (*spawnFunc)(ebcl_TaskDB_t *
  * @return 0 on success, -1 on error
  */
 int EBCL_taskDBDestroy(ebcl_TaskDB_t *ctx);
+
+/**
+ * Export the list of task names currently in the task database.
+ *
+ * The function allocates an array of strings as \a tasks and returns the number of array elements in \a numTasks.
+ * Each entry in the \a tasks array will be allocated separately and needs to be freed by the caller.
+ *
+ * @param ctx       The TaskDB context from which to get the list of task names.
+ * @param tasks     The return pointer for the array of task names.
+ * @param numTasks  The return pointer for the number of array entries.
+ *
+ * @return 0 on success, -1 on error
+ */
+int EBCL_taskDBExportTaskNamesToArray(ebcl_TaskDB_t *ctx, char **tasks[], size_t *numTasks);
 
 /**
  * Given an ebcl_ConfKvList_t created from a task config, build an equivalent ebcl_Task.

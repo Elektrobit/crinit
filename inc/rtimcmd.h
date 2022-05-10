@@ -27,7 +27,7 @@
  */
 typedef struct ebcl_RtimCmd_t {
     ebcl_RtimOp_t op;  ///< The command or response opcode (see rtimopmap.h).
-    int argc;          ///< The number of arguments.
+    size_t argc;       ///< The number of arguments.
     char **args;       ///< String array of arguments.
 } ebcl_RtimCmd_t;
 
@@ -44,7 +44,7 @@ typedef struct ebcl_RtimCmd_t {
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_buildRtimCmd(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, int argc, ...);
+int EBCL_buildRtimCmd(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, size_t argc, ...);
 /**
  * Free memory in an ebcl_RtimCmd_t allocated by EBCL_buildRtimCmd() or EBCL_parseRtimCmd().
  *
