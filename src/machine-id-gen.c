@@ -31,27 +31,89 @@
 #include <sys/mman.h>
 #include <unistd.h>
 
-#define S32G_OCOTP_BASE 0x400a4000uL
-#define S32G_OCOTP_OFFSET_UID 0x210uL
-#define S32G_SIUL21_BASE 0x44010000uL
-#define S32G_SIUL21_OFFSET_MIDR1 0x4uL
-#define S32G_SIUL21_MCUID_VAL 0x4C200000uL
-#define S32G_SIUL21_MCUID_MASK 0xFFFF0000uL
+#define S32G_OCOTP_BASE 0x400a4000uL   ///< Memory-mapped base address of the S32G OCOTP memory controller
+#define S32G_OCOTP_OFFSET_UID 0x210uL  ///< Offset to the unique ID shadow registers (2x32-Bit consecutive)
 
-#define MID_STR_LEN 36
+#define S32G_SIUL21_BASE 0x44010000uL        ///< Memory-mapped base address of the S32G SIUL2_1 subsystem.
+#define S32G_SIUL21_OFFSET_MIDR1 0x4uL       ///< Offset to the SIUL2 MCU ID register 1 (MIDR1).
+#define S32G_SIUL21_MCUID_VAL 0x4C200000uL   ///< Upper 16-Bit of MIDR1 valid for all S32G models.
+#define S32G_SIUL21_MCUID_MASK 0xFFFF0000uL  ///< Bitmask of upper 16-Bit (for MIDR1 access).
 
-#define KERNEL_CMDLINE_PATH "/proc/cmdline"
-#define KERNEL_CMDLINE_MAX_LEN 4096
-#define KERNEL_CMDLINE_KEY "systemd.machine_id"
+#define MID_STR_LEN 36  ///< Length of a 128-Bit UUIDv4 not including the terminating zero.
 
-#define MACHINE_ID_PATH "/etc/machine-id"
+#define KERNEL_CMDLINE_PATH "/proc/cmdline"      ///< Where the (pseudo-)file containing the Kernel command line is.
+#define KERNEL_CMDLINE_MAX_LEN 4096              ///< Maximum length of the Kernel command line options to be read.
+#define KERNEL_CMDLINE_KEY "systemd.machine_id"  ///< Kernel command line key to set machine ID.
 
+#define MACHINE_ID_PATH "/etc/machine-id"  ///< Path to the machine-id file to generate.
+
+/**
+ * Print application usage information (to stderr).
+ *
+ * @param basename  The name of this program.
+ */
 static void EBCL_printUsage(const char *basename);
 
+/**
+ * Tries to get the machine-id from the Kernel command line.
+ *
+ * Searches the Kernel command line for a value for #KERNEL_COMMAND_LINE_KEY and copies it to \a mid if found and n is
+ * large enough.
+ *
+ * @param mid  Return pointer for the machine-id UUID string.
+ * @param n    Maximum size of the string that can be returned.
+ *
+ * @return  0 on success, -1 on a general error, and -2 if everything went well but #KERNEL_CMDLINE_KEY is not found in
+ * the Kernel commandline.
+ */
 static int EBCL_getMidKernelCmdLine(char *mid, size_t n);
+/**
+ * Read bytes from physical memory addresses.
+ *
+ * Will write \a len Bytes of data from physical memory address \a phyAddr to the location pointed to by \a data. Uses
+ * the /dev/mem interface provided by the Linux Kernel.
+ *
+ * @param data     Return pointer for the data.
+ * @param phyAddr  Physical memory address to read from.
+ * @param len      Amount of Bytes to copy.
+ *
+ * @return  0 on success, -1 otherwise
+ */
 static int EBCL_readPhysMem(void *data, off_t phyAddr, size_t len);
+/**
+ * Reads the the NXP S32G's 64-Bit unique (per-chip) ID from the OTP shadow registers.
+ *
+ * See NXP S32G2 reference manual Ch. 63.
+ *
+ * @param uid  Return pointer for the 64-Bit unique ID.
+ *
+ * @return  0 on success, -1 otherwise
+ */
 static int EBCL_readS32Uid(uint64_t *uid);
+/**
+ * Converts S32 64-Bit unique ID to a 128-Bit UUID string format.
+ *
+ * It naively duplicates the number to get 128-Bits. If the unique ID is considered confidential some authenticated
+ * hashing method (e.g. sha256+HMAC) would have to be used.
+ *
+ * @param mid  The machine (UU)ID string.
+ * @param n    The maximum size of the returned string, should be at least (#MID_STR_LEN+1).
+ * @param uid  The 64-Bit unique ID to convert.
+ *
+ * @return  The number of characters written on success or a negative number on error.
+ */
 static inline int EBCL_s32UidToMid(char *mid, size_t n, uint64_t uid);
+/**
+ * Checks if we are running on an S32G.
+ *
+ * Checks the S32G's MCU ID register 1 in the SIUL2_1 on-chip peripheral if it indicates the chip is an S32, see NXP
+ * S32G2 reference manual Ch. 16.
+ *
+ * @param onS32  Return pointer, set to true if the MCU ID register is readable and contains the expected value for an
+ * S32-family chip.
+ *
+ * @return  0 on success (meaning the memory address of the register could be read), -1 on error
+ */
 static int EBCL_checkS32(bool *onS32);
 
 int main(int argc, char *argv[]) {
