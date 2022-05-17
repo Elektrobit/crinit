@@ -57,7 +57,7 @@ static void EBCL_printUsage(const char *basename);
 /**
  * Tries to get the machine-id from the Kernel command line.
  *
- * Searches the Kernel command line for a value for #KERNEL_COMMAND_LINE_KEY and copies it to \a mid if found and n is
+ * Searches the Kernel command line for a value for #KERNEL_CMDLINE_KEY and copies it to \a mid if found and n is
  * large enough.
  *
  * @param mid  Return pointer for the machine-id UUID string.
