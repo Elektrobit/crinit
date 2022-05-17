@@ -71,6 +71,8 @@ ln -sf /%{_bindir}/crinit-ctl %{buildroot}/sbin/reboot
 
 # machine-id-gen
 install -m 0755 src/machine-id-gen %{buildroot}/%{_bindir}
+mkdir -p %{buildroot}/etc
+ln -sf /run/machine-id %{buildroot}/etc/machine-id
 
 # conf-example
 mkdir -p %{buildroot}/%{_sysconfdir}/crinit/test
@@ -104,6 +106,7 @@ install -D -m 0644 config/s32g/*.series %{buildroot}/%{_sysconfdir}/crinit
 
 %files machine-id-gen
 %{_bindir}/machine-id-gen
+/etc/machine-id
 
 %files conf-example
 %{_sysconfdir}/crinit/test/*.crinit
