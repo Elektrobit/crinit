@@ -53,7 +53,7 @@ Development files for client programs willing to use the client API of the Confi
 %setup
 
 %build
-cmake . -DUNIT_TESTS=Off
+cmake . -DUNIT_TESTS=Off -DMACHINE_ID_EXAMPLE=On
 make
 
 %install
