@@ -67,6 +67,9 @@ static void EBCL_printUsage(const char *basename);
  * the Kernel commandline.
  */
 static int EBCL_getMidKernelCmdLine(char *mid, size_t n);
+
+#ifdef __aarch64__ /* It only makes sense to include special code for S32G if we compile for aarch64 */
+
 /**
  * Read bytes from physical memory addresses.
  *
@@ -116,6 +119,8 @@ static inline int EBCL_s32UidToMid(char *mid, size_t n, uint64_t uid);
  */
 static int EBCL_checkS32(bool *onS32);
 
+#endif /* __aarch64__ */
+
 int main(int argc, char *argv[]) {
     if (argc != 1) {
         EBCL_printUsage(argv[0]);
@@ -128,7 +133,10 @@ int main(int argc, char *argv[]) {
     if (EBCL_getMidKernelCmdLine(machId, sizeof(machId)) == 0) {
         printf(" Found!\n");
     } else {
-        printf(" None found.\nWill check if we are on S32 hardware... ");
+        printf(" None found.\n");
+
+#ifdef __aarch64__ /* It only makes sense to include special code for S32G if we compile for aarch64 */
+        printf("Will check if we are on S32 hardware... ");
         bool onS32 = false;
         if (EBCL_checkS32(&onS32) == -1) {
             printf("Could not determine if we are running on an S32G (real hardware).\n");
@@ -150,7 +158,11 @@ int main(int argc, char *argv[]) {
         }
 
         EBCL_s32UidToMid(machId, sizeof(machId), uid);
+#else
+        return EXIT_FAILURE;
+#endif /* __aarch64__ */
     }
+
     FILE *machIdF = fopen(MACHINE_ID_PATH, "w");
     if (machIdF == NULL) {
         perror("Could not open \'" MACHINE_ID_PATH "\' for writing");
@@ -171,27 +183,6 @@ static void EBCL_printUsage(const char *basename) {
             "appropriate /etc/machine-id file if it is either run on S32G or the Kernel command line contains a value\n"
             "for systemd.machine_id. The latter will take precedence over the S32G ROM serial number if set.\n",
             basename);
-}
-
-static int EBCL_checkS32(bool *onS32) {
-    uint32_t mcuIdReg = 0;
-    if (EBCL_readPhysMem(&mcuIdReg, S32G_SIUL21_BASE + S32G_SIUL21_OFFSET_MIDR1, sizeof(uint32_t)) == -1) {
-        fprintf(stderr, "Could not read MCU ID register from physical memory address %lu.",
-                S32G_SIUL21_BASE + S32G_SIUL21_OFFSET_MIDR1);
-        return -1;
-    }
-
-    *onS32 = (mcuIdReg & S32G_SIUL21_MCUID_MASK) == S32G_SIUL21_MCUID_VAL;
-    return 0;
-}
-
-static int EBCL_readS32Uid(uint64_t *uid) {
-    if (EBCL_readPhysMem(uid, S32G_OCOTP_BASE + S32G_OCOTP_OFFSET_UID, sizeof(uint64_t)) == -1) {
-        fprintf(stderr, "Could not read unique ID OCOTP shadow registers from physical memory address %lu.",
-                S32G_OCOTP_BASE + S32G_OCOTP_OFFSET_UID);
-        return -1;
-    }
-    return 0;
 }
 
 static int EBCL_getMidKernelCmdLine(char *mid, size_t n) {
@@ -226,6 +217,29 @@ static int EBCL_getMidKernelCmdLine(char *mid, size_t n) {
     return 0;
 }
 
+#ifdef __aarch64__ /* It only makes sense to include special code for S32G if we compile for aarch64 */
+
+static int EBCL_checkS32(bool *onS32) {
+    uint32_t mcuIdReg = 0;
+    if (EBCL_readPhysMem(&mcuIdReg, S32G_SIUL21_BASE + S32G_SIUL21_OFFSET_MIDR1, sizeof(uint32_t)) == -1) {
+        fprintf(stderr, "Could not read MCU ID register from physical memory address %lu.",
+                S32G_SIUL21_BASE + S32G_SIUL21_OFFSET_MIDR1);
+        return -1;
+    }
+
+    *onS32 = (mcuIdReg & S32G_SIUL21_MCUID_MASK) == S32G_SIUL21_MCUID_VAL;
+    return 0;
+}
+
+static int EBCL_readS32Uid(uint64_t *uid) {
+    if (EBCL_readPhysMem(uid, S32G_OCOTP_BASE + S32G_OCOTP_OFFSET_UID, sizeof(uint64_t)) == -1) {
+        fprintf(stderr, "Could not read unique ID OCOTP shadow registers from physical memory address %lu.",
+                S32G_OCOTP_BASE + S32G_OCOTP_OFFSET_UID);
+        return -1;
+    }
+    return 0;
+}
+
 static inline int EBCL_s32UidToMid(char *mid, size_t n, uint64_t uid) {
     uint8_t bytes[sizeof(uint64_t)];
     memcpy(bytes, &uid, sizeof(uint64_t));
@@ -256,3 +270,5 @@ static int EBCL_readPhysMem(void *data, off_t phyAddr, size_t len) {
     close(memFd);
     return 0;
 }
+
+#endif /* __aarch64__ */
