@@ -38,6 +38,14 @@ Not currently implemented is the SafeSystemStartup-like jailing functionality of
 cryptographic features of the Config Parser. Also, the Notification and Service interface does not yet support handling
 of BaseOS monitor events.
 
+This repository also includes an example application to generate a `/etc/machine-id` file, which is used to uniquely
+identify the system (for example by `elosd`). The `machine-id-gen` tool is supposed to be called on boot, for example
+from `earlysetup.crinit` as in the configuration files contained in this repository. Its implementation either uses the
+value for `systemd.machine_id` given on the Kernel command line or -- on S32G -- the unique ID burned to on-chip OTP
+memory. If the Kernel command line value is set, it always takes precedence and any physical memory OTP reads are
+omitted. This means that while the application has special functionality for S32G, it can work on any target as long as
+the Kernel command line contains the necessary value.
+
 ## Configuration
 
 As described above, Crinit needs a global series-file containing global configuration options as well as a list of task

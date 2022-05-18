@@ -1,7 +1,7 @@
 Summary: EB BaseOS Configurable Rootfs Init
 Name: crinit
 Group: System/Base
-Version: 0.5.0
+Version: 0.5.1
 %global soversion_ 0
 Release: 1
 Source0: crinit-%{version}.tar.gz
@@ -17,6 +17,13 @@ Group: System/Base
 
 %description shutdown
 Reboot and poweroff binaries using Crinit's client API.
+
+%package machine-id-gen
+Summary: Machine-ID generator example application
+Group: System/Base
+
+%description machine-id-gen
+Example application setting /etc/machine-id either from Kernel command line or from S32G OTP memory.
 
 %package conf-example
 Summary: EB BaseOS example/test configuration files
@@ -46,7 +53,7 @@ Development files for client programs willing to use the client API of the Confi
 %setup
 
 %build
-cmake . -DUNIT_TESTS=Off
+cmake . -DUNIT_TESTS=Off -DMACHINE_ID_EXAMPLE=On
 make
 
 %install
@@ -61,6 +68,11 @@ ln -sf libcrinit-client.so.%{version} %{buildroot}/%{_libdir}/libcrinit-client.s
 mkdir -p %{buildroot}/sbin
 ln -sf /%{_bindir}/crinit-ctl %{buildroot}/sbin/poweroff
 ln -sf /%{_bindir}/crinit-ctl %{buildroot}/sbin/reboot
+
+# machine-id-gen
+install -m 0755 src/machine-id-gen %{buildroot}/%{_bindir}
+mkdir -p %{buildroot}/etc
+ln -sf /run/machine-id %{buildroot}/etc/machine-id
 
 # conf-example
 mkdir -p %{buildroot}/%{_sysconfdir}/crinit/test
@@ -91,6 +103,10 @@ install -D -m 0644 config/s32g/*.series %{buildroot}/%{_sysconfdir}/crinit
 %files shutdown
 /sbin/poweroff
 /sbin/reboot
+
+%files machine-id-gen
+%{_bindir}/machine-id-gen
+/etc/machine-id
 
 %files conf-example
 %{_sysconfdir}/crinit/test/*.crinit
