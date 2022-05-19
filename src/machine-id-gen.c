@@ -206,13 +206,26 @@ static int EBCL_getMidKernelCmdLine(char *mid, size_t n) {
 
     // Find beginning of value for machine ID.
     midPtr = strchr(midPtr, '=') + 1;
-    char *midEnd = strchr(midPtr, ' ');
     // Find end of value for machine ID. Either a space or the end of the string.
-    if (midEnd != NULL) {
-        n = (n > (size_t)(midEnd - midPtr) + 1) ? (size_t)(midEnd - midPtr) + 1 : n;
+    char *midEnd = strpbrk(midPtr, " \n");
+    size_t midLen;
+    if (midEnd == NULL) {
+        midLen = strlen(midPtr);
+    } else {
+        midLen = (size_t)(midEnd - midPtr);
     }
-    strncpy(mid, midPtr, n);
-    mid[n - 1] = '\0';
+    // Copy machine ID to output buffer
+    size_t i = 0;
+    size_t j = 0;
+    while (i < n && j < midLen) {
+        if (midPtr[j] == '-') {
+            // Skip dashes in input
+            j++;
+            continue;
+        }
+        mid[i++] = midPtr[j++];
+    }
+    mid[i] = '\0';
 
     return 0;
 }
@@ -243,7 +256,7 @@ static int EBCL_readS32Uid(uint64_t *uid) {
 static inline int EBCL_s32UidToMid(char *mid, size_t n, uint64_t uid) {
     uint8_t bytes[sizeof(uint64_t)];
     memcpy(bytes, &uid, sizeof(uint64_t));
-    return snprintf(mid, n, "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x", bytes[0], bytes[1],
+    return snprintf(mid, n, "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x", bytes[0], bytes[1],
                     bytes[2], bytes[3], bytes[4], bytes[5], bytes[6], bytes[7], bytes[0], bytes[1], bytes[2], bytes[3],
                     bytes[4], bytes[5], bytes[6], bytes[7]);
 }
