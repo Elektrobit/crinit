@@ -206,13 +206,26 @@ static int EBCL_getMidKernelCmdLine(char *mid, size_t n) {
 
     // Find beginning of value for machine ID.
     midPtr = strchr(midPtr, '=') + 1;
-    char *midEnd = strchr(midPtr, ' ');
     // Find end of value for machine ID. Either a space or the end of the string.
-    if (midEnd != NULL) {
-        n = (n > (size_t)(midEnd - midPtr) + 1) ? (size_t)(midEnd - midPtr) + 1 : n;
+    char *midEnd = strpbrk(midPtr, " \n");
+    size_t midLen;
+    if (midEnd == NULL) {
+        midLen = strlen(midPtr);
+    } else {
+        midLen = (size_t)(midEnd - midPtr);
     }
-    strncpy(mid, midPtr, n);
-    mid[n - 1] = '\0';
+    // Copy machine ID to output buffer
+    size_t i = 0;
+    size_t j = 0;
+    while (i < n && j < midLen) {
+        if (midPtr[j] == '-') {
+            // Skip dashes in input
+            j++;
+            continue;
+        }
+        mid[i++] = midPtr[j++];
+    }
+    mid[i] = '\0';
 
     return 0;
 }
