@@ -243,7 +243,7 @@ static int EBCL_readS32Uid(uint64_t *uid) {
 static inline int EBCL_s32UidToMid(char *mid, size_t n, uint64_t uid) {
     uint8_t bytes[sizeof(uint64_t)];
     memcpy(bytes, &uid, sizeof(uint64_t));
-    return snprintf(mid, n, "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x", bytes[0], bytes[1],
+    return snprintf(mid, n, "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x", bytes[0], bytes[1],
                     bytes[2], bytes[3], bytes[4], bytes[5], bytes[6], bytes[7], bytes[0], bytes[1], bytes[2], bytes[3],
                     bytes[4], bytes[5], bytes[6], bytes[7]);
 }
