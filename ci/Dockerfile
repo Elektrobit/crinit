@@ -1,4 +1,5 @@
-FROM ubuntu:jammy
+ARG REPO
+FROM ${REPO}${REPO:+/}ubuntu:jammy
 
 ARG USER=ci
 ARG UID=1000
