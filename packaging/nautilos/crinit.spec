@@ -4,7 +4,7 @@ Group: System/Base
 Version: 0.5.1
 %global soversion_ 0
 Release: 1
-Source0: crinit-%{version}.tar.gz
+Source0: %{name}.tar.gz
 License: Closed
 BuildRequires: cmake
 
@@ -50,7 +50,7 @@ Group:  Development/Languages/C and C++
 Development files for client programs willing to use the client API of the Configurable Rootfs Init Daemon.
 
 %prep
-%setup
+%setup -n %{name}
 
 %build
 cmake . -DUNIT_TESTS=Off -DMACHINE_ID_EXAMPLE=On
