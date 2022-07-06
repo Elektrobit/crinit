@@ -6,6 +6,10 @@ Version: 0.5.1
 Release: 1
 Source0: %{name}.tar.gz
 License: Closed
+%if "%{_vendor}" == "debbuild"
+# Needed to set Maintainer in output debs
+Packager: Rainer Müller <rainer.mueller@emlix.com>
+%endif
 BuildRequires: cmake
 
 %description
