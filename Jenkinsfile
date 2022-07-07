@@ -25,7 +25,7 @@ pipeline {
                 axes {
                     axis {
                         name 'ARCH'
-                        values 'amd64', 'arm64v8'
+                        values 'amd64'
                     }
                 }
                 agent {
