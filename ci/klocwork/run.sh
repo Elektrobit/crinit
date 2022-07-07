@@ -65,7 +65,6 @@ function kw_analyse()
 	rm -rf build/klocwork
 	mkdir -p build/klocwork
 	cmake -B build/klocwork \
-		-DCMAKE_TOOLCHAIN_FILE=ci/aarch64-toolchain.cmake \
 		-DCMAKE_BUILD_TYPE=Release \
 		-DCMAKE_VERBOSE_MAKEFILE=On \
 		-DUNIT_TESTS=Off \
