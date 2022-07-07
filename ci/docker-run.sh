@@ -17,6 +17,7 @@ fi
 REPO="$ARCH"
 if [ "$ARCH" = "arm64" ]; then
     REPO=arm64v8
+    PLATFORM_OPTS="--platform linux/arm64/v8"
 fi
 
 IMAGE="${PROJECT}${ARCH:+-}${ARCH}"
@@ -40,7 +41,9 @@ if [ "$SSH_AUTH_SOCK" ]; then
 fi
 
 echo "==> run $PROJECT build container"
-docker run --rm -it --privileged $SSH_AGENT_OPTS \
+docker run --rm -it --privileged \
+    $SSH_AGENT_OPTS \
+    $PLATFORM_OPTS \
     -v $HOME/.ssh:/home/ci/.ssh -v $BASEDIR/ci/sshconfig:/home/ci/.ssh/config \
     -v $BASEDIR:/base -w /base "$IMAGE" $@
 
