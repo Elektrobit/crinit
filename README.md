@@ -26,8 +26,8 @@ The central Task Data Structure (`ebcl_TaskDB` in `taskdb.h`), Config Parser (`c
 (`procdip.h/.c`), Notification/Service interface (`notiserv.h/.c`, `rtimcmd.h/.c`), Client library
 (`crinit-client.h/.c`) have been preliminarily implemented and are functioning. In addition, the implementation contains
 a simple encapsulated storage for global options (`globopt.h/.c`), some minimal PID 1 setup code which cannot be
-"sourced out" into a task configuration (`minsetup.h/.c`), debug/log output functionality (`logio.h/.c`), a CLI 
-control program showcasing the the client API (`crinit-ctl.c`) including `reboot` and `poweroff` functionality. 
+"sourced out" into a task configuration (`minsetup.h/.c`), debug/log output functionality (`logio.h/.c`), a CLI
+control program showcasing the the client API (`crinit-ctl.c`) including `reboot` and `poweroff` functionality.
 For detailed explanations of the inner workings please refer to the Doxygen-generated documentation of the individual
 header and source files.
 
@@ -218,7 +218,7 @@ Unit tests can be built and run using
 ci/run-utest.sh
 ```
 
-If a manual test build is desired, running the following command sequence 
+If a manual test build is desired, running the following command sequence
 inside the container will setup the build system and build native binaries.
 ```
 mkdir -p build/x86_64
