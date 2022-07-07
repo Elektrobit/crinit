@@ -11,6 +11,7 @@ License: Closed
 Packager: Rainer Müller <rainer.mueller@emlix.com>
 %endif
 BuildRequires: cmake
+BuildRequires:  libcmocka-dev
 
 %description
 The EB BaseOS Configurable Rootfs Init Daemon including the client API shared library and the crinit-ctl CLI interface.
@@ -53,12 +54,22 @@ Group:  Development/Languages/C and C++
 %description devel
 Development files for client programs willing to use the client API of the Configurable Rootfs Init Daemon.
 
+%package tests-reports
+Summary: The unit tests report package
+Group: System/Base
+
+%description tests-reports
+tests reports and coverage reports for unit tests run on build.
+
 %prep
 %setup -n %{name}
 
 %build
-cmake . -DUNIT_TESTS=Off -DMACHINE_ID_EXAMPLE=On
+cmake . -DUNIT_TESTS=On -DMACHINE_ID_EXAMPLE=On
 make
+# in case of no unit tests yet
+touch crinit-test-report.xml
+ctest --output-on-failure --output-junit crinit-test-report.xml
 
 %install
 mkdir -p %{buildroot}/%{_bindir}
@@ -89,6 +100,10 @@ mkdir -p %{buildroot}/%{_libdir}
 install -m 0644 inc/crinit-client.h %{buildroot}/%{_includedir}
 install -m 0644 inc/crinit-sdefs.h %{buildroot}/%{_includedir}
 ln -sf libcrinit-client.so.%{soversion_} %{buildroot}/%{_libdir}/libcrinit-client.so
+
+# tests reports
+mkdir -p %{buildroot}/opt/testing
+install -m 0644 crinit-test-report.xml %{buildroot}/opt/testing
 
 %ifarch aarch64
 # conf-s32g
@@ -126,4 +141,9 @@ install -D -m 0644 config/s32g/*.series %{buildroot}/%{_sysconfdir}/crinit
 %{_sysconfdir}/crinit/*.crinit
 %{_sysconfdir}/crinit/*.series
 %endif
+
+%files tests-reports
+%defattr (-, root, root)
+%dir /opt/testing
+/opt/testing/*
 
