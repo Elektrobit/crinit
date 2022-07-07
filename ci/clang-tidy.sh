@@ -6,7 +6,9 @@
 #
 CMDPATH=$(cd "$(dirname "$0")" && pwd)
 BASEDIR=${CMDPATH%/*}
-BUILDDIR=build/aarch64
+# architecture name amd64, arm64, ...
+ARCH=$(dpkg --print-architecture)
+BUILDDIR=build/"$ARCH"
 
 if [ ! -f "${BUILDDIR}"/compile_commands.json ]; then
     echo "Build environment not set up. Please run ci/build.sh first!" >&2
