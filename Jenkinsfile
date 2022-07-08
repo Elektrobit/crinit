@@ -1,14 +1,10 @@
-def UID
-def GID
-
-node {
-    UID = sh(script: 'id -u', returnStdout: true).trim()
-    GID = sh(script: 'id -g', returnStdout: true).trim()
-}
-
 pipeline {
     agent {
         label 'agent'
+    }
+    environment {
+        UID = sh(script: 'id -u', returnStdout: true).trim()
+        GID = sh(script: 'id -g', returnStdout: true).trim()
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '4'))
