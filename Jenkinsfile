@@ -7,7 +7,9 @@ node {
 }
 
 pipeline {
-    agent any
+    agent {
+        label 'agent'
+    }
     options {
         buildDiscarder(logRotator(numToKeepStr: '4'))
         disableConcurrentBuilds()
@@ -25,7 +27,7 @@ pipeline {
                 axes {
                     axis {
                         name 'ARCH'
-                        values 'amd64'
+                        values 'amd64', 'arm64v8'
                     }
                 }
                 agent {
