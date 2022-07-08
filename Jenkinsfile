@@ -34,8 +34,6 @@ pipeline {
                             --build-arg UID=${UID} --build-arg GID=${GID}"
                         args "--privileged \
                             -v /home/jenkins/.ssh:/home/jenkins/.ssh \
-                            -v /home/jenkins/.klocwork:/home/jenkins/.klocwork \
-                            --tmpfs ${TMPDIR}:rw,size=787448k,mode=1777 \
                             -e HOME=/home/jenkins"
                     }
                 }
@@ -54,13 +52,6 @@ pipeline {
                             '''
                             sh '''#!/bin/bash -xe
                             ci/checkversion.sh
-                            '''
-                        }
-                    }
-                    stage ('Analyse: klocwork') {
-                        steps {
-                            sh '''#!/bin/bash -xe
-                            ci/klocwork/run.sh
                             '''
                         }
                     }
@@ -86,12 +77,6 @@ pipeline {
                 stage('Store result') {
                     steps {
                         archiveArtifacts 'result/**'
-                    }
-                }
-                stage('Check success') {
-                    steps {
-                        sh 'test -e result/klocwork/issues.csv'
-                        sh 'test ! -s result/klocwork/issues.csv'
                     }
                 }
             }
