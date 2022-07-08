@@ -191,8 +191,15 @@ Executing
 ```
 ci/docker-run.sh
 ```
-will start a Docker container with all necessary programs to build Crinit and its Doxygen documentation and to run a
-short local demonstration.
+will start a Docker container for the native host architecture with all necessary programs to build Crinit and its
+Doxygen documentation and to run a short local demonstration.
+
+It is possible to run the Docker container for a foreign architecture such as arm64 with the help of qemu-user-static
+and binfmt-support. Make sure these packages are installed on your host system if you want to use this functionality.
+All following commands to be run inside the container will be the same regardless of the architecture.
+```
+ci/docker-run.sh arm64
+```
 
 Inside the container, it is sufficient to run
 ```

@@ -5,57 +5,47 @@
 CMDPATH=$(cd $(dirname $0) && pwd)
 BASEDIR=${CMDPATH%/*}
 
+# architecture name amd64, arm64, ...
+ARCH=$(dpkg --print-architecture)
+# architecture name x86_64, aarch64, ...
+ARCH_ALT=$(uname -m)
+
 # prepare result dir
-rm -rf $BASEDIR/result
-mkdir -p $BASEDIR/result/bin/x86_64 $BASEDIR/result/bin/aarch64
-mkdir -p $BASEDIR/result/lib/x86_64 $BASEDIR/result/lib/aarch64
-mkdir -p $BASEDIR/result/include
+rm -rf $BASEDIR/result/$ARCH
+mkdir -p $BASEDIR/result/$ARCH/bin
+mkdir -p $BASEDIR/result/$ARCH/lib
+mkdir -p $BASEDIR/result/$ARCH/include
+mkdir -p $BASEDIR/result/$ARCH/rpm
 
 # build
 cd $BASEDIR
 
-# build and copy x86-64 binaries
-mkdir -p $BASEDIR/build/x86_64
-cmake -B $BASEDIR/build/x86_64 \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_VERBOSE_MAKEFILE=On \
-    -DUNIT_TESTS=Off \
-    $BASEDIR
-make -C $BASEDIR/build/x86_64
-cp $BASEDIR/build/x86_64/src/crinit $BASEDIR/result/bin/x86_64/
-cp $BASEDIR/build/x86_64/src/crinit-ctl $BASEDIR/result/bin/x86_64/
-cp $BASEDIR/build/x86_64/src/crinit_parsecheck $BASEDIR/result/bin/x86_64/
-cp -a $BASEDIR/build/x86_64/src/*.so* $BASEDIR/result/lib/x86_64/
-
-# build and copy aarch64 binaries
-mkdir -p $BASEDIR/build/aarch64
-cmake -B $BASEDIR/build/aarch64 \
-    -DCMAKE_TOOLCHAIN_FILE=$BASEDIR/ci/aarch64-toolchain.cmake \
+# build binaries
+mkdir -p $BASEDIR/build/$ARCH
+cmake -B $BASEDIR/build/$ARCH \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_VERBOSE_MAKEFILE=On \
     -DUNIT_TESTS=On \
     $BASEDIR
-make -C $BASEDIR/build/aarch64
-cp $BASEDIR/build/aarch64/src/crinit $BASEDIR/result/bin/aarch64/
-cp $BASEDIR/build/aarch64/src/crinit-ctl $BASEDIR/result/bin/aarch64/
-cp $BASEDIR/build/aarch64/src/crinit_parsecheck $BASEDIR/result/bin/aarch64/
-cp -a $BASEDIR/build/aarch64/src/*.so* $BASEDIR/result/lib/aarch64/
+make -C $BASEDIR/build/$ARCH
 
-# build and copy x86-64 rpm
-make -C $BASEDIR/build/x86_64 rpmbuild
-cp -a packaging/rpmbuild/RPMS $BASEDIR/result
-cp -a packaging/rpmbuild/SRPMS $BASEDIR/result
+# copy binaries
+cp $BASEDIR/build/$ARCH/src/crinit $BASEDIR/result/$ARCH/bin/
+cp $BASEDIR/build/$ARCH/src/crinit-ctl $BASEDIR/result/$ARCH/bin/
+cp $BASEDIR/build/$ARCH/src/crinit_parsecheck $BASEDIR/result/$ARCH/bin/
+cp $BASEDIR/build/$ARCH/src/*.so* $BASEDIR/result/$ARCH/lib/
 
-# build and copy aarch64 rpm
-CMAKE_TOOLCHAIN_FILE=$BASEDIR/ci/aarch64-toolchain.cmake \
-    make -C $BASEDIR/build/aarch64 rpmbuild
-cp -a packaging/rpmbuild/RPMS $BASEDIR/result
+# build and copy rpm
+rm -rf packaging/rpmbuild/RPMS/$ARCH_ALT
+rm -rf packaging/rpmbuild/SRPMS
+make -C $BASEDIR/build/$ARCH rpmbuild
+cp packaging/rpmbuild/RPMS/$ARCH_ALT/* $BASEDIR/result/$ARCH/rpm/
+cp packaging/rpmbuild/SRPMS/* $BASEDIR/result/$ARCH/rpm/
 
 # build and copy documentation
-make -C $BASEDIR/build/x86_64 doxygen
+make -C $BASEDIR/build/$ARCH doxygen
 cp -a doc $BASEDIR/result
 
 # copy client API headers
-cp inc/crinit-client.h $BASEDIR/result/include
-cp inc/crinit-sdefs.h $BASEDIR/result/include
-
+cp inc/crinit-client.h $BASEDIR/result/$ARCH/include
+cp inc/crinit-sdefs.h $BASEDIR/result/$ARCH/include

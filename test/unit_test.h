@@ -31,6 +31,6 @@
  */
 #define check_expected_dynamic(parameter_string, value) \
     _check_expected(__func__, parameter_string, __FILE__, __LINE__, \
-                    cast_to_uintmax_type(value))
+                    cast_to_largest_integral_type(value))
 
 #endif /* __UNIT_TEST_H__ */
