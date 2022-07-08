@@ -14,8 +14,10 @@ cleanup() {
 
 CMDPATH=$(cd $(dirname $0) && pwd)
 BASEDIR=${CMDPATH%/*}
-BINDIR=${BASEDIR}/result/bin/x86_64
-LIBDIR=${BASEDIR}/result/lib/x86_64
+# architecture name amd64, arm64, ...
+ARCH=$(dpkg --print-architecture)
+BINDIR=${BASEDIR}/result/"$ARCH"/bin
+LIBDIR=${BASEDIR}/result/"$ARCH"/lib
 CONFDIR=${BASEDIR}/config/test
 export LD_LIBRARY_PATH="${LIBDIR}"
 
