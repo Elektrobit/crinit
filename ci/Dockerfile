@@ -9,6 +9,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
  && apt-get install -y sudo locales vim screen libncurses-dev \
     build-essential git python3-minimal cmake \
+    valgrind \
     rpm \
     doxygen graphviz plantuml \
     clang llvm clang-tidy \

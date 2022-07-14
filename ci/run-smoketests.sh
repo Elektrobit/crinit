@@ -14,6 +14,7 @@ ARCH=$(dpkg --print-architecture)
 BUILD_TYPE="Release"
 if [ -n "$1" ]; then
     BUILD_TYPE="$1"
+    shift
 fi
 
 case "$BUILD_TYPE" in
@@ -24,6 +25,20 @@ case "$BUILD_TYPE" in
         RESULTDIR="$BASEDIR/result/$ARCH-$BUILD_TYPE"
         ;;
 esac
+
+USE_VALGRIND=0
+
+for ARG in "$@"; do
+    case "$ARG" in
+        --valgrind)
+            USE_VALGRIND=1
+            ;;
+        *)
+            echo "Unknown argument $ARG" >&2
+            exit 1
+            ;;
+    esac
+done
 
 BINDIR=$RESULTDIR/bin
 LIBDIR=$RESULTDIR/lib
