@@ -2,6 +2,7 @@
 #
 # script to run smoketests for integration
 #
+# Usage: ci/run-smoketests.sh [Debug]
 # Dependency: ci/build.sh needs to be run before
 #
 CMDPATH=$(cd "$(dirname "$0")" && pwd)
@@ -10,17 +11,31 @@ BASEDIR=${CMDPATH%/*}
 # architecture name amd64, arm64, ...
 ARCH=$(dpkg --print-architecture)
 
-BINDIR=${BASEDIR}/result/"$ARCH"/bin
-LIBDIR=${BASEDIR}/result/"$ARCH"/lib
+BUILD_TYPE="Release"
+if [ -n "$1" ]; then
+    BUILD_TYPE="$1"
+fi
+
+case "$BUILD_TYPE" in
+    Release)
+        RESULTDIR="$BASEDIR/result/$ARCH"
+        ;;
+    *)
+        RESULTDIR="$BASEDIR/result/$ARCH-$BUILD_TYPE"
+        ;;
+esac
+
+BINDIR=$RESULTDIR/bin
+LIBDIR=$RESULTDIR/lib
 CONFDIR=${BASEDIR}/config/test
 export LD_LIBRARY_PATH="${LIBDIR}"
 
-SMOKETESTS_REPORT="$BASEDIR"/result/"$ARCH"/smoketests_report.txt
-SMOKETESTS_LOG="$BASEDIR"/result/"$ARCH"/smoketests.log
+SMOKETESTS_REPORT=$RESULTDIR/smoketests_report.txt
+SMOKETESTS_LOG=$RESULTDIR/smoketests.log
 
 # check if ci/build.sh has been run before
-if [ ! -d "$BASEDIR/result/$ARCH" ]; then
-    echo Build environment not set up. Please run ci/build.sh first!
+if [ ! -d "$RESULTDIR" ]; then
+    echo Build environment not set up. Please run ci/build.sh for this build type first!
     exit 1
 fi
 
