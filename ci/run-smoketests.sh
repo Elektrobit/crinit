@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/sh -e
 #
 # script to run smoketests for integration
 #
@@ -26,12 +26,12 @@ case "$BUILD_TYPE" in
         ;;
 esac
 
-USE_VALGRIND=0
+export SMOKETESTS_VALGRIND=0
 
 for ARG in "$@"; do
     case "$ARG" in
         --valgrind)
-            USE_VALGRIND=1
+            SMOKETESTS_VALGRIND=1
             ;;
         *)
             echo "Unknown argument $ARG" >&2
@@ -40,13 +40,11 @@ for ARG in "$@"; do
     esac
 done
 
-BINDIR=$RESULTDIR/bin
-LIBDIR=$RESULTDIR/lib
-CONFDIR=${BASEDIR}/config/test
+export BINDIR=$RESULTDIR/bin
+export LIBDIR=$RESULTDIR/lib
+export CONFDIR=${BASEDIR}/config/test
 export LD_LIBRARY_PATH="${LIBDIR}"
-
-SMOKETESTS_REPORT=$RESULTDIR/smoketests_report.txt
-SMOKETESTS_LOG=$RESULTDIR/smoketests.log
+export SMOKETESTS_RESULTDIR=$RESULTDIR/smoketests
 
 # check if ci/build.sh has been run before
 if [ ! -d "$RESULTDIR" ]; then
@@ -54,11 +52,8 @@ if [ ! -d "$RESULTDIR" ]; then
     exit 1
 fi
 
-rm -f "$SMOKETESTS_REPORT"
-rm -f "$SMOKETESTS_LOG"
+mkdir -p "$SMOKETESTS_RESULTDIR"
 
 cd "$BASEDIR"
 
-source test/smoketests/lib.sh
-
-source test/smoketests/startstop.sh
+"$BASEDIR"/test/smoketests/smoketests.sh
