@@ -62,6 +62,13 @@ pipeline {
                             '''
                         }
                     }
+                    stage ('Test: smoketests') {
+                        steps {
+                            sh '''#!/bin/bash -xe
+                            ci/run-smoketests.sh Release --valgrind
+                            '''
+                        }
+                    }
                     stage ('Demo') {
                         steps {
                             sh '''#!/bin/bash -xe
