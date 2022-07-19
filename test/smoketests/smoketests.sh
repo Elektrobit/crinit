@@ -19,18 +19,21 @@ for t in "$CMDPATH"/test-*.sh; do
 
     . "$t"
 
-    setup; exitcode=$?
+    exitcode=0
+    setup || exitcode=$?
     if [ "$exitcode" -ne 0 ]; then
         echo "$SMOKETESTS_NAME: setup failed" >&2
     else
-        run; exitcode=$?
+        exitcode=0
+        run || exitcode=$?
         if [ "$exitcode" -ne 0 ]; then
             echo "$SMOKETESTS_NAME: run failed" >&2
         else
             echo "$SMOKETESTS_NAME: run success" >&2
         fi
     fi
-    teardown; exitcode=$?
+    exitcode=0
+    teardown || exitcode=$?
     if [ "$exitcode" -ne 0 ]; then
         echo "$SMOKETESTS_NAME: teardown failed" >&2
         break
