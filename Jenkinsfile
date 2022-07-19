@@ -79,14 +79,10 @@ pipeline {
                 }
             }
         }
-        stage ('Post') {
-            stages {
-                stage('Store result') {
-                    steps {
-                        archiveArtifacts 'result/**'
-                    }
-                }
-            }
+    }
+    post {
+        always {
+            archiveArtifacts 'result/**'
         }
     }
 }
