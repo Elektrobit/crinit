@@ -1,7 +1,5 @@
 #!/bin/sh -e
 
-set -x
-
 CMDPATH=$(cd "$(dirname "$0")" && pwd)
 
 # shellcheck source=test/smoketests/lib.sh
