@@ -66,7 +66,7 @@ pipeline {
                     stage ('Test: smoketests') {
                         steps {
                             sh '''#!/bin/bash -xe
-                            ci/run-smoketests.sh Release --valgrind
+                            ci/run-smoketests.sh Release
                             '''
                         }
                     }
