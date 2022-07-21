@@ -1,5 +1,9 @@
 #!/bin/sh -e
 
+if [ -n "$SMOKETESTS_DEBUG" ] && [ "$SMOKETESTS_DEBUG" -eq 1 ]; then
+    set -x
+fi
+
 CMDPATH=$(cd "$(dirname "$0")" && pwd)
 
 # shellcheck source=test/smoketests/lib.sh

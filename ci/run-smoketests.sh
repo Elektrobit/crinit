@@ -27,11 +27,15 @@ case "$BUILD_TYPE" in
 esac
 
 export SMOKETESTS_VALGRIND=0
+export SMOKETESTS_DEBUG=0
 
 for ARG in "$@"; do
     case "$ARG" in
         --valgrind)
             SMOKETESTS_VALGRIND=1
+            ;;
+        --debug)
+            SMOKETESTS_DEBUG=1
             ;;
         *)
             echo "Unknown argument $ARG" >&2
