@@ -159,6 +159,11 @@ int main(int argc, char *argv[]) {
 
     EBCL_crinitSetVerbose(verbose);
 
+    char *sockFile = getenv("CRINIT_SOCK");
+    if (sockFile != NULL) {
+        EBCL_crinitSetSocketPath(sockFile);
+    }
+
     if (ignoreDeps) {
         overDeps = "@empty";
     }
