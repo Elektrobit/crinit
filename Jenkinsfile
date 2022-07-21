@@ -5,6 +5,7 @@ pipeline {
     environment {
         UID = sh(script: 'id -u', returnStdout: true).trim()
         GID = sh(script: 'id -g', returnStdout: true).trim()
+        TMPDIR = '/tmp'
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '4'))
