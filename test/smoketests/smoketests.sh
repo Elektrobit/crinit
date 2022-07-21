@@ -48,3 +48,8 @@ NUMFAIL=$(( NUM - NUMOK ))
 
 echo ""
 echo "--> $NUM tests: $NUMOK success, $NUMFAIL failed"
+
+if [ -z "$NUMFAIL" ] || [ "$NUMFAIL" -ne 0 ]; then
+    exit 1
+fi
+exit 0
