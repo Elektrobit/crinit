@@ -5,6 +5,7 @@ pipeline {
     environment {
         UID = sh(script: 'id -u', returnStdout: true).trim()
         GID = sh(script: 'id -g', returnStdout: true).trim()
+        TMPDIR = '/tmp'
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '4'))
@@ -62,6 +63,21 @@ pipeline {
                             '''
                         }
                     }
+                    stage ('Test: smoketests') {
+                        steps {
+                            sh '''#!/bin/bash -xe
+                            # disable valgrind on arm64v8, because of segmentation faults with qemu-user emulation
+                            case "${ARCH}" in
+                                arm64v8)
+                                    ci/run-smoketests.sh Release
+                                    ;;
+                                *)
+                                    ci/run-smoketests.sh Release --valgrind
+                                    ;;
+                            esac
+                            '''
+                        }
+                    }
                     stage ('Demo') {
                         steps {
                             sh '''#!/bin/bash -xe
@@ -72,14 +88,10 @@ pipeline {
                 }
             }
         }
-        stage ('Post') {
-            stages {
-                stage('Store result') {
-                    steps {
-                        archiveArtifacts 'result/**'
-                    }
-                }
-            }
+    }
+    post {
+        always {
+            archiveArtifacts 'result/**'
         }
     }
 }

@@ -2,7 +2,9 @@
 #
 # project build script
 #
-CMDPATH=$(cd $(dirname $0) && pwd)
+# Usage: ./ci/build.sh [Release|Debug]
+#
+CMDPATH=$(cd "$(dirname "$0")" && pwd)
 BASEDIR=${CMDPATH%/*}
 
 # architecture name amd64, arm64, ...
@@ -10,42 +12,58 @@ ARCH=$(dpkg --print-architecture)
 # architecture name x86_64, aarch64, ...
 ARCH_ALT=$(uname -m)
 
+BUILD_TYPE="Release"
+if [ -n "$1" ]; then
+    BUILD_TYPE="$1"
+fi
+
+case "$BUILD_TYPE" in
+    Release)
+        BUILDDIR="$BASEDIR/build/$ARCH"
+        RESULTDIR="$BASEDIR/result/$ARCH"
+        ;;
+    *)
+        BUILDDIR="$BASEDIR/build/$ARCH-$BUILD_TYPE"
+        RESULTDIR="$BASEDIR/result/$ARCH-$BUILD_TYPE"
+        ;;
+esac
+
 # prepare result dir
-rm -rf $BASEDIR/result/$ARCH
-mkdir -p $BASEDIR/result/$ARCH/bin
-mkdir -p $BASEDIR/result/$ARCH/lib
-mkdir -p $BASEDIR/result/$ARCH/include
-mkdir -p $BASEDIR/result/$ARCH/rpm
+rm -rf "$RESULTDIR"
+mkdir -p "$RESULTDIR"/bin
+mkdir -p "$RESULTDIR"/lib
+mkdir -p "$RESULTDIR"/include
+mkdir -p "$RESULTDIR"/rpm
 
 # build
-cd $BASEDIR
+cd "$BASEDIR"
 
 # build binaries
-mkdir -p $BASEDIR/build/$ARCH
-cmake -B $BASEDIR/build/$ARCH \
-    -DCMAKE_BUILD_TYPE=Release \
+mkdir -p "$BUILDDIR"
+cmake -B "$BUILDDIR" \
+    -DCMAKE_BUILD_TYPE="$BUILD_TYPE" \
     -DCMAKE_VERBOSE_MAKEFILE=On \
     -DUNIT_TESTS=On \
-    $BASEDIR
-make -C $BASEDIR/build/$ARCH
+    "$BASEDIR"
+make -C "$BUILDDIR"
 
 # copy binaries
-cp $BASEDIR/build/$ARCH/src/crinit $BASEDIR/result/$ARCH/bin/
-cp $BASEDIR/build/$ARCH/src/crinit-ctl $BASEDIR/result/$ARCH/bin/
-cp $BASEDIR/build/$ARCH/src/crinit_parsecheck $BASEDIR/result/$ARCH/bin/
-cp $BASEDIR/build/$ARCH/src/*.so* $BASEDIR/result/$ARCH/lib/
+cp "$BUILDDIR"/src/crinit "$RESULTDIR"/bin/
+cp "$BUILDDIR"/src/crinit-ctl "$RESULTDIR"/bin/
+cp "$BUILDDIR"/src/crinit_parsecheck "$RESULTDIR"/bin/
+cp "$BUILDDIR"/src/*.so* "$RESULTDIR"/lib/
 
 # build and copy rpm
-rm -rf packaging/rpmbuild/RPMS/$ARCH_ALT
+rm -rf packaging/rpmbuild/RPMS/"$ARCH_ALT"
 rm -rf packaging/rpmbuild/SRPMS
-make -C $BASEDIR/build/$ARCH rpmbuild
-cp packaging/rpmbuild/RPMS/$ARCH_ALT/* $BASEDIR/result/$ARCH/rpm/
-cp packaging/rpmbuild/SRPMS/* $BASEDIR/result/$ARCH/rpm/
+make -C "$BUILDDIR" rpmbuild
+cp packaging/rpmbuild/RPMS/"$ARCH_ALT"/* "$RESULTDIR"/rpm/
+cp packaging/rpmbuild/SRPMS/* "$RESULTDIR"/rpm/
 
 # build and copy documentation
-make -C $BASEDIR/build/$ARCH doxygen
-cp -a doc $BASEDIR/result
+make -C "$BUILDDIR" doxygen
+cp -a doc "$BASEDIR"/result
 
 # copy client API headers
-cp inc/crinit-client.h $BASEDIR/result/$ARCH/include
-cp inc/crinit-sdefs.h $BASEDIR/result/$ARCH/include
+cp inc/crinit-client.h "$RESULTDIR"/include
+cp inc/crinit-sdefs.h "$RESULTDIR"/include
