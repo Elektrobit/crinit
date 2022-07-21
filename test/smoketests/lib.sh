@@ -16,9 +16,11 @@ if [ -z "$SMOKETESTS_RESULTDIR" ]; then
     SMOKETESTS_RESULTDIR=/tmp/smoketests
     mkdir -p "$SMOKETESTS_RESULTDIR"
 fi
+if [ -z "$CRINIT_SOCK" ]; then
+    export CRINIT_SOCK=/tmp/crinit.sock
+fi
 
 CRINIT_PID=
-CRINIT_SOCK=/run/crinit/crinit.sock
 
 crinit_daemon_start() {
     set -- "${BINDIR}"/crinit "$@"
@@ -28,10 +30,10 @@ crinit_daemon_start() {
     fi
 
     # remove stale socket if it exists
-    sudo rm -f "$CRINIT_SOCK"
+    rm -f "$CRINIT_SOCK"
 
     # shellcheck disable=SC2024
-    sudo -E "$@" > "${SMOKETESTS_RESULTDIR}/${SMOKETESTS_NAME}-crinit.log" 2>&1 &
+    "$@" > "${SMOKETESTS_RESULTDIR}/${SMOKETESTS_NAME}-crinit.log" 2>&1 &
     CRINIT_PID="$!"
 
     # give crinit some time to initialize in background
@@ -52,7 +54,7 @@ crinit_daemon_start() {
 
 crinit_daemon_stop() {
     if [ -n "$CRINIT_PID" ]; then
-        if ! sudo kill "$CRINIT_PID"; then
+        if ! kill "$CRINIT_PID"; then
             echo "Crinit with PID ${CRINIT_PID} already exited?"
             return 1
         fi

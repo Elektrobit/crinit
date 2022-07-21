@@ -55,9 +55,6 @@ NUMFAIL=$(( NUM - NUMOK ))
 echo ""
 echo "--> $NUM tests: $NUMOK success, $NUMFAIL failed"
 
-# crinit was started with sudo, make the ASAN logs accessible
-find "${SMOKETESTS_RESULTDIR}" -name "${SMOKETESTS_NAME}-asan*" -exec sudo chown "$(id -un)": {} \;
-
 if [ -z "$NUMFAIL" ] || [ "$NUMFAIL" -ne 0 ]; then
     exit 1
 fi
