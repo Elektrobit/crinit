@@ -52,6 +52,11 @@ crinit_daemon_start() {
 
 crinit_daemon_stop() {
     if [ -n "$CRINIT_PID" ]; then
-        sudo kill "$CRINIT_PID"
+        if ! sudo kill "$CRINIT_PID"; then
+            echo "Crinit with PID ${CRINIT_PID} already exited?"
+            return 1
+        fi
     fi
+
+    return 0
 }
