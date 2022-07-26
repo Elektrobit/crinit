@@ -80,6 +80,8 @@ int EBCL_parseConf(ebcl_ConfKvList_t **confList, const char *filename) {
         fclose(cf);
         return -1;
     }
+    (*confList)->next = NULL;
+
     // Parse config line by line
     ebcl_ConfKvList_t *pList = *confList;
     ebcl_ConfKvList_t *last = *confList;
