@@ -10,22 +10,38 @@ BASEDIR=${CMDPATH%/*}
 # architecture name amd64, arm64, ...
 ARCH=$(dpkg --print-architecture)
 
-UTEST_REPORT="$BASEDIR"/result/"$ARCH"/utest_report.txt
-UTEST_LOG="$BASEDIR"/result/"$ARCH"/LastTest.log
+BUILD_TYPE="Release"
+if [ -n "$1" ]; then
+    BUILD_TYPE="$1"
+    shift
+fi
+
+case "$BUILD_TYPE" in
+    Release)
+        BUILDDIR="$BASEDIR/build/$ARCH"
+        RESULTDIR="$BASEDIR/result/$ARCH"
+        ;;
+    *)
+        BUILDDIR="$BASEDIR/build/$ARCH-$BUILD_TYPE"
+        RESULTDIR="$BASEDIR/result/$ARCH-$BUILD_TYPE"
+        ;;
+esac
+
+UTEST_REPORT="$RESULTDIR"/utest_report.txt
+UTEST_LOG="$RESULTDIR"/LastTest.log
 
 # check if ci/build.sh has been run before
-if [ ! -d "$BASEDIR/result/$ARCH" ]; then
+if [ ! -d "$RESULTDIR" ]; then
     echo Build environment not set up. Please run ci/build.sh first!
     exit 1
 fi
 
-mkdir -p "$BASEDIR"/result/bin/"$ARCH"/tests
 rm -f "$UTEST_REPORT"
 rm -f "$UTEST_LOG"
 # run tests and copy artifacts
 set -o pipefail
 RETURNCODE=0
-ctest --test-dir "$BASEDIR"/build/"$ARCH" 2>&1 | tee "$UTEST_REPORT" || RETURNCODE=$?
+ctest --test-dir "$BUILDDIR" 2>&1 | tee "$UTEST_REPORT" || RETURNCODE=$?
 
-tee "$UTEST_LOG" < "$BASEDIR"/build/"$ARCH"/Testing/Temporary/LastTest.log
+tee "$UTEST_LOG" < "$BUILDDIR"/Testing/Temporary/LastTest.log
 exit $RETURNCODE
