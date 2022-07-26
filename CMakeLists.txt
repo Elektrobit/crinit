@@ -105,6 +105,7 @@ add_custom_target(
       --target ${CMAKE_SYSTEM_PROCESSOR}
       --nodeps
       --define "_topdir ${PROJECT_SOURCE_DIR}/packaging/rpmbuild"
+      --define "_build_type ${CMAKE_BUILD_TYPE}"
       -v -ba SPECS/crinit-git.spec
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
