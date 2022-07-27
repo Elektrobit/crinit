@@ -43,6 +43,7 @@ pipeline {
                         steps {
                             sh '''#!/bin/bash -xe
                             ci/build.sh
+                            ci/build.sh Debug
                             '''
                         }
                     }
@@ -60,13 +61,15 @@ pipeline {
                         steps {
                             sh '''#!/bin/bash -xe
                             ci/run-utests.sh
+                            ci/run-utests.sh Debug
                             '''
                         }
                     }
                     stage ('Test: smoketests') {
                         steps {
                             sh '''#!/bin/bash -xe
-                            ci/run-smoketests.sh Release
+                            ci/run-smoketests.sh
+                            ci/run-smoketests.sh Debug
                             '''
                         }
                     }
