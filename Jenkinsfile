@@ -11,11 +11,16 @@ pipeline {
     }
     options {
         gitlabBuilds(builds: [
-            "Build",
-            "Analyse: Lint",
-            "Test: utests",
-            "Test: smoketests",
-            "Demo"
+            "Build (amd64)",
+            "Build (arm64v8)",
+            "Analyse: Lint (amd64)",
+            "Analyse: Lint (arm64v8)",
+            "Test: utests (amd64)",
+            "Test: utests (arm64v8)",
+            "Test: smoketests (amd64)",
+            "Test: smoketests (arm64v8)",
+            "Demo (amd64)",
+            "Demo (arm64v8)"
         ])
         buildDiscarder(logRotator(numToKeepStr: '4'))
         disableConcurrentBuilds()
@@ -50,7 +55,7 @@ pipeline {
                 stages {
                     stage ('Build') {
                         steps {
-                            gitlabCommitStatus("Build") {
+                            gitlabCommitStatus("${STAGE_NAME} (${ARCH})") {
                                 sh '''#!/bin/bash -xe
                                 ci/build.sh
                                 ci/build.sh Debug
@@ -60,7 +65,7 @@ pipeline {
                     }
                     stage ('Analyse: Lint') {
                         steps {
-                            gitlabCommitStatus("Analyse: Lint") {
+                            gitlabCommitStatus("${STAGE_NAME} (${ARCH})") {
                                 sh '''#!/bin/bash -xe
                                 ci/clang-tidy.sh
                                 '''
@@ -72,7 +77,7 @@ pipeline {
                     }
                     stage ('Test: utests') {
                         steps {
-                            gitlabCommitStatus("Test: utests") {
+                            gitlabCommitStatus("${STAGE_NAME} (${ARCH})") {
                                 sh '''#!/bin/bash -xe
                                 ci/run-utests.sh
                                 ci/run-utests.sh Debug
@@ -82,7 +87,7 @@ pipeline {
                     }
                     stage ('Test: smoketests') {
                         steps {
-                            gitlabCommitStatus("Test: smoketests") {
+                            gitlabCommitStatus("${STAGE_NAME} (${ARCH})") {
                                 sh '''#!/bin/bash -xe
                                 ci/run-smoketests.sh
                                 ci/run-smoketests.sh Debug
@@ -92,7 +97,7 @@ pipeline {
                     }
                     stage ('Demo') {
                         steps {
-                            gitlabCommitStatus("Demo") {
+                            gitlabCommitStatus("${STAGE_NAME} (${ARCH})") {
                                 sh '''#!/bin/bash -xe
                                 ci/demo.sh 2>&1 | tee result/demo_output.txt
                                 '''
