@@ -66,15 +66,7 @@ pipeline {
                     stage ('Test: smoketests') {
                         steps {
                             sh '''#!/bin/bash -xe
-                            # disable valgrind on arm64v8, because of segmentation faults with qemu-user emulation
-                            case "${ARCH}" in
-                                arm64v8)
-                                    ci/run-smoketests.sh Release
-                                    ;;
-                                *)
-                                    ci/run-smoketests.sh Release --valgrind
-                                    ;;
-                            esac
+                            ci/run-smoketests.sh Release
                             '''
                         }
                     }
