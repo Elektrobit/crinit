@@ -1,3 +1,5 @@
+properties([gitLabConnection('GitLab')])
+
 pipeline {
     agent {
         label 'agent'
@@ -8,6 +10,13 @@ pipeline {
         TMPDIR = '/tmp'
     }
     options {
+        gitlabBuilds(builds: [
+            "Build",
+            "Analyse: Lint",
+            "Test: utests",
+            "Test: smoketests",
+            "Demo"
+        ])
         buildDiscarder(logRotator(numToKeepStr: '4'))
         disableConcurrentBuilds()
     }
@@ -41,43 +50,53 @@ pipeline {
                 stages {
                     stage ('Build') {
                         steps {
-                            sh '''#!/bin/bash -xe
-                            ci/build.sh
-                            ci/build.sh Debug
-                            '''
+                            gitlabCommitStatus("Build") {
+                                sh '''#!/bin/bash -xe
+                                ci/build.sh
+                                ci/build.sh Debug
+                                '''
+                            }
                         }
                     }
                     stage ('Analyse: Lint') {
                         steps {
-                            sh '''#!/bin/bash -xe
-                            ci/clang-tidy.sh
-                            '''
-                            sh '''#!/bin/bash -xe
-                            ci/checkversion.sh
-                            '''
+                            gitlabCommitStatus("Analyse: Lint") {
+                                sh '''#!/bin/bash -xe
+                                ci/clang-tidy.sh
+                                '''
+                                sh '''#!/bin/bash -xe
+                                ci/checkversion.sh
+                                '''
+                            }
                         }
                     }
-                    stage ('Analyse: Unit Tests') {
+                    stage ('Test: utests') {
                         steps {
-                            sh '''#!/bin/bash -xe
-                            ci/run-utests.sh
-                            ci/run-utests.sh Debug
-                            '''
+                            gitlabCommitStatus("Test: utests") {
+                                sh '''#!/bin/bash -xe
+                                ci/run-utests.sh
+                                ci/run-utests.sh Debug
+                                '''
+                            }
                         }
                     }
                     stage ('Test: smoketests') {
                         steps {
-                            sh '''#!/bin/bash -xe
-                            ci/run-smoketests.sh
-                            ci/run-smoketests.sh Debug
-                            '''
+                            gitlabCommitStatus("Test: smoketests") {
+                                sh '''#!/bin/bash -xe
+                                ci/run-smoketests.sh
+                                ci/run-smoketests.sh Debug
+                                '''
+                            }
                         }
                     }
                     stage ('Demo') {
                         steps {
-                            sh '''#!/bin/bash -xe
-                            ci/demo.sh 2>&1 | tee result/demo_output.txt
-                            '''
+                            gitlabCommitStatus("Demo") {
+                                sh '''#!/bin/bash -xe
+                                ci/demo.sh 2>&1 | tee result/demo_output.txt
+                                '''
+                            }
                         }
                     }
                 }
