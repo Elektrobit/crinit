@@ -10,7 +10,19 @@ cmake_policy(SET CMP0065 NEW)
 include(GNUInstallDirs)
 
 option(UNIT_TESTS "Build unit tests" ON)
+option(ENABLE_ASAN "Build with -fsanitize=address" ON)
+option(ENABLE_ANALYZER "Build with -fanalyzer" OFF)
 option(MACHINE_ID_EXAMPLE "Build machine-id-gen example application" ON)
+
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE "Debug")
+endif()
+
+if(${CMAKE_BUILD_TYPE} STREQUAL "Release")
+    message("Disabling ASAN and ANALYZER for release build")
+    set(ENABLE_ASAN OFF)
+    set(ENABLE_ANALYZER OFF)
+endif()
 
 find_package(Git REQUIRED)
 set(CRINIT_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
@@ -46,11 +58,13 @@ add_compile_options(
   -ffunction-sections -fdata-sections
   -D_DEFAULT_SOURCE
   -D_FORTIFY_SOURCE=2
+  $<IF:$<BOOL:${ENABLE_ANALYZER}>,-fanalyzer,>
+  $<IF:$<BOOL:${ENABLE_ASAN}>,-fsanitize=address,>
 )
 
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE "Debug")
-endif()
+add_link_options(
+  $<IF:$<BOOL:${ENABLE_ASAN}>,-fsanitize=address,>
+)
 
 add_subdirectory(src/)
 if(UNIT_TESTS)
