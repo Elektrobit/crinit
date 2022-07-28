@@ -65,7 +65,13 @@ tests reports and coverage reports for unit tests run on build.
 %setup -n %{name}
 
 %build
-cmake . -DUNIT_TESTS=On -DMACHINE_ID_EXAMPLE=On
+cmake . \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DUNIT_TESTS=ON \
+    -DMACHINE_ID_EXAMPLE=ON \
+    -DENABLE_ASAN=OFF \
+    -DENABLE_ANALYZER=OFF \
+    -DENABLE_WERROR=ON
 make
 # in case of no unit tests yet
 touch crinit-test-report.xml

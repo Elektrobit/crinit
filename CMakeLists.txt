@@ -10,18 +10,17 @@ cmake_policy(SET CMP0065 NEW)
 include(GNUInstallDirs)
 
 option(UNIT_TESTS "Build unit tests" ON)
-option(ENABLE_ASAN "Build with -fsanitize=address" ON)
-option(ENABLE_ANALYZER "Build with -fanalyzer" OFF)
+option(ENABLE_ASAN "Build with -fsanitize=address" OFF)
+option(ENABLE_ANALYZER "Build with -fanalyzer (disables -Werror)" OFF)
+option(ENABLE_WERROR "Build with -Werror" ON)
 option(MACHINE_ID_EXAMPLE "Build machine-id-gen example application" ON)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Debug")
 endif()
 
-if(${CMAKE_BUILD_TYPE} STREQUAL "Release")
-    message("Disabling ASAN and ANALYZER for release build")
-    set(ENABLE_ASAN OFF)
-    set(ENABLE_ANALYZER OFF)
+if(ENABLE_ANALYZER)
+  set(ENABLE_WERROR OFF)
 endif()
 
 find_package(Git REQUIRED)
@@ -53,7 +52,8 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--gc-sections")
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--gc-sections")
 
 add_compile_options(
-  -Wall -Wextra -Wswitch-enum -Werror -pedantic
+  -Wall -Wextra -Wswitch-enum -pedantic
+  $<IF:$<BOOL:${ENABLE_WERROR}>,-Werror,>
   -fstack-protector-strong
   -ffunction-sections -fdata-sections
   -D_DEFAULT_SOURCE

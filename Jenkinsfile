@@ -58,7 +58,7 @@ pipeline {
                             gitlabCommitStatus("${STAGE_NAME} (${ARCH})") {
                                 sh '''#!/bin/bash -xe
                                 ci/build.sh
-                                ci/build.sh Debug
+                                ci/build.sh Debug --asan
                                 '''
                             }
                         }

@@ -53,7 +53,14 @@ Development files for client programs willing to use the client API of the Confi
 %setup
 
 %build
-cmake . %{?_build_type:-DCMAKE_BUILD_TYPE=}%{_build_type} -DCMAKE_VERBOSE_MAKEFILE=1 -DUNIT_TESTS=Off -DMACHINE_ID_EXAMPLE=On
+cmake . \
+    %{?_build_type:-DCMAKE_BUILD_TYPE=}%{_build_type} \
+    -DCMAKE_VERBOSE_MAKEFILE=1 \
+    -DUNIT_TESTS=OFF \
+    -DMACHINE_ID_EXAMPLE=ON \
+    -DENABLE_ASAN=OFF \
+    -DENABLE_ANALYZER=OFF \
+    -DENABLE_WERROR=ON
 make
 
 %install
