@@ -205,8 +205,14 @@ Inside the container, it is sufficient to run
 ```
 ci/build.sh
 ```
-which will compile `crinit`, the client library and crinit-ctl for ARM64 and for x86_64 as well as a suite of RPMs. The
-doxygen documentation is built as well. The script will copy relevant build artifacts to `result/`.
+which will compile the release configuration for `crinit`, the client library and crinit-ctl as well as a suite of RPMs.
+The doxygen documentation is built as well. The script will copy relevant build artifacts to `result/`.
+
+For debugging purposes, the debug configuration can be built with the following command. Optionally it is also possible
+to enable AddressSanitizer (ASAN) for additional runtime checks or static analysis using `-fanalyzer` at compile-time.
+```
+ci/build.sh Debug --asan --analyzer
+```
 
 Afterwards, it is possible to run (also inside the container)
 ```
@@ -220,20 +226,22 @@ ci/clang-tidy.sh
 ```
 This will also generate a `compile_commands.json`. The output will be saved to `result/clang-tidy`.
 
-Unit tests can be built and run using
+Unit tests or smoke tests can be run using the respective commands below. For the debug configuration, either of them
+takes an additional `Debug` argument.
 ```
 ci/run-utest.sh
+ci/run-smoketests.sh
 ```
 
 If a manual test build is desired, running the following command sequence
 inside the container will setup the build system and build native binaries.
 ```
-mkdir -p build/x86_64
-cmake -B build/x86_64 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=On -DUNIT_TESTS=On
-make -C build/x86_64
+mkdir -p build/amd64
+cmake -B build/amd64 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=On -DUNIT_TESTS=On
+make -C build/amd64
 ```
 
 The Doxygen documentation alone can be built using
 ```
-make -C build/x86_64 doxygen
+make -C build/amd64 doxygen
 ```
