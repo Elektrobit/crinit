@@ -26,6 +26,11 @@ case "$BUILD_TYPE" in
         ;;
 esac
 
+if [ "$ARCH" != "amd64" ]; then
+    # disable LeakSanitizer as it does not work in qemu-user emulation
+    export ASAN_OPTIONS=detect_leaks=0
+fi
+
 export SMOKETESTS_VALGRIND=0
 export SMOKETESTS_DEBUG=0
 
