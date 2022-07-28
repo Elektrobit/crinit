@@ -125,6 +125,7 @@ int main(int argc, char *argv[]) {
                 EBCL_errnoPrint("Could not allocate string with full path for \'%s\'.", series[n]);
                 EBCL_globOptDestroy();
                 EBCL_freeArgvArray(series);
+                free(taskdir);
                 return EXIT_FAILURE;
             }
             memcpy(confFn, taskdir, prefixLen);
@@ -140,6 +141,7 @@ int main(int argc, char *argv[]) {
                 free(confFn);
             }
             EBCL_freeArgvArray(series);
+            free(taskdir);
             return EXIT_FAILURE;
         }
         EBCL_infoPrint("File \'%s\' loaded.", confFn);
@@ -154,6 +156,7 @@ int main(int argc, char *argv[]) {
             EBCL_freeConfList(c);
             EBCL_globOptDestroy();
             EBCL_freeArgvArray(series);
+            free(taskdir);
             return EXIT_FAILURE;
         }
         EBCL_freeConfList(c);
@@ -165,6 +168,7 @@ int main(int argc, char *argv[]) {
         EBCL_freeTask(t);
     }
     EBCL_freeArgvArray(series);
+    free(taskdir);
     EBCL_dbgInfoPrint("Done parsing.");
 
     if (EBCL_startInterfaceServer(&tdb, EBCL_CRINIT_SOCKFILE) == -1) {
