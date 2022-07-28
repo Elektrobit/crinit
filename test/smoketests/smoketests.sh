@@ -21,6 +21,8 @@ for t in "$CMDPATH"/test-*.sh; do
 
     . "$t"
 
+    export ASAN_OPTIONS="${ASAN_OPTIONS}:log_path=${SMOKETESTS_RESULTDIR}/${SMOKETESTS_NAME}-asan"
+
     success=1
 
     exitcode=0
