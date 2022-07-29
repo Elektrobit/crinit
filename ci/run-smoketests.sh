@@ -26,12 +26,21 @@ case "$BUILD_TYPE" in
         ;;
 esac
 
+if [ "$ARCH" != "amd64" ]; then
+    # disable LeakSanitizer as it does not work in qemu-user emulation
+    export ASAN_OPTIONS="${ASAN_OPTIONS}:detect_leaks=0"
+fi
+
 export SMOKETESTS_VALGRIND=0
+export SMOKETESTS_DEBUG=0
 
 for ARG in "$@"; do
     case "$ARG" in
         --valgrind)
             SMOKETESTS_VALGRIND=1
+            ;;
+        --debug)
+            SMOKETESTS_DEBUG=1
             ;;
         *)
             echo "Unknown argument $ARG" >&2
@@ -52,6 +61,7 @@ if [ ! -d "$RESULTDIR" ]; then
     exit 1
 fi
 
+rm -rf "$SMOKETESTS_RESULTDIR"
 mkdir -p "$SMOKETESTS_RESULTDIR"
 
 cd "$BASEDIR"

@@ -15,6 +15,7 @@ ARCH_ALT=$(uname -m)
 BUILD_TYPE="Release"
 if [ -n "$1" ]; then
     BUILD_TYPE="$1"
+    shift
 fi
 
 case "$BUILD_TYPE" in
@@ -27,6 +28,28 @@ case "$BUILD_TYPE" in
         RESULTDIR="$BASEDIR/result/$ARCH-$BUILD_TYPE"
         ;;
 esac
+
+ENABLE_ASAN=OFF
+ENABLE_ANALYZER=OFF
+ENABLE_WERROR=ON
+
+for ARG in "$@"; do
+    case "$ARG" in
+        --asan)
+            ENABLE_ASAN=ON
+            ;;
+        --analyzer)
+            ENABLE_ANALYZER=ON
+            ;;
+        --no-werror)
+            ENABLE_WERROR=OFF
+            ;;
+        *)
+            echo "Unknown argument $ARG" >&2
+            exit 1
+            ;;
+    esac
+done
 
 # prepare result dir
 rm -rf "$RESULTDIR"
@@ -44,6 +67,9 @@ cmake -B "$BUILDDIR" \
     -DCMAKE_BUILD_TYPE="$BUILD_TYPE" \
     -DCMAKE_VERBOSE_MAKEFILE=On \
     -DUNIT_TESTS=On \
+    -DENABLE_ASAN="$ENABLE_ASAN" \
+    -DENABLE_ANALYZER="$ENABLE_ANALYZER" \
+    -DENABLE_WERROR="$ENABLE_WERROR" \
     "$BASEDIR"
 make -C "$BUILDDIR"
 

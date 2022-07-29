@@ -10,7 +10,18 @@ cmake_policy(SET CMP0065 NEW)
 include(GNUInstallDirs)
 
 option(UNIT_TESTS "Build unit tests" ON)
+option(ENABLE_ASAN "Build with -fsanitize=address" OFF)
+option(ENABLE_ANALYZER "Build with -fanalyzer (disables -Werror)" OFF)
+option(ENABLE_WERROR "Build with -Werror" ON)
 option(MACHINE_ID_EXAMPLE "Build machine-id-gen example application" ON)
+
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE "Debug")
+endif()
+
+if(ENABLE_ANALYZER)
+  set(ENABLE_WERROR OFF)
+endif()
 
 find_package(Git REQUIRED)
 set(CRINIT_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
@@ -41,16 +52,19 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--gc-sections")
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--gc-sections")
 
 add_compile_options(
-  -Wall -Wextra -Wswitch-enum -Werror -pedantic
+  -Wall -Wextra -Wswitch-enum -pedantic
+  $<IF:$<BOOL:${ENABLE_WERROR}>,-Werror,>
   -fstack-protector-strong
   -ffunction-sections -fdata-sections
   -D_DEFAULT_SOURCE
   -D_FORTIFY_SOURCE=2
+  $<IF:$<BOOL:${ENABLE_ANALYZER}>,-fanalyzer,>
+  $<IF:$<BOOL:${ENABLE_ASAN}>,-fsanitize=address,>
 )
 
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE "Debug")
-endif()
+add_link_options(
+  $<IF:$<BOOL:${ENABLE_ASAN}>,-fsanitize=address,>
+)
 
 add_subdirectory(src/)
 if(UNIT_TESTS)
@@ -91,6 +105,7 @@ add_custom_target(
       --target ${CMAKE_SYSTEM_PROCESSOR}
       --nodeps
       --define "_topdir ${PROJECT_SOURCE_DIR}/packaging/rpmbuild"
+      --define "_build_type ${CMAKE_BUILD_TYPE}"
       -v -ba SPECS/crinit-git.spec
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )

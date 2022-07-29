@@ -1,5 +1,9 @@
 #!/bin/sh -e
 
+if [ -n "$SMOKETESTS_DEBUG" ] && [ "$SMOKETESTS_DEBUG" -eq 1 ]; then
+    set -x
+fi
+
 CMDPATH=$(cd "$(dirname "$0")" && pwd)
 
 # shellcheck source=test/smoketests/lib.sh
@@ -16,6 +20,8 @@ for t in "$CMDPATH"/test-*.sh; do
     echo "--> Running test $SMOKETESTS_NAME" >&2
 
     . "$t"
+
+    export ASAN_OPTIONS="${ASAN_OPTIONS}:log_path=${SMOKETESTS_RESULTDIR}/${SMOKETESTS_NAME}-asan"
 
     success=1
 
@@ -48,6 +54,9 @@ NUMFAIL=$(( NUM - NUMOK ))
 
 echo ""
 echo "--> $NUM tests: $NUMOK success, $NUMFAIL failed"
+
+# crinit was started with sudo, make the ASAN logs accessible
+find "${SMOKETESTS_RESULTDIR}" -name "${SMOKETESTS_NAME}-asan*" -exec sudo chown "$(id -un)": {} \;
 
 if [ -z "$NUMFAIL" ] || [ "$NUMFAIL" -ne 0 ]; then
     exit 1

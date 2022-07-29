@@ -144,7 +144,7 @@ int EBCL_globOptGetString(ebcl_GlobOptKey_t key, char **str) {
         return -1;
     }
     *str = malloc(len);
-    if (str == NULL) {
+    if (*str == NULL) {
         EBCL_errnoPrint("Could not allocate memory for output.");
         free(temp);
         return -1;

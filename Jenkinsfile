@@ -1,3 +1,5 @@
+properties([gitLabConnection('GitLab')])
+
 pipeline {
     agent {
         label 'agent'
@@ -8,6 +10,18 @@ pipeline {
         TMPDIR = '/tmp'
     }
     options {
+        gitlabBuilds(builds: [
+            "Build (amd64)",
+            "Build (arm64v8)",
+            "Analyse: Lint (amd64)",
+            "Analyse: Lint (arm64v8)",
+            "Test: utests (amd64)",
+            "Test: utests (arm64v8)",
+            "Test: smoketests (amd64)",
+            "Test: smoketests (arm64v8)",
+            "Demo (amd64)",
+            "Demo (arm64v8)"
+        ])
         buildDiscarder(logRotator(numToKeepStr: '4'))
         disableConcurrentBuilds()
     }
@@ -41,48 +55,53 @@ pipeline {
                 stages {
                     stage ('Build') {
                         steps {
-                            sh '''#!/bin/bash -xe
-                            ci/build.sh
-                            '''
+                            gitlabCommitStatus("${STAGE_NAME} (${ARCH})") {
+                                sh '''#!/bin/bash -xe
+                                ci/build.sh
+                                ci/build.sh Debug --asan
+                                '''
+                            }
                         }
                     }
                     stage ('Analyse: Lint') {
                         steps {
-                            sh '''#!/bin/bash -xe
-                            ci/clang-tidy.sh
-                            '''
-                            sh '''#!/bin/bash -xe
-                            ci/checkversion.sh
-                            '''
+                            gitlabCommitStatus("${STAGE_NAME} (${ARCH})") {
+                                sh '''#!/bin/bash -xe
+                                ci/clang-tidy.sh
+                                '''
+                                sh '''#!/bin/bash -xe
+                                ci/checkversion.sh
+                                '''
+                            }
                         }
                     }
-                    stage ('Analyse: Unit Tests') {
+                    stage ('Test: utests') {
                         steps {
-                            sh '''#!/bin/bash -xe
-                            ci/run-utests.sh
-                            '''
+                            gitlabCommitStatus("${STAGE_NAME} (${ARCH})") {
+                                sh '''#!/bin/bash -xe
+                                ci/run-utests.sh
+                                ci/run-utests.sh Debug
+                                '''
+                            }
                         }
                     }
                     stage ('Test: smoketests') {
                         steps {
-                            sh '''#!/bin/bash -xe
-                            # disable valgrind on arm64v8, because of segmentation faults with qemu-user emulation
-                            case "${ARCH}" in
-                                arm64v8)
-                                    ci/run-smoketests.sh Release
-                                    ;;
-                                *)
-                                    ci/run-smoketests.sh Release --valgrind
-                                    ;;
-                            esac
-                            '''
+                            gitlabCommitStatus("${STAGE_NAME} (${ARCH})") {
+                                sh '''#!/bin/bash -xe
+                                ci/run-smoketests.sh
+                                ci/run-smoketests.sh Debug
+                                '''
+                            }
                         }
                     }
                     stage ('Demo') {
                         steps {
-                            sh '''#!/bin/bash -xe
-                            ci/demo.sh 2>&1 | tee result/demo_output.txt
-                            '''
+                            gitlabCommitStatus("${STAGE_NAME} (${ARCH})") {
+                                sh '''#!/bin/bash -xe
+                                ci/demo.sh 2>&1 | tee result/demo_output.txt
+                                '''
+                            }
                         }
                     }
                 }

@@ -21,6 +21,11 @@ LIBDIR=${BASEDIR}/result/"$ARCH"/lib
 CONFDIR=${BASEDIR}/config/test
 export LD_LIBRARY_PATH="${LIBDIR}"
 
+if [ "$ARCH" != "amd64" ]; then
+    # disable LeakSanitizer as it does not work in qemu-user emulation
+    export ASAN_OPTIONS=detect_leaks=0
+fi
+
 # Remove the socket if we have run crinit before during this docker session.
 sudo rm -f /run/crinit/crinit.sock
 

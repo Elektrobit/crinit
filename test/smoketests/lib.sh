@@ -31,7 +31,7 @@ crinit_daemon_start() {
     sudo rm -f "$CRINIT_SOCK"
 
     # shellcheck disable=SC2024
-    sudo "$@" > "${SMOKETESTS_RESULTDIR}/${SMOKETESTS_NAME}-crinit.log" 2>&1 &
+    sudo -E "$@" > "${SMOKETESTS_RESULTDIR}/${SMOKETESTS_NAME}-crinit.log" 2>&1 &
     CRINIT_PID="$!"
 
     # give crinit some time to initialize in background
