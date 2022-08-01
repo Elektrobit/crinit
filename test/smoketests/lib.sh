@@ -16,7 +16,7 @@ if [ -z "$SMOKETESTS_CONFDIR" ]; then
     SMOKETESTS_CONFDIR=/tmp/crinit-smoketests-config
 fi
 if [ -z "$SMOKETESTS_RESULTDIR" ]; then
-    SMOKETESTS_RESULTDIR=/tmp/smoketests
+    SMOKETESTS_RESULTDIR=/tmp/crinit-smoketests
     mkdir -p "$SMOKETESTS_RESULTDIR"
 fi
 if [ -z "$CRINIT_SOCK" ]; then
