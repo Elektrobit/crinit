@@ -10,7 +10,10 @@ if [ -z "$BINDIR" ]; then
     BINDIR=/usr/bin
 fi
 if [ -z "$CONFDIR" ]; then
-    CONFDIR=config/test
+    CONFDIR="$CMDPATH"/config/test
+fi
+if [ -z "$SMOKETESTS_CONFDIR" ]; then
+    SMOKETESTS_CONFDIR=/tmp/crinit-smoketests-config
 fi
 if [ -z "$SMOKETESTS_RESULTDIR" ]; then
     SMOKETESTS_RESULTDIR=/tmp/smoketests
@@ -21,6 +24,12 @@ if [ -z "$CRINIT_SOCK" ]; then
 fi
 
 CRINIT_PID=
+
+crinit_config_setup() {
+    rm -rf "$SMOKETESTS_CONFDIR"
+    mkdir -p "$SMOKETESTS_CONFDIR"
+    cp -R "$CONFDIR"/* "$SMOKETESTS_CONFDIR"/
+}
 
 crinit_daemon_start() {
     set -- "${BINDIR}"/crinit "$@"
