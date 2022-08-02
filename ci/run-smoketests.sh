@@ -50,6 +50,7 @@ for ARG in "$@"; do
 done
 
 export BINDIR=$RESULTDIR/bin
+export SBINDIR=$RESULTDIR/bin
 export LIBDIR=$RESULTDIR/lib
 export CONFDIR=${BASEDIR}/config/test
 export LD_LIBRARY_PATH="${LIBDIR}"
