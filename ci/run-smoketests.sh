@@ -50,6 +50,7 @@ for ARG in "$@"; do
 done
 
 export BINDIR=$RESULTDIR/bin
+export SBINDIR=$RESULTDIR/bin
 export LIBDIR=$RESULTDIR/lib
 export CONFDIR=${BASEDIR}/config/test
 export LD_LIBRARY_PATH="${LIBDIR}"
@@ -60,9 +61,6 @@ if [ ! -d "$RESULTDIR" ]; then
     echo Build environment not set up. Please run ci/build.sh for this build type first!
     exit 1
 fi
-
-rm -rf "$SMOKETESTS_RESULTDIR"
-mkdir -p "$SMOKETESTS_RESULTDIR"
 
 cd "$BASEDIR"
 

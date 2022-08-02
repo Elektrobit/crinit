@@ -171,7 +171,11 @@ int main(int argc, char *argv[]) {
     free(taskdir);
     EBCL_dbgInfoPrint("Done parsing.");
 
-    if (EBCL_startInterfaceServer(&tdb, EBCL_CRINIT_SOCKFILE) == -1) {
+    char *sockFile = getenv("CRINIT_SOCK");
+    if (sockFile == NULL) {
+        sockFile = EBCL_CRINIT_SOCKFILE;
+    }
+    if (EBCL_startInterfaceServer(&tdb, sockFile) == -1) {
         EBCL_errPrint("Could not start notification and service interface.");
         EBCL_taskDBDestroy(&tdb);
         EBCL_globOptDestroy();
