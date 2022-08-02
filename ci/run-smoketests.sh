@@ -61,9 +61,6 @@ if [ ! -d "$RESULTDIR" ]; then
     exit 1
 fi
 
-rm -rf "$SMOKETESTS_RESULTDIR"
-mkdir -p "$SMOKETESTS_RESULTDIR"
-
 cd "$BASEDIR"
 
 "$BASEDIR"/test/smoketests/smoketests.sh

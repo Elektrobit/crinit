@@ -9,6 +9,10 @@ CMDPATH=$(cd "$(dirname "$0")" && pwd)
 # shellcheck source=test/smoketests/lib.sh
 . "$CMDPATH"/lib.sh
 
+# clear previous results
+rm -rf "$SMOKETESTS_RESULTDIR"
+mkdir -p "$SMOKETESTS_RESULTDIR"
+
 NUM=0
 NUMOK=0
 
