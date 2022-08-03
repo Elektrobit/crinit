@@ -52,6 +52,10 @@ for t in "$CMDPATH"/test-*.sh; do
     fi
 
     : $(( NUMOK += success ))
+
+    if [ "$success" -ne 1 ] && [ "$SMOKETESTS_FAILSTOP" -eq 1 ] ; then
+        break
+    fi
 done
 
 NUMFAIL=$(( NUM - NUMOK ))

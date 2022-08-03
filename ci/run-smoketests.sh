@@ -33,6 +33,7 @@ fi
 
 export SMOKETESTS_VALGRIND=0
 export SMOKETESTS_DEBUG=0
+export SMOKETESTS_FAILSTOP=0
 
 for ARG in "$@"; do
     case "$ARG" in
@@ -41,6 +42,9 @@ for ARG in "$@"; do
             ;;
         --debug)
             SMOKETESTS_DEBUG=1
+            ;;
+        --stop-on-failure)
+            SMOKETESTS_FAILSTOP=1
             ;;
         *)
             echo "Unknown argument $ARG" >&2
