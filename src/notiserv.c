@@ -505,7 +505,12 @@ static inline bool EBCL_checkPerm(ebcl_RtimOp_t op, const struct ucred *passedCr
         case EBCL_RTIMCMD_C_KILL:
         case EBCL_RTIMCMD_C_RESTART:
         case EBCL_RTIMCMD_C_NOTIFY:
-            return passedCreds->uid == 0;
+            /*
+             * Only allow the user running the crinit daemon to use these commands. With both
+             * processes having the same effective user ID, the calling process already has the
+             * privileges to execute any action specified by a crinit task.
+             */
+            return passedCreds->uid == geteuid();
         case EBCL_RTIMCMD_C_STATUS:
         case EBCL_RTIMCMD_C_TASKLIST:
         case EBCL_RTIMCMD_C_GETVER:
