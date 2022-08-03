@@ -73,3 +73,12 @@ crinit_daemon_stop() {
 
     return 0
 }
+
+compare_output() {
+    sample="$1"
+    out="$2"
+    if ! cmp -s "$sample" "$out"; then
+        diff "$sample" "$out" > "${out%.out}".diff
+        return 1
+    fi
+}
