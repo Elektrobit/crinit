@@ -56,7 +56,6 @@ rm -rf "$RESULTDIR"
 mkdir -p "$RESULTDIR"/bin
 mkdir -p "$RESULTDIR"/lib
 mkdir -p "$RESULTDIR"/include
-mkdir -p "$RESULTDIR"/rpm
 
 # build
 cd "$BASEDIR"
@@ -78,13 +77,6 @@ cp "$BUILDDIR"/src/crinit "$RESULTDIR"/bin/
 cp "$BUILDDIR"/src/crinit-ctl "$RESULTDIR"/bin/
 cp "$BUILDDIR"/src/crinit_parsecheck "$RESULTDIR"/bin/
 cp "$BUILDDIR"/src/*.so* "$RESULTDIR"/lib/
-
-# build and copy rpm
-rm -rf packaging/rpmbuild/RPMS/"$ARCH_ALT"
-rm -rf packaging/rpmbuild/SRPMS
-make -C "$BUILDDIR" rpmbuild
-cp packaging/rpmbuild/RPMS/"$ARCH_ALT"/* "$RESULTDIR"/rpm/
-cp packaging/rpmbuild/SRPMS/* "$RESULTDIR"/rpm/
 
 # build and copy documentation
 make -C "$BUILDDIR" doxygen
