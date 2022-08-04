@@ -3,6 +3,7 @@
 # project build script
 #
 # Usage: ./ci/package.sh [Release|Debug]
+# Dependency: ci/build.sh needs to be run before
 #
 CMDPATH=$(cd "$(dirname "$0")" && pwd)
 BASEDIR=${CMDPATH%/*}
@@ -29,7 +30,11 @@ case "$BUILD_TYPE" in
         ;;
 esac
 
-"$CMDPATH"/build.sh "$BUILD_TYPE"
+# check if ci/build.sh has been run before
+if [ ! -d "$RESULTDIR" ]; then
+    echo Build environment not set up. Please run ci/build.sh for this build type first!
+    exit 1
+fi
 
 # prepare result dir
 mkdir -p "$RESULTDIR"/deb
