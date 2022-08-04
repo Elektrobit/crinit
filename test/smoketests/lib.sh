@@ -31,6 +31,8 @@ crinit_config_setup() {
     rm -rf "$SMOKETESTS_CONFDIR"
     mkdir -p "$SMOKETESTS_CONFDIR"
     cp -R "$CONFDIR"/* "$SMOKETESTS_CONFDIR"/
+    sed "s#TASKDIR = .*#TASKDIR = ${SMOKETESTS_CONFDIR}#" < "${SMOKETESTS_CONFDIR}"/local.series > "${SMOKETESTS_CONFDIR}"/demo.series
+    sed "s#TASKDIR = .*#TASKDIR = ${SMOKETESTS_CONFDIR}/addseries#" < "${SMOKETESTS_CONFDIR}"/addseries/add.series > "${SMOKETESTS_CONFDIR}"/addseries/demoadd.series
 }
 
 crinit_daemon_start() {
@@ -72,4 +74,13 @@ crinit_daemon_stop() {
     fi
 
     return 0
+}
+
+compare_output() {
+    sample="$1"
+    out="$2"
+    if ! cmp -s "$sample" "$out"; then
+        diff "$sample" "$out" > "${out%.out}".diff
+        return 1
+    fi
 }
