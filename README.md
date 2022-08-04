@@ -233,6 +233,12 @@ ci/run-utest.sh
 ci/run-smoketests.sh
 ```
 
+After a successful execution of `ci/build.sh`, it is also possible to create a Debian package using debbuild.
+For the debug configuration, this also takes an additional `Debug` argument.
+```
+ci/package.sh
+```
+
 If a manual test build is desired, running the following command sequence
 inside the container will setup the build system and build native binaries.
 ```

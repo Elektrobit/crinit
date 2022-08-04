@@ -96,16 +96,14 @@ add_custom_target(
 )
 
 add_custom_target(
-  rpmbuild
+  debbuild
   COMMAND
-    mkdir -p packaging/rpmbuild/SOURCES &&
-    tar -czf packaging/rpmbuild/SOURCES/crinit-${PKG_VERSION}.tar.gz --transform "s,^,crinit-${PKG_VERSION}/," src/ inc/ test/ config/ images/ CMakeLists.txt Doxyfile README.md &&
-    cd packaging/rpmbuild &&
-    rpmbuild
-      --target ${CMAKE_SYSTEM_PROCESSOR}
-      --nodeps
-      --define "_topdir ${PROJECT_SOURCE_DIR}/packaging/rpmbuild"
-      --define "_build_type ${CMAKE_BUILD_TYPE}"
-      -v -ba SPECS/crinit-git.spec
+    mkdir -p ${PROJECT_BINARY_DIR}/debbuild/BUILD ${PROJECT_BINARY_DIR}/debbuild/BUILDROOT ${PROJECT_BINARY_DIR}/debbuild/SPECS ${PROJECT_BINARY_DIR}/debbuild/SOURCES ${PROJECT_BINARY_DIR}/debbuild/SDEBS ${PROJECT_BINARY_DIR}/debbuild/DEBS &&
+    cp ${PROJECT_SOURCE_DIR}/packaging/nautilos/crinit.spec ${PROJECT_BINARY_DIR}/debbuild/SPECS/ &&
+    tar -czf ${PROJECT_BINARY_DIR}/debbuild/SOURCES/crinit.tar.gz --transform "s,^,crinit/," src/ inc/ test/ config/ images/ CMakeLists.txt Doxyfile README.md &&
+    cd ${PROJECT_BINARY_DIR}/debbuild &&
+    debbuild
+      --define "_topdir ${PROJECT_BINARY_DIR}/debbuild"
+      -vv -ba SPECS/crinit.spec
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
