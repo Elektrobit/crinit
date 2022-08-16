@@ -131,7 +131,32 @@ int EBCL_taskDBInsert(ebcl_TaskDB_t *ctx, const ebcl_Task_t *t, bool overwrite);
  * @return 0 on success, -1 otherwise
  */
 int EBCL_taskDBFulfillDep(ebcl_TaskDB_t *ctx, const ebcl_TaskDep_t *dep);
+/**
+ * Fulfill feature dependencies implemented by a provider task.
+ *
+ * Will search \a ctx for tasks containing feature dependencies PROVIDE-ed by \a provider given its new state
+ * \a newState and, if found, remove the dependency from ebcl_Task_t::dep by using EBCL_taskDBFulfillDep().
+ * Synchronization and signalling remains the same as with a direct call to EBCL_taskDBFulfillDep().
+ *
+ * @param ctx       The ebcl_TaskDB_t context in which to fulfill the feature dependency.
+ * @param provider  The ebcl_Task_t providing the feature(s).
+ * @param newState  The ebcl_TaskState_t which has been newly reached by \a provider.
+ *
+ * @return 0 on success, -1 otherwise
+ */
 int EBCL_taskDBProvideFeature(ebcl_TaskDB_t *ctx, const ebcl_Task_t *provider, ebcl_TaskState_t newState);
+/**
+ * Fulfill feature dependencies implemented by a provider task (searched for by name).
+ *
+ * Will search \a ctx for the provider task referenced by \a taskName and then call EBCL_taskDBProvideFeature() on it
+ * (see there for details).
+ *
+ * @param ctx       The ebcl_TaskDB_t context in which to fulfill the feature dependency.
+ * @param taskName  The name of the task providing the feature(s).
+ * @param newState  The ebcl_TaskState_t which has been newly reached by the provider task.
+ *
+ * @return 0 on success, -1 otherwise
+ */
 int EBCL_taskDBProvideFeatureByTaskName(ebcl_TaskDB_t *ctx, const char *taskName, ebcl_TaskState_t newState);
 /**
  * Add a dependency to a specific task inside a task database.
