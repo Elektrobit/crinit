@@ -96,8 +96,9 @@ COMMAND[] = /sbin/ifconfig lo 127.0.0.1
 COMMAND[] = /sbin/dhcpcd -j /var/log/dhcpcd.log eth0
 
 
-# So we only run if we are on the actual S32G board
-DEPENDS = check_qemu:fail earlysetup:wait
+DEPENDS = check_qemu:fail earlysetup:wait @provided:writable_var
+
+PROVIDES = ipv4_dhcp:wait resolvconf:wait
 
 RESPAWN = NO
 RESPAWN_RETRIES = -1
@@ -123,9 +124,17 @@ SIG = ""
   this task is only run if and after the `earlysetup` (setup of system directories, etc.) has fully completed and the
   `check_qemu` task has determined we are _not_ running inside the emulator and therefore exited with an error code.
   This is a mandatory setting but may be left empty using `""` which is interpreted as "no dependencies".
+  There is also the special `@provided:feature` syntax where we can define we want to depend on a specific feature
+  another task may implement (see **PROVIDES**). In this case `@provided:writable_var` could mean that another task
+  may have mounted a tmpfs or a writable partition there which we need for the first `mkdir`. That task would need to
+  advertise the `writable_var` feature in its `PROVIDES` config value.
   _Not yet implemented:_ Once the interface to the
   [Monitor](https://gitlabintern.emlix.com/elektrobit/base-os/corbos-tools) has been implemented, it will be possible to
   depend on a monitor event by adding `@ebclmon:<event_name>` to `DEPENDS`.
+- **PROVIDES** -- As we have seen above, a task may depend on features and also provide them. In this case we advertise
+  that after completion of this task (`wait`), the features `ipv4_dhcp` and `resolvconf` are provided. Another task may
+  then depend e.g. on `@provided:resolvconf`. While the feature names chosen here reflect the functional intention, they
+  can be chosen arbitrarily.
 - **RESPAWN** -- If set to `YES`, the task will be restarted on failure or completion. Useful for daemons like `getty`.
   This is a mandatory setting.
 - **RESPAWN_RETRIES** -- Number of times a respawned task may fail *in a row* before it is not started again. The
