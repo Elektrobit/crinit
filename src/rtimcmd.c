@@ -892,16 +892,43 @@ static int EBCL_execRtimCmdNotify(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
     }
 
     if (ready > 0) {
-        if (EBCL_taskDBSetTaskState(ctx, EBCL_TASK_STATE_RUNNING, cmd->args[0]) == -1) {
+        const ebcl_TaskState_t s = EBCL_TASK_STATE_RUNNING | EBCL_TASK_STATE_NOTIFIED;
+        char depEvent[] = EBCL_TASK_EVENT_RUNNING EBCL_TASK_EVENT_NOTIFY_SUFFIX;
+        if (EBCL_taskDBSetTaskState(ctx, s, cmd->args[0]) == -1) {
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not set task state to RUNNING.");
+        }
+
+        ebcl_TaskDep_t dep = {cmd->args[0], depEvent};
+        if (EBCL_taskDBFulfillDep(ctx, &dep) == -1) {
+            return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, EBCL_RTIMCMD_RES_ERR,
+                                     "Could not fulfill dependency \'%s:%s\'.", cmd->args[0], depEvent);
+        }
+
+        if (EBCL_taskDBProvideFeatureByTaskName(ctx, cmd->args[0], s) == -1) {
+            return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, EBCL_RTIMCMD_RES_ERR,
+                                     "Could not set features of spawned task \'%s\' as provided.", cmd->args[0]);
         }
     }
 
     if (stopping > 0) {
-        if (EBCL_taskDBSetTaskState(ctx, EBCL_TASK_STATE_DONE, cmd->args[0]) == -1) {
+        const ebcl_TaskState_t s = EBCL_TASK_STATE_DONE | EBCL_TASK_STATE_NOTIFIED;
+        char depEvent[] = EBCL_TASK_EVENT_DONE EBCL_TASK_EVENT_NOTIFY_SUFFIX;
+
+        if (EBCL_taskDBSetTaskState(ctx, s, cmd->args[0]) == -1) {
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not set task state to DONE.");
+        }
+
+        const ebcl_TaskDep_t dep = {cmd->args[0], depEvent};
+        if (EBCL_taskDBFulfillDep(ctx, &dep) == -1) {
+            return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, EBCL_RTIMCMD_RES_ERR,
+                                     "Could not fulfill dependency \'%s:%s\'.", cmd->args[0], depEvent);
+        }
+
+        if (EBCL_taskDBProvideFeatureByTaskName(ctx, cmd->args[0], s) == -1) {
+            return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, EBCL_RTIMCMD_RES_ERR,
+                                     "Could not set features of spawned task \'%s\' as provided.", cmd->args[0]);
         }
     }
 
@@ -1068,7 +1095,8 @@ static void *EBCL_shdnThread(void *args) {
     EBCL_dbgInfoPrint("Sending SIGKILL to all processes.");
     if (EBCL_fsPrepareShutdown() == -1) {
         EBCL_errPrint(
-            "Could not un- or remount filesystems cleanly, continuing anyway. Some filesystems may be dirty on next "
+            "Could not un- or remount filesystems cleanly, continuing anyway. Some filesystems may be dirty on "
+            "next "
             "boot.");
     }
     if (reboot(shutdownCmd) == -1) {

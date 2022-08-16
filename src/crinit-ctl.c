@@ -411,28 +411,21 @@ static bool EBCL_isAbsPath(const char *path) {
 }
 
 static const char *EBCL_taskStateToStr(ebcl_TaskState_t s) {
-    const char *state = NULL;
+    bool notified = s & EBCL_TASK_STATE_NOTIFIED;
+    s &= ~EBCL_TASK_STATE_NOTIFIED;
 
     switch (s) {
         case EBCL_TASK_STATE_LOADED:
-            state = "loaded";
-            break;
+            return "loaded";
         case EBCL_TASK_STATE_STARTING:
-            state = "starting";
-            break;
+            return "starting";
         case EBCL_TASK_STATE_RUNNING:
-            state = "running";
-            break;
+            return (notified) ? "running (notified)" : "running";
         case EBCL_TASK_STATE_DONE:
-            state = "done";
-            break;
+            return (notified) ? "done (notified)" : "done";
         case EBCL_TASK_STATE_FAILED:
-            state = "failed";
-            break;
+            return (notified) ? "failed (notified)" : "failed";
         default:
-            state = "(invalid)";
-            break;
+            return "(invalid)";
     }
-
-    return state;
 }
