@@ -19,6 +19,10 @@
 
 #include "globopt.h"
 
+#define EBCL_ERROR_WITH_FFL_FMT "(%s:%s:%d) Error: "  ///< Format string error prefix with function, file and line.
+#define EBCL_ERRNO_FMT " Errno: %s"                   ///< Format string errno suffix, to use with strerror().
+#define EBCL_CRINIT_SYSLOG_IDENT "crinit"             ///< Identification string for crinit logging to syslog.
+
 /** Holds the Prefix to put in front of every printed line, defaults to #EBCL_CRINIT_PRINT_PREFIX **/
 static char EBCL_printPrefix[EBCL_PRINT_PREFIX_MAX_LEN] = EBCL_CRINIT_PRINT_PREFIX;
 
@@ -61,6 +65,11 @@ void EBCL_setErrStream(FILE *stream) {
 
 void EBCL_setUseSyslog(bool sl) {
     pthread_mutex_lock(&EBCL_logLock);
+    if (sl && !EBCL_useSyslog) {
+        openlog(EBCL_CRINIT_SYSLOG_IDENT, LOG_CONS, LOG_DAEMON);
+    } else if (!sl && EBCL_useSyslog) {
+        closelog();
+    }
     EBCL_useSyslog = sl;
     pthread_mutex_unlock(&EBCL_logLock);
 }
@@ -82,7 +91,6 @@ int EBCL_dbgInfoPrint(const char *format, ...) {
         EBCL_infoStream = stdout;
     }
     if (EBCL_useSyslog) {
-        openlog(EBCL_printPrefix, 0, LOG_DAEMON);
         va_start(args, format);
         vsyslog(LOG_DEBUG | LOG_DAEMON, format, args);
         va_end(args);
@@ -119,7 +127,6 @@ int EBCL_infoPrint(const char *format, ...) {
         EBCL_infoStream = stdout;
     }
     if (EBCL_useSyslog) {
-        openlog(EBCL_printPrefix, 0, LOG_DAEMON);
         va_start(args, format);
         vsyslog(LOG_INFO | LOG_DAEMON, format, args);
         va_end(args);
@@ -156,19 +163,18 @@ int EBCL_errPrintFFL(const char *file, const char *func, int line, const char *f
         EBCL_errStream = stderr;
     }
     if (EBCL_useSyslog) {
-        size_t n = strlen(format) + sizeof("%s(%s:%s:%d) Error: ");
+        size_t n = strlen(EBCL_ERROR_WITH_FFL_FMT) + strlen(format) + 1;
         char *syslogFmt = malloc(n);
         if (syslogFmt == NULL) {
             return -1;
         }
-        snprintf(syslogFmt, n, "(%s:%s:%d) Error: %s", file, func, line, format);
-        openlog(EBCL_printPrefix, 0, LOG_DAEMON);
+        snprintf(syslogFmt, n, EBCL_ERROR_WITH_FFL_FMT "%s", file, func, line, format);
         va_start(args, format);
         vsyslog(LOG_ERR | LOG_DAEMON, syslogFmt, args);
         va_end(args);
         free(syslogFmt);
     } else {
-        if ((ret = fprintf(EBCL_errStream, "%s(%s:%s:%d) Error: ", EBCL_printPrefix, file, func, line)) < 0) {
+        if ((ret = fprintf(EBCL_errStream, "%s" EBCL_ERROR_WITH_FFL_FMT, EBCL_printPrefix, file, func, line)) < 0) {
             pthread_mutex_unlock(&EBCL_logLock);
             return ret;
         }
@@ -200,20 +206,19 @@ int EBCL_errnoPrintFFL(const char *file, const char *func, int line, const char 
         EBCL_errStream = stderr;
     }
     if (EBCL_useSyslog) {
-        size_t n = strlen(format) + sizeof("%s(%s:%s:%d) Error: ") + sizeof(" Errno: %s") - 1;
+        size_t n = strlen(EBCL_ERROR_WITH_FFL_FMT) + strlen(format) + strlen(EBCL_ERRNO_FMT) + 1;
         char *syslogFmt = malloc(n);
         if (syslogFmt == NULL) {
             return -1;
         }
-        snprintf(syslogFmt, n, "(%s:%s:%d) Error: %s Errno: %s", file, func, line, format,
+        snprintf(syslogFmt, n, EBCL_ERROR_WITH_FFL_FMT "%s" EBCL_ERRNO_FMT, file, func, line, format,
                  EBCL_threadSafeStrerror(errno));
-        openlog(EBCL_printPrefix, 0, LOG_DAEMON);
         va_start(args, format);
         vsyslog(LOG_ERR | LOG_DAEMON, syslogFmt, args);
         va_end(args);
         free(syslogFmt);
     } else {
-        if ((ret = fprintf(EBCL_errStream, "%s(%s:%s:%d) Error: ", EBCL_printPrefix, file, func, line)) < 0) {
+        if ((ret = fprintf(EBCL_errStream, "%s" EBCL_ERROR_WITH_FFL_FMT, EBCL_printPrefix, file, func, line)) < 0) {
             pthread_mutex_unlock(&EBCL_logLock);
             return ret;
         }
@@ -226,7 +231,7 @@ int EBCL_errnoPrintFFL(const char *file, const char *func, int line, const char 
         }
         va_end(args);
         cCount += ret;
-        if ((ret = fprintf(EBCL_errStream, " Errno: %s\n", EBCL_threadSafeStrerror(errno))) < 0) {
+        if ((ret = fprintf(EBCL_errStream, EBCL_ERRNO_FMT, EBCL_threadSafeStrerror(errno))) < 0) {
             pthread_mutex_unlock(&EBCL_logLock);
             return ret;
         }
