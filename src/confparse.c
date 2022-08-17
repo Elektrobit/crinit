@@ -537,7 +537,7 @@ int EBCL_loadSeriesConf(int *seriesLen, char ***series, const char *filename) {
     }
 
     bool confFsigs = EBCL_GLOBOPT_DEFAULT_FILESIGS;
-    if (EBCL_confListExtractBoolean(&confDbg, EBCL_GLOBOPT_KEYSTR_FILESIGS, false, c) == -1) {
+    if (EBCL_confListExtractBoolean(&confFsigs, EBCL_GLOBOPT_KEYSTR_FILESIGS, false, c) == -1) {
         EBCL_errPrint("Failed to search for non-mandatory key \'%s\' in series config \'%s\'.",
                       EBCL_GLOBOPT_KEYSTR_FILESIGS, filename);
         EBCL_freeConfList(c);
@@ -546,6 +546,21 @@ int EBCL_loadSeriesConf(int *seriesLen, char ***series, const char *filename) {
     }
     if (EBCL_globOptSetBoolean(EBCL_GLOBOPT_FILESIGS, &confFsigs) == -1) {
         EBCL_errPrint("Could not store global boolean option value for \'%s\'.", EBCL_GLOBOPT_KEYSTR_FILESIGS);
+        EBCL_freeConfList(c);
+        EBCL_freeArgvArray(*series);
+        return -1;
+    }
+
+    bool confUseSyslog = EBCL_GLOBOPT_DEFAULT_USE_SYSLOG;
+    if (EBCL_confListExtractBoolean(&confUseSyslog, EBCL_GLOBOPT_KEYSTR_USE_SYSLOG, false, c) == -1) {
+        EBCL_errPrint("Failed to search for non-mandatory key \'%s\' in series config \'%s\'.",
+                      EBCL_GLOBOPT_KEYSTR_USE_SYSLOG, filename);
+        EBCL_freeConfList(c);
+        EBCL_freeArgvArray(*series);
+        return -1;
+    }
+    if (EBCL_globOptSetBoolean(EBCL_GLOBOPT_USE_SYSLOG, &confUseSyslog) == -1) {
+        EBCL_errPrint("Could not store global boolean option value for \'%s\'.", EBCL_GLOBOPT_KEYSTR_USE_SYSLOG);
         EBCL_freeConfList(c);
         EBCL_freeArgvArray(*series);
         return -1;
