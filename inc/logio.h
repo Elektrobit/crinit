@@ -12,6 +12,7 @@
 #define __LOGIO_H__
 
 #include <errno.h>
+#include <stdbool.h>
 #include <stdio.h>
 
 /**
@@ -61,6 +62,7 @@ void EBCL_setInfoStream(FILE *stream);
  * @param stream  The FILE* stream to use. If NULL, stream is set to stderr.
  */
 void EBCL_setErrStream(FILE *stream);
+void EBCL_setUseSyslog(bool sl);
 
 /**
  * Print an info message.
