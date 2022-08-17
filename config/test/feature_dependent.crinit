@@ -2,7 +2,7 @@
 
 NAME = feature_dependent
 
-COMMAND[] = /bin/sh -c "echo 'All feature-based dependencies have been fuilfilled.' | tee -a /tmp/crinit-feature_dependent.log"
+COMMAND[] = /bin/sh -c "echo 'All feature-based dependencies have been fulfilled.' | tee -a /tmp/crinit-feature_dependent.log"
 
 DEPENDS = "@provided:smoketest_feature1 @provided:smoketest_feature3 @provided:smoketest_feature2"
 
