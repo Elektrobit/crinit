@@ -30,7 +30,7 @@ static void EBCL_destroyTask(ebcl_Task_t *t);
  *
  * @return 0 on success, -1 otherwise
  */
-static int EBCL_findInTaskDb(ssize_t *idx, const char *taskName, const ebcl_TaskDB_t *in);
+static int EBCL_findInTaskDB(ssize_t *idx, const char *taskName, const ebcl_TaskDB_t *in);
 /**
  * Check if an ebcl_Task_t is considered ready to be started (startable).
  *
@@ -113,7 +113,7 @@ int EBCL_taskDBInsert(ebcl_TaskDB_t *ctx, const ebcl_Task_t *t, bool overwrite) 
         return -1;
     }
     ssize_t idx = -1;
-    if (EBCL_findInTaskDb(&idx, t->name, ctx) == 0) {
+    if (EBCL_findInTaskDB(&idx, t->name, ctx) == 0) {
         if (overwrite) {
             EBCL_destroyTask(&ctx->taskSet[idx]);
         } else {
@@ -482,18 +482,13 @@ int EBCL_taskDBProvideFeatureByTaskName(ebcl_TaskDB_t *ctx, const char *taskName
         EBCL_errnoPrint("Could not queue up for mutex lock.");
         return -1;
     }
-    for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        const ebcl_Task_t *pTask = &ctx->taskSet[i];
-        if (strcmp(pTask->name, taskName) == 0) {
-            provider = pTask;
-            break;
-        }
-    }
-    pthread_mutex_unlock(&ctx->lock);
-    if (provider == NULL) {
-        EBCL_errPrint("Could not find task \'%s\' as it does not exist in TaskDB.", taskName);
+    ssize_t taskIdx;
+    if (EBCL_findInTaskDB(&taskIdx, taskName, ctx) == -1) {
+        EBCL_errPrint("Could not find task \'%s\' in TaskDB.", taskName);
         return -1;
     }
+    provider = &ctx->taskSet[taskIdx];
+    pthread_mutex_unlock(&ctx->lock);
 
     return EBCL_taskDBProvideFeature(ctx, provider, newState);
 }
@@ -927,7 +922,7 @@ static void EBCL_destroyTask(ebcl_Task_t *t) {
     free(t->prv);
 }
 
-static int EBCL_findInTaskDb(ssize_t *idx, const char *taskName, const ebcl_TaskDB_t *in) {
+static int EBCL_findInTaskDB(ssize_t *idx, const char *taskName, const ebcl_TaskDB_t *in) {
     if (taskName == NULL || in == NULL) {
         return -1;
     }
