@@ -1,6 +1,6 @@
 # shellcheck shell=bash
 #
-# smoketest for crinit feature-based depnedencies commands
+# smoketest for crinit feature-based dependencies
 #
 
 setup() {
