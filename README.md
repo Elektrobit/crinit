@@ -66,6 +66,8 @@ FILE_SIGS_NEEDED = NO
 
 SHUTDOWN_GRACE_PERIOD_US = 100000
 
+USE_SYSLOG = NO
+
 # not yet implemented
 SIG = ""
 ```
@@ -78,6 +80,9 @@ SIG = ""
   implemented, this is parsed but does nothing. Default: `YES`
 - **SHUTDOWN_GRACE_PERIOD_US** -- The amount of microseconds to wait between `SIGTERM` and `SIGKILL` on shutdown/reboot.
                                   Default: 100000
+- **USE_SYSLOG** -- If syslog should be used for output if it is available. If set to `YES`, Crinit will switch to
+                    syslog for output as soon as a task file `PROVIDES` the `syslog` feature. Ideally this should be
+                    a task file loading a syslog server such as syslogd or elosd. Default: `NO`
 - **SIG** -- The signature of this file. Currently unimplemented and can be left empty.
 
 ### Example Task Configuration

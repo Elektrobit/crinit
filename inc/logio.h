@@ -62,6 +62,15 @@ void EBCL_setInfoStream(FILE *stream);
  * @param stream  The FILE* stream to use. If NULL, stream is set to stderr.
  */
 void EBCL_setErrStream(FILE *stream);
+/**
+ * Specify if syslog should be used..
+ *
+ * By default, Crinit will always use the specified FILE streams. If this is set to `true`, however, Crinit will output
+ * to syslog instead. The log connection will be opened with `LOG_CONS`, so if the connection fails, output will be sent
+ * to the system console instead.
+ *
+ * @param sl  `true` if syslog should be used, `false` otherwise.
+ */
 void EBCL_setUseSyslog(bool sl);
 
 /**
@@ -80,6 +89,9 @@ void EBCL_infoPrint(const char *format, ...) __attribute__((format(printf, 1, 2)
  * at the end. It uses the output stream specified by EBCL_setInfoStream() or stdout if unset. There will be no output
  * if the global option DEBUG is set to false using EBCL_globOptSetBoolean(). The function uses mutexes internally and
  * is thread-safe.
+ *
+ * If configured (`USE_SYSLOG = true`) and available (a task has provided `syslog`), the function will instead write to
+ * syslog.
  */
 void EBCL_dbgInfoPrint(const char *format, ...) __attribute__((format(printf, 1, 2)));
 
@@ -96,6 +108,9 @@ void EBCL_dbgInfoPrint(const char *format, ...) __attribute__((format(printf, 1,
  *
  * The macro EBCL_errPrint() should be used to provide the function with the correct \a file, \a func, and \a line
  * parameters.
+ *
+ * If configured (`USE_SYSLOG = true`) and available (a task has provided `syslog`), the function will instead write to
+ * syslog.
  */
 void EBCL_errPrintFFL(const char *file, const char *func, int line, const char *format, ...)
     __attribute__((format(printf, 4, 5)));
@@ -116,6 +131,9 @@ void EBCL_errPrintFFL(const char *file, const char *func, int line, const char *
  *
  * The macro EBCL_errnoPrint() should be used to provide the function with the correct \a file, \a func, and \a line
  * parameters.
+ *
+ * If configured (`USE_SYSLOG = true`) and available (a task has provided `syslog`), the function will instead write to
+ * syslog.
  */
 void EBCL_errnoPrintFFL(const char *file, const char *func, int line, const char *format, ...)
     __attribute__((format(printf, 4, 5)));
