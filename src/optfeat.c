@@ -1,5 +1,5 @@
 /**
- * @file optfeat.h
+ * @file optfeat.c
  * @brief Implementation of optional behavior dependent on available system features.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
