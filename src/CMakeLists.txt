@@ -18,6 +18,7 @@ add_executable(
   notiserv.c
   rtimcmd.c
   rtimopmap.c
+  optfeat.c
   ${CMAKE_CURRENT_BINARY_DIR}/version.c
 )
 

@@ -18,24 +18,27 @@
  * Type to specify a global option (set in the series file)
  */
 typedef enum {
-    EBCL_GLOBOPT_START,      ///< Marker for beginning of enum, used to calculate number of elements.
-    EBCL_GLOBOPT_DEBUG,      ///< DEBUG global option.
-    EBCL_GLOBOPT_FILESIGS,   ///< FILE_SIGS_NEEDED global option (function unimplemented).
-    EBCL_GLOBOPT_TASKDIR,    ///< TASKDIR global option.
-    EBCL_GLOBOPT_SHDGRACEP,  ///< SHUTDOWN_GRACE_PERIOD_US global option
-    EBCL_GLOBOPT_END         ///< Marker for end of enum, used to calculate number of elements.
+    EBCL_GLOBOPT_START,       ///< Marker for beginning of enum, used to calculate number of elements.
+    EBCL_GLOBOPT_DEBUG,       ///< DEBUG global option.
+    EBCL_GLOBOPT_FILESIGS,    ///< FILE_SIGS_NEEDED global option (function unimplemented).
+    EBCL_GLOBOPT_TASKDIR,     ///< TASKDIR global option.
+    EBCL_GLOBOPT_SHDGRACEP,   ///< SHUTDOWN_GRACE_PERIOD_US global option
+    EBCL_GLOBOPT_USE_SYSLOG,  ///< USE_SYSLOG global option
+    EBCL_GLOBOPT_END          ///< Marker for end of enum, used to calculate number of elements.
 } ebcl_GlobOptKey_t;
 
 #define EBCL_GLOBOPT_DEFAULT_DEBUG false            ///< Default value for DEBUG global option.
 #define EBCL_GLOBOPT_DEFAULT_FILESIGS true          ///< Default value for FILE_SIGS_NEEDED global option.
 #define EBCL_GLOBOPT_DEFAULT_TASKDIR "/etc/crinit"  ///< Default value for TASKDIR global option.
 #define EBCL_GLOBOPT_DEFAULT_SHDGRACEP 100000uLL    ///< Default value for SHUTDOWN_GRACE_PERIOD_US global option
+#define EBCL_GLOBOPT_DEFAULT_USE_SYSLOG false       ///< Default value for USE_SYSLOG global option.
 
 #define EBCL_GLOBOPT_KEYSTR_DEBUG "DEBUG"                ///< Config file key for DEBUG global option.
 #define EBCL_GLOBOPT_KEYSTR_FILESIGS "FILE_SIGS_NEEDED"  ///< Config file key for FILE_SIGS_NEEDED global option.
 #define EBCL_GLOBOPT_KEYSTR_TASKDIR "TASKDIR"            ///< Config file key for TASKDIR global option.
 #define EBCL_GLOBOPT_KEYSTR_SHDGRACEP \
-    "SHUTDOWN_GRACE_PERIOD_US"  ///< Config file key for SHUTDOWN_GRACE_PERIOD_US global option
+    "SHUTDOWN_GRACE_PERIOD_US"                       ///< Config file key for SHUTDOWN_GRACE_PERIOD_US global option
+#define EBCL_GLOBOPT_KEYSTR_USE_SYSLOG "USE_SYSLOG"  ///< Config file key for USE_SYSLOG global option.
 
 /**
  * Sets global options to their default values.

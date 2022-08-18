@@ -14,6 +14,7 @@
 #include <string.h>
 
 #include "logio.h"
+#include "optfeat.h"
 
 /**
  * Frees memory for internal members of an ebcl_Task_t
@@ -465,6 +466,10 @@ int EBCL_taskDBProvideFeature(ebcl_TaskDB_t *ctx, const ebcl_Task_t *provider, e
                 return -1;
             }
             EBCL_dbgInfoPrint("Fulfilled feature dependency \'%s:%s\'.", dep.name, dep.event);
+            if(EBCL_crinitFeatureHook(dep.event) == -1) {
+                EBCL_errPrint("Could not run activiation hook for feature \'%s\'.", dep.event);
+                return -1;
+            }
         }
     }
     return 0;

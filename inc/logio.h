@@ -12,6 +12,7 @@
 #define __LOGIO_H__
 
 #include <errno.h>
+#include <stdbool.h>
 #include <stdio.h>
 
 /**
@@ -61,6 +62,16 @@ void EBCL_setInfoStream(FILE *stream);
  * @param stream  The FILE* stream to use. If NULL, stream is set to stderr.
  */
 void EBCL_setErrStream(FILE *stream);
+/**
+ * Specify if syslog should be used..
+ *
+ * By default, Crinit will always use the specified FILE streams. If this is set to `true`, however, Crinit will output
+ * to syslog instead. The log connection will be opened with `LOG_CONS`, so if the connection fails, output will be sent
+ * to the system console instead.
+ *
+ * @param sl  `true` if syslog should be used, `false` otherwise.
+ */
+void EBCL_setUseSyslog(bool sl);
 
 /**
  * Print an info message.
@@ -69,9 +80,8 @@ void EBCL_setErrStream(FILE *stream);
  * at the end. It uses the output stream specified by EBCL_setInfoStream() or stdout if unset. The function uses mutexes
  * internally and is thread-safe.
  *
- * @return The number of characters printed.
  */
-int EBCL_infoPrint(const char *format, ...) __attribute__((format(printf, 1, 2)));
+void EBCL_infoPrint(const char *format, ...) __attribute__((format(printf, 1, 2)));
 /**
  * Print an info message if DEBUG global option is set.
  *
@@ -80,9 +90,10 @@ int EBCL_infoPrint(const char *format, ...) __attribute__((format(printf, 1, 2))
  * if the global option DEBUG is set to false using EBCL_globOptSetBoolean(). The function uses mutexes internally and
  * is thread-safe.
  *
- * @return The number of characters printed.
+ * If configured (`USE_SYSLOG = true`) and available (a task has provided `syslog`), the function will instead write to
+ * syslog.
  */
-int EBCL_dbgInfoPrint(const char *format, ...) __attribute__((format(printf, 1, 2)));
+void EBCL_dbgInfoPrint(const char *format, ...) __attribute__((format(printf, 1, 2)));
 
 /**
  * Macro to print an error message including the offending source file, function, and line using EBCL_errPrintFFL().
@@ -98,9 +109,10 @@ int EBCL_dbgInfoPrint(const char *format, ...) __attribute__((format(printf, 1, 
  * The macro EBCL_errPrint() should be used to provide the function with the correct \a file, \a func, and \a line
  * parameters.
  *
- * @return The number of characters printed.
+ * If configured (`USE_SYSLOG = true`) and available (a task has provided `syslog`), the function will instead write to
+ * syslog.
  */
-int EBCL_errPrintFFL(const char *file, const char *func, int line, const char *format, ...)
+void EBCL_errPrintFFL(const char *file, const char *func, int line, const char *format, ...)
     __attribute__((format(printf, 4, 5)));
 
 /**
@@ -120,9 +132,10 @@ int EBCL_errPrintFFL(const char *file, const char *func, int line, const char *f
  * The macro EBCL_errnoPrint() should be used to provide the function with the correct \a file, \a func, and \a line
  * parameters.
  *
- * @return The number of characters printed.
+ * If configured (`USE_SYSLOG = true`) and available (a task has provided `syslog`), the function will instead write to
+ * syslog.
  */
-int EBCL_errnoPrintFFL(const char *file, const char *func, int line, const char *format, ...)
+void EBCL_errnoPrintFFL(const char *file, const char *func, int line, const char *format, ...)
     __attribute__((format(printf, 4, 5)));
 
 #endif /* __LOGIO_H__ */

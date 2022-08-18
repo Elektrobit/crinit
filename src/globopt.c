@@ -48,6 +48,13 @@ int EBCL_globOptInitDefault(void) {
                     EBCL_errPrint("Could not set default value for global option \'SHUTDOWN_GRACE_PERIOD_US\'.");
                 }
             } break;
+            case EBCL_GLOBOPT_USE_SYSLOG: {
+                bool def = EBCL_GLOBOPT_DEFAULT_USE_SYSLOG;
+                if (EBCL_globOptSetBoolean(i, &def) == -1) {
+                    EBCL_errPrint("Could not set default value for global option \'USE_SYSYLOG\'.");
+                    return -1;
+                }
+            } break;
             case EBCL_GLOBOPT_START:
             default:
                 if (EBCL_globOptSet(i, NULL, 0) == -1) {
