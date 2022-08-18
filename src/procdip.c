@@ -180,6 +180,12 @@ static void *EBCL_dispatchThreadFunc(void *args) {
                 goto threadExit;
             }
             EBCL_dbgInfoPrint("(TID: %d) Dependency \'%s:%s\' fulfilled.", threadId, spawnDep.name, spawnDep.event);
+
+            if (EBCL_taskDBProvideFeature(ctx, tCopy, EBCL_TASK_STATE_RUNNING) == -1) {
+                EBCL_errPrint("(TID: %d) Could not fulfill provided features of spawned task \'%s\'.", threadId,
+                              tCopy->name);
+            }
+            EBCL_dbgInfoPrint("(TID: %d) Features of spawned task \'%s\' fulfilled.", threadId, tCopy->name);
         }
 
         int wret;
@@ -220,6 +226,13 @@ static void *EBCL_dispatchThreadFunc(void *args) {
                 EBCL_errPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, failDep.name, failDep.event);
             }
             EBCL_dbgInfoPrint("(TID: %d) Dependency \'%s:%s\' fulfilled.", threadId, failDep.name, failDep.event);
+
+            if (EBCL_taskDBProvideFeature(ctx, tCopy, EBCL_TASK_STATE_FAILED) == -1) {
+                EBCL_errPrint("(TID: %d) Could not fulfill provided features of failed task \'%s\'.", threadId,
+                              tCopy->name);
+            }
+            EBCL_dbgInfoPrint("(TID: %d) Features of failed task \'%s\' fulfilled.", threadId, tCopy->name);
+
             goto threadExit;
         }
 
@@ -246,6 +259,11 @@ static void *EBCL_dispatchThreadFunc(void *args) {
         EBCL_errPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, doneDep.name, doneDep.event);
     }
     EBCL_dbgInfoPrint("(TID: %d) Dependency \'%s:%s\' fulfilled.", threadId, doneDep.name, doneDep.event);
+
+    if (EBCL_taskDBProvideFeature(ctx, tCopy, EBCL_TASK_STATE_DONE) == -1) {
+        EBCL_errPrint("(TID: %d) Could not fulfill provided features of finished task \'%s\'.", threadId, tCopy->name);
+    }
+    EBCL_dbgInfoPrint("(TID: %d) Features of finished task \'%s\' fulfilled.", threadId, tCopy->name);
 
 threadExit:
     EBCL_freeTask(tCopy);

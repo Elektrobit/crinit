@@ -30,7 +30,7 @@ static void EBCL_destroyTask(ebcl_Task_t *t);
  *
  * @return 0 on success, -1 otherwise
  */
-static int EBCL_findInTaskDb(ssize_t *idx, const char *taskName, const ebcl_TaskDB_t *in);
+static int EBCL_findInTaskDB(ssize_t *idx, const char *taskName, const ebcl_TaskDB_t *in);
 /**
  * Check if an ebcl_Task_t is considered ready to be started (startable).
  *
@@ -113,7 +113,7 @@ int EBCL_taskDBInsert(ebcl_TaskDB_t *ctx, const ebcl_Task_t *t, bool overwrite) 
         return -1;
     }
     ssize_t idx = -1;
-    if (EBCL_findInTaskDb(&idx, t->name, ctx) == 0) {
+    if (EBCL_findInTaskDB(&idx, t->name, ctx) == 0) {
         if (overwrite) {
             EBCL_destroyTask(&ctx->taskSet[idx]);
         } else {
@@ -225,6 +225,7 @@ int EBCL_taskDBSetTaskState(ebcl_TaskDB_t *ctx, ebcl_TaskState_t s, const char *
         ebcl_Task_t *pTask = &ctx->taskSet[i];
         if (strcmp(pTask->name, taskName) == 0) {
             pTask->state = s;
+            s &= ~EBCL_TASK_STATE_NOTIFIED;  // Here we don't care if we got the state via notification or directly.
             if (s == EBCL_TASK_STATE_FAILED) {
                 pTask->failCount++;
             } else if (s == EBCL_TASK_STATE_DONE) {
@@ -449,6 +450,49 @@ int EBCL_taskDBFulfillDep(ebcl_TaskDB_t *ctx, const ebcl_TaskDep_t *dep) {
     return 0;
 }
 
+int EBCL_taskDBProvideFeature(ebcl_TaskDB_t *ctx, const ebcl_Task_t *provider, ebcl_TaskState_t newState) {
+    if (ctx == NULL || provider == NULL) {
+        EBCL_errPrint("The TaskDB context and the feature-providing task must not be NULL.");
+        return -1;
+    }
+
+    for (size_t i = 0; i < provider->prvSize; i++) {
+        if (provider->prv[i].stateReq == newState) {
+            char depName[] = EBCL_PROVIDE_DEP_NAME;
+            const ebcl_TaskDep_t dep = {depName, provider->prv[i].name};
+            if (EBCL_taskDBFulfillDep(ctx, &dep) == -1) {
+                EBCL_errPrint("Could not fulfill dependency \'%s:%s\'.", dep.name, dep.event);
+                return -1;
+            }
+            EBCL_dbgInfoPrint("Fulfilled feature dependency \'%s:%s\'.", dep.name, dep.event);
+        }
+    }
+    return 0;
+}
+
+int EBCL_taskDBProvideFeatureByTaskName(ebcl_TaskDB_t *ctx, const char *taskName, ebcl_TaskState_t newState) {
+    if (ctx == NULL || taskName == NULL) {
+        EBCL_errPrint("The TaskDB context and the name of the feature-providing task must not be NULL.");
+        return -1;
+    }
+
+    const ebcl_Task_t *provider = NULL;
+
+    if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
+        EBCL_errnoPrint("Could not queue up for mutex lock.");
+        return -1;
+    }
+    ssize_t taskIdx;
+    if (EBCL_findInTaskDB(&taskIdx, taskName, ctx) == -1) {
+        EBCL_errPrint("Could not find task \'%s\' in TaskDB.", taskName);
+        return -1;
+    }
+    provider = &ctx->taskSet[taskIdx];
+    pthread_mutex_unlock(&ctx->lock);
+
+    return EBCL_taskDBProvideFeature(ctx, provider, newState);
+}
+
 int EBCL_taskDBExportTaskNamesToArray(ebcl_TaskDB_t *ctx, char **tasks[], size_t *numTasks) {
     int ret = 0;
 
@@ -511,6 +555,8 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in
     pTask->depsSize = 0;
     pTask->cmds = NULL;
     pTask->cmdsSize = 0;
+    pTask->prv = NULL;
+    pTask->prvSize = 0;
     pTask->opts = 0;
     pTask->state = 0;
     pTask->pid = -1;
@@ -630,6 +676,59 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in
     }
 
     EBCL_freeArgvArray(tempDeps);
+
+    char **prvArgv = NULL;
+    int prvSize = 0;
+
+    char *tmp;
+    if (EBCL_confListGetVal(&tmp, "PROVIDES", in) == -1) {
+        // If there is no PROVIDES k/v-pair, that's fine and we're done.
+        return 0;
+    }
+
+    // Otherwise we want to parse it.
+    if (EBCL_confListExtractArgvArray(&prvSize, &prvArgv, "PROVIDES", in, false) == -1) {
+        EBCL_errPrint("Could not extract PROVIDES string from config file for task \'%s\'.", tempName);
+        goto fail;
+    }
+
+    pTask->prvSize = (size_t)prvSize;
+    pTask->prv = malloc(pTask->prvSize * sizeof(ebcl_TaskPrv_t));
+    if (pTask->prv == NULL) {
+        EBCL_errnoPrint("Could not allocate memory for array of provided features in task \'%s\'.", pTask->name);
+        goto fail;
+    }
+
+    for (size_t i = 0; i < pTask->prvSize; i++) {
+        ebcl_TaskPrv_t *ptr = &pTask->prv[i];
+        ptr->stateReq = 0;
+        ptr->name = prvArgv[i];
+        char *delimPtr = strchr(ptr->name, ':');
+        if (delimPtr == NULL) {
+            EBCL_errnoPrint("Could not parse \'%s\' in PROVIDES of task \'%s\'.", ptr->name, pTask->name);
+            free(prvArgv);
+            goto fail;
+        }
+        *delimPtr++ = '\0';
+        if (strncmp(delimPtr, EBCL_TASK_EVENT_RUNNING, strlen(EBCL_TASK_EVENT_RUNNING)) == 0) {
+            ptr->stateReq = EBCL_TASK_STATE_RUNNING;
+        } else if (strncmp(delimPtr, EBCL_TASK_EVENT_DONE, strlen(EBCL_TASK_EVENT_RUNNING)) == 0) {
+            ptr->stateReq = EBCL_TASK_STATE_DONE;
+        } else if (strncmp(delimPtr, EBCL_TASK_EVENT_FAILED, strlen(EBCL_TASK_EVENT_FAILED)) == 0) {
+            ptr->stateReq = EBCL_TASK_STATE_FAILED;
+        } else {
+            EBCL_errnoPrint("Could not parse \'%s\' in PROVIDES of task \'%s\'.", ptr->name, pTask->name);
+            free(prvArgv);
+            goto fail;
+        }
+
+        delimPtr = strchr(delimPtr, '-');
+        if (delimPtr != NULL && strcmp(delimPtr, EBCL_TASK_EVENT_NOTIFY_SUFFIX) == 0) {
+            ptr->stateReq |= EBCL_TASK_STATE_NOTIFIED;
+        }
+    }
+    free(prvArgv);
+
     return 0;
 fail:
     EBCL_freeTask(*out);
@@ -649,6 +748,8 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
     pTask->depsSize = 0;
     pTask->cmds = NULL;
     pTask->cmdsSize = 0;
+    pTask->prv = NULL;
+    pTask->prvSize = 0;
     pTask->opts = 0;
     pTask->state = 0;
     pTask->pid = -1;
@@ -733,16 +834,50 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
         size_t depEventLen = strlen(orig->deps[i].event) + 1;
         pTask->deps[i].name = malloc(depNameLen + depEventLen);
         if (pTask->deps[i].name == NULL) {
-            EBCL_errnoPrint(
-                "Could not allocate memory for backing string in deps[%zu] during "
-                "copy of Task "
-                "\'%s\'.",
-                i, orig->name);
+            EBCL_errnoPrint("Could not allocate memory for backing string in deps[%zu] during copy of Task \'%s\'.", i,
+                            orig->name);
             goto fail;
         }
         memcpy(pTask->deps[i].name, orig->deps[i].name, depNameLen);
         memcpy(pTask->deps[i].name + depNameLen, orig->deps[i].event, depEventLen);
         pTask->deps[i].event = pTask->deps[i].name + depNameLen;
+    }
+
+    pTask->prvSize = orig->prvSize;
+    if (pTask->prvSize > 0) {
+        pTask->prv = malloc(pTask->prvSize * sizeof(ebcl_TaskPrv_t));
+        if (pTask->prv == NULL) {
+            EBCL_errnoPrint("Could not allocate memory for %zu TaskPrvs during copy of Task \'%s\'.", pTask->prvSize,
+                            orig->name);
+            goto fail;
+        }
+    } else {
+        pTask->prv = NULL;
+    }
+
+    for (size_t i = 0; i < pTask->prvSize; i++) {
+        pTask->prv[i].name = NULL;
+        pTask->prv[i].stateReq = 0;
+    }
+
+    size_t backStrSize = 0;
+    for (size_t i = 0; i < orig->prvSize; i++) {
+        backStrSize += strlen(orig->prv[i].name) + 1;
+    }
+
+    if (backStrSize > 0) {
+        pTask->prv[0].name = malloc(backStrSize);
+        if (pTask->prv[0].name == NULL) {
+            EBCL_errnoPrint("Could not allocate memory for backing string in prv[0] during copy of Task \'%s\'.",
+                            orig->name);
+            goto fail;
+        }
+        char *pos = pTask->prv[0].name;
+        for (size_t i = 0; i < pTask->prvSize; i++) {
+            pTask->prv[i].name = pos;
+            pos = stpcpy(pTask->prv[i].name, orig->prv[i].name) + 1;
+            pTask->prv[i].stateReq = orig->prv[i].stateReq;
+        }
     }
 
     pTask->opts = orig->opts;
@@ -781,9 +916,13 @@ static void EBCL_destroyTask(ebcl_Task_t *t) {
         }
     }
     free(t->deps);
+    if (t->prv != NULL) {
+        free(t->prv[0].name);  // free backing string
+    }
+    free(t->prv);
 }
 
-static int EBCL_findInTaskDb(ssize_t *idx, const char *taskName, const ebcl_TaskDB_t *in) {
+static int EBCL_findInTaskDB(ssize_t *idx, const char *taskName, const ebcl_TaskDB_t *in) {
     if (taskName == NULL || in == NULL) {
         return -1;
     }

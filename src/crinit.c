@@ -231,6 +231,11 @@ static void EBCL_taskPrint(const ebcl_Task_t *t) {
         EBCL_dbgInfoPrint("deps[%zu]: name=\'%s\' event=\'%s\'", i, t->deps[i].name, t->deps[i].event);
     }
 
+    EBCL_dbgInfoPrint("Number of provided features: %zu", t->prvSize);
+    for (size_t i = 0; i < t->prvSize; i++) {
+        EBCL_dbgInfoPrint("prv[%zu]: name=\'%s\' state_req=\'%lu\'", i, t->prv[i].name, t->prv[i].stateReq);
+    }
+
     EBCL_dbgInfoPrint("TaskOpts:");
     EBCL_dbgInfoPrint("    EBCL_TASK_OPT_EXEC    = %s", (t->opts & EBCL_TASK_OPT_EXEC) ? "true" : "false");
     EBCL_dbgInfoPrint("    EBCL_TASK_OPT_QM_JAIL = %s", (t->opts & EBCL_TASK_OPT_QM_JAIL) ? "true" : "false");
