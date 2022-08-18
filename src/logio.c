@@ -74,17 +74,15 @@ void EBCL_setUseSyslog(bool sl) {
     pthread_mutex_unlock(&EBCL_logLock);
 }
 
-int EBCL_dbgInfoPrint(const char *format, ...) {
+void EBCL_dbgInfoPrint(const char *format, ...) {
     bool globOptDbg = false;
     if (EBCL_globOptGetBoolean(EBCL_GLOBOPT_DEBUG, &globOptDbg) == -1) {
         EBCL_errPrint("Could not read value for \'DEBUG\' from global options, assuming default.");
         globOptDbg = EBCL_GLOBOPT_DEFAULT_DEBUG;
     }
     if (!globOptDbg) {
-        return 0;
+        return;
     }
-    int ret = 0;
-    int cCount = 0;
     va_list args;
     pthread_mutex_lock(&EBCL_logLock);
     if (EBCL_infoStream == NULL) {
@@ -95,32 +93,16 @@ int EBCL_dbgInfoPrint(const char *format, ...) {
         vsyslog(LOG_DEBUG | LOG_DAEMON, format, args);
         va_end(args);
     } else {
-        if ((ret = fprintf(EBCL_infoStream, "%s", EBCL_printPrefix)) < 0) {
-            pthread_mutex_unlock(&EBCL_logLock);
-            return ret;
-        }
-        cCount += ret;
+        fprintf(EBCL_infoStream, "%s", EBCL_printPrefix);
         va_start(args, format);
-        if ((ret = vfprintf(EBCL_infoStream, format, args)) < 0) {
-            va_end(args);
-            pthread_mutex_unlock(&EBCL_logLock);
-            return ret;
-        }
+        vfprintf(EBCL_infoStream, format, args);
         va_end(args);
-        cCount += ret;
-        if ((ret = fprintf(EBCL_infoStream, "\n")) < 0) {
-            pthread_mutex_unlock(&EBCL_logLock);
-            return ret;
-        }
-        cCount += ret;
+        fprintf(EBCL_infoStream, "\n");
     }
     pthread_mutex_unlock(&EBCL_logLock);
-    return cCount;
 }
 
-int EBCL_infoPrint(const char *format, ...) {
-    int ret = 0;
-    int cCount = 0;
+void EBCL_infoPrint(const char *format, ...) {
     va_list args;
     pthread_mutex_lock(&EBCL_logLock);
     if (EBCL_infoStream == NULL) {
@@ -131,32 +113,16 @@ int EBCL_infoPrint(const char *format, ...) {
         vsyslog(LOG_INFO | LOG_DAEMON, format, args);
         va_end(args);
     } else {
-        if ((ret = fprintf(EBCL_infoStream, "%s", EBCL_printPrefix)) < 0) {
-            pthread_mutex_unlock(&EBCL_logLock);
-            return ret;
-        }
-        cCount += ret;
+        fprintf(EBCL_infoStream, "%s", EBCL_printPrefix);
         va_start(args, format);
-        if ((ret = vfprintf(EBCL_infoStream, format, args)) < 0) {
-            va_end(args);
-            pthread_mutex_unlock(&EBCL_logLock);
-            return ret;
-        }
+        vfprintf(EBCL_infoStream, format, args);
         va_end(args);
-        cCount += ret;
-        if ((ret = fprintf(EBCL_infoStream, "\n")) < 0) {
-            pthread_mutex_unlock(&EBCL_logLock);
-            return ret;
-        }
-        cCount += ret;
+        fprintf(EBCL_infoStream, "\n");
     }
     pthread_mutex_unlock(&EBCL_logLock);
-    return cCount;
 }
 
-int EBCL_errPrintFFL(const char *file, const char *func, int line, const char *format, ...) {
-    int ret = 0;
-    int cCount = 0;
+void EBCL_errPrintFFL(const char *file, const char *func, int line, const char *format, ...) {
     va_list args;
     pthread_mutex_lock(&EBCL_logLock);
     if (EBCL_errStream == NULL) {
@@ -166,7 +132,7 @@ int EBCL_errPrintFFL(const char *file, const char *func, int line, const char *f
         size_t n = strlen(EBCL_ERROR_WITH_FFL_FMT) + strlen(format) + 1;
         char *syslogFmt = malloc(n);
         if (syslogFmt == NULL) {
-            return -1;
+            return;
         }
         snprintf(syslogFmt, n, EBCL_ERROR_WITH_FFL_FMT "%s", file, func, line, format);
         va_start(args, format);
@@ -174,32 +140,16 @@ int EBCL_errPrintFFL(const char *file, const char *func, int line, const char *f
         va_end(args);
         free(syslogFmt);
     } else {
-        if ((ret = fprintf(EBCL_errStream, "%s" EBCL_ERROR_WITH_FFL_FMT, EBCL_printPrefix, file, func, line)) < 0) {
-            pthread_mutex_unlock(&EBCL_logLock);
-            return ret;
-        }
-        cCount += ret;
+        fprintf(EBCL_errStream, "%s" EBCL_ERROR_WITH_FFL_FMT, EBCL_printPrefix, file, func, line);
         va_start(args, format);
-        if ((ret = vfprintf(EBCL_errStream, format, args)) < 0) {
-            va_end(args);
-            pthread_mutex_unlock(&EBCL_logLock);
-            return ret;
-        }
+        vfprintf(EBCL_errStream, format, args);
         va_end(args);
-        cCount += ret;
-        if ((ret = fprintf(EBCL_errStream, "\n")) < 0) {
-            pthread_mutex_unlock(&EBCL_logLock);
-            return ret;
-        }
-        cCount += ret;
+        fprintf(EBCL_errStream, "\n");
     }
     pthread_mutex_unlock(&EBCL_logLock);
-    return cCount;
 }
 
-int EBCL_errnoPrintFFL(const char *file, const char *func, int line, const char *format, ...) {
-    int ret = 0;
-    int cCount = 0;
+void EBCL_errnoPrintFFL(const char *file, const char *func, int line, const char *format, ...) {
     va_list args;
     pthread_mutex_lock(&EBCL_logLock);
     if (EBCL_errStream == NULL) {
@@ -209,7 +159,7 @@ int EBCL_errnoPrintFFL(const char *file, const char *func, int line, const char 
         size_t n = strlen(EBCL_ERROR_WITH_FFL_FMT) + strlen(format) + strlen(EBCL_ERRNO_FMT) + 1;
         char *syslogFmt = malloc(n);
         if (syslogFmt == NULL) {
-            return -1;
+            return;
         }
         snprintf(syslogFmt, n, EBCL_ERROR_WITH_FFL_FMT "%s" EBCL_ERRNO_FMT, file, func, line, format,
                  EBCL_threadSafeStrerror(errno));
@@ -218,27 +168,13 @@ int EBCL_errnoPrintFFL(const char *file, const char *func, int line, const char 
         va_end(args);
         free(syslogFmt);
     } else {
-        if ((ret = fprintf(EBCL_errStream, "%s" EBCL_ERROR_WITH_FFL_FMT, EBCL_printPrefix, file, func, line)) < 0) {
-            pthread_mutex_unlock(&EBCL_logLock);
-            return ret;
-        }
-        cCount += ret;
+        fprintf(EBCL_errStream, "%s" EBCL_ERROR_WITH_FFL_FMT, EBCL_printPrefix, file, func, line);
         va_start(args, format);
-        if ((ret = vfprintf(EBCL_errStream, format, args)) < 0) {
-            va_end(args);
-            pthread_mutex_unlock(&EBCL_logLock);
-            return ret;
-        }
+        vfprintf(EBCL_errStream, format, args);
         va_end(args);
-        cCount += ret;
-        if ((ret = fprintf(EBCL_errStream, EBCL_ERRNO_FMT, EBCL_threadSafeStrerror(errno))) < 0) {
-            pthread_mutex_unlock(&EBCL_logLock);
-            return ret;
-        }
-        cCount += ret;
+        fprintf(EBCL_errStream, EBCL_ERRNO_FMT, EBCL_threadSafeStrerror(errno));
     }
     pthread_mutex_unlock(&EBCL_logLock);
-    return cCount;
 }
 
 static char *EBCL_threadSafeStrerror(int errNum) {

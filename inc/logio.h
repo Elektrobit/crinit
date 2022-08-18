@@ -71,9 +71,8 @@ void EBCL_setUseSyslog(bool sl);
  * at the end. It uses the output stream specified by EBCL_setInfoStream() or stdout if unset. The function uses mutexes
  * internally and is thread-safe.
  *
- * @return The number of characters printed.
  */
-int EBCL_infoPrint(const char *format, ...) __attribute__((format(printf, 1, 2)));
+void EBCL_infoPrint(const char *format, ...) __attribute__((format(printf, 1, 2)));
 /**
  * Print an info message if DEBUG global option is set.
  *
@@ -81,10 +80,8 @@ int EBCL_infoPrint(const char *format, ...) __attribute__((format(printf, 1, 2))
  * at the end. It uses the output stream specified by EBCL_setInfoStream() or stdout if unset. There will be no output
  * if the global option DEBUG is set to false using EBCL_globOptSetBoolean(). The function uses mutexes internally and
  * is thread-safe.
- *
- * @return The number of characters printed.
  */
-int EBCL_dbgInfoPrint(const char *format, ...) __attribute__((format(printf, 1, 2)));
+void EBCL_dbgInfoPrint(const char *format, ...) __attribute__((format(printf, 1, 2)));
 
 /**
  * Macro to print an error message including the offending source file, function, and line using EBCL_errPrintFFL().
@@ -99,10 +96,8 @@ int EBCL_dbgInfoPrint(const char *format, ...) __attribute__((format(printf, 1, 
  *
  * The macro EBCL_errPrint() should be used to provide the function with the correct \a file, \a func, and \a line
  * parameters.
- *
- * @return The number of characters printed.
  */
-int EBCL_errPrintFFL(const char *file, const char *func, int line, const char *format, ...)
+void EBCL_errPrintFFL(const char *file, const char *func, int line, const char *format, ...)
     __attribute__((format(printf, 4, 5)));
 
 /**
@@ -121,10 +116,8 @@ int EBCL_errPrintFFL(const char *file, const char *func, int line, const char *f
  *
  * The macro EBCL_errnoPrint() should be used to provide the function with the correct \a file, \a func, and \a line
  * parameters.
- *
- * @return The number of characters printed.
  */
-int EBCL_errnoPrintFFL(const char *file, const char *func, int line, const char *format, ...)
+void EBCL_errnoPrintFFL(const char *file, const char *func, int line, const char *format, ...)
     __attribute__((format(printf, 4, 5)));
 
 #endif /* __LOGIO_H__ */
