@@ -164,6 +164,12 @@ else
 fi
 
 echo ""
+echo Now we\'ll load a task to show off the environment variable setting.
+echo Will run: $ sudo crinit-ctl addtask ${CONFDIR}/print_env.crinit
+sudo LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ${BINDIR}/crinit-ctl addtask ${CONFDIR}/print_env.crinit
+sleep 1
+
+echo ""
 echo Now we\'ll try loading a second series file containing 3 tasks, forming a chain of dependencies. Three lines \
     should be echo\'d, one after the other.
 echo ""
