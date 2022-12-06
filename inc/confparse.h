@@ -14,6 +14,8 @@
 #include <stdbool.h>
 #include <sys/types.h>
 
+#define EBCL_CONFIG_KEYSTR_SETENV "ENV_SET"
+
 /**
  * Linked list to hold key/value pairs read from the config file.
  */

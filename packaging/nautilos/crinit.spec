@@ -11,6 +11,7 @@ License: Closed
 Packager: Rainer Müller <rainer.mueller@emlix.com>
 %endif
 BuildRequires: cmake
+BuildRequires: re2c
 BuildRequires:  libcmocka-dev
 
 %description

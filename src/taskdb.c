@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "globopt.h"
 #include "logio.h"
 #include "optfeat.h"
 
@@ -466,7 +467,7 @@ int EBCL_taskDBProvideFeature(ebcl_TaskDB_t *ctx, const ebcl_Task_t *provider, e
                 return -1;
             }
             EBCL_dbgInfoPrint("Fulfilled feature dependency \'%s:%s\'.", dep.name, dep.event);
-            if(EBCL_crinitFeatureHook(dep.event) == -1) {
+            if (EBCL_crinitFeatureHook(dep.event) == -1) {
                 EBCL_errPrint("Could not run activiation hook for feature \'%s\'.", dep.event);
                 return -1;
             }
@@ -560,6 +561,9 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in
     pTask->depsSize = 0;
     pTask->cmds = NULL;
     pTask->cmdsSize = 0;
+    pTask->taskEnv.envp = NULL;
+    pTask->taskEnv.allocSz = 0;
+    pTask->taskEnv.allocInc = 0;
     pTask->prv = NULL;
     pTask->prvSize = 0;
     pTask->opts = 0;
@@ -682,6 +686,18 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in
 
     EBCL_freeArgvArray(tempDeps);
 
+    ebcl_EnvSet_t globEnv;
+    if (EBCL_globOptGetEnvSet(&globEnv) == -1) {
+        EBCL_errPrint("Could not retrieve global environment set for task \'%s\'.", pTask->name);
+        goto fail;
+    }
+    if (EBCL_envSetCreateFromConfKvList(&pTask->taskEnv, &globEnv, in) == -1) {
+        EBCL_errPrint("Could not parse local task environment for task \'%s\'.", pTask->name);
+        EBCL_envSetDestroy(&globEnv);
+        goto fail;
+    }
+    EBCL_envSetDestroy(&globEnv);
+
     char **prvArgv = NULL;
     int prvSize = 0;
 
@@ -753,6 +769,9 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
     pTask->depsSize = 0;
     pTask->cmds = NULL;
     pTask->cmdsSize = 0;
+    pTask->taskEnv.envp = NULL;
+    pTask->taskEnv.allocSz = 0;
+    pTask->taskEnv.allocInc = 0;
     pTask->prv = NULL;
     pTask->prvSize = 0;
     pTask->opts = 0;
@@ -815,6 +834,11 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
             pTask->cmds[i].argv[j] = runner;
             runner += argvLen;
         }
+    }
+
+    if (EBCL_envSetDup(&pTask->taskEnv, &orig->taskEnv) == -1) {
+        EBCL_errPrint("Could not duplicate task environment during task duplication.");
+        goto fail;
     }
 
     pTask->depsSize = orig->depsSize;
@@ -925,6 +949,7 @@ static void EBCL_destroyTask(ebcl_Task_t *t) {
         free(t->prv[0].name);  // free backing string
     }
     free(t->prv);
+    EBCL_envSetDestroy(&t->taskEnv);
 }
 
 static int EBCL_findInTaskDB(ssize_t *idx, const char *taskName, const ebcl_TaskDB_t *in) {

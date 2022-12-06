@@ -657,6 +657,7 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
             if (confFn == NULL) {
                 EBCL_freeArgvArray(series);
                 EBCL_taskDBSetSpawnInhibit(ctx, false);
+                free(taskdir);
                 return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
                                          "Memory allocation error.");
             }
@@ -673,6 +674,7 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
             }
             EBCL_freeArgvArray(series);
             EBCL_taskDBSetSpawnInhibit(ctx, false);
+            free(taskdir);
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not parse config file.");
         }
@@ -684,6 +686,7 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
         ebcl_Task_t *t = NULL;
         if (EBCL_taskCreateFromConfKvList(&t, c) == -1) {
             EBCL_freeConfList(c);
+            free(taskdir);
             EBCL_freeArgvArray(series);
             EBCL_taskDBSetSpawnInhibit(ctx, false);
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
@@ -693,6 +696,7 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
         EBCL_freeConfList(c);
         if (EBCL_taskDBInsert(ctx, t, overwriteTasks) == -1) {
             EBCL_freeTask(t);
+            free(taskdir);
             EBCL_freeArgvArray(series);
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not insert new task into TaskDB.");
@@ -701,6 +705,7 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
         EBCL_freeTask(t);
     }
 
+    free(taskdir);
     EBCL_freeArgvArray(series);
     if (EBCL_taskDBSetSpawnInhibit(ctx, false) == -1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,

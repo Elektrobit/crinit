@@ -3,6 +3,7 @@ if(NOT DEFINED CMAKE_TOOLCHAIN_FILE AND DEFINED ENV{CMAKE_TOOLCHAIN_FILE})
   set(CMAKE_TOOLCHAIN_FILE $ENV{CMAKE_TOOLCHAIN_FILE})
 endif()
 project(crinit VERSION 0.6.1)
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_EXTENSIONS NO)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -100,7 +101,7 @@ add_custom_target(
   COMMAND
     mkdir -p ${PROJECT_BINARY_DIR}/debbuild/BUILD ${PROJECT_BINARY_DIR}/debbuild/BUILDROOT ${PROJECT_BINARY_DIR}/debbuild/SPECS ${PROJECT_BINARY_DIR}/debbuild/SOURCES ${PROJECT_BINARY_DIR}/debbuild/SDEBS ${PROJECT_BINARY_DIR}/debbuild/DEBS &&
     cp ${PROJECT_SOURCE_DIR}/packaging/nautilos/crinit.spec ${PROJECT_BINARY_DIR}/debbuild/SPECS/ &&
-    tar -czf ${PROJECT_BINARY_DIR}/debbuild/SOURCES/crinit.tar.gz --transform "s,^,crinit/," src/ inc/ test/ config/ images/ CMakeLists.txt Doxyfile README.md &&
+    tar -czf ${PROJECT_BINARY_DIR}/debbuild/SOURCES/crinit.tar.gz --transform "s,^,crinit/," src/ inc/ test/ config/ images/ CMakeModules/ CMakeLists.txt Doxyfile README.md &&
     cd ${PROJECT_BINARY_DIR}/debbuild &&
     debbuild
       --define "_topdir ${PROJECT_BINARY_DIR}/debbuild"
