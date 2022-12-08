@@ -1,6 +1,6 @@
 /**
  * @file utest-envset-dup.h
- * @brief Header declaring the unit tests for EBCL_envSetDu[().
+ * @brief Header declaring the unit tests for EBCL_envSetDup().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *

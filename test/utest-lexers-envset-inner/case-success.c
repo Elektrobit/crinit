@@ -1,6 +1,6 @@
 /**
  * @file case-success.c
- * @brief Unit test for EBCL_crinitTaskAdd(), successful execution.
+ * @brief Unit test for EBCL_envVarInnerLex(), successful execution.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *

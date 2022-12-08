@@ -1,6 +1,6 @@
 /**
  * @file case-null-input.c
- * @brief Unit test for EBCL_envVarInnerLex() with >=1 NULL inputs.
+ * @brief Unit test for EBCL_envSetInit() with a NULL input.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
