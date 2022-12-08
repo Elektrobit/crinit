@@ -30,7 +30,7 @@ typedef enum ebcl_TokenType_t {
  * Lexer/tokenizer for parsing an ENV_SET directive on the upper level.
  *
  * When repeatedly fed a string of the form `ENV_VAR_NAME "env var content"`, this function will advance the given
- * pointer over each token and tokenize that string as <EBCL_TK_ENVKEY EBCL_TK_ENVVAR>.
+ * pointer over each token and tokenize that string as `<EBCL_TK_ENVKEY EBCL_TK_ENVVAR>`.
  *
  * In general, the function will tokenive any free-standing alphanumeric text as an env key and any quoted characters
  * as an env value. Sanity-checking to make sure we get a single key followed by a single value is left to the upper

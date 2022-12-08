@@ -16,7 +16,24 @@
 #include "lexers.h"
 #include "logio.h"
 
+/**
+ * Grows an environment set according to its size increment.
+ *
+ * Used by EBCL_envSetSet() if not enough space is left in the set.
+ *
+ * @param es  The environment set to grow, must be initialized.
+ * 
+ * @return  0 on success, -1 otherwise
+ */
 static int EBCL_envSetGrow(ebcl_EnvSet_t *es);
+/**
+ * Searches for a given environment variable and returns its index in the set if found.
+ *
+ * @param es       The environment set to search in.
+ * @param envName  Then name of the variable to search for.
+ *
+ * @return  The index of the variable within ebcl_EnvSet_t::envp if successful, -1 otherwise
+ */
 static ssize_t EBCL_envSetSearch(const ebcl_EnvSet_t *es, const char *envName);
 
 static const char EBCL_escMap[128] = {
