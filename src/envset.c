@@ -22,7 +22,7 @@
  * Used by EBCL_envSetSet() if not enough space is left in the set.
  *
  * @param es  The environment set to grow, must be initialized.
- * 
+ *
  * @return  0 on success, -1 otherwise
  */
 static int EBCL_envSetGrow(ebcl_EnvSet_t *es);
@@ -249,15 +249,17 @@ int EBCL_envSetParseAndSet(ebcl_EnvSet_t *es, const char *envConf) {
         char *substKey = NULL;
         const char *substVal = NULL;
         size_t substLen = 0;
-        char hexBuf[3] = { '\0' };
+        char hexBuf[3] = {'\0'};
         char c = '\0';
+        size_t escMapIdx = 0;
         tt = EBCL_envVarInnerLex(&s, &mbegin, &mend);
         switch (tt) {
             case EBCL_TK_ERR:
                 EBCL_errPrint("Error while parsing string at '%.*s'\n", (int)(mend - mbegin), mbegin);
                 break;
             case EBCL_TK_ESC:
-                c = EBCL_escMap[(size_t) * (mbegin + 1)];
+                escMapIdx = (size_t)(*(mbegin + 1));
+                c = (escMapIdx < sizeof(EBCL_escMap)) ? EBCL_escMap[escMapIdx] : '\0';
                 if (c == '\0') {
                     EBCL_errPrint("Unimplemented escape sequence at '%.*s'\n", (int)(mend - mbegin), mbegin);
                     tt = EBCL_TK_ERR;
