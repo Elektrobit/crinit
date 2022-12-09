@@ -43,7 +43,6 @@ add_library(
   crinit-client SHARED
   crinit-client.c
   envset.c
-  lexers.c
   logio.c
   rtimcmd.c
   rtimopmap.c
