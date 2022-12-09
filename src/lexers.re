@@ -56,7 +56,7 @@ ebcl_TokenType_t EBCL_envVarInnerLex(const char **s, const char **mbegin, const 
 
         any        = [^\x00\\];
         escseq     = [\\] ( any | [\\] );
-        escseqx     = [\\][x] @t1 [0-9a-fA-F]{2} @t2;
+        escseqx    = [\\][x] @t1 [0-9a-fA-F]{2} @t2;
         varname    = [a-zA-Z_][a-zA-Z0-9_]*;
         var        = "\$\{" @t1 varname @t2 "\}";
 
