@@ -11,9 +11,6 @@ create_unit_test(
     case-lexer-error.c
     lexers.c
     ${PROJECT_SOURCE_DIR}/src/logio.c
-  DEFINITIONS
-    "-DEBCL_LIB_CONSTRUCTOR=__attribute__((unused))"
-    "-DEBCL_LIB_DESTRUCTOR=__attribute__((unused))"
   LIBRARIES
     libmockfunctions
   WRAPS

@@ -7,9 +7,6 @@ create_unit_test(
     case-null-input.c
     ${PROJECT_SOURCE_DIR}/src/logio.c
     ${PROJECT_SOURCE_DIR}/src/envset.c
-  DEFINITIONS
-    "-DEBCL_LIB_CONSTRUCTOR=__attribute__((unused))"
-    "-DEBCL_LIB_DESTRUCTOR=__attribute__((unused))"
   LIBRARIES
     libmockfunctions
   WRAPS
