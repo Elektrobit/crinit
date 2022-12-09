@@ -239,7 +239,7 @@ int EBCL_envSetParseAndSet(ebcl_EnvSet_t *es, const char *envConf) {
     size_t newAllocSz = strlen(s) + 1;
     char *parsedVal = malloc(newAllocSz * sizeof(char));
     if (parsedVal == NULL) {
-        EBCL_errnoPrint("Could not allocate buffer to parse envirenment variable value.");
+        EBCL_errnoPrint("Could not allocate buffer to parse environment variable value.");
         free(envKey);
         free(envVal);
         return -1;
