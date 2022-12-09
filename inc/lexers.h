@@ -32,24 +32,24 @@ typedef enum ebcl_TokenType_t {
  * When repeatedly fed a string of the form `ENV_VAR_NAME "env var content"`, this function will advance the given
  * pointer over each token and tokenize that string as `<EBCL_TK_ENVKEY EBCL_TK_ENVVAR>`.
  *
- * In general, the function will tokenive any free-standing alphanumeric text as an env key and any quoted characters
+ * In general, the function will tokenize any free-standing alphanumeric text as an env key and any quoted characters
  * as an env value. Sanity-checking to make sure we get a single key followed by a single value is left to the upper
  * layer.
  *
  * The function will return an EBCL_TK_ERR if a free-standing (unquoted) non-alphanumeric character is encountered or
- * if a key would begin with a number.
+ * if a key begins with a number.
  *
  * Environment keys are matched fully while the quotes of environment values are consumed but left out of the matched
  * string.
  *
- * Whitespaces are
+ * Whitespaces are matched/consumed as blocks.
  *
  * @param s       The string to tokenize, will be advanced over one token per call.
  * @param mbegin  Begin of a token match.
  * @param mend    End of a token match.
  *
  * @return EBCL_TK_ERR on any error, EBCL_TK_END on the end of the string, EBCL_TK_ENVKEY on an env key match,
- *         EBCL_TK_ENVVAL on an env value match.
+ *         EBCL_TK_ENVVAL on an env value match, EBCL_TK_WSPC on a whitespace (block) match.
  */
 ebcl_TokenType_t EBCL_envVarOuterLex(const char **s, const char **mbegin, const char **mend);
 /**
@@ -62,8 +62,8 @@ ebcl_TokenType_t EBCL_envVarOuterLex(const char **s, const char **mbegin, const 
  *     - EBCL_TK_VAR will consume `${VAR_NAME}` but match only `VAR_NAME`.
  *     - EBCL_TK_ESCX will consume for example `\x5e` but match only `5e`.
  *
- * The only parser error to be encountered is a single slash followed by the end-of-string, resulting in an illegal
- * escape sequences.
+ * The only parser error to be encountered is a single backslash followed by the end-of-string, resulting in an illegal
+ * escape sequence.
  *
  * @param s       The string to tokenize, will be advanced over one token per call.
  * @param mbegin  Begin of a token match.
