@@ -8,8 +8,8 @@
  *            All rights exclusively reserved for Elektrobit Automotive GmbH,
  *            unless otherwise expressly agreed
  */
-#ifndef __UTEST_LEXERS_ENVSET_OUTER_H__
-#define __UTEST_LEXERS_ENVSET_OUTER_H__
+#ifndef __UTEST_LEXERS_ENVSET_INNER_H__
+#define __UTEST_LEXERS_ENVSET_INNER_H__
 
 /**
  * Tests successful lex-ing of valid inputs.
@@ -32,4 +32,4 @@ void EBCL_envVarInnerLexTestNullInput(void **state);
  */
 void EBCL_envVarInnerLexTestLexerError(void **state);
 
-#endif /* __UTEST_LEXERS_ENVSET_OUTER_H__ */
+#endif /* __UTEST_LEXERS_ENVSET_INNER_H__ */

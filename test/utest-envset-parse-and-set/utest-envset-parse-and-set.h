@@ -8,8 +8,8 @@
  *            All rights exclusively reserved for Elektrobit Automotive GmbH,
  *            unless otherwise expressly agreed
  */
-#ifndef __UTEST_ENVSET_SET_H__
-#define __UTEST_ENVSET_SET_H__
+#ifndef __UTEST_ENVSET_PARSE_AND_SET_H__
+#define __UTEST_ENVSET_PARSE_AND_SET_H__
 
 /**
  * Tests successful parsing of an environment variable definition.
@@ -24,4 +24,4 @@ void EBCL_envSetParseAndSetTestWrongInput(void **state);
  */
 void EBCL_envSetParseAndSetTestNullInput(void **state);
 
-#endif /* __UTEST_ENVSET_SET_H__ */
+#endif /* __UTEST_ENVSET_PARSE_AND_SET_H__ */
