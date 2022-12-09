@@ -18,11 +18,11 @@ void EBCL_envSetParseAndSetTestSuccess(void **state) {
     EBCL_PARAM_UNUSED(state);
 
     const char *vanillaConf = "VANILLA_VAR \"That is tasty.\"", *vanillaRes = "That is tasty.";
-    const char *escSeqConf = "ESCSEQ_VAR \"Hello,\\x20World!\n\"", *escSeqRes = "Hello, World!\n";
-    const char *substConf = "SUBST_VAR \"\'${ESCSEQ_VAR}\' is a well-known phrase.\"",
-               *substRes = "\'Hello, World!\n\' is a well-known phrase.";
+    const char *escSeqConf = "ESCSEQ_VAR \"Hello,\\x20fans!\n\"", *escSeqRes = "Hello, fans!\n";
+    const char *substConf = "SUBST_VAR \"'${ESCSEQ_VAR}' is a well-known phrase.\"",
+               *substRes = "'Hello, fans!\n' is a well-known phrase.";
     const char *combinedConf = "COMPLEX_VAR \"${ESCSEQ_VAR}\\t${VANILLA_VAR}\"",
-               *combinedRes = "Hello, World!\n\tThat is tasty.";
+               *combinedRes = "Hello, fans!\n\tThat is tasty.";
 
     ebcl_EnvSet_t e = {NULL, 0, 0};
     assert_int_equal(EBCL_envSetInit(&e, EBCL_ENVSET_INITIAL_SIZE, EBCL_ENVSET_SIZE_INCREMENT), 0);

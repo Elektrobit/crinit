@@ -249,6 +249,7 @@ int EBCL_envSetParseAndSet(ebcl_EnvSet_t *es, const char *envConf) {
         char *substKey = NULL;
         const char *substVal = NULL;
         size_t substLen = 0;
+        char hexBuf[3] = { '\0' };
         char c = '\0';
         tt = EBCL_envVarInnerLex(&s, &mbegin, &mend);
         switch (tt) {
@@ -266,7 +267,10 @@ int EBCL_envSetParseAndSet(ebcl_EnvSet_t *es, const char *envConf) {
                 pTgt++;
                 break;
             case EBCL_TK_ESCX:
-                c = (char)strtoul(mbegin, NULL, 16);
+                hexBuf[0] = mbegin[0];
+                hexBuf[1] = mbegin[1];
+                hexBuf[2] = '\0';
+                c = (char)strtoul(hexBuf, NULL, 16);
                 *pTgt = c;
                 pTgt++;
                 break;
