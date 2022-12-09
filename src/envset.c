@@ -107,7 +107,7 @@ const char *EBCL_envSetGet(const ebcl_EnvSet_t *es, const char *envName) {
         return NULL;
     }
     if (strchr(envName, '=') != NULL) {
-        EBCL_errPrint("Environment variable names must not contain \'=\'.");
+        EBCL_errPrint("Environment variable names must not contain '='.");
         return NULL;
     }
     ssize_t idx = EBCL_envSetSearch(es, envName);
@@ -129,7 +129,7 @@ int EBCL_envSetSet(ebcl_EnvSet_t *es, const char *envName, const char *envVal) {
     size_t newSize = strlen(envName) + strlen(envVal) + 2;
     ssize_t idx = EBCL_envSetSearch(es, envName);
     if (idx == -1) {
-        EBCL_errPrint("Could not complete search for environment variable \'%s\' during variable set.", envName);
+        EBCL_errPrint("Could not complete search for environment variable '%s' during variable set.", envName);
     }
     if (es->envp[idx] == NULL) {
         if ((size_t)idx >= es->allocSz - 1) {
@@ -229,7 +229,7 @@ int EBCL_envSetParseAndSet(ebcl_EnvSet_t *es, const char *envConf) {
     }
 
     if (tt != EBCL_TK_END) {
-        EBCL_errPrint("Parsing of environment string \'%s\' ended with error.\n", envConf);
+        EBCL_errPrint("Parsing of environment string '%s' ended with error.\n", envConf);
         free(envVal);
         free(envKey);
         return -1;
@@ -318,14 +318,14 @@ int EBCL_envSetParseAndSet(ebcl_EnvSet_t *es, const char *envConf) {
     free(envVal);
 
     if (tt != EBCL_TK_END) {
-        EBCL_errPrint("Parsing of \'%s\' ended with an error state.", envConf);
+        EBCL_errPrint("Parsing of '%s' ended with an error state.", envConf);
         free(envKey);
         free(parsedVal);
         return -1;
     }
 
     if (EBCL_envSetSet(es, envKey, parsedVal) == -1) {
-        EBCL_errPrint("Could not set environment variable \'%s\' to \'%s\'.", envKey, parsedVal);
+        EBCL_errPrint("Could not set environment variable '%s' to '%s'.", envKey, parsedVal);
         free(envKey);
         free(parsedVal);
         return -1;
@@ -355,12 +355,12 @@ int EBCL_envSetCreateFromConfKvList(ebcl_EnvSet_t *newSet, const ebcl_EnvSet_t *
     for (size_t i = 0; i < (size_t)numNewEnvs; i++) {
         char *val = NULL;
         if (EBCL_confListGetValWithIdx(&val, EBCL_CONFIG_KEYSTR_SETENV, i, c) == -1) {
-            EBCL_errPrint("Could not retrieve config key \'%s\', index %zu from config.", EBCL_CONFIG_KEYSTR_SETENV, i);
+            EBCL_errPrint("Could not retrieve config key '%s', index %zu from config.", EBCL_CONFIG_KEYSTR_SETENV, i);
             EBCL_envSetDestroy(newSet);
             return -1;
         }
         if (EBCL_envSetParseAndSet(newSet, val) == -1) {
-            EBCL_errPrint("Failed to process " EBCL_CONFIG_KEYSTR_SETENV " config item with value \'%s\'", val);
+            EBCL_errPrint("Failed to process " EBCL_CONFIG_KEYSTR_SETENV " config item with value '%s'", val);
             EBCL_envSetDestroy(newSet);
             return -1;
         }
@@ -374,7 +374,7 @@ static ssize_t EBCL_envSetSearch(const ebcl_EnvSet_t *es, const char *envName) {
         return -1;
     }
     if (strchr(envName, '=') != NULL) {
-        EBCL_errPrint("Environment variable names must not contain \'=\'.");
+        EBCL_errPrint("Environment variable names must not contain '='.");
         return -1;
     }
     char **searcher = es->envp;
