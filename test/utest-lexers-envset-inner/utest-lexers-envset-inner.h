@@ -1,0 +1,35 @@
+/**
+ * @file utest-lexers-envset-inner.h
+ * @brief Header declaring the unit tests for EBCL_envVarInnerLex().
+ *
+ * @author emlix GmbH, 37083 Göttingen, Germany
+ *
+ * @copyright 2022 Elektrobit Automotive GmbH
+ *            All rights exclusively reserved for Elektrobit Automotive GmbH,
+ *            unless otherwise expressly agreed
+ */
+#ifndef __UTEST_LEXERS_ENVSET_INNER_H__
+#define __UTEST_LEXERS_ENVSET_INNER_H__
+
+/**
+ * Tests successful lex-ing of valid inputs.
+ *
+ * All possible return values of EBCL_envVarInnerLex() save for EBCL_TK_ERR are triggered using accordingly built input
+ * strings.
+ */
+void EBCL_envVarInnerLexTestSuccess(void **state);
+/**
+ * Tests detection of NULL pointer inputs.
+ *
+ * EBCL_envVarInnerLex() shall fail if any pointer input parameter is NULL and/or the string in *s is NULL.
+ */
+void EBCL_envVarInnerLexTestNullInput(void **state);
+/**
+ * Tests cases leading to a lexer error (EBCL_TK_ERR).
+ *
+ * For EBCL_envVarInnerLex() that can only happen if the input string starts with a character not allowed in an
+ * environment key _AND_ is not an opening double quote.
+ */
+void EBCL_envVarInnerLexTestLexerError(void **state);
+
+#endif /* __UTEST_LEXERS_ENVSET_INNER_H__ */

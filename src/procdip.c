@@ -17,6 +17,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include "envset.h"
 #include "logio.h"
 
 #ifndef SYS_gettid
@@ -47,20 +48,6 @@ static bool EBCL_waitInhibit = false;
  * @param args  See ebcl_DispThrArgs_t.
  */
 static void *EBCL_dispatchThreadFunc(void *args);
-/**
- * Builds the standard environment for a new task.
- *
- * Currently, this contains only the required task name for sd_notify().
- *
- * Memory is allocated for the string. When no longer needed, the string should be freed.
- *
- * @param taskEnv   An array of char pointers of size 2 or more.
- * @param taskName  The task name to add to the environment.
- *
- * @return 0 on success, -1 on error
- */
-static int EBCL_buildEnv(char **taskEnv, const char *taskName);
-
 /**
  * Block calling thread until #EBCL_waitInhibit becomes false.
  *
@@ -129,7 +116,6 @@ static void *EBCL_dispatchThreadFunc(void *args) {
     ebcl_TaskDB_t *ctx = a->ctx;
     const ebcl_Task_t *t = a->t;
     ebcl_Task_t *tCopy = NULL;
-    char *taskEnv[2] = {NULL, NULL};
     pid_t threadId = EBCL_gettid();
     pid_t pid = -1;
 
@@ -147,15 +133,17 @@ static void *EBCL_dispatchThreadFunc(void *args) {
     }
 
     pthread_mutex_unlock(&ctx->lock);
-    EBCL_dbgInfoPrint("(TID: %d) Will spawn Task \'%s\'.", threadId, tCopy->name);
 
-    if (EBCL_buildEnv(taskEnv, tCopy->name) == -1) {
-        EBCL_errPrint("(TID: %d) Could not build new environment for task \'%s\'.", threadId, tCopy->name);
+    if (EBCL_envSetSet(&tCopy->taskEnv, EBCL_CRINIT_ENV_NOTIFY_NAME, tCopy->name) == -1) {
+        EBCL_errPrint("Could not set notification environment variable for task \'%s\'", tCopy->name);
         goto threadExit;
     }
 
+    EBCL_dbgInfoPrint("(TID: %d) Will spawn Task \'%s\'.", threadId, tCopy->name);
+
     for (size_t i = 0; i < tCopy->cmdsSize; i++) {
-        if (posix_spawn(&pid, tCopy->cmds[i].argv[0], NULL, NULL, tCopy->cmds[i].argv, taskEnv) == -1) {
+        if (posix_spawn(&pid, tCopy->cmds[i].argv[0], NULL, NULL, tCopy->cmds[i].argv, tCopy->taskEnv.envp) == -1 ||
+            pid == -1) {
             EBCL_errnoPrint("(TID: %d) Could not spawn new process for command %zu of Task \'%s\'", threadId, i,
                             tCopy->name);
             goto threadExit;
@@ -268,7 +256,6 @@ static void *EBCL_dispatchThreadFunc(void *args) {
 threadExit:
     EBCL_freeTask(tCopy);
     free(args);
-    free(taskEnv[0]);
     return NULL;
 }
 
@@ -292,29 +279,6 @@ int EBCL_setInhibitWait(bool inh) {
         EBCL_errnoPrint("Could not unlock mutex.");
     }
     return ret;
-}
-
-static int EBCL_buildEnv(char **taskEnv, const char *taskName) {
-    if (taskEnv == NULL || taskName == NULL) {
-        EBCL_errPrint("Pointer arguments must not be NULL.");
-        return -1;
-    }
-    // Add task name for sd_notify()
-    size_t envPrefixLen = strlen(EBCL_CRINIT_ENV_NOTIFY_NAME "=");
-    size_t envSuffixLen = strlen(taskName);
-    size_t envSize = envPrefixLen + envSuffixLen + 1;
-    taskEnv[0] = calloc(envSize, sizeof(char));
-    if (taskEnv[0] == NULL) {
-        EBCL_errnoPrint("Could not allocate %zu Bytes of memory for environment variable \'%s\'.", envSize,
-                        EBCL_CRINIT_ENV_NOTIFY_NAME);
-        taskEnv[1] = NULL;
-        return -1;
-    }
-    memcpy(taskEnv[0], EBCL_CRINIT_ENV_NOTIFY_NAME "=", envPrefixLen);
-    memcpy(taskEnv[0] + envPrefixLen, taskName, envSuffixLen);
-    taskEnv[0][envPrefixLen + envSuffixLen] = '\0';
-    taskEnv[1] = NULL;
-    return 0;
 }
 
 static int EBCL_blockOnWaitInhibit(void) {

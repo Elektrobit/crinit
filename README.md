@@ -68,6 +68,10 @@ SHUTDOWN_GRACE_PERIOD_US = 100000
 
 USE_SYSLOG = NO
 
+ENV_SET = FOO "foo"
+ENV_SET = FOO_BAZ "${FOO} baz"
+ENV_SET = GREETING "Good morning!"
+
 # not yet implemented
 SIG = ""
 ```
@@ -83,6 +87,7 @@ SIG = ""
 - **USE_SYSLOG** -- If syslog should be used for output if it is available. If set to `YES`, Crinit will switch to
                     syslog for output as soon as a task file `PROVIDES` the `syslog` feature. Ideally this should be
                     a task file loading a syslog server such as syslogd or elosd. Default: `NO`
+- **ENV_SET** -- See section **Setting Environment Variables** below.
 - **SIG** -- The signature of this file. Currently unimplemented and can be left empty.
 
 ### Example Task Configuration
@@ -107,6 +112,12 @@ PROVIDES = ipv4_dhcp:wait resolvconf:wait
 
 RESPAWN = NO
 RESPAWN_RETRIES = -1
+
+ENV_SET = FOO_BAR "${FOO} bar"
+ENV_SET = ESCAPED_VAR "Global variable name: \${FOO}"
+ENV_SET = VAR_WITH_ESC_SEQUENCES "hex\t\x68\x65\x78"
+ENV_SET = GREETING "Good evening!"
+
 # features below not yet implemented
 EXEC = NO
 QM_JAIL = NO
@@ -144,11 +155,40 @@ SIG = ""
   This is a mandatory setting.
 - **RESPAWN_RETRIES** -- Number of times a respawned task may fail *in a row* before it is not started again. The
   special value `-1` is interpreted as "unlimited". Default: -1
+- **ENV_SET** -- See section **Setting Environment Variables** below.
 - **EXEC** -- If set to `YES`, `crinit` will exec into the first `COMMAND` of this task instead of spawning a process.
   This is a mandatory setting. (Not yet implemented.)
 - **QM_JAIL** -- If set to `YES`, all `COMMAND`s will be spawned inside a restricted environment such as the non-SIL/QM
   environment created by SafeSystemStartup. This is a mandatory setting. (Not yet implemented.)
 - **SIG** -- The signature of this file. Currently unimplemented and can be left empty.
+
+### Setting Environment Variables
+
+Crinit supports setting environment variables in the global and task configurations as shown above. The variables in the
+global config are valid for all tasks and may be locally overriden or referenced. The above examples together would
+result in the following list of environment variables for the task `network-dhcp` (with explanatory comments).
+
+```
+FOO=foo
+FOO_BAZ=foo baz                            # Expansion of variable set before in the same config.
+FOO_BAR=foo bar                            # Expansion of global variable in task-local variable.
+GREETING=Good evening!                     # Override of global variable.
+ESCAPED_VAR=Global variable name: ${FOO}   # Avoid variable expansion through escaping.
+VAR_WITH_ESC_SEQUENCES=hex  hex            # Support for escape sequences including hexadecimal bytes.
+```
+
+#### Ruleset
+
+* A configuration file may have an unlimited number of `ENV_SET` statements, each specifying a single environment
+  variable.
+* `ENV_SET` statements must be of the form `ENV_SET = VARIABLE_NAME "variable content"`. The quotes around the variable
+  content are mandatory and will not appear in the environment variable itself.
+* Setting the same variable twice overrides the first instance.
+* Variables can be referenced/expanded using sh-like `${VARIABLE_NAME}` syntax.
+    + Expansion can be avoided by escaping with a `\`.
+* Variables can reference all other variables set before it, globally and locally.
+* Variables are set/processed in the order they appear in the config file.
+* Common escape sequences are supported: `\a, \b, \n, \t, \$, \\, \x<two digit hex number>`.
 
 ## crinit-ctl Usage Info
 

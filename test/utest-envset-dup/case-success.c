@@ -1,0 +1,45 @@
+/**
+ * @file case-success.c
+ * @brief Unit test for EBCL_envSetDup(), successful execution.
+ *
+ * @author emlix GmbH, 37083 Göttingen, Germany
+ *
+ * @copyright 2022 Elektrobit Automotive GmbH
+ *            All rights exclusively reserved for Elektrobit Automotive GmbH,
+ *            unless otherwise expressly agreed
+ */
+
+#include "common.h"
+#include "envset.h"
+#include "string.h"
+#include "unit_test.h"
+#include "utest-envset-dup.h"
+
+#define UTEST_ENVSET_DUP_ORIG_SET_ALLOCSIZE 8uL
+#define UTEST_ENVSET_DUP_ORIG_SET_ELEMENTS (UTEST_ENVSET_DUP_ORIG_SET_ALLOCSIZE - 3uL)
+
+void EBCL_envSetDupTestSuccess(void **state) {
+    EBCL_PARAM_UNUSED(state);
+
+    char dummyStr[] = "foo bar baz";
+    char *origEnvp[UTEST_ENVSET_DUP_ORIG_SET_ALLOCSIZE];
+    for (size_t i = 0; i < UTEST_ENVSET_DUP_ORIG_SET_ALLOCSIZE; i++) {
+        origEnvp[i] = (i < UTEST_ENVSET_DUP_ORIG_SET_ELEMENTS) ? dummyStr : NULL;
+    }
+    ebcl_EnvSet_t origSet = {&origEnvp[0], sizeof(origEnvp), sizeof(origEnvp) / 2};
+    ebcl_EnvSet_t copySet = {NULL, 0, 0};
+
+    assert_int_equal(EBCL_envSetDup(&copySet, &origSet), 0);
+
+    assert_non_null(copySet.envp);
+    assert_int_equal(copySet.allocSz, origSet.allocSz);
+    assert_int_equal(copySet.allocInc, origSet.allocInc);
+    for (size_t i = 0; i < UTEST_ENVSET_DUP_ORIG_SET_ALLOCSIZE; i++) {
+        if (i < UTEST_ENVSET_DUP_ORIG_SET_ELEMENTS) {
+            assert_string_equal(copySet.envp[i], dummyStr);
+        } else {
+            assert_null(copySet.envp[i]);
+        }
+    }
+    assert_int_equal(EBCL_envSetDestroy(&copySet), 0);
+}

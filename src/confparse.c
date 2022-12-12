@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "envset.h"
 #include "globopt.h"
 #include "logio.h"
 
@@ -86,6 +87,7 @@ int EBCL_parseConf(ebcl_ConfKvList_t **confList, const char *filename) {
     ebcl_ConfKvList_t *pList = *confList;
     ebcl_ConfKvList_t *last = *confList;
     size_t keyArrayCount = 0;
+    size_t envSetCount = 0;
     while (fgets(line, sizeof(line), cf) != NULL) {
         pList->key = NULL;
         pList->next = NULL;
@@ -157,6 +159,13 @@ int EBCL_parseConf(ebcl_ConfKvList_t **confList, const char *filename) {
                 skLen -= strlen(brck);
                 *brck = '\0';
             }
+        }
+
+        /* Handle ENV_SET (TODO: As we will likely change the whole array handling syntax we should consolidate this
+         * with everything else and just differentiate between keys which may be given multiple times and keys which may
+         * appear only once. */
+        if (!autoArray && strcmp(sk, EBCL_CONFIG_KEYSTR_SETENV) == 0) {
+            pList->keyArrIndex = envSetCount++;
         }
 
         // Copy to list
@@ -495,14 +504,14 @@ ssize_t EBCL_confListKeyGetMaxIdx(const ebcl_ConfKvList_t *c, const char *key) {
         return -1;
     }
 
-    size_t maxIdx = 0;
+    ssize_t maxIdx = -1;
     while (c != NULL) {
-        if (!strncmp(pKey, c->key, kLen) && c->key[kLen] == '\0' && c->keyArrIndex > maxIdx) {
-            maxIdx = c->keyArrIndex;
+        if (!strncmp(pKey, c->key, kLen) && c->key[kLen] == '\0' && (ssize_t)c->keyArrIndex > maxIdx) {
+            maxIdx = (ssize_t)c->keyArrIndex;
         }
         c = c->next;
     }
-    return (ssize_t)maxIdx;
+    return maxIdx;
 }
 
 int EBCL_loadSeriesConf(int *seriesLen, char ***series, const char *filename) {
@@ -597,7 +606,24 @@ int EBCL_loadSeriesConf(int *seriesLen, char ***series, const char *filename) {
         return -1;
     }
 
+    ebcl_EnvSet_t globEnv;
+    if (EBCL_envSetCreateFromConfKvList(&globEnv, NULL, c) == -1) {
+        EBCL_errPrint("Could not parse global environment variables from series config.");
+        EBCL_freeConfList(c);
+        EBCL_freeArgvArray(*series);
+        return -1;
+    }
+
+    if (EBCL_globOptSetEnvSet(&globEnv) == -1) {
+        EBCL_errPrint("Could not store global environment variable set.");
+        EBCL_freeConfList(c);
+        EBCL_freeArgvArray(*series);
+        EBCL_envSetDestroy(&globEnv);
+        return -1;
+    }
+
     EBCL_freeConfList(c);
+    EBCL_envSetDestroy(&globEnv);
     return 0;
 }
 
@@ -667,4 +693,3 @@ static inline bool EBCL_isAbsPath(const char *path) {
     if (path == NULL) return false;
     return (path[0] == '/');
 }
-

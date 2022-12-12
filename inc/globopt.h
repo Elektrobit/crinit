@@ -14,6 +14,8 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include "envset.h"
+
 /**
  * Type to specify a global option (set in the series file)
  */
@@ -24,6 +26,7 @@ typedef enum {
     EBCL_GLOBOPT_TASKDIR,     ///< TASKDIR global option.
     EBCL_GLOBOPT_SHDGRACEP,   ///< SHUTDOWN_GRACE_PERIOD_US global option
     EBCL_GLOBOPT_USE_SYSLOG,  ///< USE_SYSLOG global option
+    EBCL_GLOBOPT_ENV,         ///< Global task environment variables.
     EBCL_GLOBOPT_END          ///< Marker for end of enum, used to calculate number of elements.
 } ebcl_GlobOptKey_t;
 
@@ -150,5 +153,8 @@ int EBCL_globOptSetString(ebcl_GlobOptKey_t key, const char *str);
  * @return 0 on success, -1 otherwise
  */
 int EBCL_globOptGetString(ebcl_GlobOptKey_t key, char **str);
+
+int EBCL_globOptSetEnvSet(const ebcl_EnvSet_t *es);
+int EBCL_globOptGetEnvSet(ebcl_EnvSet_t *es);
 
 #endif /* __GLOBOPT_H__ */

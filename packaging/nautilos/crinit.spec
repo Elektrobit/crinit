@@ -1,7 +1,7 @@
 Summary: EB BaseOS Configurable Rootfs Init
 Name: crinit
 Group: System/Base
-Version: 0.6.1
+Version: 0.7.0
 %global soversion_ 0
 Release: 1
 Source0: %{name}.tar.gz
@@ -11,6 +11,7 @@ License: Closed
 Packager: Rainer Müller <rainer.mueller@emlix.com>
 %endif
 BuildRequires: cmake
+BuildRequires: re2c
 BuildRequires:  libcmocka-dev
 
 %description

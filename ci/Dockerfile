@@ -8,7 +8,7 @@ ARG GID=1000
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
  && apt-get install -y sudo locales vim screen libncurses-dev \
-    build-essential git python3-minimal cmake \
+    build-essential git python3-minimal cmake re2c \
     valgrind \
     rpm wget \
     doxygen graphviz plantuml \

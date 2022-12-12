@@ -1,7 +1,10 @@
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
+find_package(RE2C REQUIRED)
 
 configure_file(version.c.in version.c)
+
+RE2C_TARGET(NAME lexers INPUT ${PROJECT_SOURCE_DIR}/src/lexers.re OUTPUT lexers.c OPTIONS -ibs -W DEPENDS ${PROJECT_SOURCE_DIR}/inc/lexers.h)
 
 # crinit
 
@@ -9,6 +12,8 @@ add_executable(
   crinit
   crinit.c
   confparse.c
+  lexers.c
+  envset.c
   taskdb.c
   procdip.c
   logio.c
@@ -37,6 +42,7 @@ target_link_libraries(
 add_library(
   crinit-client SHARED
   crinit-client.c
+  envset.c
   logio.c
   rtimcmd.c
   rtimopmap.c
@@ -82,6 +88,9 @@ add_executable(
   crinit_parsecheck
   crinit_parsecheck.c
   confparse.c
+  lexers.c
+  envset.c
+  globopt.c
   taskdb.c
   logio.c
 )

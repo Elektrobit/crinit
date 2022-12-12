@@ -30,6 +30,14 @@ create_mock_lib(
     mock-build-rtim-cmd.c
     mock-destroy-rtim-cmd.c
     mock-crinit-xfer.c
+    mock-malloc.c
+    mock-calloc.c
+    mock-strdup.c
+    mock-free.c
+    mock-err-print.c
+    mock-errno-print.c
+    mock-envset-init.c
+    mock-envset-destroy.c
   INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
