@@ -14,7 +14,13 @@
 #include <stdbool.h>
 #include <sys/types.h>
 
+#include "fseries.h"
+
+#define EBCL_CONFIG_KEYSTR_TASKS "TASKS"
 #define EBCL_CONFIG_KEYSTR_SETENV "ENV_SET"
+#define EBCL_CONFIG_KEYSTR_SYMLINKS "TASKDIR_FOLLOW_SYMLINKS"
+#define EBCL_CONFIG_KEYSTR_TASK_FILE_SUFFIX "TASK_FILE_SUFFIX"
+#define EBCL_CONFIG_DEFAULT_TASK_FILE_SUFFIX ".crinit"
 
 /**
  * Linked list to hold key/value pairs read from the config file.
@@ -161,8 +167,8 @@ int EBCL_confListExtractSignedInt(int *out, int base, const char *key, bool mand
  *
  * See EBCL_confListExtractArgvArrayWithIdx() for further documentation.
  */
-#define EBCL_confListExtractArgvArray(outArgc, outArgv, key, in, doubleQuoting) \
-    EBCL_confListExtractArgvArrayWithIdx(outArgc, outArgv, key, 0, in, doubleQuoting)
+#define EBCL_confListExtractArgvArray(outArgc, outArgv, key, mandatory, in, doubleQuoting) \
+    EBCL_confListExtractArgvArrayWithIdx(outArgc, outArgv, key, 0, mandatory, in, doubleQuoting)
 /**
  * Extract an array of strings from the value mapped to an indexed key in an ebcl_ConfKvList_t.
  *
@@ -176,13 +182,15 @@ int EBCL_confListExtractSignedInt(int *out, int base, const char *key, bool mand
  * @param outArgv         Will contain the value of \a key split along spaces.
  * @param key             The key to search for in \a in.
  * @param keyArrIndex     The index of the key to search for. The index of a singular (non-array) key is 0.
+ * @param mandatory       If true, this function will return an error if \a key is not found in \a in. If false, a
+ *                        non-existent \a key will result in successful return and \a out being left untouched.
  * @param in              The ebcl_ConfKvList_t to search in.
  * @param doubleQuoting   If true, EBCL_confListExtractArgvArray() will respect quoting with double quotes.
  *
  * @return 0 on success, -1 on error
  */
 int EBCL_confListExtractArgvArrayWithIdx(int *outArgc, char ***outArgv, const char *key, size_t keyArrIndex,
-                                         const ebcl_ConfKvList_t *in, bool doubleQuoting);
+                                         bool mandatory, const ebcl_ConfKvList_t *in, bool doubleQuoting);
 
 /**
  * Free an argv array created by EBCL_confListExtractArgvArray()/EBCL_confListExtractArgvArrayWithIdx().
@@ -212,12 +220,11 @@ ssize_t EBCL_confListKeyGetMaxIdx(const ebcl_ConfKvList_t *c, const char *key);
  * Will return the task config files to be loaded in \a series. Will also set any global options specified in the series
  * file.
  *
- * @param seriesLen  Returns how many task configs there are in \a series.
  * @param series     Returns the paths to the task configs specified in the series file.
  * @param filename   The path to the series file to load.
  *
  * @return 0 on success, -1 on failure
  */
-int EBCL_loadSeriesConf(int *seriesLen, char ***series, const char *filename);
+int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename);
 
 #endif /* __CONFPARSE_H__ */

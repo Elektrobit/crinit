@@ -21,6 +21,7 @@ typedef struct ebcl_FileSeries_t {
 } ebcl_FileSeries_t;
 
 int EBCL_fileSeriesFromDir(ebcl_FileSeries_t *fse, const char *path, const char *fileSuffix, bool followLinks);
+int EBCL_fileSeriesFromStrArr(ebcl_FileSeries_t *fse, const char *baseDir, char **strArr);
 void EBCL_destroyFileSeries(ebcl_FileSeries_t *fse);
 int EBCL_initFileSeries(ebcl_FileSeries_t *fse, size_t numElements, const char *baseDir);
 int EBCL_resizeFileSeries(ebcl_FileSeries_t *fse, size_t numElements);

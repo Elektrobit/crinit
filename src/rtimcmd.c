@@ -23,6 +23,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include "fseries.h"
 #include "globopt.h"
 #include "logio.h"
 #include "procdip.h"
@@ -629,17 +630,9 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
                                  "Could not inhibit process spawning to load new series file.");
     }
 
-    char **series = NULL;
-    int seriesLen = 0;
-    if (EBCL_loadSeriesConf(&seriesLen, &series, cmd->args[0]) == -1) {
+    ebcl_FileSeries_t taskSeries;
+    if (EBCL_loadSeriesConf(&taskSeries, cmd->args[0]) == -1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR, "Could not load series file.");
-    }
-
-    char *taskdir;
-    if (EBCL_globOptGetString(EBCL_GLOBOPT_TASKDIR, &taskdir) == -1) {
-        EBCL_taskDBSetSpawnInhibit(ctx, false);
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
-                                 "Could not access \'TASKDIR\' global option.");
     }
 
     bool overwriteTasks = false;
@@ -647,34 +640,33 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
         overwriteTasks = true;
     }
 
-    for (int n = 0; n < seriesLen; n++) {
-        char *confFn = series[n];
+    for (size_t n = 0; n < taskSeries.size; n++) {
+        char *confFn = taskSeries.fnames[n];
         bool confFnAllocated = false;
         if (!EBCL_isAbsPath(confFn)) {
-            size_t prefixLen = strlen(taskdir);
-            size_t suffixLen = strlen(series[n]);
+            size_t prefixLen = strlen(taskSeries.baseDir);
+            size_t suffixLen = strlen(taskSeries.fnames[n]);
             confFn = malloc(prefixLen + suffixLen + 2);
             if (confFn == NULL) {
-                EBCL_freeArgvArray(series);
+                EBCL_destroyFileSeries(&taskSeries);
                 EBCL_taskDBSetSpawnInhibit(ctx, false);
-                free(taskdir);
                 return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
                                          "Memory allocation error.");
             }
-            memcpy(confFn, taskdir, prefixLen);
+            memcpy(confFn, taskSeries.baseDir, prefixLen);
             confFn[prefixLen] = '/';
-            memcpy(confFn + prefixLen + 1, series[n], suffixLen + 1);
+            memcpy(confFn + prefixLen + 1, taskSeries.fnames[n], suffixLen + 1);
             confFnAllocated = true;
         }
         ebcl_ConfKvList_t *c;
+
         if (EBCL_parseConf(&c, confFn) == -1) {
             EBCL_errPrint("Could not parse file \'%s\'.", confFn);
             if (confFnAllocated) {
                 free(confFn);
             }
-            EBCL_freeArgvArray(series);
+            EBCL_destroyFileSeries(&taskSeries);
             EBCL_taskDBSetSpawnInhibit(ctx, false);
-            free(taskdir);
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not parse config file.");
         }
@@ -686,8 +678,7 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
         ebcl_Task_t *t = NULL;
         if (EBCL_taskCreateFromConfKvList(&t, c) == -1) {
             EBCL_freeConfList(c);
-            free(taskdir);
-            EBCL_freeArgvArray(series);
+            EBCL_destroyFileSeries(&taskSeries);
             EBCL_taskDBSetSpawnInhibit(ctx, false);
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not create task from config file.");
@@ -696,8 +687,7 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
         EBCL_freeConfList(c);
         if (EBCL_taskDBInsert(ctx, t, overwriteTasks) == -1) {
             EBCL_freeTask(t);
-            free(taskdir);
-            EBCL_freeArgvArray(series);
+            EBCL_destroyFileSeries(&taskSeries);
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not insert new task into TaskDB.");
         }
@@ -705,8 +695,7 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
         EBCL_freeTask(t);
     }
 
-    free(taskdir);
-    EBCL_freeArgvArray(series);
+    EBCL_destroyFileSeries(&taskSeries);
     if (EBCL_taskDBSetSpawnInhibit(ctx, false) == -1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
                                  "Could not re-enable spawning of processes.");

@@ -390,15 +390,20 @@ int EBCL_confListExtractUnsignedLL(unsigned long long *out, int base, const char
 }
 
 int EBCL_confListExtractArgvArrayWithIdx(int *outArgc, char ***outArgv, const char *key, size_t keyArrIndex,
-                                         const ebcl_ConfKvList_t *in, bool doubleQuoting) {
+                                         bool mandatory, const ebcl_ConfKvList_t *in, bool doubleQuoting) {
     if (key == NULL || in == NULL || outArgc == NULL || outArgv == NULL) {
         EBCL_errPrint("\'key\', \'in\', outArgv, and \'outArgc\' parameters must not be NULL.");
         return -1;
     }
     char *val = NULL;
     if (EBCL_confListGetValWithIdx(&val, key, keyArrIndex, in) == -1) {
-        EBCL_errPrint("Could not get value for key \"%s\" (index %zu).", key, keyArrIndex);
-        return -1;
+        if (mandatory) {
+            EBCL_errPrint("Could not get value for mandatory key \"%s\" (index %zu).", key, keyArrIndex);
+            return -1;
+        } else {
+            // Leave outArgc and outArgv untouched
+            return 0;
+        }
     }
 
     size_t valLen = strlen(val) + 1;
@@ -514,8 +519,8 @@ ssize_t EBCL_confListKeyGetMaxIdx(const ebcl_ConfKvList_t *c, const char *key) {
     return maxIdx;
 }
 
-int EBCL_loadSeriesConf(int *seriesLen, char ***series, const char *filename) {
-    if (seriesLen == NULL || series == NULL || !EBCL_isAbsPath(filename)) {
+int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
+    if (series == NULL || !EBCL_isAbsPath(filename)) {
         EBCL_errPrint("Parameters must not be NULL and filename must be an absolute path.");
         return -1;
     }
@@ -524,10 +529,52 @@ int EBCL_loadSeriesConf(int *seriesLen, char ***series, const char *filename) {
         EBCL_errPrint("Could not parse file \'%s\'.", filename);
         return -1;
     }
-    if (EBCL_confListExtractArgvArray(seriesLen, series, "TASKS", c, true) == -1) {
+
+    char *taskDir = NULL;
+    if (EBCL_confListGetVal(&taskDir, EBCL_GLOBOPT_KEYSTR_TASKDIR, c) == -1) {
+        EBCL_errPrint("Could not get value for mandatory key \'%s\' in series config \'%s\'.",
+                      EBCL_GLOBOPT_KEYSTR_TASKDIR, filename);
+        EBCL_freeConfList(c);
+        return -1;
+    }
+
+    if (EBCL_globOptSetString(EBCL_GLOBOPT_TASKDIR, taskDir) == -1) {
+        EBCL_errPrint("Could not store global string option values for \'%s\'.", EBCL_GLOBOPT_KEYSTR_TASKDIR);
+        EBCL_freeConfList(c);
+        return -1;
+    }
+
+    bool followLinks = true;
+    if (EBCL_confListExtractBoolean(&followLinks, EBCL_CONFIG_KEYSTR_SYMLINKS, false, c) == -1) {
+        EBCL_errPrint("Could not extract boolean value for key 'TASKDIR_FOLLOW_SYMLINKS'.");
+        EBCL_freeConfList(c);
+    }
+
+    char *taskFileSuffix = NULL;
+    EBCL_confListGetVal(&taskFileSuffix, EBCL_CONFIG_KEYSTR_TASK_FILE_SUFFIX, c);
+
+    char **seriesArr = NULL;
+    int seriesLen = 0;
+    if (EBCL_confListExtractArgvArray(&seriesLen, &seriesArr, EBCL_CONFIG_KEYSTR_TASKS, false, c, true) == -1) {
         EBCL_errPrint("Could not extract value for key \'TASKS\' from \'%s\'.", filename);
         EBCL_freeConfList(c);
         return -1;
+    }
+
+    if (seriesArr == NULL) {  // No TASKS array given, scan TASKDIR.
+        if (EBCL_fileSeriesFromDir(series, taskDir,
+                                   (taskFileSuffix != NULL) ? taskFileSuffix : EBCL_CONFIG_DEFAULT_TASK_FILE_SUFFIX,
+                                   followLinks) == -1) {
+            EBCL_errPrint("Could not generate list of tasks from task directory '%s'.", taskDir);
+            EBCL_freeConfList(c);
+            return -1;
+        }
+    } else {  // TASKS taken from config
+        if (EBCL_fileSeriesFromStrArr(series, taskDir, seriesArr) == -1) {
+            EBCL_errPrint("Could not generate list of tasks from 'TASKS' option.");
+            EBCL_freeConfList(c);
+            EBCL_freeArgvArray(seriesArr);
+        }
     }
 
     bool confDbg = EBCL_GLOBOPT_DEFAULT_DEBUG;
@@ -535,13 +582,13 @@ int EBCL_loadSeriesConf(int *seriesLen, char ***series, const char *filename) {
         EBCL_errPrint("Failed to search for non-mandatory key \'%s\' in series config \'%s\'.",
                       EBCL_GLOBOPT_KEYSTR_DEBUG, filename);
         EBCL_freeConfList(c);
-        EBCL_freeArgvArray(*series);
+        EBCL_destroyFileSeries(series);
         return -1;
     }
     if (EBCL_globOptSetBoolean(EBCL_GLOBOPT_DEBUG, &confDbg) == -1) {
         EBCL_errPrint("Could not store global boolean option value for \'%s\'.", EBCL_GLOBOPT_KEYSTR_DEBUG);
         EBCL_freeConfList(c);
-        EBCL_freeArgvArray(*series);
+        EBCL_destroyFileSeries(series);
         return -1;
     }
 
@@ -550,13 +597,13 @@ int EBCL_loadSeriesConf(int *seriesLen, char ***series, const char *filename) {
         EBCL_errPrint("Failed to search for non-mandatory key \'%s\' in series config \'%s\'.",
                       EBCL_GLOBOPT_KEYSTR_FILESIGS, filename);
         EBCL_freeConfList(c);
-        EBCL_freeArgvArray(*series);
+        EBCL_destroyFileSeries(series);
         return -1;
     }
     if (EBCL_globOptSetBoolean(EBCL_GLOBOPT_FILESIGS, &confFsigs) == -1) {
         EBCL_errPrint("Could not store global boolean option value for \'%s\'.", EBCL_GLOBOPT_KEYSTR_FILESIGS);
         EBCL_freeConfList(c);
-        EBCL_freeArgvArray(*series);
+        EBCL_destroyFileSeries(series);
         return -1;
     }
 
@@ -565,28 +612,13 @@ int EBCL_loadSeriesConf(int *seriesLen, char ***series, const char *filename) {
         EBCL_errPrint("Failed to search for non-mandatory key \'%s\' in series config \'%s\'.",
                       EBCL_GLOBOPT_KEYSTR_USE_SYSLOG, filename);
         EBCL_freeConfList(c);
-        EBCL_freeArgvArray(*series);
+        EBCL_destroyFileSeries(series);
         return -1;
     }
     if (EBCL_globOptSetBoolean(EBCL_GLOBOPT_USE_SYSLOG, &confUseSyslog) == -1) {
         EBCL_errPrint("Could not store global boolean option value for \'%s\'.", EBCL_GLOBOPT_KEYSTR_USE_SYSLOG);
         EBCL_freeConfList(c);
-        EBCL_freeArgvArray(*series);
-        return -1;
-    }
-
-    char *taskDir = NULL;
-    if (EBCL_confListGetVal(&taskDir, EBCL_GLOBOPT_KEYSTR_TASKDIR, c) == -1) {
-        EBCL_errPrint("Could not get value for mandatory key \'%s\' in series config \'%s\'.",
-                      EBCL_GLOBOPT_KEYSTR_TASKDIR, filename);
-        EBCL_freeConfList(c);
-        EBCL_freeArgvArray(*series);
-        return -1;
-    }
-    if (EBCL_globOptSetString(EBCL_GLOBOPT_TASKDIR, taskDir) == -1) {
-        EBCL_errPrint("Could not store global string option values for \'%s\'.", EBCL_GLOBOPT_KEYSTR_TASKDIR);
-        EBCL_freeConfList(c);
-        EBCL_freeArgvArray(*series);
+        EBCL_destroyFileSeries(series);
         return -1;
     }
 
@@ -595,14 +627,14 @@ int EBCL_loadSeriesConf(int *seriesLen, char ***series, const char *filename) {
         EBCL_errPrint("Failed to search for non-mandatory key \'%s\' in series config \'%s\'.",
                       EBCL_GLOBOPT_KEYSTR_SHDGRACEP, filename);
         EBCL_freeConfList(c);
-        EBCL_freeArgvArray(*series);
+        EBCL_destroyFileSeries(series);
         return -1;
     }
     if (EBCL_globOptSetUnsignedLL(EBCL_GLOBOPT_SHDGRACEP, &shdnGracePeriodUs) == -1) {
         EBCL_errPrint("Could not store global unsigned long long option values for \'%s\'.",
                       EBCL_GLOBOPT_KEYSTR_SHDGRACEP);
         EBCL_freeConfList(c);
-        EBCL_freeArgvArray(*series);
+        EBCL_destroyFileSeries(series);
         return -1;
     }
 
@@ -610,14 +642,14 @@ int EBCL_loadSeriesConf(int *seriesLen, char ***series, const char *filename) {
     if (EBCL_envSetCreateFromConfKvList(&globEnv, NULL, c) == -1) {
         EBCL_errPrint("Could not parse global environment variables from series config.");
         EBCL_freeConfList(c);
-        EBCL_freeArgvArray(*series);
+        EBCL_destroyFileSeries(series);
         return -1;
     }
 
     if (EBCL_globOptSetEnvSet(&globEnv) == -1) {
         EBCL_errPrint("Could not store global environment variable set.");
         EBCL_freeConfList(c);
-        EBCL_freeArgvArray(*series);
+        EBCL_destroyFileSeries(series);
         EBCL_envSetDestroy(&globEnv);
         return -1;
     }

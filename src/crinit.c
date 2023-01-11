@@ -94,9 +94,8 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    char **series = NULL;
-    int seriesLen = 0;
-    if (EBCL_loadSeriesConf(&seriesLen, &series, seriesFname) == -1) {
+    ebcl_FileSeries_t taskSeries;
+    if (EBCL_loadSeriesConf(&taskSeries, seriesFname) == -1) {
         EBCL_errPrint("Could not load series file \'%s\'.", seriesFname);
         EBCL_globOptDestroy();
         return EXIT_FAILURE;
@@ -107,30 +106,23 @@ int main(int argc, char *argv[]) {
     ebcl_TaskDB_t tdb;
     EBCL_taskDBInit(&tdb, EBCL_procDispatchSpawnFunc);
 
-    char *taskdir;
-    if (EBCL_globOptGetString(EBCL_GLOBOPT_TASKDIR, &taskdir) == -1) {
-        EBCL_errPrint("Could not get value for \'TASKDIR\' from global options.");
-        EBCL_globOptDestroy();
-        return EXIT_FAILURE;
-    }
-
-    for (int n = 0; n < seriesLen; n++) {
-        char *confFn = series[n];
+    for (size_t n = 0; n < taskSeries.size; n++) {
+        char *confFn = taskSeries.fnames[n];
         bool confFnAllocated = false;
         if (!EBCL_isAbsPath(confFn)) {
-            size_t prefixLen = strlen(taskdir);
-            size_t suffixLen = strlen(series[n]);
+            size_t prefixLen = strlen(taskSeries.baseDir);
+            size_t suffixLen = strlen(taskSeries.fnames[n]);
             confFn = malloc(prefixLen + suffixLen + 2);
             if (confFn == NULL) {
-                EBCL_errnoPrint("Could not allocate string with full path for \'%s\'.", series[n]);
+                EBCL_errnoPrint("Could not allocate string with full path for \'%s\'.", taskSeries.fnames[n]);
                 EBCL_globOptDestroy();
-                EBCL_freeArgvArray(series);
-                free(taskdir);
+                EBCL_destroyFileSeries(&taskSeries);
+                EBCL_taskDBDestroy(&tdb);
                 return EXIT_FAILURE;
             }
-            memcpy(confFn, taskdir, prefixLen);
+            memcpy(confFn, taskSeries.baseDir, prefixLen);
             confFn[prefixLen] = '/';
-            memcpy(confFn + prefixLen + 1, series[n], suffixLen + 1);
+            memcpy(confFn + prefixLen + 1, taskSeries.fnames[n], suffixLen + 1);
             confFnAllocated = true;
         }
         ebcl_ConfKvList_t *c;
@@ -140,8 +132,8 @@ int main(int argc, char *argv[]) {
             if (confFnAllocated) {
                 free(confFn);
             }
-            EBCL_freeArgvArray(series);
-            free(taskdir);
+            EBCL_destroyFileSeries(&taskSeries);
+            EBCL_taskDBDestroy(&tdb);
             return EXIT_FAILURE;
         }
         EBCL_infoPrint("File \'%s\' loaded.", confFn);
@@ -155,8 +147,8 @@ int main(int argc, char *argv[]) {
             EBCL_errPrint("Could not extract task from ConfKvList.");
             EBCL_freeConfList(c);
             EBCL_globOptDestroy();
-            EBCL_freeArgvArray(series);
-            free(taskdir);
+            EBCL_destroyFileSeries(&taskSeries);
+            EBCL_taskDBDestroy(&tdb);
             return EXIT_FAILURE;
         }
         EBCL_freeConfList(c);
@@ -167,8 +159,7 @@ int main(int argc, char *argv[]) {
         EBCL_taskDBInsert(&tdb, t, false);
         EBCL_freeTask(t);
     }
-    EBCL_freeArgvArray(series);
-    free(taskdir);
+    EBCL_destroyFileSeries(&taskSeries);
     EBCL_dbgInfoPrint("Done parsing.");
 
     char *sockFile = getenv("CRINIT_SOCK");

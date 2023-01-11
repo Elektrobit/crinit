@@ -35,19 +35,19 @@ static ebcl_DirScanState_t EBCL_scState = {NULL, false, -1, PTHREAD_MUTEX_INITIA
 static int EBCL_scanDirFilter(const struct dirent *dent);
 static inline bool EBCL_suffixFilter(const char *name, const char *suffix);
 static inline bool EBCL_statFilter(const char *name, int baseDirFd, bool followLinks);
+static inline void EBCL_freeScandirList(struct dirent **scanList, int size);
 
 void EBCL_destroyFileSeries(ebcl_FileSeries_t *fse) {
     if (fse == NULL || fse->fnames == NULL) {
         return;
     }
-    for (size_t i = 0; i <= fse->size; i++) {
-        free(fse->fnames[i]);
-        fse->fnames[i] = NULL;
-    }
+    free(fse->fnames[0]);
+    fse->fnames[0] = NULL;
     free(fse->fnames);
     fse->fnames = NULL;
     free(fse->baseDir);
     fse->baseDir = NULL;
+    fse->size = 0;
 }
 
 int EBCL_initFileSeries(ebcl_FileSeries_t *fse, size_t numElements, const char *baseDir) {
@@ -76,7 +76,7 @@ int EBCL_resizeFileSeries(ebcl_FileSeries_t *fse, size_t numElements) {
     if (numElements == fse->size) {
         return 0;
     }
-    char **newPtr = realloc(fse->fnames, numElements + 1);
+    char **newPtr = realloc(fse->fnames, (numElements + 1) * sizeof(char *));
     if (newPtr == NULL) {
         EBCL_errnoPrint("Could not reallocate filename array of file series to size %zu.", numElements);
         return -1;
@@ -145,16 +145,46 @@ int EBCL_fileSeriesFromDir(ebcl_FileSeries_t *fse, const char *path, const char 
         return -1;
     }
 
+    size_t backingStrAllocLen = 0;
     for (size_t i = 0; i < fse->size; i++) {
-        fse->fnames[i] = strdup(scanList[i]->d_name);
-        if (fse->fnames[i] == NULL) {
-            EBCL_errnoPrint("Could not duplicate string from directory scan.");
-            fse->size = i + 1;
-            EBCL_destroyFileSeries(fse);
-            return -1;
-        }
+        backingStrAllocLen += strlen(scanList[i]->d_name) + 1;
     }
 
+    fse->fnames[0] = malloc(backingStrAllocLen * sizeof(char));
+    if (fse->fnames[0] == NULL) {
+        EBCL_errnoPrint("Could not allocate memory for file series backing string.");
+        EBCL_destroyFileSeries(fse);
+        return -1;
+    }
+
+    char *runner = fse->fnames[0];
+    for (size_t i = 0; i < fse->size; i++) {
+        fse->fnames[i] = runner;
+        runner = stpcpy(runner, scanList[i]->d_name) + 1;
+    }
+    EBCL_freeScandirList(scanList, scanRes);
+    return 0;
+}
+
+int EBCL_fileSeriesFromStrArr(ebcl_FileSeries_t *fse, const char *baseDir, char **strArr) {
+    if (fse == NULL || baseDir == NULL || strArr == NULL) {
+        EBCL_errPrint("Input parameters must not be NULL.");
+        return -1;
+    }
+
+    fse->fnames = strArr;
+
+    char **ptr = strArr;
+    while (*ptr != NULL) {
+        ptr++;
+    }
+    fse->size = ptr - strArr;
+
+    fse->baseDir = strdup(baseDir);
+    if (fse->baseDir == NULL) {
+        EBCL_errnoPrint("Could not duplicate string for base directory of file series.");
+        return -1;
+    }
     return 0;
 }
 
@@ -177,7 +207,7 @@ static inline bool EBCL_statFilter(const char *name, int baseDirFd, bool followL
         return false;
     }
 
-    int fstFlags = followLinks ? AT_SYMLINK_NOFOLLOW : 0;
+    int fstFlags = followLinks ? 0 : AT_SYMLINK_NOFOLLOW;
     struct stat stbuf;
 
     if (fstatat(baseDirFd, name, &stbuf, fstFlags) == -1) {
@@ -204,4 +234,14 @@ static int EBCL_scanDirFilter(const struct dirent *dent) {
         return 1;
     }
     return 0;
+}
+
+static inline void EBCL_freeScandirList(struct dirent **scanList, int size) {
+    if(scanList == NULL) {
+        return;
+    }
+    for(int i=0; i<size; i++) {
+        free(scanList[i]);
+    }
+    free(scanList);
 }
