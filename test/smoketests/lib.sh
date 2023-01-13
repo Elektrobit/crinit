@@ -33,6 +33,9 @@ crinit_config_setup() {
     cp -R "$CONFDIR"/* "$SMOKETESTS_CONFDIR"/
     sed "s#TASKDIR = .*#TASKDIR = ${SMOKETESTS_CONFDIR}#" < "${SMOKETESTS_CONFDIR}"/local.series > "${SMOKETESTS_CONFDIR}"/demo.series
     sed "s#TASKDIR = .*#TASKDIR = ${SMOKETESTS_CONFDIR}/addseries#" < "${SMOKETESTS_CONFDIR}"/addseries/add.series > "${SMOKETESTS_CONFDIR}"/addseries/demoadd.series
+    sed "s#TASKDIR = .*#TASKDIR = ${SMOKETESTS_CONFDIR}/addseries#" < "${SMOKETESTS_CONFDIR}"/addseries/add_dyn.series > "${SMOKETESTS_CONFDIR}"/addseries/demoadd_dyn.series
+    sed "s#TASKDIR = .*#TASKDIR = ${SMOKETESTS_CONFDIR}/addseries#" < "${SMOKETESTS_CONFDIR}"/addseries/add_dyn_nofollow.series > "${SMOKETESTS_CONFDIR}"/addseries/demoadd_dyn_nofollow.series
+    sed "s#TASKDIR = .*#TASKDIR = ${SMOKETESTS_CONFDIR}/addseries#" < "${SMOKETESTS_CONFDIR}"/addseries/add_dyn_suffix.series > "${SMOKETESTS_CONFDIR}"/addseries/demoadd_dyn_suffix.series
 }
 
 crinit_daemon_start() {
