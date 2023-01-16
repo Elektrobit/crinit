@@ -1,6 +1,6 @@
 /**
  * @file fseries.c
- * @brief Implementation file related to the handling of a series of filenamea.
+ * @brief Implementation file related to the handling of a series of filenames within a directory.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -23,18 +23,65 @@
 #include "confparse.h"
 #include "logio.h"
 
+/**
+ * Type to store options and state of a directory scan.
+ *
+ * Used to configure the filters for scandir() in EBCL_fileSeriesFromDir(). Needs to be used as a compilation-unit-
+ * global variable as scandir() does not allow arbitrary arguments to the filters.
+ */
 typedef struct ebcl_DirScanState_t {
-    const char *fileSuffix;
-    bool followLinks;
-    int baseDirFd;
-    pthread_mutex_t dirScanLock;
+    const char *fileSuffix;       ///< The extension of the files we want to scan for.
+    bool followLinks;             ///< If we should follow symlinks that have the correct
+                                  ///< ebcl_DirScanState_t::fileSuffix. If `false`, symlinks will be filtered out of the
+                                  ///< list.
+    int baseDirFd;                ///< File descriptor of the opened base directory for the search.
+    pthread_mutex_t dirScanLock;  ///< Mutex to synchronize concurrent accesses to this data, must be held
+                                  ///< during scandir().
 } ebcl_DirScanState_t;
 
+/**
+ * Global state/option variable for the dirscan() filters, see ebcl_DirScanState_t.
+ */
 static ebcl_DirScanState_t EBCL_scState = {NULL, false, -1, PTHREAD_MUTEX_INITIALIZER};
 
+/**
+ * Result filter to be given to scandir() via function pointer.
+ *
+ * Uses EBCL_scState to setup and run EBCL_suffixFilter() and EBCL_statFilter().
+ *
+ * See also [scandir(3) man page](https://man7.org/linux/man-pages/man3/scandir.3.html).
+ *
+ * @param dent  Pointer to a directory entry.
+ *
+ * @return  1 if \a dent should be included in the final result list, 0 if not.
+ */
 static int EBCL_scanDirFilter(const struct dirent *dent);
+/**
+ * Filters strings by suffix.
+ *
+ * @param name    String to be fed to the filter.
+ * @param suffix  Suffix to check for.
+ *
+ * @return  true if \a name ends with \a suffix, false if not.
+ */
 static inline bool EBCL_suffixFilter(const char *name, const char *suffix);
+/**
+ * Filters out everything that is not a regular file (or a symlink to it, depending on settings).
+ *
+ * @param name  Filename of the file to be fed to the filter.
+ * @param baseDirFd  Opened file descriptor of the directory, the file in question resides.
+ * @param followLinks  If symbolic links should be followed to its destination before filtering (true) or generally
+ *                     filtered out (false).
+ *
+ * @return  true if \a name refers to a regular file, false if not.
+ */
 static inline bool EBCL_statFilter(const char *name, int baseDirFd, bool followLinks);
+/**
+ * Free return pointer(s) from scandir().
+ *
+ * Will free everything, scandir() has allocated according to the
+ * [scandir(3) man page](https://man7.org/linux/man-pages/man3/scandir.3.html).
+ */
 static inline void EBCL_freeScandirList(struct dirent **scanList, int size);
 
 void EBCL_destroyFileSeries(ebcl_FileSeries_t *fse) {
@@ -237,10 +284,10 @@ static int EBCL_scanDirFilter(const struct dirent *dent) {
 }
 
 static inline void EBCL_freeScandirList(struct dirent **scanList, int size) {
-    if(scanList == NULL) {
+    if (scanList == NULL) {
         return;
     }
-    for(int i=0; i<size; i++) {
+    for (int i = 0; i < size; i++) {
         free(scanList[i]);
     }
     free(scanList);

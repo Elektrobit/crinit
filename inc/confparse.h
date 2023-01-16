@@ -16,11 +16,13 @@
 
 #include "fseries.h"
 
-#define EBCL_CONFIG_KEYSTR_TASKS "TASKS"
-#define EBCL_CONFIG_KEYSTR_SETENV "ENV_SET"
-#define EBCL_CONFIG_KEYSTR_SYMLINKS "TASKDIR_FOLLOW_SYMLINKS"
-#define EBCL_CONFIG_KEYSTR_TASK_FILE_SUFFIX "TASK_FILE_SUFFIX"
-#define EBCL_CONFIG_DEFAULT_TASK_FILE_SUFFIX ".crinit"
+#define EBCL_CONFIG_KEYSTR_TASKS "TASKS"     ///< Config key for the list of task file names.
+#define EBCL_CONFIG_KEYSTR_SETENV "ENV_SET"  ///< Config key to set an environment variable with.
+#define EBCL_CONFIG_KEYSTR_SYMLINKS \
+    "TASKDIR_FOLLOW_SYMLINKS"  ///< Config key for the option to follow symbolic links in dynamic configurations.
+#define EBCL_CONFIG_KEYSTR_TASK_FILE_SUFFIX \
+    "TASK_FILE_SUFFIX"  ///< Config key for the task file extension in dynamic configurations.
+#define EBCL_CONFIG_DEFAULT_TASK_FILE_SUFFIX ".crinit"  ///< Default filename extension of task files.
 
 /**
  * Linked list to hold key/value pairs read from the config file.
