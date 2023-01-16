@@ -1,5 +1,5 @@
 /**
- * @file case-crinit-response-error.c
+ * @file case-crinit-response-code-error.c
  * @brief Unit test for EBCL_crinitTaskAdd() testing error handling for error code response.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
