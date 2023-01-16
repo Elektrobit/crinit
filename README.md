@@ -61,6 +61,8 @@ An example, as used to boot a minimal environment on the S32G board, may look li
 TASKS = earlysetup.crinit check_qemu.crinit network-dhcp.crinit sshd.crinit getty.crinit
 
 TASKDIR = /etc/crinit
+TASK_FILE_SUFFIX = .crinit
+TASKDIR_FOLLOW_SYMLINKS = YES
 DEBUG = NO
 FILE_SIGS_NEEDED = NO
 
@@ -76,9 +78,14 @@ ENV_SET = GREETING "Good morning!"
 SIG = ""
 ```
 #### Explanation
-- **TASKS** -- The task configurations to load. This is a mandatory setting.
+- **TASKS** -- The task configurations to load. This is an optional setting. If unset, **TASKDIR** will be scanned for
+               task configuration files.
 - **TASKDIR** -- Where to find the task configurations, will be prepended to the filenames in **TASKS**.
                  This is a mandatory setting.
+- **TASK_FILE_SUFFIX** -- Filename suffix of task configurations. Only relevant if **TASKS** is not set.
+                          Default: `.crinit`
+- **TASKDIR_FOLLOW_SYMLINKS** -- If symbolic links should be followed during scanning of **TASKDIR**. Only relevant if
+                                 **TASKS** is not set. Default: YES
 - **DEBUG** -- If crinit should be verbose in its output. Either `YES` or `NO`. Default: `NO`
 - **FILE_SIGS_NEEDED** -- If each task configuration needs its own signature. As signature checking is not yet
   implemented, this is parsed but does nothing. Default: `YES`
