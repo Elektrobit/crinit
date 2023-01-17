@@ -8,8 +8,6 @@
  *            All rights exclusively reserved for Elektrobit Automotive GmbH,
  *            unless otherwise expressly agreed
  */
-#define _GNU_SOURCE  // Needed for O_PATH.
-
 #include "fseries.h"
 
 #include <dirent.h>
