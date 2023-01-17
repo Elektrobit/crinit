@@ -180,12 +180,13 @@ int EBCL_fileSeriesFromDir(ebcl_FileSeries_t *fse, const char *path, const char 
 
     pthread_mutex_unlock(&EBCL_scState.dirScanLock);
 
-    closedir(scd);
-
     if (scanRes == -1) {
         EBCL_errnoPrint("Could not scan directory '%s'", path);
+        closedir(scd);
         return -1;
     }
+
+    closedir(scd);
 
     if (EBCL_initFileSeries(fse, scanRes, path) == -1) {
         EBCL_errPrint("Could not initialize file series struct holding %d elements.", scanRes);
