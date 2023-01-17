@@ -574,6 +574,7 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
             EBCL_errPrint("Could not generate list of tasks from '%s' option.", EBCL_CONFIG_KEYSTR_TASKS);
             EBCL_freeConfList(c);
             EBCL_freeArgvArray(seriesArr);
+            return -1;
         }
     }
 
