@@ -556,7 +556,7 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
     char **seriesArr = NULL;
     int seriesLen = 0;
     if (EBCL_confListExtractArgvArray(&seriesLen, &seriesArr, EBCL_CONFIG_KEYSTR_TASKS, false, c, true) == -1) {
-        EBCL_errPrint("Could not extract value for key \'TASKS\' from \'%s\'.", filename);
+        EBCL_errPrint("Could not extract value for key '%s' from '%s'.", EBCL_CONFIG_KEYSTR_TASKS, filename);
         EBCL_freeConfList(c);
         return -1;
     }
@@ -571,7 +571,7 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
         }
     } else {  // TASKS taken from config
         if (EBCL_fileSeriesFromStrArr(series, taskDir, seriesArr) == -1) {
-            EBCL_errPrint("Could not generate list of tasks from 'TASKS' option.");
+            EBCL_errPrint("Could not generate list of tasks from '%s' option.", EBCL_CONFIG_KEYSTR_TASKS);
             EBCL_freeConfList(c);
             EBCL_freeArgvArray(seriesArr);
         }
