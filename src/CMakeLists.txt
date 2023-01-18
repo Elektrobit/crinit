@@ -24,6 +24,7 @@ add_executable(
   rtimcmd.c
   rtimopmap.c
   optfeat.c
+  fseries.c
   ${CMAKE_CURRENT_BINARY_DIR}/version.c
 )
 

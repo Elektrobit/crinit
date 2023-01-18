@@ -1,0 +1,13 @@
+# Task config 4 to use with add_dyn.series to check if symlinks are followed or not
+
+NAME = task_add_chain4
+
+COMMAND[] = /bin/echo "Symlinked task from added series file."
+
+DEPENDS = task_add_chain3:wait
+
+RESPAWN = NO
+# features below not yet implemented
+EXEC = NO
+QM_JAIL = NO
+SIG = ""

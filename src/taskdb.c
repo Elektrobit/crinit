@@ -630,7 +630,7 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in
     }
 
     for (size_t i = 0; i < pTask->cmdsSize; i++) {
-        if (EBCL_confListExtractArgvArrayWithIdx(&(pTask->cmds[i].argc), &(pTask->cmds[i].argv), "COMMAND", i, in,
+        if (EBCL_confListExtractArgvArrayWithIdx(&(pTask->cmds[i].argc), &(pTask->cmds[i].argv), "COMMAND", i, true, in,
                                                  true) == -1) {
             EBCL_errPrint(
                 "Could not extract argv/argc from COMMAND[%zu] in config for task "
@@ -642,7 +642,7 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in
 
     char **tempDeps = NULL;
     int tempDepsSize = 0;
-    if (EBCL_confListExtractArgvArray(&tempDepsSize, &tempDeps, "DEPENDS", in, false) == -1) {
+    if (EBCL_confListExtractArgvArray(&tempDepsSize, &tempDeps, "DEPENDS", true, in, false) == -1) {
         EBCL_errPrint("Could not extract DEPENDS string from config file for task \'%s\'.", tempName);
         goto fail;
     }
@@ -701,16 +701,13 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in
     char **prvArgv = NULL;
     int prvSize = 0;
 
-    char *tmp;
-    if (EBCL_confListGetVal(&tmp, "PROVIDES", in) == -1) {
-        // If there is no PROVIDES k/v-pair, that's fine and we're done.
-        return 0;
-    }
-
-    // Otherwise we want to parse it.
-    if (EBCL_confListExtractArgvArray(&prvSize, &prvArgv, "PROVIDES", in, false) == -1) {
+    // PROVIDES is non-mandatory
+    if (EBCL_confListExtractArgvArray(&prvSize, &prvArgv, "PROVIDES", false, in, false) == -1) {
         EBCL_errPrint("Could not extract PROVIDES string from config file for task \'%s\'.", tempName);
         goto fail;
+    }
+    if (prvSize == 0 || prvArgv == NULL) {
+        return 0;
     }
 
     pTask->prvSize = (size_t)prvSize;

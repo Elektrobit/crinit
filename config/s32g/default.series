@@ -1,8 +1,6 @@
-# BaseOS crinit series file, specifying which files to parse
+# BaseOS crinit series file, specifying the dirextory in which to look for tasks (dynamic configuration)
 
-TASKS = earlysetup.crinit check_qemu.crinit network-dhcp.crinit sshd.crinit getty.crinit
-
-TASKDIR = /etc/crinit
+TASKDIR = /etc/crinit.d
 DEBUG = NO
 FILE_SIGS_NEEDED = NO
 

@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
                     char **argArr = NULL;
                     int argCount = 0;
                     EBCL_infoPrint("\'%s\':", runner->key);
-                    if (EBCL_confListExtractArgvArray(&argCount, &argArr, runner->key, c, true) == -1) {
+                    if (EBCL_confListExtractArgvArray(&argCount, &argArr, runner->key, true, c, true) == -1) {
                         EBCL_errPrint("Could not get argv-array for key \'%s\'.", runner->key);
                         EBCL_freeConfList(c);
                         return EXIT_FAILURE;
