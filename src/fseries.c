@@ -70,7 +70,7 @@ static inline bool EBCL_suffixFilter(const char *name, const char *suffix);
  *
  * @return  true if \a name refers to a regular file, false if not.
  */
-static inline bool EBCL_statFilter(const char *name, int baseDirFd, bool followLinks);
+static inline int EBCL_statFilter(const char *name, int baseDirFd, bool followLinks);
 /**
  * Free return pointer(s) from scandir().
  *
@@ -247,11 +247,7 @@ static inline bool EBCL_suffixFilter(const char *name, const char *suffix) {
     return (cmpStart > name) && (strcmp(cmpStart, suffix) == 0);
 }
 
-static inline bool EBCL_statFilter(const char *name, int baseDirFd, bool followLinks) {
-    if (name == NULL) {
-        return false;
-    }
-
+static inline int EBCL_statFilter(const char *name, int baseDirFd, bool followLinks) {
     int fstFlags = followLinks ? 0 : AT_SYMLINK_NOFOLLOW;
     struct stat stbuf;
 
@@ -260,10 +256,7 @@ static inline bool EBCL_statFilter(const char *name, int baseDirFd, bool followL
         return false;
     }
 
-    if (S_ISREG(stbuf.st_mode)) {
-        return true;
-    }
-    return false;
+    return S_ISREG(stbuf.st_mode);
 }
 
 static int EBCL_scanDirFilter(const struct dirent *dent) {
