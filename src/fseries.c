@@ -80,13 +80,15 @@ static inline bool EBCL_statFilter(const char *name, int baseDirFd, bool followL
 static inline void EBCL_freeScandirList(struct dirent **scanList, int size);
 
 void EBCL_destroyFileSeries(ebcl_FileSeries_t *fse) {
-    if (fse == NULL || fse->fnames == NULL) {
+    if (fse == NULL) {
         return;
     }
-    free(fse->fnames[0]);
-    fse->fnames[0] = NULL;
-    free(fse->fnames);
-    fse->fnames = NULL;
+    if (fse->fnames != NULL) {
+        free(fse->fnames[0]);
+        fse->fnames[0] = NULL;
+        free(fse->fnames);
+        fse->fnames = NULL;
+    }
     free(fse->baseDir);
     fse->baseDir = NULL;
     fse->size = 0;
