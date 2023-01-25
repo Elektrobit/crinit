@@ -32,6 +32,7 @@ create_mock_lib(
     mock-crinit-xfer.c
     mock-malloc.c
     mock-calloc.c
+    mock-realloc.c
     mock-strdup.c
     mock-free.c
     mock-err-print.c
