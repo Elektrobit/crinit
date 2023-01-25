@@ -40,6 +40,7 @@ create_mock_lib(
     mock-strcpy.c
     mock-opendir.c
     mock-closedir.c
+    mock-dirfd.c
     mock-err-print.c
     mock-errno-print.c
     mock-envset-init.c
