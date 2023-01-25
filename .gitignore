@@ -37,3 +37,5 @@ Sessionx.vim
 tags
 # Persistent undo
 [._]*.un
+# Prevent include of IDE files
+.vscode/
