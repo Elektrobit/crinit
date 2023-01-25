@@ -156,6 +156,7 @@ int EBCL_fileSeriesFromDir(ebcl_FileSeries_t *fse, const char *path, const char 
     int scdfd = dirfd(scd);
     if (scdfd == -1) {
         EBCL_errnoPrint("Could not get file descriptor from directory stream.");
+        closedir(scd);
         return -1;
     }
 
