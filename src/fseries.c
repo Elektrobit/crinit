@@ -260,18 +260,11 @@ static inline int EBCL_statFilter(const char *name, int baseDirFd, bool followLi
 }
 
 static int EBCL_scanDirFilter(const struct dirent *dent) {
-    if (dent == NULL) {
+    if (dent == NULL || dent->d_name == NULL) {
         return 0;
     }
-    if (EBCL_scState.fileSuffix != NULL) {
-        if (EBCL_suffixFilter(dent->d_name, EBCL_scState.fileSuffix) == 0) {
-            return 0;
-        }
-    }
-    if (EBCL_statFilter(dent->d_name, EBCL_scState.baseDirFd, EBCL_scState.followLinks)) {
-        return 1;
-    }
-    return 0;
+    return EBCL_statFilter(dent->d_name, EBCL_scState.baseDirFd, EBCL_scState.followLinks)
+        && EBCL_suffixFilter(dent->d_name, EBCL_scState.fileSuffix);
 }
 
 static inline void EBCL_freeScandirList(struct dirent **scanList, int size) {
