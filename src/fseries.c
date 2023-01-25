@@ -271,8 +271,8 @@ static inline void EBCL_freeScandirList(struct dirent **scanList, int size) {
     if (scanList == NULL) {
         return;
     }
-    for (int i = 0; i < size; i++) {
-        free(scanList[i]);
+    while (size--) {
+        free(scanList[size]);
     }
     free(scanList);
 }
