@@ -120,6 +120,10 @@ int EBCL_resizeFileSeries(ebcl_FileSeries_t *fse, size_t numElements) {
     if (numElements == fse->size) {
         return 0;
     }
+    if (numElements == 0) {
+        EBCL_errPrint("File series struct shrink to 0 is not supported.");
+        return -1;
+    }
     char **newPtr = realloc(fse->fnames, (numElements + 1) * sizeof(char *));
     if (newPtr == NULL) {
         EBCL_errnoPrint("Could not reallocate filename array of file series to size %zu.", numElements);
