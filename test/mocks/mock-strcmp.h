@@ -1,0 +1,24 @@
+/**
+ * @file mock-strcmp.h
+ * @brief Header declaring a mock function for strcmp().
+ *
+ * @author emlix GmbH, 37083 Göttingen, Germany
+ *
+ * @copyright 2023 Elektrobit Automotive GmbH
+ *            All rights exclusively reserved for Elektrobit Automotive GmbH,
+ *            unless otherwise expressly agreed
+ */
+#ifndef __MOCK_STRCMP_H__
+#define __MOCK_STRCMP_H__
+
+#include <string.h>
+
+/**
+ * Mock function for strcmp().
+ *
+ * Checks that the right parameter is given and returns a preset value.
+ */
+int __wrap_strcmp(const char *s1, const char *s2);  // NOLINT(readability-identifier-naming)
+                                     // Rationale: Naming scheme fixed due to linker wrapping.
+
+#endif /* __MOCK_STRCMP_H__ */

@@ -36,6 +36,7 @@ create_mock_lib(
     mock-free.c
     mock-strdup.c
     mock-strlen.c
+    mock-strcmp.c
     mock-err-print.c
     mock-errno-print.c
     mock-envset-init.c
