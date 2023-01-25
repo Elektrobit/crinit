@@ -239,17 +239,12 @@ int EBCL_fileSeriesFromStrArr(ebcl_FileSeries_t *fse, const char *baseDir, char 
 }
 
 static inline bool EBCL_suffixFilter(const char *name, const char *suffix) {
-    if (name == NULL) {
-        return false;
-    }
-    if (suffix == NULL) {
+    if (suffix == NULL || strcmp(suffix, "") == 0) {
         return true;
     }
-    if (strlen(suffix) > strlen(name)) {
-        return false;
-    }
     const char *cmpStart = name + ((off_t)strlen(name) - (off_t)strlen(suffix));
-    return (strcmp(cmpStart, suffix) == 0);
+    /* ensure name is longer than suffix and suffix matches */
+    return (cmpStart > name) && (strcmp(cmpStart, suffix) == 0);
 }
 
 static inline bool EBCL_statFilter(const char *name, int baseDirFd, bool followLinks) {
