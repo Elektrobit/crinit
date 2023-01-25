@@ -20,6 +20,9 @@
 // clang-format on
 //     Rationale: Specific order of includes needed by cmocka.h.
 
+#define ARRAY_SIZE(array) \
+    (sizeof(array) / sizeof(*(array)))
+
 /**
  * Determine whether a function parameter is correct.
  *
