@@ -33,8 +33,9 @@ create_mock_lib(
     mock-malloc.c
     mock-calloc.c
     mock-realloc.c
-    mock-strdup.c
     mock-free.c
+    mock-strdup.c
+    mock-strlen.c
     mock-err-print.c
     mock-errno-print.c
     mock-envset-init.c
