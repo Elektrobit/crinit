@@ -22,25 +22,22 @@
 #include "logio.h"
 
 /**
- * Type to store options and state of a directory scan.
+ * Global state/option variable to store options and state of a directory scan for the dirscan() filters.
  *
  * Used to configure the filters for scandir() in EBCL_fileSeriesFromDir(). Needs to be used as a compilation-unit-
  * global variable as scandir() does not allow arbitrary arguments to the filters.
  */
-typedef struct ebcl_DirScanState_t {
+static  struct {
     const char *fileSuffix;       ///< The extension of the files we want to scan for.
     bool followLinks;             ///< If we should follow symlinks that have the correct
-                                  ///< ebcl_DirScanState_t::fileSuffix. If `false`, symlinks will be filtered out of the
-                                  ///< list.
+                                  ///< fileSuffix. If `false`, symlinks will be filtered out of the list.
     int baseDirFd;                ///< File descriptor of the opened base directory for the search.
     pthread_mutex_t dirScanLock;  ///< Mutex to synchronize concurrent accesses to this data, must be held
                                   ///< during scandir().
-} ebcl_DirScanState_t;
-
-/**
- * Global state/option variable for the dirscan() filters, see ebcl_DirScanState_t.
- */
-static ebcl_DirScanState_t EBCL_scState = {NULL, false, -1, PTHREAD_MUTEX_INITIALIZER};
+} EBCL_scState = {
+    .baseDirFd = -1,
+    .dirScanLock = PTHREAD_MUTEX_INITIALIZER
+};
 
 /**
  * Result filter to be given to scandir() via function pointer.
