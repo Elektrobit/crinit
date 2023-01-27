@@ -17,15 +17,8 @@
 #include "unit_test.h"
 
 static void EBCL_testVariant(size_t numElements, const char *baseDir) {
-    struct ebcl_FileSeries_t fse;
     char *fnamesBuff[numElements + 1];
-
-    if (baseDir != NULL) {
-        expect_value(__wrap_strdup, s, baseDir);
-        will_return(__wrap_strdup, baseDir);
-    }
-
-    EBCL_initFileSeries(&fse, numElements, baseDir);
+    struct ebcl_FileSeries_t fse = {.baseDir = (char *)baseDir, .size = numElements};
 
     if (baseDir) {
         print_message("Testing EBCL_destroyFileSeriesTestSuccess with numElement = %ld and baseDir = %s.\n",
