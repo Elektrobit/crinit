@@ -38,6 +38,7 @@ create_mock_lib(
     mock-strlen.c
     mock-strcmp.c
     mock-strcpy.c
+    mock-stpcpy.c
     mock-opendir.c
     mock-closedir.c
     mock-scandir.c
