@@ -11,6 +11,12 @@
 #ifndef __FSERIES_H__
 #define __FSERIES_H__
 
+#ifdef CRINIT_FSERIES_TESTING
+#define TESTABLE __attribute__((weak))
+#else
+#define TESTABLE
+#endif
+
 #include <stdbool.h>
 #include <stddef.h>
 
@@ -71,7 +77,7 @@ void EBCL_destroyFileSeries(ebcl_FileSeries_t *fse);
  *
  *  @return  0 on success, -1 otherwise.
  */
-int EBCL_initFileSeries(ebcl_FileSeries_t *fse, size_t numElements, const char *baseDir);
+TESTABLE int EBCL_initFileSeries(ebcl_FileSeries_t *fse, size_t numElements, const char *baseDir);
 /**
  * Grow or shrink the number of string pointers in a file series.
  *

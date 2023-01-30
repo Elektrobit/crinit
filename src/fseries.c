@@ -33,17 +33,14 @@
  * Used to configure the filters for scandir() in EBCL_fileSeriesFromDir(). Needs to be used as a compilation-unit-
  * global variable as scandir() does not allow arbitrary arguments to the filters.
  */
-static  struct {
+static struct {
     const char *fileSuffix;       ///< The extension of the files we want to scan for.
     bool followLinks;             ///< If we should follow symlinks that have the correct
                                   ///< fileSuffix. If `false`, symlinks will be filtered out of the list.
     int baseDirFd;                ///< File descriptor of the opened base directory for the search.
     pthread_mutex_t dirScanLock;  ///< Mutex to synchronize concurrent accesses to this data, must be held
                                   ///< during scandir().
-} EBCL_scState = {
-    .baseDirFd = -1,
-    .dirScanLock = PTHREAD_MUTEX_INITIALIZER
-};
+} EBCL_scState = {.baseDirFd = -1, .dirScanLock = PTHREAD_MUTEX_INITIALIZER};
 
 /**
  * Result filter to be given to scandir() via function pointer.
@@ -85,7 +82,7 @@ TESTABLE_STATIC int EBCL_statFilter(const char *name, int baseDirFd, bool follow
  */
 TESTABLE_STATIC void EBCL_freeScandirList(struct dirent **scanList, int size);
 
-void EBCL_destroyFileSeries(ebcl_FileSeries_t *fse) {
+TESTABLE void EBCL_destroyFileSeries(ebcl_FileSeries_t *fse) {
     if (fse == NULL) {
         return;
     }
@@ -100,7 +97,7 @@ void EBCL_destroyFileSeries(ebcl_FileSeries_t *fse) {
     fse->size = 0;
 }
 
-int EBCL_initFileSeries(ebcl_FileSeries_t *fse, size_t numElements, const char *baseDir) {
+TESTABLE int EBCL_initFileSeries(ebcl_FileSeries_t *fse, size_t numElements, const char *baseDir) {
     if (fse == NULL) {
         EBCL_errPrint("File series struct to initialize must not be NULL.");
         return -1;
@@ -269,8 +266,8 @@ int EBCL_scanDirFilter(const struct dirent *dent) {
     if (dent == NULL || dent->d_name == NULL) {
         return 0;
     }
-    return EBCL_statFilter(dent->d_name, EBCL_scState.baseDirFd, EBCL_scState.followLinks)
-        && EBCL_suffixFilter(dent->d_name, EBCL_scState.fileSuffix);
+    return EBCL_statFilter(dent->d_name, EBCL_scState.baseDirFd, EBCL_scState.followLinks) &&
+           EBCL_suffixFilter(dent->d_name, EBCL_scState.fileSuffix);
 }
 
 void EBCL_freeScandirList(struct dirent **scanList, int size) {
