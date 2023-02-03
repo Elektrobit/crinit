@@ -16,7 +16,7 @@
 
 void EBCL_envSetDestroyTestNullInput(void **state) {
     EBCL_PARAM_UNUSED(state);
-    
+
     expect_any(__wrap_EBCL_errPrintFFL, format);
     assert_int_equal(EBCL_envSetDestroy(NULL), -1);
 }

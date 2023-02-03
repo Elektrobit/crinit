@@ -19,6 +19,6 @@
  * Checks that the right parameter is given and returns a preset value.
  */
 int __wrap_strcmp(const char *s1, const char *s2);  // NOLINT(readability-identifier-naming)
-                                     // Rationale: Naming scheme fixed due to linker wrapping.
+                                                    // Rationale: Naming scheme fixed due to linker wrapping.
 
 #endif /* __MOCK_STRCMP_H__ */

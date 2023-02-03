@@ -21,9 +21,9 @@ static void EBCL_testVariant(size_t numElements) {
 
     const char *baseDir = "/some/path/to/testdir/";
 
-    char *fnamesBuff[numElements+1];
+    char *fnamesBuff[numElements + 1];
     for (size_t i = 0; i < numElements; i++) {
-        fnamesBuff[i] = (void*)0xd3adda7a;
+        fnamesBuff[i] = (void *)0xd3adda7a;
     }
     fnamesBuff[numElements] = NULL;
 
@@ -41,7 +41,6 @@ static void EBCL_testVariant(size_t numElements) {
 
 void EBCL_fileSeriesFromStrArrTestSuccess(void **state) {
     EBCL_PARAM_UNUSED(state);
-
 
     EBCL_testVariant(0);
     EBCL_testVariant(10);

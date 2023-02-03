@@ -18,18 +18,16 @@
 static void EBCL_testVariant(size_t numElements) {
     struct ebcl_FileSeries_t fse;
 
-    char *baseDir = (void*)0xDEADB33F;
+    char *baseDir = (void *)0xDEADB33F;
 
-    char *strArr[numElements+1];
+    char *strArr[numElements + 1];
     for (size_t i = 0; i < numElements; i++) {
-        strArr[i] = (void*)0xd3adda7a;
+        strArr[i] = (void *)0xd3adda7a;
     }
     strArr[numElements] = NULL;
 
-    print_message(
-        "Testing EBCL_fileSeriesFromStrArr with fse = %p, baseDir = %p and strArr = %p.\n",
-        (void*)&fse, (void*)baseDir, (void*)strArr
-    );
+    print_message("Testing EBCL_fileSeriesFromStrArr with fse = %p, baseDir = %p and strArr = %p.\n", (void *)&fse,
+                  (void *)baseDir, (void *)strArr);
 
     expect_value(__wrap_strdup, s, baseDir);
     will_return(__wrap_strdup, NULL);

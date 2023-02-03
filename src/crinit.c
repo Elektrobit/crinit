@@ -232,4 +232,3 @@ static void EBCL_taskPrint(const ebcl_Task_t *t) {
     EBCL_dbgInfoPrint("    EBCL_TASK_OPT_QM_JAIL = %s", (t->opts & EBCL_TASK_OPT_QM_JAIL) ? "true" : "false");
     EBCL_dbgInfoPrint("    EBCL_TASK_OPT_RESPAWN = %s", (t->opts & EBCL_TASK_OPT_RESPAWN) ? "true" : "false");
 }
-

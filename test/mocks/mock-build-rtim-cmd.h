@@ -19,7 +19,8 @@
  * Checks that the right parameters are given and returns a pre-set value through the cmocka API.
  * Otherwise the function is a no-op.
  */
-int __wrap_EBCL_buildRtimCmd(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, int argc, ...);  // NOLINT(readability-identifier-naming)
-                                                                                   // Rationale: Naming scheme fixed due to linker wrapping.
+int __wrap_EBCL_buildRtimCmd(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, int argc,
+                             ...);  // NOLINT(readability-identifier-naming)
+                                    // Rationale: Naming scheme fixed due to linker wrapping.
 
 #endif /* __MOCK_BUILD_RTIM_CMD_H__ */

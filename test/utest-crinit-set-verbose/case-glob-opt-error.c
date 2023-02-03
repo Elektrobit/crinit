@@ -34,4 +34,3 @@ void EBCL_crinitSetVerboseTestGlobOptError(void **state) {
     will_return(__wrap_EBCL_globOptSet, -1);
     assert_int_equal(EBCL_crinitSetVerbose(false), -1);
 }
-

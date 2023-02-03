@@ -18,10 +18,8 @@
 
 void EBCL_resizeFileSeriesTestShrinkZeroError(void **state) {
     EBCL_PARAM_UNUSED(state);
-    
-    struct ebcl_FileSeries_t fse = {
-        .size = 100
-    };
+
+    struct ebcl_FileSeries_t fse = {.size = 100};
 
     expect_any(__wrap_EBCL_errPrintFFL, format);
 

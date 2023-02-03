@@ -27,6 +27,6 @@ void EBCL_envSetParseAndSetTestWrongInput(void **state) {
     assert_int_equal(EBCL_envSetParseAndSet(&e, wronglyQuoted), -1);
     assert_int_equal(EBCL_envSetParseAndSet(&e, noKey), -1);
     assert_int_equal(EBCL_envSetParseAndSet(&e, noVal), -1);
- 
+
     assert_int_equal(EBCL_envSetDestroy(&e), 0);
 }

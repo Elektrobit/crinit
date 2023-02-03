@@ -11,6 +11,7 @@
 #include "mock-build-rtim-cmd.h"
 
 #include <stdio.h>
+
 #include "unit_test.h"
 
 // Rationale: Naming scheme fixed due to linker wrapping.

@@ -115,4 +115,3 @@ int EBCL_setupSystemFs(void) {
     umask(0022);
     return 0;
 }
-

@@ -11,8 +11,8 @@
 #ifndef __MOCK_DIRFD_H__
 #define __MOCK_DIRFD_H__
 
-#include <sys/types.h>
 #include <dirent.h>
+#include <sys/types.h>
 
 /**
  * Mock function for dirfd().

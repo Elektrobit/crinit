@@ -15,12 +15,11 @@
 #include "fseries.h"
 #include "unit_test.h"
 
-
 void EBCL_initFileSeriesTestNoMemError(void **state) {
     EBCL_PARAM_UNUSED(state);
 
     struct ebcl_FileSeries_t fse;
-    char *baseDir = (void*)0xDEADB33F;
+    char *baseDir = (void *)0xDEADB33F;
 
     expect_value(__wrap_strdup, s, baseDir);
     will_return(__wrap_strdup, NULL);

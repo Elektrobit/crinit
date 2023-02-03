@@ -16,12 +16,11 @@
 #include "fseries.h"
 #include "unit_test.h"
 
-
 void EBCL_resizeFileSeriesTestNoMemError(void **state) {
     EBCL_PARAM_UNUSED(state);
 
     struct ebcl_FileSeries_t fse = {
-        .fnames = (void*)0xd3adda7a,
+        .fnames = (void *)0xd3adda7a,
     };
 
     expect_value_count(__wrap_realloc, ptr, fse.fnames, 2);
@@ -31,7 +30,7 @@ void EBCL_resizeFileSeriesTestNoMemError(void **state) {
     expect_any_count(__wrap_EBCL_errnoPrintFFL, format, 2);
 
     assert_int_equal(EBCL_resizeFileSeries(&fse, 100), -1);
-    
+
     /* fse.fnames should not be changed on error */
     assert_ptr_not_equal(fse.fnames, NULL);
 

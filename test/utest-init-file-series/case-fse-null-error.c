@@ -15,7 +15,6 @@
 #include "fseries.h"
 #include "unit_test.h"
 
-
 void EBCL_initFileSeriesTestFseNullError(void **state) {
     EBCL_PARAM_UNUSED(state);
 

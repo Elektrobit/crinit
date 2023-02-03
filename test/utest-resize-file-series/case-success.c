@@ -17,16 +17,15 @@
 #include "unit_test.h"
 
 static void EBCL_testVariant(size_t initialSize, size_t numElements) {
-    char *fnamesBuff[numElements+1];
-    struct ebcl_FileSeries_t fse = {
-        .size = initialSize
-    };
+    char *fnamesBuff[numElements + 1];
+    struct ebcl_FileSeries_t fse = {.size = initialSize};
 
     if (initialSize > 0) {
         fse.fnames = fnamesBuff;
     }
 
-    print_message("Testing EBCL_resizeFileSeriesTestSuccess with %zu elements resizing to %zu elements.\n", initialSize, numElements);
+    print_message("Testing EBCL_resizeFileSeriesTestSuccess with %zu elements resizing to %zu elements.\n", initialSize,
+                  numElements);
 
     if (numElements != initialSize) {
         expect_value(__wrap_realloc, ptr, fse.fnames);

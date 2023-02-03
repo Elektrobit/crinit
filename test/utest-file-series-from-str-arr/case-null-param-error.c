@@ -16,10 +16,8 @@
 #include "unit_test.h"
 
 static void EBCL_testVariant(ebcl_FileSeries_t *fse, const char *baseDir, char **strArr) {
-    print_message(
-        "Testing EBCL_fileSeriesFromStrArr with fse = %p, baseDir = %p and strArr = %p.\n",
-        (void*)fse, (void*)baseDir, (void*)strArr
-    );
+    print_message("Testing EBCL_fileSeriesFromStrArr with fse = %p, baseDir = %p and strArr = %p.\n", (void *)fse,
+                  (void *)baseDir, (void *)strArr);
 
     expect_any(__wrap_EBCL_errPrintFFL, format);
 
@@ -30,8 +28,8 @@ void EBCL_fileSeriesFromStrArrTestNullParamError(void **state) {
     EBCL_PARAM_UNUSED(state);
 
     struct ebcl_FileSeries_t fse;
-    const char *baseDir = (void*)0xdeadda7a;
-    char **strArr = (void*)0xbaadda7a;
+    const char *baseDir = (void *)0xdeadda7a;
+    char **strArr = (void *)0xbaadda7a;
 
     EBCL_testVariant(NULL, NULL, NULL);
     EBCL_testVariant(&fse, NULL, NULL);

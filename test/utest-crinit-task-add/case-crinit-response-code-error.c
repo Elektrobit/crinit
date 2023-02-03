@@ -20,14 +20,9 @@
 
 static ebcl_RtimCmd_t *EBCL_buildRtimArgCmd;
 static ebcl_RtimCmd_t *EBCL_crinitXferArgRes;
-static char *EBCL_crinitXferArgResErrArgs[1] = {
-    EBCL_RTIMCMD_RES_ERR
-};
+static char *EBCL_crinitXferArgResErrArgs[1] = {EBCL_RTIMCMD_RES_ERR};
 static ebcl_RtimCmd_t EBCL_crinitXferArgResErr = {
-    .op = EBCL_RTIMCMD_R_ADDTASK,
-    .argc = 1,
-    .args = EBCL_crinitXferArgResErrArgs
-};
+    .op = EBCL_RTIMCMD_R_ADDTASK, .argc = 1, .args = EBCL_crinitXferArgResErrArgs};
 static struct EBCL_storeRtimCmdArgs EBCL_crinitXferArgResContext = {
     &EBCL_crinitXferArgRes,
     &EBCL_crinitXferArgResErr,

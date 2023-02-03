@@ -11,8 +11,8 @@
 #ifndef __MOCK_OPENDIR_H__
 #define __MOCK_OPENDIR_H__
 
-#include <sys/types.h>
 #include <dirent.h>
+#include <sys/types.h>
 
 /**
  * Mock function for opendir().
@@ -20,6 +20,6 @@
  * Checks that the right parameters are given and return a preset pointer.
  */
 DIR *__wrap_opendir(const char *name);  // NOLINT(readability-identifier-naming)
-                                   // Rationale: Naming scheme fixed due to linker wrapping.
+                                        // Rationale: Naming scheme fixed due to linker wrapping.
 
 #endif /* __MOCK_OPENDIR_H__ */

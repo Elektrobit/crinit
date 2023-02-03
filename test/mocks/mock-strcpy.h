@@ -19,6 +19,6 @@
  * Checks that the right parameter is given and returns a preset pointer.
  */
 char *__wrap_strcpy(char *dest, const char *src);  // NOLINT(readability-identifier-naming)
-                                     // Rationale: Naming scheme fixed due to linker wrapping.
+                                                   // Rationale: Naming scheme fixed due to linker wrapping.
 
 #endif /* __MOCK_STRCPY_H__ */

@@ -24,11 +24,11 @@ static void EBCL_testVariant(int size) {
         scanList = list;
 
         for (int i = 0; i < size; i++) {
-            list[i] = (void*)0xd3adda7a;
+            list[i] = (void *)0xd3adda7a;
         }
-    
-        expect_value_count(__wrap_free, ptr, (void*)0xd3adda7a, size);
-        expect_value(__wrap_free, ptr, (void*)list);
+
+        expect_value_count(__wrap_free, ptr, (void *)0xd3adda7a, size);
+        expect_value(__wrap_free, ptr, (void *)list);
     } else if (size == 0) {
         print_message("Testing EBCL_freeScandirList with empty scan list.\n");
         scanList = list;

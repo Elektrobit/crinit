@@ -9,13 +9,12 @@
  *            unless otherwise expressly agreed
  */
 
-#include <stdio.h>
 #include <limits.h>
+#include <stdio.h>
 
 #include "common.h"
 #include "fseries.h"
 #include "unit_test.h"
-
 
 void EBCL_resizeFileSeriesTestFseNullError(void **state) {
     EBCL_PARAM_UNUSED(state);

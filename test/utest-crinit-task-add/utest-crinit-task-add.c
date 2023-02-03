@@ -9,9 +9,9 @@
  *            unless otherwise expressly agreed
  */
 
-#include "rtimcmd.h"
 #include "utest-crinit-task-add.h"
 
+#include "rtimcmd.h"
 #include "unit_test.h"
 
 int EBCL_storeRtimCmd(const uintmax_t value, const uintmax_t context) {

@@ -247,4 +247,3 @@ static void *EBCL_dryPoolWatchdog(void *thrpool) {
 
     return NULL;
 }
-
