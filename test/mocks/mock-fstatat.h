@@ -19,8 +19,7 @@
  *
  * Checks that the right parameters are given and return a preset value.
  */
-int __wrap_fstatat(int fd, const char *path, struct stat *buf,
-                   int flag);  // NOLINT(readability-identifier-naming)
-                               // Rationale: Naming scheme fixed due to linker wrapping.
+// NOLINTNEXTLINE(readability-identifier-naming) Rationale: Naming scheme fixed due to linker wrapping.
+int __wrap_fstatat(int fd, const char *path, struct stat *buf, int flag);
 
 #endif /* __MOCK_FSTATAT_H__ */
