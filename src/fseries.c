@@ -21,26 +21,26 @@
 #include "confparse.h"
 #include "logio.h"
 
+#ifdef CRINIT_FSERIES_TESTING
+#define TESTABLE_STATIC __attribute__((weak))
+#else
+#define TESTABLE_STATIC static
+#endif
+
 /**
- * Type to store options and state of a directory scan.
+ * Global state/option variable to store options and state of a directory scan for the dirscan() filters.
  *
  * Used to configure the filters for scandir() in EBCL_fileSeriesFromDir(). Needs to be used as a compilation-unit-
  * global variable as scandir() does not allow arbitrary arguments to the filters.
  */
-typedef struct ebcl_DirScanState_t {
+static struct {
     const char *fileSuffix;       ///< The extension of the files we want to scan for.
     bool followLinks;             ///< If we should follow symlinks that have the correct
-                                  ///< ebcl_DirScanState_t::fileSuffix. If `false`, symlinks will be filtered out of the
-                                  ///< list.
+                                  ///< fileSuffix. If `false`, symlinks will be filtered out of the list.
     int baseDirFd;                ///< File descriptor of the opened base directory for the search.
     pthread_mutex_t dirScanLock;  ///< Mutex to synchronize concurrent accesses to this data, must be held
                                   ///< during scandir().
-} ebcl_DirScanState_t;
-
-/**
- * Global state/option variable for the dirscan() filters, see ebcl_DirScanState_t.
- */
-static ebcl_DirScanState_t EBCL_scState = {NULL, false, -1, PTHREAD_MUTEX_INITIALIZER};
+} EBCL_scState = {.baseDirFd = -1, .dirScanLock = PTHREAD_MUTEX_INITIALIZER};
 
 /**
  * Result filter to be given to scandir() via function pointer.
@@ -53,7 +53,7 @@ static ebcl_DirScanState_t EBCL_scState = {NULL, false, -1, PTHREAD_MUTEX_INITIA
  *
  * @return  1 if \a dent should be included in the final result list, 0 if not.
  */
-static int EBCL_scanDirFilter(const struct dirent *dent);
+TESTABLE_STATIC int EBCL_scanDirFilter(const struct dirent *dent);
 /**
  * Filters strings by suffix.
  *
@@ -62,7 +62,7 @@ static int EBCL_scanDirFilter(const struct dirent *dent);
  *
  * @return  true if \a name ends with \a suffix, false if not.
  */
-static inline bool EBCL_suffixFilter(const char *name, const char *suffix);
+TESTABLE_STATIC bool EBCL_suffixFilter(const char *name, const char *suffix);
 /**
  * Filters out everything that is not a regular file (or a symlink to it, depending on settings).
  *
@@ -73,29 +73,31 @@ static inline bool EBCL_suffixFilter(const char *name, const char *suffix);
  *
  * @return  true if \a name refers to a regular file, false if not.
  */
-static inline bool EBCL_statFilter(const char *name, int baseDirFd, bool followLinks);
+TESTABLE_STATIC int EBCL_statFilter(const char *name, int baseDirFd, bool followLinks);
 /**
  * Free return pointer(s) from scandir().
  *
  * Will free everything, scandir() has allocated according to the
  * [scandir(3) man page](https://man7.org/linux/man-pages/man3/scandir.3.html).
  */
-static inline void EBCL_freeScandirList(struct dirent **scanList, int size);
+TESTABLE_STATIC void EBCL_freeScandirList(struct dirent **scanList, int size);
 
-void EBCL_destroyFileSeries(ebcl_FileSeries_t *fse) {
-    if (fse == NULL || fse->fnames == NULL) {
+TESTABLE void EBCL_destroyFileSeries(ebcl_FileSeries_t *fse) {
+    if (fse == NULL) {
         return;
     }
-    free(fse->fnames[0]);
-    fse->fnames[0] = NULL;
-    free(fse->fnames);
-    fse->fnames = NULL;
+    if (fse->fnames != NULL) {
+        free(fse->fnames[0]);
+        fse->fnames[0] = NULL;
+        free(fse->fnames);
+        fse->fnames = NULL;
+    }
     free(fse->baseDir);
     fse->baseDir = NULL;
     fse->size = 0;
 }
 
-int EBCL_initFileSeries(ebcl_FileSeries_t *fse, size_t numElements, const char *baseDir) {
+TESTABLE int EBCL_initFileSeries(ebcl_FileSeries_t *fse, size_t numElements, const char *baseDir) {
     if (fse == NULL) {
         EBCL_errPrint("File series struct to initialize must not be NULL.");
         return -1;
@@ -120,6 +122,10 @@ int EBCL_resizeFileSeries(ebcl_FileSeries_t *fse, size_t numElements) {
     }
     if (numElements == fse->size) {
         return 0;
+    }
+    if (numElements == 0) {
+        EBCL_errPrint("File series struct shrink to 0 is not supported.");
+        return -1;
     }
     char **newPtr = realloc(fse->fnames, (numElements + 1) * sizeof(char *));
     if (newPtr == NULL) {
@@ -153,6 +159,7 @@ int EBCL_fileSeriesFromDir(ebcl_FileSeries_t *fse, const char *path, const char 
     int scdfd = dirfd(scd);
     if (scdfd == -1) {
         EBCL_errnoPrint("Could not get file descriptor from directory stream.");
+        closedir(scd);
         return -1;
     }
 
@@ -234,25 +241,16 @@ int EBCL_fileSeriesFromStrArr(ebcl_FileSeries_t *fse, const char *baseDir, char 
     return 0;
 }
 
-static inline bool EBCL_suffixFilter(const char *name, const char *suffix) {
-    if (name == NULL) {
-        return false;
-    }
-    if (suffix == NULL) {
+bool EBCL_suffixFilter(const char *name, const char *suffix) {
+    if (suffix == NULL || strcmp(suffix, "") == 0) {
         return true;
     }
-    if (strlen(suffix) > strlen(name)) {
-        return false;
-    }
     const char *cmpStart = name + ((off_t)strlen(name) - (off_t)strlen(suffix));
-    return (strcmp(cmpStart, suffix) == 0);
+    /* ensure name is longer than suffix and suffix matches */
+    return (cmpStart >= name) && (strcmp(cmpStart, suffix) == 0);
 }
 
-static inline bool EBCL_statFilter(const char *name, int baseDirFd, bool followLinks) {
-    if (name == NULL) {
-        return false;
-    }
-
+int EBCL_statFilter(const char *name, int baseDirFd, bool followLinks) {
     int fstFlags = followLinks ? 0 : AT_SYMLINK_NOFOLLOW;
     struct stat stbuf;
 
@@ -261,33 +259,23 @@ static inline bool EBCL_statFilter(const char *name, int baseDirFd, bool followL
         return false;
     }
 
-    if (S_ISREG(stbuf.st_mode)) {
-        return true;
-    }
-    return false;
+    return S_ISREG(stbuf.st_mode);
 }
 
-static int EBCL_scanDirFilter(const struct dirent *dent) {
-    if (dent == NULL) {
+int EBCL_scanDirFilter(const struct dirent *dent) {
+    if (dent == NULL || dent->d_name == NULL) {
         return 0;
     }
-    if (EBCL_scState.fileSuffix != NULL) {
-        if (EBCL_suffixFilter(dent->d_name, EBCL_scState.fileSuffix) == 0) {
-            return 0;
-        }
-    }
-    if (EBCL_statFilter(dent->d_name, EBCL_scState.baseDirFd, EBCL_scState.followLinks)) {
-        return 1;
-    }
-    return 0;
+    return EBCL_statFilter(dent->d_name, EBCL_scState.baseDirFd, EBCL_scState.followLinks) &&
+           EBCL_suffixFilter(dent->d_name, EBCL_scState.fileSuffix);
 }
 
-static inline void EBCL_freeScandirList(struct dirent **scanList, int size) {
+void EBCL_freeScandirList(struct dirent **scanList, int size) {
     if (scanList == NULL) {
         return;
     }
-    for (int i = 0; i < size; i++) {
-        free(scanList[i]);
+    while (size--) {
+        free(scanList[size]);
     }
     free(scanList);
 }

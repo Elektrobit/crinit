@@ -235,4 +235,3 @@ void EBCL_globOptDestroy(void) {
     }
     pthread_mutex_unlock(&EBCL_optLock);
 }
-

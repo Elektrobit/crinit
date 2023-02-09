@@ -78,4 +78,3 @@ static inline size_t EBCL_delimitedStrlen(const char *str) {
     }
     return len;
 }
-

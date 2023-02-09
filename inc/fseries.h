@@ -11,6 +11,12 @@
 #ifndef __FSERIES_H__
 #define __FSERIES_H__
 
+#ifdef CRINIT_FSERIES_TESTING
+#define TESTABLE __attribute__((weak))
+#else
+#define TESTABLE
+#endif
+
 #include <stdbool.h>
 #include <stddef.h>
 
@@ -39,7 +45,7 @@ typedef struct ebcl_FileSeries_t {
  */
 int EBCL_fileSeriesFromDir(ebcl_FileSeries_t *fse, const char *path, const char *fileSuffix, bool followLinks);
 /** Creates an ebcl_FileSeries_t instance by emplacing a pre-created array of strings.
- *  
+ *
  *  Under the assumption, \a strArr is allocated as an outer array of pointers into a single dynamically allocated
  *  backing string beginning at the first pointer (as EBCL_fileSeriesFromDir() does it), EBCL_destroyFileSeries() can
  *  be used for deallocation. If that is not the case, ebcl_FileSeries_t::fnames needs to be manually freed as
@@ -68,8 +74,10 @@ void EBCL_destroyFileSeries(ebcl_FileSeries_t *fse);
  * @param numElements  The number of pointers in ebcl_FileSeries_t::fnames to allocate. No memory for the backing string
  *                     is allocated at this point.
  * @param baseDir      Base directory of the new file series to be set.
+ *
+ *  @return  0 on success, -1 otherwise.
  */
-int EBCL_initFileSeries(ebcl_FileSeries_t *fse, size_t numElements, const char *baseDir);
+TESTABLE int EBCL_initFileSeries(ebcl_FileSeries_t *fse, size_t numElements, const char *baseDir);
 /**
  * Grow or shrink the number of string pointers in a file series.
  *

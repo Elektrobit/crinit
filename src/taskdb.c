@@ -987,4 +987,3 @@ static bool EBCL_taskReady(const ebcl_Task_t *t) {
     }
     return true;
 }
-

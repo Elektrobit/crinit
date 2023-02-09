@@ -11,8 +11,9 @@
 #ifndef __UTEST_CRINIT_TASK_ADD_H__
 #define __UTEST_CRINIT_TASK_ADD_H__
 
-#include "rtimcmd.h"
 #include <stdint.h>
+
+#include "rtimcmd.h"
 
 /**
  * Structure used for \a EBCL_storeRtimCmdContext().

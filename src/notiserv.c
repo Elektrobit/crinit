@@ -549,4 +549,3 @@ static inline int EBCL_procCapget(cap_user_data_t out, pid_t pid) {
     }
     return 0;
 }
-

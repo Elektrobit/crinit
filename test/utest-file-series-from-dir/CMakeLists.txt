@@ -1,0 +1,30 @@
+create_unit_test(
+  NAME
+    utest-file-series-from-dir
+  SOURCES
+    utest-file-series-from-dir.c
+    case-success.c
+    case-null-param-error.c
+    case-opendir-error.c
+    case-dirfd-error.c
+    case-scandir-error.c
+    case-init-error.c
+    case-no-mem-error.c
+    ${PROJECT_SOURCE_DIR}/src/logio.c
+    ${PROJECT_SOURCE_DIR}/src/fseries.c
+  LIBRARIES
+    libmockfunctions
+  DEFINITIONS
+    CRINIT_FSERIES_TESTING
+  WRAPS
+    -Wl,--wrap=opendir
+    -Wl,--wrap=dirfd
+    -Wl,--wrap=scandir
+    -Wl,--wrap=closedir
+    -Wl,--wrap=strdup
+    -Wl,--wrap=strlen
+    -Wl,--wrap=malloc
+    -Wl,--wrap=stpcpy
+    -Wl,--wrap=EBCL_errPrintFFL
+    -Wl,--wrap=EBCL_errnoPrintFFL
+)

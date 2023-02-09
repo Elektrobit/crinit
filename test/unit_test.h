@@ -20,6 +20,8 @@
 // clang-format on
 //     Rationale: Specific order of includes needed by cmocka.h.
 
+#define ARRAY_SIZE(array) (sizeof(array) / sizeof(*(array)))
+
 /**
  * Determine whether a function parameter is correct.
  *
@@ -30,7 +32,11 @@
  * This function needs to be called in the mock object.
  */
 #define check_expected_dynamic(parameter_string, value) \
-    _check_expected(__func__, parameter_string, __FILE__, __LINE__, \
-                    cast_to_largest_integral_type(value))
+    _check_expected(__func__, parameter_string, __FILE__, __LINE__, cast_to_largest_integral_type(value))
+
+/**
+ * CMocka macro to be used to mock return paramters.
+ */
+#define will_set_parameter(METHOD, PARAM_NAME, VALUE) will_return(METHOD, VALUE)
 
 #endif /* __UNIT_TEST_H__ */

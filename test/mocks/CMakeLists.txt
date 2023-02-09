@@ -32,8 +32,18 @@ create_mock_lib(
     mock-crinit-xfer.c
     mock-malloc.c
     mock-calloc.c
-    mock-strdup.c
+    mock-realloc.c
     mock-free.c
+    mock-strdup.c
+    mock-strlen.c
+    mock-strcmp.c
+    mock-strcpy.c
+    mock-stpcpy.c
+    mock-opendir.c
+    mock-closedir.c
+    mock-scandir.c
+    mock-dirfd.c
+    mock-fstatat.c
     mock-err-print.c
     mock-errno-print.c
     mock-envset-init.c

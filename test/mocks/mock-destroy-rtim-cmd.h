@@ -23,4 +23,3 @@ int __wrap_EBCL_destroyRtimCmd(ebcl_RtimCmd_t *c);  // NOLINT(readability-identi
                                                     // Rationale: Naming scheme fixed due to linker wrapping.
 
 #endif /* __MOCK_DESTROY_RTIM_CMD_H__ */
-
