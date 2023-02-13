@@ -934,7 +934,7 @@ static int crinitExecRtimCmdNotify(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, co
         }
 
         crinitTaskDep_t dep = {cmd->args[0], depEvent};
-        if (crinitTaskDBFulfillDep(ctx, &dep) == -1) {
+        if (crinitTaskDBFulfillDep(ctx, &dep, NULL) == -1) {
             return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_NOTIFY, 2, CRINIT_RTIMCMD_RES_ERR,
                                       "Could not fulfill dependency \'%s:%s\'.", cmd->args[0], depEvent);
         }
@@ -955,7 +955,7 @@ static int crinitExecRtimCmdNotify(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, co
         }
 
         const crinitTaskDep_t dep = {cmd->args[0], depEvent};
-        if (crinitTaskDBFulfillDep(ctx, &dep) == -1) {
+        if (crinitTaskDBFulfillDep(ctx, &dep, NULL) == -1) {
             return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_NOTIFY, 2, CRINIT_RTIMCMD_RES_ERR,
                                       "Could not fulfill dependency \'%s:%s\'.", cmd->args[0], depEvent);
         }

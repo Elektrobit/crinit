@@ -105,6 +105,10 @@ DEBUG = NO
 SHUTDOWN_GRACE_PERIOD_US = 100000
 
 USE_SYSLOG = NO
+USE_ELOS = YES
+
+ELOS_SERVER = 192.168.3.43
+ELOS_PORT = 2342
 
 ENV_SET = FOO "foo"
 ENV_SET = FOO_BAZ "${FOO} baz"
@@ -127,7 +131,13 @@ ENV_SET = GREETING "Good morning!"
 - **USE_SYSLOG** -- If syslog should be used for output if it is available. If set to `YES`, Crinit will switch to
                     syslog for output as soon as a task file `PROVIDES` the `syslog` feature. Ideally this should be
                     a task file loading a syslog server such as syslogd or elosd. Default: `NO`
+- **USE_ELOS** -- If Elos should be used for output if it is available. If set to `YES`, Crinit will switch to
+                  Elos for output as soon as a task file `PROVIDES` the `elos` feature. Ideally this should be
+                  a task file loading the Elos daemon elosd. Default: `NO`
+- **ELOS_SERVER** -- Ip address of the elos server. Default: `127.0.0.1`
+- **ELOS_PORT** -- Port of the elos server. Default: `54321`
 - **ENV_SET** -- See section **Setting Environment Variables** below. (*array-like*)
+- **FILTER_DEFINE** -- See section **Defining Elos Filters** below. (*array-like*)
 
 ### Example Task Configuration
 The `network-dhcp.crinit` from above could for example look like this:
@@ -187,6 +197,7 @@ IO_REDIRECT = STDERR STDOUT
 - **RESPAWN_RETRIES** -- Number of times a respawned task may fail *in a row* before it is not started again. The
   special value `-1` is interpreted as "unlimited". Default: -1
 - **ENV_SET** -- See section **Setting Environment Variables** below. (*array-like*)
+- **FILTER_DEFINE** -- See section **Defining Elos Filters** below. (*array-like*)
 - **IO_REDIRECT** -- See section **IO Redirections** below. (*array-like*)
 
 ### Setting Environment Variables

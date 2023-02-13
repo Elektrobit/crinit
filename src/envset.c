@@ -22,6 +22,7 @@
  * @return  0 on success, -1 otherwise
  */
 static int crinitEnvSetGrow(crinitEnvSet_t *es);
+
 /**
  * Searches for a given environment variable and returns its index in the set if found.
  *
@@ -90,14 +91,7 @@ int crinitEnvSetDup(crinitEnvSet_t *copy, const crinitEnvSet_t *orig) {
     return 0;
 }
 
-const char *crinitEnvSetGet(const crinitEnvSet_t *es, const char *envName) {
-    if (envName == NULL || es == NULL || es->envp == NULL || es->allocSz == 0) {
-        return NULL;
-    }
-    ssize_t idx = crinitEnvSetSearch(es, envName);
-    if (idx == -1 || es->envp[idx] == NULL) {
-        return NULL;
-    }
+static inline char *crinitEnvSetGetVal(const crinitEnvSet_t *es, const size_t idx) {
     char *out = strchr(es->envp[idx], '=');
     if (out == NULL) {
         return NULL;
@@ -105,8 +99,23 @@ const char *crinitEnvSetGet(const crinitEnvSet_t *es, const char *envName) {
     return out + 1;
 }
 
+static inline int crinitEnvSetValid(const crinitEnvSet_t *es) {
+    return es != NULL && es->envp != NULL && es->allocSz > 0;
+}
+
+const char *crinitEnvSetGet(const crinitEnvSet_t *es, const char *envName) {
+    if (!crinitEnvSetValid(es) || envName == NULL) {
+        return NULL;
+    }
+    ssize_t idx = crinitEnvSetSearch(es, envName);
+    if (idx == -1 || es->envp[idx] == NULL) {
+        return NULL;
+    }
+    return crinitEnvSetGetVal(es, idx);
+}
+
 int crinitEnvSetSet(crinitEnvSet_t *es, const char *envName, const char *envVal) {
-    if (es == NULL || envName == NULL || envVal == NULL || es->envp == NULL || es->allocSz == 0) {
+    if (!crinitEnvSetValid(es) || envName == NULL || envVal == NULL) {
         crinitErrPrint("Input parameters must not be NULL and given environment set must be initialized.");
         return -1;
     }
@@ -149,7 +158,7 @@ int crinitEnvSetSet(crinitEnvSet_t *es, const char *envName, const char *envVal)
 }
 
 static ssize_t crinitEnvSetSearch(const crinitEnvSet_t *es, const char *envName) {
-    if (envName == NULL || es == NULL || es->envp == NULL || es->allocSz == 0) {
+    if (!crinitEnvSetValid(es) || envName == NULL) {
         crinitErrPrint("Input parameters must not be NULL and given environment set must be initialized.");
         return -1;
     }

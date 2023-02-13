@@ -238,6 +238,38 @@ int crinitCfgEnvHandler(void *tgt, const char *val, crinitConfigType_t type) {
     return 0;
 }
 
+/* TODO: It might be necessary to adapt this handler for elos filters */
+int crinitCfgFilterHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    if (type == CRINIT_CONFIG_TYPE_TASK) {
+        crinitNullCheck(-1, tgt, val);
+        crinitTask_t *t = tgt;
+        if (crinitConfConvToEnvSetMember(&t->elosFilters, val) == -1) {
+            crinitErrPrint("Could not parse task filters directive '%s'.", val);
+            return -1;
+        }
+    } else if (type == CRINIT_CONFIG_TYPE_SERIES) {
+        crinitNullCheck(-1, val);
+        crinitGlobOptStore_t *globOpts = crinitGlobOptBorrow();
+        if (globOpts == NULL) {
+            crinitErrPrint("Could not get exclusive access to global option storage.");
+            return -1;
+        }
+        if (crinitConfConvToEnvSetMember(&globOpts->globFilters, val) == -1) {
+            crinitErrPrint("Could not parse task filters directive '%s'.", val);
+            crinitGlobOptRemit();
+            return -1;
+        }
+        if (crinitGlobOptRemit() == -1) {
+            crinitErrPrint("Could not release exclusive access of global option storage.");
+            return -1;
+        }
+    } else {
+        crinitErrPrint("Unexpected value for configuration file type.");
+        return -1;
+    }
+    return 0;
+}
+
 int crinitCfgIoRedirHandler(void *tgt, const char *val, crinitConfigType_t type) {
     crinitNullCheck(-1, tgt, val);
     crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
@@ -510,6 +542,52 @@ int crinitCfgSyslogHandler(void *tgt, const char *val, crinitConfigType_t type) 
 
     if (crinitGlobOptSet(CRINIT_GLOBOPT_USE_SYSLOG, v) == -1) {
         crinitErrPrint("Could not set global option '%s'.", CRINIT_CONFIG_KEYSTR_USE_SYSLOG);
+        return -1;
+    }
+    return 0;
+}
+
+int crinitCfgElosHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    CRINIT_PARAM_UNUSED(tgt);
+    crinitNullCheck(-1, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
+    bool v;
+    if (crinitConfConvToBool(&v, val) == -1) {
+        crinitErrPrint("Could not convert given string '%s' to a boolean value.", val);
+        return -1;
+    }
+
+    if (crinitGlobOptSet(CRINIT_GLOBOPT_USE_ELOS, v) == -1) {
+        crinitErrPrint("Could not set global option '%s'.", CRINIT_CONFIG_KEYSTR_USE_ELOS);
+        return -1;
+    }
+    return 0;
+}
+
+int crinitCfgElosServerHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    CRINIT_PARAM_UNUSED(tgt);
+    crinitNullCheck(-1, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
+
+    if (crinitGlobOptSet(CRINIT_GLOBOPT_ELOS_SERVER, val) == -1) {
+        crinitErrPrint("Could not set global option '%s'.", CRINIT_CONFIG_KEYSTR_ELOS_SERVER);
+        return -1;
+    }
+    return 0;
+}
+
+int crinitCfgElosPortHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    CRINIT_PARAM_UNUSED(tgt);
+    crinitNullCheck(-1, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
+
+    int port;
+    if (crinitConfConvToInteger(&port, val, 10) == -1) {
+        crinitErrPrint("Could not parse value of integral numeric option '%s'.", CRINIT_CONFIG_KEYSTR_ELOS_PORT);
+        return -1;
+    }
+    if (crinitGlobOptSet(CRINIT_GLOBOPT_ELOS_PORT, port) == -1) {
+        crinitErrPrint("Could not set global option '%s'.", CRINIT_CONFIG_KEYSTR_ELOS_PORT);
         return -1;
     }
     return 0;

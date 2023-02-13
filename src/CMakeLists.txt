@@ -17,6 +17,7 @@ add_executable(
   confhdl.c
   confmap.c
   lexers.c
+  elosio.c
   envset.c
   task.c
   taskdb.c

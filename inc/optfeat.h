@@ -7,6 +7,16 @@
 #define __OPTFEAT_H__
 
 /**
+ * Hook types.
+ */
+typedef enum crinitHookType_t {
+    INIT,
+    EXIT,
+    START,
+    TASK_ADDED,
+} crinitHookType_t;
+
+/**
  * Hook to be called whenever a new feature is provided by a task.
  *
  * Meant to be used to let Crinit change its own behavior whenever a relevant (optional or delayed) feature needed for
@@ -16,9 +26,11 @@
  * provides `syslog`.
  *
  * @param sysFeatName  Name of the newly-provided feature.
+ * @param type         Type of the invoked hook.
+ * @param data         Hook payload.
  *
  * @return 0 on success, -1 otherwise
  */
-int crinitFeatureHook(const char *sysFeatName);
+int crinitFeatureHook(const char *sysFeatName, crinitHookType_t type, void *data);
 
 #endif /*__OPTFEAT_H__ */

@@ -12,6 +12,7 @@
 #include "common.h"
 #include "confconv.h"
 #include "confmap.h"
+#include "elosio.h"
 #include "envset.h"
 #include "globopt.h"
 #include "ini.h"
@@ -51,7 +52,7 @@ int crinitParseConf(crinitConfKvList_t **confList, const char *filename) {
     (*confList)->next = NULL;
 
     // Parse config ing libinih
-    crinitIniParserCtx_t parserCtx = {*confList, *confList, *confList, 0};
+    crinitIniParserCtx_t parserCtx = {.anchor = *confList, .pList = *confList, .last = *confList};
     int parseResult = ini_parse_file(cf, crinitIniHandler, &parserCtx);
 
     // Trim the list's tail
@@ -171,6 +172,40 @@ void crinitFreeArgvArray(char **inArgv) {
     }
 }
 
+static int crinitConfSanityCheck(void) {
+    bool useElos = false;
+    char *elosServer;
+    int elosPort;
+
+    if (crinitGlobOptGet(CRINIT_GLOBOPT_USE_ELOS, &useElos) == -1) {
+        crinitErrPrint("Could not recall elos configuration from global options.");
+    }
+
+    if (useElos) {
+        if (crinitGlobOptGet(CRINIT_GLOBOPT_ELOS_SERVER, &elosServer) == -1) {
+            crinitErrPrint("Could not recall elos server ip from global options.");
+        } else {
+            if (elosServer == NULL || elosServer[0] == '\0') {
+                crinitErrPrint("Elos server configuration missing - disabling elos.");
+                crinitGlobOptSetBoolean(CRINIT_GLOBOPT_USE_ELOS, false);
+            }
+
+            free(elosServer);
+        }
+
+        if (crinitGlobOptGet(CRINIT_GLOBOPT_ELOS_PORT, &elosPort) == -1) {
+            crinitErrPrint("Could not recall elos server port from global options.");
+        }
+
+        if (elosPort == 0) {
+            crinitErrPrint("Elos server port configuration missing - disabling elos.");
+            crinitGlobOptSetBoolean(CRINIT_GLOBOPT_USE_ELOS, false);
+        }
+    }
+
+    return 0;
+}
+
 int crinitLoadSeriesConf(crinitFileSeries_t *series, const char *filename) {
     if (series == NULL || filename == NULL || !crinitIsAbsPath(filename)) {
         crinitErrPrint("Parameters must not be NULL and filename must be an absolute path.");
@@ -215,13 +250,17 @@ int crinitLoadSeriesConf(crinitFileSeries_t *series, const char *filename) {
                 case CRINIT_CONFIG_TASKS:
                     tgt = &tasks;
                     break;
+                case CRINIT_CONFIG_ELOS_PORT:
+                case CRINIT_CONFIG_ELOS_SERVER:
                 case CRINIT_CONFIG_ENV_SET:
+                case CRINIT_CONFIG_FILTER_DEFINE:
                 case CRINIT_CONFIG_DEBUG:
                 case CRINIT_CONFIG_INCLUDE:
                 case CRINIT_CONFIG_INCLUDE_SUFFIX:
                 case CRINIT_CONFIG_INCLUDEDIR:
                 case CRINIT_CONFIG_SHDGRACEP:
                 case CRINIT_CONFIG_USE_SYSLOG:
+                case CRINIT_CONFIG_USE_ELOS:
                     break;
                 case CRINIT_CONFIG_COMMAND:
                 case CRINIT_CONFIG_DEPENDS:
@@ -249,6 +288,11 @@ int crinitLoadSeriesConf(crinitFileSeries_t *series, const char *filename) {
         crinitCfgInclDirHandler(NULL, tDir, CRINIT_CONFIG_TYPE_SERIES) == -1) {
         crinitErrPrint("INCLUDEDIR was not given and trying to set it to the current value of TASKDIR ('%s') failed.",
                        tDir);
+        return -1;
+    }
+
+    if (crinitConfSanityCheck() != 0) {
+        crinitErrPrint("Sanity check of global crinit configuration %s failed.", filename);
         return -1;
     }
 

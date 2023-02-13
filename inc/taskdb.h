@@ -76,10 +76,11 @@ int crinitTaskDBInsert(crinitTaskDB_t *ctx, const crinitTask_t *t, bool overwrit
  *
  * @param ctx  The crinitTaskDB_t context in which to fulfill the dependency.
  * @param dep  The dependency to be fulfilled.
+ * @param target The targeted task or NULL.
  *
  * @return 0 on success, -1 otherwise
  */
-int crinitTaskDBFulfillDep(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep);
+int crinitTaskDBFulfillDep(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep, const crinitTask_t *target);
 /**
  * Fulfill feature dependencies implemented by a provider task.
  *

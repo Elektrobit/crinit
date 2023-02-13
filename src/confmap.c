@@ -14,6 +14,7 @@ const crinitConfigMapping_t crinitTaskCfgMap[] = {
     {CRINIT_CONFIG_COMMAND, CRINIT_CONFIG_KEYSTR_COMMAND, true, false, crinitCfgCmdHandler},
     {CRINIT_CONFIG_DEPENDS, CRINIT_CONFIG_KEYSTR_DEPENDS, true, true, crinitCfgDepHandler},
     {CRINIT_CONFIG_ENV_SET, CRINIT_CONFIG_KEYSTR_ENV_SET, true, true, crinitCfgEnvHandler},
+    {CRINIT_CONFIG_FILTER_DEFINE, CRINIT_CONFIG_KEYSTR_FILTER_DEFINE, true, true, crinitCfgFilterHandler},
     {CRINIT_CONFIG_INCLUDE, CRINIT_CONFIG_KEYSTR_INCLUDE, true, false, crinitTaskIncludeHandler},
     {CRINIT_CONFIG_IOREDIR, CRINIT_CONFIG_KEYSTR_IOREDIR, true, true, crinitCfgIoRedirHandler},
     {CRINIT_CONFIG_NAME, CRINIT_CONFIG_KEYSTR_NAME, false, false, crinitCfgNameHandler},
@@ -25,7 +26,10 @@ const size_t crinitTaskCfgMapSize = crinitNumElements(crinitTaskCfgMap);
 
 const crinitConfigMapping_t crinitSeriesCfgMap[] = {
     {CRINIT_CONFIG_DEBUG, CRINIT_CONFIG_KEYSTR_DEBUG, false, false, crinitCfgDebugHandler},
+    {CRINIT_CONFIG_ELOS_PORT, CRINIT_CONFIG_KEYSTR_ELOS_PORT, false, false, crinitCfgElosPortHandler},
+    {CRINIT_CONFIG_ELOS_SERVER, CRINIT_CONFIG_KEYSTR_ELOS_SERVER, false, false, crinitCfgElosServerHandler},
     {CRINIT_CONFIG_ENV_SET, CRINIT_CONFIG_KEYSTR_ENV_SET, true, false, crinitCfgEnvHandler},
+    {CRINIT_CONFIG_FILTER_DEFINE, CRINIT_CONFIG_KEYSTR_FILTER_DEFINE, true, false, crinitCfgFilterHandler},
     {CRINIT_CONFIG_INCLUDEDIR, CRINIT_CONFIG_KEYSTR_INCLDIR, false, false, crinitCfgInclDirHandler},
     {CRINIT_CONFIG_INCLUDE_SUFFIX, CRINIT_CONFIG_KEYSTR_INCL_SUFFIX, false, false, crinitCfgInclSuffixHandler},
     {CRINIT_CONFIG_SHDGRACEP, CRINIT_CONFIG_KEYSTR_SHDGRACEP, false, false, crinitCfgShdGpHandler},
@@ -34,6 +38,7 @@ const crinitConfigMapping_t crinitSeriesCfgMap[] = {
      crinitCfgTaskDirSlHandler},
     {CRINIT_CONFIG_TASKS, CRINIT_CONFIG_KEYSTR_TASKS, true, false, crinitCfgTasksHandler},
     {CRINIT_CONFIG_TASK_FILE_SUFFIX, CRINIT_CONFIG_KEYSTR_TASK_FILE_SUFFIX, false, false, crinitCfgTaskSuffixHandler},
+    {CRINIT_CONFIG_USE_ELOS, CRINIT_CONFIG_KEYSTR_USE_ELOS, false, false, crinitCfgElosHandler},
     {CRINIT_CONFIG_USE_SYSLOG, CRINIT_CONFIG_KEYSTR_USE_SYSLOG, false, false, crinitCfgSyslogHandler},
 };
 const size_t crinitSeriesCfgMapSize = crinitNumElements(crinitSeriesCfgMap);
