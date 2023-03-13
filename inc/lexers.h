@@ -27,6 +27,27 @@ typedef enum ebcl_TokenType_t {
 } ebcl_TokenType_t;
 
 /**
+ * Matches a fully quoted config value and removes quotes from match.
+ *
+ * Takes the \a value input from the libinih parser and takes care of things like
+ * ```
+ * "quoted '""''' string here"
+ * ```
+ * Resulting string (the range of characters between mbegin and mend) shall be
+ * ```
+ * quoted '""''' string here
+ * ```
+ * A string without outer "top-level" quotes will not match, neither a string which is not fully quoted.
+ *
+ * @param s       The string to try to match
+ * @param mbegin  Output pointer for the begin of the match, will be equal to s on no match.
+ * @param mend    Output pointer for the end of the match, will be equal to the terminating null char of s on no match.
+ *
+ * @return 1 on a match, 0 on no match, -1 on error
+ */
+int EBCL_matchQuotedConfig(const char *s, const char **mbegin, const char **mend);
+
+/**
  * Lexer/tokenizer for parsing an ENV_SET directive on the upper level.
  *
  * When repeatedly fed a string of the form `ENV_VAR_NAME "env var content"`, this function will advance the given

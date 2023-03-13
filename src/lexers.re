@@ -8,8 +8,33 @@
  *            All rights exclusively reserved for Elektrobit Automotive GmbH,
  *            unless otherwise expressly agreed
  */
+#include <string.h>
+
 #include "lexers.h"
 #include "logio.h"
+
+int EBCL_matchQuotedConfig(const char *s, const char **mbegin, const char **mend) {
+    if (s == NULL || mbegin == NULL || mend == NULL) {
+        EBCL_errPrint("Input parameters must not be NULL.");
+        return -1;
+    }
+
+    const char *YYCURSOR = s, *YYMARKER = s;
+
+    const char *t1, *t2, *yyt1, *yyt2;
+    /*!re2c
+            re2c:define:YYCTYPE = char;
+            re2c:yyfill:enable = 0;
+            re2c:tags = 1;
+
+            wspc_opt   = [ ]*;
+            end        = "\x00";
+            qconf      = wspc_opt ["]@t1[^\x00]*@t2["] wspc_opt end;
+
+            *          { *mbegin = s; *mend = strchr(s, '\0'); return 0; }
+            qconf      { *mbegin = t1; *mend = t2; return 1; }
+    */
+}
 
 ebcl_TokenType_t EBCL_envVarOuterLex(const char **s, const char **mbegin, const char **mend) {
     if (s == NULL || *s == NULL || mbegin == NULL || mend == NULL) {
@@ -26,9 +51,8 @@ ebcl_TokenType_t EBCL_envVarOuterLex(const char **s, const char **mbegin, const 
         re2c:yyfill:enable = 0;
         re2c:tags = 1;
 
-        end        = "\x00";
-        envkey     = [a-zA-Z_][a-zA-Z0-9_]*;
         whitespace = [ ]+;
+        envkey     = [a-zA-Z_][a-zA-Z0-9_]*;
         envval     = ["]@t1[^\x00]*@t2["];
 
         *          { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return EBCL_TK_ERR; }

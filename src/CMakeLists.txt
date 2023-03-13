@@ -35,6 +35,7 @@ target_include_directories(
 target_link_libraries(
   crinit
   PRIVATE Threads::Threads
+  PRIVATE inih-local
 )
 
 
@@ -102,6 +103,7 @@ target_include_directories(
 target_link_libraries(
   crinit_parsecheck
   PRIVATE Threads::Threads
+  PRIVATE inih-local
 )
 
 # machine-id-gen
