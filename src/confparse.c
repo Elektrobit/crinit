@@ -548,6 +548,7 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
     if (EBCL_confListExtractBoolean(&followLinks, EBCL_CONFIG_KEYSTR_SYMLINKS, false, c) == -1) {
         EBCL_errPrint("Could not extract boolean value for key 'TASKDIR_FOLLOW_SYMLINKS'.");
         EBCL_freeConfList(c);
+        return -1;
     }
 
     char *taskFileSuffix = NULL;
