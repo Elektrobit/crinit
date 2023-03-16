@@ -11,6 +11,8 @@
 #ifndef __LEXERS_H__
 #define __LEXERS_H__
 
+#include <stdbool.h>
+
 /**
  * Enum data type for token types return by the lexers.
  */
@@ -23,8 +25,15 @@ typedef enum ebcl_TokenType_t {
     EBCL_TK_VAR,       ///< Variable reference encountered (EBCL_envVarInnerLex())
     EBCL_TK_ESC,       ///< Regular escape sequence encountered (EBCL_envVarInnerLex())
     EBCL_TK_ESCX,      ///< Hexadecimal escape sequence encountered (EBCL_envVarInnerLex())
-    EBCL_TK_CPY        ///< Single character to copy encountered (EBCL_envVarInnerLex())
+    EBCL_TK_CPY,       ///< Single character to copy encountered (EBCL_envVarInnerLex())
+    EBCL_TK_DQSTR,     ///< Double-quoted string encountered (EBCL_argvLex())
+    EBCL_TK_UQSTR      ///< Unquoted string encountered (EBCL_argvLex())
 } ebcl_TokenType_t;
+
+extern const char EBCL_escMap[128];
+
+ebcl_TokenType_t EBCL_argvLex(const char **s, const char **mbegin, const char **mend, bool dq);
+ebcl_TokenType_t EBCL_escLex(const char **s, const char **mbegin, const char **mend); 
 
 /**
  * Matches a fully quoted config value and removes quotes from match.

@@ -31,32 +31,7 @@ typedef struct {
     size_t envSetCount;
 } ebcl_IniParserCtx_t;
 
-/**
- * Swap out character tokens situated between quotation delimeters for a placeholder
- *
- * Will search \a str for any \a token in between two occurences of \a quoteDelim and
- * replace \a token with \a placeholder. Will return an error if an odd number of
- * quotation delimiters is encountered.
- *
- * @param str           The string to be modified.
- * @param quoteDelim    The quotation delimiter.
- * @param token         The character to swap out if encountered in between two quotation delimiters.
- * @param placeholder   The character with which to swap out tokens between two quotation delimiters.
- *
- * @return 0 on success, -1 on error
- */
-static int EBCL_quoteProtectTokens(char *str, char quoteDelim, char token, char placeholder);
-
-/**
- * Restore tokens swapped out by quoteProtectTokens()
- *
- * Will search \a str for all occurences of \a placeholder and swap each out with \a token.
- *
- * @param str          The string to be modified.
- * @param token        The token to be restored.
- * @param placeholder  The placeholder character to be swapped out for \a token.
- */
-static void EBCL_quoteRestoreTokens(char *str, char token, char placeholder);
+static char *EBCL_copyEscaped(char *dst, const char *src, const char *end);
 /**
  * Check if \a path is absolute (i.e. starts with '/').
  *
@@ -161,9 +136,9 @@ static int EBCL_iniHandler(void *parserCtx, const char *section, const char *key
 
     // Handle quotes around value.
     const char *mbegin, *mend;
-    if(EBCL_matchQuotedConfig(value, &mbegin, &mend) == 1) {
-            valLen = mend - mbegin;
-            value = mbegin;
+    if (EBCL_matchQuotedConfig(value, &mbegin, &mend) == 1) {
+        valLen = mend - mbegin;
+        value = mbegin;
     }
 
     // Copy to list
@@ -395,76 +370,112 @@ int EBCL_confListExtractArgvArrayWithIdx(int *outArgc, char ***outArgv, const ch
         }
     }
 
-    size_t valLen = strlen(val) + 1;
-    char *backbuf = malloc(valLen);
+    size_t allocSz = strlen(val) + 1;
+    char *backbuf = malloc(allocSz);
     if (backbuf == NULL) {
         EBCL_errnoPrint("Could not allocate memory for argv backing string.");
         return -1;
     }
-    memcpy(backbuf, val, valLen);
-
-    if (doubleQuoting && (EBCL_quoteProtectTokens(backbuf, '\"', ' ', -1) == -1)) {
-        EBCL_quoteRestoreTokens(backbuf, ' ', -1);
-        EBCL_errPrint("Could not parse quotations in string: \'%s\'", backbuf);
-        free(backbuf);
-        return -1;
+    // Leaving it unitilialized makes valgrind complain
+    for (size_t i = 0; i < allocSz; i++) {
+        backbuf[i] = '\0';
     }
 
-    char *strtokState = NULL;
-    char *temp = backbuf;
-    *outArgc = 1;
-    while (strtok_r(temp, " ", &strtokState) != NULL) {
-        temp = NULL;
-        (*outArgc)++;
-    }
-    *outArgv = malloc((*outArgc) * sizeof(char *));
-    (*outArgc)--;
+    ebcl_TokenType_t tt;
+    const char *s = val, *mbegin, *mend;
+
+    // Check how many argv's we're dealing with
+    *outArgc = 0;
+    do {
+        tt = EBCL_argvLex(&s, &mbegin, &mend, doubleQuoting);
+        switch (tt) {
+            case EBCL_TK_WSPC:
+            case EBCL_TK_END:
+                break;
+            case EBCL_TK_UQSTR:
+            case EBCL_TK_DQSTR:
+                (*outArgc)++;
+                break;
+            default:
+            case EBCL_TK_ENVKEY:
+            case EBCL_TK_ENVVAL:
+            case EBCL_TK_VAR:
+            case EBCL_TK_CPY:
+            case EBCL_TK_ESC:
+            case EBCL_TK_ESCX:
+            case EBCL_TK_ERR:
+                EBCL_errPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
+                free(backbuf);
+                (*outArgc) = 0;
+                return -1;
+        }
+    } while (tt != EBCL_TK_END);
+
+    *outArgv = malloc((*outArgc + 1) * sizeof(char *));
     if (*outArgv == NULL) {
         EBCL_errnoPrint("Could not allocate memory for argv-array from config.");
         free(backbuf);
         (*outArgc) = 0;
         return -1;
     }
+    char **pArgv = *outArgv;
+    for (int i = 0; i < (*outArgc + 1); i++) {
+        pArgv[i] = NULL;
+    }
 
     // Shortcut if an empty string was given
     if (*outArgc == 0) {
         free(backbuf);
-        (*outArgv)[0] = NULL;
         return 0;
     }
 
-    temp = backbuf;
-    char **pOut = *outArgv;
-    int i = 0;
-    while (temp < backbuf + valLen) {
-        pOut[i] = temp;
-        temp += strlen(temp) + 1;
-        i++;
-    }
-    if (i != *outArgc) {
-        EBCL_errPrint("Unexpected number of arguments while trying to generate argv-array from config.");
-        free(backbuf);
-        free(*outArgv);
-        *outArgc = 0;
-        *outArgv = NULL;
-        return -1;
-    }
-    pOut[*outArgc] = NULL;
-
-    if (doubleQuoting) {
-        for (int i = 0; i < *outArgc; i++) {
-            EBCL_quoteRestoreTokens(pOut[i], ' ', -1);
-            // If the value is enclosed in double quotes, discard those
-            size_t argLen = strlen(pOut[i]);
-            if (pOut[i][0] == '\"' && pOut[i][argLen - 1] == '\"') {
-                pOut[i][argLen - 1] = '\0';
-                if (i == 0) {
-                    memmove(pOut[0], pOut[0] + 1, argLen - 1);
-                } else {
-                    pOut[i]++;
+    s = val;
+    char *runner = backbuf;
+    int argc = 0;
+    do {
+        tt = EBCL_argvLex(&s, &mbegin, &mend, doubleQuoting);
+        switch (tt) {
+            case EBCL_TK_WSPC:
+            case EBCL_TK_END:
+                break;
+            case EBCL_TK_UQSTR:
+            case EBCL_TK_DQSTR:
+                pArgv[argc++] = runner;
+                runner = EBCL_copyEscaped(runner, mbegin, mend);
+                if (runner == NULL) {
+                    EBCL_errPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
+                    free(backbuf);
+                    free(pArgv);
+                    (*outArgc) = 0;
+                    pArgv = NULL;
+                    return -1;
                 }
-            }
+                runner++;
+                break;
+            default:
+            case EBCL_TK_ENVKEY:
+            case EBCL_TK_ENVVAL:
+            case EBCL_TK_VAR:
+            case EBCL_TK_CPY:
+            case EBCL_TK_ESC:
+            case EBCL_TK_ESCX:
+            case EBCL_TK_ERR:
+                EBCL_errPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
+                free(backbuf);
+                free(pArgv);
+                (*outArgc) = 0;
+                pArgv = NULL;
+                return -1;
         }
+    } while (tt != EBCL_TK_END);
+
+    if (argc != *outArgc) {
+        EBCL_errPrint("Error trying to parse string array '%s'\n", val);
+        free(backbuf);
+        free(pArgv);
+        (*outArgc) = 0;
+        pArgv = NULL;
+        return -1;
     }
 
     return 0;
@@ -650,49 +661,43 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
     return 0;
 }
 
-static int EBCL_quoteProtectTokens(char *str, char quoteDelim, char token, char placeholder) {
-    if (str == NULL) {
-        EBCL_errPrint("Input string may not be NULL.");
-        return -1;
-    }
-
-    ebcl_QuotingState_t state = STATE_UNQUOTED;
-    while (*str != '\0') {
-        if (*str == quoteDelim) {
-            switch (state) {
-                case STATE_UNQUOTED:
-                    state = STATE_QUOTED;
-                    break;
-                case STATE_QUOTED:
-                    state = STATE_UNQUOTED;
-                    break;
-                default:
-                    EBCL_errPrint("Reached unexpected state while trying to parse quoted string.");
-                    return -1;
-            }
-        } else if (state == STATE_QUOTED && *str == token) {
-            *str = placeholder;
-        }
-        str++;
-    }
-    if (state == STATE_QUOTED) {
-        EBCL_errPrint("Reached end of string while searching for closing quotation delimiter.");
-        return -1;
-    }
-    return 0;
-}
-
-static void EBCL_quoteRestoreTokens(char *str, char token, char placeholder) {
-    if (str == NULL) return;
-    while (*str != '\0') {
-        if (*str == placeholder) {
-            *str = token;
-        }
-        str++;
-    }
-}
-
 static inline bool EBCL_isAbsPath(const char *path) {
     if (path == NULL) return false;
     return (path[0] == '/');
+}
+
+static char *EBCL_copyEscaped(char *dst, const char *src, const char *end) {
+    if (dst == NULL || src == NULL || end == NULL) {
+        EBCL_errPrint("Input parameters must not be NULL.\n");
+        return NULL;
+    }
+    char *runner = dst;
+    runner = stpncpy(runner, src, (end - src));
+    *runner = '\0';
+    runner = dst;
+    ebcl_TokenType_t tt;
+    const char *s = runner, *mbegin, *mend;
+    do {
+        tt = EBCL_escLex(&s, &mbegin, &mend);
+        if (tt == EBCL_TK_END) {
+            *runner = '\0';
+            break;
+        } else if (tt == EBCL_TK_CPY) {
+            *runner = *mbegin;
+            runner++;
+        } else if (tt == EBCL_TK_ESC) {
+            *runner = EBCL_escMap[(int)mbegin[1]];
+            runner++;
+        } else if (tt == EBCL_TK_ESCX) {
+            char match[3] = {mbegin[0], mbegin[1], '\0'};
+            *runner = (char)strtol(match, NULL, 16);
+            runner++;
+        } else {
+            EBCL_errPrint("Parser error while parsing escape sequences.\n");
+            return NULL;
+        }
+
+    } while (true);
+
+    return runner;
 }
