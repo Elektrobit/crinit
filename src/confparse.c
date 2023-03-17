@@ -22,7 +22,7 @@
 #include "logio.h"
 
 /**
- * Struct definition for the parser context used by EBCL_iniHandle()
+ * Struct definition for the parser context used by EBCL_iniHandler()
  */
 typedef struct {
     ebcl_ConfKvList_t *anchor;  ///< Anchor pointer to the beginning of the list.
