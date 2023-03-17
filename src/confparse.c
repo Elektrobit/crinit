@@ -21,14 +21,15 @@
 #include "lexers.h"
 #include "logio.h"
 
-typedef enum { STATE_UNQUOTED, STATE_QUOTED } ebcl_QuotingState_t;
-
+/**
+ * Struct definition for the parser context used by EBCL_iniHandle()
+ */
 typedef struct {
-    ebcl_ConfKvList_t *anchor;
-    ebcl_ConfKvList_t *pList;
-    ebcl_ConfKvList_t *last;
-    size_t keyArrayCount;
-    size_t envSetCount;
+    ebcl_ConfKvList_t *anchor;  ///< Anchor pointer to the beginning of the list.
+    ebcl_ConfKvList_t *pList;   ///< Running pointer to the element being currently constructed.
+    ebcl_ConfKvList_t *last;    ///< Running pointer to the last element just constructed.
+    size_t keyArrayCount;       ///< Counter variable for array-like config options.
+    size_t envSetCount;         ///< Counter variable for ENV_SET config directives.
 } ebcl_IniParserCtx_t;
 
 static char *EBCL_copyEscaped(char *dst, const char *src, const char *end);

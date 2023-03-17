@@ -30,9 +30,48 @@ typedef enum ebcl_TokenType_t {
     EBCL_TK_UQSTR      ///< Unquoted string encountered (EBCL_argvLex())
 } ebcl_TokenType_t;
 
+/**
+ * Escape sequence map.
+ *
+ * EBCL_escMap[c] will return the character which the escape sequence \\'c' specifies.
+ *
+ * Values initialized in src/lexers.re
+ */
 extern const char EBCL_escMap[128];
 
+/**
+ * Lexer/Tokenizer for argv-like string Arrays.
+ *
+ * With dq==true, will respect double quotes. Otherwise it will only delimit tokens by unescaped whitespace. Escaped
+ * double quotes (`\"`) are detected and handled as regular characters in both modes.
+ *
+ * Should be called in a loop, will consume a single token on each call.
+ *
+ * @param s       The string to tokenize.
+ * @param mbegin  Begin of a matched token, will not include enclosing quotes if dq==true.
+ * @param mend    End of a matched token, will not include enclosing quotes if dq==true.
+ * @param dq      Set to true to activate handling of double quoted strings.
+ *
+ * @return  The token type that was just consumed. EBCL_TK_UQSTR for an unquoted string, EBCL_TK_DQSTR for a doubly-
+ *          quoted string (only if dq==true), EBCL_TK_WSPC for whitespace, EBCL_TK_END for end-of-string, and
+ *          EBCL_TK_ERR if the lexer encountered an error.
+ */
 ebcl_TokenType_t EBCL_argvLex(const char **s, const char **mbegin, const char **mend, bool dq);
+/**
+ * Lexer/Tokenizer for escape characters.
+ *
+ * Will either consume/tokenize a single character or a whole escape sequence.
+ *
+ * Should be called in a loop, will consume a single token on each call.
+ *
+ * @param s       The string to tokenize.
+ * @param mbegin  Begin of a matched token.
+ * @param mend    End of a matched token.
+ *
+ * @return The token type that was just consumed. EBCL_TK_CPY for a single character to copy, EBCL_TK_ESCSEQ for a
+ *         two-character escape sequence (like `\n` for example), EBCL_TK_ESCSEQX for a hexadecimal escape sequence
+ *         (like `\x4f` for `O`), EBCL_TK_END for end-of-string, and EBCL_TK_ERR if the lexer encountered an error.
+ */
 ebcl_TokenType_t EBCL_escLex(const char **s, const char **mbegin, const char **mend); 
 
 /**
