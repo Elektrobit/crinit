@@ -663,8 +663,7 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
 }
 
 static inline bool EBCL_isAbsPath(const char *path) {
-    if (path == NULL) return false;
-    return (path[0] == '/');
+    return (path != NULL) && (path[0] == '/');
 }
 
 static char *EBCL_copyEscaped(char *dst, const char *src, const char *end) {
