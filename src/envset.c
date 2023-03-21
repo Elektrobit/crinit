@@ -36,10 +36,6 @@ static int EBCL_envSetGrow(ebcl_EnvSet_t *es);
  */
 static ssize_t EBCL_envSetSearch(const ebcl_EnvSet_t *es, const char *envName);
 
-static const char EBCL_escMap[128] = {
-    ['n'] = '\n',  ['r'] = '\r', ['b'] = '\b', ['a'] = '\a', ['"'] = '"', ['\''] = '\'',
-    ['\\'] = '\\', ['f'] = '\f', ['t'] = '\t', ['v'] = '\v', ['$'] = '$'};
-
 int EBCL_envSetInit(ebcl_EnvSet_t *es, size_t initSize, size_t sizeIncrement) {
     if (es == NULL) {
         EBCL_errPrint("Input parameter must not be NULL.");
@@ -215,6 +211,8 @@ int EBCL_envSetParseAndSet(ebcl_EnvSet_t *es, const char *envConf) {
             case EBCL_TK_CPY:
             case EBCL_TK_ESC:
             case EBCL_TK_ESCX:
+            case EBCL_TK_UQSTR:
+            case EBCL_TK_DQSTR:
                 EBCL_errPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
                 tt = EBCL_TK_ERR;
                 break;
@@ -314,6 +312,8 @@ int EBCL_envSetParseAndSet(ebcl_EnvSet_t *es, const char *envConf) {
                 break;
             case EBCL_TK_ENVKEY:
             case EBCL_TK_ENVVAL:
+            case EBCL_TK_UQSTR:
+            case EBCL_TK_DQSTR:
             default:
                 EBCL_errPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
                 tt = EBCL_TK_ERR;

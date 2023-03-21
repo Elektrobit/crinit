@@ -11,6 +11,8 @@
 #ifndef __LEXERS_H__
 #define __LEXERS_H__
 
+#include <stdbool.h>
+
 /**
  * Enum data type for token types return by the lexers.
  */
@@ -23,8 +25,75 @@ typedef enum ebcl_TokenType_t {
     EBCL_TK_VAR,       ///< Variable reference encountered (EBCL_envVarInnerLex())
     EBCL_TK_ESC,       ///< Regular escape sequence encountered (EBCL_envVarInnerLex())
     EBCL_TK_ESCX,      ///< Hexadecimal escape sequence encountered (EBCL_envVarInnerLex())
-    EBCL_TK_CPY        ///< Single character to copy encountered (EBCL_envVarInnerLex())
+    EBCL_TK_CPY,       ///< Single character to copy encountered (EBCL_envVarInnerLex())
+    EBCL_TK_DQSTR,     ///< Double-quoted string encountered (EBCL_argvLex())
+    EBCL_TK_UQSTR      ///< Unquoted string encountered (EBCL_argvLex())
 } ebcl_TokenType_t;
+
+/**
+ * Escape sequence map.
+ *
+ * EBCL_escMap[c] will return the character which the escape sequence \\'c' specifies.
+ *
+ * Values initialized in src/lexers.re
+ */
+extern const char EBCL_escMap[128];
+
+/**
+ * Lexer/Tokenizer for argv-like string Arrays.
+ *
+ * With dq==true, will respect double quotes. Otherwise it will only delimit tokens by unescaped whitespace. Escaped
+ * double quotes (`\"`) are detected and handled as regular characters in both modes.
+ *
+ * Should be called in a loop, will consume a single token on each call.
+ *
+ * @param s       The string to tokenize.
+ * @param mbegin  Begin of a matched token, will not include enclosing quotes if dq==true.
+ * @param mend    End of a matched token, will not include enclosing quotes if dq==true.
+ * @param dq      Set to true to activate handling of double quoted strings.
+ *
+ * @return  The token type that was just consumed. EBCL_TK_UQSTR for an unquoted string, EBCL_TK_DQSTR for a doubly-
+ *          quoted string (only if dq==true), EBCL_TK_WSPC for whitespace, EBCL_TK_END for end-of-string, and
+ *          EBCL_TK_ERR if the lexer encountered an error.
+ */
+ebcl_TokenType_t EBCL_argvLex(const char **s, const char **mbegin, const char **mend, bool dq);
+/**
+ * Lexer/Tokenizer for escape characters.
+ *
+ * Will either consume/tokenize a single character or a whole escape sequence.
+ *
+ * Should be called in a loop, will consume a single token on each call.
+ *
+ * @param s       The string to tokenize.
+ * @param mbegin  Begin of a matched token.
+ * @param mend    End of a matched token.
+ *
+ * @return The token type that was just consumed. EBCL_TK_CPY for a single character to copy, EBCL_TK_ESCSEQ for a
+ *         two-character escape sequence (like `\n` for example), EBCL_TK_ESCSEQX for a hexadecimal escape sequence
+ *         (like `\x4f` for `O`), EBCL_TK_END for end-of-string, and EBCL_TK_ERR if the lexer encountered an error.
+ */
+ebcl_TokenType_t EBCL_escLex(const char **s, const char **mbegin, const char **mend); 
+
+/**
+ * Matches a fully quoted config value and removes quotes from match.
+ *
+ * Takes the \a value input from the libinih parser and takes care of things like
+ * ```
+ * "quoted '""''' string here"
+ * ```
+ * Resulting string (the range of characters between mbegin and mend) shall be
+ * ```
+ * quoted '""''' string here
+ * ```
+ * A string without outer "top-level" quotes will not match, neither a string which is not fully quoted.
+ *
+ * @param s       The string to try to match
+ * @param mbegin  Output pointer for the begin of the match, will be equal to s on no match.
+ * @param mend    Output pointer for the end of the match, will be equal to the terminating null char of s on no match.
+ *
+ * @return 1 on a match, 0 on no match, -1 on error
+ */
+int EBCL_matchQuotedConfig(const char *s, const char **mbegin, const char **mend);
 
 /**
  * Lexer/tokenizer for parsing an ENV_SET directive on the upper level.

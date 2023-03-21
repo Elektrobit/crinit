@@ -1,5 +1,5 @@
 /**
- * @file case-param-null-error.c
+ * @file case-null-param-error.c
  * @brief Unit test for EBCL_fileSeriesFromDir(), given a NULL parameter fse or path.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany

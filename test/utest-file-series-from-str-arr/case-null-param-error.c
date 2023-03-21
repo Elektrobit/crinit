@@ -1,5 +1,5 @@
 /**
- * @file case-fse-null-error.c
+ * @file case-null-param-error.c
  * @brief Unit test for EBCL_fileSeriesFromStrArr(), given NULL parameter.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany

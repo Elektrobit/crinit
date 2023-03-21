@@ -1,5 +1,5 @@
 /**
- * @file case-fse-null-error.c
+ * @file case-opendir-error.c
  * @brief Unit test for EBCL_fileSeriesFromDir(), given opendir fails.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany

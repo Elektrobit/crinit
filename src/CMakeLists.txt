@@ -4,7 +4,7 @@ find_package(RE2C REQUIRED)
 
 configure_file(version.c.in version.c)
 
-RE2C_TARGET(NAME lexers INPUT ${PROJECT_SOURCE_DIR}/src/lexers.re OUTPUT lexers.c OPTIONS -ibs -W DEPENDS ${PROJECT_SOURCE_DIR}/inc/lexers.h)
+RE2C_TARGET(NAME lexers INPUT ${PROJECT_SOURCE_DIR}/src/lexers.re OUTPUT lexers.c OPTIONS -ibsc -W DEPENDS ${PROJECT_SOURCE_DIR}/inc/lexers.h)
 
 # crinit
 
@@ -35,6 +35,7 @@ target_include_directories(
 target_link_libraries(
   crinit
   PRIVATE Threads::Threads
+  PRIVATE inih-local
 )
 
 
@@ -102,6 +103,7 @@ target_include_directories(
 target_link_libraries(
   crinit_parsecheck
   PRIVATE Threads::Threads
+  PRIVATE inih-local
 )
 
 # machine-id-gen
