@@ -100,24 +100,20 @@ static int EBCL_iniHandler(void *parserCtx, const char *section, const char *key
     size_t keyLen = strlen(key);
     size_t valLen = strlen(value);
 
-    bool autoArray = false;
-    // Handle empty key array subscript
-    if (keyLen > 2 && key[keyLen - 2] == '[' && key[keyLen - 1] == ']') {
-        // If this is a beginning of an array declaration, set counter to 0
-        if (ctx->last != ctx->pList &&
-            (keyLen - 2 != strlen(ctx->last->key) || strncmp(key, ctx->last->key, keyLen - 2) != 0)) {
-            ctx->keyArrayCount = 0;
-        }
-        autoArray = true;
-        ctx->pList->keyArrIndex = ctx->keyArrayCount;
-        keyLen -= 2;
-        ctx->keyArrayCount++;
-    }
-
-    // Handle non-empty key array subscript
-    if (!autoArray) {
-        const char *brck = strchr(key, '[');
-        if (brck != NULL) {
+    // Handle array-like keys
+    const char *brck = strchr(key, '[');
+    if (keyLen > 2 && brck != NULL) {
+        //  Decide if key array subscript is empty or not and handle it accordingly
+        if (brck[1] == ']') {
+            // If this is a beginning of an array declaration, set counter to 0
+            if (ctx->last != ctx->pList &&
+                (keyLen - 2 != strlen(ctx->last->key) || strncmp(key, ctx->last->key, keyLen - 2) != 0)) {
+                ctx->keyArrayCount = 0;
+            }
+            ctx->pList->keyArrIndex = ctx->keyArrayCount;
+            keyLen -= 2;
+            ctx->keyArrayCount++;
+        } else {
             char *pEnd = NULL;
             ctx->pList->keyArrIndex = strtoul(brck + 1, &pEnd, 10);
             if (pEnd == brck + 1 || *pEnd != ']') {
@@ -126,12 +122,10 @@ static int EBCL_iniHandler(void *parserCtx, const char *section, const char *key
             }
             keyLen -= strlen(brck);
         }
-    }
-
-    /* Handle ENV_SET (TODO: As we will likely change the whole array handling syntax we should consolidate this
-     * with everything else and just differentiate between keys which may be given multiple times and keys which may
-     * appear only once. */
-    if (!autoArray && strcmp(key, EBCL_CONFIG_KEYSTR_SETENV) == 0) {
+    } else if (strcmp(key, EBCL_CONFIG_KEYSTR_SETENV) == 0) {
+        /* Handle ENV_SET (TODO: As we will likely change the whole array handling syntax we should consolidate this
+         * with everything else and just differentiate between keys which may be given multiple times and keys which may
+         * appear only once. */
         ctx->pList->keyArrIndex = ctx->envSetCount++;
     }
 
