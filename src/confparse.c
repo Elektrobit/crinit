@@ -368,9 +368,7 @@ int EBCL_confListExtractArgvArrayWithIdx(int *outArgc, char ***outArgv, const ch
         return -1;
     }
     // Leaving it unitilialized makes valgrind complain
-    for (size_t i = 0; i < allocSz; i++) {
-        backbuf[i] = '\0';
-    }
+    memset(backbuf, '\0', allocSz);
 
     ebcl_TokenType_t tt;
     const char *s = val, *mbegin, *mend;
