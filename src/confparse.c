@@ -671,8 +671,12 @@ static char *EBCL_copyEscaped(char *dst, const char *src, const char *end) {
         EBCL_errPrint("Input parameters must not be NULL.\n");
         return NULL;
     }
-    char *runner = dst;
-    runner = stpncpy(runner, src, (end - src));
+    if (src > end) {
+        EBCL_errPrint("String start pointer must not point behind the end pointer.");
+        return NULL;
+    }
+
+    char *runner = stpncpy(dst, src, (end - src));
     *runner = '\0';
     runner = dst;
     ebcl_TokenType_t tt;
