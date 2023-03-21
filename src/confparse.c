@@ -137,16 +137,12 @@ static int EBCL_iniHandler(void *parserCtx, const char *section, const char *key
     }
 
     // Copy to list
-    ctx->pList->key = malloc(keyLen + 1);
-    ctx->pList->val = malloc(valLen + 1);
+    ctx->pList->key = strndup(key, keyLen);
+    ctx->pList->val = strndup(value, valLen);
     if (ctx->pList->key == NULL || ctx->pList->val == NULL) {
         EBCL_errnoPrint("Could not allocate memory for a ConfKVList.");
         return 0;
     }
-    memcpy(ctx->pList->key, key, keyLen);
-    ctx->pList->key[keyLen] = '\0';
-    memcpy(ctx->pList->val, value, valLen);
-    ctx->pList->val[valLen] = '\0';
 
     // Check for duplicate key
     ebcl_ConfKvList_t *pSrch = ctx->anchor;
