@@ -11,7 +11,3 @@ COMMAND[4] = /usr/sbin/sshd -f /etc/ssh/sshd_config_readonly
 DEPENDS = earlysetup:wait
 
 RESPAWN = NO
-# features below not yet implemented
-EXEC = NO
-QM_JAIL = NO
-SIG = ""

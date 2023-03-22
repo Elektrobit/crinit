@@ -7,7 +7,3 @@ COMMAND[] = /bin/echo "Task from added series file 2/3."
 DEPENDS = task_add_chain1:wait
 
 RESPAWN = NO
-# features below not yet implemented
-EXEC = NO
-QM_JAIL = NO
-SIG = ""

@@ -13,7 +13,3 @@ COMMAND[6] = /usr/bin/machine-id-gen
 DEPENDS = ""
 
 RESPAWN = NO
-# features below not yet implemented
-EXEC = NO
-QM_JAIL = NO
-SIG = ""

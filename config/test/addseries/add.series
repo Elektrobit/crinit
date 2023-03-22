@@ -4,7 +4,3 @@ TASKS = task_add_chain1.crinit task_add_chain2.crinit task_add_chain3.crinit
 
 TASKDIR = /etc/crinit/test/addseries
 DEBUG = NO
-FILE_SIGS_NEEDED = NO
-
-# not yet implemented
-SIG = ""

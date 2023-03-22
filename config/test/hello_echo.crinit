@@ -8,7 +8,3 @@ COMMAND[] = "/bin/echo" This second line is echo'd after the first.
 DEPENDS = ""
 
 RESPAWN = NO
-# features below not yet implemented
-EXEC = NO
-QM_JAIL = NO
-SIG = ""

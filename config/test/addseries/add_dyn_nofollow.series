@@ -4,7 +4,3 @@ TASKDIR = /etc/crinit/test/addseries
 TASKDIR_FOLLOW_SYMLINKS = NO
 
 DEBUG = NO
-FILE_SIGS_NEEDED = NO
-
-# not yet implemented
-SIG = ""
