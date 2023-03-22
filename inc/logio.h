@@ -14,6 +14,7 @@
 #include <errno.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 
 /**
  * Maximum size of prefix set with EBCL_setPrintPrefix()
@@ -31,6 +32,21 @@
  * prefix, line number, etc.
  */
 #define EBCL_PRINT_EMPTY_LINE "%s", ""
+
+/**
+ * Constant to use instead of __FILE__ which shows only the filename without the leading path.
+ *
+ * For gcc from version 12 and clang from version 9, this already exists as a macro called __FILE_NAME__. If we detect
+ * a suitable compiler version, we'll use that, otherwise implement it manually by looking at the last slash in the
+ * path. Note, that this precludes us from using escaped slashes in file names (which we should not do anyway).
+ *
+ * Using __builtin_strrchr() on a string constant should cause compile-time evaluation of the expressio.
+ */
+#if __GNUC__ >= 12 || __clang_major__ >= 9
+#define __FILE_BASENAME__ __FILE_NAME__
+#else
+#define __FILE_BASENAME__ (__builtin_strrchr("/" __FILE__, '/') + 1)
+#endif
 
 /**
  * Set prefix to put in front of error and info message lines.
@@ -98,7 +114,7 @@ void EBCL_dbgInfoPrint(const char *format, ...) __attribute__((format(printf, 1,
 /**
  * Macro to print an error message including the offending source file, function, and line using EBCL_errPrintFFL().
  */
-#define EBCL_errPrint(...) EBCL_errPrintFFL(__FILE__, __func__, __LINE__, __VA_ARGS__)
+#define EBCL_errPrint(...) EBCL_errPrintFFL(__FILE_BASENAME__, __func__, __LINE__, __VA_ARGS__)
 /**
  * Print an error message.
  *
@@ -120,7 +136,7 @@ void EBCL_errPrintFFL(const char *file, const char *func, int line, const char *
  * as well as the value of errno.
  *
  */
-#define EBCL_errnoPrint(...) EBCL_errnoPrintFFL(__FILE__, __func__, __LINE__, __VA_ARGS__)
+#define EBCL_errnoPrint(...) EBCL_errnoPrintFFL(__FILE_BASENAME__, __func__, __LINE__, __VA_ARGS__)
 /**
  * Print an error message including a text representation of the current value of errno.
  *
