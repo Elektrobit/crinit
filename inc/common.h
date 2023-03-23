@@ -38,4 +38,13 @@
 #define EBCL_paramCheck(inputParam, cmpShort, cmpLong) \
     ((strncmp(inputParam, cmpShort, sizeof(cmpShort)) == 0) || (strncmp(inputParam, cmpLong, sizeof(cmpLong)) == 0))
 
+/**
+ * Check if \a path is absolute (i.e. starts with '/').
+ *
+ * @param path  The path to check.
+ *
+ * @return true if path is absolute, false otherwise
+ */
+#define EBCL_isAbsPath(path) (((path) != NULL) && ((path)[0] == '/'))
+
 #endif /* __COMMON_H__ */

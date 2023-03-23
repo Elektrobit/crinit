@@ -17,12 +17,14 @@
 #include "confparse.h"
 #include "crinit-sdefs.h"
 #include "envset.h"
+#include "ioredir.h"
 
 #define EBCL_MONITOR_DEP_NAME "@ebclmon"   ///< Special dependency name to depend on monitor events (not yet impl.).
 #define EBCL_PROVIDE_DEP_NAME "@provided"  ///< Special dependency name to depend on provided system features.
 #define EBCL_TASKDB_INITIAL_SIZE 256       ///< Default initial size of the taskSet within an ebcl_TaskDB_t.
 
 typedef unsigned long ebcl_TaskOpts_t;  ///< Type to store Task option bitmask.
+///< Path to file for stdout redirection, unchanged if NULL. Special values: "STDOUT", "STDERR", "STDIN"
 
 #define EBCL_TASK_OPT_RESPAWN (1 << 0)  ///< RESPAWN task option bitmask.
 
@@ -59,21 +61,23 @@ typedef struct ebcl_TaskPrv_t {
  * Type to store a single task.
  */
 typedef struct ebcl_Task_t {
-    char *name;              ///< Name of the task, corresponds to NAME in the config file.
-    ebcl_TaskCmd_t *cmds;    ///< Dynamic array of commands, corresponds to COMMAND[N] in the config file.
-    size_t cmdsSize;         ///< Number of commands in cmds array.
-    ebcl_EnvSet_t taskEnv;   ///< Environment variables valid for each COMMAND in this task.
-    ebcl_TaskDep_t *deps;    ///< Dynamic array of dependencies, corresponds to DEPENDS in the config file.
-    size_t depsSize;         ///< Number of dependencies in deps array.
-    ebcl_TaskPrv_t *prv;     ///< Dynamic array of provided features, corresponds to PROVIDES in the config file.
-    size_t prvSize;          ///< Number of provided features in prv array.
-    ebcl_TaskOpts_t opts;    ///< Task options.
-    ebcl_TaskState_t state;  ///< Task state.
-    pid_t pid;               ///< PID of currently running process subordinate to the task, if any.
-    int maxRetries;          ///< If ebcl_Task_t::opts includes #EBCL_TASK_OPT_RESPAWN, this variable specifies a
-                             ///< maximum consecutive number of respawns after failure (default: -1 for infinite).
-    int failCount;           ///< Counts consecutive respawns after failure (see ebcl_TaskOpts_t::maxRetries). Resets
-                             ///< on a successful completion (i.e. all COMMANDs in the task have returned 0).
+    char *name;                  ///< Name of the task, corresponds to NAME in the config file.
+    ebcl_TaskCmd_t *cmds;        ///< Dynamic array of commands, corresponds to COMMAND[N] in the config file.
+    size_t cmdsSize;             ///< Number of commands in cmds array.
+    ebcl_EnvSet_t taskEnv;       ///< Environment variables valid for each COMMAND in this task.
+    ebcl_TaskDep_t *deps;        ///< Dynamic array of dependencies, corresponds to DEPENDS in the config file.
+    size_t depsSize;             ///< Number of dependencies in deps array.
+    ebcl_TaskPrv_t *prv;         ///< Dynamic array of provided features, corresponds to PROVIDES in the config file.
+    size_t prvSize;              ///< Number of provided features in prv array.
+    ebcl_TaskOpts_t opts;        ///< Task options.
+    ebcl_TaskState_t state;      ///< Task state.
+    pid_t pid;                   ///< PID of currently running process subordinate to the task, if any.
+    ebcl_IoRedir_t *redirs;  ///< IO redirection descriptions.
+    size_t redirsSize;           ///< Number of IO redirections.
+    int maxRetries;              ///< If ebcl_Task_t::opts includes #EBCL_TASK_OPT_RESPAWN, this variable specifies a
+                                 ///< maximum consecutive number of respawns after failure (default: -1 for infinite).
+    int failCount;  ///< Counts consecutive respawns after failure (see ebcl_TaskOpts_t::maxRetries). Resets
+                    ///< on a successful completion (i.e. all COMMANDs in the task have returned 0).
 } ebcl_Task_t;
 
 /**

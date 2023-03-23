@@ -569,23 +569,21 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in
     pTask->opts = 0;
     pTask->state = 0;
     pTask->pid = -1;
+    pTask->redirs = NULL;
+    pTask->redirsSize = 0;
     pTask->maxRetries = -1;
     pTask->failCount = 0;
 
     char *tempName = NULL;
-    size_t nameLen = 0;
-
     if (EBCL_confListGetVal(&tempName, "NAME", in) == -1) {
         EBCL_errPrint("Mandatory key \'NAME\' not found in task config file.");
         goto fail;
     }
-    nameLen = strlen(tempName) + 1;
-    pTask->name = malloc(nameLen);
+    pTask->name = strdup(tempName);
     if (pTask->name == NULL) {
         EBCL_errnoPrint("Could not allocate memory for name of task \'%s\'.", tempName);
         goto fail;
     }
-    memcpy(pTask->name, tempName, nameLen);
 
     bool tempYesNo = false;
     if (EBCL_confListExtractBoolean(&tempYesNo, "RESPAWN", true, in) == -1) {
@@ -597,6 +595,26 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in
     if (EBCL_confListExtractSignedInt(&pTask->maxRetries, 10, "RESPAWN_RETRIES", false, in) == -1) {
         EBCL_errPrint("Failed to parse integer value for non-mandatory key \'RESPAWN_RETRIES\' from task config file.");
         goto fail;
+    }
+
+    ssize_t redirsMaxIdx = EBCL_confListKeyGetMaxIdx(in, EBCL_CONFIG_KEYSTR_IOREDIR);
+    if (redirsMaxIdx > -1) {
+        pTask->redirs = malloc((redirsMaxIdx + 1) * sizeof(ebcl_IoRedir_t));
+        if (pTask->redirs == NULL) {
+            EBCL_errnoPrint("Could not allocate memory for IO redirections for task '%s'.", tempName);
+            goto fail;
+        }
+        pTask->redirsSize = (size_t)(redirsMaxIdx + 1);
+        for (size_t i = 0; i < pTask->redirsSize; i++) {
+            pTask->redirs[i].path = NULL;
+        }
+        for (size_t i = 0; i < pTask->redirsSize; i++) {
+            if (EBCL_initIoRedirFromConfKvList(&(pTask->redirs[i]), EBCL_CONFIG_KEYSTR_IOREDIR, i, in) == -1) {
+                EBCL_errPrint("Could not initialize IO redirection definition %zu from config for task '%s'.", i,
+                              tempName);
+                goto fail;
+            }
+        }
     }
 
     ssize_t cmdArrSize = EBCL_confListKeyGetMaxIdx(in, "COMMAND");
@@ -762,6 +780,8 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
     pTask->opts = 0;
     pTask->state = 0;
     pTask->pid = -1;
+    pTask->redirs = NULL;
+    pTask->redirsSize = 0;
     pTask->maxRetries = -1;
     pTask->failCount = 0;
 
@@ -894,8 +914,28 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
         }
     }
 
+    pTask->redirsSize = orig->redirsSize;
+    if (pTask->redirsSize > 0) {
+        pTask->redirs = malloc(pTask->redirsSize * sizeof(ebcl_IoRedir_t));
+        if (pTask->redirs == NULL) {
+            EBCL_errnoPrint("Could not allocate memory for %zu IO redirection(s) during copy of task '%s'.",
+                            pTask->redirsSize, orig->name);
+            goto fail;
+        }
+        for (size_t i = 0; i < pTask->redirsSize; i++) {
+            pTask->redirs[i].path = NULL;
+        }
+        for (size_t i = 0; i < pTask->redirsSize; i++) {
+            if (EBCL_ioRedirCpy(&pTask->redirs[i], &orig->redirs[i]) == -1) {
+                EBCL_errPrint("Could not copy all IO redirections during copy of task '%s'.", orig->name);
+                goto fail;
+            }
+        }
+    }
+
     pTask->opts = orig->opts;
     pTask->state = orig->state;
+    pTask->pid = orig->pid;
     pTask->maxRetries = orig->maxRetries;
     pTask->failCount = orig->failCount;
 
@@ -934,6 +974,12 @@ static void EBCL_destroyTask(ebcl_Task_t *t) {
         free(t->prv[0].name);  // free backing string
     }
     free(t->prv);
+    if (t->redirs != NULL) {
+        for (size_t i = 0; i < t->redirsSize; i++) {
+            EBCL_destroyIoRedir(&(t->redirs[i]));
+        }
+    }
+    free(t->redirs);
     EBCL_envSetDestroy(&t->taskEnv);
 }
 

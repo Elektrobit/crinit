@@ -24,6 +24,11 @@
     "TASK_FILE_SUFFIX"  ///< Config key for the task file extension in dynamic configurations.
 #define EBCL_CONFIG_DEFAULT_TASK_FILE_SUFFIX ".crinit"  ///< Default filename extension of task files.
 
+#define EBCL_CONFIG_STDOUT_NAME "STDOUT"          ///< What stdout is called in task configs.
+#define EBCL_CONFIG_STDERR_NAME "STDERR"          ///< What stdout is called in task configs.
+#define EBCL_CONFIG_STDIN_NAME "STDIN"            ///< What stdout is called in task configs.
+#define EBCL_CONFIG_KEYSTR_IOREDIR "IO_REDIRECT"  ///< Config key for IO redirections.
+
 /**
  * Linked list to hold key/value pairs read from the config file.
  */

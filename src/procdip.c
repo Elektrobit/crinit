@@ -66,6 +66,22 @@ static int EBCL_blockOnWaitInhibit(void);
  * @return 0 on success, -1 on error
  */
 static int EBCL_reapPid(pid_t pid);
+/**
+ * Adds an action to a posix_spawn_file_actions_t instance as defined by an ebcl_IoRedir_t instance.
+ *
+ * The file action will either be a call to open() including an IO redirection for an ebcl_IoRedir_t which contains a
+ * non-NULL ebcl_IoRedir_t::path, or a single redirection via dup2() if ebcl_IoRedir_t::oldfd is positive. If both cases
+ * are true, the ebcl_IoRedir_t::path takes precedence and ebcl_IoRedir_r::oldfd is ignored.
+ *
+ * ebcl_IoRedir_t::oflags is respected for files and ebcl_IoRedir_t::mode is respected for files that are overwritten
+ * or newly created.
+ *
+ * @param fileact  The posix_spawn_file_actions_t to be modified, must have been initialized.
+ * @param ior      The ebcl_IoRedir_t defining the file action to be added.
+ *
+ * @return 0 on success, -1 otherwise.
+ */
+static int EBCL_posixSpawnAddIOFileAction(posix_spawn_file_actions_t *fileact, const ebcl_IoRedir_t *ior);
 
 int EBCL_procDispatchSpawnFunc(ebcl_TaskDB_t *ctx, const ebcl_Task_t *t) {
     pthread_t dispatchThread;
@@ -142,12 +158,32 @@ static void *EBCL_dispatchThreadFunc(void *args) {
     EBCL_dbgInfoPrint("(TID: %d) Will spawn Task \'%s\'.", threadId, tCopy->name);
 
     for (size_t i = 0; i < tCopy->cmdsSize; i++) {
-        if (posix_spawn(&pid, tCopy->cmds[i].argv[0], NULL, NULL, tCopy->cmds[i].argv, tCopy->taskEnv.envp) == -1 ||
-            pid == -1) {
-            EBCL_errnoPrint("(TID: %d) Could not spawn new process for command %zu of Task \'%s\'", threadId, i,
-                            tCopy->name);
+        posix_spawn_file_actions_t fileact;
+        errno = posix_spawn_file_actions_init(&fileact);
+        if (errno != 0) {
+            EBCL_errnoPrint("(TID: %d) Could not initialize posix_spawn file actions for command %zu of Task '%s'",
+                            threadId, i, tCopy->name);
             goto threadExit;
         }
+
+        for (size_t j = 0; j < tCopy->redirsSize; j++) {
+            // NOTE: We currently have a umask of 0022 which precludes us from creating files with 0666 permissions.
+            //       We may want to make that configurable in the future.
+            if (EBCL_posixSpawnAddIOFileAction(&fileact, &(tCopy->redirs[j])) == -1) {
+                EBCL_errPrint("(TID: %d) Could not add IO file action to posix_spawn for command %zu of Task '%s'",
+                              threadId, i, tCopy->name);
+                goto threadExit;
+            }
+        }
+
+        errno = posix_spawn(&pid, tCopy->cmds[i].argv[0], &fileact, NULL, tCopy->cmds[i].argv, tCopy->taskEnv.envp);
+        if (errno != 0 || pid == -1) {
+            EBCL_errnoPrint("(TID: %d) Could not spawn new process for command %zu of Task \'%s\'", threadId, i,
+                            tCopy->name);
+            posix_spawn_file_actions_destroy(&fileact);
+            goto threadExit;
+        }
+        posix_spawn_file_actions_destroy(&fileact);
         EBCL_infoPrint("(TID: %d) Started new process %d for command %zu of Task \'%s\' (\'%s\').", threadId, pid, i,
                        tCopy->name, tCopy->cmds[i].argv[0]);
 
@@ -311,6 +347,39 @@ static int EBCL_reapPid(pid_t pid) {
     } while (errno == EINTR);
     if (errno != 0) {
         EBCL_errnoPrint("Could not reap zombie for PID \'%d\'.", pid);
+        return -1;
+    }
+    return 0;
+}
+
+static int EBCL_posixSpawnAddIOFileAction(posix_spawn_file_actions_t *fileact, const ebcl_IoRedir_t *ior) {
+    if (fileact == NULL || ior == NULL) {
+        EBCL_errPrint("Input parameters must not be NULL.");
+        return -1;
+    }
+    errno = 0;
+    int streamFd = ior->newFd;
+    if (streamFd != STDOUT_FILENO && streamFd != STDERR_FILENO && streamFd != STDIN_FILENO) {
+        EBCL_errPrint("Given IO stream must be either stdout, stderr, or stdin.");
+        return -1;
+    }
+    if (ior->path != NULL) {
+        errno = posix_spawn_file_actions_addopen(fileact, streamFd, ior->path, ior->oflags, ior->mode);
+        if (errno != 0) {
+            EBCL_errnoPrint("Could not add file redirection to posix spawn.");
+            return -1;
+        }
+        return 0;
+    }
+
+    if (ior->oldFd == -1) {
+        EBCL_errPrint("An IO redirection must specify either a path or a stream file descriptor as a target.");
+        return -1;
+    }
+
+    errno = posix_spawn_file_actions_adddup2(fileact, ior->oldFd, ior->newFd);
+    if (errno != 0) {
+        EBCL_errnoPrint("Could not add stream fd redirection to posix spawn.");
         return -1;
     }
     return 0;

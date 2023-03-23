@@ -23,6 +23,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include "common.h"
 #include "fseries.h"
 #include "globopt.h"
 #include "logio.h"
@@ -239,14 +240,6 @@ static inline int EBCL_genUnMountList(ebcl_UnMountList_t **um, bool *rootfsIsRo)
  * @param um  The ebcl_UnMountList_t to free.
  */
 static inline void EBCL_freeUnMountList(ebcl_UnMountList_t *um);
-/**
- * Check if \a path is absolute (i.e. starts with '/').
- *
- * @param path  The path to check.
- *
- * @return true if path is absolute, false otherwise
- */
-static inline bool EBCL_isAbsPath(const char *path);
 
 int EBCL_parseRtimCmd(ebcl_RtimCmd_t *out, const char *cmdStr) {
     if (out == NULL || cmdStr == NULL) {
@@ -1231,9 +1224,4 @@ static inline int EBCL_fsPrepareShutdown(void) {
     }
     sync();
     return out;
-}
-
-static inline bool EBCL_isAbsPath(const char *path) {
-    if (path == NULL) return false;
-    return (path[0] == '/');
 }

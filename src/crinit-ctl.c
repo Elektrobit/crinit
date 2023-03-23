@@ -68,14 +68,6 @@
 #include "version.h"
 
 /**
- * Check if \a path is absolute (i.e. starts with '/').
- *
- * @param path  The path to check.
- *
- * @return true if path is absolute, false otherwise
- */
-static bool EBCL_isAbsPath(const char *path);
-/**
  * Print usage information.
  *
  * @param prgmPath  The path to the program, usually found in argv[0].
@@ -403,11 +395,6 @@ static void EBCL_printVersion(void) {
     }
     fprintf(stderr, "crinit daemon version %u.%u.%u%s%s\n", daemonVer.major, daemonVer.minor, daemonVer.micro,
             (strlen(daemonVer.git) == 0) ? "" : ".", daemonVer.git);
-}
-
-static bool EBCL_isAbsPath(const char *path) {
-    if (path == NULL) return false;
-    return (path[0] == '/');
 }
 
 static const char *EBCL_taskStateToStr(ebcl_TaskState_t s) {
