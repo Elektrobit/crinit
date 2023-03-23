@@ -4,7 +4,6 @@ TASKS = hello_echo.crinit sleep_one_sec.crinit after_sleep.crinit one_second_res
 
 TASKDIR = /base/config/test
 DEBUG = NO
-FILE_SIGS_NEEDED = NO
 
 # use a 100ms grace period between SIGTERM and SIGKILL during shutdown
 SHUTDOWN_GRACE_PERIOD_US = 100000
@@ -15,6 +14,3 @@ ENV_SET = ESCSEQ_VAR "\"\ttabs\t\""
 ENV_SET = GLOB_VAR "This is a global value. 1234"
 ENV_SET = EXP_VAR "${GLOB_VAR}5678"
 ENV_SET = HEX_ESC_VAR "\x68\x65\x78\x20\x68\x65\x78 foo\x20bar"
-
-# not yet implemented
-SIG = ""

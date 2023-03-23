@@ -30,13 +30,6 @@ int EBCL_globOptInitDefault(void) {
                     return -1;
                 }
             } break;
-            case EBCL_GLOBOPT_FILESIGS: {
-                bool def = EBCL_GLOBOPT_DEFAULT_FILESIGS;
-                if (EBCL_globOptSetBoolean(i, &def) == -1) {
-                    EBCL_errPrint("Could not set default value for global option \'FILE_SIGS_NEEDED\'.");
-                    return -1;
-                }
-            } break;
             case EBCL_GLOBOPT_TASKDIR:
                 if (EBCL_globOptSetString(i, EBCL_GLOBOPT_DEFAULT_TASKDIR) == -1) {
                     EBCL_errPrint("Could not set default value for global option \'TASKDIR\'.");

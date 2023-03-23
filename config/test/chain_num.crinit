@@ -13,7 +13,3 @@ COMMAND[4] = /bin/echo 4
 COMMAND[3] = /bin/echo 3
 
 RESPAWN = NO
-# features below not yet implemented
-EXEC = NO
-QM_JAIL = NO
-SIG = ""

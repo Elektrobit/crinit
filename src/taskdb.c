@@ -588,18 +588,6 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in
     memcpy(pTask->name, tempName, nameLen);
 
     bool tempYesNo = false;
-    if (EBCL_confListExtractBoolean(&tempYesNo, "EXEC", true, in) == -1) {
-        EBCL_errPrint("Could not extract mandatory boolean key \'EXEC\' from task config file.");
-        goto fail;
-    }
-    pTask->opts |= (tempYesNo) ? EBCL_TASK_OPT_EXEC : 0;
-
-    if (EBCL_confListExtractBoolean(&tempYesNo, "QM_JAIL", true, in) == -1) {
-        EBCL_errPrint("Could not extract mandatory boolean key \'QM_JAIL\' from task config file.");
-        goto fail;
-    }
-    pTask->opts |= (tempYesNo) ? EBCL_TASK_OPT_QM_JAIL : 0;
-
     if (EBCL_confListExtractBoolean(&tempYesNo, "RESPAWN", true, in) == -1) {
         EBCL_errPrint("Could not extract mandatory boolean key \'RESPAWN\' from task config file.");
         goto fail;

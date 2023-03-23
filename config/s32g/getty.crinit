@@ -7,7 +7,3 @@ COMMAND[0] = /sbin/getty 115200 console
 DEPENDS = earlysetup:wait
 
 RESPAWN = YES
-# features below not yet implemented
-EXEC = NO
-QM_JAIL = NO
-SIG = ""

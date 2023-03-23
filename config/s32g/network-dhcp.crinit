@@ -15,7 +15,3 @@ COMMAND[6] = /sbin/dhcpcd -j /var/log/dhcpcd.log eth0
 DEPENDS = check_qemu:fail earlysetup:wait
 
 RESPAWN = NO
-# features below not yet implemented
-EXEC = NO
-QM_JAIL = NO
-SIG = ""

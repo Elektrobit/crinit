@@ -64,7 +64,6 @@ TASKDIR = /etc/crinit
 TASK_FILE_SUFFIX = .crinit
 TASKDIR_FOLLOW_SYMLINKS = YES
 DEBUG = NO
-FILE_SIGS_NEEDED = NO
 
 SHUTDOWN_GRACE_PERIOD_US = 100000
 
@@ -73,9 +72,6 @@ USE_SYSLOG = NO
 ENV_SET = FOO "foo"
 ENV_SET = FOO_BAZ "${FOO} baz"
 ENV_SET = GREETING "Good morning!"
-
-# not yet implemented
-SIG = ""
 ```
 #### Explanation
 - **TASKS** -- The task configurations to load. This is an optional setting. If unset, **TASKDIR** will be scanned for
@@ -87,15 +83,12 @@ SIG = ""
 - **TASKDIR_FOLLOW_SYMLINKS** -- If symbolic links should be followed during scanning of **TASKDIR**. Only relevant if
                                  **TASKS** is not set. Default: YES
 - **DEBUG** -- If crinit should be verbose in its output. Either `YES` or `NO`. Default: `NO`
-- **FILE_SIGS_NEEDED** -- If each task configuration needs its own signature. As signature checking is not yet
-  implemented, this is parsed but does nothing. Default: `YES`
 - **SHUTDOWN_GRACE_PERIOD_US** -- The amount of microseconds to wait between `SIGTERM` and `SIGKILL` on shutdown/reboot.
                                   Default: 100000
 - **USE_SYSLOG** -- If syslog should be used for output if it is available. If set to `YES`, Crinit will switch to
                     syslog for output as soon as a task file `PROVIDES` the `syslog` feature. Ideally this should be
                     a task file loading a syslog server such as syslogd or elosd. Default: `NO`
 - **ENV_SET** -- See section **Setting Environment Variables** below.
-- **SIG** -- The signature of this file. Currently unimplemented and can be left empty.
 
 ### Example Task Configuration
 The `network-dhcp.crinit` from above looks like this:
@@ -124,11 +117,6 @@ ENV_SET = FOO_BAR "${FOO} bar"
 ENV_SET = ESCAPED_VAR "Global variable name: \${FOO}"
 ENV_SET = VAR_WITH_ESC_SEQUENCES "hex\t\x68\x65\x78"
 ENV_SET = GREETING "Good evening!"
-
-# features below not yet implemented
-EXEC = NO
-QM_JAIL = NO
-SIG = ""
 ```
 #### Explanation
 - **NAME** -- The name given to this task configuration. Relevant if other tasks want to depend on this one. This is a
@@ -163,11 +151,6 @@ SIG = ""
 - **RESPAWN_RETRIES** -- Number of times a respawned task may fail *in a row* before it is not started again. The
   special value `-1` is interpreted as "unlimited". Default: -1
 - **ENV_SET** -- See section **Setting Environment Variables** below.
-- **EXEC** -- If set to `YES`, `crinit` will exec into the first `COMMAND` of this task instead of spawning a process.
-  This is a mandatory setting. (Not yet implemented.)
-- **QM_JAIL** -- If set to `YES`, all `COMMAND`s will be spawned inside a restricted environment such as the non-SIL/QM
-  environment created by SafeSystemStartup. This is a mandatory setting. (Not yet implemented.)
-- **SIG** -- The signature of this file. Currently unimplemented and can be left empty.
 
 ### Setting Environment Variables
 

@@ -4,7 +4,3 @@ TASK_FILE_SUFFIX = .txt
 
 TASKDIR = /etc/crinit/test/addseries
 DEBUG = NO
-FILE_SIGS_NEEDED = NO
-
-# not yet implemented
-SIG = ""

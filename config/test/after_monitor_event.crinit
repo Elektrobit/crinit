@@ -11,7 +11,3 @@ COMMAND[0] = /bin/echo Sleep task is done and the HIGH_TEMPERATURE event was sig
 DEPENDS = sleep_one_sec:wait @ebclmon:HIGH_TEMPERATURE
 
 RESPAWN = NO
-# features below not yet implemented
-EXEC = NO
-QM_JAIL = NO
-SIG = ""

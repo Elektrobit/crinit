@@ -9,7 +9,3 @@ DEPENDS = "@ctl:enable"
 
 RESPAWN = YES
 RESPAWN_RETRIES = 5
-# features below not yet implemented
-EXEC = NO
-QM_JAIL = NO
-SIG = ""

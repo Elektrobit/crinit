@@ -8,7 +8,3 @@ COMMAND[1] = /bin/sleep 86400
 DEPENDS = ""
 
 RESPAWN = NO
-# features below not yet implemented
-EXEC = NO
-QM_JAIL = NO
-SIG = ""

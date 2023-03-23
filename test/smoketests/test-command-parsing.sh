@@ -24,10 +24,6 @@ COMMAND[] = /bin/sh "-c"   "echo \\" '''   \\xe2\\x99\\xa5  \\"\\x68ello w\\ spc
 DEPENDS = ""
 
 RESPAWN = NO
-
-# features below not yet implemented
-EXEC = NO
-QM_JAIL = NO
 EOF
 }
 

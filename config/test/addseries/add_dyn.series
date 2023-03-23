@@ -2,7 +2,3 @@
 
 TASKDIR = /etc/crinit/test/addseries
 DEBUG = NO
-FILE_SIGS_NEEDED = NO
-
-# not yet implemented
-SIG = ""
