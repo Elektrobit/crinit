@@ -117,6 +117,9 @@ ENV_SET = FOO_BAR "${FOO} bar"
 ENV_SET = ESCAPED_VAR "Global variable name: \${FOO}"
 ENV_SET = VAR_WITH_ESC_SEQUENCES "hex\t\x68\x65\x78"
 ENV_SET = GREETING "Good evening!"
+
+IO_REDIRECT = STDOUT "/var/log/net-dhcp.log" APPEND 0644
+IO_REDIRECT = STDERR STDOUT
 ```
 #### Explanation
 - **NAME** -- The name given to this task configuration. Relevant if other tasks want to depend on this one. This is a
@@ -151,6 +154,7 @@ ENV_SET = GREETING "Good evening!"
 - **RESPAWN_RETRIES** -- Number of times a respawned task may fail *in a row* before it is not started again. The
   special value `-1` is interpreted as "unlimited". Default: -1
 - **ENV_SET** -- See section **Setting Environment Variables** below.
+- **IO_REDIRECT** -- See section **IO Redirections** below.
 
 ### Setting Environment Variables
 
@@ -179,6 +183,34 @@ VAR_WITH_ESC_SEQUENCES=hex  hex            # Support for escape sequences includ
 * Variables can reference all other variables set before it, globally and locally.
 * Variables are set/processed in the order they appear in the config file.
 * Common escape sequences are supported: `\a, \b, \n, \t, \$, \\, \x<two digit hex number>`.
+
+### IO Redirections
+
+Crinit supports per-task IO redirection to/from file and between STDOUT/IN/ERR using `IO_REDIRECT` statements in the
+task configurations. The statements are of the form
+```
+<REDIRECT_FROM> <REDIRECT_TO> [ APPEND | TRUNCATE ] [ OCTAL_MODE ]
+```
+Where `REDIRECT_FROM` is one of `{ STDOUT, STDERR, STDIN }`, and `REDIRECT_TO` may either also be one of those streams
+or an absolute path to a file. `APPEND` or `TRUNCATE` signify whether an existing file at that location should be
+appended to or truncated. Default ist `TRUNCATE`. `OCTAL_MODE` sets the permission bits if the file is newly created.
+Default is `0644`.
+
+Accordingly the statements in the example configuration above will result in `stdout` being redirected to the file
+`/var/log/net-dhcp.log` in append mode. If the file does not yet exist, it will be created with permission bits `0644`.
+The second statement then redirects stderr to stdout, capturing both in the log.
+
+Other examples could be
+```
+IO_REDIRECT = STDERR "/var/log/err.log" APPEND
+IO_REDIRECT = STDOUT "/dev/null"
+```
+to silence stdout and log stderr, or
+```
+IO_REDIRECT = STDIN /opt/data/backup.tar
+IO_REDIRECT = STDOUT /opt/data/backup.tar.gz
+```
+to read stdin from file and capture stdout to another file. Stderr will go to console as normal.
 
 ## crinit-ctl Usage Info
 
