@@ -55,7 +55,7 @@ EOF
 
 NAME = io_redirections_test_stdin
 
-COMMAND[] = /bin/tee
+COMMAND[] = /usr/bin/tee
 
 IO_REDIRECT = STDOUT "${out_stdin}" APPEND
 IO_REDIRECT = STDIN "${in_stdin}" 
