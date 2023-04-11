@@ -66,6 +66,7 @@ static int EBCL_blockOnWaitInhibit(void);
  * @return 0 on success, -1 on error
  */
 static int EBCL_reapPid(pid_t pid);
+
 /**
  * Adds an action to a posix_spawn_file_actions_t instance as defined by an ebcl_IoRedir_t instance.
  *
