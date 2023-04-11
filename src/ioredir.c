@@ -121,7 +121,6 @@ int EBCL_initIoRedirFromConfKvList(ebcl_IoRedir_t *out, const char *key, size_t 
             out->path = NULL;
             return -1;
         }
-        EBCL_errPrint("mode %o", out->mode);
     }
 
     if (out->newFd == STDIN_FILENO) {
