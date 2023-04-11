@@ -599,14 +599,11 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in
 
     ssize_t redirsMaxIdx = EBCL_confListKeyGetMaxIdx(in, EBCL_CONFIG_KEYSTR_IOREDIR);
     if (redirsMaxIdx > -1) {
-        pTask->redirs = malloc((redirsMaxIdx + 1) * sizeof(ebcl_IoRedir_t));
+        pTask->redirsSize = (size_t)(redirsMaxIdx + 1);
+        pTask->redirs = calloc(pTask->redirsSize, sizeof(*pTask->redirs));
         if (pTask->redirs == NULL) {
             EBCL_errnoPrint("Could not allocate memory for IO redirections for task '%s'.", tempName);
             goto fail;
-        }
-        pTask->redirsSize = (size_t)(redirsMaxIdx + 1);
-        for (size_t i = 0; i < pTask->redirsSize; i++) {
-            pTask->redirs[i].path = NULL;
         }
         for (size_t i = 0; i < pTask->redirsSize; i++) {
             if (EBCL_initIoRedirFromConfKvList(&(pTask->redirs[i]), EBCL_CONFIG_KEYSTR_IOREDIR, i, in) == -1) {
@@ -916,14 +913,11 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
 
     pTask->redirsSize = orig->redirsSize;
     if (pTask->redirsSize > 0) {
-        pTask->redirs = malloc(pTask->redirsSize * sizeof(ebcl_IoRedir_t));
+        pTask->redirs = calloc(pTask->redirsSize, sizeof(*pTask->redirs));
         if (pTask->redirs == NULL) {
             EBCL_errnoPrint("Could not allocate memory for %zu IO redirection(s) during copy of task '%s'.",
                             pTask->redirsSize, orig->name);
             goto fail;
-        }
-        for (size_t i = 0; i < pTask->redirsSize; i++) {
-            pTask->redirs[i].path = NULL;
         }
         for (size_t i = 0; i < pTask->redirsSize; i++) {
             if (EBCL_ioRedirCpy(&pTask->redirs[i], &orig->redirs[i]) == -1) {
