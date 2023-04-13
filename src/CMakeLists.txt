@@ -25,6 +25,7 @@ add_executable(
   rtimopmap.c
   optfeat.c
   fseries.c
+  ioredir.c
   ${CMAKE_CURRENT_BINARY_DIR}/version.c
 )
 
@@ -95,6 +96,7 @@ add_executable(
   globopt.c
   taskdb.c
   logio.c
+  ioredir.c
 )
 target_include_directories(
   crinit_parsecheck

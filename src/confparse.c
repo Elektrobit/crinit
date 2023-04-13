@@ -18,6 +18,7 @@
 #include "envset.h"
 #include "globopt.h"
 #include "ini.h"
+#include "ioredir.h"
 #include "lexers.h"
 #include "logio.h"
 
@@ -30,17 +31,10 @@ typedef struct {
     ebcl_ConfKvList_t *last;    ///< Running pointer to the last element just constructed.
     size_t keyArrayCount;       ///< Counter variable for array-like config options.
     size_t envSetCount;         ///< Counter variable for ENV_SET config directives.
+    size_t ioRedirCount;        ///< Counter variable for IO_REDIRECT config directives.
 } ebcl_IniParserCtx_t;
 
 static char *EBCL_copyEscaped(char *dst, const char *src, const char *end);
-/**
- * Check if \a path is absolute (i.e. starts with '/').
- *
- * @param path  The path to check.
- *
- * @return true if path is absolute, false otherwise
- */
-static inline bool EBCL_isAbsPath(const char *path);
 
 /**
  * Parser handler for libinih.
@@ -64,7 +58,7 @@ int EBCL_parseConf(ebcl_ConfKvList_t **confList, const char *filename) {
     (*confList)->next = NULL;
 
     // Parse config ing libinih
-    ebcl_IniParserCtx_t parserCtx = {*confList, *confList, *confList, 0, 0};
+    ebcl_IniParserCtx_t parserCtx = {*confList, *confList, *confList, 0, 0, 0};
     int parseResult = ini_parse_file(cf, EBCL_iniHandler, &parserCtx);
 
     // Trim the list's tail
@@ -127,6 +121,9 @@ static int EBCL_iniHandler(void *parserCtx, const char *section, const char *key
          * with everything else and just differentiate between keys which may be given multiple times and keys which may
          * appear only once. */
         ctx->pList->keyArrIndex = ctx->envSetCount++;
+    } else if (strcmp(key, EBCL_CONFIG_KEYSTR_IOREDIR) == 0) {
+        // Handle REDIRECT_IO the same way as ENV_SET for now. Same criticism applies.
+        ctx->pList->keyArrIndex = ctx->ioRedirCount++;
     }
 
     // Handle quotes around value.
@@ -633,10 +630,6 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
     EBCL_freeConfList(c);
     EBCL_envSetDestroy(&globEnv);
     return 0;
-}
-
-static inline bool EBCL_isAbsPath(const char *path) {
-    return (path != NULL) && (path[0] == '/');
 }
 
 static char *EBCL_copyEscaped(char *dst, const char *src, const char *end) {

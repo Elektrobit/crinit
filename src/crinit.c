@@ -38,14 +38,6 @@ static void EBCL_printVersion(void);
  */
 static void EBCL_printUsage(const char *basename);
 /**
- * Check if \a path is absolute (i.e. starts with '/').
- *
- * @param path  The path to check.
- *
- * @return true if path is absolute, false otherwise
- */
-static bool EBCL_isAbsPath(const char *path);
-/**
  * Print out the contents of an ebcl_Task_t structure in a readable format using EBCL_dbgInfoPrint().
  *
  * @param t  The task to be printed.
@@ -193,11 +185,6 @@ static void EBCL_printUsage(const char *basename) {
     EBCL_printVersion();
     fprintf(stderr, "USAGE: %s [path/to/config.series]\n", basename);
     fprintf(stderr, "If nothing is specified, the default path \'%s\' is used.\n", EBCL_CRINIT_DEFAULT_CONFIG_SERIES);
-}
-
-static bool EBCL_isAbsPath(const char *path) {
-    if (path == NULL) return false;
-    return (path[0] == '/');
 }
 
 static void EBCL_taskPrint(const ebcl_Task_t *t) {
