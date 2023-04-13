@@ -30,6 +30,7 @@ int EBCL_initIoRedirFromConfKvList(ebcl_IoRedir_t *out, const char *key, size_t 
     out->path = NULL;
     out->oflags = O_TRUNC | O_CREAT;
     out->mode = 0644;
+    out->fifo = false;
 
     int numParams = 0;
     char **confStrArr = NULL;
@@ -83,9 +84,13 @@ int EBCL_initIoRedirFromConfKvList(ebcl_IoRedir_t *out, const char *key, size_t 
                 out->oflags = O_TRUNC | O_CREAT;
             } else if (strcmp(confStrArr[2], "APPEND") == 0) {
                 out->oflags = O_APPEND | O_CREAT;
+            } else if (strcmp(confStrArr[2], "PIPE") == 0) {
+                out->oflags = 0;
+                out->fifo = true;
             } else {
                 EBCL_errPrint(
-                    "Third parameter of redirection statement - if it is given - must be either APPEND or TRUNCATE.");
+                    "Third parameter of redirection statement - if it is given - must be either APPEND, TRUNCATE, or "
+                    "PIPE.");
                 EBCL_freeArgvArray(confStrArr);
                 free(out->path);
                 out->path = NULL;

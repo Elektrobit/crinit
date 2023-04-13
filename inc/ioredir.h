@@ -24,6 +24,7 @@ typedef struct ebcl_IoRedir_t {
     int oflags;   ///< The value to use as oflag in the call to open if ebcl_IoRedir_t::path is used, for example
                   ///< O_APPEND.
     mode_t mode;  ///< The value to use as mode in the call to open if ebcl_IoRedir_t::path is used, for example 0644.
+    bool fifo;    ///< If true, the target at ebcl_IoRedir_t::path is treated as a FIFO special file (named pipe).
 } ebcl_IoRedir_t;
 
 /**
