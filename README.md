@@ -131,7 +131,8 @@ IO_REDIRECT = STDERR STDOUT
   starting at 0. When using the syntax with empty brackets, all commands must be written as consecutive lines. Mixing
   both forms (**[]** and **[n]**) is unsupported and may lead to errors during parsing/loading due to duplicate or
   missing keys. There are a few examples of correct and incorrect usage in the `config/test` directory which are used by
-  `ci/demo.sh` to check the parser. At least one `COMMAND` is mandatory.
+  `ci/demo.sh` to check the parser. If no **COMMAND[]** is given, the task is treated as a dependency group (or
+  "meta-task", see below.).
 - **DEPENDS** -- A list of dependencies which need to be fulfilled before this task is considered "ready-to-start".
   Semantics are `<taskname>:{fail,wait,spawn}`, where `spawn` is fulfilled when (the first command of) a task has been
   started, `wait` if it has successfully completed, and `fail` if it has failed somewhere along the way. Here we can see
@@ -211,6 +212,37 @@ IO_REDIRECT = STDIN /opt/data/backup.tar
 IO_REDIRECT = STDOUT /opt/data/backup.tar.gz
 ```
 to read stdin from file and capture stdout to another file. Stderr will go to console as normal.
+
+### Dependency groups (meta-tasks)
+
+A dependency group or meta-task is a task without any **COMMAND**s. The provided dependencies of the meta-task will be
+fulfilled immediately once its own dependencies are fulfilled. This can be used to semantically combine different
+dependencies into one. Reasons to do that can be semantic readability of the configs or to provide hook dependencies
+for third-party applications having an opaque view of their target system.
+
+As an example a dependency group and a task using it could look like
+
+```
+NAME = dep_grp_server
+
+DEPENDS = @provided:sql-db @provided:network @provided:firewall-open-port httpd:spawn
+
+PROVIDES = server:wait
+```
+
+```
+NAME = local_http_client
+
+COMMAND = /usr/bin/some-http-request localhost
+
+DEPENDS = @provided:server
+# or, with same effect: DEPENDS = dep_grp_server:wait
+```
+
+Semantically, this would mean `local_http_client` only cares about the server stuff being set up and running. This could
+also be delivered by a third party with only the interface knowledge "You need to wait for the `server` dependency". How
+to provide this dependency, with which tasks, and in what order is then up to the system integrator who maintains
+`dep_grp_server`.
 
 ## crinit-ctl Usage Info
 
