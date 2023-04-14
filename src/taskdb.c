@@ -600,7 +600,7 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in
     ssize_t cmdArrSize = EBCL_confListKeyGetMaxIdx(in, "COMMAND");
     if (cmdArrSize >= 0) {
         pTask->cmdsSize = (size_t)(cmdArrSize + 1);
-        pTask->cmds = malloc(sizeof(ebcl_TaskCmd_t) * pTask->cmdsSize);
+        pTask->cmds = calloc(pTask->cmdsSize, sizeof(*pTask->cmds));
         if (pTask->cmds == NULL) {
             EBCL_errnoPrint("Could not allocate memory for %zu commands in task %s.", pTask->cmdsSize, tempName);
             goto fail;
@@ -789,7 +789,7 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
 
     pTask->cmdsSize = orig->cmdsSize;
     if (pTask->cmdsSize > 0) {
-        pTask->cmds = malloc(pTask->cmdsSize * sizeof(ebcl_TaskCmd_t));
+        pTask->cmds = calloc(pTask->cmdsSize, sizeof(*pTask->cmds));
         if (pTask->cmds == NULL) {
             EBCL_errnoPrint("Could not allocate memory for %zu COMMANDs during copy of Task \'%s\'.", pTask->cmdsSize,
                             orig->name);
@@ -807,7 +807,7 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
                 goto fail;
             }
             pTask->cmds[i].argc = orig->cmds[i].argc;
-            pTask->cmds[i].argv = malloc((pTask->cmds[i].argc + 1) * sizeof(char *));
+            pTask->cmds[i].argv = calloc((pTask->cmds[i].argc + 1), sizeof(*pTask->cmds[i].argv));
             if (pTask->cmds[i].argv == NULL) {
                 EBCL_errnoPrint(
                     "Could not allocate memory for argv-array of size %d during copy of task \'%s\', cmds[%zu].",
