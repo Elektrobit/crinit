@@ -597,49 +597,41 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in
         goto fail;
     }
 
-    ssize_t redirsMaxIdx = EBCL_confListKeyGetMaxIdx(in, EBCL_CONFIG_KEYSTR_IOREDIR);
-    if (redirsMaxIdx > -1) {
-        pTask->redirsSize = (size_t)(redirsMaxIdx + 1);
-        pTask->redirs = calloc(pTask->redirsSize, sizeof(*pTask->redirs));
-        if (pTask->redirs == NULL) {
-            EBCL_errnoPrint("Could not allocate memory for IO redirections for task '%s'.", tempName);
+    ssize_t cmdArrSize = EBCL_confListKeyGetMaxIdx(in, "COMMAND");
+    if (cmdArrSize >= 0) {
+        pTask->cmdsSize = (size_t)(cmdArrSize + 1);
+        pTask->cmds = calloc(pTask->cmdsSize, sizeof(*pTask->cmds));
+        if (pTask->cmds == NULL) {
+            EBCL_errnoPrint("Could not allocate memory for %zu commands in task %s.", pTask->cmdsSize, tempName);
             goto fail;
         }
-        for (size_t i = 0; i < pTask->redirsSize; i++) {
-            if (EBCL_initIoRedirFromConfKvList(&(pTask->redirs[i]), EBCL_CONFIG_KEYSTR_IOREDIR, i, in) == -1) {
-                EBCL_errPrint("Could not initialize IO redirection definition %zu from config for task '%s'.", i,
-                              tempName);
+
+        for (size_t i = 0; i < pTask->cmdsSize; i++) {
+            if (EBCL_confListExtractArgvArrayWithIdx(&(pTask->cmds[i].argc), &(pTask->cmds[i].argv), "COMMAND", i, true,
+                                                     in, true) == -1) {
+                EBCL_errPrint(
+                    "Could not extract argv/argc from COMMAND[%zu] in config for task "
+                    "\'%s\'.",
+                    i, tempName);
                 goto fail;
             }
         }
-    }
 
-    ssize_t cmdArrSize = EBCL_confListKeyGetMaxIdx(in, "COMMAND");
-    if (cmdArrSize == -1) {
-        EBCL_errPrint("Could not get maximum index of COMMAND array.");
-        goto fail;
-    }
-
-    pTask->cmdsSize = (size_t)(cmdArrSize + 1);
-    pTask->cmds = malloc(sizeof(ebcl_TaskCmd_t) * pTask->cmdsSize);
-    if (pTask->cmds == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for %zu commands in task %s.", pTask->cmdsSize, tempName);
-        goto fail;
-    }
-
-    for (size_t i = 0; i < pTask->cmdsSize; i++) {
-        pTask->cmds[i].argc = 0;
-        pTask->cmds[i].argv = NULL;
-    }
-
-    for (size_t i = 0; i < pTask->cmdsSize; i++) {
-        if (EBCL_confListExtractArgvArrayWithIdx(&(pTask->cmds[i].argc), &(pTask->cmds[i].argv), "COMMAND", i, true, in,
-                                                 true) == -1) {
-            EBCL_errPrint(
-                "Could not extract argv/argc from COMMAND[%zu] in config for task "
-                "\'%s\'.",
-                i, tempName);
-            goto fail;
+        ssize_t redirsMaxIdx = EBCL_confListKeyGetMaxIdx(in, EBCL_CONFIG_KEYSTR_IOREDIR);
+        if (redirsMaxIdx > -1) {
+            pTask->redirsSize = (size_t)(redirsMaxIdx + 1);
+            pTask->redirs = calloc(pTask->redirsSize, sizeof(*pTask->redirs));
+            if (pTask->redirs == NULL) {
+                EBCL_errnoPrint("Could not allocate memory for IO redirections for task '%s'.", tempName);
+                goto fail;
+            }
+            for (size_t i = 0; i < pTask->redirsSize; i++) {
+                if (EBCL_initIoRedirFromConfKvList(&(pTask->redirs[i]), EBCL_CONFIG_KEYSTR_IOREDIR, i, in) == -1) {
+                    EBCL_errPrint("Could not initialize IO redirection definition %zu from config for task '%s'.", i,
+                                  tempName);
+                    goto fail;
+                }
+            }
         }
     }
 
@@ -791,50 +783,44 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
     memcpy(pTask->name, orig->name, nameLen);
 
     pTask->cmdsSize = orig->cmdsSize;
-    pTask->cmds = malloc(pTask->cmdsSize * sizeof(ebcl_TaskCmd_t));
-    if (pTask->cmds == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for %zu COMMANDs during copy of Task \'%s\'.", pTask->cmdsSize,
-                        orig->name);
-        goto fail;
-    }
-
-    for (size_t i = 0; i < pTask->cmdsSize; i++) {
-        pTask->cmds[i].argc = 0;
-        pTask->cmds[i].argv = NULL;
-    }
-
-    for (size_t i = 0; i < pTask->cmdsSize; i++) {
-        if (orig->cmds[i].argc < 1) {
-            EBCL_errPrint("COMMANDs must have at least one argument.");
-            goto fail;
-        }
-        pTask->cmds[i].argc = orig->cmds[i].argc;
-        pTask->cmds[i].argv = malloc((pTask->cmds[i].argc + 1) * sizeof(char *));
-        if (pTask->cmds[i].argv == NULL) {
-            EBCL_errnoPrint(
-                "Could not allocate memory for argv-array of size %d during copy of task \'%s\', cmds[%zu].",
-                pTask->cmds[i].argc + 1, orig->name, i);
+    if (pTask->cmdsSize > 0) {
+        pTask->cmds = calloc(pTask->cmdsSize, sizeof(*pTask->cmds));
+        if (pTask->cmds == NULL) {
+            EBCL_errnoPrint("Could not allocate memory for %zu COMMANDs during copy of Task \'%s\'.", pTask->cmdsSize,
+                            orig->name);
             goto fail;
         }
 
-        size_t argvBackbufLen = 0;
-        for (int j = 0; j < pTask->cmds[i].argc; j++) {
-            pTask->cmds[i].argv[j] = NULL;
-            argvBackbufLen += strlen(orig->cmds[i].argv[j]) + 1;
-        }
-        pTask->cmds[i].argv[pTask->cmds[i].argc] = NULL;
-        char *argvBackbuf = malloc(argvBackbufLen);
-        if (argvBackbuf == NULL) {
-            EBCL_errnoPrint("Could not allocate memory for cmds[%zu].argv of task \'%s\'.", i, orig->name);
-            goto fail;
-        }
+        for (size_t i = 0; i < pTask->cmdsSize; i++) {
+            if (orig->cmds[i].argc < 1) {
+                EBCL_errPrint("COMMANDs must have at least one argument.");
+                goto fail;
+            }
+            pTask->cmds[i].argc = orig->cmds[i].argc;
+            pTask->cmds[i].argv = calloc((pTask->cmds[i].argc + 1), sizeof(*pTask->cmds[i].argv));
+            if (pTask->cmds[i].argv == NULL) {
+                EBCL_errnoPrint(
+                    "Could not allocate memory for argv-array of size %d during copy of task \'%s\', cmds[%zu].",
+                    pTask->cmds[i].argc + 1, orig->name, i);
+                goto fail;
+            }
 
-        char *runner = argvBackbuf;
-        for (int j = 0; j < pTask->cmds[i].argc; j++) {
-            size_t argvLen = strlen(orig->cmds[i].argv[j]) + 1;
-            memcpy(runner, orig->cmds[i].argv[j], argvLen);
-            pTask->cmds[i].argv[j] = runner;
-            runner += argvLen;
+            char *origArgvBackbufEnd = strchr(orig->cmds[i].argv[pTask->cmds[i].argc - 1], '\0');
+            size_t argvBackbufLen = origArgvBackbufEnd - orig->cmds[i].argv[0] + 1;
+
+            char *argvBackbuf = malloc(argvBackbufLen);
+            if (argvBackbuf == NULL) {
+                EBCL_errnoPrint("Could not allocate memory for cmds[%zu].argv of task \'%s\'.", i, orig->name);
+                goto fail;
+            }
+
+            memcpy(argvBackbuf, orig->cmds[i].argv[0], argvBackbufLen);
+            char *runner = argvBackbuf;
+            for (int j = 0; j < pTask->cmds[i].argc; j++) {
+                size_t argvLen = strlen(orig->cmds[i].argv[j]) + 1;
+                pTask->cmds[i].argv[j] = runner;
+                runner += argvLen;
+            }
         }
     }
 
