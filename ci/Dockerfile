@@ -14,6 +14,7 @@ RUN apt-get update \
     doxygen graphviz plantuml \
     clang llvm clang-tidy \
     libcmocka-dev \
+    bc \
  && rm -rf /var/lib/apt/lists/*
 
 # install debbuild
