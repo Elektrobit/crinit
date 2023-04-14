@@ -69,6 +69,7 @@ crinit_add_task() {
         echo "crinit-ctl addtask successful, but task '$2' not in list."
         return 1
     fi
+    return 0
 }
 
 crinit_task_check_status() {
@@ -76,6 +77,7 @@ crinit_task_check_status() {
         echo "crinit-ctl status $1 failed or returned an unexpected status."
         return 1
     fi
+    return 0
 }
 
 crinit_enable_task() {
@@ -83,6 +85,7 @@ crinit_enable_task() {
         echo "crinit-ctl enable $1 failed unexpectedly."
         return 1
     fi
+    return 0
 }
 
 run() {
@@ -151,6 +154,7 @@ run() {
     if ! crinit_task_check_status "task_final" "done"; then
         return 1
     fi
+    return 0
 }
 
 teardown() {
