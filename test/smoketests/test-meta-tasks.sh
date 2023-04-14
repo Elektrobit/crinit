@@ -21,55 +21,40 @@ setup() {
 # Config to test dependency groups (dep group member 1)
 
 NAME = task_dep1
-
 COMMAND[] = /bin/true
-
 DEPENDS = "@ctl:enable"
-
 RESPAWN = NO
 EOF
     cat << EOF > "${task_dep2}"
 # Config to test dependency groups (dep group member 2)
 
 NAME = task_dep2
-
 COMMAND[] = /bin/true
-
 DEPENDS = "@ctl:enable"
-
 RESPAWN = NO
 EOF
     cat << EOF > "${task_dep3}"
 # Config to test dependency groups (dep group member 3)
 
 NAME = task_dep3
-
 COMMAND[] = /bin/true
-
 DEPENDS = "@ctl:enable"
-
 RESPAWN = NO
 EOF
     cat << EOF > "${task_grp}"
 # Config to test dependency groups (dependency group meta-task)
 
 NAME = task_grp
-
 DEPENDS = "task_dep1:wait task_dep2:wait task_dep3:wait"
-
 PROVIDES = "depgrp:wait"
-
 RESPAWN = NO
 EOF
     cat << EOF > "${task_final}"
 # Config to test dependency groups (dep group member 3)
 
 NAME = task_final
-
 COMMAND[] = /bin/echo Dependency group has been fulfilled.
-
 DEPENDS = "@provided:depgrp"
-
 RESPAWN = NO
 EOF
 }
