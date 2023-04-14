@@ -805,20 +805,19 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
                 goto fail;
             }
 
-            size_t argvBackbufLen = 0;
-            for (int j = 0; j < pTask->cmds[i].argc; j++) {
-                argvBackbufLen += strlen(orig->cmds[i].argv[j]) + 1;
-            }
+            char *origArgvBackbufEnd = strchr(orig->cmds[i].argv[pTask->cmds[i].argc - 1], '\0');
+            size_t argvBackbufLen = origArgvBackbufEnd - orig->cmds[i].argv[0] + 1;
+
             char *argvBackbuf = malloc(argvBackbufLen);
             if (argvBackbuf == NULL) {
                 EBCL_errnoPrint("Could not allocate memory for cmds[%zu].argv of task \'%s\'.", i, orig->name);
                 goto fail;
             }
 
+            memcpy(argvBackbuf, orig->cmds[i].argv[0], argvBackbufLen);
             char *runner = argvBackbuf;
             for (int j = 0; j < pTask->cmds[i].argc; j++) {
                 size_t argvLen = strlen(orig->cmds[i].argv[j]) + 1;
-                memcpy(runner, orig->cmds[i].argv[j], argvLen);
                 pTask->cmds[i].argv[j] = runner;
                 runner += argvLen;
             }
