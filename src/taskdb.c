@@ -607,11 +607,6 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in
         }
 
         for (size_t i = 0; i < pTask->cmdsSize; i++) {
-            pTask->cmds[i].argc = 0;
-            pTask->cmds[i].argv = NULL;
-        }
-
-        for (size_t i = 0; i < pTask->cmdsSize; i++) {
             if (EBCL_confListExtractArgvArrayWithIdx(&(pTask->cmds[i].argc), &(pTask->cmds[i].argv), "COMMAND", i, true,
                                                      in, true) == -1) {
                 EBCL_errPrint(
@@ -797,11 +792,6 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
         }
 
         for (size_t i = 0; i < pTask->cmdsSize; i++) {
-            pTask->cmds[i].argc = 0;
-            pTask->cmds[i].argv = NULL;
-        }
-
-        for (size_t i = 0; i < pTask->cmdsSize; i++) {
             if (orig->cmds[i].argc < 1) {
                 EBCL_errPrint("COMMANDs must have at least one argument.");
                 goto fail;
@@ -817,10 +807,8 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
 
             size_t argvBackbufLen = 0;
             for (int j = 0; j < pTask->cmds[i].argc; j++) {
-                pTask->cmds[i].argv[j] = NULL;
                 argvBackbufLen += strlen(orig->cmds[i].argv[j]) + 1;
             }
-            pTask->cmds[i].argv[pTask->cmds[i].argc] = NULL;
             char *argvBackbuf = malloc(argvBackbufLen);
             if (argvBackbuf == NULL) {
                 EBCL_errnoPrint("Could not allocate memory for cmds[%zu].argv of task \'%s\'.", i, orig->name);
