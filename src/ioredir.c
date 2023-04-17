@@ -25,12 +25,11 @@ int EBCL_initIoRedirFromConfKvList(ebcl_IoRedir_t *out, const char *key, size_t 
         EBCL_errPrint("Input parameters must not be NULL.");
         return -1;
     }
+    memset(out, 0, sizeof(*out));
     out->newFd = -1;
     out->oldFd = -1;
-    out->path = NULL;
     out->oflags = O_TRUNC | O_CREAT;
     out->mode = 0644;
-    out->fifo = false;
 
     int numParams = 0;
     char **confStrArr = NULL;
