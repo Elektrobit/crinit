@@ -190,12 +190,12 @@ VAR_WITH_ESC_SEQUENCES=hex  hex            # Support for escape sequences includ
 Crinit supports per-task IO redirection to/from file and between STDOUT/IN/ERR using `IO_REDIRECT` statements in the
 task configurations. The statements are of the form
 ```
-<REDIRECT_FROM> <REDIRECT_TO> [ APPEND | TRUNCATE ] [ OCTAL_MODE ]
+<REDIRECT_FROM> <REDIRECT_TO> [ APPEND | TRUNCATE | PIPE ] [ OCTAL_MODE ]
 ```
 Where `REDIRECT_FROM` is one of `{ STDOUT, STDERR, STDIN }`, and `REDIRECT_TO` may either also be one of those streams
 or an absolute path to a file. `APPEND` or `TRUNCATE` signify whether an existing file at that location should be
-appended to or truncated. Default ist `TRUNCATE`. `OCTAL_MODE` sets the permission bits if the file is newly created.
-Default is `0644`.
+appended to or truncated. Default is `TRUNCATE`. The special value `PIPE` is discussed below (see *Named Pipes*).
+`OCTAL_MODE` sets the permission bits if the file is newly created. Default is `0644`.
 
 Accordingly the statements in the example configuration above will result in `stdout` being redirected to the file
 `/var/log/net-dhcp.log` in append mode. If the file does not yet exist, it will be created with permission bits `0644`.
@@ -212,6 +212,64 @@ IO_REDIRECT = STDIN /opt/data/backup.tar
 IO_REDIRECT = STDOUT /opt/data/backup.tar.gz
 ```
 to read stdin from file and capture stdout to another file. Stderr will go to console as normal.
+
+#### Named pipes
+
+As indicated above, `crinit` also accepts the setting `PIPE` instead of `APPEND` or `TRUNCATE`. With this setting,
+`crinit` will ensure that the given path is a named pipe (also called a FIFO special file). This is useful to pipe the
+output of one task to another.
+
+A common example would be redirection of output to syslog. For that we would create two task files, one as the sender
+and another as the receiver (using the `logger` utility provided by e.g. busybox and others).
+
+**Sending Task**
+
+```
+NAME = some_task
+
+COMMAND[] = /bin/echo "This output will be redirected to syslog!"
+RESPAWN = NO
+DEPENDS = ""
+
+IO_REDIRECT = STDOUT "/tmp/some_task_log_pipe" PIPE 0640
+```
+
+**Receiving Task**
+
+```
+NAME = some_task_logger
+
+COMMAND[] = /usr/bin/logger -t some_task
+RESPAWN = YES
+DEPENDS = ""
+
+IO_REDIRECT = STDIN "/tmp/some_task_log_pipe" PIPE 0640
+```
+
+This will redirect the output of the `echo` command to the input of the `logger` utility and thereby to syslog. As is
+shown, it is also possible to set permissions for named pipes (default will also be `0644`). It should be kept in mind
+to keep the permissions the same in both tasks. Setting different permissions in the sending and receiving task of a
+pipe creates a race condition where one of the tasks will be able to create the named pipe with its settings. The other
+task will take it as-is, as long as it can access the file.
+
+#### A note on buffering
+
+By default, glibc will switch from line- to block-buffered mode when redirecting a stream to file. This may make it
+hard to use e.g. `tail -f ...` to monitor the output in parallel. To get around that problem, one may use the `stdbuf`
+utility (part of GNU coreutils).
+
+In a `crinit` task, the following
+```
+NAME = line_buffered_task
+
+COMMAND[] = /usr/bin/stdbuf -oL -eL <SOME_EXECUTABLE>
+
+IO_REDIRECT = STDOUT "/some/where.txt"
+IO_REDIRECT = STDERR "/some/where/else.txt"
+```
+
+will result in line-buffered output to the files which can be monitored easily. For more details, see the `stdbuf` man
+page.
 
 ### Dependency groups (meta-tasks)
 

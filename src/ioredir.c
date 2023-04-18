@@ -25,9 +25,9 @@ int EBCL_initIoRedirFromConfKvList(ebcl_IoRedir_t *out, const char *key, size_t 
         EBCL_errPrint("Input parameters must not be NULL.");
         return -1;
     }
+    memset(out, 0, sizeof(*out));
     out->newFd = -1;
     out->oldFd = -1;
-    out->path = NULL;
     out->oflags = O_TRUNC | O_CREAT;
     out->mode = 0644;
 
@@ -83,9 +83,13 @@ int EBCL_initIoRedirFromConfKvList(ebcl_IoRedir_t *out, const char *key, size_t 
                 out->oflags = O_TRUNC | O_CREAT;
             } else if (strcmp(confStrArr[2], "APPEND") == 0) {
                 out->oflags = O_APPEND | O_CREAT;
+            } else if (strcmp(confStrArr[2], "PIPE") == 0) {
+                out->oflags = 0;
+                out->fifo = true;
             } else {
                 EBCL_errPrint(
-                    "Third parameter of redirection statement - if it is given - must be either APPEND or TRUNCATE.");
+                    "Third parameter of redirection statement - if it is given - must be either APPEND, TRUNCATE, or "
+                    "PIPE.");
                 EBCL_freeArgvArray(confStrArr);
                 free(out->path);
                 out->path = NULL;

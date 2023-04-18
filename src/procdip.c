@@ -13,7 +13,9 @@
 #include <spawn.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <sys/syscall.h>
+#include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
@@ -83,6 +85,20 @@ static int EBCL_reapPid(pid_t pid);
  * @return 0 on success, -1 otherwise.
  */
 static int EBCL_posixSpawnAddIOFileAction(posix_spawn_file_actions_t *fileact, const ebcl_IoRedir_t *ior);
+
+/**
+ * Ensures the given path is a FIFO special file (named pipe).
+ *
+ * If the file exists it will be checked wie stat() and the function will return an error if the file is anything else
+ * than a FIFO. If the file does not yet exist, it will be created with the given mode. Existing FIFOs will be left as
+ * is.
+ *
+ * @param path  The path where the FIFO shall exist.
+ * @param mode  The mode of a FIFO if it is newly created.
+ *
+ * @return  0 on success, -1 otherwise.
+ */
+static int EBCL_ensureFifo(const char *path, mode_t mode);
 
 int EBCL_procDispatchSpawnFunc(ebcl_TaskDB_t *ctx, const ebcl_Task_t *t) {
     pthread_t dispatchThread;
@@ -170,6 +186,15 @@ static void *EBCL_dispatchThreadFunc(void *args) {
         for (size_t j = 0; j < tCopy->redirsSize; j++) {
             // NOTE: We currently have a umask of 0022 which precludes us from creating files with 0666 permissions.
             //       We may want to make that configurable in the future.
+
+            if (tCopy->redirs[j].fifo && EBCL_ensureFifo(tCopy->redirs[j].path, tCopy->redirs[j].mode) == -1) {
+                EBCL_errPrint(
+                    "(TID: %d) Unexpected result while ensuring '%s' is a FIFO special file for command %zu of Task "
+                    "'%s'",
+                    threadId, tCopy->redirs[j].path, i, tCopy->name);
+                goto threadExit;
+            }
+
             if (EBCL_posixSpawnAddIOFileAction(&fileact, &(tCopy->redirs[j])) == -1) {
                 EBCL_errPrint("(TID: %d) Could not add IO file action to posix_spawn for command %zu of Task '%s'",
                               threadId, i, tCopy->name);
@@ -221,7 +246,8 @@ static void *EBCL_dispatchThreadFunc(void *args) {
         } while (wret != 0 && errno == EINTR);
 
         if (wret != 0 || status.si_code != CLD_EXITED || status.si_status != 0) {
-            // There was some error, either Crinit-internal or the task returned an error code or the task was killed
+            // There was some error, either Crinit-internal or the task returned an error code or the task was
+            // killed
             if (errno) {
                 EBCL_errnoPrint("(TID: %d) Failed to wait for Task \'%s\' (PID %d).", threadId, tCopy->name, pid);
                 goto threadExit;
@@ -381,6 +407,36 @@ static int EBCL_posixSpawnAddIOFileAction(posix_spawn_file_actions_t *fileact, c
     errno = posix_spawn_file_actions_adddup2(fileact, ior->oldFd, ior->newFd);
     if (errno != 0) {
         EBCL_errnoPrint("Could not add stream fd redirection to posix spawn.");
+        return -1;
+    }
+    return 0;
+}
+
+static int EBCL_ensureFifo(const char *path, mode_t mode) {
+    if (path == NULL) {
+        EBCL_errPrint("Path to the FIFO must not be NULL.");
+        return -1;
+    }
+
+    // Try to create the FIFO and handle errors accordingly.
+    if (mkfifo(path, mode) == -1) {
+        if (errno == EEXIST) {
+            // There already is something there, check what it is.
+            struct stat stbuf;
+            if (stat(path, &stbuf) == -1) {
+                EBCL_errnoPrint(
+                    "There is already an existing file at '%s' but I can not stat() it to make sure it is a FIFO.",
+                    path);
+                return -1;
+            } else if (!S_ISFIFO(stbuf.st_mode)) {
+                EBCL_errPrint("The given file '%s' already exists but is not a FIFO.", path);
+                return -1;
+            } else {
+                // If we're here, that means there already is a FIFO and we're good.
+                return 0;
+            }
+        }
+        EBCL_errnoPrint("Could not create FIFO special file at '%s'.", path);
         return -1;
     }
     return 0;
