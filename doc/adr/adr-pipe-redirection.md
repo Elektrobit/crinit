@@ -87,6 +87,21 @@ For this, we can let Crinit behave as in option 1 if given an absolute path or a
 * most complex concept
 * most complex implementations
 * less intuitive for users
+### Option 4 - Anonymous 'classic' pipes
+
+This approach is similar to Option 2, it connects IOs by the same naming schema, but it uses classic pipes ( ```man 2 pipe``` ) for that.
+
+#### Pros
+
+* simpler handing, especially clean up
+* traditional approach of STDIO connecting
+
+#### Cons
+
+* no way to access the pipe externally, hence option 1 is needed additionally.
+* 
+
+
 
 ## Decision
 
