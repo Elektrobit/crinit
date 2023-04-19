@@ -87,30 +87,31 @@ For this, we can let Crinit behave as in option 1 if given an absolute path or a
 * most complex concept
 * most complex implementations
 * less intuitive for users
+
 ### Option 4 - Anonymous 'classic' pipes
 
-This approach is similar to Option 2, it connects IOs by the same naming schema, but it uses classic pipes ( ```man 2 pipe``` ) for that.
+This approach is similar to Option 2, it connects IOs by the same naming schema, but it uses classic pipes ( ```man 2
+pipe``` ) for that. Crinit will centrally manage opened pipe file descriptors in memory.
 
 #### Pros
 
-* simpler handing, especially clean up
-* traditional approach of STDIO connecting
+* simpler handling, especially clean up
+* analoguous to shell pipes
+* pipe can be opened while task are waiting to be startable
+    - potential to improve speed of process spawning
 
 #### Cons
 
 * no way to access the pipe externally, hence option 1 is needed additionally.
-* 
-
-
+* implementation work simlarly complex to option 2
 
 ## Decision
 
-Option 1 is taken for current milestone `0.9.2`, with possibility to move in the direction of option 2 for later
-releases.
+Option 1 is taken for current milestone `0.9.2`, with possibility to add option 4 for later releases.
 
 ## Rationale
 
-Options 2 and 1 share much of their technical groundwork in the low-level process spawning area. While option 1 does not
-need much more than that, option 2 can be seen as an extension which needs more higher level logic within crinit. Given
-that, option 1 can be seen as a reasonable stepping stone to offer basic functionality now, evaluate feedback, and
-extend with aspects of option 2 down the line if required.
+Options 4 and 1 share technical groundwork in the low-level process spawning area. While option 1 does not need much
+more than that, option 4 needs more higher level logic within crinit. Given that, option 1 can be seen as a reasonable
+stepping stone to offer basic functionality now, evaluate feedback, and extend towards option 4 down the line if
+required.
