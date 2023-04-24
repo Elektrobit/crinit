@@ -18,11 +18,19 @@
 
 #define EBCL_CONFIG_KEYSTR_TASKS "TASKS"     ///< Config key for the list of task file names.
 #define EBCL_CONFIG_KEYSTR_SETENV "ENV_SET"  ///< Config key to set an environment variable with.
-#define EBCL_CONFIG_KEYSTR_SYMLINKS \
-    "TASKDIR_FOLLOW_SYMLINKS"  ///< Config key for the option to follow symbolic links in dynamic configurations.
+#define EBCL_CONFIG_KEYSTR_TASKDIR_SYMLINKS \
+    "TASKDIR_FOLLOW_SYMLINKS"  ///< Config key for the option to follow symbolic links from `TASKDIR` in dynamic
+                               ///< configurations.
+#define EBCL_CONFIG_KEYSTR_INCLDIR_SYMLINKS \
+    "INCLUDEDIR_FOLLOW_SYMLINKS"  ///< Config key for the option to follow symbolic links from `INCLUDEDIR` in dynamic
+                                  ///< configurations.
+
 #define EBCL_CONFIG_KEYSTR_TASK_FILE_SUFFIX \
     "TASK_FILE_SUFFIX"  ///< Config key for the task file extension in dynamic configurations.
 #define EBCL_CONFIG_DEFAULT_TASK_FILE_SUFFIX ".crinit"  ///< Default filename extension of task files.
+#define EBCL_CONFIG_KEYSTR_INCL_FILE_SUFFIX \
+    "INCL_FILE_SUFFIX"  ///< Config key for the task include file extension in dynamic configurations.
+#define EBCL_CONFIG_DEFAULT_INCL_FILE_SUFFIX ".crincl"  ///< Default filename extension of task include files.
 
 #define EBCL_CONFIG_STDOUT_NAME "STDOUT"          ///< What stdout is called in task configs.
 #define EBCL_CONFIG_STDERR_NAME "STDERR"          ///< What stderr is called in task configs.

@@ -31,11 +31,13 @@ typedef enum {
 
 #define EBCL_GLOBOPT_DEFAULT_DEBUG false            ///< Default value for DEBUG global option.
 #define EBCL_GLOBOPT_DEFAULT_TASKDIR "/etc/crinit"  ///< Default value for TASKDIR global option.
+#define EBCL_GLOBOPT_DEFAULT_INCLDIR "/etc/crinit"  ///< Default value for INCLUDEDIR global option.
 #define EBCL_GLOBOPT_DEFAULT_SHDGRACEP 100000uLL    ///< Default value for SHUTDOWN_GRACE_PERIOD_US global option
 #define EBCL_GLOBOPT_DEFAULT_USE_SYSLOG false       ///< Default value for USE_SYSLOG global option.
 
-#define EBCL_GLOBOPT_KEYSTR_DEBUG "DEBUG"                ///< Config file key for DEBUG global option.
-#define EBCL_GLOBOPT_KEYSTR_TASKDIR "TASKDIR"            ///< Config file key for TASKDIR global option.
+#define EBCL_GLOBOPT_KEYSTR_DEBUG "DEBUG"         ///< Config file key for DEBUG global option.
+#define EBCL_GLOBOPT_KEYSTR_TASKDIR "TASKDIR"     ///< Config file key for TASKDIR global option.
+#define EBCL_GLOBOPT_KEYSTR_INCLDIR "INCLUDEDIR"  ///< Config file key for INCLUDEDIR global option.
 #define EBCL_GLOBOPT_KEYSTR_SHDGRACEP \
     "SHUTDOWN_GRACE_PERIOD_US"                       ///< Config file key for SHUTDOWN_GRACE_PERIOD_US global option
 #define EBCL_GLOBOPT_KEYSTR_USE_SYSLOG "USE_SYSLOG"  ///< Config file key for USE_SYSLOG global option.
