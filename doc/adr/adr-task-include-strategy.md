@@ -93,6 +93,7 @@ indicating if they are include-safe and what their append/override policy is.
 
 #### Cons
 * added documentation effort
+  * But that is needed anyhow and some advice on how to use this feature is nice to have
 * otherwise as option 2
 
 ## Decision
