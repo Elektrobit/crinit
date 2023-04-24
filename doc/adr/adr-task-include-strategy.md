@@ -44,7 +44,7 @@ not be the best solution in all cases.
 ### Option 1 - All options possible, pre-set policy
 
 We have a pre-set append/override policy, like "Options get appended to where possible. If the option is single value,
-it will be overriden. If multipled include files are given, append and override appends in the order they are INCLUDEd.
+it will be overriden." If multiple include files are given, append and override happens in the order they are INCLUDEd.
 All options valid in task configurations are also valid in `INCLUDE` files.
 
 #### Pros
@@ -58,7 +58,7 @@ All options valid in task configurations are also valid in `INCLUDE` files.
 * can become chaotic especially if more than one include file is involved.
 * some options can be problematic in an include file
     - Example: `COMMAND[]` can be appended to. If include files are used to prepend commands to downstream task files,
-               the configuration effort becomes high and behavior may seem obtuse to the downstream user.
+               the configuration effort becomes high and behavior may seem opaque to the downstream user.
 
 ### Option 2 - All options possible with task-configurable subset
 
