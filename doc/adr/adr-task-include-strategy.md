@@ -37,8 +37,6 @@ not be the best solution in all cases.
 * ease of use / intuitively usable
 * the design shall not allow circumvention of security 
 
-### Assumptions
-
 ## Considered Alternatives
 
 ### Option 1 - All options possible, pre-set policy
@@ -55,6 +53,8 @@ All options valid in task configurations are also valid in `INCLUDE` files.
 #### Cons
 * limited functionality
 * overriding of multi-value options impossible
+    - prohibits advanced usage
+    - may lead to need for multiple include files to choose from on downstream side
 * can become chaotic especially if more than one include file is involved.
 * some options can be problematic in an include file
     - Example: `COMMAND[]` can be appended to. If include files are used to prepend commands to downstream task files,
@@ -75,6 +75,7 @@ works as in option 1. If no import list is given, it will work the same as optio
 * simple extension of Option 1
 * big improvement in usability
 * users can rely on pre-sets but also have full control over what they import
+* greatest flexibility from downstream perspective
 
 #### Cons
 * effective usage of imports requires more system knowledge than plain option 1
@@ -88,6 +89,7 @@ indicating if they are include-safe and what their append/override policy is.
 
 #### Pros
 * improves on option 2 by filtering out options, thereby limiting configuration complexity
+    - encourages intended usage
 * maintaining this table in documentation is a good idea anyway as configuration options become more numerous/complex
 * otherwise same as option 2
 
@@ -99,9 +101,3 @@ indicating if they are include-safe and what their append/override policy is.
 ## Decision
 
 Option 3 is taken.
-
-## Rationale
-
-Option 1 disqualifies itself because having options being appended to without possibility to exclude/override them may
-prohibit advanced usage. Options 3 has a leg up on option 2 as it encourages intended usage. Option 2 would offer the
-most functional possibilities but not all of them will lead to a cleanly configured system.
