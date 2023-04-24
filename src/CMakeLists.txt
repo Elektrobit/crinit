@@ -14,6 +14,7 @@ add_executable(
   confparse.c
   lexers.c
   envset.c
+  task.c
   taskdb.c
   procdip.c
   logio.c
@@ -94,6 +95,7 @@ add_executable(
   lexers.c
   envset.c
   globopt.c
+  task.c
   taskdb.c
   logio.c
   ioredir.c
