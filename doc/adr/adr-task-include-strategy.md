@@ -34,6 +34,9 @@ not be the best solution in all cases.
 
 ## Influencing Factors
 
+* ease of use / intuitively usable
+* the design shall not allow circumvention of security 
+
 ### Assumptions
 
 ## Considered Alternatives
