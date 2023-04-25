@@ -47,4 +47,22 @@
  */
 #define EBCL_isAbsPath(path) (((path) != NULL) && ((path)[0] == '/'))
 
+#define EBCL_numElements(p) (sizeof(p) / sizeof(*(p)))
+
+#define EBCL_nullCheck(errcode, expr)                            \
+    do {                                                         \
+        if (expr) {                                              \
+            EBCL_errPrint("Input parameters must not be NULL."); \
+            return (errcode);                                    \
+        }                                                        \
+    } while (0)
+
+#define EBCL_strtoGenericInteger(resType, str, endptr, base) \
+    _Generic((resType), int                                  \
+             : strtol, long                                  \
+             : strtol, long long                             \
+             : strtoll, unsigned long                        \
+             : strtoul, unsigned long long                   \
+             : strtoull)((str), (endptr), (base))
+
 #endif /* __COMMON_H__ */

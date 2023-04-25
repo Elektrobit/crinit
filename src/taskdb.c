@@ -10,6 +10,7 @@
  */
 #include "taskdb.h"
 
+#include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -52,7 +53,7 @@ int EBCL_taskDBInitWithSize(ebcl_TaskDB_t *ctx, int (*spawnFunc)(ebcl_TaskDB_t *
     ctx->taskSetItems = 0;
     ctx->spawnFunc = NULL;
     ctx->spawnInhibit = true;
-    ctx->taskSet = malloc(sizeof(ebcl_Task_t) * initialSize);
+    ctx->taskSet = calloc(initialSize, sizeof(*ctx->taskSet));
     if (ctx->taskSet == NULL) {
         EBCL_errnoPrint("Could not allocate memory for Task set of size %zu in TaskDB.", initialSize);
         return -1;
@@ -133,7 +134,7 @@ int EBCL_taskDBInsert(ebcl_TaskDB_t *ctx, const ebcl_Task_t *t, bool overwrite) 
 
     ebcl_Task_t *tempDuplicate = NULL;
     if (EBCL_taskDup(&tempDuplicate, t) == -1) {
-        EBCL_errnoPrint("Could not duplicate new Task into temporary variable.");
+        EBCL_errPrint("Could not duplicate new Task into temporary variable.");
         goto fail;
     }
     memcpy(&ctx->taskSet[idx], tempDuplicate, sizeof(ebcl_Task_t));

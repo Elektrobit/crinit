@@ -1,20 +1,21 @@
 /**
  * @file case-success.c
- * @brief Unit test for EBCL_envSetParseAndSet(), successful execution.
+ * @brief Unit test for EBCL_confConvToEnvSetMember(), successful execution.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
- * @copyright 2022 Elektrobit Automotive GmbH
+ * @copyright 2023 Elektrobit Automotive GmbH
  *            All rights exclusively reserved for Elektrobit Automotive GmbH,
  *            unless otherwise expressly agreed
  */
 
 #include "common.h"
+#include "confconv.h"
 #include "envset.h"
 #include "unit_test.h"
-#include "utest-envset-parse-and-set.h"
+#include "utest-confconv-envset.h"
 
-void EBCL_envSetParseAndSetTestSuccess(void **state) {
+void EBCL_confConvToEnvSetMemberTestSuccess(void **state) {
     EBCL_PARAM_UNUSED(state);
 
     const char *vanillaConf = "VANILLA_VAR \"That is tasty.\"", *vanillaRes = "That is tasty.";
@@ -27,10 +28,10 @@ void EBCL_envSetParseAndSetTestSuccess(void **state) {
     ebcl_EnvSet_t e = {NULL, 0, 0};
     assert_int_equal(EBCL_envSetInit(&e, EBCL_ENVSET_INITIAL_SIZE, EBCL_ENVSET_SIZE_INCREMENT), 0);
 
-    assert_int_equal(EBCL_envSetParseAndSet(&e, vanillaConf), 0);
-    assert_int_equal(EBCL_envSetParseAndSet(&e, escSeqConf), 0);
-    assert_int_equal(EBCL_envSetParseAndSet(&e, substConf), 0);
-    assert_int_equal(EBCL_envSetParseAndSet(&e, combinedConf), 0);
+    assert_int_equal(EBCL_confConvToEnvSetMember(&e, vanillaConf), 0);
+    assert_int_equal(EBCL_confConvToEnvSetMember(&e, escSeqConf), 0);
+    assert_int_equal(EBCL_confConvToEnvSetMember(&e, substConf), 0);
+    assert_int_equal(EBCL_confConvToEnvSetMember(&e, combinedConf), 0);
 
     assert_string_equal(EBCL_envSetGet(&e, "VANILLA_VAR"), vanillaRes);
     assert_string_equal(EBCL_envSetGet(&e, "ESCSEQ_VAR"), escSeqRes);

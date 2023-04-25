@@ -107,16 +107,5 @@ const char *EBCL_envSetGet(const ebcl_EnvSet_t *es, const char *envName);
  * @return  0 on success, -1 otherwise
  */
 int EBCL_envSetSet(ebcl_EnvSet_t *es, const char *envName, const char *envVal);
-/**
- * Parses a single ENV_SET directive and sets the variable in question accordingly.
- *
- * For details on the syntax, see the relevant section in README.md.
- *
- * @param es       The environment set to be modified, must be initialized.
- * @param envConf  The ENV_SET directive to be parsed and "executed" on the set.
- *
- * @return  0 on success, -1 otherwise
- */
-int EBCL_envSetParseAndSet(ebcl_EnvSet_t *es, const char *envConf);
 
 #endif /* __ENVSET_H__ */

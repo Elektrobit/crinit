@@ -18,7 +18,9 @@
 
 typedef unsigned long ebcl_TaskOpts_t;  ///< Type to store Task option bitmask.
 
-#define EBCL_TASK_OPT_RESPAWN (1 << 0)   ///< RESPAWN task option bitmask.
+#define EBCL_TASK_OPT_RESPAWN (1 << 0)       ///< RESPAWN task option bitmask.
+#define EBCL_TASK_OPT_RESPAWN_DEFAULT false  ///< Default value for RESPAWN option
+
 #define EBCL_TASK_EVENT_RUNNING "spawn"  ///< Dependency event that fires when a task reaches the RUNNING state.
 #define EBCL_TASK_EVENT_DONE "wait"      ///< Dependency event that fires when a task reaches the DONE state.
 #define EBCL_TASK_EVENT_FAILED "fail"    ///< Dependency event that fires when a task reaches the FAILED state.

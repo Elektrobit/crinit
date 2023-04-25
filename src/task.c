@@ -12,14 +12,13 @@
 
 #include <stdlib.h>
 
-#include "logio.h"
+#include "common.h"
 #include "globopt.h"
+#include "logio.h"
+#include "taskconfmap.h"
 
 int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in) {
-    if (in == NULL) {
-        EBCL_errPrint("The parameter \'in\' must not be NULL.");
-        return -1;
-    }
+    EBCL_nullCheck(-1, out == NULL || in == NULL);
 
     *out = malloc(sizeof(ebcl_Task_t));
     if (*out == NULL) {
@@ -32,9 +31,6 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in
     pTask->depsSize = 0;
     pTask->cmds = NULL;
     pTask->cmdsSize = 0;
-    pTask->taskEnv.envp = NULL;
-    pTask->taskEnv.allocSz = 0;
-    pTask->taskEnv.allocInc = 0;
     pTask->prv = NULL;
     pTask->prvSize = 0;
     pTask->opts = 0;
@@ -45,173 +41,47 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in
     pTask->maxRetries = -1;
     pTask->failCount = 0;
 
-    char *tempName = NULL;
-    if (EBCL_confListGetVal(&tempName, "NAME", in) == -1) {
-        EBCL_errPrint("Mandatory key \'NAME\' not found in task config file.");
-        goto fail;
-    }
-    pTask->name = strdup(tempName);
-    if (pTask->name == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for name of task \'%s\'.", tempName);
+    if (EBCL_globOptGetEnvSet(&pTask->taskEnv) == -1) {
+        EBCL_errPrint("Could not retrieve global environment set during Task creation.");
         goto fail;
     }
 
-    bool tempYesNo = false;
-    if (EBCL_confListExtractBoolean(&tempYesNo, "RESPAWN", true, in) == -1) {
-        EBCL_errPrint("Could not extract mandatory boolean key \'RESPAWN\' from task config file.");
-        goto fail;
-    }
-    pTask->opts |= (tempYesNo) ? EBCL_TASK_OPT_RESPAWN : 0;
-
-    if (EBCL_confListExtractSignedInt(&pTask->maxRetries, 10, "RESPAWN_RETRIES", false, in) == -1) {
-        EBCL_errPrint("Failed to parse integer value for non-mandatory key \'RESPAWN_RETRIES\' from task config file.");
-        goto fail;
-    }
-
-    ssize_t cmdArrSize = EBCL_confListKeyGetMaxIdx(in, "COMMAND");
-    if (cmdArrSize >= 0) {
-        pTask->cmdsSize = (size_t)(cmdArrSize + 1);
-        pTask->cmds = calloc(pTask->cmdsSize, sizeof(*pTask->cmds));
-        if (pTask->cmds == NULL) {
-            EBCL_errnoPrint("Could not allocate memory for %zu commands in task %s.", pTask->cmdsSize, tempName);
-            goto fail;
-        }
-
-        for (size_t i = 0; i < pTask->cmdsSize; i++) {
-            if (EBCL_confListExtractArgvArrayWithIdx(&(pTask->cmds[i].argc), &(pTask->cmds[i].argv), "COMMAND", i, true,
-                                                     in, true) == -1) {
-                EBCL_errPrint(
-                    "Could not extract argv/argc from COMMAND[%zu] in config for task "
-                    "\'%s\'.",
-                    i, tempName);
-                goto fail;
-            }
-        }
-
-        ssize_t redirsMaxIdx = EBCL_confListKeyGetMaxIdx(in, EBCL_CONFIG_KEYSTR_IOREDIR);
-        if (redirsMaxIdx > -1) {
-            pTask->redirsSize = (size_t)(redirsMaxIdx + 1);
-            pTask->redirs = calloc(pTask->redirsSize, sizeof(*pTask->redirs));
-            if (pTask->redirs == NULL) {
-                EBCL_errnoPrint("Could not allocate memory for IO redirections for task '%s'.", tempName);
-                goto fail;
-            }
-            for (size_t i = 0; i < pTask->redirsSize; i++) {
-                if (EBCL_initIoRedirFromConfKvList(&(pTask->redirs[i]), EBCL_CONFIG_KEYSTR_IOREDIR, i, in) == -1) {
-                    EBCL_errPrint("Could not initialize IO redirection definition %zu from config for task '%s'.", i,
-                                  tempName);
-                    goto fail;
-                }
-            }
-        }
-    }
-
-    char **tempDeps = NULL;
-    int tempDepsSize = 0;
-    if (EBCL_confListExtractArgvArray(&tempDepsSize, &tempDeps, "DEPENDS", true, in, false) == -1) {
-        EBCL_errPrint("Could not extract DEPENDS string from config file for task \'%s\'.", tempName);
-        goto fail;
-    }
-    pTask->depsSize = (size_t)tempDepsSize;
-    if (pTask->depsSize > 0) {
-        pTask->deps = malloc(pTask->depsSize * sizeof(ebcl_TaskDep_t));
-        if (pTask->deps == NULL) {
-            EBCL_errnoPrint("Could not allocate memory for %zu TaskDeps during copy of Task \'%s\'.", pTask->depsSize,
-                            pTask->name);
-            goto fail;
-        }
-    } else {
-        pTask->deps = NULL;
-    }
-
-    for (size_t i = 0; i < pTask->depsSize; i++) {
-        pTask->deps[i].name = NULL;
-        pTask->deps[i].event = NULL;
-    }
-
-    for (size_t i = 0; i < pTask->depsSize; i++) {
-        size_t depLen = strlen(tempDeps[i]) + 1;
-        pTask->deps[i].name = malloc(depLen);
-
-        if (pTask->deps[i].name == NULL) {
-            EBCL_errnoPrint("Could not allocate memory for dependency \'%s\' in task \'%s\'.", tempDeps[i],
-                            pTask->name);
-        }
-        memcpy(pTask->deps[i].name, tempDeps[i], depLen);
-
-        char *strtokState = NULL;
-        pTask->deps[i].name = strtok_r(pTask->deps[i].name, ":", &strtokState);
-        pTask->deps[i].event = strtok_r(NULL, ":", &strtokState);
-
-        if (pTask->deps[i].name == NULL || pTask->deps[i].event == NULL) {
-            EBCL_errPrint("Could not parse dependency \'%s\' in task \'%s\'.", tempDeps[i], pTask->name);
-            EBCL_freeArgvArray(tempDeps);
-            goto fail;
-        }
-    }
-
-    EBCL_freeArgvArray(tempDeps);
-
-    ebcl_EnvSet_t globEnv;
-    if (EBCL_globOptGetEnvSet(&globEnv) == -1) {
-        EBCL_errPrint("Could not retrieve global environment set for task \'%s\'.", pTask->name);
-        goto fail;
-    }
-    if (EBCL_envSetCreateFromConfKvList(&pTask->taskEnv, &globEnv, in) == -1) {
-        EBCL_errPrint("Could not parse local task environment for task \'%s\'.", pTask->name);
-        EBCL_envSetDestroy(&globEnv);
-        goto fail;
-    }
-    EBCL_envSetDestroy(&globEnv);
-
-    char **prvArgv = NULL;
-    int prvSize = 0;
-
-    // PROVIDES is non-mandatory
-    if (EBCL_confListExtractArgvArray(&prvSize, &prvArgv, "PROVIDES", false, in, false) == -1) {
-        EBCL_errPrint("Could not extract PROVIDES string from config file for task \'%s\'.", tempName);
-        goto fail;
-    }
-    if (prvSize == 0 || prvArgv == NULL) {
-        return 0;
-    }
-
-    pTask->prvSize = (size_t)prvSize;
-    pTask->prv = malloc(pTask->prvSize * sizeof(ebcl_TaskPrv_t));
-    if (pTask->prv == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for array of provided features in task \'%s\'.", pTask->name);
-        goto fail;
-    }
-
-    for (size_t i = 0; i < pTask->prvSize; i++) {
-        ebcl_TaskPrv_t *ptr = &pTask->prv[i];
-        ptr->stateReq = 0;
-        ptr->name = prvArgv[i];
-        char *delimPtr = strchr(ptr->name, ':');
-        if (delimPtr == NULL) {
-            EBCL_errnoPrint("Could not parse \'%s\' in PROVIDES of task \'%s\'.", ptr->name, pTask->name);
-            free(prvArgv);
-            goto fail;
-        }
-        *delimPtr++ = '\0';
-        if (strncmp(delimPtr, EBCL_TASK_EVENT_RUNNING, strlen(EBCL_TASK_EVENT_RUNNING)) == 0) {
-            ptr->stateReq = EBCL_TASK_STATE_RUNNING;
-        } else if (strncmp(delimPtr, EBCL_TASK_EVENT_DONE, strlen(EBCL_TASK_EVENT_RUNNING)) == 0) {
-            ptr->stateReq = EBCL_TASK_STATE_DONE;
-        } else if (strncmp(delimPtr, EBCL_TASK_EVENT_FAILED, strlen(EBCL_TASK_EVENT_FAILED)) == 0) {
-            ptr->stateReq = EBCL_TASK_STATE_FAILED;
+    const ebcl_ConfKvList_t *pEntry = in;
+    ebcl_TaskCfgHdlCtx_t handlerCtx = {NULL, {0}, {0}};
+    while (pEntry != NULL) {
+        const ebcl_TaskConfigMapping_t *tcm = EBCL_findTaskConfigMapping(pEntry->key);
+        if (pEntry == NULL) {
+            EBCL_infoPrint("Warning: Unknown configuration key '%s' encountered.", pEntry->key);
         } else {
-            EBCL_errnoPrint("Could not parse \'%s\' in PROVIDES of task \'%s\'.", ptr->name, pTask->name);
-            free(prvArgv);
-            goto fail;
+            handlerCtx.val = pEntry->val;
+            size_t idx = pEntry->keyArrIndex;
+            if ((!tcm->arrayLike) && idx > 0) {
+                EBCL_errPrint("Multiple values for non-array like configuration parameter '%s' given.", pEntry->key);
+                goto fail;
+            }
+            handlerCtx.curIdx[tcm->config] = idx;
+            if (handlerCtx.maxIdx[tcm->config] < idx) {
+                handlerCtx.maxIdx[tcm->config] = idx;
+            }
+            if (tcm->cfgHandler(pTask, &handlerCtx) == -1) {
+                EBCL_errPrint("Could not parse configuration parameter '%s' with given value '%s'.", pEntry->key,
+                              pEntry->val);
+                goto fail;
+            }
         }
-
-        delimPtr = strchr(delimPtr, '-');
-        if (delimPtr != NULL && strcmp(delimPtr, EBCL_TASK_EVENT_NOTIFY_SUFFIX) == 0) {
-            ptr->stateReq |= EBCL_TASK_STATE_NOTIFIED;
-        }
+        pEntry = pEntry->next;
     }
-    free(prvArgv);
+
+    // Check that resulting task has a name and at least either a DEPENDS or COMMAND (as a meta-task only makes sense
+    // with a DEPENDS and a regular task only with at least one COMMAND)
+    if (pTask->name == NULL) {
+        EBCL_errPrint("All task configurations must have a NAME.");
+        goto fail;
+    }
+    if (pTask->cmdsSize == 0 && pTask->depsSize == 0) {
+        EBCL_errPrint("The task '%s' seems to lack both COMMAND and DEPENDS which is unsupported.", pTask->name);
+        goto fail;
+    }
 
     return 0;
 fail:
@@ -333,7 +203,7 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
 
     pTask->prvSize = orig->prvSize;
     if (pTask->prvSize > 0) {
-        pTask->prv = malloc(pTask->prvSize * sizeof(ebcl_TaskPrv_t));
+        pTask->prv = calloc(pTask->prvSize, sizeof(*pTask->prv));
         if (pTask->prv == NULL) {
             EBCL_errnoPrint("Could not allocate memory for %zu TaskPrvs during copy of Task \'%s\'.", pTask->prvSize,
                             orig->name);
@@ -344,27 +214,12 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
     }
 
     for (size_t i = 0; i < pTask->prvSize; i++) {
-        pTask->prv[i].name = NULL;
-        pTask->prv[i].stateReq = 0;
-    }
-
-    size_t backStrSize = 0;
-    for (size_t i = 0; i < orig->prvSize; i++) {
-        backStrSize += strlen(orig->prv[i].name) + 1;
-    }
-
-    if (backStrSize > 0) {
-        pTask->prv[0].name = malloc(backStrSize);
-        if (pTask->prv[0].name == NULL) {
-            EBCL_errnoPrint("Could not allocate memory for backing string in prv[0] during copy of Task \'%s\'.",
-                            orig->name);
+        pTask->prv[i].name = strdup(orig->prv[i].name);
+        pTask->prv[i].stateReq = orig->prv[i].stateReq;
+        if (pTask->prv[i].name == NULL) {
+            EBCL_errnoPrint("Could not allocate memory for TaskPrv at index %zu during copy of Task '%s'.", i,
+                            pTask->name);
             goto fail;
-        }
-        char *pos = pTask->prv[0].name;
-        for (size_t i = 0; i < pTask->prvSize; i++) {
-            pTask->prv[i].name = pos;
-            pos = stpcpy(pTask->prv[i].name, orig->prv[i].name) + 1;
-            pTask->prv[i].stateReq = orig->prv[i].stateReq;
         }
     }
 
@@ -422,7 +277,9 @@ void EBCL_destroyTask(ebcl_Task_t *t) {
     }
     free(t->deps);
     if (t->prv != NULL) {
-        free(t->prv[0].name);  // free backing string
+        for (size_t i = 0; i < t->prvSize; i++) {
+            free(t->prv[i].name);
+        }
     }
     free(t->prv);
     if (t->redirs != NULL) {

@@ -3,15 +3,16 @@ RE2C_TARGET(NAME lexers_ut_parse_set INPUT ${PROJECT_SOURCE_DIR}/src/lexers.re O
 
 create_unit_test(
   NAME
-    utest-envset-parse-and-set
+    utest-confconv-envset
   SOURCES
-    utest-envset-parse-and-set.c
+    utest-confconv-envset.c
     case-success.c
     case-null-input.c
     case-wrong-input.c
     lexers.c
     ${PROJECT_SOURCE_DIR}/src/logio.c
     ${PROJECT_SOURCE_DIR}/src/envset.c
+    ${PROJECT_SOURCE_DIR}/src/confconv.c
   LIBRARIES
     libmockfunctions
   WRAPS
