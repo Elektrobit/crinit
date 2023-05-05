@@ -15,7 +15,7 @@
 #include "common.h"
 #include "globopt.h"
 #include "logio.h"
-#include "taskconfmap.h"
+#include "confmap.h"
 
 int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in) {
     EBCL_nullCheck(-1, out == NULL || in == NULL);
@@ -47,9 +47,9 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in
     }
 
     const ebcl_ConfKvList_t *pEntry = in;
-    ebcl_TaskCfgHdlCtx_t handlerCtx = {NULL, {0}, {0}};
+    ebcl_CfgHdlCtx_t handlerCtx = {NULL, {0}, {0}};
     while (pEntry != NULL) {
-        const ebcl_TaskConfigMapping_t *tcm = EBCL_findTaskConfigMapping(pEntry->key);
+        const ebcl_ConfigMapping_t *tcm = EBCL_findConfigMapping(pEntry->key);
         if (pEntry == NULL) {
             EBCL_infoPrint("Warning: Unknown configuration key '%s' encountered.", pEntry->key);
         } else {

@@ -25,7 +25,7 @@
 static inline int EBCL_cfgHandlerSetTaskOptFromStr(ebcl_TaskOpts_t *tgt, ebcl_TaskOpts_t opt, const char *val);
 static inline void *EBCL_cfgHandlerManageArrayMem(void *dynArr, size_t elementSize, size_t curSize, size_t reqSize);
 
-int EBCL_taskCfgCmdHandler(ebcl_Task_t *tgt, ebcl_TaskCfgHdlCtx_t *handlerCtx) {
+int EBCL_taskCfgCmdHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx) {
     EBCL_cfgHandlerCommonNullCheck();
     if (handlerCtx->curIdx[EBCL_TASK_CONFIG_COMMAND] > handlerCtx->maxIdx[EBCL_TASK_CONFIG_COMMAND]) {
         EBCL_errPrint("Option index overflow internal to the task configuration parser.");
@@ -57,7 +57,7 @@ int EBCL_taskCfgCmdHandler(ebcl_Task_t *tgt, ebcl_TaskCfgHdlCtx_t *handlerCtx) {
     return 0;
 }
 
-int EBCL_taskCfgDepHandler(ebcl_Task_t *tgt, ebcl_TaskCfgHdlCtx_t *handlerCtx) {
+int EBCL_taskCfgDepHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx) {
     EBCL_cfgHandlerCommonNullCheck();
 
     int tempDepsSize = 0;
@@ -108,7 +108,7 @@ int EBCL_taskCfgDepHandler(ebcl_Task_t *tgt, ebcl_TaskCfgHdlCtx_t *handlerCtx) {
     return 0;
 }
 
-int EBCL_taskCfgPrvHandler(ebcl_Task_t *tgt, ebcl_TaskCfgHdlCtx_t *handlerCtx) {
+int EBCL_taskCfgPrvHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx) {
     EBCL_cfgHandlerCommonNullCheck();
 
     int tempPrvsSize = 0;
@@ -174,7 +174,7 @@ int EBCL_taskCfgPrvHandler(ebcl_Task_t *tgt, ebcl_TaskCfgHdlCtx_t *handlerCtx) {
     return 0;
 }
 
-int EBCL_taskCfgEnvHandler(ebcl_Task_t *tgt, ebcl_TaskCfgHdlCtx_t *handlerCtx) {
+int EBCL_taskCfgEnvHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx) {
     EBCL_cfgHandlerCommonNullCheck();
     if (tgt->taskEnv.envp == NULL &&
         EBCL_envSetInit(&tgt->taskEnv, EBCL_ENVSET_INITIAL_SIZE, EBCL_ENVSET_SIZE_INCREMENT) == -1) {
@@ -188,7 +188,7 @@ int EBCL_taskCfgEnvHandler(ebcl_Task_t *tgt, ebcl_TaskCfgHdlCtx_t *handlerCtx) {
     return 0;
 }
 
-int EBCL_taskCfgIoRedirHandler(ebcl_Task_t *tgt, ebcl_TaskCfgHdlCtx_t *handlerCtx) {
+int EBCL_taskCfgIoRedirHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx) {
     EBCL_cfgHandlerCommonNullCheck();
     if (handlerCtx->curIdx[EBCL_TASK_CONFIG_IOREDIR] > handlerCtx->maxIdx[EBCL_TASK_CONFIG_IOREDIR]) {
         EBCL_errPrint("Option index overflow internal to the task configuration parser.");
@@ -221,7 +221,7 @@ int EBCL_taskCfgIoRedirHandler(ebcl_Task_t *tgt, ebcl_TaskCfgHdlCtx_t *handlerCt
     return 0;
 }
 
-int EBCL_taskCfgNameHandler(ebcl_Task_t *tgt, ebcl_TaskCfgHdlCtx_t *handlerCtx) {
+int EBCL_taskCfgNameHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx) {
     EBCL_cfgHandlerCommonNullCheck();
     tgt->name = strdup(handlerCtx->val);
     if (tgt->name == NULL) {
@@ -231,7 +231,7 @@ int EBCL_taskCfgNameHandler(ebcl_Task_t *tgt, ebcl_TaskCfgHdlCtx_t *handlerCtx) 
     return 0;
 }
 
-int EBCL_taskCfgRespHandler(ebcl_Task_t *tgt, ebcl_TaskCfgHdlCtx_t *handlerCtx) {
+int EBCL_taskCfgRespHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx) {
     EBCL_cfgHandlerCommonNullCheck();
     if (EBCL_cfgHandlerSetTaskOptFromStr(&tgt->opts, EBCL_TASK_OPT_RESPAWN, handlerCtx->val) == -1) {
         EBCL_errPrint("Could not parse value of boolean option '%s'.", EBCL_TASK_CONFIG_KEYSTR_RESPAWN);
@@ -240,7 +240,7 @@ int EBCL_taskCfgRespHandler(ebcl_Task_t *tgt, ebcl_TaskCfgHdlCtx_t *handlerCtx) 
     return 0;
 }
 
-int EBCL_taskCfgRespRetHandler(ebcl_Task_t *tgt, ebcl_TaskCfgHdlCtx_t *handlerCtx) {
+int EBCL_taskCfgRespRetHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx) {
     EBCL_cfgHandlerCommonNullCheck();
     if (EBCL_confConvToInteger(&tgt->maxRetries, handlerCtx->val, 10) == -1) {
         EBCL_errPrint("Could not parse value of integral numeric option '%s'.",
@@ -250,7 +250,7 @@ int EBCL_taskCfgRespRetHandler(ebcl_Task_t *tgt, ebcl_TaskCfgHdlCtx_t *handlerCt
     return 0;
 }
 
-int EBCL_taskIncludeHandler(ebcl_Task_t *tgt, ebcl_TaskCfgHdlCtx_t *handlerCtx) {
+int EBCL_taskIncludeHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx) {
     EBCL_cfgHandlerCommonNullCheck();
     return 0;
 }

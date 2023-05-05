@@ -14,7 +14,7 @@ add_executable(
   confparse.c
   confconv.c
   confhdl.c
-  taskconfmap.c
+  confmap.c
   lexers.c
   envset.c
   task.c
@@ -97,7 +97,7 @@ add_executable(
   confparse.c
   confconv.c
   confhdl.c
-  taskconfmap.c
+  confmap.c
   lexers.c
   envset.c
   globopt.c
