@@ -167,18 +167,17 @@ int EBCL_envSetCreateFromConfKvList(ebcl_EnvSet_t *newSet, const ebcl_EnvSet_t *
         EBCL_errPrint("Could not initialize new environment set.");
         return -1;
     }
-    ssize_t numNewEnvs = EBCL_confListKeyGetMaxIdx(c, EBCL_TASK_CONFIG_KEYSTR_ENV_SET) + 1;
+    ssize_t numNewEnvs = EBCL_confListKeyGetMaxIdx(c, EBCL_CONFIG_KEYSTR_ENV_SET) + 1;
     // If EBCL_conflListKeyGetMaxIdx() returns -1, we assume no ENV_SET config lines present.
     for (size_t i = 0; i < (size_t)numNewEnvs; i++) {
         char *val = NULL;
-        if (EBCL_confListGetValWithIdx(&val, EBCL_TASK_CONFIG_KEYSTR_ENV_SET, i, c) == -1) {
-            EBCL_errPrint("Could not retrieve config key '%s', index %zu from config.", EBCL_TASK_CONFIG_KEYSTR_ENV_SET,
-                          i);
+        if (EBCL_confListGetValWithIdx(&val, EBCL_CONFIG_KEYSTR_ENV_SET, i, c) == -1) {
+            EBCL_errPrint("Could not retrieve config key '%s', index %zu from config.", EBCL_CONFIG_KEYSTR_ENV_SET, i);
             EBCL_envSetDestroy(newSet);
             return -1;
         }
         if (EBCL_confConvToEnvSetMember(newSet, val) == -1) {
-            EBCL_errPrint("Failed to process " EBCL_TASK_CONFIG_KEYSTR_ENV_SET " config item with value '%s'", val);
+            EBCL_errPrint("Failed to process " EBCL_CONFIG_KEYSTR_ENV_SET " config item with value '%s'", val);
             EBCL_envSetDestroy(newSet);
             return -1;
         }

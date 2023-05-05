@@ -24,15 +24,15 @@
     "INCLUDEDIR_FOLLOW_SYMLINKS"  ///< Config key for the option to follow symbolic links from `INCLUDEDIR` in dynamic
                                   ///< configurations.
 
-#define EBCL_TASK_CONFIG_KEYSTR_COMMAND "COMMAND"
-#define EBCL_TASK_CONFIG_KEYSTR_DEPENDS "DEPENDS"
-#define EBCL_TASK_CONFIG_KEYSTR_ENV_SET "ENV_SET"      ///< Config key to set an environment variable with.
-#define EBCL_TASK_CONFIG_KEYSTR_INCLUDE "INCLUDE"      ///< Config key for file include directives.
-#define EBCL_TASK_CONFIG_KEYSTR_IOREDIR "IO_REDIRECT"  ///< Config key for IO redirections.
-#define EBCL_TASK_CONFIG_KEYSTR_NAME "NAME"            ///< Config key for the task name.
-#define EBCL_TASK_CONFIG_KEYSTR_PROVIDES "PROVIDES"    ///< Config key for provided features.
-#define EBCL_TASK_CONFIG_KEYSTR_RESPAWN "RESPAWN"
-#define EBCL_TASK_CONFIG_KEYSTR_RESPAWN_RETRIES "RESPAWN_RETRIES"
+#define EBCL_CONFIG_KEYSTR_COMMAND "COMMAND"
+#define EBCL_CONFIG_KEYSTR_DEPENDS "DEPENDS"
+#define EBCL_CONFIG_KEYSTR_ENV_SET "ENV_SET"      ///< Config key to set an environment variable with.
+#define EBCL_CONFIG_KEYSTR_INCLUDE "INCLUDE"      ///< Config key for file include directives.
+#define EBCL_CONFIG_KEYSTR_IOREDIR "IO_REDIRECT"  ///< Config key for IO redirections.
+#define EBCL_CONFIG_KEYSTR_NAME "NAME"            ///< Config key for the task name.
+#define EBCL_CONFIG_KEYSTR_PROVIDES "PROVIDES"    ///< Config key for provided features.
+#define EBCL_CONFIG_KEYSTR_RESPAWN "RESPAWN"
+#define EBCL_CONFIG_KEYSTR_RESPAWN_RETRIES "RESPAWN_RETRIES"
 
 #define EBCL_CONFIG_KEYSTR_TASK_FILE_SUFFIX \
     "TASK_FILE_SUFFIX"  ///< Config key for the task file extension in dynamic configurations.
@@ -45,18 +45,18 @@
 #define EBCL_CONFIG_STDERR_NAME "STDERR"  ///< What stderr is called in task configs.
 #define EBCL_CONFIG_STDIN_NAME "STDIN"    ///< What stdin is called in task configs.
 
-typedef enum ebcl_TaskConfigs_t {
-    EBCL_TASK_CONFIG_COMMAND = 0,
-    EBCL_TASK_CONFIG_DEPENDS,
-    EBCL_TASK_CONFIG_ENV_SET,
-    EBCL_TASK_CONFIG_INCLUDE,
-    EBCL_TASK_CONFIG_IOREDIR,
-    EBCL_TASK_CONFIG_NAME,
-    EBCL_TASK_CONFIG_PROVIDES,
-    EBCL_TASK_CONFIG_RESPAWN,
-    EBCL_TASK_CONFIG_RESPAWN_RETRIES,
-    EBCL_TASK_CONFIGS_SIZE
-} ebcl_TaskConfigs_t;
+typedef enum ebcl_Configs_t {
+    EBCL_CONFIG_COMMAND = 0,
+    EBCL_CONFIG_DEPENDS,
+    EBCL_CONFIG_ENV_SET,
+    EBCL_CONFIG_INCLUDE,
+    EBCL_CONFIG_IOREDIR,
+    EBCL_CONFIG_NAME,
+    EBCL_CONFIG_PROVIDES,
+    EBCL_CONFIG_RESPAWN,
+    EBCL_CONFIG_RESPAWN_RETRIES,
+    EBCL_CONFIGS_SIZE
+} ebcl_Configs_t;
 
 /**
  * Linked list to hold key/value pairs read from the config file.

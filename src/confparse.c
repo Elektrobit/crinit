@@ -116,12 +116,12 @@ static int EBCL_iniHandler(void *parserCtx, const char *section, const char *key
             }
             keyLen -= strlen(brck);
         }
-    } else if (strcmp(key, EBCL_TASK_CONFIG_KEYSTR_ENV_SET) == 0) {
+    } else if (strcmp(key, EBCL_CONFIG_KEYSTR_ENV_SET) == 0) {
         /* Handle ENV_SET (TODO: As we will likely change the whole array handling syntax we should consolidate this
          * with everything else and just differentiate between keys which may be given multiple times and keys which may
          * appear only once. */
         ctx->pList->keyArrIndex = ctx->envSetCount++;
-    } else if (strcmp(key, EBCL_TASK_CONFIG_KEYSTR_IOREDIR) == 0) {
+    } else if (strcmp(key, EBCL_CONFIG_KEYSTR_IOREDIR) == 0) {
         // Handle REDIRECT_IO the same way as ENV_SET for now. Same criticism applies.
         ctx->pList->keyArrIndex = ctx->ioRedirCount++;
     }

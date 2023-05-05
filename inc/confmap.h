@@ -14,7 +14,7 @@
 #include "confhdl.h"
 
 typedef struct ebcl_ConfigMapping_t {
-    ebcl_TaskConfigs_t config;
+    ebcl_Configs_t config;
     const char *configKey;
     bool arrayLike;
     bool includeSafe;

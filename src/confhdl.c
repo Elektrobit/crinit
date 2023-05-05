@@ -27,22 +27,22 @@ static inline void *EBCL_cfgHandlerManageArrayMem(void *dynArr, size_t elementSi
 
 int EBCL_taskCfgCmdHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx) {
     EBCL_cfgHandlerCommonNullCheck();
-    if (handlerCtx->curIdx[EBCL_TASK_CONFIG_COMMAND] > handlerCtx->maxIdx[EBCL_TASK_CONFIG_COMMAND]) {
+    if (handlerCtx->curIdx[EBCL_CONFIG_COMMAND] > handlerCtx->maxIdx[EBCL_CONFIG_COMMAND]) {
         EBCL_errPrint("Option index overflow internal to the task configuration parser.");
         return -1;
     }
 
-    size_t newCmdsSize = handlerCtx->maxIdx[EBCL_TASK_CONFIG_COMMAND] + 1;
+    size_t newCmdsSize = handlerCtx->maxIdx[EBCL_CONFIG_COMMAND] + 1;
     ebcl_TaskCmd_t *newArr = EBCL_cfgHandlerManageArrayMem(tgt->cmds, sizeof(*tgt->cmds), tgt->cmdsSize, newCmdsSize);
     if (newArr == NULL) {
         EBCL_errPrint("Could not perform memory allocation during handler for configuration key '%s'.",
-                      EBCL_TASK_CONFIG_KEYSTR_COMMAND);
+                      EBCL_CONFIG_KEYSTR_COMMAND);
         return -1;
     }
     tgt->cmds = newArr;
     tgt->cmdsSize = newCmdsSize;
 
-    size_t newCmdIdx = handlerCtx->curIdx[EBCL_TASK_CONFIG_COMMAND];
+    size_t newCmdIdx = handlerCtx->curIdx[EBCL_CONFIG_COMMAND];
     if (newCmdIdx >= tgt->cmdsSize) {
         EBCL_errPrint("No space left in array to acommodate element at index %zu. Array has size %zu.", newCmdIdx,
                       tgt->cmdsSize);
@@ -51,7 +51,7 @@ int EBCL_taskCfgCmdHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx) {
 
     tgt->cmds[newCmdIdx].argv = EBCL_confConvToStrArr(&tgt->cmds[newCmdIdx].argc, handlerCtx->val, true);
     if (tgt->cmds[newCmdIdx].argv == NULL) {
-        EBCL_errPrint("Could not extract argv/argc from '%s' index %zu.", EBCL_TASK_CONFIG_KEYSTR_COMMAND, newCmdIdx);
+        EBCL_errPrint("Could not extract argv/argc from '%s' index %zu.", EBCL_CONFIG_KEYSTR_COMMAND, newCmdIdx);
         return -1;
     }
     return 0;
@@ -63,8 +63,8 @@ int EBCL_taskCfgDepHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx) {
     int tempDepsSize = 0;
     char **tempDeps = EBCL_confConvToStrArr(&tempDepsSize, handlerCtx->val, false);
     if (tempDeps == NULL) {
-        EBCL_errPrint("Could not extract string array from '%s' index %zu.", EBCL_TASK_CONFIG_KEYSTR_DEPENDS,
-                      handlerCtx->curIdx[EBCL_TASK_CONFIG_DEPENDS]);
+        EBCL_errPrint("Could not extract string array from '%s' index %zu.", EBCL_CONFIG_KEYSTR_DEPENDS,
+                      handlerCtx->curIdx[EBCL_CONFIG_DEPENDS]);
         return -1;
     }
 
@@ -78,7 +78,7 @@ int EBCL_taskCfgDepHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx) {
     ebcl_TaskDep_t *newArr = EBCL_cfgHandlerManageArrayMem(tgt->deps, sizeof(*tgt->deps), oldSz, newSz);
     if (newArr == NULL) {
         EBCL_errPrint("Could not perform memory allocation during handler for configuration key '%s', index %zu.",
-                      EBCL_TASK_CONFIG_KEYSTR_DEPENDS, handlerCtx->curIdx[EBCL_TASK_CONFIG_DEPENDS]);
+                      EBCL_CONFIG_KEYSTR_DEPENDS, handlerCtx->curIdx[EBCL_CONFIG_DEPENDS]);
         EBCL_freeArgvArray(tempDeps);
         return -1;
     }
@@ -114,8 +114,8 @@ int EBCL_taskCfgPrvHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx) {
     int tempPrvsSize = 0;
     char **tempPrvs = EBCL_confConvToStrArr(&tempPrvsSize, handlerCtx->val, false);
     if (tempPrvs == NULL) {
-        EBCL_errPrint("Could not extract string array from '%s' index %zu.", EBCL_TASK_CONFIG_KEYSTR_PROVIDES,
-                      handlerCtx->curIdx[EBCL_TASK_CONFIG_PROVIDES]);
+        EBCL_errPrint("Could not extract string array from '%s' index %zu.", EBCL_CONFIG_KEYSTR_PROVIDES,
+                      handlerCtx->curIdx[EBCL_CONFIG_PROVIDES]);
         return -1;
     }
 
@@ -128,7 +128,7 @@ int EBCL_taskCfgPrvHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx) {
     ebcl_TaskPrv_t *newArr = EBCL_cfgHandlerManageArrayMem(tgt->prv, sizeof(*tgt->prv), oldSz, newSz);
     if (newArr == NULL) {
         EBCL_errPrint("Could not perform memory allocation during handler for configuration key '%s', index %zu.",
-                      EBCL_TASK_CONFIG_KEYSTR_PROVIDES, handlerCtx->curIdx[EBCL_TASK_CONFIG_PROVIDES]);
+                      EBCL_CONFIG_KEYSTR_PROVIDES, handlerCtx->curIdx[EBCL_CONFIG_PROVIDES]);
         EBCL_freeArgvArray(tempPrvs);
         return -1;
     }
@@ -140,14 +140,14 @@ int EBCL_taskCfgPrvHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx) {
         ptr->stateReq = 0;
         ptr->name = strdup(tempPrvs[i]);
         if (ptr->name == NULL) {
-            EBCL_errnoPrint("Could not duplicate string for %s.", EBCL_TASK_CONFIG_KEYSTR_PROVIDES);
+            EBCL_errnoPrint("Could not duplicate string for %s.", EBCL_CONFIG_KEYSTR_PROVIDES);
             EBCL_freeArgvArray(tempPrvs);
             return -1;
         }
 
         char *delimPtr = strchr(ptr->name, ':');
         if (delimPtr == NULL) {
-            EBCL_errnoPrint("Could not parse '%s' in %s.", ptr->name, EBCL_TASK_CONFIG_KEYSTR_PROVIDES);
+            EBCL_errnoPrint("Could not parse '%s' in %s.", ptr->name, EBCL_CONFIG_KEYSTR_PROVIDES);
             EBCL_freeArgvArray(tempPrvs);
             return -1;
         }
@@ -159,7 +159,7 @@ int EBCL_taskCfgPrvHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx) {
         } else if (strncmp(delimPtr, EBCL_TASK_EVENT_FAILED, strlen(EBCL_TASK_EVENT_FAILED)) == 0) {
             ptr->stateReq = EBCL_TASK_STATE_FAILED;
         } else {
-            EBCL_errnoPrint("Could not parse '%s' in %s.", ptr->name, EBCL_TASK_CONFIG_KEYSTR_PROVIDES);
+            EBCL_errnoPrint("Could not parse '%s' in %s.", ptr->name, EBCL_CONFIG_KEYSTR_PROVIDES);
             EBCL_freeArgvArray(tempPrvs);
             return -1;
         }
@@ -190,23 +190,23 @@ int EBCL_taskCfgEnvHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx) {
 
 int EBCL_taskCfgIoRedirHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx) {
     EBCL_cfgHandlerCommonNullCheck();
-    if (handlerCtx->curIdx[EBCL_TASK_CONFIG_IOREDIR] > handlerCtx->maxIdx[EBCL_TASK_CONFIG_IOREDIR]) {
+    if (handlerCtx->curIdx[EBCL_CONFIG_IOREDIR] > handlerCtx->maxIdx[EBCL_CONFIG_IOREDIR]) {
         EBCL_errPrint("Option index overflow internal to the task configuration parser.");
         return -1;
     }
 
-    size_t newRedirsSize = handlerCtx->maxIdx[EBCL_TASK_CONFIG_IOREDIR] + 1;
+    size_t newRedirsSize = handlerCtx->maxIdx[EBCL_CONFIG_IOREDIR] + 1;
     ebcl_IoRedir_t *newArr =
         EBCL_cfgHandlerManageArrayMem(tgt->redirs, sizeof(*tgt->redirs), tgt->redirsSize, newRedirsSize);
     if (newArr == NULL) {
         EBCL_errPrint("Could not perform memory allocation during handler for configuration key '%s'.",
-                      EBCL_TASK_CONFIG_KEYSTR_IOREDIR);
+                      EBCL_CONFIG_KEYSTR_IOREDIR);
         return -1;
     }
     tgt->redirs = newArr;
     tgt->redirsSize = newRedirsSize;
 
-    size_t newRedirIdx = handlerCtx->curIdx[EBCL_TASK_CONFIG_IOREDIR];
+    size_t newRedirIdx = handlerCtx->curIdx[EBCL_CONFIG_IOREDIR];
     if (newRedirIdx >= tgt->redirsSize) {
         EBCL_errPrint("No space left in array to acommodate element at index %zu. Array has size %zu.", newRedirIdx,
                       tgt->redirsSize);
@@ -214,8 +214,8 @@ int EBCL_taskCfgIoRedirHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx) {
     }
 
     if (EBCL_confConvToIoRedir(&tgt->redirs[newRedirIdx], handlerCtx->val) == -1) {
-        EBCL_errPrint("Could not initialize IO redirection structure from '%s' index %zu.",
-                      EBCL_TASK_CONFIG_KEYSTR_IOREDIR, newRedirIdx);
+        EBCL_errPrint("Could not initialize IO redirection structure from '%s' index %zu.", EBCL_CONFIG_KEYSTR_IOREDIR,
+                      newRedirIdx);
         return -1;
     }
     return 0;
@@ -234,7 +234,7 @@ int EBCL_taskCfgNameHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx) {
 int EBCL_taskCfgRespHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx) {
     EBCL_cfgHandlerCommonNullCheck();
     if (EBCL_cfgHandlerSetTaskOptFromStr(&tgt->opts, EBCL_TASK_OPT_RESPAWN, handlerCtx->val) == -1) {
-        EBCL_errPrint("Could not parse value of boolean option '%s'.", EBCL_TASK_CONFIG_KEYSTR_RESPAWN);
+        EBCL_errPrint("Could not parse value of boolean option '%s'.", EBCL_CONFIG_KEYSTR_RESPAWN);
         return -1;
     }
     return 0;
@@ -243,8 +243,7 @@ int EBCL_taskCfgRespHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx) {
 int EBCL_taskCfgRespRetHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx) {
     EBCL_cfgHandlerCommonNullCheck();
     if (EBCL_confConvToInteger(&tgt->maxRetries, handlerCtx->val, 10) == -1) {
-        EBCL_errPrint("Could not parse value of integral numeric option '%s'.",
-                      EBCL_TASK_CONFIG_KEYSTR_RESPAWN_RETRIES);
+        EBCL_errPrint("Could not parse value of integral numeric option '%s'.", EBCL_CONFIG_KEYSTR_RESPAWN_RETRIES);
         return -1;
     }
     return 0;

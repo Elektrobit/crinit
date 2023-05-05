@@ -15,8 +15,8 @@
 
 typedef struct ebcl_CfgHdlContext_t {
     const char *val;
-    size_t maxIdx[EBCL_TASK_CONFIGS_SIZE];
-    size_t curIdx[EBCL_TASK_CONFIGS_SIZE];
+    size_t maxIdx[EBCL_CONFIGS_SIZE];
+    size_t curIdx[EBCL_CONFIGS_SIZE];
 } ebcl_CfgHdlCtx_t;
 
 typedef int (*ebcl_ConfigHandler_t)(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx);
