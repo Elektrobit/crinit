@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "common.h"
 #include "globopt.h"
 #include "logio.h"
 #include "optfeat.h"
@@ -58,6 +59,7 @@ int EBCL_taskDBInitWithSize(ebcl_TaskDB_t *ctx, int (*spawnFunc)(ebcl_TaskDB_t *
         EBCL_errnoPrint("Could not allocate memory for Task set of size %zu in TaskDB.", initialSize);
         return -1;
     }
+
     if ((errno = pthread_mutex_init(&ctx->lock, NULL)) != 0) {
         EBCL_errnoPrint("Could not initialize mutex for TaskDB.");
         goto fail;
@@ -101,20 +103,19 @@ int EBCL_taskDBDestroy(ebcl_TaskDB_t *ctx) {
 }
 
 int EBCL_taskDBInsert(ebcl_TaskDB_t *ctx, const ebcl_Task_t *t, bool overwrite) {
-    if (ctx == NULL || t == NULL) {
-        EBCL_errPrint("The TaskDB context and the Task to search must not be NULL.");
-        return -1;
-    }
+    EBCL_nullCheck(-1, ctx == NULL || t == NULL);
+
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
         EBCL_errnoPrint("Could not queue up for mutex lock.");
         return -1;
     }
+
     ssize_t idx = -1;
     if (EBCL_findInTaskDB(&idx, t->name, ctx) == 0) {
         if (overwrite) {
             EBCL_destroyTask(&ctx->taskSet[idx]);
         } else {
-            EBCL_errPrint("Found task with name \'%s\' already in TaskDB but will not overwrite", t->name);
+            EBCL_errPrint("Found task/include with name '%s' already in TaskDB but will not overwrite", t->name);
             goto fail;
         }
     }
@@ -122,7 +123,7 @@ int EBCL_taskDBInsert(ebcl_TaskDB_t *ctx, const ebcl_Task_t *t, bool overwrite) 
         // We need to grow the backing array
         ebcl_Task_t *newSet = realloc(ctx->taskSet, ctx->taskSetSize * 2 * sizeof(ebcl_Task_t));
         if (newSet == NULL) {
-            EBCL_errnoPrint("Could not allocate additional memory for more Task elements.");
+            EBCL_errnoPrint("Could not allocate additional memory for more task/include elements.");
             goto fail;
         }
         ctx->taskSet = newSet;
@@ -543,6 +544,7 @@ static int EBCL_findInTaskDB(ssize_t *idx, const char *taskName, const ebcl_Task
     if (taskName == NULL || in == NULL) {
         return -1;
     }
+
     for (size_t i = 0; i < in->taskSetItems; i++) {
         if (strcmp(taskName, in->taskSet[i].name) == 0) {
             if (idx != NULL) {

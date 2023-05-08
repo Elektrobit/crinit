@@ -13,22 +13,16 @@
 
 #include "task.h"
 
-typedef struct ebcl_CfgHdlContext_t {
-    const char *val;
-    size_t maxIdx[EBCL_CONFIGS_SIZE];
-    size_t curIdx[EBCL_CONFIGS_SIZE];
-} ebcl_CfgHdlCtx_t;
+typedef int (*ebcl_ConfigHandler_t)(ebcl_Task_t *tgt, const char *val);
 
-typedef int (*ebcl_ConfigHandler_t)(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx);
-
-int EBCL_taskCfgCmdHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx);
-int EBCL_taskCfgDepHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx);
-int EBCL_taskCfgEnvHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx);
-int EBCL_taskCfgIoRedirHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx);
-int EBCL_taskCfgNameHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx);
-int EBCL_taskCfgPrvHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx);
-int EBCL_taskCfgRespHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx);
-int EBCL_taskCfgRespRetHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx);
-int EBCL_taskIncludeHandler(ebcl_Task_t *tgt, ebcl_CfgHdlCtx_t *handlerCtx);
+int EBCL_taskCfgCmdHandler(ebcl_Task_t *tgt, const char *val);
+int EBCL_taskCfgDepHandler(ebcl_Task_t *tgt, const char *val);
+int EBCL_taskCfgEnvHandler(ebcl_Task_t *tgt, const char *val);
+int EBCL_taskCfgIoRedirHandler(ebcl_Task_t *tgt, const char *val);
+int EBCL_taskCfgNameHandler(ebcl_Task_t *tgt, const char *val);
+int EBCL_taskCfgPrvHandler(ebcl_Task_t *tgt, const char *val);
+int EBCL_taskCfgRespHandler(ebcl_Task_t *tgt, const char *val);
+int EBCL_taskCfgRespRetHandler(ebcl_Task_t *tgt, const char *val);
+int EBCL_taskIncludeHandler(ebcl_Task_t *tgt, const char *val);
 
 #endif /* __CONFHDL_H__ */

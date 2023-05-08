@@ -140,16 +140,6 @@ static int EBCL_iniHandler(void *parserCtx, const char *section, const char *key
         return 0;
     }
 
-    // Check for duplicate key
-    ebcl_ConfKvList_t *pSrch = ctx->anchor;
-    while (pSrch != NULL && pSrch != ctx->pList) {
-        if (ctx->pList->keyArrIndex == pSrch->keyArrIndex && strcmp(ctx->pList->key, pSrch->key) == 0) {
-            EBCL_errPrint("Found duplicate key \'%s\' (index %zu) in config.", pSrch->key, pSrch->keyArrIndex);
-            return 0;
-        }
-        pSrch = pSrch->next;
-    }
-
     // Grow list
     ctx->last = ctx->pList;
     if ((ctx->pList->next = malloc(sizeof(ebcl_ConfKvList_t))) == NULL) {
@@ -404,7 +394,7 @@ ssize_t EBCL_confListKeyGetMaxIdx(const ebcl_ConfKvList_t *c, const char *key) {
 }
 
 int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
-    if (series == NULL || !EBCL_isAbsPath(filename)) {
+    if (series == NULL || filename == NULL || !EBCL_isAbsPath(filename)) {
         EBCL_errPrint("Parameters must not be NULL and filename must be an absolute path.");
         return -1;
     }
@@ -423,20 +413,20 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
     }
 
     if (EBCL_globOptSetString(EBCL_GLOBOPT_TASKDIR, taskDir) == -1) {
-        EBCL_errPrint("Could not store global string option values for \'%s\'.", EBCL_GLOBOPT_KEYSTR_TASKDIR);
+        EBCL_errPrint("Could not store global string option values for '%s'.", EBCL_GLOBOPT_KEYSTR_TASKDIR);
         EBCL_freeConfList(c);
         return -1;
     }
 
     bool followLinks = true;
     if (EBCL_confListExtractBoolean(&followLinks, EBCL_CONFIG_KEYSTR_TASKDIR_SYMLINKS, false, c) == -1) {
-        EBCL_errPrint("Could not extract boolean value for key 'TASKDIR_FOLLOW_SYMLINKS'.");
+        EBCL_errPrint("Could not extract boolean value for key '%s'.", EBCL_CONFIG_KEYSTR_TASKDIR_SYMLINKS);
         EBCL_freeConfList(c);
         return -1;
     }
 
-    char *taskFileSuffix = NULL;
-    EBCL_confListGetVal(&taskFileSuffix, EBCL_CONFIG_KEYSTR_TASK_FILE_SUFFIX, c);
+    char *fileSuffix = NULL;
+    EBCL_confListGetVal(&fileSuffix, EBCL_CONFIG_KEYSTR_TASK_FILE_SUFFIX, c);
 
     char **seriesArr = NULL;
     int seriesLen = 0;
@@ -448,7 +438,7 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
 
     if (seriesArr == NULL) {  // No TASKS array given, scan TASKDIR.
         if (EBCL_fileSeriesFromDir(series, taskDir,
-                                   (taskFileSuffix != NULL) ? taskFileSuffix : EBCL_CONFIG_DEFAULT_TASK_FILE_SUFFIX,
+                                   (fileSuffix != NULL) ? fileSuffix : EBCL_CONFIG_DEFAULT_TASK_FILE_SUFFIX,
                                    followLinks) == -1) {
             EBCL_errPrint("Could not generate list of tasks from task directory '%s'.", taskDir);
             EBCL_freeConfList(c);
@@ -461,6 +451,23 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
             EBCL_freeArgvArray(seriesArr);
             return -1;
         }
+    }
+
+    char *inclDir = taskDir;
+    EBCL_confListGetVal(&inclDir, EBCL_GLOBOPT_KEYSTR_INCLDIR, c);
+    if (EBCL_globOptSetString(EBCL_GLOBOPT_INCLDIR, inclDir) == -1) {
+        EBCL_errPrint("Could not store global string option values for '%s'.", EBCL_GLOBOPT_KEYSTR_INCLDIR);
+        EBCL_freeConfList(c);
+        EBCL_destroyFileSeries(series);
+        return -1;
+    }
+
+    if (EBCL_confListGetVal(&fileSuffix, EBCL_GLOBOPT_KEYSTR_INCL_SUFFIX, c) == 0 &&
+        EBCL_globOptSetString(EBCL_GLOBOPT_INCL_SUFFIX, fileSuffix) == -1) {
+        EBCL_errPrint("Could not store global string option values for '%s'.", EBCL_GLOBOPT_KEYSTR_INCL_SUFFIX);
+        EBCL_freeConfList(c);
+        EBCL_destroyFileSeries(series);
+        return -1;
     }
 
     bool confDbg = EBCL_GLOBOPT_DEFAULT_DEBUG;

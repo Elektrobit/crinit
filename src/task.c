@@ -13,9 +13,12 @@
 #include <stdlib.h>
 
 #include "common.h"
+#include "confmap.h"
 #include "globopt.h"
 #include "logio.h"
-#include "confmap.h"
+
+static inline int EBCL_taskSetFromConfKvList(ebcl_Task_t *tgt, const ebcl_ConfKvList_t *src, ebcl_TaskType_t type,
+                                             char *importList);
 
 int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in) {
     EBCL_nullCheck(-1, out == NULL || in == NULL);
@@ -46,30 +49,9 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in
         goto fail;
     }
 
-    const ebcl_ConfKvList_t *pEntry = in;
-    ebcl_CfgHdlCtx_t handlerCtx = {NULL, {0}, {0}};
-    while (pEntry != NULL) {
-        const ebcl_ConfigMapping_t *tcm = EBCL_findConfigMapping(pEntry->key);
-        if (pEntry == NULL) {
-            EBCL_infoPrint("Warning: Unknown configuration key '%s' encountered.", pEntry->key);
-        } else {
-            handlerCtx.val = pEntry->val;
-            size_t idx = pEntry->keyArrIndex;
-            if ((!tcm->arrayLike) && idx > 0) {
-                EBCL_errPrint("Multiple values for non-array like configuration parameter '%s' given.", pEntry->key);
-                goto fail;
-            }
-            handlerCtx.curIdx[tcm->config] = idx;
-            if (handlerCtx.maxIdx[tcm->config] < idx) {
-                handlerCtx.maxIdx[tcm->config] = idx;
-            }
-            if (tcm->cfgHandler(pTask, &handlerCtx) == -1) {
-                EBCL_errPrint("Could not parse configuration parameter '%s' with given value '%s'.", pEntry->key,
-                              pEntry->val);
-                goto fail;
-            }
-        }
-        pEntry = pEntry->next;
+    if (EBCL_taskSetFromConfKvList(pTask, in, EBCL_TASK_TYPE_STANDARD, NULL) == -1) {
+        EBCL_errPrint("Could not set parameters of new task from configuration list.");
+        goto fail;
     }
 
     // Check that resulting task has a name and at least either a DEPENDS or COMMAND (as a meta-task only makes sense
@@ -289,5 +271,106 @@ void EBCL_destroyTask(ebcl_Task_t *t) {
     }
     free(t->redirs);
     EBCL_envSetDestroy(&t->taskEnv);
+}
+
+int EBCL_taskMergeInclude(ebcl_Task_t *tgt, const char *src, char *importList) {
+    EBCL_nullCheck(-1, tgt == NULL || src == NULL);
+
+    char *inclDir = NULL, *inclSuffix = NULL, *inclPath = NULL;
+    if (EBCL_globOptGetString(EBCL_GLOBOPT_INCLDIR, &inclDir) == -1) {
+        EBCL_errPrint("Could not recall path include directory from global options.");
+        return -1;
+    }
+    if (EBCL_globOptGetString(EBCL_GLOBOPT_INCL_SUFFIX, &inclSuffix) == -1) {
+        EBCL_errPrint("Could not recall include file suffix from global options.");
+        free(inclDir);
+        return -1;
+    }
+
+    size_t allocSz = strlen(inclDir) + strlen(src) + strlen(inclSuffix) + 2;
+    inclPath = malloc(allocSz);
+    if (inclPath == NULL) {
+        EBCL_errnoPrint("Could not allocate memory for full include file path.");
+        free(inclDir);
+        free(inclSuffix);
+        return -1;
+    }
+
+    char *runner = stpcpy(inclPath, inclDir);
+    *(runner++) = '/';
+    runner = stpcpy(runner, src);
+    runner = stpcpy(runner, inclSuffix);
+
+    free(inclDir);
+    free(inclSuffix);
+
+    ebcl_ConfKvList_t *inclConfList;
+    if (EBCL_parseConf(&inclConfList, inclPath) == -1) {
+        EBCL_errPrint("Could not parse include file at '%s'.", inclPath);
+        free(inclPath);
+        return -1;
+    }
+
+    if (EBCL_taskSetFromConfKvList(tgt, inclConfList, EBCL_TASK_TYPE_INCLUDE, importList) == -1) {
+        EBCL_errPrint("Could not merge include file '%s' into task.", inclPath);
+        free(inclPath);
+        EBCL_freeConfList(inclConfList);
+        return -1;
+    }
+
+    free(inclPath);
+    EBCL_freeConfList(inclConfList);
+    return 0;
+}
+
+static inline int EBCL_taskSetFromConfKvList(ebcl_Task_t *tgt, const ebcl_ConfKvList_t *src, ebcl_TaskType_t type,
+                                             char *importList) {
+    EBCL_nullCheck(-1, tgt == NULL || src == NULL);
+
+    bool importArr[EBCL_CONFIGS_SIZE] = {false};
+    if (type == EBCL_TASK_TYPE_STANDARD || importList == NULL) {
+        for (size_t i = 0; i < EBCL_numElements(importArr); i++) {
+            importArr[i] = true;
+        }
+    } else {
+        char *strtokState;
+        char *token = strtok_r(importList, ",", &strtokState);
+        while (token != NULL) {
+            const ebcl_ConfigMapping_t *cfg = EBCL_findConfigMapping(token);
+            if (cfg == NULL) {
+                EBCL_errPrint("Unexpected configuration string in include import list: '%s'", token);
+                return -1;
+            }
+            importArr[cfg->config] = true;
+            token = strtok_r(NULL, ",", &strtokState);
+        }
+    }
+
+    const ebcl_ConfKvList_t *pEntry = src;
+    const char *val = NULL;
+    while (pEntry != NULL) {
+        const ebcl_ConfigMapping_t *tcm = EBCL_findConfigMapping(pEntry->key);
+        if (tcm == NULL) {
+            EBCL_infoPrint("Warning: Unknown configuration key '%s' encountered.", pEntry->key);
+        } else {
+            val = pEntry->val;
+            if ((!tcm->includeSafe) && type == EBCL_TASK_TYPE_INCLUDE) {
+                EBCL_errPrint("Non include-safe configuration parameter '%s' encountered in include file.",
+                              pEntry->key);
+                return -1;
+            }
+            if ((!tcm->arrayLike) && pEntry->keyArrIndex > 0) {
+                EBCL_errPrint("Multiple values for non-array like configuration parameter '%s' given.", pEntry->key);
+                return -1;
+            }
+            if (importArr[tcm->config] && tcm->cfgHandler(tgt, val) == -1) {
+                EBCL_errPrint("Could not parse configuration parameter '%s' with given value '%s'.", pEntry->key,
+                              pEntry->val);
+                return -1;
+            }
+        }
+        pEntry = pEntry->next;
+    }
+    return 0;
 }
 

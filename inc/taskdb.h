@@ -4,7 +4,7 @@
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
- * @copyright 2021 Elektrobit Automotive GmbH
+ * @copyright 2023 Elektrobit Automotive GmbH
  *            All rights exclusively reserved for Elektrobit Automotive GmbH,
  *            unless otherwise expressly agreed
  */
@@ -18,7 +18,7 @@
 
 #define EBCL_MONITOR_DEP_NAME "@ebclmon"   ///< Special dependency name to depend on monitor events (not yet impl.).
 #define EBCL_PROVIDE_DEP_NAME "@provided"  ///< Special dependency name to depend on provided system features.
-#define EBCL_TASKDB_INITIAL_SIZE 256       ///< Default initial size of the taskSet within an ebcl_TaskDB_t.
+#define EBCL_TASKDB_INITIAL_SIZE 256       ///< Default initial size of taskSet and inclSet within an ebcl_TaskDB_t.
 
 /**
  * Type to store a task database.

@@ -23,6 +23,8 @@ typedef enum {
     EBCL_GLOBOPT_START,       ///< Marker for beginning of enum, used to calculate number of elements.
     EBCL_GLOBOPT_DEBUG,       ///< DEBUG global option.
     EBCL_GLOBOPT_TASKDIR,     ///< TASKDIR global option.
+    EBCL_GLOBOPT_INCLDIR,
+    EBCL_GLOBOPT_INCL_SUFFIX,
     EBCL_GLOBOPT_SHDGRACEP,   ///< SHUTDOWN_GRACE_PERIOD_US global option
     EBCL_GLOBOPT_USE_SYSLOG,  ///< USE_SYSLOG global option
     EBCL_GLOBOPT_ENV,         ///< Global task environment variables.
@@ -34,6 +36,7 @@ typedef enum {
 #define EBCL_GLOBOPT_DEFAULT_INCLDIR "/etc/crinit"  ///< Default value for INCLUDEDIR global option.
 #define EBCL_GLOBOPT_DEFAULT_SHDGRACEP 100000uLL    ///< Default value for SHUTDOWN_GRACE_PERIOD_US global option
 #define EBCL_GLOBOPT_DEFAULT_USE_SYSLOG false       ///< Default value for USE_SYSLOG global option.
+#define EBCL_GLOBOPT_DEFAULT_INCL_SUFFIX ".crincl"
 
 #define EBCL_GLOBOPT_KEYSTR_DEBUG "DEBUG"         ///< Config file key for DEBUG global option.
 #define EBCL_GLOBOPT_KEYSTR_TASKDIR "TASKDIR"     ///< Config file key for TASKDIR global option.
@@ -41,6 +44,7 @@ typedef enum {
 #define EBCL_GLOBOPT_KEYSTR_SHDGRACEP \
     "SHUTDOWN_GRACE_PERIOD_US"                       ///< Config file key for SHUTDOWN_GRACE_PERIOD_US global option
 #define EBCL_GLOBOPT_KEYSTR_USE_SYSLOG "USE_SYSLOG"  ///< Config file key for USE_SYSLOG global option.
+#define EBCL_GLOBOPT_KEYSTR_INCL_SUFFIX "INCLUDE_SUFFIX"
 
 /**
  * Sets global options to their default values.

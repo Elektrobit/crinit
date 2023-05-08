@@ -15,6 +15,8 @@
 
 #include "logio.h"
 
+#define EBCL_globOptSetErrPrint(keyStr) EBCL_errPrint("Could not set default value for global option '%s'.", (keyStr))
+
 /** Array to hold pointers to the global option values, one pointer per global option. **/
 static void *EBCL_globOptArr[EBCL_GLOBOPT_END - EBCL_GLOBOPT_START] = {NULL};
 /** Mutex to synchronize access to globOptArr **/
@@ -26,32 +28,46 @@ int EBCL_globOptInitDefault(void) {
             case EBCL_GLOBOPT_DEBUG: {
                 bool def = EBCL_GLOBOPT_DEFAULT_DEBUG;
                 if (EBCL_globOptSetBoolean(i, &def) == -1) {
-                    EBCL_errPrint("Could not set default value for global option \'DEBUG\'.");
+                    EBCL_globOptSetErrPrint(EBCL_GLOBOPT_KEYSTR_DEBUG);
                     return -1;
                 }
             } break;
             case EBCL_GLOBOPT_TASKDIR:
                 if (EBCL_globOptSetString(i, EBCL_GLOBOPT_DEFAULT_TASKDIR) == -1) {
-                    EBCL_errPrint("Could not set default value for global option \'TASKDIR\'.");
+                    EBCL_globOptSetErrPrint(EBCL_GLOBOPT_KEYSTR_TASKDIR);
+                    return -1;
+                }
+                break;
+            case EBCL_GLOBOPT_INCLDIR:
+                if (EBCL_globOptSetString(i, EBCL_GLOBOPT_DEFAULT_INCLDIR) == -1) {
+                    EBCL_globOptSetErrPrint(EBCL_GLOBOPT_KEYSTR_INCLDIR);
+                    return -1;
+                }
+                break;
+            case EBCL_GLOBOPT_INCL_SUFFIX:
+                if (EBCL_globOptSetString(i, EBCL_GLOBOPT_DEFAULT_INCL_SUFFIX) == -1) {
+                    EBCL_globOptSetErrPrint(EBCL_GLOBOPT_KEYSTR_INCL_SUFFIX);
+                    return -1;
                 }
                 break;
             case EBCL_GLOBOPT_SHDGRACEP: {
                 unsigned long long def = EBCL_GLOBOPT_DEFAULT_SHDGRACEP;
                 if (EBCL_globOptSetUnsignedLL(i, &def) == -1) {
-                    EBCL_errPrint("Could not set default value for global option \'SHUTDOWN_GRACE_PERIOD_US\'.");
+                    EBCL_globOptSetErrPrint(EBCL_GLOBOPT_KEYSTR_SHDGRACEP);
+                    return -1;
                 }
             } break;
             case EBCL_GLOBOPT_USE_SYSLOG: {
                 bool def = EBCL_GLOBOPT_DEFAULT_USE_SYSLOG;
                 if (EBCL_globOptSetBoolean(i, &def) == -1) {
-                    EBCL_errPrint("Could not set default value for global option \'USE_SYSLOG\'.");
+                    EBCL_globOptSetErrPrint(EBCL_GLOBOPT_KEYSTR_USE_SYSLOG);
                     return -1;
                 }
             } break;
             case EBCL_GLOBOPT_ENV: {
                 ebcl_EnvSet_t init = {NULL, 0, 0};
                 if (EBCL_globOptSet(i, &init, sizeof(ebcl_EnvSet_t)) == -1) {
-                    EBCL_errPrint("Could not set default value for global environment set.");
+                    EBCL_globOptSetErrPrint(EBCL_CONFIG_KEYSTR_ENV_SET);
                     return -1;
                 }
             } break;

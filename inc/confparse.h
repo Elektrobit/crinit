@@ -16,13 +16,11 @@
 
 #include "fseries.h"
 
-#define EBCL_CONFIG_KEYSTR_TASKS "TASKS"  ///< Config key for the list of task file names.
+#define EBCL_CONFIG_KEYSTR_TASKS "TASKS"        ///< Config key for the list of task file names.
+#define EBCL_CONFIG_KEYSTR_INCLUDES "INCLUDES"  ///< Config key for the list of task file names.
 #define EBCL_CONFIG_KEYSTR_TASKDIR_SYMLINKS \
     "TASKDIR_FOLLOW_SYMLINKS"  ///< Config key for the option to follow symbolic links from `TASKDIR` in dynamic
                                ///< configurations.
-#define EBCL_CONFIG_KEYSTR_INCLDIR_SYMLINKS \
-    "INCLUDEDIR_FOLLOW_SYMLINKS"  ///< Config key for the option to follow symbolic links from `INCLUDEDIR` in dynamic
-                                  ///< configurations.
 
 #define EBCL_CONFIG_KEYSTR_COMMAND "COMMAND"
 #define EBCL_CONFIG_KEYSTR_DEPENDS "DEPENDS"
@@ -253,11 +251,12 @@ ssize_t EBCL_confListKeyGetMaxIdx(const ebcl_ConfKvList_t *c, const char *key);
 /**
  * Parse a series file.
  *
- * Will return the task config files to be loaded in \a series. Will also set any global options specified in the series
- * file.
+ * Will return the task config and include files to be loaded in \a series. Will also set any global options specified
+ * in the series file.
  *
- * @param series     Returns the paths to the task configs specified in the series file.
- * @param filename   The path to the series file to load.
+ * @param series      Returns the paths to the task configs specified in the series file (or scanned from TASKDIR, if
+ *                    configured).
+ * @param filename    The path to the series file to load.
  *
  * @return 0 on success, -1 on failure
  */

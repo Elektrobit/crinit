@@ -173,6 +173,7 @@ void EBCL_errnoPrintFFL(const char *file, const char *func, int line, const char
         vfprintf(EBCL_errStream, format, args);
         va_end(args);
         fprintf(EBCL_errStream, EBCL_ERRNO_FMT, EBCL_threadSafeStrerror(errno));
+        fprintf(EBCL_errStream, "\n");
     }
     pthread_mutex_unlock(&EBCL_logLock);
 }
