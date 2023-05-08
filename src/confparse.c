@@ -15,6 +15,7 @@
 #include <string.h>
 
 #include "common.h"
+#include "confconv.h"
 #include "envset.h"
 #include "globopt.h"
 #include "ini.h"
@@ -33,8 +34,6 @@ typedef struct {
     size_t envSetCount;         ///< Counter variable for ENV_SET config directives.
     size_t ioRedirCount;        ///< Counter variable for IO_REDIRECT config directives.
 } ebcl_IniParserCtx_t;
-
-static char *EBCL_copyEscaped(char *dst, const char *src, const char *end);
 
 /**
  * Parser handler for libinih.
@@ -358,112 +357,11 @@ int EBCL_confListExtractArgvArrayWithIdx(int *outArgc, char ***outArgv, const ch
         }
     }
 
-    size_t allocSz = strlen(val) + 1;
-    char *backbuf = malloc(allocSz);
-    if (backbuf == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for argv backing string.");
+    *outArgv = EBCL_confConvToStrArr(outArgc, val, doubleQuoting);
+    if (outArgv == NULL) {
+        EBCL_errPrint("Could not convert configuration value to string array.");
         return -1;
     }
-    // Leaving it unitilialized makes valgrind complain
-    memset(backbuf, '\0', allocSz);
-
-    ebcl_TokenType_t tt;
-    const char *s = val, *mbegin, *mend;
-
-    // Check how many argv's we're dealing with
-    *outArgc = 0;
-    do {
-        tt = EBCL_argvLex(&s, &mbegin, &mend, doubleQuoting);
-        switch (tt) {
-            case EBCL_TK_WSPC:
-            case EBCL_TK_END:
-                break;
-            case EBCL_TK_UQSTR:
-            case EBCL_TK_DQSTR:
-                (*outArgc)++;
-                break;
-            default:
-            case EBCL_TK_ENVKEY:
-            case EBCL_TK_ENVVAL:
-            case EBCL_TK_VAR:
-            case EBCL_TK_CPY:
-            case EBCL_TK_ESC:
-            case EBCL_TK_ESCX:
-            case EBCL_TK_ERR:
-                EBCL_errPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
-                free(backbuf);
-                (*outArgc) = 0;
-                return -1;
-        }
-    } while (tt != EBCL_TK_END);
-
-    *outArgv = malloc((*outArgc + 1) * sizeof(char *));
-    if (*outArgv == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for argv-array from config.");
-        free(backbuf);
-        (*outArgc) = 0;
-        return -1;
-    }
-    char **pArgv = *outArgv;
-    for (int i = 0; i < (*outArgc + 1); i++) {
-        pArgv[i] = NULL;
-    }
-
-    // Shortcut if an empty string was given
-    if (*outArgc == 0) {
-        free(backbuf);
-        return 0;
-    }
-
-    s = val;
-    char *runner = backbuf;
-    int argc = 0;
-    do {
-        tt = EBCL_argvLex(&s, &mbegin, &mend, doubleQuoting);
-        switch (tt) {
-            case EBCL_TK_WSPC:
-            case EBCL_TK_END:
-                break;
-            case EBCL_TK_UQSTR:
-            case EBCL_TK_DQSTR:
-                pArgv[argc++] = runner;
-                runner = EBCL_copyEscaped(runner, mbegin, mend);
-                if (runner == NULL) {
-                    EBCL_errPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
-                    free(backbuf);
-                    free(pArgv);
-                    (*outArgc) = 0;
-                    pArgv = NULL;
-                    return -1;
-                }
-                runner++;
-                break;
-            default:
-            case EBCL_TK_ENVKEY:
-            case EBCL_TK_ENVVAL:
-            case EBCL_TK_VAR:
-            case EBCL_TK_CPY:
-            case EBCL_TK_ESC:
-            case EBCL_TK_ESCX:
-            case EBCL_TK_ERR:
-                EBCL_errPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
-                free(backbuf);
-                free(pArgv);
-                (*outArgc) = 0;
-                pArgv = NULL;
-                return -1;
-        }
-    } while (tt != EBCL_TK_END);
-
-    if (argc != *outArgc) {
-        EBCL_errPrint("Error trying to parse string array '%s'\n", val);
-        free(backbuf);
-        free(pArgv);
-        (*outArgc) = 0;
-        pArgv = NULL;
-        return -1;
-    }
-
     return 0;
 }
 
@@ -630,44 +528,4 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
     EBCL_freeConfList(c);
     EBCL_envSetDestroy(&globEnv);
     return 0;
-}
-
-static char *EBCL_copyEscaped(char *dst, const char *src, const char *end) {
-    if (dst == NULL || src == NULL || end == NULL) {
-        EBCL_errPrint("Input parameters must not be NULL.\n");
-        return NULL;
-    }
-    if (src > end) {
-        EBCL_errPrint("String start pointer must not point behind the end pointer.");
-        return NULL;
-    }
-
-    char *runner = stpncpy(dst, src, (end - src));
-    *runner = '\0';
-    runner = dst;
-    ebcl_TokenType_t tt;
-    const char *s = runner, *mbegin, *mend;
-    do {
-        tt = EBCL_escLex(&s, &mbegin, &mend);
-        if (tt == EBCL_TK_END) {
-            *runner = '\0';
-            break;
-        } else if (tt == EBCL_TK_CPY) {
-            *runner = *mbegin;
-            runner++;
-        } else if (tt == EBCL_TK_ESC) {
-            *runner = EBCL_escMap[(int)mbegin[1]];
-            runner++;
-        } else if (tt == EBCL_TK_ESCX) {
-            char match[3] = {mbegin[0], mbegin[1], '\0'};
-            *runner = (char)strtol(match, NULL, 16);
-            runner++;
-        } else {
-            EBCL_errPrint("Parser error while parsing escape sequences.\n");
-            return NULL;
-        }
-
-    } while (true);
-
-    return runner;
 }
