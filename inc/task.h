@@ -117,7 +117,20 @@ void EBCL_destroyTask(ebcl_Task_t *t);
  */
 int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig);
 
-
+/**
+ * Merges the options set in a given include file into the target ebcl_Task_t.
+ *
+ * Uses the same parser handlers as regular task files but will fail if configuration options are encountered where
+ * ebcl_ConfigMapping_t::includeSafe is `false`. Optionally a comma-separated importList can be specified. If given,
+ * only the configuration options in the list will be merged. If not given, everything in the include file will be
+ * imported.
+ *
+ * @param tgt         The target ebcl_Task_t which will be modified.
+ * @param src         Name of the include file to parse/merge (filename without leading path and ending).
+ * @param importList  A comma-separated list which configs to merge from the include file. `NULL` means everything.
+ *
+ * @return  0 on success, -1 on failure
+ */
 int EBCL_taskMergeInclude(ebcl_Task_t *tgt, const char *src, char *importList);
 
 #endif /* __TASK_H__ */

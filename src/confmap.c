@@ -28,6 +28,7 @@ const ebcl_ConfigMapping_t EBCL_cfgMap[] = {
 };
 const size_t EBCL_cfgMapSize = EBCL_numElements(EBCL_cfgMap);
 
+/** Comparison function between two ebcl_ConfigMapping_t, for bsearch() **/
 static int EBCL_compareConfigMappings(const void *a, const void *b);
 
 const ebcl_ConfigMapping_t *EBCL_findConfigMapping(const char *keyStr) {

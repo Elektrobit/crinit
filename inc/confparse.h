@@ -22,15 +22,16 @@
     "TASKDIR_FOLLOW_SYMLINKS"  ///< Config key for the option to follow symbolic links from `TASKDIR` in dynamic
                                ///< configurations.
 
-#define EBCL_CONFIG_KEYSTR_COMMAND "COMMAND"
-#define EBCL_CONFIG_KEYSTR_DEPENDS "DEPENDS"
+#define EBCL_CONFIG_KEYSTR_COMMAND "COMMAND"      ///< Config key to add a command to the task.
+#define EBCL_CONFIG_KEYSTR_DEPENDS "DEPENDS"      ///< Config key to add dependencies to the task.
 #define EBCL_CONFIG_KEYSTR_ENV_SET "ENV_SET"      ///< Config key to set an environment variable with.
 #define EBCL_CONFIG_KEYSTR_INCLUDE "INCLUDE"      ///< Config key for file include directives.
 #define EBCL_CONFIG_KEYSTR_IOREDIR "IO_REDIRECT"  ///< Config key for IO redirections.
 #define EBCL_CONFIG_KEYSTR_NAME "NAME"            ///< Config key for the task name.
 #define EBCL_CONFIG_KEYSTR_PROVIDES "PROVIDES"    ///< Config key for provided features.
-#define EBCL_CONFIG_KEYSTR_RESPAWN "RESPAWN"
-#define EBCL_CONFIG_KEYSTR_RESPAWN_RETRIES "RESPAWN_RETRIES"
+#define EBCL_CONFIG_KEYSTR_RESPAWN "RESPAWN"      ///< Config key to set a task to be respawning.
+#define EBCL_CONFIG_KEYSTR_RESPAWN_RETRIES \
+    "RESPAWN_RETRIES"  ///< Config key to set how often a task is allowed to respawn on failure.
 
 #define EBCL_CONFIG_KEYSTR_TASK_FILE_SUFFIX \
     "TASK_FILE_SUFFIX"  ///< Config key for the task file extension in dynamic configurations.
@@ -43,6 +44,7 @@
 #define EBCL_CONFIG_STDERR_NAME "STDERR"  ///< What stderr is called in task configs.
 #define EBCL_CONFIG_STDIN_NAME "STDIN"    ///< What stdin is called in task configs.
 
+/** Enumeration of all (task) configuration keys. Goes together with EBCL_cfgMap. **/
 typedef enum ebcl_Configs_t {
     EBCL_CONFIG_COMMAND = 0,
     EBCL_CONFIG_DEPENDS,

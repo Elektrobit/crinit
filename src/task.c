@@ -17,6 +17,20 @@
 #include "globopt.h"
 #include "logio.h"
 
+/**
+ * Helper function to go through an ebcl_ConfKvList_t and apply all contained settings to a target task.
+ *
+ * Will call appropriate config handlers (see confhdl.h).
+ *
+ * @param tgt         The target task to be modified.
+ * @param src         The list of config parameters from a task config file.
+ * @param type        The ebcl_TaskType_t of the source task configuration file, i.e. if it is a regular task or an
+ *                    include file. Relevant for checking include safety of options and for \a importList behavior.
+ * @param importList  A comma-separated list of option names to be used from src. If NULL, all are used. Only relevant
+ *                    if `type == EBCL_TASK_TYPE_INCLUDE`.
+ *
+ * @return  0 on success, -1 on error
+ */
 static inline int EBCL_taskSetFromConfKvList(ebcl_Task_t *tgt, const ebcl_ConfKvList_t *src, ebcl_TaskType_t type,
                                              char *importList);
 

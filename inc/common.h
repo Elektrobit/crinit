@@ -47,8 +47,19 @@
  */
 #define EBCL_isAbsPath(path) (((path) != NULL) && ((path)[0] == '/'))
 
+/**
+ * Calculate the number of elements of an array at compile-time.
+ */
 #define EBCL_numElements(p) (sizeof(p) / sizeof(*(p)))
 
+/**
+ * Macro to simplify checking for null pointer inputs at the start of a function.
+ *
+ * @param errcode  The error code to return if \a expr is false. Must be a compatible type to the return type of the
+ *                 encompassing function.
+ * @param expr     Boolean expression. If true, the macro will do nothing. If false, the macro will print an error msg
+ *                 and cause a `return errcode;`.
+ */
 #define EBCL_nullCheck(errcode, expr)                            \
     do {                                                         \
         if (expr) {                                              \
@@ -57,6 +68,12 @@
         }                                                        \
     } while (0)
 
+/**
+ * Macro for a type-generic implementation of `strto*()`.
+ *
+ * Example: `unsigned long x = strtoGenericInteger(x, "0xFF", NULL, 16);` will map to
+ *          `unsigned long x = strtoul("0xFF", NULL, 16);`.
+ */
 #define EBCL_strtoGenericInteger(resType, str, endptr, base) \
     _Generic((resType), int                                  \
              : strtol, long                                  \

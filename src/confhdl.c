@@ -19,9 +19,32 @@
 #include "lexers.h"
 #include "logio.h"
 
+/** Common NULL-pointer input check as all configuration handler functions have the same signature **/
 #define EBCL_cfgHandlerCommonNullCheck() EBCL_nullCheck(-1, tgt == NULL || val == NULL)
 
+/**
+ * Helper function to set a bitmask value in ebcl_Task_t::opts.
+ *
+ * @param tgt  Direct pointer to the ebcl_TaskOpts_t inside an ebcl_Task_t which shall be modified.
+ * @param opt  Bitmask of the task option to be set, one of `EBCL_TASK_OPT_*`
+ * @param val  The string value indicating if the bit should be set or unset. Uses EBCL_confConvToBool().
+ *
+ * @return  0 on success, -1 on error
+ */
 static inline int EBCL_cfgHandlerSetTaskOptFromStr(ebcl_TaskOpts_t *tgt, ebcl_TaskOpts_t opt, const char *val);
+/**
+ * (Re-)allocate memory for generic arrays.
+ *
+ * Given current size of an array and required size, the function will allocate/grow the array. Shrinking is unsupported
+ * and will lead to an error being returned. Initializes newly allocated memory to 0.
+ *
+ * @param dynArr       The array to reallocate or NULL if we want a new array.
+ * @param elementSize  Size of a single element in the array.
+ * @param curSize      Current number of elements in the array.
+ * @param reqSize      Required number of elements in the array.
+ *
+ * @return  The new address of the array on success, NULL on failure.
+ */
 static inline void *EBCL_cfgHandlerManageArrayMem(void *dynArr, size_t elementSize, size_t curSize, size_t reqSize);
 
 int EBCL_taskCfgCmdHandler(ebcl_Task_t *tgt, const char *val) {

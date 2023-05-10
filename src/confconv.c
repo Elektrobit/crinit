@@ -19,6 +19,16 @@
 #include "lexers.h"
 #include "logio.h"
 
+/**
+ * Copies a string while resolving all contained escape sequences.
+ *
+ * @param dst  Destination string. Must have enough space. Best practice would be "same as \a src" because escape
+ *             sequence evaluation can only make the string shorter in this case.
+ * @param src  Source string, potentially containing escape sequences.
+ * @param end  End pointer, if src should not be read until the terminating null byte.
+ *
+ * @return  Pointer to end of \a src on success, NULL on failure.
+ */
 static char *EBCL_copyEscaped(char *dst, const char *src, const char *end);
 
 char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQuoting) {
@@ -125,6 +135,7 @@ char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQ
     return outArr;
 }
 
+/** Function body for type-generic string-to-integer functions, used internally to deduplicate code. **/
 #define EBCL_confConvToIntegerFnBody(resType, confVal)                                                   \
     do {                                                                                                 \
         if (*(confVal) == '\0') {                                                                        \
