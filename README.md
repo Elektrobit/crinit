@@ -63,6 +63,8 @@ TASKS = earlysetup.crinit check_qemu.crinit network-dhcp.crinit sshd.crinit gett
 TASKDIR = /etc/crinit
 TASK_FILE_SUFFIX = .crinit
 TASKDIR_FOLLOW_SYMLINKS = YES
+INCLUDEDIR = /etc/crinit
+INCLUDE_SUFFIX = .crincl
 DEBUG = NO
 
 SHUTDOWN_GRACE_PERIOD_US = 100000
@@ -82,6 +84,8 @@ ENV_SET = GREETING "Good morning!"
                           Default: `.crinit`
 - **TASKDIR_FOLLOW_SYMLINKS** -- If symbolic links should be followed during scanning of **TASKDIR**. Only relevant if
                                  **TASKS** is not set. Default: YES
+- **INCLUDEDIR** -- Where to find include files referenced from task configurations. Default: Same as **TASKDIR**.
+- **INCLUDE_SUFFIX** -- Filename suffix of include files referenced from task configurations. Default: `.crincl`
 - **DEBUG** -- If crinit should be verbose in its output. Either `YES` or `NO`. Default: `NO`
 - **SHUTDOWN_GRACE_PERIOD_US** -- The amount of microseconds to wait between `SIGTERM` and `SIGKILL` on shutdown/reboot.
                                   Default: 100000
@@ -96,6 +100,8 @@ The `network-dhcp.crinit` from above looks like this:
 # DHCP config for S32G board
 
 NAME = network-dhcp
+
+INCLUDE = daemon_env_preset
 
 COMMAND[] = /bin/mkdir -p /var/lib/dhcpcd
 COMMAND[] = /bin/mount -t tmpfs none /var/lib/dhcpcd
@@ -124,6 +130,7 @@ IO_REDIRECT = STDERR STDOUT
 #### Explanation
 - **NAME** -- The name given to this task configuration. Relevant if other tasks want to depend on this one. This is a
   mandatory setting.
+- **INCLUDE** -- See section **Include files** below.
 - **COMMAND[]** -- The commands to be executed in series. Executable paths must be absolute. Execution will stop if
   one of them fails and the whole task will be considered failed. The whole task is considered finished (i.e.
   the `network-dhcp:wait` dependency is fulfilled) if the last command has successfully returned. May also be written
@@ -184,6 +191,38 @@ VAR_WITH_ESC_SEQUENCES=hex  hex            # Support for escape sequences includ
 * Variables can reference all other variables set before it, globally and locally.
 * Variables are set/processed in the order they appear in the config file.
 * Common escape sequences are supported: `\a, \b, \n, \t, \$, \\, \x<two digit hex number>`.
+
+### Include files
+
+A crinit task configuration may reference multiple include files at any point in the task file. The effect is the same
+as manually copying the contents of the include file at exactly that point in the task config, similar to C incluedes.
+Additionally, it is possible to define an import list if not all settings in the include file should be applied.
+
+An INCLUDE statement looks like
+```
+INCLUDE = <include_name> [list,of,imported,settings]
+```
+where `<include_name>` is the filename of the include without the ending and without the leading path. The imported
+settings are defined as a comma-separated list of possible configuration options. If omitted, everything in the include
+file is taken.
+
+Currently only `IO_REDIRECT`, `DEPENDS`, and `ENV_SET` are supported in include files.
+
+Example:
+```
+INCLUDE = server_settings ENV_SET,IO_REDIRECT
+```
+Imports only the `ENV_SET` and `IO_REDIRECT` settings from (assuming default values for include dir and suffix)
+`/etc/crinit/server_settings.crincl`.
+
+`server_settings.crincl` could look like
+```
+ENV_SET = HTTP_PORT "8080"
+IO_REDIRECT = STDOUT /some/file.txt
+IO_REDIRECT = STDERR STDOUT
+DEPENDS = @provided:network
+```
+In the above case, the DEPENDS setting would be ignored.
 
 ### IO Redirections
 
