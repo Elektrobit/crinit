@@ -17,10 +17,11 @@
 void EBCL_envSetInitTestMallocError(void **state) {
     EBCL_PARAM_UNUSED(state);
 
-    ebcl_EnvSet_t e = {NULL, 0, 0};
+    ebcl_EnvSet_t e = {0};
 
-    expect_value(__wrap_malloc, size, EBCL_ENVSET_INITIAL_SIZE * sizeof(char *));
-    will_return(__wrap_malloc, NULL);
+    expect_value(__wrap_calloc, num, EBCL_ENVSET_INITIAL_SIZE);
+    expect_value(__wrap_calloc, size, sizeof(char *));
+    will_return(__wrap_calloc, NULL);
 
     expect_any(__wrap_EBCL_errnoPrintFFL, format);
 

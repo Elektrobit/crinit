@@ -22,13 +22,11 @@ void EBCL_envSetInitTestSuccess(void **state) {
 
     ebcl_EnvSet_t e;
 
-    expect_value(__wrap_malloc, size, EBCL_ENVSET_INITIAL_SIZE * sizeof(char *));
-    will_return(__wrap_malloc, envp);
+    expect_value(__wrap_calloc, num, EBCL_ENVSET_INITIAL_SIZE);
+    expect_value(__wrap_calloc, size, sizeof(char *));
+    will_return(__wrap_calloc, envp);
 
     assert_int_equal(EBCL_envSetInit(&e, EBCL_ENVSET_INITIAL_SIZE, EBCL_ENVSET_SIZE_INCREMENT), 0);
 
     assert_ptr_equal(e.envp, envp);
-    for (size_t i = 0; i < EBCL_ENVSET_INITIAL_SIZE; i++) {
-        assert_ptr_equal(e.envp[i], NULL);
-    }
 }

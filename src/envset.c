@@ -41,16 +41,13 @@ int EBCL_envSetInit(ebcl_EnvSet_t *es, size_t initSize, size_t sizeIncrement) {
         EBCL_errPrint("Input parameter must not be NULL.");
         return -1;
     }
-    es->envp = malloc(initSize * sizeof(char *));
+    es->envp = calloc(initSize, sizeof(*es->envp));
     if (es->envp == NULL) {
         EBCL_errnoPrint("Could not allocate memory for environment set.");
         return -1;
     }
     es->allocSz = initSize;
     es->allocInc = sizeIncrement;
-    for (size_t i = 0; i < es->allocSz; i++) {
-        es->envp[i] = NULL;
-    }
     return 0;
 }
 
@@ -62,7 +59,7 @@ int EBCL_envSetDestroy(ebcl_EnvSet_t *es) {
     if (es->envp == NULL) {
         return 0;
     }
-    for (size_t i = 0; i < es->allocSz && es->envp[i] != NULL; i++) {
+    for (size_t i = 0; es->envp[i] != NULL; i++) {
         free(es->envp[i]);
         es->envp[i] = NULL;
     }
@@ -84,7 +81,7 @@ int EBCL_envSetDup(ebcl_EnvSet_t *copy, const ebcl_EnvSet_t *orig) {
     }
     char **pSrc = orig->envp;
     char **pTgt = copy->envp;
-    while ((size_t)(pTgt - copy->envp) < (copy->allocSz - 1) && *pSrc != NULL) {
+    while (*pSrc != NULL) {
         *pTgt = strdup(*pSrc);
         if (*pTgt == NULL) {
             EBCL_errnoPrint("Could not duplicate string in environment set.");
@@ -94,16 +91,11 @@ int EBCL_envSetDup(ebcl_EnvSet_t *copy, const ebcl_EnvSet_t *orig) {
         pTgt++;
         pSrc++;
     }
-    *pTgt = NULL;
     return 0;
 }
 
 const char *EBCL_envSetGet(const ebcl_EnvSet_t *es, const char *envName) {
     if (envName == NULL || es == NULL || es->envp == NULL || es->allocSz == 0) {
-        return NULL;
-    }
-    if (strchr(envName, '=') != NULL) {
-        EBCL_errPrint("Environment variable names must not contain '='.");
         return NULL;
     }
     ssize_t idx = EBCL_envSetSearch(es, envName);
@@ -126,8 +118,7 @@ int EBCL_envSetSet(ebcl_EnvSet_t *es, const char *envName, const char *envVal) {
     ssize_t idx = EBCL_envSetSearch(es, envName);
     if (idx == -1) {
         EBCL_errPrint("Could not complete search for environment variable '%s' during variable set.", envName);
-    }
-    if (es->envp[idx] == NULL) {
+    } else if (es->envp[idx] == NULL) {
         if ((size_t)idx >= es->allocSz - 1) {
             if (EBCL_envSetGrow(es) == -1) {
                 EBCL_errPrint("Could not grow environment set of size %zu to size %zu.", es->allocSz,
@@ -383,15 +374,14 @@ static ssize_t EBCL_envSetSearch(const ebcl_EnvSet_t *es, const char *envName) {
         EBCL_errPrint("Environment variable names must not contain '='.");
         return -1;
     }
-    char **searcher = es->envp;
-    while ((size_t)(searcher - es->envp) < es->allocSz && *searcher != NULL) {
+    size_t i = 0;
+    for (; i < es->allocSz && es->envp[i] != NULL; i++) {
         size_t cmpLen = strlen(envName);
-        if (strlen(*searcher) > cmpLen && strncmp(*searcher, envName, cmpLen) == 0 && (*searcher)[cmpLen] == '=') {
-            return searcher - es->envp;
+        if (strncmp(es->envp[i], envName, cmpLen) == 0 && es->envp[i][cmpLen] == '=') {
+            break;
         }
-        searcher++;
     }
-    return searcher - es->envp;
+    return i;
 }
 
 static int EBCL_envSetGrow(ebcl_EnvSet_t *es) {
@@ -404,15 +394,13 @@ static int EBCL_envSetGrow(ebcl_EnvSet_t *es) {
         return -1;
     }
     size_t newAllocSz = es->allocSz + es->allocInc;
-    char **newPtr = realloc(es->envp, newAllocSz * sizeof(char *));
+    char **newPtr = realloc(es->envp, newAllocSz * sizeof(*newPtr));
     if (newPtr == NULL) {
         EBCL_errnoPrint("Could not reallocate memory to grow environment set.");
         return -1;
     }
     es->envp = newPtr;
-    for (size_t i = es->allocSz; i < newAllocSz; i++) {
-        es->envp[i] = NULL;
-    }
+    memset(&es->envp[es->allocSz], 0, es->allocInc * sizeof(*(es->envp)));
     es->allocSz = newAllocSz;
     return 0;
 }
