@@ -301,8 +301,8 @@ int EBCL_taskMergeInclude(ebcl_Task_t *tgt, const char *src, char *importList) {
         return -1;
     }
 
-    size_t allocSz = strlen(inclDir) + strlen(src) + strlen(inclSuffix) + 2;
-    inclPath = malloc(allocSz);
+    size_t pathLen = snprintf(NULL, 0, "%s/%s%s", inclDir, src, inclSuffix);
+    inclPath = malloc(pathLen + 1);
     if (inclPath == NULL) {
         EBCL_errnoPrint("Could not allocate memory for full include file path.");
         free(inclDir);
@@ -310,10 +310,7 @@ int EBCL_taskMergeInclude(ebcl_Task_t *tgt, const char *src, char *importList) {
         return -1;
     }
 
-    char *runner = stpcpy(inclPath, inclDir);
-    *(runner++) = '/';
-    runner = stpcpy(runner, src);
-    runner = stpcpy(runner, inclSuffix);
+    sprintf(inclPath, "%s/%s%s", inclDir, src, inclSuffix);
 
     free(inclDir);
     free(inclSuffix);
