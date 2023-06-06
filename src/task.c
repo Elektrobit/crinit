@@ -37,26 +37,14 @@ static inline int EBCL_taskSetFromConfKvList(ebcl_Task_t *tgt, const ebcl_ConfKv
 int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in) {
     EBCL_nullCheck(-1, out == NULL || in == NULL);
 
-    *out = malloc(sizeof(ebcl_Task_t));
+    *out = calloc(1, sizeof(**out));
     if (*out == NULL) {
         EBCL_errnoPrint("Could not allocate memory for ebcl_Task.");
         return -1;
     }
     ebcl_Task_t *pTask = *out;
-    pTask->name = NULL;
-    pTask->deps = NULL;
-    pTask->depsSize = 0;
-    pTask->cmds = NULL;
-    pTask->cmdsSize = 0;
-    pTask->prv = NULL;
-    pTask->prvSize = 0;
-    pTask->opts = 0;
-    pTask->state = 0;
     pTask->pid = -1;
-    pTask->redirs = NULL;
-    pTask->redirsSize = 0;
     pTask->maxRetries = -1;
-    pTask->failCount = 0;
 
     if (EBCL_globOptGetEnvSet(&pTask->taskEnv) == -1) {
         EBCL_errPrint("Could not retrieve global environment set during Task creation.");
