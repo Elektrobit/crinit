@@ -295,15 +295,8 @@ static inline void *EBCL_cfgHandlerManageArrayMem(void *dynArr, size_t elementSi
         EBCL_errPrint("Configuration value arrays can only be grown in size.");
         return NULL;
     }
-    void *out = NULL;
-    if (dynArr == NULL) {
-        out = calloc(reqSize, elementSize);
-        if (out == NULL) {
-            EBCL_errnoPrint("Could not allocate memory for a configuration value array with %zu elements.", reqSize);
-        }
-        return out;
-    }
 
+    void *out = NULL;
     if (curSize < reqSize) {
         out = realloc(dynArr, reqSize * elementSize);
         if (out == NULL) {
