@@ -93,33 +93,20 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
         return -1;
     }
     ebcl_Task_t *pTask = *out;
+    memcpy(pTask, orig, sizeof(*pTask));
     pTask->name = NULL;
     pTask->deps = NULL;
-    pTask->depsSize = 0;
     pTask->cmds = NULL;
-    pTask->cmdsSize = 0;
     pTask->taskEnv.envp = NULL;
-    pTask->taskEnv.allocSz = 0;
-    pTask->taskEnv.allocInc = 0;
     pTask->prv = NULL;
-    pTask->prvSize = 0;
-    pTask->opts = 0;
-    pTask->state = 0;
-    pTask->pid = -1;
     pTask->redirs = NULL;
-    pTask->redirsSize = 0;
-    pTask->maxRetries = -1;
-    pTask->failCount = 0;
 
-    size_t nameLen = strlen(orig->name) + 1;
-    pTask->name = malloc(nameLen);
+    pTask->name = strdup(orig->name);
     if (pTask->name == NULL) {
         EBCL_errnoPrint("Could not allocate memory for task name during copy of Task \'%s\'.", orig->name);
         goto fail;
     }
-    memcpy(pTask->name, orig->name, nameLen);
 
-    pTask->cmdsSize = orig->cmdsSize;
     if (pTask->cmdsSize > 0) {
         pTask->cmds = calloc(pTask->cmdsSize, sizeof(*pTask->cmds));
         if (pTask->cmds == NULL) {
@@ -152,11 +139,8 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
             }
 
             memcpy(argvBackbuf, orig->cmds[i].argv[0], argvBackbufLen);
-            char *runner = argvBackbuf;
             for (int j = 0; j < pTask->cmds[i].argc; j++) {
-                size_t argvLen = strlen(orig->cmds[i].argv[j]) + 1;
-                pTask->cmds[i].argv[j] = runner;
-                runner += argvLen;
+                pTask->cmds[i].argv[j] = argvBackbuf + (orig->cmds[i].argv[j] - orig->cmds[i].argv[0]);
             }
         }
     }
@@ -166,18 +150,12 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
         goto fail;
     }
 
-    pTask->depsSize = orig->depsSize;
     if (pTask->depsSize > 0) {
-        pTask->deps = malloc(pTask->depsSize * sizeof(ebcl_TaskDep_t));
+        pTask->deps = calloc(pTask->depsSize, sizeof(*pTask->deps));
         if (pTask->deps == NULL) {
             EBCL_errnoPrint("Could not allocate memory for %zu TaskDeps during copy of Task \'%s\'.", pTask->depsSize,
                             orig->name);
             goto fail;
-        }
-
-        for (size_t i = 0; i < pTask->depsSize; i++) {
-            pTask->deps[i].name = NULL;
-            pTask->deps[i].event = NULL;
         }
 
         for (size_t i = 0; i < pTask->depsSize; i++) {
@@ -189,15 +167,13 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
                                 i, orig->name);
                 goto fail;
             }
-            memcpy(pTask->deps[i].name, orig->deps[i].name, depNameLen);
-            memcpy(pTask->deps[i].name + depNameLen, orig->deps[i].event, depEventLen);
+            memcpy(pTask->deps[i].name, orig->deps[i].name, depNameLen + depEventLen);
             pTask->deps[i].event = pTask->deps[i].name + depNameLen;
         }
     } else {
         pTask->deps = NULL;
     }
 
-    pTask->prvSize = orig->prvSize;
     if (pTask->prvSize > 0) {
         pTask->prv = calloc(pTask->prvSize, sizeof(*pTask->prv));
         if (pTask->prv == NULL) {
@@ -219,7 +195,6 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
         pTask->prv = NULL;
     }
 
-    pTask->redirsSize = orig->redirsSize;
     if (pTask->redirsSize > 0) {
         pTask->redirs = calloc(pTask->redirsSize, sizeof(*pTask->redirs));
         if (pTask->redirs == NULL) {
