@@ -174,27 +174,27 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
                             orig->name);
             goto fail;
         }
+
+        for (size_t i = 0; i < pTask->depsSize; i++) {
+            pTask->deps[i].name = NULL;
+            pTask->deps[i].event = NULL;
+        }
+
+        for (size_t i = 0; i < pTask->depsSize; i++) {
+            size_t depNameLen = strlen(orig->deps[i].name) + 1;
+            size_t depEventLen = strlen(orig->deps[i].event) + 1;
+            pTask->deps[i].name = malloc(depNameLen + depEventLen);
+            if (pTask->deps[i].name == NULL) {
+                EBCL_errnoPrint("Could not allocate memory for backing string in deps[%zu] during copy of Task \'%s\'.",
+                                i, orig->name);
+                goto fail;
+            }
+            memcpy(pTask->deps[i].name, orig->deps[i].name, depNameLen);
+            memcpy(pTask->deps[i].name + depNameLen, orig->deps[i].event, depEventLen);
+            pTask->deps[i].event = pTask->deps[i].name + depNameLen;
+        }
     } else {
         pTask->deps = NULL;
-    }
-
-    for (size_t i = 0; i < pTask->depsSize; i++) {
-        pTask->deps[i].name = NULL;
-        pTask->deps[i].event = NULL;
-    }
-
-    for (size_t i = 0; i < pTask->depsSize; i++) {
-        size_t depNameLen = strlen(orig->deps[i].name) + 1;
-        size_t depEventLen = strlen(orig->deps[i].event) + 1;
-        pTask->deps[i].name = malloc(depNameLen + depEventLen);
-        if (pTask->deps[i].name == NULL) {
-            EBCL_errnoPrint("Could not allocate memory for backing string in deps[%zu] during copy of Task \'%s\'.", i,
-                            orig->name);
-            goto fail;
-        }
-        memcpy(pTask->deps[i].name, orig->deps[i].name, depNameLen);
-        memcpy(pTask->deps[i].name + depNameLen, orig->deps[i].event, depEventLen);
-        pTask->deps[i].event = pTask->deps[i].name + depNameLen;
     }
 
     pTask->prvSize = orig->prvSize;
@@ -205,18 +205,18 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
                             orig->name);
             goto fail;
         }
+
+        for (size_t i = 0; i < pTask->prvSize; i++) {
+            pTask->prv[i].name = strdup(orig->prv[i].name);
+            pTask->prv[i].stateReq = orig->prv[i].stateReq;
+            if (pTask->prv[i].name == NULL) {
+                EBCL_errnoPrint("Could not allocate memory for TaskPrv at index %zu during copy of Task '%s'.", i,
+                                pTask->name);
+                goto fail;
+            }
+        }
     } else {
         pTask->prv = NULL;
-    }
-
-    for (size_t i = 0; i < pTask->prvSize; i++) {
-        pTask->prv[i].name = strdup(orig->prv[i].name);
-        pTask->prv[i].stateReq = orig->prv[i].stateReq;
-        if (pTask->prv[i].name == NULL) {
-            EBCL_errnoPrint("Could not allocate memory for TaskPrv at index %zu during copy of Task '%s'.", i,
-                            pTask->name);
-            goto fail;
-        }
     }
 
     pTask->redirsSize = orig->redirsSize;
