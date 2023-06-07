@@ -284,7 +284,6 @@ int EBCL_confConvToEnvSetMember(ebcl_EnvSet_t *es, const char *confVal) {
         return -1;
     }
     const char *s = confVal, *mbegin = NULL, *mend = NULL;
-    bool envKeyFound = false, envValFound = false;
     char *envKey = NULL, *envVal = NULL;
     ebcl_TokenType_t tt;
     do {
@@ -294,7 +293,7 @@ int EBCL_confConvToEnvSetMember(ebcl_EnvSet_t *es, const char *confVal) {
                 EBCL_errPrint("Error while parsing string at '%.*s'\n", (int)(mend - mbegin), mbegin);
                 break;
             case EBCL_TK_ENVKEY:
-                if (envKeyFound) {
+                if (envKey != NULL) {
                     EBCL_errPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
                     tt = EBCL_TK_ERR;
                     break;
@@ -304,10 +303,9 @@ int EBCL_confConvToEnvSetMember(ebcl_EnvSet_t *es, const char *confVal) {
                     EBCL_errnoPrint("Could not duplicate environment variable key.");
                     return -1;
                 }
-                envKeyFound = true;
                 break;
             case EBCL_TK_ENVVAL:
-                if (!envKeyFound || envValFound) {
+                if (envKey == NULL || envVal != NULL) {
                     EBCL_errPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
                     tt = EBCL_TK_ERR;
                     break;
@@ -318,7 +316,6 @@ int EBCL_confConvToEnvSetMember(ebcl_EnvSet_t *es, const char *confVal) {
                     free(envKey);
                     return -1;
                 }
-                envValFound = true;
                 break;
             case EBCL_TK_WSPC:
             case EBCL_TK_END:
@@ -336,7 +333,7 @@ int EBCL_confConvToEnvSetMember(ebcl_EnvSet_t *es, const char *confVal) {
         }
     } while (tt != EBCL_TK_END && tt != EBCL_TK_ERR);
 
-    if (!envKeyFound || !envValFound) {
+    if (envKey == NULL || envVal == NULL) {
         EBCL_errPrint("Given string does not contain both an environment key and a value.\n");
         free(envVal);
         free(envKey);
