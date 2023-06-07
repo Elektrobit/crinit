@@ -94,6 +94,7 @@
              int : strtol,                                   \
              long : strtol,                                  \
              long long : strtoll,                            \
+             unsigned int : strtoul,                         \
              unsigned long : strtoul,                        \
              unsigned long long : strtoull)                  \
              ((str), (endptr), (base))

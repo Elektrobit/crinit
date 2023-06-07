@@ -249,7 +249,7 @@ int EBCL_confConvToIoRedir(ebcl_IoRedir_t *ior, const char *confVal) {
 
         if (numParams > 3) {
             char *endPtr;
-            ior->mode = strtoul(confStrArr[3], &endPtr, 8);
+            ior->mode = EBCL_strtoGenericInteger(ior->mode, confStrArr[3], &endPtr, 8);
             if (ior->mode == 0 && (errno != 0 || endPtr == confStrArr[3])) {
                 if (errno == 0) {
                     EBCL_errPrint(
