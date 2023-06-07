@@ -11,7 +11,7 @@ create_unit_test(
   LIBRARIES
     libmockfunctions
   WRAPS
-    -Wl,--wrap=malloc
+    -Wl,--wrap=calloc
     -Wl,--wrap=EBCL_errPrintFFL
     -Wl,--wrap=EBCL_errnoPrintFFL
 )
