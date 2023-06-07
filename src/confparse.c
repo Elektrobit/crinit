@@ -15,6 +15,7 @@
 #include <string.h>
 
 #include "common.h"
+#include "confconv.h"
 #include "envset.h"
 #include "globopt.h"
 #include "ini.h"
@@ -33,8 +34,6 @@ typedef struct {
     size_t envSetCount;         ///< Counter variable for ENV_SET config directives.
     size_t ioRedirCount;        ///< Counter variable for IO_REDIRECT config directives.
 } ebcl_IniParserCtx_t;
-
-static char *EBCL_copyEscaped(char *dst, const char *src, const char *end);
 
 /**
  * Parser handler for libinih.
@@ -116,7 +115,7 @@ static int EBCL_iniHandler(void *parserCtx, const char *section, const char *key
             }
             keyLen -= strlen(brck);
         }
-    } else if (strcmp(key, EBCL_CONFIG_KEYSTR_SETENV) == 0) {
+    } else if (strcmp(key, EBCL_CONFIG_KEYSTR_ENV_SET) == 0) {
         /* Handle ENV_SET (TODO: As we will likely change the whole array handling syntax we should consolidate this
          * with everything else and just differentiate between keys which may be given multiple times and keys which may
          * appear only once. */
@@ -139,16 +138,6 @@ static int EBCL_iniHandler(void *parserCtx, const char *section, const char *key
     if (ctx->pList->key == NULL || ctx->pList->val == NULL) {
         EBCL_errnoPrint("Could not allocate memory for a ConfKVList.");
         return 0;
-    }
-
-    // Check for duplicate key
-    ebcl_ConfKvList_t *pSrch = ctx->anchor;
-    while (pSrch != NULL && pSrch != ctx->pList) {
-        if (ctx->pList->keyArrIndex == pSrch->keyArrIndex && strcmp(ctx->pList->key, pSrch->key) == 0) {
-            EBCL_errPrint("Found duplicate key \'%s\' (index %zu) in config.", pSrch->key, pSrch->keyArrIndex);
-            return 0;
-        }
-        pSrch = pSrch->next;
     }
 
     // Grow list
@@ -358,112 +347,11 @@ int EBCL_confListExtractArgvArrayWithIdx(int *outArgc, char ***outArgv, const ch
         }
     }
 
-    size_t allocSz = strlen(val) + 1;
-    char *backbuf = malloc(allocSz);
-    if (backbuf == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for argv backing string.");
+    *outArgv = EBCL_confConvToStrArr(outArgc, val, doubleQuoting);
+    if (outArgv == NULL) {
+        EBCL_errPrint("Could not convert configuration value to string array.");
         return -1;
     }
-    // Leaving it unitilialized makes valgrind complain
-    memset(backbuf, '\0', allocSz);
-
-    ebcl_TokenType_t tt;
-    const char *s = val, *mbegin, *mend;
-
-    // Check how many argv's we're dealing with
-    *outArgc = 0;
-    do {
-        tt = EBCL_argvLex(&s, &mbegin, &mend, doubleQuoting);
-        switch (tt) {
-            case EBCL_TK_WSPC:
-            case EBCL_TK_END:
-                break;
-            case EBCL_TK_UQSTR:
-            case EBCL_TK_DQSTR:
-                (*outArgc)++;
-                break;
-            default:
-            case EBCL_TK_ENVKEY:
-            case EBCL_TK_ENVVAL:
-            case EBCL_TK_VAR:
-            case EBCL_TK_CPY:
-            case EBCL_TK_ESC:
-            case EBCL_TK_ESCX:
-            case EBCL_TK_ERR:
-                EBCL_errPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
-                free(backbuf);
-                (*outArgc) = 0;
-                return -1;
-        }
-    } while (tt != EBCL_TK_END);
-
-    *outArgv = malloc((*outArgc + 1) * sizeof(char *));
-    if (*outArgv == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for argv-array from config.");
-        free(backbuf);
-        (*outArgc) = 0;
-        return -1;
-    }
-    char **pArgv = *outArgv;
-    for (int i = 0; i < (*outArgc + 1); i++) {
-        pArgv[i] = NULL;
-    }
-
-    // Shortcut if an empty string was given
-    if (*outArgc == 0) {
-        free(backbuf);
-        return 0;
-    }
-
-    s = val;
-    char *runner = backbuf;
-    int argc = 0;
-    do {
-        tt = EBCL_argvLex(&s, &mbegin, &mend, doubleQuoting);
-        switch (tt) {
-            case EBCL_TK_WSPC:
-            case EBCL_TK_END:
-                break;
-            case EBCL_TK_UQSTR:
-            case EBCL_TK_DQSTR:
-                pArgv[argc++] = runner;
-                runner = EBCL_copyEscaped(runner, mbegin, mend);
-                if (runner == NULL) {
-                    EBCL_errPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
-                    free(backbuf);
-                    free(pArgv);
-                    (*outArgc) = 0;
-                    pArgv = NULL;
-                    return -1;
-                }
-                runner++;
-                break;
-            default:
-            case EBCL_TK_ENVKEY:
-            case EBCL_TK_ENVVAL:
-            case EBCL_TK_VAR:
-            case EBCL_TK_CPY:
-            case EBCL_TK_ESC:
-            case EBCL_TK_ESCX:
-            case EBCL_TK_ERR:
-                EBCL_errPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
-                free(backbuf);
-                free(pArgv);
-                (*outArgc) = 0;
-                pArgv = NULL;
-                return -1;
-        }
-    } while (tt != EBCL_TK_END);
-
-    if (argc != *outArgc) {
-        EBCL_errPrint("Error trying to parse string array '%s'\n", val);
-        free(backbuf);
-        free(pArgv);
-        (*outArgc) = 0;
-        pArgv = NULL;
-        return -1;
-    }
-
     return 0;
 }
 
@@ -506,7 +394,7 @@ ssize_t EBCL_confListKeyGetMaxIdx(const ebcl_ConfKvList_t *c, const char *key) {
 }
 
 int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
-    if (series == NULL || !EBCL_isAbsPath(filename)) {
+    if (series == NULL || filename == NULL || !EBCL_isAbsPath(filename)) {
         EBCL_errPrint("Parameters must not be NULL and filename must be an absolute path.");
         return -1;
     }
@@ -517,28 +405,28 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
     }
 
     char *taskDir = NULL;
-    if (EBCL_confListGetVal(&taskDir, EBCL_GLOBOPT_KEYSTR_TASKDIR, c) == -1) {
+    if (EBCL_confListGetVal(&taskDir, EBCL_CONFIG_KEYSTR_TASKDIR, c) == -1) {
         EBCL_errPrint("Could not get value for mandatory key \'%s\' in series config \'%s\'.",
-                      EBCL_GLOBOPT_KEYSTR_TASKDIR, filename);
+                      EBCL_CONFIG_KEYSTR_TASKDIR, filename);
         EBCL_freeConfList(c);
         return -1;
     }
 
     if (EBCL_globOptSetString(EBCL_GLOBOPT_TASKDIR, taskDir) == -1) {
-        EBCL_errPrint("Could not store global string option values for \'%s\'.", EBCL_GLOBOPT_KEYSTR_TASKDIR);
+        EBCL_errPrint("Could not store global string option values for '%s'.", EBCL_CONFIG_KEYSTR_TASKDIR);
         EBCL_freeConfList(c);
         return -1;
     }
 
     bool followLinks = true;
-    if (EBCL_confListExtractBoolean(&followLinks, EBCL_CONFIG_KEYSTR_SYMLINKS, false, c) == -1) {
-        EBCL_errPrint("Could not extract boolean value for key 'TASKDIR_FOLLOW_SYMLINKS'.");
+    if (EBCL_confListExtractBoolean(&followLinks, EBCL_CONFIG_KEYSTR_TASKDIR_SYMLINKS, false, c) == -1) {
+        EBCL_errPrint("Could not extract boolean value for key '%s'.", EBCL_CONFIG_KEYSTR_TASKDIR_SYMLINKS);
         EBCL_freeConfList(c);
         return -1;
     }
 
-    char *taskFileSuffix = NULL;
-    EBCL_confListGetVal(&taskFileSuffix, EBCL_CONFIG_KEYSTR_TASK_FILE_SUFFIX, c);
+    char *fileSuffix = NULL;
+    EBCL_confListGetVal(&fileSuffix, EBCL_CONFIG_KEYSTR_TASK_FILE_SUFFIX, c);
 
     char **seriesArr = NULL;
     int seriesLen = 0;
@@ -550,7 +438,7 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
 
     if (seriesArr == NULL) {  // No TASKS array given, scan TASKDIR.
         if (EBCL_fileSeriesFromDir(series, taskDir,
-                                   (taskFileSuffix != NULL) ? taskFileSuffix : EBCL_CONFIG_DEFAULT_TASK_FILE_SUFFIX,
+                                   (fileSuffix != NULL) ? fileSuffix : EBCL_CONFIG_DEFAULT_TASK_FILE_SUFFIX,
                                    followLinks) == -1) {
             EBCL_errPrint("Could not generate list of tasks from task directory '%s'.", taskDir);
             EBCL_freeConfList(c);
@@ -565,47 +453,64 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
         }
     }
 
-    bool confDbg = EBCL_GLOBOPT_DEFAULT_DEBUG;
-    if (EBCL_confListExtractBoolean(&confDbg, EBCL_GLOBOPT_KEYSTR_DEBUG, false, c) == -1) {
+    char *inclDir = taskDir;
+    EBCL_confListGetVal(&inclDir, EBCL_CONFIG_KEYSTR_INCLDIR, c);
+    if (EBCL_globOptSetString(EBCL_GLOBOPT_INCLDIR, inclDir) == -1) {
+        EBCL_errPrint("Could not store global string option values for '%s'.", EBCL_CONFIG_KEYSTR_INCLDIR);
+        EBCL_freeConfList(c);
+        EBCL_destroyFileSeries(series);
+        return -1;
+    }
+
+    if (EBCL_confListGetVal(&fileSuffix, EBCL_CONFIG_KEYSTR_INCL_SUFFIX, c) == 0 &&
+        EBCL_globOptSetString(EBCL_GLOBOPT_INCL_SUFFIX, fileSuffix) == -1) {
+        EBCL_errPrint("Could not store global string option values for '%s'.", EBCL_CONFIG_KEYSTR_INCL_SUFFIX);
+        EBCL_freeConfList(c);
+        EBCL_destroyFileSeries(series);
+        return -1;
+    }
+
+    bool confDbg = EBCL_CONFIG_DEFAULT_DEBUG;
+    if (EBCL_confListExtractBoolean(&confDbg, EBCL_CONFIG_KEYSTR_DEBUG, false, c) == -1) {
         EBCL_errPrint("Failed to search for non-mandatory key \'%s\' in series config \'%s\'.",
-                      EBCL_GLOBOPT_KEYSTR_DEBUG, filename);
+                      EBCL_CONFIG_KEYSTR_DEBUG, filename);
         EBCL_freeConfList(c);
         EBCL_destroyFileSeries(series);
         return -1;
     }
     if (EBCL_globOptSetBoolean(EBCL_GLOBOPT_DEBUG, &confDbg) == -1) {
-        EBCL_errPrint("Could not store global boolean option value for \'%s\'.", EBCL_GLOBOPT_KEYSTR_DEBUG);
+        EBCL_errPrint("Could not store global boolean option value for \'%s\'.", EBCL_CONFIG_KEYSTR_DEBUG);
         EBCL_freeConfList(c);
         EBCL_destroyFileSeries(series);
         return -1;
     }
 
-    bool confUseSyslog = EBCL_GLOBOPT_DEFAULT_USE_SYSLOG;
-    if (EBCL_confListExtractBoolean(&confUseSyslog, EBCL_GLOBOPT_KEYSTR_USE_SYSLOG, false, c) == -1) {
+    bool confUseSyslog = EBCL_CONFIG_DEFAULT_USE_SYSLOG;
+    if (EBCL_confListExtractBoolean(&confUseSyslog, EBCL_CONFIG_KEYSTR_USE_SYSLOG, false, c) == -1) {
         EBCL_errPrint("Failed to search for non-mandatory key \'%s\' in series config \'%s\'.",
-                      EBCL_GLOBOPT_KEYSTR_USE_SYSLOG, filename);
+                      EBCL_CONFIG_KEYSTR_USE_SYSLOG, filename);
         EBCL_freeConfList(c);
         EBCL_destroyFileSeries(series);
         return -1;
     }
     if (EBCL_globOptSetBoolean(EBCL_GLOBOPT_USE_SYSLOG, &confUseSyslog) == -1) {
-        EBCL_errPrint("Could not store global boolean option value for \'%s\'.", EBCL_GLOBOPT_KEYSTR_USE_SYSLOG);
+        EBCL_errPrint("Could not store global boolean option value for \'%s\'.", EBCL_CONFIG_KEYSTR_USE_SYSLOG);
         EBCL_freeConfList(c);
         EBCL_destroyFileSeries(series);
         return -1;
     }
 
-    unsigned long long shdnGracePeriodUs = EBCL_GLOBOPT_DEFAULT_SHDGRACEP;
-    if (EBCL_confListExtractUnsignedLL(&shdnGracePeriodUs, 10, EBCL_GLOBOPT_KEYSTR_SHDGRACEP, false, c) == -1) {
+    unsigned long long shdnGracePeriodUs = EBCL_CONFIG_DEFAULT_SHDGRACEP;
+    if (EBCL_confListExtractUnsignedLL(&shdnGracePeriodUs, 10, EBCL_CONFIG_KEYSTR_SHDGRACEP, false, c) == -1) {
         EBCL_errPrint("Failed to search for non-mandatory key \'%s\' in series config \'%s\'.",
-                      EBCL_GLOBOPT_KEYSTR_SHDGRACEP, filename);
+                      EBCL_CONFIG_KEYSTR_SHDGRACEP, filename);
         EBCL_freeConfList(c);
         EBCL_destroyFileSeries(series);
         return -1;
     }
     if (EBCL_globOptSetUnsignedLL(EBCL_GLOBOPT_SHDGRACEP, &shdnGracePeriodUs) == -1) {
         EBCL_errPrint("Could not store global unsigned long long option values for \'%s\'.",
-                      EBCL_GLOBOPT_KEYSTR_SHDGRACEP);
+                      EBCL_CONFIG_KEYSTR_SHDGRACEP);
         EBCL_freeConfList(c);
         EBCL_destroyFileSeries(series);
         return -1;
@@ -630,44 +535,4 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
     EBCL_freeConfList(c);
     EBCL_envSetDestroy(&globEnv);
     return 0;
-}
-
-static char *EBCL_copyEscaped(char *dst, const char *src, const char *end) {
-    if (dst == NULL || src == NULL || end == NULL) {
-        EBCL_errPrint("Input parameters must not be NULL.\n");
-        return NULL;
-    }
-    if (src > end) {
-        EBCL_errPrint("String start pointer must not point behind the end pointer.");
-        return NULL;
-    }
-
-    char *runner = stpncpy(dst, src, (end - src));
-    *runner = '\0';
-    runner = dst;
-    ebcl_TokenType_t tt;
-    const char *s = runner, *mbegin, *mend;
-    do {
-        tt = EBCL_escLex(&s, &mbegin, &mend);
-        if (tt == EBCL_TK_END) {
-            *runner = '\0';
-            break;
-        } else if (tt == EBCL_TK_CPY) {
-            *runner = *mbegin;
-            runner++;
-        } else if (tt == EBCL_TK_ESC) {
-            *runner = EBCL_escMap[(int)mbegin[1]];
-            runner++;
-        } else if (tt == EBCL_TK_ESCX) {
-            char match[3] = {mbegin[0], mbegin[1], '\0'};
-            *runner = (char)strtol(match, NULL, 16);
-            runner++;
-        } else {
-            EBCL_errPrint("Parser error while parsing escape sequences.\n");
-            return NULL;
-        }
-
-    } while (true);
-
-    return runner;
 }

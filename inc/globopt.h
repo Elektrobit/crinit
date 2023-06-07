@@ -20,25 +20,16 @@
  * Type to specify a global option (set in the series file)
  */
 typedef enum {
-    EBCL_GLOBOPT_START,       ///< Marker for beginning of enum, used to calculate number of elements.
-    EBCL_GLOBOPT_DEBUG,       ///< DEBUG global option.
-    EBCL_GLOBOPT_TASKDIR,     ///< TASKDIR global option.
-    EBCL_GLOBOPT_SHDGRACEP,   ///< SHUTDOWN_GRACE_PERIOD_US global option
-    EBCL_GLOBOPT_USE_SYSLOG,  ///< USE_SYSLOG global option
-    EBCL_GLOBOPT_ENV,         ///< Global task environment variables.
-    EBCL_GLOBOPT_END          ///< Marker for end of enum, used to calculate number of elements.
+    EBCL_GLOBOPT_START,        ///< Marker for beginning of enum, used to calculate number of elements.
+    EBCL_GLOBOPT_DEBUG,        ///< DEBUG global option.
+    EBCL_GLOBOPT_TASKDIR,      ///< TASKDIR global option.
+    EBCL_GLOBOPT_INCLDIR,      ///< INCLUDEDIR global option.
+    EBCL_GLOBOPT_INCL_SUFFIX,  ///< INCLUDE_SUFFIX global option
+    EBCL_GLOBOPT_SHDGRACEP,    ///< SHUTDOWN_GRACE_PERIOD_US global option
+    EBCL_GLOBOPT_USE_SYSLOG,   ///< USE_SYSLOG global option
+    EBCL_GLOBOPT_ENV,          ///< Global task environment variables.
+    EBCL_GLOBOPT_END           ///< Marker for end of enum, used to calculate number of elements.
 } ebcl_GlobOptKey_t;
-
-#define EBCL_GLOBOPT_DEFAULT_DEBUG false            ///< Default value for DEBUG global option.
-#define EBCL_GLOBOPT_DEFAULT_TASKDIR "/etc/crinit"  ///< Default value for TASKDIR global option.
-#define EBCL_GLOBOPT_DEFAULT_SHDGRACEP 100000uLL    ///< Default value for SHUTDOWN_GRACE_PERIOD_US global option
-#define EBCL_GLOBOPT_DEFAULT_USE_SYSLOG false       ///< Default value for USE_SYSLOG global option.
-
-#define EBCL_GLOBOPT_KEYSTR_DEBUG "DEBUG"                ///< Config file key for DEBUG global option.
-#define EBCL_GLOBOPT_KEYSTR_TASKDIR "TASKDIR"            ///< Config file key for TASKDIR global option.
-#define EBCL_GLOBOPT_KEYSTR_SHDGRACEP \
-    "SHUTDOWN_GRACE_PERIOD_US"                       ///< Config file key for SHUTDOWN_GRACE_PERIOD_US global option
-#define EBCL_GLOBOPT_KEYSTR_USE_SYSLOG "USE_SYSLOG"  ///< Config file key for USE_SYSLOG global option.
 
 /**
  * Sets global options to their default values.
@@ -151,7 +142,26 @@ int EBCL_globOptSetString(ebcl_GlobOptKey_t key, const char *str);
  */
 int EBCL_globOptGetString(ebcl_GlobOptKey_t key, char **str);
 
+/**
+ * Stores an ebcl_EnvSet_t structure.
+ *
+ * The given instance will be duplicated using EBCL_envSetDup() and stored.
+ *
+ * @param es  The ebcl_EnvSet_t instance to store.
+ *
+ * @return  0 on success, -1 on error
+ */
 int EBCL_globOptSetEnvSet(const ebcl_EnvSet_t *es);
+/**
+ * Retrieves an ebcl_EnvSet_t structure.
+ *
+ * The instance will be duplicated from the stored one using EBCL_envSetDup(). Memory inside the returned instance will
+ * be allocated and should be freed using EBCL_envSetDestroy() when no longer in use.
+ *
+ * @param es  Return pointer for the retrieved ebcl_EnvSet_t.
+ *
+ * @return  0 on success, -1 on error.
+ */
 int EBCL_globOptGetEnvSet(ebcl_EnvSet_t *es);
 
 #endif /* __GLOBOPT_H__ */

@@ -12,8 +12,12 @@ add_executable(
   crinit
   crinit.c
   confparse.c
+  confconv.c
+  confhdl.c
+  confmap.c
   lexers.c
   envset.c
+  task.c
   taskdb.c
   procdip.c
   logio.c
@@ -91,9 +95,13 @@ add_executable(
   crinit_parsecheck
   crinit_parsecheck.c
   confparse.c
+  confconv.c
+  confhdl.c
+  confmap.c
   lexers.c
   envset.c
   globopt.c
+  task.c
   taskdb.c
   logio.c
   ioredir.c

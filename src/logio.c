@@ -78,7 +78,7 @@ void EBCL_dbgInfoPrint(const char *format, ...) {
     bool globOptDbg = false;
     if (EBCL_globOptGetBoolean(EBCL_GLOBOPT_DEBUG, &globOptDbg) == -1) {
         EBCL_errPrint("Could not read value for \'DEBUG\' from global options, assuming default.");
-        globOptDbg = EBCL_GLOBOPT_DEFAULT_DEBUG;
+        globOptDbg = EBCL_CONFIG_DEFAULT_DEBUG;
     }
     if (!globOptDbg) {
         return;
@@ -173,6 +173,7 @@ void EBCL_errnoPrintFFL(const char *file, const char *func, int line, const char
         vfprintf(EBCL_errStream, format, args);
         va_end(args);
         fprintf(EBCL_errStream, EBCL_ERRNO_FMT, EBCL_threadSafeStrerror(errno));
+        fprintf(EBCL_errStream, "\n");
     }
     pthread_mutex_unlock(&EBCL_logLock);
 }

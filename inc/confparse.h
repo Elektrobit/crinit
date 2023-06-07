@@ -16,18 +16,60 @@
 
 #include "fseries.h"
 
-#define EBCL_CONFIG_KEYSTR_TASKS "TASKS"     ///< Config key for the list of task file names.
-#define EBCL_CONFIG_KEYSTR_SETENV "ENV_SET"  ///< Config key to set an environment variable with.
-#define EBCL_CONFIG_KEYSTR_SYMLINKS \
-    "TASKDIR_FOLLOW_SYMLINKS"  ///< Config key for the option to follow symbolic links in dynamic configurations.
+#define EBCL_CONFIG_KEYSTR_TASKS "TASKS"        ///< Config key for the list of task file names.
+#define EBCL_CONFIG_KEYSTR_INCLUDES "INCLUDES"  ///< Config key for the list of task file names.
+#define EBCL_CONFIG_KEYSTR_TASKDIR_SYMLINKS \
+    "TASKDIR_FOLLOW_SYMLINKS"  ///< Config key for the option to follow symbolic links from `TASKDIR` in dynamic
+                               ///< configurations.
+#define EBCL_CONFIG_KEYSTR_DEBUG "DEBUG"         ///< Config file key for DEBUG global option.
+#define EBCL_CONFIG_KEYSTR_TASKDIR "TASKDIR"     ///< Config file key for TASKDIR global option.
+#define EBCL_CONFIG_KEYSTR_INCLDIR "INCLUDEDIR"  ///< Config file key for INCLUDEDIR global option.
+#define EBCL_CONFIG_KEYSTR_SHDGRACEP \
+    "SHUTDOWN_GRACE_PERIOD_US"                           ///< Config file key for SHUTDOWN_GRACE_PERIOD_US global option
+#define EBCL_CONFIG_KEYSTR_USE_SYSLOG "USE_SYSLOG"       ///< Config file key for USE_SYSLOG global option.
+#define EBCL_CONFIG_KEYSTR_INCL_SUFFIX "INCLUDE_SUFFIX"  ///< Config file key for INCLUDE_SUFFIX global option.
 #define EBCL_CONFIG_KEYSTR_TASK_FILE_SUFFIX \
     "TASK_FILE_SUFFIX"  ///< Config key for the task file extension in dynamic configurations.
-#define EBCL_CONFIG_DEFAULT_TASK_FILE_SUFFIX ".crinit"  ///< Default filename extension of task files.
 
-#define EBCL_CONFIG_STDOUT_NAME "STDOUT"          ///< What stdout is called in task configs.
-#define EBCL_CONFIG_STDERR_NAME "STDERR"          ///< What stderr is called in task configs.
-#define EBCL_CONFIG_STDIN_NAME "STDIN"            ///< What stdin is called in task configs.
+#define EBCL_CONFIG_KEYSTR_COMMAND "COMMAND"      ///< Config key to add a command to the task.
+#define EBCL_CONFIG_KEYSTR_DEPENDS "DEPENDS"      ///< Config key to add dependencies to the task.
+#define EBCL_CONFIG_KEYSTR_ENV_SET "ENV_SET"      ///< Config key to set an environment variable with.
+#define EBCL_CONFIG_KEYSTR_INCLUDE "INCLUDE"      ///< Config key for file include directives.
 #define EBCL_CONFIG_KEYSTR_IOREDIR "IO_REDIRECT"  ///< Config key for IO redirections.
+#define EBCL_CONFIG_KEYSTR_NAME "NAME"            ///< Config key for the task name.
+#define EBCL_CONFIG_KEYSTR_PROVIDES "PROVIDES"    ///< Config key for provided features.
+#define EBCL_CONFIG_KEYSTR_RESPAWN "RESPAWN"      ///< Config key to set a task to be respawning.
+#define EBCL_CONFIG_KEYSTR_RESPAWN_RETRIES \
+    "RESPAWN_RETRIES"  ///< Config key to set how often a task is allowed to respawn on failure.
+
+#define EBCL_CONFIG_DEFAULT_TASK_FILE_SUFFIX ".crinit"  ///< Default filename extension of task files.
+#define EBCL_CONFIG_KEYSTR_INCL_FILE_SUFFIX \
+    "INCL_FILE_SUFFIX"  ///< Config key for the task include file extension in dynamic configurations.
+#define EBCL_CONFIG_DEFAULT_INCL_FILE_SUFFIX ".crincl"  ///< Default filename extension of task include files.
+#define EBCL_CONFIG_DEFAULT_DEBUG false                 ///< Default value for DEBUG global option.
+#define EBCL_CONFIG_DEFAULT_TASKDIR "/etc/crinit"       ///< Default value for TASKDIR global option.
+#define EBCL_CONFIG_DEFAULT_INCLDIR "/etc/crinit"       ///< Default value for INCLUDEDIR global option.
+#define EBCL_CONFIG_DEFAULT_SHDGRACEP 100000uLL         ///< Default value for SHUTDOWN_GRACE_PERIOD_US global option
+#define EBCL_CONFIG_DEFAULT_USE_SYSLOG false            ///< Default value for USE_SYSLOG global option.
+#define EBCL_CONFIG_DEFAULT_INCL_SUFFIX ".crincl"       ///< Default filename extension of include files.
+
+#define EBCL_CONFIG_STDOUT_NAME "STDOUT"  ///< What stdout is called in task configs.
+#define EBCL_CONFIG_STDERR_NAME "STDERR"  ///< What stderr is called in task configs.
+#define EBCL_CONFIG_STDIN_NAME "STDIN"    ///< What stdin is called in task configs.
+
+/** Enumeration of all (task) configuration keys. Goes together with EBCL_cfgMap. **/
+typedef enum ebcl_Configs_t {
+    EBCL_CONFIG_COMMAND = 0,
+    EBCL_CONFIG_DEPENDS,
+    EBCL_CONFIG_ENV_SET,
+    EBCL_CONFIG_INCLUDE,
+    EBCL_CONFIG_IOREDIR,
+    EBCL_CONFIG_NAME,
+    EBCL_CONFIG_PROVIDES,
+    EBCL_CONFIG_RESPAWN,
+    EBCL_CONFIG_RESPAWN_RETRIES,
+    EBCL_CONFIGS_SIZE
+} ebcl_Configs_t;
 
 /**
  * Linked list to hold key/value pairs read from the config file.
@@ -224,11 +266,12 @@ ssize_t EBCL_confListKeyGetMaxIdx(const ebcl_ConfKvList_t *c, const char *key);
 /**
  * Parse a series file.
  *
- * Will return the task config files to be loaded in \a series. Will also set any global options specified in the series
- * file.
+ * Will return the task config and include files to be loaded in \a series. Will also set any global options specified
+ * in the series file.
  *
- * @param series     Returns the paths to the task configs specified in the series file.
- * @param filename   The path to the series file to load.
+ * @param series      Returns the paths to the task configs specified in the series file (or scanned from TASKDIR, if
+ *                    configured).
+ * @param filename    The path to the series file to load.
  *
  * @return 0 on success, -1 on failure
  */

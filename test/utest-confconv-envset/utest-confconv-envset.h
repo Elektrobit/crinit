@@ -1,10 +1,10 @@
 /**
- * @file utest-envset-parse-and-set.h
- * @brief Header declaring the unit tests for EBCL_envSetParseAndSet().
+ * @file utest-confconv-envset.h
+ * @brief Header declaring the unit tests for EBCL_confConvToEnvSetMember().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
- * @copyright 2022 Elektrobit Automotive GmbH
+ * @copyright 2023 Elektrobit Automotive GmbH
  *            All rights exclusively reserved for Elektrobit Automotive GmbH,
  *            unless otherwise expressly agreed
  */
@@ -14,14 +14,14 @@
 /**
  * Tests successful parsing of an environment variable definition.
  */
-void EBCL_envSetParseAndSetTestSuccess(void **state);
+void EBCL_confConvToEnvSetMemberTestSuccess(void **state);
 /**
  * Tests unsuccessful parsing of an environment variable definition due to invalid syntax.
  */
-void EBCL_envSetParseAndSetTestWrongInput(void **state);
+void EBCL_confConvToEnvSetMemberTestWrongInput(void **state);
 /**
  * Tests detection of NULL pointer input.
  */
-void EBCL_envSetParseAndSetTestNullInput(void **state);
+void EBCL_confConvToEnvSetMemberTestNullInput(void **state);
 
 #endif /* __UTEST_ENVSET_PARSE_AND_SET_H__ */

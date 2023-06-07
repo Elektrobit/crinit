@@ -47,4 +47,68 @@
  */
 #define EBCL_isAbsPath(path) (((path) != NULL) && ((path)[0] == '/'))
 
+/**
+ * Calculate the number of elements of an array at compile-time.
+ */
+#define EBCL_numElements(p) (sizeof(p) / sizeof(*(p)))
+
+/**
+ * Macro to simplify checking for null pointer inputs at the start of a function.
+ *
+ * Will print an error message and return from the calling function with the given error code if any of the given
+ * variables are NULL.
+ *
+ * Declares the variables `_macroPtrsToCheck` and `_macroI` internally. These names must not be used as parameter names
+ * to functions which use this macro.
+ *
+ * @param errcode  The error code to return if \a expr is false. Must be a compatible type to the return type of the
+ *                 encompassing function.
+ * @param ...      Variadic list of parameter names to check if they are NULL.
+ */
+#define EBCL_nullCheck(errcode, ...)                                                         \
+    do {                                                                                     \
+        _Pragma("GCC diagnostic push");                                                      \
+        _Pragma("GCC diagnostic error \"-Wshadow\"");                                        \
+        const void *_macroPtrsToCheck[] = {__VA_ARGS__};                                     \
+        for (size_t _macroI = 0; _macroI < EBCL_numElements(_macroPtrsToCheck); _macroI++) { \
+            if (_macroPtrsToCheck[_macroI] == NULL) {                                        \
+                EBCL_errPrint("Input parameters must not be NULL.");                         \
+                return (errcode);                                                            \
+            }                                                                                \
+        }                                                                                    \
+        _Pragma("GCC diagnostic pop");                                                       \
+    } while (0)
+
+/**
+ * Macro for a type-generic implementation of `strto*()`.
+ *
+ * Example: `unsigned long x = strtoGenericInteger(x, "0xFF", NULL, 16);` will map to
+ *          `unsigned long x = strtoul("0xFF", NULL, 16);`.
+ */
+// clang-format off
+// Rationale: Used version of clang-format does not format _Generic macros correctly. This is a known bug and has been
+// fixed very recently. We may remove this exemption once we are on the new clang version as standard.
+// See: https://github.com/llvm/llvm-project/issues/18080
+#define EBCL_strtoGenericInteger(resType, str, endptr, base) \
+    _Generic((resType),                                      \
+             int : strtol,                                   \
+             long : strtol,                                  \
+             long long : strtoll,                            \
+             unsigned int : strtoul,                         \
+             unsigned long : strtoul,                        \
+             unsigned long long : strtoull)                  \
+             ((str), (endptr), (base))
+// clang-format on
+
+/**
+ * Convenience macro to free memory and also set the pointer to it to NULL.
+ *
+ * @param ptr  The pointer to be "nullified".
+ */
+#define EBCL_nullify(ptr) \
+    do {                  \
+        free(ptr);        \
+        (ptr) = NULL;     \
+    } while (0)
+
 #endif /* __COMMON_H__ */

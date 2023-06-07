@@ -148,7 +148,14 @@ int main(int argc, char *argv[]) {
         EBCL_dbgInfoPrint("Task extracted without error.");
         EBCL_taskPrint(t);
 
-        EBCL_taskDBInsert(&tdb, t, false);
+        if (EBCL_taskDBInsert(&tdb, t, false) == -1) {
+            EBCL_errPrint("Could not insert Task '%s' into TaskDB.", t->name);
+            EBCL_globOptDestroy();
+            EBCL_destroyFileSeries(&taskSeries);
+            EBCL_freeTask(t);
+            EBCL_taskDBDestroy(&tdb);
+            return EXIT_FAILURE;
+        }
         EBCL_freeTask(t);
     }
     EBCL_destroyFileSeries(&taskSeries);

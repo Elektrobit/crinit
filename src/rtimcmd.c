@@ -1066,9 +1066,9 @@ static void *EBCL_shdnThread(void *args) {
         EBCL_errPrint("Could not inhibit spawning of new tasks. Continuing anyway.");
     }
 
-    unsigned long long gpMicros = EBCL_GLOBOPT_DEFAULT_SHDGRACEP;
+    unsigned long long gpMicros = EBCL_CONFIG_DEFAULT_SHDGRACEP;
     if (EBCL_globOptGetUnsignedLL(EBCL_GLOBOPT_SHDGRACEP, &gpMicros) == -1) {
-        gpMicros = EBCL_GLOBOPT_DEFAULT_SHDGRACEP;
+        gpMicros = EBCL_CONFIG_DEFAULT_SHDGRACEP;
         EBCL_errPrint("Could not read global option for shutdown grace period, using default: %lluus.", gpMicros);
     }
 
