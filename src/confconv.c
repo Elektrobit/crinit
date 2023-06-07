@@ -33,14 +33,11 @@ static char *EBCL_copyEscaped(char *dst, const char *src, const char *end);
 
 char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQuoting) {
     EBCL_nullCheck(NULL, numElements == NULL || confVal == NULL);
-    size_t allocSz = strlen(confVal) + 1;
-    char *backbuf = malloc(allocSz);
+    char *backbuf = calloc(strlen(confVal) + 1, sizeof(*backbuf));
     if (backbuf == NULL) {
         EBCL_errnoPrint("Could not allocate memory for argv backing string.");
         return NULL;
     }
-    // Leaving it unitilialized makes valgrind complain
-    memset(backbuf, '\0', allocSz);
 
     ebcl_TokenType_t tt;
     const char *s = confVal, *mbegin, *mend;
