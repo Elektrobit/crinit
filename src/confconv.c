@@ -259,8 +259,7 @@ int EBCL_confConvToIoRedir(ebcl_IoRedir_t *ior, const char *confVal) {
                 EBCL_freeArgvArray(confStrArr);
                 EBCL_nullify(ior->path);
                 return -1;
-            }
-            if (ior->mode > 0777) {
+            } else if (ior->mode > 0777) {
                 EBCL_errPrint("0%o is not a supported file mode.", ior->mode);
                 EBCL_freeArgvArray(confStrArr);
                 EBCL_nullify(ior->path);
