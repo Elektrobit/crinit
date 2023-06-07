@@ -77,10 +77,16 @@ int EBCL_confConvToIntegerULL(unsigned long long *x, const char *confVal, int ba
  *
  * @return  0 on success, -1 on error
  */
-#define EBCL_confConvToInteger(out, confVal, base)         \
-    _Generic((*(out)), int                                 \
-             : EBCL_confConvToIntegerI, unsigned long long \
-             : EBCL_confConvToIntegerULL)(out, confVal, base)
+// clang-format off
+// Rationale: Used version of clang-format does not format _Generic macros correctly. This is a known bug and has been
+// fixed very recently. We may remove this exemption once we are on the new clang version as standard.
+// See: https://github.com/llvm/llvm-project/issues/18080
+#define EBCL_confConvToInteger(out, confVal, base)           \
+    _Generic((*(out)),                                       \
+             int : EBCL_confConvToIntegerI,                  \
+             unsigned long long : EBCL_confConvToIntegerULL) \
+             (out, confVal, base)
+// clang-format on
 
 /**
  * Converts a string to bool.

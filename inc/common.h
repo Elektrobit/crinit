@@ -85,12 +85,18 @@
  * Example: `unsigned long x = strtoGenericInteger(x, "0xFF", NULL, 16);` will map to
  *          `unsigned long x = strtoul("0xFF", NULL, 16);`.
  */
+// clang-format off
+// Rationale: Used version of clang-format does not format _Generic macros correctly. This is a known bug and has been
+// fixed very recently. We may remove this exemption once we are on the new clang version as standard.
+// See: https://github.com/llvm/llvm-project/issues/18080
 #define EBCL_strtoGenericInteger(resType, str, endptr, base) \
-    _Generic((resType), int                                  \
-             : strtol, long                                  \
-             : strtol, long long                             \
-             : strtoll, unsigned long                        \
-             : strtoul, unsigned long long                   \
-             : strtoull)((str), (endptr), (base))
+    _Generic((resType),                                      \
+             int : strtol,                                   \
+             long : strtol,                                  \
+             long long : strtoll,                            \
+             unsigned long : strtoul,                        \
+             unsigned long long : strtoull)                  \
+             ((str), (endptr), (base))
+// clang-format on
 
 #endif /* __COMMON_H__ */
