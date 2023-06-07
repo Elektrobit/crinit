@@ -241,8 +241,7 @@ int EBCL_confConvToIoRedir(ebcl_IoRedir_t *ior, const char *confVal) {
                     "Third parameter of redirection statement - if it is given - must be either APPEND, TRUNCATE, or "
                     "PIPE.");
                 EBCL_freeArgvArray(confStrArr);
-                free(ior->path);
-                ior->path = NULL;
+                EBCL_nullify(ior->path);
                 return -1;
             }
         }
@@ -258,15 +257,13 @@ int EBCL_confConvToIoRedir(ebcl_IoRedir_t *ior, const char *confVal) {
                     EBCL_errnoPrint("Could not perform conversion of octal mode digits in IO redirection statement.");
                 }
                 EBCL_freeArgvArray(confStrArr);
-                free(ior->path);
-                ior->path = NULL;
+                EBCL_nullify(ior->path);
                 return -1;
             }
             if (ior->mode > 0777) {
                 EBCL_errPrint("0%o is not a supported file mode.", ior->mode);
                 EBCL_freeArgvArray(confStrArr);
-                free(ior->path);
-                ior->path = NULL;
+                EBCL_nullify(ior->path);
                 return -1;
             }
         }

@@ -100,4 +100,15 @@
              ((str), (endptr), (base))
 // clang-format on
 
+/**
+ * Convenience macro to free memory and also set the pointer to it to NULL.
+ *
+ * @param ptr  The pointer to be "nullified".
+ */
+#define EBCL_nullify(ptr) \
+    do {                  \
+        free(ptr);        \
+        (ptr) = NULL;     \
+    } while (0)
+
 #endif /* __COMMON_H__ */
