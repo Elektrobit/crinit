@@ -26,41 +26,41 @@ int EBCL_globOptInitDefault(void) {
     for (ebcl_GlobOptKey_t i = EBCL_GLOBOPT_START; i < EBCL_GLOBOPT_END; i++) {
         switch (i) {
             case EBCL_GLOBOPT_DEBUG: {
-                bool def = EBCL_GLOBOPT_DEFAULT_DEBUG;
+                bool def = EBCL_CONFIG_DEFAULT_DEBUG;
                 if (EBCL_globOptSetBoolean(i, &def) == -1) {
-                    EBCL_globOptSetErrPrint(EBCL_GLOBOPT_KEYSTR_DEBUG);
+                    EBCL_globOptSetErrPrint(EBCL_CONFIG_KEYSTR_DEBUG);
                     return -1;
                 }
             } break;
             case EBCL_GLOBOPT_TASKDIR:
-                if (EBCL_globOptSetString(i, EBCL_GLOBOPT_DEFAULT_TASKDIR) == -1) {
-                    EBCL_globOptSetErrPrint(EBCL_GLOBOPT_KEYSTR_TASKDIR);
+                if (EBCL_globOptSetString(i, EBCL_CONFIG_DEFAULT_TASKDIR) == -1) {
+                    EBCL_globOptSetErrPrint(EBCL_CONFIG_KEYSTR_TASKDIR);
                     return -1;
                 }
                 break;
             case EBCL_GLOBOPT_INCLDIR:
-                if (EBCL_globOptSetString(i, EBCL_GLOBOPT_DEFAULT_INCLDIR) == -1) {
-                    EBCL_globOptSetErrPrint(EBCL_GLOBOPT_KEYSTR_INCLDIR);
+                if (EBCL_globOptSetString(i, EBCL_CONFIG_DEFAULT_INCLDIR) == -1) {
+                    EBCL_globOptSetErrPrint(EBCL_CONFIG_KEYSTR_INCLDIR);
                     return -1;
                 }
                 break;
             case EBCL_GLOBOPT_INCL_SUFFIX:
-                if (EBCL_globOptSetString(i, EBCL_GLOBOPT_DEFAULT_INCL_SUFFIX) == -1) {
-                    EBCL_globOptSetErrPrint(EBCL_GLOBOPT_KEYSTR_INCL_SUFFIX);
+                if (EBCL_globOptSetString(i, EBCL_CONFIG_DEFAULT_INCL_SUFFIX) == -1) {
+                    EBCL_globOptSetErrPrint(EBCL_CONFIG_KEYSTR_INCL_SUFFIX);
                     return -1;
                 }
                 break;
             case EBCL_GLOBOPT_SHDGRACEP: {
-                unsigned long long def = EBCL_GLOBOPT_DEFAULT_SHDGRACEP;
+                unsigned long long def = EBCL_CONFIG_DEFAULT_SHDGRACEP;
                 if (EBCL_globOptSetUnsignedLL(i, &def) == -1) {
-                    EBCL_globOptSetErrPrint(EBCL_GLOBOPT_KEYSTR_SHDGRACEP);
+                    EBCL_globOptSetErrPrint(EBCL_CONFIG_KEYSTR_SHDGRACEP);
                     return -1;
                 }
             } break;
             case EBCL_GLOBOPT_USE_SYSLOG: {
-                bool def = EBCL_GLOBOPT_DEFAULT_USE_SYSLOG;
+                bool def = EBCL_CONFIG_DEFAULT_USE_SYSLOG;
                 if (EBCL_globOptSetBoolean(i, &def) == -1) {
-                    EBCL_globOptSetErrPrint(EBCL_GLOBOPT_KEYSTR_USE_SYSLOG);
+                    EBCL_globOptSetErrPrint(EBCL_CONFIG_KEYSTR_USE_SYSLOG);
                     return -1;
                 }
             } break;

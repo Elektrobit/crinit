@@ -405,15 +405,15 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
     }
 
     char *taskDir = NULL;
-    if (EBCL_confListGetVal(&taskDir, EBCL_GLOBOPT_KEYSTR_TASKDIR, c) == -1) {
+    if (EBCL_confListGetVal(&taskDir, EBCL_CONFIG_KEYSTR_TASKDIR, c) == -1) {
         EBCL_errPrint("Could not get value for mandatory key \'%s\' in series config \'%s\'.",
-                      EBCL_GLOBOPT_KEYSTR_TASKDIR, filename);
+                      EBCL_CONFIG_KEYSTR_TASKDIR, filename);
         EBCL_freeConfList(c);
         return -1;
     }
 
     if (EBCL_globOptSetString(EBCL_GLOBOPT_TASKDIR, taskDir) == -1) {
-        EBCL_errPrint("Could not store global string option values for '%s'.", EBCL_GLOBOPT_KEYSTR_TASKDIR);
+        EBCL_errPrint("Could not store global string option values for '%s'.", EBCL_CONFIG_KEYSTR_TASKDIR);
         EBCL_freeConfList(c);
         return -1;
     }
@@ -454,63 +454,63 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
     }
 
     char *inclDir = taskDir;
-    EBCL_confListGetVal(&inclDir, EBCL_GLOBOPT_KEYSTR_INCLDIR, c);
+    EBCL_confListGetVal(&inclDir, EBCL_CONFIG_KEYSTR_INCLDIR, c);
     if (EBCL_globOptSetString(EBCL_GLOBOPT_INCLDIR, inclDir) == -1) {
-        EBCL_errPrint("Could not store global string option values for '%s'.", EBCL_GLOBOPT_KEYSTR_INCLDIR);
+        EBCL_errPrint("Could not store global string option values for '%s'.", EBCL_CONFIG_KEYSTR_INCLDIR);
         EBCL_freeConfList(c);
         EBCL_destroyFileSeries(series);
         return -1;
     }
 
-    if (EBCL_confListGetVal(&fileSuffix, EBCL_GLOBOPT_KEYSTR_INCL_SUFFIX, c) == 0 &&
+    if (EBCL_confListGetVal(&fileSuffix, EBCL_CONFIG_KEYSTR_INCL_SUFFIX, c) == 0 &&
         EBCL_globOptSetString(EBCL_GLOBOPT_INCL_SUFFIX, fileSuffix) == -1) {
-        EBCL_errPrint("Could not store global string option values for '%s'.", EBCL_GLOBOPT_KEYSTR_INCL_SUFFIX);
+        EBCL_errPrint("Could not store global string option values for '%s'.", EBCL_CONFIG_KEYSTR_INCL_SUFFIX);
         EBCL_freeConfList(c);
         EBCL_destroyFileSeries(series);
         return -1;
     }
 
-    bool confDbg = EBCL_GLOBOPT_DEFAULT_DEBUG;
-    if (EBCL_confListExtractBoolean(&confDbg, EBCL_GLOBOPT_KEYSTR_DEBUG, false, c) == -1) {
+    bool confDbg = EBCL_CONFIG_DEFAULT_DEBUG;
+    if (EBCL_confListExtractBoolean(&confDbg, EBCL_CONFIG_KEYSTR_DEBUG, false, c) == -1) {
         EBCL_errPrint("Failed to search for non-mandatory key \'%s\' in series config \'%s\'.",
-                      EBCL_GLOBOPT_KEYSTR_DEBUG, filename);
+                      EBCL_CONFIG_KEYSTR_DEBUG, filename);
         EBCL_freeConfList(c);
         EBCL_destroyFileSeries(series);
         return -1;
     }
     if (EBCL_globOptSetBoolean(EBCL_GLOBOPT_DEBUG, &confDbg) == -1) {
-        EBCL_errPrint("Could not store global boolean option value for \'%s\'.", EBCL_GLOBOPT_KEYSTR_DEBUG);
+        EBCL_errPrint("Could not store global boolean option value for \'%s\'.", EBCL_CONFIG_KEYSTR_DEBUG);
         EBCL_freeConfList(c);
         EBCL_destroyFileSeries(series);
         return -1;
     }
 
-    bool confUseSyslog = EBCL_GLOBOPT_DEFAULT_USE_SYSLOG;
-    if (EBCL_confListExtractBoolean(&confUseSyslog, EBCL_GLOBOPT_KEYSTR_USE_SYSLOG, false, c) == -1) {
+    bool confUseSyslog = EBCL_CONFIG_DEFAULT_USE_SYSLOG;
+    if (EBCL_confListExtractBoolean(&confUseSyslog, EBCL_CONFIG_KEYSTR_USE_SYSLOG, false, c) == -1) {
         EBCL_errPrint("Failed to search for non-mandatory key \'%s\' in series config \'%s\'.",
-                      EBCL_GLOBOPT_KEYSTR_USE_SYSLOG, filename);
+                      EBCL_CONFIG_KEYSTR_USE_SYSLOG, filename);
         EBCL_freeConfList(c);
         EBCL_destroyFileSeries(series);
         return -1;
     }
     if (EBCL_globOptSetBoolean(EBCL_GLOBOPT_USE_SYSLOG, &confUseSyslog) == -1) {
-        EBCL_errPrint("Could not store global boolean option value for \'%s\'.", EBCL_GLOBOPT_KEYSTR_USE_SYSLOG);
+        EBCL_errPrint("Could not store global boolean option value for \'%s\'.", EBCL_CONFIG_KEYSTR_USE_SYSLOG);
         EBCL_freeConfList(c);
         EBCL_destroyFileSeries(series);
         return -1;
     }
 
-    unsigned long long shdnGracePeriodUs = EBCL_GLOBOPT_DEFAULT_SHDGRACEP;
-    if (EBCL_confListExtractUnsignedLL(&shdnGracePeriodUs, 10, EBCL_GLOBOPT_KEYSTR_SHDGRACEP, false, c) == -1) {
+    unsigned long long shdnGracePeriodUs = EBCL_CONFIG_DEFAULT_SHDGRACEP;
+    if (EBCL_confListExtractUnsignedLL(&shdnGracePeriodUs, 10, EBCL_CONFIG_KEYSTR_SHDGRACEP, false, c) == -1) {
         EBCL_errPrint("Failed to search for non-mandatory key \'%s\' in series config \'%s\'.",
-                      EBCL_GLOBOPT_KEYSTR_SHDGRACEP, filename);
+                      EBCL_CONFIG_KEYSTR_SHDGRACEP, filename);
         EBCL_freeConfList(c);
         EBCL_destroyFileSeries(series);
         return -1;
     }
     if (EBCL_globOptSetUnsignedLL(EBCL_GLOBOPT_SHDGRACEP, &shdnGracePeriodUs) == -1) {
         EBCL_errPrint("Could not store global unsigned long long option values for \'%s\'.",
-                      EBCL_GLOBOPT_KEYSTR_SHDGRACEP);
+                      EBCL_CONFIG_KEYSTR_SHDGRACEP);
         EBCL_freeConfList(c);
         EBCL_destroyFileSeries(series);
         return -1;

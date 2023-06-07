@@ -78,7 +78,7 @@ void EBCL_dbgInfoPrint(const char *format, ...) {
     bool globOptDbg = false;
     if (EBCL_globOptGetBoolean(EBCL_GLOBOPT_DEBUG, &globOptDbg) == -1) {
         EBCL_errPrint("Could not read value for \'DEBUG\' from global options, assuming default.");
-        globOptDbg = EBCL_GLOBOPT_DEFAULT_DEBUG;
+        globOptDbg = EBCL_CONFIG_DEFAULT_DEBUG;
     }
     if (!globOptDbg) {
         return;

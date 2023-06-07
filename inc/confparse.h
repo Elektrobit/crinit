@@ -21,6 +21,15 @@
 #define EBCL_CONFIG_KEYSTR_TASKDIR_SYMLINKS \
     "TASKDIR_FOLLOW_SYMLINKS"  ///< Config key for the option to follow symbolic links from `TASKDIR` in dynamic
                                ///< configurations.
+#define EBCL_CONFIG_KEYSTR_DEBUG "DEBUG"         ///< Config file key for DEBUG global option.
+#define EBCL_CONFIG_KEYSTR_TASKDIR "TASKDIR"     ///< Config file key for TASKDIR global option.
+#define EBCL_CONFIG_KEYSTR_INCLDIR "INCLUDEDIR"  ///< Config file key for INCLUDEDIR global option.
+#define EBCL_CONFIG_KEYSTR_SHDGRACEP \
+    "SHUTDOWN_GRACE_PERIOD_US"                           ///< Config file key for SHUTDOWN_GRACE_PERIOD_US global option
+#define EBCL_CONFIG_KEYSTR_USE_SYSLOG "USE_SYSLOG"       ///< Config file key for USE_SYSLOG global option.
+#define EBCL_CONFIG_KEYSTR_INCL_SUFFIX "INCLUDE_SUFFIX"  ///< Config file key for INCLUDE_SUFFIX global option.
+#define EBCL_CONFIG_KEYSTR_TASK_FILE_SUFFIX \
+    "TASK_FILE_SUFFIX"  ///< Config key for the task file extension in dynamic configurations.
 
 #define EBCL_CONFIG_KEYSTR_COMMAND "COMMAND"      ///< Config key to add a command to the task.
 #define EBCL_CONFIG_KEYSTR_DEPENDS "DEPENDS"      ///< Config key to add dependencies to the task.
@@ -33,12 +42,16 @@
 #define EBCL_CONFIG_KEYSTR_RESPAWN_RETRIES \
     "RESPAWN_RETRIES"  ///< Config key to set how often a task is allowed to respawn on failure.
 
-#define EBCL_CONFIG_KEYSTR_TASK_FILE_SUFFIX \
-    "TASK_FILE_SUFFIX"  ///< Config key for the task file extension in dynamic configurations.
 #define EBCL_CONFIG_DEFAULT_TASK_FILE_SUFFIX ".crinit"  ///< Default filename extension of task files.
 #define EBCL_CONFIG_KEYSTR_INCL_FILE_SUFFIX \
     "INCL_FILE_SUFFIX"  ///< Config key for the task include file extension in dynamic configurations.
 #define EBCL_CONFIG_DEFAULT_INCL_FILE_SUFFIX ".crincl"  ///< Default filename extension of task include files.
+#define EBCL_CONFIG_DEFAULT_DEBUG false                 ///< Default value for DEBUG global option.
+#define EBCL_CONFIG_DEFAULT_TASKDIR "/etc/crinit"       ///< Default value for TASKDIR global option.
+#define EBCL_CONFIG_DEFAULT_INCLDIR "/etc/crinit"       ///< Default value for INCLUDEDIR global option.
+#define EBCL_CONFIG_DEFAULT_SHDGRACEP 100000uLL         ///< Default value for SHUTDOWN_GRACE_PERIOD_US global option
+#define EBCL_CONFIG_DEFAULT_USE_SYSLOG false            ///< Default value for USE_SYSLOG global option.
+#define EBCL_CONFIG_DEFAULT_INCL_SUFFIX ".crincl"       ///< Default filename extension of include files.
 
 #define EBCL_CONFIG_STDOUT_NAME "STDOUT"  ///< What stdout is called in task configs.
 #define EBCL_CONFIG_STDERR_NAME "STDERR"  ///< What stderr is called in task configs.
