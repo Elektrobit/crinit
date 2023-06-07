@@ -64,7 +64,6 @@ char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQ
             case EBCL_TK_ERR:
                 EBCL_errPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
                 free(backbuf);
-                (*numElements) = 0;
                 return NULL;
         }
     } while (tt != EBCL_TK_END);
@@ -73,7 +72,6 @@ char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQ
     if (outArr == NULL) {
         EBCL_errnoPrint("Could not allocate memory for argv-array from config.");
         free(backbuf);
-        (*numElements) = 0;
         return NULL;
     }
 
@@ -100,7 +98,6 @@ char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQ
                     EBCL_errPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
                     free(backbuf);
                     free(outArr);
-                    (*numElements) = 0;
                     return NULL;
                 }
                 runner++;
@@ -116,7 +113,6 @@ char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQ
                 EBCL_errPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
                 free(backbuf);
                 free(outArr);
-                (*numElements) = 0;
                 return NULL;
         }
     } while (tt != EBCL_TK_END);
@@ -125,7 +121,6 @@ char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQ
         EBCL_errPrint("Error trying to parse string array '%s'\n", confVal);
         free(backbuf);
         free(outArr);
-        (*numElements) = 0;
         return NULL;
     }
 
