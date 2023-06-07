@@ -32,7 +32,7 @@
 static char *EBCL_copyEscaped(char *dst, const char *src, const char *end);
 
 char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQuoting) {
-    EBCL_nullCheck(NULL, numElements == NULL || confVal == NULL);
+    EBCL_nullCheck(NULL, numElements, confVal);
     char *backbuf = calloc(strlen(confVal) + 1, sizeof(*backbuf));
     if (backbuf == NULL) {
         EBCL_errnoPrint("Could not allocate memory for argv backing string.");
@@ -153,19 +153,19 @@ char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQ
     } while (0)
 
 int EBCL_confConvToIntegerI(int *x, const char *confVal, int base) {
-    EBCL_nullCheck(-1, x == NULL || confVal == NULL);
+    EBCL_nullCheck(-1, x, confVal);
     EBCL_confConvToIntegerFnBody(*x, confVal);
     return 0;
 }
 
 int EBCL_confConvToIntegerULL(unsigned long long *x, const char *confVal, int base) {
-    EBCL_nullCheck(-1, x == NULL || confVal == NULL);
+    EBCL_nullCheck(-1, x, confVal);
     EBCL_confConvToIntegerFnBody(*x, confVal);
     return 0;
 }
 
 int EBCL_confConvToBool(bool *b, const char *confVal) {
-    EBCL_nullCheck(-1, b == NULL || confVal == NULL);
+    EBCL_nullCheck(-1, b, confVal);
     if (strcmp(confVal, "YES") == 0) {
         *b = true;
         return 0;
@@ -179,7 +179,7 @@ int EBCL_confConvToBool(bool *b, const char *confVal) {
 }
 
 int EBCL_confConvToIoRedir(ebcl_IoRedir_t *ior, const char *confVal) {
-    EBCL_nullCheck(-1, ior == NULL || confVal == NULL);
+    EBCL_nullCheck(-1, ior, confVal);
 
     memset(ior, 0, sizeof(*ior));
     ior->newFd = -1;
@@ -469,7 +469,7 @@ int EBCL_confConvToEnvSetMember(ebcl_EnvSet_t *es, const char *confVal) {
 }
 
 static char *EBCL_copyEscaped(char *dst, const char *src, const char *end) {
-    EBCL_nullCheck(NULL, dst == NULL || src == NULL || end == NULL);
+    EBCL_nullCheck(NULL, dst, src, end);
     if (src > end) {
         EBCL_errPrint("String start pointer must not point behind the end pointer.");
         return NULL;

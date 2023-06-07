@@ -103,7 +103,7 @@ int EBCL_taskDBDestroy(ebcl_TaskDB_t *ctx) {
 }
 
 int EBCL_taskDBInsert(ebcl_TaskDB_t *ctx, const ebcl_Task_t *t, bool overwrite) {
-    EBCL_nullCheck(-1, ctx == NULL || t == NULL);
+    EBCL_nullCheck(-1, ctx, t);
 
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
         EBCL_errnoPrint("Could not queue up for mutex lock.");

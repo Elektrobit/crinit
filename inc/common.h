@@ -55,17 +55,28 @@
 /**
  * Macro to simplify checking for null pointer inputs at the start of a function.
  *
+ * Will print an error message and return from the calling function with the given error code if any of the given
+ * variables are NULL.
+ *
+ * Declares the variables `_macroPtrsToCheck` and `_macroI` internally. These names must not be used as parameter names
+ * to functions which use this macro.
+ *
  * @param errcode  The error code to return if \a expr is false. Must be a compatible type to the return type of the
  *                 encompassing function.
- * @param expr     Boolean expression. If true, the macro will do nothing. If false, the macro will print an error msg
- *                 and cause a `return errcode;`.
+ * @param ...      Variadic list of parameter names to check if they are NULL.
  */
-#define EBCL_nullCheck(errcode, expr)                            \
-    do {                                                         \
-        if (expr) {                                              \
-            EBCL_errPrint("Input parameters must not be NULL."); \
-            return (errcode);                                    \
-        }                                                        \
+#define EBCL_nullCheck(errcode, ...)                                                         \
+    do {                                                                                     \
+        _Pragma("GCC diagnostic push");                                                      \
+        _Pragma("GCC diagnostic error \"-Wshadow\"");                                        \
+        const void *_macroPtrsToCheck[] = {__VA_ARGS__};                                     \
+        for (size_t _macroI = 0; _macroI < EBCL_numElements(_macroPtrsToCheck); _macroI++) { \
+            if (_macroPtrsToCheck[_macroI] == NULL) {                                        \
+                EBCL_errPrint("Input parameters must not be NULL.");                         \
+                return (errcode);                                                            \
+            }                                                                                \
+        }                                                                                    \
+        _Pragma("GCC diagnostic pop");                                                       \
     } while (0)
 
 /**
