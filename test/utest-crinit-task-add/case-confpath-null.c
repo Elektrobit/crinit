@@ -17,7 +17,7 @@
 #define TEST_FORCE_DEPS "foo:wait"
 
 void EBCL_crinitTaskAddTestConfPathNull(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     assert_int_equal(EBCL_crinitTaskAdd(NULL, false, TEST_FORCE_DEPS), -1);
 }

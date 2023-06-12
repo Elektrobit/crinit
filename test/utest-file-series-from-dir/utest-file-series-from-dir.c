@@ -19,8 +19,8 @@
 #include "unit_test.h"
 
 int EBCL_initFileSeries(ebcl_FileSeries_t *fse, size_t numElements, const char *baseDir) {
-    EBCL_PARAM_UNUSED(numElements);
-    EBCL_PARAM_UNUSED(baseDir);
+    CRINIT_PARAM_UNUSED(numElements);
+    CRINIT_PARAM_UNUSED(baseDir);
 
     if (fse == (void *)0xbaadda7a) return -1;
 
@@ -28,12 +28,12 @@ int EBCL_initFileSeries(ebcl_FileSeries_t *fse, size_t numElements, const char *
 }
 
 void EBCL_destroyFileSeries(ebcl_FileSeries_t *fse) {
-    EBCL_PARAM_UNUSED(fse);
+    CRINIT_PARAM_UNUSED(fse);
 }
 
 void EBCL_freeScandirList(struct dirent **scanList, int size) {
-    EBCL_PARAM_UNUSED(scanList);
-    EBCL_PARAM_UNUSED(size);
+    CRINIT_PARAM_UNUSED(scanList);
+    CRINIT_PARAM_UNUSED(size);
 }
 
 /**

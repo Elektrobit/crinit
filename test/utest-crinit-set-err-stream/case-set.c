@@ -15,7 +15,7 @@
 #include "utest-crinit-set-err-stream.h"
 
 void EBCL_crinitSetErrStreamTestSet(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     FILE *fp = (FILE *)0x12345678;
     expect_value(__wrap_EBCL_setErrStream, stream, fp);

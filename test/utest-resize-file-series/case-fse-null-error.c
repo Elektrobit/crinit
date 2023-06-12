@@ -17,7 +17,7 @@
 #include "unit_test.h"
 
 void EBCL_resizeFileSeriesTestFseNullError(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     expect_any_count(__wrap_EBCL_errPrintFFL, format, 3);
 

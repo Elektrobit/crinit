@@ -15,7 +15,7 @@
 #include "utest-envset-get.h"
 
 void EBCL_envSetGetTestNotFound(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     ebcl_EnvSet_t e = {NULL, 0, 0};
     assert_int_equal(EBCL_envSetInit(&e, EBCL_ENVSET_INITIAL_SIZE, EBCL_ENVSET_SIZE_INCREMENT), 0);

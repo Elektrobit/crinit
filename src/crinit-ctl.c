@@ -100,7 +100,7 @@ int main(int argc, char *argv[]) {
         } else {
             // We need to do this before getopt as we might not have an <ACTION> specified.
             for (int i = 0; i < argc; i++) {
-                if (EBCL_paramCheck(argv[i], "-V", "--version")) {
+                if (crinitParamCheck(argv[i], "-V", "--version")) {
                     EBCL_printVersion();
                     return EXIT_FAILURE;
                 }
@@ -165,7 +165,7 @@ int main(int argc, char *argv[]) {
             EBCL_printUsage(argv[0]);
             return EXIT_FAILURE;
         }
-        if (!EBCL_isAbsPath(getoptArgv[optind])) {
+        if (!crinitIsAbsPath(getoptArgv[optind])) {
             EBCL_errPrint("The path to the task config to load must be absolute.");
             return EXIT_FAILURE;
         }
@@ -180,7 +180,7 @@ int main(int argc, char *argv[]) {
             EBCL_printUsage(getoptArgv[0]);
             return EXIT_FAILURE;
         }
-        if (!EBCL_isAbsPath(getoptArgv[optind])) {
+        if (!crinitIsAbsPath(getoptArgv[optind])) {
             EBCL_errPrint("The path to the series config to load must be absolute.");
             return EXIT_FAILURE;
         }

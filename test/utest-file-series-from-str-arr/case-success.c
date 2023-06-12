@@ -40,7 +40,7 @@ static void EBCL_testVariant(size_t numElements) {
 }
 
 void EBCL_fileSeriesFromStrArrTestSuccess(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     EBCL_testVariant(0);
     EBCL_testVariant(10);

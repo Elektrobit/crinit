@@ -16,8 +16,8 @@
 // Rationale: Naming scheme fixed due to linker wrapping.
 // NOLINTNEXTLINE(readability-identifier-naming)
 void __wrap_EBCL_errnoPrintFFL(const char *file, const char *func, int line, const char *format, ...) {
-    EBCL_PARAM_UNUSED(file);
-    EBCL_PARAM_UNUSED(func);
-    EBCL_PARAM_UNUSED(line);
+    CRINIT_PARAM_UNUSED(file);
+    CRINIT_PARAM_UNUSED(func);
+    CRINIT_PARAM_UNUSED(line);
     check_expected(format);
 }

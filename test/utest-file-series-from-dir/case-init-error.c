@@ -18,7 +18,7 @@
 #include "unit_test.h"
 
 void EBCL_fileSeriesFromDirInitError(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     /* Use special pointer to trigger error */
     ebcl_FileSeries_t *fse = (void *)0xbaadda7a;

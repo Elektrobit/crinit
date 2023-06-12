@@ -78,7 +78,7 @@ static void EBCL_testVariant(size_t numElements, const char *path, const char *f
 }
 
 void EBCL_fileSeriesFromDirTestSuccess(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     // clang-format off
     const bool followLinks[] = {true, false};

@@ -27,7 +27,7 @@ static void EBCL_testVariant(const char *path, const char *fileSuffix, bool res)
 }
 
 void EBCL_suffixFilterTestSuccess(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     // clang-format off
     // Rationale: unreadable output of clang-format

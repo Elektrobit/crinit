@@ -18,7 +18,7 @@
  *
  * @param par  Unused variable that should not be warned about.
  */
-#define EBCL_PARAM_UNUSED(par) \
+#define CRINIT_PARAM_UNUSED(par) \
     do {                       \
         (void)(par);           \
     } while (0)
@@ -35,7 +35,7 @@
  * @return  true if \a inputParam is lexicographically equal to at least one of \a cmpShort and \a cmpLong, false
  *          otherwise
  */
-#define EBCL_paramCheck(inputParam, cmpShort, cmpLong) \
+#define crinitParamCheck(inputParam, cmpShort, cmpLong) \
     ((strncmp(inputParam, cmpShort, sizeof(cmpShort)) == 0) || (strncmp(inputParam, cmpLong, sizeof(cmpLong)) == 0))
 
 /**
@@ -45,12 +45,12 @@
  *
  * @return true if path is absolute, false otherwise
  */
-#define EBCL_isAbsPath(path) (((path) != NULL) && ((path)[0] == '/'))
+#define crinitIsAbsPath(path) (((path) != NULL) && ((path)[0] == '/'))
 
 /**
  * Calculate the number of elements of an array at compile-time.
  */
-#define EBCL_numElements(p) (sizeof(p) / sizeof(*(p)))
+#define crinitNumElements(p) (sizeof(p) / sizeof(*(p)))
 
 /**
  * Macro to simplify checking for null pointer inputs at the start of a function.
@@ -65,12 +65,12 @@
  *                 encompassing function.
  * @param ...      Variadic list of parameter names to check if they are NULL.
  */
-#define EBCL_nullCheck(errcode, ...)                                                         \
+#define crinitNullCheck(errcode, ...)                                                         \
     do {                                                                                     \
         _Pragma("GCC diagnostic push");                                                      \
         _Pragma("GCC diagnostic error \"-Wshadow\"");                                        \
         const void *_macroPtrsToCheck[] = {__VA_ARGS__};                                     \
-        for (size_t _macroI = 0; _macroI < EBCL_numElements(_macroPtrsToCheck); _macroI++) { \
+        for (size_t _macroI = 0; _macroI < crinitNumElements(_macroPtrsToCheck); _macroI++) { \
             if (_macroPtrsToCheck[_macroI] == NULL) {                                        \
                 EBCL_errPrint("Input parameters must not be NULL.");                         \
                 return (errcode);                                                            \
@@ -89,7 +89,7 @@
 // Rationale: Used version of clang-format does not format _Generic macros correctly. This is a known bug and has been
 // fixed very recently. We may remove this exemption once we are on the new clang version as standard.
 // See: https://github.com/llvm/llvm-project/issues/18080
-#define EBCL_strtoGenericInteger(resType, str, endptr, base) \
+#define crinitStrtoGenericInteger(resType, str, endptr, base) \
     _Generic((resType),                                      \
              int : strtol,                                   \
              long : strtol,                                  \
@@ -105,7 +105,7 @@
  *
  * @param ptr  The pointer to be "nullified".
  */
-#define EBCL_nullify(ptr) \
+#define crinitNullify(ptr) \
     do {                  \
         free(ptr);        \
         (ptr) = NULL;     \

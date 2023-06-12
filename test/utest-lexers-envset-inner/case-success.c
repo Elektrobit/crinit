@@ -18,7 +18,7 @@
 #define EBCL_UTEST_DUMMY_ENVVAR_NAME "SOME_VAR"
 
 void EBCL_envVarInnerLexTestSuccess(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     const char *mbegin = NULL, *mend = NULL;
     const char *cpyStr = "COPYTHIS";

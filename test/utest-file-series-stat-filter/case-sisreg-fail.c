@@ -21,7 +21,7 @@
 void EBCL_statFilterTestSisregFail(void **state) {
     struct stat buf = {0};
 
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     int baseDirFd = 0xd3adda7a;
     const char *path = "file.gz";

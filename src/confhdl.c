@@ -20,7 +20,7 @@
 #include "logio.h"
 
 /** Common NULL-pointer input check as all configuration handler functions have the same signature **/
-#define EBCL_cfgHandlerCommonNullCheck() EBCL_nullCheck(-1, tgt, val)
+#define EBCL_cfgHandlerCommonNullCheck() crinitNullCheck(-1, tgt, val)
 
 /**
  * Helper function to set a bitmask value in ebcl_Task_t::opts.

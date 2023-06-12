@@ -26,13 +26,13 @@ const ebcl_ConfigMapping_t EBCL_cfgMap[] = {
     {EBCL_CONFIG_RESPAWN, EBCL_CONFIG_KEYSTR_RESPAWN, false, false, EBCL_taskCfgRespHandler},
     {EBCL_CONFIG_RESPAWN_RETRIES, EBCL_CONFIG_KEYSTR_RESPAWN_RETRIES, false, false, EBCL_taskCfgRespRetHandler},
 };
-const size_t EBCL_cfgMapSize = EBCL_numElements(EBCL_cfgMap);
+const size_t EBCL_cfgMapSize = crinitNumElements(EBCL_cfgMap);
 
 /** Comparison function between two ebcl_ConfigMapping_t, for bsearch() **/
 static int EBCL_compareConfigMappings(const void *a, const void *b);
 
 const ebcl_ConfigMapping_t *EBCL_findConfigMapping(const char *keyStr) {
-    EBCL_nullCheck(NULL, keyStr);
+    crinitNullCheck(NULL, keyStr);
     ebcl_ConfigMapping_t searchKey = {0, keyStr, 0, 0, NULL};
     return bsearch(&searchKey, EBCL_cfgMap, EBCL_cfgMapSize, sizeof(*EBCL_cfgMap), EBCL_compareConfigMappings);
 }

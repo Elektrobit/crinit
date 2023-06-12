@@ -15,7 +15,7 @@
 #include "utest-envset-init.h"
 
 void EBCL_envSetInitTestMallocError(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     ebcl_EnvSet_t e = {0};
 

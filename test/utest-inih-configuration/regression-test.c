@@ -21,7 +21,7 @@
 static int EBCL_iniHandler(void *userP, const char *section, const char *name, const char *value);
 
 void EBCL_inihConfigurationRegressionTest(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     // Check compile time defines as specified in deps/inih/README.md
     assert_int_equal(INI_MAX_LINE, 4096);
@@ -37,8 +37,8 @@ void EBCL_inihConfigurationRegressionTest(void **state) {
  }
 
 static int EBCL_iniHandler(void *userP, const char *section, const char *name, const char *value) {
-    EBCL_PARAM_UNUSED(userP);
-    EBCL_PARAM_UNUSED(section);
+    CRINIT_PARAM_UNUSED(userP);
+    CRINIT_PARAM_UNUSED(section);
 
     // Check if we're getting the full line without the potential inline comment cut off.
     if (strcmp(name, STR_CHECK_INLINE) == 0 && strcmp(value, STR_SEMICOLON_LINE) == 0) {

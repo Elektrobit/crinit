@@ -15,7 +15,7 @@
 #include "utest-envset-get.h"
 
 void EBCL_envSetGetTestNullInput(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     ebcl_EnvSet_t failureDummy = {NULL, 0, 0};
     ebcl_EnvSet_t successDummy = {NULL, 0, 0};

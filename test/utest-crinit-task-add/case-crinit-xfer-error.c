@@ -21,7 +21,7 @@
 static ebcl_RtimCmd_t *EBCL_buildRtimArgCmd;
 
 void EBCL_crinitTaskAddTestCrinitXferError(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     expect_check(__wrap_EBCL_buildRtimCmd, c, EBCL_storeRtimCmd, &EBCL_buildRtimArgCmd);
     expect_value(__wrap_EBCL_buildRtimCmd, op, EBCL_RTIMCMD_C_ADDTASK);

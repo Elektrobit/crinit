@@ -82,7 +82,7 @@ int EBCL_parseConf(ebcl_ConfKvList_t **confList, const char *filename) {
 }
 
 static int EBCL_iniHandler(void *parserCtx, const char *section, const char *key, const char *value) {
-    EBCL_PARAM_UNUSED(section);
+    CRINIT_PARAM_UNUSED(section);
 
     ebcl_IniParserCtx_t *ctx = (ebcl_IniParserCtx_t *)parserCtx;
     ctx->pList->key = NULL;
@@ -394,7 +394,7 @@ ssize_t EBCL_confListKeyGetMaxIdx(const ebcl_ConfKvList_t *c, const char *key) {
 }
 
 int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
-    if (series == NULL || filename == NULL || !EBCL_isAbsPath(filename)) {
+    if (series == NULL || filename == NULL || !crinitIsAbsPath(filename)) {
         EBCL_errPrint("Parameters must not be NULL and filename must be an absolute path.");
         return -1;
     }

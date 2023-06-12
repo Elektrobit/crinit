@@ -16,7 +16,7 @@
 #include "unit_test.h"
 
 void EBCL_initFileSeriesTestNoMemError(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     struct ebcl_FileSeries_t fse;
     char *baseDir = (void *)0xDEADB33F;

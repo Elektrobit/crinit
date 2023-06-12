@@ -15,7 +15,7 @@
 #include "utest-crinit-set-info-stream.h"
 
 void EBCL_crinitSetInfoStreamTestSet(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     FILE *fp = (FILE *)0x12345678;
     expect_value(__wrap_EBCL_setInfoStream, stream, fp);
