@@ -22,7 +22,7 @@
 int EBCL_forkZombieReaper(void) {
     pid_t pid = fork();
     if (pid == -1) {
-        EBCL_errnoPrint("Could not fork to create a PID 1 zombie reaper parent.");
+        crinitErrnoPrint("Could not fork to create a PID 1 zombie reaper parent.");
         return -1;
     }
     if (pid != 0) {  // parent process (must be PID 1)
@@ -44,72 +44,72 @@ int EBCL_setupSystemFs(void) {
 
     if (mkdir("/dev", 0777) == -1) {
         if (errno != EEXIST) {
-            EBCL_errnoPrint("Could not create /dev directory: ");
+            crinitErrnoPrint("Could not create /dev directory: ");
             return -1;
         }
     }
     if (mount("none", "/dev", "devtmpfs", MS_NOEXEC | MS_NOSUID, NULL) == -1) {
         if (errno != EBUSY) {
-            EBCL_errnoPrint("Could not mount devtmpfs.");
+            crinitErrnoPrint("Could not mount devtmpfs.");
             return -1;
         }
-        EBCL_infoPrint("/dev is already mounted. Skipping.");
+        crinitInfoPrint("/dev is already mounted. Skipping.");
     }
 
     if (mkdir("/proc", 0777) == -1) {
         if (errno != EEXIST) {
-            EBCL_errnoPrint("Could not create /proc directory: ");
+            crinitErrnoPrint("Could not create /proc directory: ");
             return -1;
         }
     }
     if (mount("none", "/proc", "proc", MS_NODEV | MS_NOEXEC | MS_NOSUID, NULL) == -1) {
         if (errno != EBUSY) {
-            EBCL_errnoPrint("Could not mount procfs.");
+            crinitErrnoPrint("Could not mount procfs.");
             return -1;
         }
-        EBCL_infoPrint("/proc is already mounted. Skipping.");
+        crinitInfoPrint("/proc is already mounted. Skipping.");
     }
 
     if (mkdir("/sys", 0777) == -1) {
         if (errno != EEXIST) {
-            EBCL_errnoPrint("Could not create /sys directory: ");
+            crinitErrnoPrint("Could not create /sys directory: ");
             return -1;
         }
     }
     if (mount("none", "/sys", "sysfs", MS_NODEV | MS_NOEXEC | MS_NOSUID, NULL) == -1) {
         if (errno != EBUSY) {
-            EBCL_errnoPrint("Could not mount sysfs.");
+            crinitErrnoPrint("Could not mount sysfs.");
             return -1;
         }
-        EBCL_infoPrint("/sys is already mounted. Skipping.");
+        crinitInfoPrint("/sys is already mounted. Skipping.");
     }
 
     if (mkdir("/dev/pts", 0755) == -1) {
         if (errno != EEXIST) {
-            EBCL_errnoPrint("Could not create /dev/pts directory: ");
+            crinitErrnoPrint("Could not create /dev/pts directory: ");
             return -1;
         }
     }
     if (mount("none", "/dev/pts", "devpts", MS_NOEXEC | MS_NOSUID, "mode=0620,ptmxmode=0666,gid=5") == -1) {
         if (errno != EBUSY) {
-            EBCL_errnoPrint("Could not mount devpts.");
+            crinitErrnoPrint("Could not mount devpts.");
             return -1;
         }
-        EBCL_infoPrint("/dev/pts is already mounted. Skipping.");
+        crinitInfoPrint("/dev/pts is already mounted. Skipping.");
     }
 
     if (mkdir("/run", 0777) == -1) {
         if (errno != EEXIST) {
-            EBCL_errnoPrint("Could not create /run directory: ");
+            crinitErrnoPrint("Could not create /run directory: ");
             return -1;
         }
     }
     if (mount("none", "/run", "tmpfs", MS_NODEV | MS_NOEXEC | MS_NOSUID, NULL) == -1) {
         if (errno != EBUSY) {
-            EBCL_errnoPrint("Could not mount tmpfs on /run.");
+            crinitErrnoPrint("Could not mount tmpfs on /run.");
             return -1;
         }
-        EBCL_infoPrint("/run is already mounted. Skipping.");
+        crinitInfoPrint("/run is already mounted. Skipping.");
     }
 
     umask(0022);

@@ -243,11 +243,11 @@ static inline void EBCL_freeUnMountList(ebcl_UnMountList_t *um);
 
 int EBCL_parseRtimCmd(ebcl_RtimCmd_t *out, const char *cmdStr) {
     if (out == NULL || cmdStr == NULL) {
-        EBCL_errPrint("Pointer parameters must not be NULL.");
+        crinitErrPrint("Pointer parameters must not be NULL.");
         return -1;
     }
     if (EBCL_rtimOpGetByOpStr(&out->op, cmdStr) == -1) {
-        EBCL_errPrint("Could not parse runtime command. Unknown or invalid opcode string.");
+        crinitErrPrint("Could not parse runtime command. Unknown or invalid opcode string.");
         return -1;
     }
 
@@ -275,7 +275,7 @@ int EBCL_parseRtimCmd(ebcl_RtimCmd_t *out, const char *cmdStr) {
     }
     out->args = malloc((argCount + 1) * sizeof(char *));
     if (out->args == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for runtime commmand argument array with %zu arguments.", argCount);
+        crinitErrnoPrint("Could not allocate memory for runtime commmand argument array with %zu arguments.", argCount);
         return -1;
     }
     if (argCount == 0) {
@@ -287,7 +287,7 @@ int EBCL_parseRtimCmd(ebcl_RtimCmd_t *out, const char *cmdStr) {
     size_t argStrLen = argEnd - argStart;
     out->args[0] = malloc(argStrLen);
     if (out->args[0] == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for backing string of argument array");
+        crinitErrnoPrint("Could not allocate memory for backing string of argument array");
         free(out->args);
         out->args = NULL;
         out->argc = 0;
@@ -312,13 +312,13 @@ int EBCL_parseRtimCmd(ebcl_RtimCmd_t *out, const char *cmdStr) {
 
 int EBCL_rtimCmdToMsgStr(char **out, size_t *outLen, const ebcl_RtimCmd_t *cmd) {
     if (out == NULL || outLen == NULL || cmd == NULL) {
-        EBCL_errPrint("Pointer parameters must not be NULL.");
+        crinitErrPrint("Pointer parameters must not be NULL.");
         return -1;
     }
 
     const char *opStr = NULL;
     if (EBCL_opStrGetByRtimOp(&opStr, cmd->op) == -1) {
-        EBCL_errPrint("Could not get a string representation of the command's opcode.");
+        crinitErrPrint("Could not get a string representation of the command's opcode.");
         return -1;
     }
     *outLen = strlen(opStr) + 1;
@@ -328,7 +328,7 @@ int EBCL_rtimCmdToMsgStr(char **out, size_t *outLen, const ebcl_RtimCmd_t *cmd) 
 
     *out = malloc(*outLen);
     if (*out == NULL) {
-        EBCL_errPrint("Could not allocate memory (%zu Bytes) for string representation of runtime command.", *outLen);
+        crinitErrPrint("Could not allocate memory (%zu Bytes) for string representation of runtime command.", *outLen);
         *outLen = 0;
         return -1;
     }
@@ -344,79 +344,79 @@ int EBCL_rtimCmdToMsgStr(char **out, size_t *outLen, const ebcl_RtimCmd_t *cmd) 
 
 int EBCL_execRtimCmd(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     if (res == NULL || cmd == NULL) {
-        EBCL_errPrint("Pointer parameters must not be NULL.");
+        crinitErrPrint("Pointer parameters must not be NULL.");
         return -1;
     }
     switch (cmd->op) {
         case EBCL_RTIMCMD_C_ADDTASK:
             if (EBCL_execRtimCmdAddTask(ctx, res, cmd) == -1) {
-                EBCL_errPrint("Could not execute runtime command \'ADDTASK\'.");
+                crinitErrPrint("Could not execute runtime command \'ADDTASK\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_ADDSERIES:
             if (EBCL_execRtimCmdAddSeries(ctx, res, cmd) == -1) {
-                EBCL_errPrint("Could not execute runtime command \'ADDSERIES\'.");
+                crinitErrPrint("Could not execute runtime command \'ADDSERIES\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_ENABLE:
             if (EBCL_execRtimCmdEnable(ctx, res, cmd) == -1) {
-                EBCL_errPrint("Could not execute runtime command \'ENABLE\'.");
+                crinitErrPrint("Could not execute runtime command \'ENABLE\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_DISABLE:
             if (EBCL_execRtimCmdDisable(ctx, res, cmd) == -1) {
-                EBCL_errPrint("Could not execute runtime command \'DISABLE\'.");
+                crinitErrPrint("Could not execute runtime command \'DISABLE\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_STOP:
             if (EBCL_execRtimCmdStop(ctx, res, cmd) == -1) {
-                EBCL_errPrint("Could not execute runtime command \'STOP\'.");
+                crinitErrPrint("Could not execute runtime command \'STOP\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_KILL:
             if (EBCL_execRtimCmdKill(ctx, res, cmd) == -1) {
-                EBCL_errPrint("Could not execute runtime command \'KILL\'.");
+                crinitErrPrint("Could not execute runtime command \'KILL\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_RESTART:
             if (EBCL_execRtimCmdRestart(ctx, res, cmd) == -1) {
-                EBCL_errPrint("Could not execute runtime command \'RESTART\'.");
+                crinitErrPrint("Could not execute runtime command \'RESTART\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_NOTIFY:
             if (EBCL_execRtimCmdNotify(ctx, res, cmd) == -1) {
-                EBCL_errPrint("Could not execute runtime command \'NOTIFY\'.");
+                crinitErrPrint("Could not execute runtime command \'NOTIFY\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_STATUS:
             if (EBCL_execRtimCmdStatus(ctx, res, cmd) == -1) {
-                EBCL_errPrint("Could not execute runtime command \'STATUS\'.");
+                crinitErrPrint("Could not execute runtime command \'STATUS\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_TASKLIST:
             if (EBCL_execRtimCmdTaskList(ctx, res, cmd) == -1) {
-                EBCL_errPrint("Could not execute runtime command \'TASKLIST\'.");
+                crinitErrPrint("Could not execute runtime command \'TASKLIST\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_SHUTDOWN:
             if (EBCL_execRtimCmdShutdown(ctx, res, cmd) == -1) {
-                EBCL_errPrint("Could not execute runtime command \'SHUTDOWN\'.");
+                crinitErrPrint("Could not execute runtime command \'SHUTDOWN\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_GETVER:
             if (EBCL_execRtimCmdGetVer(ctx, res, cmd) == -1) {
-                EBCL_errPrint("Could not execute runtime command \'GETVER\'.");
+                crinitErrPrint("Could not execute runtime command \'GETVER\'.");
                 return -1;
             }
             return 0;
@@ -434,7 +434,7 @@ int EBCL_execRtimCmd(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd
         case EBCL_RTIMCMD_R_SHUTDOWN:
         case EBCL_RTIMCMD_R_GETVER:
         default:
-            EBCL_errPrint("Could not execute opcode %d. This is an unknown opcode or a response code.", cmd->op);
+            crinitErrPrint("Could not execute opcode %d. This is an unknown opcode or a response code.", cmd->op);
             return -1;
     }
     return 0;
@@ -442,13 +442,13 @@ int EBCL_execRtimCmd(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd
 
 int EBCL_buildRtimCmd(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, size_t argc, ...) {
     if (c == NULL) {
-        EBCL_errPrint("Return pointer must not be NULL.");
+        crinitErrPrint("Return pointer must not be NULL.");
         return -1;
     }
 
     c->args = malloc((argc + 1) * sizeof(char *));
     if (c->args == NULL) {
-        EBCL_errPrint("Could not allocate memory for RtimCmd argument array.");
+        crinitErrPrint("Could not allocate memory for RtimCmd argument array.");
         return -1;
     }
     c->args[argc] = NULL;
@@ -466,7 +466,7 @@ int EBCL_buildRtimCmd(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, size_t argc, ...) {
 
     c->args[0] = malloc(sumStrSize);
     if (c->args[0] == NULL) {
-        EBCL_errPrint("Could not allocate memory for RtimCmd argument array backing string.");
+        crinitErrPrint("Could not allocate memory for RtimCmd argument array backing string.");
         free(c->args);
         c->args = NULL;
         va_end(vargsCopy);
@@ -491,13 +491,13 @@ int EBCL_buildRtimCmd(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, size_t argc, ...) {
 
 int EBCL_buildRtimCmdArray(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, int argc, const char *args[]) {
     if (c == NULL) {
-        EBCL_errPrint("Return pointer must not be NULL.");
+        crinitErrPrint("Return pointer must not be NULL.");
         return -1;
     }
 
     c->args = malloc((argc + 1) * sizeof(char *));
     if (c->args == NULL) {
-        EBCL_errPrint("Could not allocate memory for RtimCmd argument array.");
+        crinitErrPrint("Could not allocate memory for RtimCmd argument array.");
         return -1;
     }
     c->args[argc] = NULL;
@@ -510,7 +510,7 @@ int EBCL_buildRtimCmdArray(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, int argc, const 
 
     c->args[0] = malloc(sumStrSize);
     if (c->args[0] == NULL) {
-        EBCL_errPrint("Could not allocate memory for RtimCmd argument array backing string.");
+        crinitErrPrint("Could not allocate memory for RtimCmd argument array backing string.");
         free(c->args);
         c->args = NULL;
         return -1;
@@ -533,7 +533,7 @@ int EBCL_buildRtimCmdArray(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, int argc, const 
 
 int EBCL_destroyRtimCmd(ebcl_RtimCmd_t *c) {
     if (c == NULL) {
-        EBCL_errPrint("RtimCmd pointer must not be NULL.");
+        crinitErrPrint("RtimCmd pointer must not be NULL.");
         return -1;
     }
     free(c->args[0]);
@@ -543,12 +543,12 @@ int EBCL_destroyRtimCmd(ebcl_RtimCmd_t *c) {
 
 static int EBCL_execRtimCmdAddTask(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     if (ctx == NULL || res == NULL || cmd == NULL) {
-        EBCL_errPrint("Pointer parameters must not be NULL.");
+        crinitErrPrint("Pointer parameters must not be NULL.");
     }
 
-    EBCL_dbgInfoPrint("Will execute runtime command \'ADDTASK\' with following arguments:");
+    crinitDbgInfoPrint("Will execute runtime command \'ADDTASK\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
-        EBCL_dbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
+        crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
 
     if (cmd->argc != 3) {
@@ -559,7 +559,7 @@ static int EBCL_execRtimCmdAddTask(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
     if (EBCL_parseConf(&c, cmd->args[0]) == -1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR, "Could not parse given config.");
     }
-    EBCL_dbgInfoPrint("File \'%s\' loaded.", cmd->args[0]);
+    crinitDbgInfoPrint("File \'%s\' loaded.", cmd->args[0]);
 
     if (strcmp(cmd->args[2], "@unchanged") != 0) {
         if (strcmp(cmd->args[2], "@empty") == 0) {
@@ -584,7 +584,7 @@ static int EBCL_execRtimCmdAddTask(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
     }
     EBCL_freeConfList(c);
 
-    EBCL_dbgInfoPrint("Task extracted without error.");
+    crinitDbgInfoPrint("Task extracted without error.");
     bool overwrite = false;
     if (strcmp(cmd->args[1], "true") == 0) {
         overwrite = true;
@@ -601,12 +601,12 @@ static int EBCL_execRtimCmdAddTask(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
 
 static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     if (ctx == NULL || res == NULL || cmd == NULL) {
-        EBCL_errPrint("Pointer parameters must not be NULL.");
+        crinitErrPrint("Pointer parameters must not be NULL.");
     }
 
-    EBCL_dbgInfoPrint("Will execute runtime command \'ADDSERIES\' with following arguments:");
+    crinitDbgInfoPrint("Will execute runtime command \'ADDSERIES\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
-        EBCL_dbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
+        crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
 
     if (cmd->argc != 2) {
@@ -654,7 +654,7 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
         ebcl_ConfKvList_t *c;
 
         if (EBCL_parseConf(&c, confFn) == -1) {
-            EBCL_errPrint("Could not parse file \'%s\'.", confFn);
+            crinitErrPrint("Could not parse file \'%s\'.", confFn);
             if (confFnAllocated) {
                 free(confFn);
             }
@@ -663,7 +663,7 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not parse config file.");
         }
-        EBCL_infoPrint("File \'%s\' loaded.", confFn);
+        crinitInfoPrint("File \'%s\' loaded.", confFn);
         if (confFnAllocated) {
             free(confFn);
         }
@@ -697,9 +697,9 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
 }
 
 static int EBCL_execRtimCmdEnable(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
-    EBCL_dbgInfoPrint("Will execute runtime command \'ENABLE\' with following arguments:");
+    crinitDbgInfoPrint("Will execute runtime command \'ENABLE\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
-        EBCL_dbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
+        crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
     if (cmd->argc != 1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ENABLE, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
@@ -723,9 +723,9 @@ static int EBCL_execRtimCmdEnable(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
 }
 
 static int EBCL_execRtimCmdDisable(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
-    EBCL_dbgInfoPrint("Will execute runtime command \'DISABLE\' with following arguments:");
+    crinitDbgInfoPrint("Will execute runtime command \'DISABLE\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
-        EBCL_dbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
+        crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
     if (cmd->argc != 1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_DISABLE, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
@@ -749,9 +749,9 @@ static int EBCL_execRtimCmdDisable(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
 }
 
 static int EBCL_execRtimCmdStop(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
-    EBCL_dbgInfoPrint("Will execute runtime command \'STOP\' with following arguments:");
+    crinitDbgInfoPrint("Will execute runtime command \'STOP\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
-        EBCL_dbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
+        crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
     if (cmd->argc != 1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
@@ -779,9 +779,9 @@ static int EBCL_execRtimCmdStop(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const e
 }
 
 static int EBCL_execRtimCmdKill(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
-    EBCL_dbgInfoPrint("Will execute runtime command \'KILL\' with following arguments:");
+    crinitDbgInfoPrint("Will execute runtime command \'KILL\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
-        EBCL_dbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
+        crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
     if (cmd->argc != 1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_KILL, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
@@ -810,9 +810,9 @@ static int EBCL_execRtimCmdKill(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const e
 }
 
 static int EBCL_execRtimCmdRestart(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
-    EBCL_dbgInfoPrint("Will execute runtime command \'RESTART\' with following arguments:");
+    crinitDbgInfoPrint("Will execute runtime command \'RESTART\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
-        EBCL_dbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
+        crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
     if (cmd->argc != 1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_RESTART, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
@@ -836,9 +836,9 @@ static int EBCL_execRtimCmdRestart(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
 }
 
 static int EBCL_execRtimCmdNotify(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
-    EBCL_dbgInfoPrint("Will execute runtime command \'NOTIFY\' with following arguments:");
+    crinitDbgInfoPrint("Will execute runtime command \'NOTIFY\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
-        EBCL_dbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
+        crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
 
     // Notify library will need to send task name. So process dispatch will need to set it in an environment for
@@ -923,9 +923,9 @@ static int EBCL_execRtimCmdNotify(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
 }
 
 static int EBCL_execRtimCmdStatus(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
-    EBCL_dbgInfoPrint("Will execute runtime command \'STATUS\' with following arguments:");
+    crinitDbgInfoPrint("Will execute runtime command \'STATUS\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
-        EBCL_dbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
+        crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
     if (cmd->argc != 1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
@@ -956,9 +956,9 @@ static int EBCL_execRtimCmdStatus(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
 }
 
 static int EBCL_execRtimCmdTaskList(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
-    EBCL_dbgInfoPrint("Will execute runtime command \'TASKLIST\' with following arguments:");
+    crinitDbgInfoPrint("Will execute runtime command \'TASKLIST\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
-        EBCL_dbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
+        crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
     if (cmd->argc != 0) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_TASKLIST, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
@@ -997,11 +997,11 @@ out:
 
 static int EBCL_execRtimCmdGetVer(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     if (ctx == NULL || res == NULL || cmd == NULL) {
-        EBCL_errPrint("Pointer parameters must not be NULL");
+        crinitErrPrint("Pointer parameters must not be NULL");
         return -1;
     }
 
-    EBCL_dbgInfoPrint("Will execute runtime command \'GETVER\'.");
+    crinitDbgInfoPrint("Will execute runtime command \'GETVER\'.");
     if (cmd->argc != 0) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_GETVER, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
@@ -1017,12 +1017,12 @@ static int EBCL_execRtimCmdGetVer(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
 
 static int EBCL_execRtimCmdShutdown(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     if (ctx == NULL || res == NULL || cmd == NULL) {
-        EBCL_errPrint("Pointer parameters must not be NULL");
+        crinitErrPrint("Pointer parameters must not be NULL");
         return -1;
     }
     ebcl_ShdnThrArgs_t *thrArgs = malloc(sizeof(ebcl_ShdnThrArgs_t));
     if (thrArgs == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for shutdown thread arguments.");
+        crinitErrnoPrint("Could not allocate memory for shutdown thread arguments.");
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_SHUTDOWN, 2, EBCL_RTIMCMD_RES_ERR, "Memory allocation error.");
     }
 
@@ -1047,7 +1047,7 @@ static int EBCL_execRtimCmdShutdown(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, con
     errno = pthread_create(&shdnThreadRef, &thrAttrs, EBCL_shdnThread, thrArgs);
     pthread_attr_destroy(&thrAttrs);
     if (errno != 0) {
-        EBCL_errnoPrint("Could not start shutdown thread");
+        crinitErrnoPrint("Could not start shutdown thread");
         free(thrArgs);
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_SHUTDOWN, 2, EBCL_RTIMCMD_RES_ERR,
                                  "Could not start shutdown thread.");
@@ -1063,31 +1063,31 @@ static void *EBCL_shdnThread(void *args) {
     free(args);
 
     if (EBCL_taskDBSetSpawnInhibit(ctx, true) == -1) {
-        EBCL_errPrint("Could not inhibit spawning of new tasks. Continuing anyway.");
+        crinitErrPrint("Could not inhibit spawning of new tasks. Continuing anyway.");
     }
 
     unsigned long long gpMicros = EBCL_CONFIG_DEFAULT_SHDGRACEP;
     if (EBCL_globOptGetUnsignedLL(EBCL_GLOBOPT_SHDGRACEP, &gpMicros) == -1) {
         gpMicros = EBCL_CONFIG_DEFAULT_SHDGRACEP;
-        EBCL_errPrint("Could not read global option for shutdown grace period, using default: %lluus.", gpMicros);
+        crinitErrPrint("Could not read global option for shutdown grace period, using default: %lluus.", gpMicros);
     }
 
     kill(-1, SIGCONT);
     kill(-1, SIGTERM);
-    EBCL_dbgInfoPrint("Sending SIGTERM to all processes.");
+    crinitDbgInfoPrint("Sending SIGTERM to all processes.");
     if (EBCL_gracePeriod(gpMicros) == -1) {
-        EBCL_errPrint("Could not wait out the shutdown grace period, continuing anyway.");
+        crinitErrPrint("Could not wait out the shutdown grace period, continuing anyway.");
     }
     kill(-1, SIGKILL);
-    EBCL_dbgInfoPrint("Sending SIGKILL to all processes.");
+    crinitDbgInfoPrint("Sending SIGKILL to all processes.");
     if (EBCL_fsPrepareShutdown() == -1) {
-        EBCL_errPrint(
+        crinitErrPrint(
             "Could not un- or remount filesystems cleanly, continuing anyway. Some filesystems may be dirty on "
             "next "
             "boot.");
     }
     if (reboot(shutdownCmd) == -1) {
-        EBCL_errnoPrint("Reboot syscall failed.");
+        crinitErrnoPrint("Reboot syscall failed.");
     }
     return NULL;
 }
@@ -1095,7 +1095,7 @@ static void *EBCL_shdnThread(void *args) {
 static inline int EBCL_gracePeriod(unsigned long long micros) {
     struct timespec t;
     if (clock_gettime(CLOCK_MONOTONIC, &t) == -1) {
-        EBCL_errnoPrint("Could not get current time from monotonic clock.");
+        crinitErrnoPrint("Could not get current time from monotonic clock.");
         return -1;
     }
     t.tv_sec += (time_t)(micros / 1000000uLL);
@@ -1107,7 +1107,7 @@ static inline int EBCL_gracePeriod(unsigned long long micros) {
         ret = clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &t, NULL);
     } while (ret == -1 && errno == EINTR);
     if (ret == -1) {
-        EBCL_errnoPrint("Could not sleep for %lluus.", micros);
+        crinitErrnoPrint("Could not sleep for %lluus.", micros);
         return -1;
     }
     return 0;
@@ -1115,18 +1115,18 @@ static inline int EBCL_gracePeriod(unsigned long long micros) {
 
 static inline int EBCL_genUnMountList(ebcl_UnMountList_t **ml, bool *rootfsIsRo) {
     if (ml == NULL || rootfsIsRo == NULL) {
-        EBCL_errPrint("Input parameters must not be NULL.");
+        crinitErrPrint("Input parameters must not be NULL.");
         return -1;
     }
     *rootfsIsRo = false;
     FILE *mountListStream = fopen("/proc/mounts", "r");
     if (mountListStream == NULL) {
-        EBCL_errnoPrint("Could not open \'/proc/mounts\' for reading.");
+        crinitErrnoPrint("Could not open \'/proc/mounts\' for reading.");
         return -1;
     }
     ebcl_UnMountList_t *pList = malloc(sizeof(ebcl_UnMountList_t));
     if (pList == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for list of mount points to be unmounted.");
+        crinitErrnoPrint("Could not allocate memory for list of mount points to be unmounted.");
         fclose(mountListStream);
         return -1;
     }
@@ -1167,7 +1167,7 @@ static inline int EBCL_genUnMountList(ebcl_UnMountList_t **ml, bool *rootfsIsRo)
             memmove(pList->target, runner, strlen(runner) + 1);
             ebcl_UnMountList_t *new = malloc(sizeof(ebcl_UnMountList_t));
             if (new == NULL) {
-                EBCL_errnoPrint("Could not allocate memory for list of mount points to be unmounted.");
+                crinitErrnoPrint("Could not allocate memory for list of mount points to be unmounted.");
                 fclose(mountListStream);
                 EBCL_freeUnMountList(pList);
                 return -1;
@@ -1197,7 +1197,7 @@ static inline int EBCL_fsPrepareShutdown(void) {
     bool rootfsIsRo;
 
     if (EBCL_genUnMountList(&um, &rootfsIsRo) == -1) {
-        EBCL_errPrint(
+        crinitErrPrint(
             "Could not generate list of targets to unmount. Will at least try to remount root filesystem as "
             "read-only.");
         rootfsIsRo = false;
@@ -1206,10 +1206,10 @@ static inline int EBCL_fsPrepareShutdown(void) {
         ebcl_UnMountList_t *runner = um;
         while (runner != NULL) {
             if (runner->target[0] != '\0') {
-                EBCL_dbgInfoPrint("Will unmount target \'%s\'.", runner->target);
+                crinitDbgInfoPrint("Will unmount target \'%s\'.", runner->target);
                 // Perform a lazy unmount of all targets in the list (does not include root node).
                 if (umount2(runner->target, MNT_DETACH) == -1) {
-                    EBCL_errnoPrint("Could not umount (detach) mountpoint \'%s\'. Continuing anyway.", runner->target);
+                    crinitErrnoPrint("Could not umount (detach) mountpoint \'%s\'. Continuing anyway.", runner->target);
                     out = -1;
                 }
             }
@@ -1219,7 +1219,7 @@ static inline int EBCL_fsPrepareShutdown(void) {
     }
     // If it is (possibly) an rw rootfs, try remounting it ro.
     if (!rootfsIsRo && mount(NULL, "/", NULL, MS_REMOUNT | MS_RDONLY, NULL) == -1) {
-        EBCL_errnoPrint("Could not remount rootfs read-only, continuing anyway. Filesystem may be dirty on boot.");
+        crinitErrnoPrint("Could not remount rootfs read-only, continuing anyway. Filesystem may be dirty on boot.");
         out = -1;
     }
     sync();

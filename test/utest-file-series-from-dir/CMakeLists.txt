@@ -25,6 +25,6 @@ create_unit_test(
     -Wl,--wrap=strlen
     -Wl,--wrap=malloc
     -Wl,--wrap=stpcpy
-    -Wl,--wrap=EBCL_errPrintFFL
-    -Wl,--wrap=EBCL_errnoPrintFFL
+    -Wl,--wrap=crinitErrPrintFFL
+    -Wl,--wrap=crinitErrnoPrintFFL
 )

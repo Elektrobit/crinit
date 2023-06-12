@@ -39,12 +39,12 @@ static ssize_t EBCL_envSetSearch(const ebcl_EnvSet_t *es, const char *envName);
 
 int EBCL_envSetInit(ebcl_EnvSet_t *es, size_t initSize, size_t sizeIncrement) {
     if (es == NULL) {
-        EBCL_errPrint("Input parameter must not be NULL.");
+        crinitErrPrint("Input parameter must not be NULL.");
         return -1;
     }
     es->envp = calloc(initSize, sizeof(*es->envp));
     if (es->envp == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for environment set.");
+        crinitErrnoPrint("Could not allocate memory for environment set.");
         return -1;
     }
     es->allocSz = initSize;
@@ -54,7 +54,7 @@ int EBCL_envSetInit(ebcl_EnvSet_t *es, size_t initSize, size_t sizeIncrement) {
 
 int EBCL_envSetDestroy(ebcl_EnvSet_t *es) {
     if (es == NULL) {
-        EBCL_errPrint("Input parameter must not be NULL.");
+        crinitErrPrint("Input parameter must not be NULL.");
         return -1;
     }
     if (es->envp == NULL) {
@@ -73,11 +73,11 @@ int EBCL_envSetDestroy(ebcl_EnvSet_t *es) {
 
 int EBCL_envSetDup(ebcl_EnvSet_t *copy, const ebcl_EnvSet_t *orig) {
     if (orig == NULL || orig->envp == NULL || copy == NULL) {
-        EBCL_errPrint("Input parameters must not be NULL.");
+        crinitErrPrint("Input parameters must not be NULL.");
         return -1;
     }
     if (EBCL_envSetInit(copy, orig->allocSz, orig->allocInc) == -1) {
-        EBCL_errPrint("Could not initialize new environment set during duplication.");
+        crinitErrPrint("Could not initialize new environment set during duplication.");
         return -1;
     }
     char **pSrc = orig->envp;
@@ -85,7 +85,7 @@ int EBCL_envSetDup(ebcl_EnvSet_t *copy, const ebcl_EnvSet_t *orig) {
     while (*pSrc != NULL) {
         *pTgt = strdup(*pSrc);
         if (*pTgt == NULL) {
-            EBCL_errnoPrint("Could not duplicate string in environment set.");
+            crinitErrnoPrint("Could not duplicate string in environment set.");
             EBCL_envSetDestroy(copy);
             return -1;
         }
@@ -112,31 +112,31 @@ const char *EBCL_envSetGet(const ebcl_EnvSet_t *es, const char *envName) {
 
 int EBCL_envSetSet(ebcl_EnvSet_t *es, const char *envName, const char *envVal) {
     if (es == NULL || envName == NULL || envVal == NULL || es->envp == NULL || es->allocSz == 0) {
-        EBCL_errPrint("Input parameters must not be NULL and given environment set must be initialized.");
+        crinitErrPrint("Input parameters must not be NULL and given environment set must be initialized.");
         return -1;
     }
     size_t newSize = strlen(envName) + strlen(envVal) + 2;
     ssize_t idx = EBCL_envSetSearch(es, envName);
     if (idx == -1) {
-        EBCL_errPrint("Could not complete search for environment variable '%s' during variable set.", envName);
+        crinitErrPrint("Could not complete search for environment variable '%s' during variable set.", envName);
     } else if (es->envp[idx] == NULL) {
         if ((size_t)idx >= es->allocSz - 1) {
             if (EBCL_envSetGrow(es) == -1) {
-                EBCL_errPrint("Could not grow environment set of size %zu to size %zu.", es->allocSz,
+                crinitErrPrint("Could not grow environment set of size %zu to size %zu.", es->allocSz,
                               es->allocSz + es->allocInc);
                 return -1;
             }
         }
         es->envp[idx] = malloc(newSize * sizeof(char));
         if (es->envp[idx] == NULL) {
-            EBCL_errnoPrint("Could not allocate memory for new environment variable.");
+            crinitErrnoPrint("Could not allocate memory for new environment variable.");
             return -1;
         }
     } else {
         if (newSize != strlen(es->envp[idx]) + 1) {
             char *newPtr = realloc(es->envp[idx], newSize * sizeof(char));
             if (newPtr == NULL) {
-                EBCL_errnoPrint("Could not reallocate memory to update environment variable.");
+                crinitErrnoPrint("Could not reallocate memory to update environment variable.");
                 return -1;
             }
             es->envp[idx] = newPtr;
@@ -144,7 +144,7 @@ int EBCL_envSetSet(ebcl_EnvSet_t *es, const char *envName, const char *envVal) {
     }
     int n = snprintf(es->envp[idx], newSize, "%s=%s", envName, envVal);
     if (n < 0) {
-        EBCL_errPrint("Encoding error during creation/update of environment variable");
+        crinitErrPrint("Encoding error during creation/update of environment variable");
         free(es->envp[idx]);
         es->envp[idx] = NULL;
         return -1;
@@ -155,16 +155,16 @@ int EBCL_envSetSet(ebcl_EnvSet_t *es, const char *envName, const char *envVal) {
 
 int EBCL_envSetCreateFromConfKvList(ebcl_EnvSet_t *newSet, const ebcl_EnvSet_t *baseSet, const ebcl_ConfKvList_t *c) {
     if (newSet == NULL || c == NULL) {
-        EBCL_errPrint("Input config list and output environment set must not be NULL.");
+        crinitErrPrint("Input config list and output environment set must not be NULL.");
         return -1;
     }
 
     if (baseSet != NULL && EBCL_envSetDup(newSet, baseSet) == -1) {
-        EBCL_errPrint("Could not duplicate base environment set in creation of new merged set.");
+        crinitErrPrint("Could not duplicate base environment set in creation of new merged set.");
         return -1;
     }
     if (baseSet == NULL && EBCL_envSetInit(newSet, EBCL_ENVSET_INITIAL_SIZE, EBCL_ENVSET_SIZE_INCREMENT) == -1) {
-        EBCL_errPrint("Could not initialize new environment set.");
+        crinitErrPrint("Could not initialize new environment set.");
         return -1;
     }
     ssize_t numNewEnvs = EBCL_confListKeyGetMaxIdx(c, EBCL_CONFIG_KEYSTR_ENV_SET) + 1;
@@ -172,12 +172,12 @@ int EBCL_envSetCreateFromConfKvList(ebcl_EnvSet_t *newSet, const ebcl_EnvSet_t *
     for (size_t i = 0; i < (size_t)numNewEnvs; i++) {
         char *val = NULL;
         if (EBCL_confListGetValWithIdx(&val, EBCL_CONFIG_KEYSTR_ENV_SET, i, c) == -1) {
-            EBCL_errPrint("Could not retrieve config key '%s', index %zu from config.", EBCL_CONFIG_KEYSTR_ENV_SET, i);
+            crinitErrPrint("Could not retrieve config key '%s', index %zu from config.", EBCL_CONFIG_KEYSTR_ENV_SET, i);
             EBCL_envSetDestroy(newSet);
             return -1;
         }
         if (EBCL_confConvToEnvSetMember(newSet, val) == -1) {
-            EBCL_errPrint("Failed to process " EBCL_CONFIG_KEYSTR_ENV_SET " config item with value '%s'", val);
+            crinitErrPrint("Failed to process " EBCL_CONFIG_KEYSTR_ENV_SET " config item with value '%s'", val);
             EBCL_envSetDestroy(newSet);
             return -1;
         }
@@ -187,11 +187,11 @@ int EBCL_envSetCreateFromConfKvList(ebcl_EnvSet_t *newSet, const ebcl_EnvSet_t *
 
 static ssize_t EBCL_envSetSearch(const ebcl_EnvSet_t *es, const char *envName) {
     if (envName == NULL || es == NULL || es->envp == NULL || es->allocSz == 0) {
-        EBCL_errPrint("Input parameters must not be NULL and given environment set must be initialized.");
+        crinitErrPrint("Input parameters must not be NULL and given environment set must be initialized.");
         return -1;
     }
     if (strchr(envName, '=') != NULL) {
-        EBCL_errPrint("Environment variable names must not contain '='.");
+        crinitErrPrint("Environment variable names must not contain '='.");
         return -1;
     }
     size_t i = 0;
@@ -206,17 +206,17 @@ static ssize_t EBCL_envSetSearch(const ebcl_EnvSet_t *es, const char *envName) {
 
 static int EBCL_envSetGrow(ebcl_EnvSet_t *es) {
     if (es == NULL) {
-        EBCL_errPrint("Input parameter must not be NULL.");
+        crinitErrPrint("Input parameter must not be NULL.");
         return -1;
     }
     if (es->allocInc == 0) {
-        EBCL_errPrint("Could not grow environment set as increment size is 0.");
+        crinitErrPrint("Could not grow environment set as increment size is 0.");
         return -1;
     }
     size_t newAllocSz = es->allocSz + es->allocInc;
     char **newPtr = realloc(es->envp, newAllocSz * sizeof(*newPtr));
     if (newPtr == NULL) {
-        EBCL_errnoPrint("Could not reallocate memory to grow environment set.");
+        crinitErrnoPrint("Could not reallocate memory to grow environment set.");
         return -1;
     }
     es->envp = newPtr;

@@ -13,5 +13,5 @@ create_unit_test(
   LIBRARIES
     libmockfunctions
   WRAPS
-    -Wl,--wrap=EBCL_setInfoStream
+    -Wl,--wrap=crinitSetInfoStream
 )

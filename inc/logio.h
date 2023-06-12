@@ -17,21 +17,21 @@
 #include <string.h>
 
 /**
- * Maximum size of prefix set with EBCL_setPrintPrefix()
+ * Maximum size of prefix set with crinitSetPrintPrefix()
  */
-#define EBCL_PRINT_PREFIX_MAX_LEN 32
+#define CRINIT_PRINT_PREFIX_MAX_LEN 32
 
 /**
  * Default prefix to put in front of log/info/error messages.
  */
-#define EBCL_CRINIT_PRINT_PREFIX "[CRINIT] "
+#define CRINIT_PRINT_PREFIX "[CRINIT] "
 
 /**
  * Constant to use if one wishes to output an empty line using an output function, e.g.
- * EBCL_infoPrint(EBCL_PRINT_EMPTY_LINE). The output will still contain everything the output function adds, e.g.
+ * crinitInfoPrint(CRINIT_PRINT_EMPTY_LINE). The output will still contain everything the output function adds, e.g.
  * prefix, line number, etc.
  */
-#define EBCL_PRINT_EMPTY_LINE "%s", ""
+#define CRINIT_PRINT_EMPTY_LINE "%s", ""
 
 /**
  * Constant to use instead of __FILE__ which shows only the filename without the leading path.
@@ -53,31 +53,31 @@
  *
  * @param prefix  The prefix to use.
  */
-void EBCL_setPrintPrefix(const char *prefix);
+void crinitSetPrintPrefix(const char *prefix);
 /**
  * Set FILE stream to use for info messages.
  *
  * Defaults to stdout. This can be used to divert the info messages into a log file. The stream can be the same as the
- * one used for EBCL_setErrStream() if the log should contain both types of messages. The function uses mutexes
+ * one used for crinitSetErrStream() if the log should contain both types of messages. The function uses mutexes
  * internally and is thread-safe.
  *
  * Currently, the config file option to make use of this functionality is not yet implemented.
  *
  * @param stream  The FILE* stream to use. If NULL, stream is set to stdout.
  */
-void EBCL_setInfoStream(FILE *stream);
+void crinitSetInfoStream(FILE *stream);
 /**
  * Set FILE stream to use for error messages.
  *
  * Defaults to stderr. This can be used to divert the error messages into a log file. The stream can be the same as the
- * one used for EBCL_setInfoStream() if the log should contain both types of messages. The function uses mutexes
+ * one used for crinitSetInfoStream() if the log should contain both types of messages. The function uses mutexes
  * internally and is thread-safe.
  *
  * Currently, the config file option to make use of this functionality is not yet implemented.
  *
  * @param stream  The FILE* stream to use. If NULL, stream is set to stderr.
  */
-void EBCL_setErrStream(FILE *stream);
+void crinitSetErrStream(FILE *stream);
 /**
  * Specify if syslog should be used..
  *
@@ -87,71 +87,71 @@ void EBCL_setErrStream(FILE *stream);
  *
  * @param sl  `true` if syslog should be used, `false` otherwise.
  */
-void EBCL_setUseSyslog(bool sl);
+void crinitSetUseSyslog(bool sl);
 
 /**
  * Print an info message.
  *
  * Can be used like printf(). In contrast to printf(), this function adds the Crinit prefix at the start and a newline
- * at the end. It uses the output stream specified by EBCL_setInfoStream() or stdout if unset. The function uses mutexes
+ * at the end. It uses the output stream specified by crinitSetInfoStream() or stdout if unset. The function uses mutexes
  * internally and is thread-safe.
  *
  */
-void EBCL_infoPrint(const char *format, ...) __attribute__((format(printf, 1, 2)));
+void crinitInfoPrint(const char *format, ...) __attribute__((format(printf, 1, 2)));
 /**
  * Print an info message if DEBUG global option is set.
  *
  * Can be used like printf(). In contrast to printf(), this function adds the Crinit prefix at the start and a newline
- * at the end. It uses the output stream specified by EBCL_setInfoStream() or stdout if unset. There will be no output
+ * at the end. It uses the output stream specified by crinitSetInfoStream() or stdout if unset. There will be no output
  * if the global option DEBUG is set to false using EBCL_globOptSetBoolean(). The function uses mutexes internally and
  * is thread-safe.
  *
  * If configured (`USE_SYSLOG = true`) and available (a task has provided `syslog`), the function will instead write to
  * syslog.
  */
-void EBCL_dbgInfoPrint(const char *format, ...) __attribute__((format(printf, 1, 2)));
+void crinitDbgInfoPrint(const char *format, ...) __attribute__((format(printf, 1, 2)));
 
 /**
- * Macro to print an error message including the offending source file, function, and line using EBCL_errPrintFFL().
+ * Macro to print an error message including the offending source file, function, and line using crinitErrPrintFFL().
  */
-#define EBCL_errPrint(...) EBCL_errPrintFFL(__FILE_BASENAME__, __func__, __LINE__, __VA_ARGS__)
+#define crinitErrPrint(...) crinitErrPrintFFL(__FILE_BASENAME__, __func__, __LINE__, __VA_ARGS__)
 /**
  * Print an error message.
  *
  * Can be used like printf(). In contrast to printf(), this function adds the Crinit prefix and the given \a file, \a
  * func, and \a line parameters at the start as well as a newline at the end. It uses the output stream specified by
- * EBCL_setErrStream() or stderr if unset. The function uses mutexes internally and is thread-safe.
+ * crinitSetErrStream() or stderr if unset. The function uses mutexes internally and is thread-safe.
  *
- * The macro EBCL_errPrint() should be used to provide the function with the correct \a file, \a func, and \a line
+ * The macro crinitErrPrint() should be used to provide the function with the correct \a file, \a func, and \a line
  * parameters.
  *
  * If configured (`USE_SYSLOG = true`) and available (a task has provided `syslog`), the function will instead write to
  * syslog.
  */
-void EBCL_errPrintFFL(const char *file, const char *func, int line, const char *format, ...)
+void crinitErrPrintFFL(const char *file, const char *func, int line, const char *format, ...)
     __attribute__((format(printf, 4, 5)));
 
 /**
- * Macro to print an error message using EBCL_errnoPrintFFL() including the offending source file, function, and line,
+ * Macro to print an error message using crinitErrnoPrintFFL() including the offending source file, function, and line,
  * as well as the value of errno.
  *
  */
-#define EBCL_errnoPrint(...) EBCL_errnoPrintFFL(__FILE_BASENAME__, __func__, __LINE__, __VA_ARGS__)
+#define crinitErrnoPrint(...) crinitErrnoPrintFFL(__FILE_BASENAME__, __func__, __LINE__, __VA_ARGS__)
 /**
  * Print an error message including a text representation of the current value of errno.
  *
  * Can be used like printf(). In contrast to printf(), this function adds the Crinit prefix and the given \a file, \a
  * func, and \a line parameters at the start as well as a text representation of errno and a newline at the end.
- * It uses the output stream specified by EBCL_setErrStream() or stderr if unset. The function uses mutexes internally
+ * It uses the output stream specified by crinitSetErrStream() or stderr if unset. The function uses mutexes internally
  * and is thread-safe.
  *
- * The macro EBCL_errnoPrint() should be used to provide the function with the correct \a file, \a func, and \a line
+ * The macro crinitErrnoPrint() should be used to provide the function with the correct \a file, \a func, and \a line
  * parameters.
  *
  * If configured (`USE_SYSLOG = true`) and available (a task has provided `syslog`), the function will instead write to
  * syslog.
  */
-void EBCL_errnoPrintFFL(const char *file, const char *func, int line, const char *format, ...)
+void crinitErrnoPrintFFL(const char *file, const char *func, int line, const char *format, ...)
     __attribute__((format(printf, 4, 5)));
 
 #endif /* __LOGIO_H__ */

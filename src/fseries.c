@@ -99,7 +99,7 @@ TESTABLE void EBCL_destroyFileSeries(ebcl_FileSeries_t *fse) {
 
 TESTABLE int EBCL_initFileSeries(ebcl_FileSeries_t *fse, size_t numElements, const char *baseDir) {
     if (fse == NULL) {
-        EBCL_errPrint("File series struct to initialize must not be NULL.");
+        crinitErrPrint("File series struct to initialize must not be NULL.");
         return -1;
     }
     fse->fnames = NULL;
@@ -108,7 +108,7 @@ TESTABLE int EBCL_initFileSeries(ebcl_FileSeries_t *fse, size_t numElements, con
     if (baseDir != NULL) {
         fse->baseDir = strdup(baseDir);
         if (fse->baseDir == NULL) {
-            EBCL_errnoPrint("Could not duplicate base directory string in file series.");
+            crinitErrnoPrint("Could not duplicate base directory string in file series.");
             return -1;
         }
     }
@@ -117,19 +117,19 @@ TESTABLE int EBCL_initFileSeries(ebcl_FileSeries_t *fse, size_t numElements, con
 
 int EBCL_resizeFileSeries(ebcl_FileSeries_t *fse, size_t numElements) {
     if (fse == NULL) {
-        EBCL_errPrint("File series struct to resize must not be NULL.");
+        crinitErrPrint("File series struct to resize must not be NULL.");
         return -1;
     }
     if (numElements == fse->size) {
         return 0;
     }
     if (numElements == 0) {
-        EBCL_errPrint("File series struct shrink to 0 is not supported.");
+        crinitErrPrint("File series struct shrink to 0 is not supported.");
         return -1;
     }
     char **newPtr = realloc(fse->fnames, (numElements + 1) * sizeof(char *));
     if (newPtr == NULL) {
-        EBCL_errnoPrint("Could not reallocate filename array of file series to size %zu.", numElements);
+        crinitErrnoPrint("Could not reallocate filename array of file series to size %zu.", numElements);
         return -1;
     }
     fse->fnames = newPtr;
@@ -143,22 +143,22 @@ int EBCL_resizeFileSeries(ebcl_FileSeries_t *fse, size_t numElements) {
 
 int EBCL_fileSeriesFromDir(ebcl_FileSeries_t *fse, const char *path, const char *fileSuffix, bool followLinks) {
     if (fse == NULL) {
-        EBCL_errPrint("Return pointer must not be NULL.");
+        crinitErrPrint("Return pointer must not be NULL.");
         return -1;
     }
     if (path == NULL) {
-        EBCL_errPrint("Directory to scan must not be NULL.");
+        crinitErrPrint("Directory to scan must not be NULL.");
         return -1;
     }
 
     DIR *scd = opendir(path);
     if (scd == NULL) {
-        EBCL_errnoPrint("Could not open directory at '%s' for scanning.", path);
+        crinitErrnoPrint("Could not open directory at '%s' for scanning.", path);
         return -1;
     }
     int scdfd = dirfd(scd);
     if (scdfd == -1) {
-        EBCL_errnoPrint("Could not get file descriptor from directory stream.");
+        crinitErrnoPrint("Could not get file descriptor from directory stream.");
         closedir(scd);
         return -1;
     }
@@ -168,7 +168,7 @@ int EBCL_fileSeriesFromDir(ebcl_FileSeries_t *fse, const char *path, const char 
 
     errno = pthread_mutex_lock(&EBCL_scState.dirScanLock);
     if (errno != 0) {
-        EBCL_errnoPrint("Could not queue up for mutex lock.");
+        crinitErrnoPrint("Could not queue up for mutex lock.");
         closedir(scd);
         return -1;
     }
@@ -186,7 +186,7 @@ int EBCL_fileSeriesFromDir(ebcl_FileSeries_t *fse, const char *path, const char 
     pthread_mutex_unlock(&EBCL_scState.dirScanLock);
 
     if (scanRes == -1) {
-        EBCL_errnoPrint("Could not scan directory '%s'", path);
+        crinitErrnoPrint("Could not scan directory '%s'", path);
         closedir(scd);
         return -1;
     }
@@ -194,7 +194,7 @@ int EBCL_fileSeriesFromDir(ebcl_FileSeries_t *fse, const char *path, const char 
     closedir(scd);
 
     if (EBCL_initFileSeries(fse, scanRes, path) == -1) {
-        EBCL_errPrint("Could not initialize file series struct holding %d elements.", scanRes);
+        crinitErrPrint("Could not initialize file series struct holding %d elements.", scanRes);
         return -1;
     }
 
@@ -205,7 +205,7 @@ int EBCL_fileSeriesFromDir(ebcl_FileSeries_t *fse, const char *path, const char 
 
     fse->fnames[0] = malloc(backingStrAllocLen * sizeof(char));
     if (fse->fnames[0] == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for file series backing string.");
+        crinitErrnoPrint("Could not allocate memory for file series backing string.");
         EBCL_destroyFileSeries(fse);
         return -1;
     }
@@ -221,7 +221,7 @@ int EBCL_fileSeriesFromDir(ebcl_FileSeries_t *fse, const char *path, const char 
 
 int EBCL_fileSeriesFromStrArr(ebcl_FileSeries_t *fse, const char *baseDir, char **strArr) {
     if (fse == NULL || baseDir == NULL || strArr == NULL) {
-        EBCL_errPrint("Input parameters must not be NULL.");
+        crinitErrPrint("Input parameters must not be NULL.");
         return -1;
     }
 
@@ -235,7 +235,7 @@ int EBCL_fileSeriesFromStrArr(ebcl_FileSeries_t *fse, const char *baseDir, char 
 
     fse->baseDir = strdup(baseDir);
     if (fse->baseDir == NULL) {
-        EBCL_errnoPrint("Could not duplicate string for base directory of file series.");
+        crinitErrnoPrint("Could not duplicate string for base directory of file series.");
         return -1;
     }
     return 0;
@@ -255,7 +255,7 @@ int EBCL_statFilter(const char *name, int baseDirFd, bool followLinks) {
     struct stat stbuf;
 
     if (fstatat(baseDirFd, name, &stbuf, fstFlags) == -1) {
-        EBCL_errnoPrint("Could not stat '%s'.", name);
+        crinitErrnoPrint("Could not stat '%s'.", name);
         return false;
     }
 

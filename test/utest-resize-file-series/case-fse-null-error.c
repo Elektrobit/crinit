@@ -19,7 +19,7 @@
 void EBCL_resizeFileSeriesTestFseNullError(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
-    expect_any_count(__wrap_EBCL_errPrintFFL, format, 3);
+    expect_any_count(__wrap_crinitErrPrintFFL, format, 3);
 
     assert_int_equal(EBCL_resizeFileSeries(NULL, 0), -1);
     assert_int_equal(EBCL_resizeFileSeries(NULL, 100), -1);

@@ -91,7 +91,7 @@ int main(int argc, char *argv[]) {
     int getoptArgc = argc;
     char **getoptArgv = argv;
 
-    EBCL_setPrintPrefix("");
+    crinitSetPrintPrefix("");
 
     if (strcmp(basename(argv[0]), "poweroff") != 0 && strcmp(basename(argv[0]), "reboot") != 0) {
         if (argc < 2) {
@@ -166,11 +166,11 @@ int main(int argc, char *argv[]) {
             return EXIT_FAILURE;
         }
         if (!crinitIsAbsPath(getoptArgv[optind])) {
-            EBCL_errPrint("The path to the task config to load must be absolute.");
+            crinitErrPrint("The path to the task config to load must be absolute.");
             return EXIT_FAILURE;
         }
         if (EBCL_crinitTaskAdd(getoptArgv[optind], overwrite, overDeps) == -1) {
-            EBCL_errPrint("Adding task from \'%s\' failed.", getoptArgv[optind]);
+            crinitErrPrint("Adding task from \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
         }
         return EXIT_SUCCESS;
@@ -181,11 +181,11 @@ int main(int argc, char *argv[]) {
             return EXIT_FAILURE;
         }
         if (!crinitIsAbsPath(getoptArgv[optind])) {
-            EBCL_errPrint("The path to the series config to load must be absolute.");
+            crinitErrPrint("The path to the series config to load must be absolute.");
             return EXIT_FAILURE;
         }
         if (EBCL_crinitSeriesAdd(getoptArgv[optind], overwrite) == -1) {
-            EBCL_errPrint("Loading series file \'%s\' failed.", getoptArgv[optind]);
+            crinitErrPrint("Loading series file \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
         }
         return EXIT_SUCCESS;
@@ -196,7 +196,7 @@ int main(int argc, char *argv[]) {
             return EXIT_FAILURE;
         }
         if (EBCL_crinitTaskEnable(getoptArgv[optind]) == -1) {
-            EBCL_errPrint("Enabling task \'%s\' failed.", getoptArgv[optind]);
+            crinitErrPrint("Enabling task \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
         }
         return EXIT_SUCCESS;
@@ -207,7 +207,7 @@ int main(int argc, char *argv[]) {
             return EXIT_FAILURE;
         }
         if (EBCL_crinitTaskDisable(getoptArgv[optind]) == -1) {
-            EBCL_errPrint("Disabling task \'%s\' failed.", getoptArgv[optind]);
+            crinitErrPrint("Disabling task \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
         }
         return EXIT_SUCCESS;
@@ -218,7 +218,7 @@ int main(int argc, char *argv[]) {
             return EXIT_FAILURE;
         }
         if (EBCL_crinitTaskStop(getoptArgv[optind]) == -1) {
-            EBCL_errPrint("Stopping task \'%s\' failed.", getoptArgv[optind]);
+            crinitErrPrint("Stopping task \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
         }
         return EXIT_SUCCESS;
@@ -229,7 +229,7 @@ int main(int argc, char *argv[]) {
             return EXIT_FAILURE;
         }
         if (EBCL_crinitTaskKill(getoptArgv[optind]) == -1) {
-            EBCL_errPrint("Killing task \'%s\' failed.", getoptArgv[optind]);
+            crinitErrPrint("Killing task \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
         }
         return EXIT_SUCCESS;
@@ -240,7 +240,7 @@ int main(int argc, char *argv[]) {
             return EXIT_FAILURE;
         }
         if (EBCL_crinitTaskRestart(getoptArgv[optind]) == -1) {
-            EBCL_errPrint("Restarting task \'%s\' failed.", getoptArgv[optind]);
+            crinitErrPrint("Restarting task \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
         }
         return EXIT_SUCCESS;
@@ -254,11 +254,11 @@ int main(int argc, char *argv[]) {
         pid_t pid = -1;
         const char *state;
         if (EBCL_crinitTaskGetStatus(&s, &pid, getoptArgv[optind]) == -1) {
-            EBCL_errPrint("Querying status of task \'%s\' failed.", getoptArgv[optind]);
+            crinitErrPrint("Querying status of task \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
         }
         state = EBCL_taskStateToStr(s);
-        EBCL_infoPrint("Status: %s, PID: %d", state, pid);
+        crinitInfoPrint("Status: %s, PID: %d", state, pid);
         return EXIT_SUCCESS;
     }
     if (strcmp(getoptArgv[0], "notify") == 0) {
@@ -268,7 +268,7 @@ int main(int argc, char *argv[]) {
         }
         EBCL_crinitSetNotifyTaskName(getoptArgv[optind]);
         if (sd_notify(0, getoptArgv[optind + 1]) == -1) {
-            EBCL_errPrint("sd_notify() for task \'%s\' with notify-string \'%s\' failed.", getoptArgv[optind],
+            crinitErrPrint("sd_notify() for task \'%s\' with notify-string \'%s\' failed.", getoptArgv[optind],
                           getoptArgv[optind + 1]);
             return EXIT_FAILURE;
         }
@@ -281,7 +281,7 @@ int main(int argc, char *argv[]) {
         }
         ebcl_TaskList_t *tl;
         if (EBCL_crinitGetTaskList(&tl) == -1) {
-            EBCL_errPrint("Querying list of task \'%s\' failed.", getoptArgv[optind]);
+            crinitErrPrint("Querying list of task \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
         }
         int maxNameLen = 0;
@@ -291,24 +291,24 @@ int main(int argc, char *argv[]) {
                 maxNameLen = len;
             }
         }
-        EBCL_infoPrint("%-*s  %4s  %s", maxNameLen, "NAME", "PID", "STATUS");
+        crinitInfoPrint("%-*s  %4s  %s", maxNameLen, "NAME", "PID", "STATUS");
         for (size_t i = 0; i < tl->numTasks; i++) {
             const char *state = EBCL_taskStateToStr(tl->tasks[i].state);
-            EBCL_infoPrint("%-*s  %4d  %s", maxNameLen, tl->tasks[i].name, tl->tasks[i].pid, state);
+            crinitInfoPrint("%-*s  %4d  %s", maxNameLen, tl->tasks[i].name, tl->tasks[i].pid, state);
         }
         EBCL_crinitFreeTaskList(tl);
         return EXIT_SUCCESS;
     }
     if (strcmp(basename(getoptArgv[0]), "poweroff") == 0) {
         if (EBCL_crinitShutdown(RB_POWER_OFF) == -1) {
-            EBCL_errPrint("System poweroff request failed.");
+            crinitErrPrint("System poweroff request failed.");
             return EXIT_FAILURE;
         }
         return EXIT_SUCCESS;
     }
     if (strcmp(basename(getoptArgv[0]), "reboot") == 0) {
         if (EBCL_crinitShutdown(RB_AUTOBOOT) == -1) {
-            EBCL_errPrint("System reboot request failed.");
+            crinitErrPrint("System reboot request failed.");
             return EXIT_FAILURE;
         }
         return EXIT_SUCCESS;
@@ -390,7 +390,7 @@ static void EBCL_printVersion(void) {
             (strlen(libVer->git) == 0) ? "" : ".", libVer->git);
     ebcl_Version_t daemonVer;
     if (EBCL_crinitGetVersion(&daemonVer) == -1) {
-        EBCL_errPrint("Could not get version of Crinit daemon.");
+        crinitErrPrint("Could not get version of Crinit daemon.");
         return;
     }
     fprintf(stderr, "crinit daemon version %u.%u.%u%s%s\n", daemonVer.major, daemonVer.minor, daemonVer.micro,

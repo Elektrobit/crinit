@@ -24,7 +24,7 @@ void EBCL_fileSeriesFromDirOpendirError(void **state) {
     expect_value(__wrap_opendir, name, path);
     will_return(__wrap_opendir, NULL);
 
-    expect_any(__wrap_EBCL_errnoPrintFFL, format);
+    expect_any(__wrap_crinitErrnoPrintFFL, format);
 
     assert_int_equal(EBCL_fileSeriesFromDir(fse, path, NULL, false), -1);
 }

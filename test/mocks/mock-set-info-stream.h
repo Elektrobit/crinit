@@ -1,6 +1,6 @@
 /**
  * @file mock-set-info-stream.h
- * @brief Header declaring a mock function for EBCL_setInfoStream().
+ * @brief Header declaring a mock function for crinitSetInfoStream().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -14,11 +14,11 @@
 #include "logio.h"
 
 /**
- * Mock function for EBCL_setInfoStream().
+ * Mock function for crinitSetInfoStream().
  *
  * Checks that the right parameters are given through the cmocka API.
  */
-void __wrap_EBCL_setInfoStream(FILE *stream);  // NOLINT(readability-identifier-naming)
+void __wrap_crinitSetInfoStream(FILE *stream);  // NOLINT(readability-identifier-naming)
                                                // Rationale: Naming scheme fixed due to linkerw
                                                // wrapping.
 

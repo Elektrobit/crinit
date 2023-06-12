@@ -35,7 +35,7 @@ char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQ
     crinitNullCheck(NULL, numElements, confVal);
     char *backbuf = calloc(strlen(confVal) + 1, sizeof(*backbuf));
     if (backbuf == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for argv backing string.");
+        crinitErrnoPrint("Could not allocate memory for argv backing string.");
         return NULL;
     }
 
@@ -62,7 +62,7 @@ char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQ
             case EBCL_TK_ESC:
             case EBCL_TK_ESCX:
             case EBCL_TK_ERR:
-                EBCL_errPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
+                crinitErrPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
                 free(backbuf);
                 return NULL;
         }
@@ -70,7 +70,7 @@ char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQ
 
     char **outArr = calloc((*numElements + 1), sizeof(*outArr));
     if (outArr == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for argv-array from config.");
+        crinitErrnoPrint("Could not allocate memory for argv-array from config.");
         free(backbuf);
         return NULL;
     }
@@ -95,7 +95,7 @@ char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQ
                 outArr[argc++] = runner;
                 runner = EBCL_copyEscaped(runner, mbegin, mend);
                 if (runner == NULL) {
-                    EBCL_errPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
+                    crinitErrPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
                     free(backbuf);
                     free(outArr);
                     return NULL;
@@ -110,7 +110,7 @@ char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQ
             case EBCL_TK_ESC:
             case EBCL_TK_ESCX:
             case EBCL_TK_ERR:
-                EBCL_errPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
+                crinitErrPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
                 free(backbuf);
                 free(outArr);
                 return NULL;
@@ -118,7 +118,7 @@ char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQ
     } while (tt != EBCL_TK_END);
 
     if (argc != *numElements) {
-        EBCL_errPrint("Error trying to parse string array '%s'\n", confVal);
+        crinitErrPrint("Error trying to parse string array '%s'\n", confVal);
         free(backbuf);
         free(outArr);
         return NULL;
@@ -131,18 +131,18 @@ char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQ
 #define EBCL_confConvToIntegerFnBody(resType, confVal)                                                   \
     do {                                                                                                 \
         if (*(confVal) == '\0') {                                                                        \
-            EBCL_errPrint("Could not convert string to int. String is empty.");                          \
+            crinitErrPrint("Could not convert string to int. String is empty.");                          \
             return -1;                                                                                   \
         }                                                                                                \
         char *endptr = NULL;                                                                             \
         errno = 0;                                                                                       \
         (resType) = crinitStrtoGenericInteger(resType, confVal, &endptr, base);                           \
         if (errno != 0) {                                                                                \
-            EBCL_errnoPrint("Could not convert string to int.");                                         \
+            crinitErrnoPrint("Could not convert string to int.");                                         \
             return -1;                                                                                   \
         }                                                                                                \
         if (*endptr != '\0') {                                                                           \
-            EBCL_errPrint("Could not convert string to int. Non-numeric characters present in string."); \
+            crinitErrPrint("Could not convert string to int. Non-numeric characters present in string."); \
             return -1;                                                                                   \
         }                                                                                                \
     } while (0)
@@ -169,7 +169,7 @@ int EBCL_confConvToBool(bool *b, const char *confVal) {
         *b = false;
         return 0;
     }
-    EBCL_errPrint("Value for boolean option is not either \"YES\" or \"NO\" but \"%s\".", confVal);
+    crinitErrPrint("Value for boolean option is not either \"YES\" or \"NO\" but \"%s\".", confVal);
     return -1;
 }
 
@@ -185,12 +185,12 @@ int EBCL_confConvToIoRedir(ebcl_IoRedir_t *ior, const char *confVal) {
     int numParams = 0;
     char **confStrArr = EBCL_confConvToStrArr(&numParams, confVal, true);
     if (confStrArr == NULL) {
-        EBCL_errPrint("Could not extract IO redirection parameters from configuration.");
+        crinitErrPrint("Could not extract IO redirection parameters from configuration.");
         return -1;
     }
 
     if (numParams < 2) {
-        EBCL_errPrint("The IO redirection statement must have at least 2 parameters.");
+        crinitErrPrint("The IO redirection statement must have at least 2 parameters.");
         EBCL_freeArgvArray(confStrArr);
         return -1;
     }
@@ -202,7 +202,7 @@ int EBCL_confConvToIoRedir(ebcl_IoRedir_t *ior, const char *confVal) {
     } else if (strcmp(confStrArr[0], EBCL_CONFIG_STDIN_NAME) == 0) {
         ior->newFd = STDIN_FILENO;
     } else {
-        EBCL_errPrint("Redirecting other file descriptors than STDOUT, STDERR, or STDIN is not supported.");
+        crinitErrPrint("Redirecting other file descriptors than STDOUT, STDERR, or STDIN is not supported.");
         EBCL_freeArgvArray(confStrArr);
         return -1;
     }
@@ -216,12 +216,12 @@ int EBCL_confConvToIoRedir(ebcl_IoRedir_t *ior, const char *confVal) {
     } else if (crinitIsAbsPath(confStrArr[1])) {
         ior->path = strdup(confStrArr[1]);
         if (ior->path == NULL) {
-            EBCL_errnoPrint("Could not duplicate path string during parsing of IO redirection statement.");
+            crinitErrnoPrint("Could not duplicate path string during parsing of IO redirection statement.");
             EBCL_freeArgvArray(confStrArr);
             return -1;
         }
     } else {
-        EBCL_errPrint("Redirection target must be a standard file descriptor or an absolute path.");
+        crinitErrPrint("Redirection target must be a standard file descriptor or an absolute path.");
         EBCL_freeArgvArray(confStrArr);
         return -1;
     }
@@ -237,7 +237,7 @@ int EBCL_confConvToIoRedir(ebcl_IoRedir_t *ior, const char *confVal) {
                 ior->oflags = 0;
                 ior->fifo = true;
             } else {
-                EBCL_errPrint(
+                crinitErrPrint(
                     "Third parameter of redirection statement - if it is given - must be either APPEND, TRUNCATE, or "
                     "PIPE.");
                 EBCL_freeArgvArray(confStrArr);
@@ -251,16 +251,16 @@ int EBCL_confConvToIoRedir(ebcl_IoRedir_t *ior, const char *confVal) {
             ior->mode = crinitStrtoGenericInteger(ior->mode, confStrArr[3], &endPtr, 8);
             if (ior->mode == 0 && (errno != 0 || endPtr == confStrArr[3])) {
                 if (errno == 0) {
-                    EBCL_errPrint(
+                    crinitErrPrint(
                         "Encountered token that is not an octal number for file mode in IO redirection statement.");
                 } else {
-                    EBCL_errnoPrint("Could not perform conversion of octal mode digits in IO redirection statement.");
+                    crinitErrnoPrint("Could not perform conversion of octal mode digits in IO redirection statement.");
                 }
                 EBCL_freeArgvArray(confStrArr);
                 crinitNullify(ior->path);
                 return -1;
             } else if (ior->mode > 0777) {
-                EBCL_errPrint("0%o is not a supported file mode.", ior->mode);
+                crinitErrPrint("0%o is not a supported file mode.", ior->mode);
                 EBCL_freeArgvArray(confStrArr);
                 crinitNullify(ior->path);
                 return -1;
@@ -280,7 +280,7 @@ int EBCL_confConvToIoRedir(ebcl_IoRedir_t *ior, const char *confVal) {
 
 int EBCL_confConvToEnvSetMember(ebcl_EnvSet_t *es, const char *confVal) {
     if (es == NULL || confVal == NULL || es->envp == NULL || es->allocSz == 0) {
-        EBCL_errPrint("Input parameters must not be NULL and given environment set must be initialized.");
+        crinitErrPrint("Input parameters must not be NULL and given environment set must be initialized.");
         return -1;
     }
     const char *s = confVal, *mbegin = NULL, *mend = NULL;
@@ -290,29 +290,29 @@ int EBCL_confConvToEnvSetMember(ebcl_EnvSet_t *es, const char *confVal) {
         tt = EBCL_envVarOuterLex(&s, &mbegin, &mend);
         switch (tt) {
             case EBCL_TK_ERR:
-                EBCL_errPrint("Error while parsing string at '%.*s'\n", (int)(mend - mbegin), mbegin);
+                crinitErrPrint("Error while parsing string at '%.*s'\n", (int)(mend - mbegin), mbegin);
                 break;
             case EBCL_TK_ENVKEY:
                 if (envKey != NULL) {
-                    EBCL_errPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
+                    crinitErrPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
                     tt = EBCL_TK_ERR;
                     break;
                 }
                 envKey = strndup(mbegin, (size_t)(mend - mbegin));
                 if (envKey == NULL) {
-                    EBCL_errnoPrint("Could not duplicate environment variable key.");
+                    crinitErrnoPrint("Could not duplicate environment variable key.");
                     return -1;
                 }
                 break;
             case EBCL_TK_ENVVAL:
                 if (envKey == NULL || envVal != NULL) {
-                    EBCL_errPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
+                    crinitErrPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
                     tt = EBCL_TK_ERR;
                     break;
                 }
                 envVal = strndup(mbegin, (size_t)(mend - mbegin));
                 if (envVal == NULL) {
-                    EBCL_errnoPrint("Could not duplicate environment variable value.");
+                    crinitErrnoPrint("Could not duplicate environment variable value.");
                     free(envKey);
                     return -1;
                 }
@@ -327,21 +327,21 @@ int EBCL_confConvToEnvSetMember(ebcl_EnvSet_t *es, const char *confVal) {
             case EBCL_TK_ESCX:
             case EBCL_TK_UQSTR:
             case EBCL_TK_DQSTR:
-                EBCL_errPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
+                crinitErrPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
                 tt = EBCL_TK_ERR;
                 break;
         }
     } while (tt != EBCL_TK_END && tt != EBCL_TK_ERR);
 
     if (envKey == NULL || envVal == NULL) {
-        EBCL_errPrint("Given string does not contain both an environment key and a value.\n");
+        crinitErrPrint("Given string does not contain both an environment key and a value.\n");
         free(envVal);
         free(envKey);
         return -1;
     }
 
     if (tt != EBCL_TK_END) {
-        EBCL_errPrint("Parsing of environment string '%s' ended with error.\n", confVal);
+        crinitErrPrint("Parsing of environment string '%s' ended with error.\n", confVal);
         free(envVal);
         free(envKey);
         return -1;
@@ -351,7 +351,7 @@ int EBCL_confConvToEnvSetMember(ebcl_EnvSet_t *es, const char *confVal) {
     size_t newAllocSz = strlen(s) + 1;
     char *parsedVal = malloc(newAllocSz * sizeof(char));
     if (parsedVal == NULL) {
-        EBCL_errnoPrint("Could not allocate buffer to parse environment variable value.");
+        crinitErrnoPrint("Could not allocate buffer to parse environment variable value.");
         free(envKey);
         free(envVal);
         return -1;
@@ -367,13 +367,13 @@ int EBCL_confConvToEnvSetMember(ebcl_EnvSet_t *es, const char *confVal) {
         tt = EBCL_envVarInnerLex(&s, &mbegin, &mend);
         switch (tt) {
             case EBCL_TK_ERR:
-                EBCL_errPrint("Error while parsing string at '%.*s'\n", (int)(mend - mbegin), mbegin);
+                crinitErrPrint("Error while parsing string at '%.*s'\n", (int)(mend - mbegin), mbegin);
                 break;
             case EBCL_TK_ESC:
                 escMapIdx = (size_t)(*(mbegin + 1));
                 c = (escMapIdx < sizeof(EBCL_escMap)) ? EBCL_escMap[escMapIdx] : '\0';
                 if (c == '\0') {
-                    EBCL_errPrint("Unimplemented escape sequence at '%.*s'\n", (int)(mend - mbegin), mbegin);
+                    crinitErrPrint("Unimplemented escape sequence at '%.*s'\n", (int)(mend - mbegin), mbegin);
                     tt = EBCL_TK_ERR;
                     break;
                 }
@@ -391,7 +391,7 @@ int EBCL_confConvToEnvSetMember(ebcl_EnvSet_t *es, const char *confVal) {
             case EBCL_TK_VAR:
                 substKey = strndup(mbegin, (size_t)(mend - mbegin));
                 if (substKey == NULL) {
-                    EBCL_errnoPrint("Could not duplicate key of environment variable to expand.");
+                    crinitErrnoPrint("Could not duplicate key of environment variable to expand.");
                     tt = EBCL_TK_ERR;
                     break;
                 }
@@ -407,7 +407,7 @@ int EBCL_confConvToEnvSetMember(ebcl_EnvSet_t *es, const char *confVal) {
                     newAllocSz += substLen;
                     char *newPtr = realloc(parsedVal, newAllocSz);
                     if (newPtr == NULL) {
-                        EBCL_errnoPrint("Could not reallocate memory during environment variable expansion.");
+                        crinitErrnoPrint("Could not reallocate memory during environment variable expansion.");
                         tt = EBCL_TK_ERR;
                         break;
                     }
@@ -429,7 +429,7 @@ int EBCL_confConvToEnvSetMember(ebcl_EnvSet_t *es, const char *confVal) {
             case EBCL_TK_UQSTR:
             case EBCL_TK_DQSTR:
             default:
-                EBCL_errPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
+                crinitErrPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
                 tt = EBCL_TK_ERR;
                 break;
         }
@@ -438,14 +438,14 @@ int EBCL_confConvToEnvSetMember(ebcl_EnvSet_t *es, const char *confVal) {
     free(envVal);
 
     if (tt != EBCL_TK_END) {
-        EBCL_errPrint("Parsing of '%s' ended with an error state.", confVal);
+        crinitErrPrint("Parsing of '%s' ended with an error state.", confVal);
         free(envKey);
         free(parsedVal);
         return -1;
     }
 
     if (EBCL_envSetSet(es, envKey, parsedVal) == -1) {
-        EBCL_errPrint("Could not set environment variable '%s' to '%s'.", envKey, parsedVal);
+        crinitErrPrint("Could not set environment variable '%s' to '%s'.", envKey, parsedVal);
         free(envKey);
         free(parsedVal);
         return -1;
@@ -459,7 +459,7 @@ int EBCL_confConvToEnvSetMember(ebcl_EnvSet_t *es, const char *confVal) {
 static char *EBCL_copyEscaped(char *dst, const char *src, const char *end) {
     crinitNullCheck(NULL, dst, src, end);
     if (src > end) {
-        EBCL_errPrint("String start pointer must not point behind the end pointer.");
+        crinitErrPrint("String start pointer must not point behind the end pointer.");
         return NULL;
     }
 
@@ -484,7 +484,7 @@ static char *EBCL_copyEscaped(char *dst, const char *src, const char *end) {
             *runner = (char)strtol(match, NULL, 16);
             runner++;
         } else {
-            EBCL_errPrint("Parser error while parsing escape sequences.\n");
+            crinitErrPrint("Parser error while parsing escape sequences.\n");
             return NULL;
         }
 

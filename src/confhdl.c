@@ -53,7 +53,7 @@ int EBCL_taskCfgCmdHandler(ebcl_Task_t *tgt, const char *val) {
     size_t newIdx = tgt->cmdsSize;
     ebcl_TaskCmd_t *newArr = EBCL_cfgHandlerManageArrayMem(tgt->cmds, sizeof(*tgt->cmds), tgt->cmdsSize, newIdx + 1);
     if (newArr == NULL) {
-        EBCL_errPrint("Could not perform memory allocation during handler for configuration key '%s'.",
+        crinitErrPrint("Could not perform memory allocation during handler for configuration key '%s'.",
                       EBCL_CONFIG_KEYSTR_COMMAND);
         return -1;
     }
@@ -62,7 +62,7 @@ int EBCL_taskCfgCmdHandler(ebcl_Task_t *tgt, const char *val) {
 
     tgt->cmds[newIdx].argv = EBCL_confConvToStrArr(&tgt->cmds[newIdx].argc, val, true);
     if (tgt->cmds[newIdx].argv == NULL) {
-        EBCL_errPrint("Could not extract argv/argc from '%s' index %zu.", EBCL_CONFIG_KEYSTR_COMMAND, newIdx);
+        crinitErrPrint("Could not extract argv/argc from '%s' index %zu.", EBCL_CONFIG_KEYSTR_COMMAND, newIdx);
         return -1;
     }
     return 0;
@@ -74,7 +74,7 @@ int EBCL_taskCfgDepHandler(ebcl_Task_t *tgt, const char *val) {
     int tempDepsSize = 0;
     char **tempDeps = EBCL_confConvToStrArr(&tempDepsSize, val, false);
     if (tempDeps == NULL) {
-        EBCL_errPrint("Could not extract string array from '%s' parameter, value: '%s'", EBCL_CONFIG_KEYSTR_DEPENDS,
+        crinitErrPrint("Could not extract string array from '%s' parameter, value: '%s'", EBCL_CONFIG_KEYSTR_DEPENDS,
                       val);
         return -1;
     }
@@ -88,7 +88,7 @@ int EBCL_taskCfgDepHandler(ebcl_Task_t *tgt, const char *val) {
     size_t oldSz = tgt->depsSize, newSz = (size_t)(oldSz + tempDepsSize);
     ebcl_TaskDep_t *newArr = EBCL_cfgHandlerManageArrayMem(tgt->deps, sizeof(*tgt->deps), oldSz, newSz);
     if (newArr == NULL) {
-        EBCL_errPrint("Could not perform memory allocation during handler for configuration key '%s'.",
+        crinitErrPrint("Could not perform memory allocation during handler for configuration key '%s'.",
                       EBCL_CONFIG_KEYSTR_DEPENDS);
         EBCL_freeArgvArray(tempDeps);
         return -1;
@@ -99,7 +99,7 @@ int EBCL_taskCfgDepHandler(ebcl_Task_t *tgt, const char *val) {
     for (size_t i = oldSz; i < tgt->depsSize; i++) {
         tgt->deps[i].name = strdup(tempDeps[i]);
         if (tgt->deps[i].name == NULL) {
-            EBCL_errnoPrint("Could not duplicate string for dependency '%s'.", tempDeps[i]);
+            crinitErrnoPrint("Could not duplicate string for dependency '%s'.", tempDeps[i]);
             EBCL_freeArgvArray(tempDeps);
             return -1;
         }
@@ -109,7 +109,7 @@ int EBCL_taskCfgDepHandler(ebcl_Task_t *tgt, const char *val) {
         tgt->deps[i].event = strtok_r(NULL, ":", &strtokState);
 
         if (tgt->deps[i].name == NULL || tgt->deps[i].event == NULL) {
-            EBCL_errPrint("Could not parse dependency '%s'.", tempDeps[i]);
+            crinitErrPrint("Could not parse dependency '%s'.", tempDeps[i]);
             EBCL_freeArgvArray(tempDeps);
             return -1;
         }
@@ -125,7 +125,7 @@ int EBCL_taskCfgPrvHandler(ebcl_Task_t *tgt, const char *val) {
     int tempPrvsSize = 0;
     char **tempPrvs = EBCL_confConvToStrArr(&tempPrvsSize, val, false);
     if (tempPrvs == NULL) {
-        EBCL_errPrint("Could not extract string array from '%s', value: '%s'.", EBCL_CONFIG_KEYSTR_PROVIDES, val);
+        crinitErrPrint("Could not extract string array from '%s', value: '%s'.", EBCL_CONFIG_KEYSTR_PROVIDES, val);
         return -1;
     }
 
@@ -137,7 +137,7 @@ int EBCL_taskCfgPrvHandler(ebcl_Task_t *tgt, const char *val) {
     size_t oldSz = tgt->prvSize, newSz = (size_t)(oldSz + tempPrvsSize);
     ebcl_TaskPrv_t *newArr = EBCL_cfgHandlerManageArrayMem(tgt->prv, sizeof(*tgt->prv), oldSz, newSz);
     if (newArr == NULL) {
-        EBCL_errPrint("Could not perform memory allocation during handler for configuration key '%s'.",
+        crinitErrPrint("Could not perform memory allocation during handler for configuration key '%s'.",
                       EBCL_CONFIG_KEYSTR_PROVIDES);
         EBCL_freeArgvArray(tempPrvs);
         return -1;
@@ -150,14 +150,14 @@ int EBCL_taskCfgPrvHandler(ebcl_Task_t *tgt, const char *val) {
         ptr->stateReq = 0;
         ptr->name = strdup(tempPrvs[i]);
         if (ptr->name == NULL) {
-            EBCL_errnoPrint("Could not duplicate string for %s.", EBCL_CONFIG_KEYSTR_PROVIDES);
+            crinitErrnoPrint("Could not duplicate string for %s.", EBCL_CONFIG_KEYSTR_PROVIDES);
             EBCL_freeArgvArray(tempPrvs);
             return -1;
         }
 
         char *delimPtr = strchr(ptr->name, ':');
         if (delimPtr == NULL) {
-            EBCL_errnoPrint("Could not parse '%s' in %s.", ptr->name, EBCL_CONFIG_KEYSTR_PROVIDES);
+            crinitErrnoPrint("Could not parse '%s' in %s.", ptr->name, EBCL_CONFIG_KEYSTR_PROVIDES);
             EBCL_freeArgvArray(tempPrvs);
             return -1;
         }
@@ -169,7 +169,7 @@ int EBCL_taskCfgPrvHandler(ebcl_Task_t *tgt, const char *val) {
         } else if (strncmp(delimPtr, EBCL_TASK_EVENT_FAILED, strlen(EBCL_TASK_EVENT_FAILED)) == 0) {
             ptr->stateReq = EBCL_TASK_STATE_FAILED;
         } else {
-            EBCL_errnoPrint("Could not parse '%s' in %s.", ptr->name, EBCL_CONFIG_KEYSTR_PROVIDES);
+            crinitErrnoPrint("Could not parse '%s' in %s.", ptr->name, EBCL_CONFIG_KEYSTR_PROVIDES);
             EBCL_freeArgvArray(tempPrvs);
             return -1;
         }
@@ -188,11 +188,11 @@ int EBCL_taskCfgEnvHandler(ebcl_Task_t *tgt, const char *val) {
     EBCL_cfgHandlerCommonNullCheck();
     if (tgt->taskEnv.envp == NULL &&
         EBCL_envSetInit(&tgt->taskEnv, EBCL_ENVSET_INITIAL_SIZE, EBCL_ENVSET_SIZE_INCREMENT) == -1) {
-        EBCL_errPrint("Could not initialize task environment.");
+        crinitErrPrint("Could not initialize task environment.");
         return -1;
     }
     if (EBCL_confConvToEnvSetMember(&tgt->taskEnv, val) == -1) {
-        EBCL_errPrint("Could not parse task environment directive '%s'.", val);
+        crinitErrPrint("Could not parse task environment directive '%s'.", val);
         return -1;
     }
     return 0;
@@ -205,7 +205,7 @@ int EBCL_taskCfgIoRedirHandler(ebcl_Task_t *tgt, const char *val) {
     ebcl_IoRedir_t *newArr =
         EBCL_cfgHandlerManageArrayMem(tgt->redirs, sizeof(*tgt->redirs), tgt->redirsSize, tgt->redirsSize + 1);
     if (newArr == NULL) {
-        EBCL_errPrint("Could not perform memory allocation during handler for configuration key '%s'.",
+        crinitErrPrint("Could not perform memory allocation during handler for configuration key '%s'.",
                       EBCL_CONFIG_KEYSTR_IOREDIR);
         return -1;
     }
@@ -213,7 +213,7 @@ int EBCL_taskCfgIoRedirHandler(ebcl_Task_t *tgt, const char *val) {
     tgt->redirsSize++;
 
     if (EBCL_confConvToIoRedir(&tgt->redirs[newIdx], val) == -1) {
-        EBCL_errPrint("Could not initialize IO redirection structure from '%s', value: '%s'.",
+        crinitErrPrint("Could not initialize IO redirection structure from '%s', value: '%s'.",
                       EBCL_CONFIG_KEYSTR_IOREDIR, val);
         return -1;
     }
@@ -224,7 +224,7 @@ int EBCL_taskCfgNameHandler(ebcl_Task_t *tgt, const char *val) {
     EBCL_cfgHandlerCommonNullCheck();
     tgt->name = strdup(val);
     if (tgt->name == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for name of task '%s'.", val);
+        crinitErrnoPrint("Could not allocate memory for name of task '%s'.", val);
         return -1;
     }
     return 0;
@@ -233,7 +233,7 @@ int EBCL_taskCfgNameHandler(ebcl_Task_t *tgt, const char *val) {
 int EBCL_taskCfgRespHandler(ebcl_Task_t *tgt, const char *val) {
     EBCL_cfgHandlerCommonNullCheck();
     if (EBCL_cfgHandlerSetTaskOptFromStr(&tgt->opts, EBCL_TASK_OPT_RESPAWN, val) == -1) {
-        EBCL_errPrint("Could not parse value of boolean option '%s'.", EBCL_CONFIG_KEYSTR_RESPAWN);
+        crinitErrPrint("Could not parse value of boolean option '%s'.", EBCL_CONFIG_KEYSTR_RESPAWN);
         return -1;
     }
     return 0;
@@ -242,7 +242,7 @@ int EBCL_taskCfgRespHandler(ebcl_Task_t *tgt, const char *val) {
 int EBCL_taskCfgRespRetHandler(ebcl_Task_t *tgt, const char *val) {
     EBCL_cfgHandlerCommonNullCheck();
     if (EBCL_confConvToInteger(&tgt->maxRetries, val, 10) == -1) {
-        EBCL_errPrint("Could not parse value of integral numeric option '%s'.", EBCL_CONFIG_KEYSTR_RESPAWN_RETRIES);
+        crinitErrPrint("Could not parse value of integral numeric option '%s'.", EBCL_CONFIG_KEYSTR_RESPAWN_RETRIES);
         return -1;
     }
     return 0;
@@ -254,7 +254,7 @@ int EBCL_taskIncludeHandler(ebcl_Task_t *tgt, const char *val) {
     int inclCfgSz;
     char **inclCfgStrArr = EBCL_confConvToStrArr(&inclCfgSz, val, true);
     if (inclCfgStrArr == NULL) {
-        EBCL_errPrint("Could not extract config parameters from '%s', value: '%s'", EBCL_CONFIG_KEYSTR_INCLUDE, val);
+        crinitErrPrint("Could not extract config parameters from '%s', value: '%s'", EBCL_CONFIG_KEYSTR_INCLUDE, val);
         return -1;
     }
     char *importList;
@@ -263,12 +263,12 @@ int EBCL_taskIncludeHandler(ebcl_Task_t *tgt, const char *val) {
     } else if (inclCfgSz == 2) {  // INCLUDE with import list
         importList = inclCfgStrArr[1];
     } else {  // parser error
-        EBCL_errPrint("Unexpected number of parameters to '%s' config directive.", EBCL_CONFIG_KEYSTR_INCLUDE);
+        crinitErrPrint("Unexpected number of parameters to '%s' config directive.", EBCL_CONFIG_KEYSTR_INCLUDE);
         EBCL_freeArgvArray(inclCfgStrArr);
         return -1;
     }
     if (EBCL_taskMergeInclude(tgt, inclCfgStrArr[0], importList) == -1) {
-        EBCL_errPrint("Could not merge include '%s' into task.", inclCfgStrArr[0]);
+        crinitErrPrint("Could not merge include '%s' into task.", inclCfgStrArr[0]);
         EBCL_freeArgvArray(inclCfgStrArr);
         return -1;
     }
@@ -279,7 +279,7 @@ int EBCL_taskIncludeHandler(ebcl_Task_t *tgt, const char *val) {
 static inline int EBCL_cfgHandlerSetTaskOptFromStr(ebcl_TaskOpts_t *tgt, ebcl_TaskOpts_t opt, const char *val) {
     bool b;
     if (EBCL_confConvToBool(&b, val) == -1) {
-        EBCL_errPrint("Could not convert from configuration file value to boolean.");
+        crinitErrPrint("Could not convert from configuration file value to boolean.");
         return -1;
     }
     if (b) {
@@ -292,7 +292,7 @@ static inline int EBCL_cfgHandlerSetTaskOptFromStr(ebcl_TaskOpts_t *tgt, ebcl_Ta
 
 static inline void *EBCL_cfgHandlerManageArrayMem(void *dynArr, size_t elementSize, size_t curSize, size_t reqSize) {
     if (reqSize < curSize) {
-        EBCL_errPrint("Configuration value arrays can only be grown in size.");
+        crinitErrPrint("Configuration value arrays can only be grown in size.");
         return NULL;
     }
 
@@ -300,7 +300,7 @@ static inline void *EBCL_cfgHandlerManageArrayMem(void *dynArr, size_t elementSi
     if (curSize < reqSize) {
         out = realloc(dynArr, reqSize * elementSize);
         if (out == NULL) {
-            EBCL_errnoPrint(
+            crinitErrnoPrint(
                 "Could not allocate additional memory to grow configuration value array from size %zu to size %zu.",
                 curSize, reqSize);
             return NULL;

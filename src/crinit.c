@@ -38,7 +38,7 @@ static void EBCL_printVersion(void);
  */
 static void EBCL_printUsage(const char *basename);
 /**
- * Print out the contents of an ebcl_Task_t structure in a readable format using EBCL_dbgInfoPrint().
+ * Print out the contents of an ebcl_Task_t structure in a readable format using crinitDbgInfoPrint().
  *
  * @param t  The task to be printed.
  */
@@ -64,31 +64,31 @@ int main(int argc, char *argv[]) {
             }
         }
         if (!crinitIsAbsPath(argv[1])) {
-            EBCL_errPrint("Program argument must be an absolute path.");
+            crinitErrPrint("Program argument must be an absolute path.");
             EBCL_printUsage(argv[0]);
             return EXIT_FAILURE;
         }
         seriesFname = argv[1];
     }
-    EBCL_infoPrint("Crinit daemon version %s started.", EBCL_getVersionString());
+    crinitInfoPrint("Crinit daemon version %s started.", EBCL_getVersionString());
     if (getpid() == 1) {
         if (EBCL_forkZombieReaper() == -1) {
-            EBCL_errPrint("I am PID 1 but failed to create a zombie reaper process.");
+            crinitErrPrint("I am PID 1 but failed to create a zombie reaper process.");
             return EXIT_FAILURE;
         }
         if (EBCL_setupSystemFs() == -1) {
-            EBCL_errPrint("I started as PID 1 but failed to do minimal system setup.");
+            crinitErrPrint("I started as PID 1 but failed to do minimal system setup.");
             return EXIT_FAILURE;
         }
     }
     if (EBCL_globOptInitDefault() == -1) {
-        EBCL_errPrint("Could not initialize global option array.");
+        crinitErrPrint("Could not initialize global option array.");
         return EXIT_FAILURE;
     }
 
     ebcl_FileSeries_t taskSeries;
     if (EBCL_loadSeriesConf(&taskSeries, seriesFname) == -1) {
-        EBCL_errPrint("Could not load series file \'%s\'.", seriesFname);
+        crinitErrPrint("Could not load series file \'%s\'.", seriesFname);
         EBCL_globOptDestroy();
         return EXIT_FAILURE;
     }
@@ -106,7 +106,7 @@ int main(int argc, char *argv[]) {
             size_t suffixLen = strlen(taskSeries.fnames[n]);
             confFn = malloc(prefixLen + suffixLen + 2);
             if (confFn == NULL) {
-                EBCL_errnoPrint("Could not allocate string with full path for \'%s\'.", taskSeries.fnames[n]);
+                crinitErrnoPrint("Could not allocate string with full path for \'%s\'.", taskSeries.fnames[n]);
                 EBCL_globOptDestroy();
                 EBCL_destroyFileSeries(&taskSeries);
                 EBCL_taskDBDestroy(&tdb);
@@ -119,7 +119,7 @@ int main(int argc, char *argv[]) {
         }
         ebcl_ConfKvList_t *c;
         if (EBCL_parseConf(&c, confFn) == -1) {
-            EBCL_errPrint("Could not parse file \'%s\'.", confFn);
+            crinitErrPrint("Could not parse file \'%s\'.", confFn);
             EBCL_globOptDestroy();
             if (confFnAllocated) {
                 free(confFn);
@@ -128,15 +128,15 @@ int main(int argc, char *argv[]) {
             EBCL_taskDBDestroy(&tdb);
             return EXIT_FAILURE;
         }
-        EBCL_infoPrint("File \'%s\' loaded.", confFn);
+        crinitInfoPrint("File \'%s\' loaded.", confFn);
         if (confFnAllocated) {
             free(confFn);
         }
-        EBCL_dbgInfoPrint("Will now attempt to extract a Task out of the config.");
+        crinitDbgInfoPrint("Will now attempt to extract a Task out of the config.");
 
         ebcl_Task_t *t = NULL;
         if (EBCL_taskCreateFromConfKvList(&t, c) == -1) {
-            EBCL_errPrint("Could not extract task from ConfKvList.");
+            crinitErrPrint("Could not extract task from ConfKvList.");
             EBCL_freeConfList(c);
             EBCL_globOptDestroy();
             EBCL_destroyFileSeries(&taskSeries);
@@ -145,11 +145,11 @@ int main(int argc, char *argv[]) {
         }
         EBCL_freeConfList(c);
 
-        EBCL_dbgInfoPrint("Task extracted without error.");
+        crinitDbgInfoPrint("Task extracted without error.");
         EBCL_taskPrint(t);
 
         if (EBCL_taskDBInsert(&tdb, t, false) == -1) {
-            EBCL_errPrint("Could not insert Task '%s' into TaskDB.", t->name);
+            crinitErrPrint("Could not insert Task '%s' into TaskDB.", t->name);
             EBCL_globOptDestroy();
             EBCL_destroyFileSeries(&taskSeries);
             EBCL_freeTask(t);
@@ -159,14 +159,14 @@ int main(int argc, char *argv[]) {
         EBCL_freeTask(t);
     }
     EBCL_destroyFileSeries(&taskSeries);
-    EBCL_dbgInfoPrint("Done parsing.");
+    crinitDbgInfoPrint("Done parsing.");
 
     char *sockFile = getenv("CRINIT_SOCK");
     if (sockFile == NULL) {
         sockFile = EBCL_CRINIT_SOCKFILE;
     }
     if (EBCL_startInterfaceServer(&tdb, sockFile) == -1) {
-        EBCL_errPrint("Could not start notification and service interface.");
+        crinitErrPrint("Could not start notification and service interface.");
         EBCL_taskDBDestroy(&tdb);
         EBCL_globOptDestroy();
         return EXIT_FAILURE;
@@ -175,7 +175,7 @@ int main(int argc, char *argv[]) {
     while (true) {
         EBCL_taskDBSpawnReady(&tdb);
         pthread_mutex_lock(&tdb.lock);
-        EBCL_dbgInfoPrint("Waiting for Task to be ready.");
+        crinitDbgInfoPrint("Waiting for Task to be ready.");
         pthread_cond_wait(&tdb.changed, &tdb.lock);
         pthread_mutex_unlock(&tdb.lock);
     }
@@ -195,32 +195,32 @@ static void EBCL_printUsage(const char *basename) {
 }
 
 static void EBCL_taskPrint(const ebcl_Task_t *t) {
-    EBCL_dbgInfoPrint("---------------");
-    EBCL_dbgInfoPrint("Data Structure:");
-    EBCL_dbgInfoPrint("---------------");
-    EBCL_dbgInfoPrint("NAME: %s", t->name);
-    EBCL_dbgInfoPrint("Number of COMMANDs: %zu", t->cmdsSize);
+    crinitDbgInfoPrint("---------------");
+    crinitDbgInfoPrint("Data Structure:");
+    crinitDbgInfoPrint("---------------");
+    crinitDbgInfoPrint("NAME: %s", t->name);
+    crinitDbgInfoPrint("Number of COMMANDs: %zu", t->cmdsSize);
     for (size_t i = 0; i < t->cmdsSize; i++) {
-        EBCL_dbgInfoPrint("cmds[%zu]:", i);
+        crinitDbgInfoPrint("cmds[%zu]:", i);
         for (int j = 0; j <= t->cmds[i].argc; j++) {
             if (t->cmds[i].argv[j] != NULL) {
-                EBCL_dbgInfoPrint("    argv[%d] = \'%s\'", j, t->cmds[i].argv[j]);
+                crinitDbgInfoPrint("    argv[%d] = \'%s\'", j, t->cmds[i].argv[j]);
             } else {
-                EBCL_dbgInfoPrint("    argv[%d] = NULL", j);
+                crinitDbgInfoPrint("    argv[%d] = NULL", j);
             }
         }
     }
 
-    EBCL_dbgInfoPrint("Number of dependencies: %zu", t->depsSize);
+    crinitDbgInfoPrint("Number of dependencies: %zu", t->depsSize);
     for (size_t i = 0; i < t->depsSize; i++) {
-        EBCL_dbgInfoPrint("deps[%zu]: name=\'%s\' event=\'%s\'", i, t->deps[i].name, t->deps[i].event);
+        crinitDbgInfoPrint("deps[%zu]: name=\'%s\' event=\'%s\'", i, t->deps[i].name, t->deps[i].event);
     }
 
-    EBCL_dbgInfoPrint("Number of provided features: %zu", t->prvSize);
+    crinitDbgInfoPrint("Number of provided features: %zu", t->prvSize);
     for (size_t i = 0; i < t->prvSize; i++) {
-        EBCL_dbgInfoPrint("prv[%zu]: name=\'%s\' state_req=\'%lu\'", i, t->prv[i].name, t->prv[i].stateReq);
+        crinitDbgInfoPrint("prv[%zu]: name=\'%s\' state_req=\'%lu\'", i, t->prv[i].name, t->prv[i].stateReq);
     }
 
-    EBCL_dbgInfoPrint("TaskOpts:");
-    EBCL_dbgInfoPrint("    EBCL_TASK_OPT_RESPAWN = %s", (t->opts & EBCL_TASK_OPT_RESPAWN) ? "true" : "false");
+    crinitDbgInfoPrint("TaskOpts:");
+    crinitDbgInfoPrint("    EBCL_TASK_OPT_RESPAWN = %s", (t->opts & EBCL_TASK_OPT_RESPAWN) ? "true" : "false");
 }

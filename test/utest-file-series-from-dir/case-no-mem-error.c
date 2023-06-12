@@ -46,7 +46,7 @@ void EBCL_fileSeriesFromDirNoMemError(void **state) {
     expect_value(__wrap_malloc, size, 0);
     will_return(__wrap_malloc, NULL);
 
-    expect_any(__wrap_EBCL_errnoPrintFFL, format);
+    expect_any(__wrap_crinitErrnoPrintFFL, format);
 
     assert_int_equal(EBCL_fileSeriesFromDir(&fse, path, NULL, false), -1);
 }

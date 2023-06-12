@@ -30,7 +30,7 @@ void EBCL_fileSeriesFromDirDirfdError(void **state) {
     expect_value(__wrap_dirfd, dirp, dptr);
     will_return(__wrap_dirfd, -1);
 
-    expect_any(__wrap_EBCL_errnoPrintFFL, format);
+    expect_any(__wrap_crinitErrnoPrintFFL, format);
 
     expect_value(__wrap_closedir, dirp, dptr);
 

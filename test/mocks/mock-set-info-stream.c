@@ -1,6 +1,6 @@
 /**
  * @file mock-set-info-stream.c
- * @brief Implementation of a mock function for EBCL_setInfoStream().
+ * @brief Implementation of a mock function for crinitSetInfoStream().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -12,7 +12,7 @@
 
 #include "unit_test.h"
 
-void __wrap_EBCL_setInfoStream(FILE *stream) {  // NOLINT(readability-identifier-naming)
+void __wrap_crinitSetInfoStream(FILE *stream) {  // NOLINT(readability-identifier-naming)
                                                 // Rationale: Naming scheme fixed due to linkerw
                                                 // wrapping.
     check_expected(stream);
