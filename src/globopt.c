@@ -32,12 +32,6 @@ int crinitGlobOptInitDefault(void) {
                     return -1;
                 }
             } break;
-            case CRINIT_GLOBOPT_TASKDIR:
-                if (crinitGlobOptSetString(i, CRINIT_CONFIG_DEFAULT_TASKDIR) == -1) {
-                    crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_TASKDIR);
-                    return -1;
-                }
-                break;
             case CRINIT_GLOBOPT_INCLDIR:
                 if (crinitGlobOptSetString(i, CRINIT_CONFIG_DEFAULT_INCLDIR) == -1) {
                     crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_INCLDIR);
@@ -65,9 +59,15 @@ int crinitGlobOptInitDefault(void) {
                 }
             } break;
             case CRINIT_GLOBOPT_ENV: {
-                crinitEnvSet_t init = {NULL, 0, 0};
+                crinitEnvSet_t init;
+                if (crinitEnvSetInit(&init, CRINIT_ENVSET_INITIAL_SIZE, CRINIT_ENVSET_SIZE_INCREMENT) == -1) {
+                    crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_ENV_SET);
+                    return -1;
+                }
+
                 if (crinitGlobOptSet(i, &init, sizeof(crinitEnvSet_t)) == -1) {
                     crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_ENV_SET);
+                    crinitEnvSetDestroy(&init);
                     return -1;
                 }
             } break;

@@ -16,11 +16,17 @@
 
 #include "common.h"
 #include "confconv.h"
+#include "globopt.h"
 #include "lexers.h"
 #include "logio.h"
 
-/** Common NULL-pointer input check as all configuration handler functions have the same signature **/
-#define crinitCfgHandlerCommonNullCheck() crinitNullCheck(-1, tgt, val)
+#define crinitCfgHandlerTypeCheck(t)                                                                      \
+    do {                                                                                                  \
+        if ((t) != type) {                                                                                \
+            crinitErrPrint("This function is not capable of dealing with the configuration type %s", #t); \
+            return -1;                                                                                    \
+        }                                                                                                 \
+    } while (0)
 
 /**
  * Helper function to set a bitmask value in crinitTask_t::opts.
@@ -47,35 +53,38 @@ static inline int crinitCfgHandlerSetTaskOptFromStr(crinitTaskOpts_t *tgt, crini
  */
 static inline void *crinitCfgHandlerManageArrayMem(void *dynArr, size_t elementSize, size_t curSize, size_t reqSize);
 
-int crinitTaskCfgCmdHandler(crinitTask_t *tgt, const char *val) {
-    crinitCfgHandlerCommonNullCheck();
-
-    size_t newIdx = tgt->cmdsSize;
-    crinitTaskCmd_t *newArr = crinitCfgHandlerManageArrayMem(tgt->cmds, sizeof(*tgt->cmds), tgt->cmdsSize, newIdx + 1);
+int crinitCfgCmdHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    crinitNullCheck(-1, tgt, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
+    crinitTask_t *t = tgt;
+    size_t newIdx = t->cmdsSize;
+    crinitTaskCmd_t *newArr = crinitCfgHandlerManageArrayMem(t->cmds, sizeof(*t->cmds), t->cmdsSize, newIdx + 1);
     if (newArr == NULL) {
         crinitErrPrint("Could not perform memory allocation during handler for configuration key '%s'.",
-                      CRINIT_CONFIG_KEYSTR_COMMAND);
+                       CRINIT_CONFIG_KEYSTR_COMMAND);
         return -1;
     }
-    tgt->cmds = newArr;
-    tgt->cmdsSize++;
+    t->cmds = newArr;
+    t->cmdsSize++;
 
-    tgt->cmds[newIdx].argv = crinitConfConvToStrArr(&tgt->cmds[newIdx].argc, val, true);
-    if (tgt->cmds[newIdx].argv == NULL) {
+    t->cmds[newIdx].argv = crinitConfConvToStrArr(&t->cmds[newIdx].argc, val, true);
+    if (t->cmds[newIdx].argv == NULL) {
         crinitErrPrint("Could not extract argv/argc from '%s' index %zu.", CRINIT_CONFIG_KEYSTR_COMMAND, newIdx);
         return -1;
     }
     return 0;
 }
 
-int crinitTaskCfgDepHandler(crinitTask_t *tgt, const char *val) {
-    crinitCfgHandlerCommonNullCheck();
+int crinitCfgDepHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    crinitNullCheck(-1, tgt, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
+    crinitTask_t *t = tgt;
 
     int tempDepsSize = 0;
     char **tempDeps = crinitConfConvToStrArr(&tempDepsSize, val, false);
     if (tempDeps == NULL) {
         crinitErrPrint("Could not extract string array from '%s' parameter, value: '%s'", CRINIT_CONFIG_KEYSTR_DEPENDS,
-                      val);
+                       val);
         return -1;
     }
 
@@ -85,31 +94,31 @@ int crinitTaskCfgDepHandler(crinitTask_t *tgt, const char *val) {
         return 0;
     }
 
-    size_t oldSz = tgt->depsSize, newSz = (size_t)(oldSz + tempDepsSize);
-    crinitTaskDep_t *newArr = crinitCfgHandlerManageArrayMem(tgt->deps, sizeof(*tgt->deps), oldSz, newSz);
+    size_t oldSz = t->depsSize, newSz = (size_t)(oldSz + tempDepsSize);
+    crinitTaskDep_t *newArr = crinitCfgHandlerManageArrayMem(t->deps, sizeof(*t->deps), oldSz, newSz);
     if (newArr == NULL) {
         crinitErrPrint("Could not perform memory allocation during handler for configuration key '%s'.",
-                      CRINIT_CONFIG_KEYSTR_DEPENDS);
+                       CRINIT_CONFIG_KEYSTR_DEPENDS);
         crinitFreeArgvArray(tempDeps);
         return -1;
     }
-    tgt->deps = newArr;
-    tgt->depsSize = newSz;
+    t->deps = newArr;
+    t->depsSize = newSz;
 
-    for (size_t i = oldSz; i < tgt->depsSize; i++) {
-        tgt->deps[i].name = strdup(tempDeps[i]);
-        if (tgt->deps[i].name == NULL) {
-            crinitErrnoPrint("Could not duplicate string for dependency '%s'.", tempDeps[i]);
+    for (size_t i = oldSz; i < t->depsSize; i++) {
+        t->deps[i].name = strdup(tempDeps[i - oldSz]);
+        if (t->deps[i].name == NULL) {
+            crinitErrnoPrint("Could not duplicate string for dependency '%s'.", tempDeps[i - oldSz]);
             crinitFreeArgvArray(tempDeps);
             return -1;
         }
 
         char *strtokState = NULL;
-        tgt->deps[i].name = strtok_r(tgt->deps[i].name, ":", &strtokState);
-        tgt->deps[i].event = strtok_r(NULL, ":", &strtokState);
+        t->deps[i].name = strtok_r(t->deps[i].name, ":", &strtokState);
+        t->deps[i].event = strtok_r(NULL, ":", &strtokState);
 
-        if (tgt->deps[i].name == NULL || tgt->deps[i].event == NULL) {
-            crinitErrPrint("Could not parse dependency '%s'.", tempDeps[i]);
+        if (t->deps[i].name == NULL || t->deps[i].event == NULL) {
+            crinitErrPrint("Could not parse dependency '%s'.", tempDeps[i - oldSz]);
             crinitFreeArgvArray(tempDeps);
             return -1;
         }
@@ -119,9 +128,11 @@ int crinitTaskCfgDepHandler(crinitTask_t *tgt, const char *val) {
     return 0;
 }
 
-int crinitTaskCfgPrvHandler(crinitTask_t *tgt, const char *val) {
-    crinitCfgHandlerCommonNullCheck();
+int crinitCfgPrvHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    crinitNullCheck(-1, tgt, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
 
+    crinitTask_t *t = tgt;
     int tempPrvsSize = 0;
     char **tempPrvs = crinitConfConvToStrArr(&tempPrvsSize, val, false);
     if (tempPrvs == NULL) {
@@ -134,21 +145,21 @@ int crinitTaskCfgPrvHandler(crinitTask_t *tgt, const char *val) {
         return 0;
     }
 
-    size_t oldSz = tgt->prvSize, newSz = (size_t)(oldSz + tempPrvsSize);
-    crinitTaskPrv_t *newArr = crinitCfgHandlerManageArrayMem(tgt->prv, sizeof(*tgt->prv), oldSz, newSz);
+    size_t oldSz = t->prvSize, newSz = (size_t)(oldSz + tempPrvsSize);
+    crinitTaskPrv_t *newArr = crinitCfgHandlerManageArrayMem(t->prv, sizeof(*t->prv), oldSz, newSz);
     if (newArr == NULL) {
         crinitErrPrint("Could not perform memory allocation during handler for configuration key '%s'.",
-                      CRINIT_CONFIG_KEYSTR_PROVIDES);
+                       CRINIT_CONFIG_KEYSTR_PROVIDES);
         crinitFreeArgvArray(tempPrvs);
         return -1;
     }
-    tgt->prv = newArr;
-    tgt->prvSize = newSz;
+    t->prv = newArr;
+    t->prvSize = newSz;
 
-    for (size_t i = oldSz; i < tgt->prvSize; i++) {
-        crinitTaskPrv_t *ptr = &tgt->prv[i];
+    for (size_t i = oldSz; i < t->prvSize; i++) {
+        crinitTaskPrv_t *ptr = &t->prv[i];
         ptr->stateReq = 0;
-        ptr->name = strdup(tempPrvs[i]);
+        ptr->name = strdup(tempPrvs[i - oldSz]);
         if (ptr->name == NULL) {
             crinitErrnoPrint("Could not duplicate string for %s.", CRINIT_CONFIG_KEYSTR_PROVIDES);
             crinitFreeArgvArray(tempPrvs);
@@ -184,73 +195,101 @@ int crinitTaskCfgPrvHandler(crinitTask_t *tgt, const char *val) {
     return 0;
 }
 
-int crinitTaskCfgEnvHandler(crinitTask_t *tgt, const char *val) {
-    crinitCfgHandlerCommonNullCheck();
-    if (tgt->taskEnv.envp == NULL &&
-        crinitEnvSetInit(&tgt->taskEnv, CRINIT_ENVSET_INITIAL_SIZE, CRINIT_ENVSET_SIZE_INCREMENT) == -1) {
-        crinitErrPrint("Could not initialize task environment.");
-        return -1;
-    }
-    if (crinitConfConvToEnvSetMember(&tgt->taskEnv, val) == -1) {
-        crinitErrPrint("Could not parse task environment directive '%s'.", val);
+int crinitCfgEnvHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    if (type == CRINIT_CONFIG_TYPE_TASK) {
+        crinitNullCheck(-1, tgt, val);
+        crinitTask_t *t = tgt;
+        if (crinitConfConvToEnvSetMember(&t->taskEnv, val) == -1) {
+            crinitErrPrint("Could not parse task environment directive '%s'.", val);
+            return -1;
+        }
+    } else if (type == CRINIT_CONFIG_TYPE_SERIES) {
+        crinitNullCheck(-1, val);
+        crinitEnvSet_t globEnv;
+        if (crinitGlobOptGetEnvSet(&globEnv) == -1) {
+            crinitErrPrint("Could not retrieve global task environment set.");
+            return -1;
+        }
+        if (crinitConfConvToEnvSetMember(&globEnv, val) == -1) {
+            crinitErrPrint("Could not parse task environment directive '%s'.", val);
+            crinitEnvSetDestroy(&globEnv);
+            return -1;
+        }
+        if (crinitGlobOptSetEnvSet(&globEnv) == -1) {
+            crinitErrPrint("Could not store global task environment variables.");
+            crinitEnvSetDestroy(&globEnv);
+            return -1;
+        }
+        crinitEnvSetDestroy(&globEnv);
+    } else {
+        crinitErrPrint("Unexpected value for configuration file type.");
         return -1;
     }
     return 0;
 }
 
-int crinitTaskCfgIoRedirHandler(crinitTask_t *tgt, const char *val) {
-    crinitCfgHandlerCommonNullCheck();
+int crinitCfgIoRedirHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    crinitNullCheck(-1, tgt, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
 
-    size_t newIdx = tgt->redirsSize;
+    crinitTask_t *t = tgt;
+    size_t newIdx = t->redirsSize;
     crinitIoRedir_t *newArr =
-        crinitCfgHandlerManageArrayMem(tgt->redirs, sizeof(*tgt->redirs), tgt->redirsSize, tgt->redirsSize + 1);
+        crinitCfgHandlerManageArrayMem(t->redirs, sizeof(*t->redirs), t->redirsSize, t->redirsSize + 1);
     if (newArr == NULL) {
         crinitErrPrint("Could not perform memory allocation during handler for configuration key '%s'.",
-                      CRINIT_CONFIG_KEYSTR_IOREDIR);
+                       CRINIT_CONFIG_KEYSTR_IOREDIR);
         return -1;
     }
-    tgt->redirs = newArr;
-    tgt->redirsSize++;
+    t->redirs = newArr;
+    t->redirsSize++;
 
-    if (crinitConfConvToIoRedir(&tgt->redirs[newIdx], val) == -1) {
+    if (crinitConfConvToIoRedir(&t->redirs[newIdx], val) == -1) {
         crinitErrPrint("Could not initialize IO redirection structure from '%s', value: '%s'.",
-                      CRINIT_CONFIG_KEYSTR_IOREDIR, val);
+                       CRINIT_CONFIG_KEYSTR_IOREDIR, val);
         return -1;
     }
     return 0;
 }
 
-int crinitTaskCfgNameHandler(crinitTask_t *tgt, const char *val) {
-    crinitCfgHandlerCommonNullCheck();
-    tgt->name = strdup(val);
-    if (tgt->name == NULL) {
+int crinitCfgNameHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    crinitNullCheck(-1, tgt, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
+    crinitTask_t *t = tgt;
+    t->name = strdup(val);
+    if (t->name == NULL) {
         crinitErrnoPrint("Could not allocate memory for name of task '%s'.", val);
         return -1;
     }
     return 0;
 }
 
-int crinitTaskCfgRespHandler(crinitTask_t *tgt, const char *val) {
-    crinitCfgHandlerCommonNullCheck();
-    if (crinitCfgHandlerSetTaskOptFromStr(&tgt->opts, CRINIT_TASK_OPT_RESPAWN, val) == -1) {
+int crinitCfgRespHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    crinitNullCheck(-1, tgt, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
+    crinitTask_t *t = tgt;
+    if (crinitCfgHandlerSetTaskOptFromStr(&t->opts, CRINIT_TASK_OPT_RESPAWN, val) == -1) {
         crinitErrPrint("Could not parse value of boolean option '%s'.", CRINIT_CONFIG_KEYSTR_RESPAWN);
         return -1;
     }
     return 0;
 }
 
-int crinitTaskCfgRespRetHandler(crinitTask_t *tgt, const char *val) {
-    crinitCfgHandlerCommonNullCheck();
-    if (crinitConfConvToInteger(&tgt->maxRetries, val, 10) == -1) {
+int crinitCfgRespRetHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    crinitNullCheck(-1, tgt, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
+    crinitTask_t *t = tgt;
+    if (crinitConfConvToInteger(&t->maxRetries, val, 10) == -1) {
         crinitErrPrint("Could not parse value of integral numeric option '%s'.", CRINIT_CONFIG_KEYSTR_RESPAWN_RETRIES);
         return -1;
     }
     return 0;
 }
 
-int crinitTaskIncludeHandler(crinitTask_t *tgt, const char *val) {
-    crinitCfgHandlerCommonNullCheck();
-
+int crinitTaskIncludeHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    crinitNullCheck(-1, tgt, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
+    crinitTask_t *t = tgt;
     int inclCfgSz;
     char **inclCfgStrArr = crinitConfConvToStrArr(&inclCfgSz, val, true);
     if (inclCfgStrArr == NULL) {
@@ -267,12 +306,194 @@ int crinitTaskIncludeHandler(crinitTask_t *tgt, const char *val) {
         crinitFreeArgvArray(inclCfgStrArr);
         return -1;
     }
-    if (crinitTaskMergeInclude(tgt, inclCfgStrArr[0], importList) == -1) {
+    if (crinitTaskMergeInclude(t, inclCfgStrArr[0], importList) == -1) {
         crinitErrPrint("Could not merge include '%s' into task.", inclCfgStrArr[0]);
         crinitFreeArgvArray(inclCfgStrArr);
         return -1;
     }
     crinitFreeArgvArray(inclCfgStrArr);
+    return 0;
+}
+
+int crinitCfgDebugHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    CRINIT_PARAM_UNUSED(tgt);
+    crinitNullCheck(-1, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
+
+    bool v;
+    if (crinitConfConvToBool(&v, val) == -1) {
+        crinitErrPrint("Could not convert given string '%s' to a boolean value.", val);
+        return -1;
+    }
+
+    if (crinitGlobOptSetBoolean(CRINIT_GLOBOPT_DEBUG, &v) == -1) {
+        crinitErrPrint("Could not set global option '%s'.", CRINIT_CONFIG_KEYSTR_DEBUG);
+        return -1;
+    }
+    return 0;
+}
+
+int crinitCfgInclSuffixHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    CRINIT_PARAM_UNUSED(tgt);
+    crinitNullCheck(-1, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
+
+    if (val[0] != '.') {
+        crinitErrPrint("Include file suffixes must begin with a dot ('.'). Offending value: '%s'", val);
+        return -1;
+    }
+    if (crinitGlobOptSetString(CRINIT_GLOBOPT_INCL_SUFFIX, val) == -1) {
+        crinitErrPrint("Could not set global option '%s'.", CRINIT_CONFIG_KEYSTR_INCL_SUFFIX);
+        return -1;
+    }
+    return 0;
+}
+
+int crinitCfgInclDirHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    CRINIT_PARAM_UNUSED(tgt);
+    crinitNullCheck(-1, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
+
+    if (!crinitIsAbsPath(val)) {
+        crinitErrPrint("The value for '%s' must be an absolute path.", CRINIT_CONFIG_KEYSTR_INCLDIR);
+        return -1;
+    }
+    if (crinitGlobOptSetString(CRINIT_GLOBOPT_INCLDIR, val) == -1) {
+        crinitErrPrint("Could not set global option '%s'.", CRINIT_CONFIG_KEYSTR_INCLDIR);
+        return -1;
+    }
+    return 0;
+}
+
+int crinitCfgShdGpHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    CRINIT_PARAM_UNUSED(tgt);
+    crinitNullCheck(-1, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
+
+    unsigned long long gpMicros;
+    if (crinitConfConvToInteger(&gpMicros, val, 10) == -1) {
+        crinitErrPrint("Could not parse value of integral numeric option '%s'.", CRINIT_CONFIG_KEYSTR_SHDGRACEP);
+        return -1;
+    }
+    if (crinitGlobOptSetUnsignedLL(CRINIT_GLOBOPT_SHDGRACEP, &gpMicros) == -1) {
+        crinitErrPrint("Could not set global option '%s'.", CRINIT_CONFIG_KEYSTR_SHDGRACEP);
+        return -1;
+    }
+    return 0;
+}
+
+int crinitCfgTaskSuffixHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    CRINIT_PARAM_UNUSED(tgt);
+    crinitNullCheck(-1, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
+
+    if (val[0] != '.') {
+        crinitErrPrint("Task file suffixes must begin with a dot ('.'). Offending value: '%s'", val);
+        return -1;
+    }
+
+    char **out = tgt;
+    *out = strdup(val);
+    return 0;
+}
+
+int crinitCfgTaskDirHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    crinitNullCheck(-1, tgt, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
+
+    if (!crinitIsAbsPath(val)) {
+        crinitErrPrint("The value for '%s' must be an absolute path.", CRINIT_CONFIG_KEYSTR_TASKDIR);
+        return -1;
+    }
+
+    char **out = tgt;
+    *out = strdup(val);
+    return 0;
+}
+
+int crinitCfgTaskDirSlHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    crinitNullCheck(-1, tgt, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
+
+    bool *v = tgt;
+    if (crinitConfConvToBool(v, val) == -1) {
+        crinitErrPrint("Could not convert given string '%s' to a boolean value.", val);
+        return -1;
+    }
+    return 0;
+}
+
+int crinitCfgTasksHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    crinitNullCheck(-1, tgt, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
+
+    char ***out = tgt;
+    int confArrLen;
+    char **parsedVal = crinitConfConvToStrArr(&confArrLen, val, true);
+    if (parsedVal == NULL) {
+        crinitErrPrint("Could not convert task list '%s' to string array.", val);
+        return -1;
+    }
+
+    // If the tasks array is not yet initialized, just do the usual.
+    if (*out == NULL) {
+        *out = parsedVal;
+        return 0;
+    }
+
+    // If we're here the Tasks array has already been initialized and we need to append.
+    size_t oldSz = 0;
+    while ((*out)[oldSz] != NULL) {
+        oldSz++;
+    }
+    size_t newSz = oldSz + confArrLen;
+    char **newArr = crinitCfgHandlerManageArrayMem(*out, sizeof(**out), oldSz + 1, newSz + 1);
+    if (newArr == NULL) {
+        crinitErrPrint("Could not perform memory allocation during handler for configuration key '%s'.",
+                       CRINIT_CONFIG_KEYSTR_TASKS);
+        crinitFreeArgvArray(parsedVal);
+        return -1;
+    }
+
+    size_t oldBackBufLen = strchr(newArr[oldSz - 1], '\0') - newArr[0] + 1;
+    size_t addBackBufLen = strchr(parsedVal[confArrLen - 1], '\0') - parsedVal[0] + 1;
+    size_t newBackBufLen = oldBackBufLen + addBackBufLen;
+    char *newBackBuf = realloc(newArr[0], newBackBufLen);
+    if (newBackBuf == NULL) {
+        crinitErrPrint("Could not perform memory allocation during handler for configuration key '%s'.",
+                       CRINIT_CONFIG_KEYSTR_TASKS);
+        crinitFreeArgvArray(parsedVal);
+        crinitFreeArgvArray(newArr);
+        return -1;
+    }
+    memcpy(newBackBuf + oldBackBufLen, parsedVal[0], addBackBufLen);
+    for (size_t i = 1; i < oldSz; i++) {
+        newArr[i] = newBackBuf + (newArr[i] - newArr[0]);
+    }
+    for (size_t i = oldSz; i < newSz; i++) {
+        newArr[i] = newBackBuf + oldBackBufLen + (parsedVal[i - oldSz] - parsedVal[0]);
+    }
+    newArr[0] = newBackBuf;
+
+    crinitFreeArgvArray(parsedVal);
+    *out = newArr;
+    return 0;
+}
+
+int crinitCfgSyslogHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    CRINIT_PARAM_UNUSED(tgt);
+    crinitNullCheck(-1, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
+    bool v;
+    if (crinitConfConvToBool(&v, val) == -1) {
+        crinitErrPrint("Could not convert given string '%s' to a boolean value.", val);
+        return -1;
+    }
+
+    if (crinitGlobOptSetBoolean(CRINIT_GLOBOPT_USE_SYSLOG, &v) == -1) {
+        crinitErrPrint("Could not set global option '%s'.", CRINIT_CONFIG_KEYSTR_USE_SYSLOG);
+        return -1;
+    }
     return 0;
 }
 
@@ -311,4 +532,3 @@ static inline void *crinitCfgHandlerManageArrayMem(void *dynArr, size_t elementS
     }
     return out;
 }
-

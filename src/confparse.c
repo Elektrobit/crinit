@@ -16,6 +16,7 @@
 
 #include "common.h"
 #include "confconv.h"
+#include "confmap.h"
 #include "envset.h"
 #include "globopt.h"
 #include "ini.h"
@@ -31,8 +32,6 @@ typedef struct {
     crinitConfKvList_t *pList;   ///< Running pointer to the element being currently constructed.
     crinitConfKvList_t *last;    ///< Running pointer to the last element just constructed.
     size_t keyArrayCount;       ///< Counter variable for array-like config options.
-    size_t envSetCount;         ///< Counter variable for ENV_SET config directives.
-    size_t ioRedirCount;        ///< Counter variable for IO_REDIRECT config directives.
 } crinitIniParserCtx_t;
 
 /**
@@ -57,7 +56,7 @@ int crinitParseConf(crinitConfKvList_t **confList, const char *filename) {
     (*confList)->next = NULL;
 
     // Parse config ing libinih
-    crinitIniParserCtx_t parserCtx = {*confList, *confList, *confList, 0, 0, 0};
+    crinitIniParserCtx_t parserCtx = {*confList, *confList, *confList, 0};
     int parseResult = ini_parse_file(cf, crinitIniHandler, &parserCtx);
 
     // Trim the list's tail
@@ -88,14 +87,15 @@ static int crinitIniHandler(void *parserCtx, const char *section, const char *ke
     ctx->pList->key = NULL;
     ctx->pList->next = NULL;
     ctx->pList->val = NULL;
-    ctx->pList->keyArrIndex = 0;
 
     size_t keyLen = strlen(key);
     size_t valLen = strlen(value);
 
-    // Handle array-like keys
+    // Handle legacy array-like keys. This is deprecated and will generate a warning. Current config files using this
+    // scheme must be updated. This code block will be removed in one of the next versions.
     const char *brck = strchr(key, '[');
     if (keyLen > 2 && brck != NULL) {
+        crinitInfoPrint("Warning: Encountered deprecated use of array brackets in configuration file.");
         //  Decide if key array subscript is empty or not and handle it accordingly
         if (brck[1] == ']') {
             // If this is a beginning of an array declaration, set counter to 0
@@ -103,26 +103,28 @@ static int crinitIniHandler(void *parserCtx, const char *section, const char *ke
                 (keyLen - 2 != strlen(ctx->last->key) || strncmp(key, ctx->last->key, keyLen - 2) != 0)) {
                 ctx->keyArrayCount = 0;
             }
-            ctx->pList->keyArrIndex = ctx->keyArrayCount;
             keyLen -= 2;
-            ctx->keyArrayCount++;
         } else {
             char *pEnd = NULL;
-            ctx->pList->keyArrIndex = strtoul(brck + 1, &pEnd, 10);
+            size_t idxLen = strlen(brck);
+            // If this is a beginning of an array declaration, set counter to 0
+            if (ctx->last != ctx->pList &&
+                (keyLen - idxLen != strlen(ctx->last->key) || strncmp(key, ctx->last->key, keyLen - idxLen) != 0)) {
+                ctx->keyArrayCount = 0;
+            }
+            keyLen -= idxLen;
+
+            size_t keyArrIndex = strtoul(brck + 1, &pEnd, 10);
             if (pEnd == brck + 1 || *pEnd != ']') {
                 crinitErrPrint("Could not interpret configuration key array subscript: \'%s\'", key);
                 return 0;
             }
-            keyLen -= strlen(brck);
+            if (keyArrIndex != ctx->keyArrayCount) {
+                crinitErrPrint("Key array must be specified in order. Subscript '%zu' is unordered.", keyArrIndex);
+                return 0;
+            }
         }
-    } else if (strcmp(key, CRINIT_CONFIG_KEYSTR_ENV_SET) == 0) {
-        /* Handle ENV_SET (TODO: As we will likely change the whole array handling syntax we should consolidate this
-         * with everything else and just differentiate between keys which may be given multiple times and keys which may
-         * appear only once. */
-        ctx->pList->keyArrIndex = ctx->envSetCount++;
-    } else if (strcmp(key, CRINIT_CONFIG_KEYSTR_IOREDIR) == 0) {
-        // Handle REDIRECT_IO the same way as ENV_SET for now. Same criticism applies.
-        ctx->pList->keyArrIndex = ctx->ioRedirCount++;
+        ctx->keyArrayCount++;
     }
 
     // Handle quotes around value.
@@ -165,196 +167,6 @@ void crinitFreeConfList(crinitConfKvList_t *confList) {
     } while (confList != NULL);
 }
 
-int crinitConfListGetValWithIdx(char **val, const char *key, size_t keyArrIndex, const crinitConfKvList_t *c) {
-    if (val == NULL || key == NULL || c == NULL) {
-        crinitErrPrint("Input parameters must not be NULL.");
-        return -1;
-    }
-
-    const char *pKey = key;
-    while (*pKey != '\0' && isspace(*pKey)) {
-        pKey++;
-    }
-
-    size_t kLen = strlen(pKey);
-    while (kLen > 0 && isspace(pKey[kLen - 1])) {
-        kLen--;
-    }
-    if (kLen == 0) {
-        return -1;
-    }
-
-    while (c != NULL) {
-        if (!strncmp(pKey, c->key, kLen) && c->key[kLen] == '\0' && c->keyArrIndex == keyArrIndex) {
-            break;
-        }
-        c = c->next;
-    }
-    if (c == NULL) {
-        return -1;
-    }
-    *val = c->val;
-    if (*val == NULL) {
-        return -1;
-    }
-    return 0;
-}
-
-int crinitConfListSetValWithIdx(const char *val, const char *key, size_t keyArrIndex, crinitConfKvList_t *c) {
-    if (val == NULL || key == NULL || c == NULL) {
-        crinitErrPrint("Input Parameters must not be NULL.");
-        return -1;
-    }
-
-    const char *pKey = key;
-    while (*pKey != '\0' && isspace(*pKey)) {
-        pKey++;
-    }
-
-    size_t kLen = strlen(pKey);
-    while (kLen > 0 && isspace(pKey[kLen - 1])) {
-        kLen--;
-    }
-    if (kLen == 0) {
-        return -1;
-    }
-
-    while (c != NULL) {
-        if (!strncmp(pKey, c->key, kLen) && c->key[kLen] == '\0' && c->keyArrIndex == keyArrIndex) {
-            break;
-        }
-        c = c->next;
-    }
-    if (c == NULL) {
-        return -1;
-    }
-    free(c->val);
-    c->val = strdup(val);
-    if (c->val == NULL) {
-        return -1;
-    }
-    return 0;
-}
-
-int crinitConfListExtractBoolean(bool *out, const char *key, bool mandatory, const crinitConfKvList_t *in) {
-    if (key == NULL || in == NULL || out == NULL) {
-        crinitErrPrint("Input parameters must not be NULL.");
-        return -1;
-    }
-    char *val = NULL;
-    if (crinitConfListGetVal(&val, key, in) == -1) {
-        if (mandatory) {
-            crinitErrPrint("Could not get value for mandatory key \"%s\".", key);
-            return -1;
-        } else {
-            // leave *out untouched and return successfully if key is optional
-            return 0;
-        }
-    }
-    if (strncmp(val, "YES", 3) == 0) {
-        *out = true;
-        return 0;
-    }
-    if (strncmp(val, "NO", 2) == 0) {
-        *out = false;
-        return 0;
-    }
-    crinitErrPrint("Value for \"%s\" is not either \"YES\" or \"NO\" but \"%s\".", key, val);
-    return -1;
-}
-
-int crinitConfListExtractSignedInt(int *out, int base, const char *key, bool mandatory, const crinitConfKvList_t *in) {
-    if (key == NULL || in == NULL || out == NULL) {
-        crinitErrPrint("Input parameters must not be NULL.");
-        return -1;
-    }
-    char *val = NULL;
-    if (crinitConfListGetVal(&val, key, in) == -1) {
-        if (mandatory) {
-            crinitErrPrint("Could not get value for mandatory key \"%s\".", key);
-            return -1;
-        } else {
-            // leave *out untouched and return successfully if key is optional
-            return 0;
-        }
-    }
-    if (*val == '\0') {
-        crinitErrPrint("Could not convert string to int. String is empty.");
-        return -1;
-    }
-    char *endptr = NULL;
-    errno = 0;
-    *out = strtol(val, &endptr, base);
-    if (errno != 0) {
-        crinitErrnoPrint("Could not convert string to int.");
-        return -1;
-    }
-    if (*endptr != '\0') {
-        crinitErrPrint("Could not convert string to int. Non-numeric characters present in string.");
-        return -1;
-    }
-    return 0;
-}
-
-int crinitConfListExtractUnsignedLL(unsigned long long *out, int base, const char *key, bool mandatory,
-                                   const crinitConfKvList_t *in) {
-    if (key == NULL || in == NULL || out == NULL) {
-        crinitErrPrint("Input parameters must not be NULL.");
-        return -1;
-    }
-    char *val = NULL;
-    if (crinitConfListGetVal(&val, key, in) == -1) {
-        if (mandatory) {
-            crinitErrPrint("Could not get value for mandatory key \"%s\".", key);
-            return -1;
-        } else {
-            // leave *out untouched and return successfully if key is optional
-            return 0;
-        }
-    }
-    if (*val == '\0') {
-        crinitErrPrint("Could not convert string to unsigned long long. String is empty.");
-        return -1;
-    }
-    char *endptr = NULL;
-    errno = 0;
-    *out = strtoull(val, &endptr, base);
-    if (errno != 0) {
-        crinitErrnoPrint("Could not convert string to unsigned long long.");
-        return -1;
-    }
-    if (*endptr != '\0') {
-        crinitErrPrint("Could not convert string to unsigned long long. Non-numeric characters present in string.");
-        return -1;
-    }
-    return 0;
-}
-
-int crinitConfListExtractArgvArrayWithIdx(int *outArgc, char ***outArgv, const char *key, size_t keyArrIndex,
-                                         bool mandatory, const crinitConfKvList_t *in, bool doubleQuoting) {
-    if (key == NULL || in == NULL || outArgc == NULL || outArgv == NULL) {
-        crinitErrPrint("\'key\', \'in\', outArgv, and \'outArgc\' parameters must not be NULL.");
-        return -1;
-    }
-    char *val = NULL;
-    if (crinitConfListGetValWithIdx(&val, key, keyArrIndex, in) == -1) {
-        if (mandatory) {
-            crinitErrPrint("Could not get value for mandatory key \"%s\" (index %zu).", key, keyArrIndex);
-            return -1;
-        } else {
-            // Leave outArgc and outArgv untouched
-            return 0;
-        }
-    }
-
-    *outArgv = crinitConfConvToStrArr(outArgc, val, doubleQuoting);
-    if (outArgv == NULL) {
-        crinitErrPrint("Could not convert configuration value to string array.");
-        return -1;
-    }
-    return 0;
-}
-
 void crinitFreeArgvArray(char **inArgv) {
     if (inArgv != NULL) {
         // free the backing string
@@ -362,35 +174,6 @@ void crinitFreeArgvArray(char **inArgv) {
         // free the outer array
         free(inArgv);
     }
-}
-
-ssize_t crinitConfListKeyGetMaxIdx(const crinitConfKvList_t *c, const char *key) {
-    if (c == NULL || key == NULL) {
-        crinitErrPrint("Parameters must not be NULL.");
-        return -1;
-    }
-
-    const char *pKey = key;
-    while (*pKey != '\0' && isspace(*pKey)) {
-        pKey++;
-    }
-
-    size_t kLen = strlen(pKey);
-    while (kLen > 0 && isspace(pKey[kLen - 1])) {
-        kLen--;
-    }
-    if (kLen == 0) {
-        return -1;
-    }
-
-    ssize_t maxIdx = -1;
-    while (c != NULL) {
-        if (!strncmp(pKey, c->key, kLen) && c->key[kLen] == '\0' && (ssize_t)c->keyArrIndex > maxIdx) {
-            maxIdx = (ssize_t)c->keyArrIndex;
-        }
-        c = c->next;
-    }
-    return maxIdx;
 }
 
 int crinitLoadSeriesConf(crinitFileSeries_t *series, const char *filename) {
@@ -404,135 +187,92 @@ int crinitLoadSeriesConf(crinitFileSeries_t *series, const char *filename) {
         return -1;
     }
 
-    char *taskDir = NULL;
-    if (crinitConfListGetVal(&taskDir, CRINIT_CONFIG_KEYSTR_TASKDIR, c) == -1) {
-        crinitErrPrint("Could not get value for mandatory key \'%s\' in series config \'%s\'.",
-                      CRINIT_CONFIG_KEYSTR_TASKDIR, filename);
-        crinitFreeConfList(c);
+    char **tasks = NULL;
+    char *tDir = NULL, *tSuffix = NULL;
+    bool tDirSl = CRINIT_CONFIG_DEFAULT_TASKDIR_SYMLINKS;
+
+    bool duplCheckArr[CRINIT_CONFIGS_SIZE] = {false};
+    const crinitConfKvList_t *pEntry = c;
+    const char *val = NULL;
+    while (pEntry != NULL) {
+        const crinitConfigMapping_t *scm = crinitFindConfigMapping(crinitSeriesCfgMap, crinitSeriesCfgMapSize, pEntry->key);
+        if (scm == NULL) {
+            crinitInfoPrint("Warning: Unknown configuration key '%s' encountered.", pEntry->key);
+        } else {
+            val = pEntry->val;
+            if ((!scm->arrayLike) && duplCheckArr[scm->config]) {
+                crinitErrPrint("Multiple values for non-array like configuration parameter '%s' given.", pEntry->key);
+                return -1;
+            }
+
+            void *tgt = NULL;
+            switch (scm->config) {
+                case CRINIT_CONFIG_TASK_FILE_SUFFIX:
+                    tgt = &tSuffix;
+                    break;
+                case CRINIT_CONFIG_TASKDIR:
+                    tgt = &tDir;
+                    break;
+                case CRINIT_CONFIG_TASKDIR_FOLLOW_SYMLINKS:
+                    tgt = &tDirSl;
+                    break;
+                case CRINIT_CONFIG_TASKS:
+                    tgt = &tasks;
+                    break;
+                case CRINIT_CONFIG_ENV_SET:
+                case CRINIT_CONFIG_DEBUG:
+                case CRINIT_CONFIG_INCLUDE:
+                case CRINIT_CONFIG_INCLUDE_SUFFIX:
+                case CRINIT_CONFIG_INCLUDEDIR:
+                case CRINIT_CONFIG_SHDGRACEP:
+                case CRINIT_CONFIG_USE_SYSLOG:
+                    break;
+                case CRINIT_CONFIG_COMMAND:
+                case CRINIT_CONFIG_DEPENDS:
+                case CRINIT_CONFIG_IOREDIR:
+                case CRINIT_CONFIG_NAME:
+                case CRINIT_CONFIG_PROVIDES:
+                case CRINIT_CONFIG_RESPAWN:
+                case CRINIT_CONFIG_RESPAWN_RETRIES:
+                case CRINIT_CONFIGS_SIZE:
+                default:
+                    crinitErrPrint("Unexpected configuration key found in series file: '%s'", scm->configKey);
+                    return -1;
+            }
+            duplCheckArr[scm->config] = true;
+            if (scm->cfgHandler(tgt, val, CRINIT_CONFIG_TYPE_SERIES) == -1) {
+                crinitErrPrint("Could not parse configuration parameter '%s' with given value '%s'.", pEntry->key,
+                               pEntry->val);
+                return -1;
+            }
+        }
+        pEntry = pEntry->next;
+    }
+
+    if (!duplCheckArr[CRINIT_CONFIG_INCLUDEDIR] && crinitCfgInclDirHandler(NULL, tDir, CRINIT_CONFIG_TYPE_SERIES) == -1) {
+        crinitErrPrint("INCLUDEDIR was not given and trying to set it to the current value of TASKDIR ('%s') failed.",
+                       tDir);
         return -1;
     }
 
-    if (crinitGlobOptSetString(CRINIT_GLOBOPT_TASKDIR, taskDir) == -1) {
-        crinitErrPrint("Could not store global string option values for '%s'.", CRINIT_CONFIG_KEYSTR_TASKDIR);
-        crinitFreeConfList(c);
-        return -1;
-    }
-
-    bool followLinks = true;
-    if (crinitConfListExtractBoolean(&followLinks, CRINIT_CONFIG_KEYSTR_TASKDIR_SYMLINKS, false, c) == -1) {
-        crinitErrPrint("Could not extract boolean value for key '%s'.", CRINIT_CONFIG_KEYSTR_TASKDIR_SYMLINKS);
-        crinitFreeConfList(c);
-        return -1;
-    }
-
-    char *fileSuffix = NULL;
-    crinitConfListGetVal(&fileSuffix, CRINIT_CONFIG_KEYSTR_TASK_FILE_SUFFIX, c);
-
-    char **seriesArr = NULL;
-    int seriesLen = 0;
-    if (crinitConfListExtractArgvArray(&seriesLen, &seriesArr, CRINIT_CONFIG_KEYSTR_TASKS, false, c, true) == -1) {
-        crinitErrPrint("Could not extract value for key '%s' from '%s'.", CRINIT_CONFIG_KEYSTR_TASKS, filename);
-        crinitFreeConfList(c);
-        return -1;
-    }
-
-    if (seriesArr == NULL) {  // No TASKS array given, scan TASKDIR.
-        if (crinitFileSeriesFromDir(series, taskDir,
-                                   (fileSuffix != NULL) ? fileSuffix : CRINIT_CONFIG_DEFAULT_TASK_FILE_SUFFIX,
-                                   followLinks) == -1) {
-            crinitErrPrint("Could not generate list of tasks from task directory '%s'.", taskDir);
+    if (tasks == NULL) {  // No TASKS array given, scan TASKDIR.
+        if (crinitFileSeriesFromDir(series, (tDir != NULL) ? tDir : CRINIT_CONFIG_DEFAULT_TASKDIR,
+                                    (tSuffix != NULL) ? tSuffix : CRINIT_CONFIG_DEFAULT_TASK_FILE_SUFFIX, tDirSl) == -1) {
+            crinitErrPrint("Could not generate list of tasks from task directory '%s'.", tDir);
             crinitFreeConfList(c);
             return -1;
         }
     } else {  // TASKS taken from config
-        if (crinitFileSeriesFromStrArr(series, taskDir, seriesArr) == -1) {
+        if (crinitFileSeriesFromStrArr(series, (tDir != NULL) ? tDir : CRINIT_CONFIG_DEFAULT_TASKDIR, tasks) == -1) {
             crinitErrPrint("Could not generate list of tasks from '%s' option.", CRINIT_CONFIG_KEYSTR_TASKS);
             crinitFreeConfList(c);
-            crinitFreeArgvArray(seriesArr);
+            crinitFreeArgvArray(tasks);
             return -1;
         }
     }
 
-    char *inclDir = taskDir;
-    crinitConfListGetVal(&inclDir, CRINIT_CONFIG_KEYSTR_INCLDIR, c);
-    if (crinitGlobOptSetString(CRINIT_GLOBOPT_INCLDIR, inclDir) == -1) {
-        crinitErrPrint("Could not store global string option values for '%s'.", CRINIT_CONFIG_KEYSTR_INCLDIR);
-        crinitFreeConfList(c);
-        crinitDestroyFileSeries(series);
-        return -1;
-    }
-
-    if (crinitConfListGetVal(&fileSuffix, CRINIT_CONFIG_KEYSTR_INCL_SUFFIX, c) == 0 &&
-        crinitGlobOptSetString(CRINIT_GLOBOPT_INCL_SUFFIX, fileSuffix) == -1) {
-        crinitErrPrint("Could not store global string option values for '%s'.", CRINIT_CONFIG_KEYSTR_INCL_SUFFIX);
-        crinitFreeConfList(c);
-        crinitDestroyFileSeries(series);
-        return -1;
-    }
-
-    bool confDbg = CRINIT_CONFIG_DEFAULT_DEBUG;
-    if (crinitConfListExtractBoolean(&confDbg, CRINIT_CONFIG_KEYSTR_DEBUG, false, c) == -1) {
-        crinitErrPrint("Failed to search for non-mandatory key \'%s\' in series config \'%s\'.",
-                      CRINIT_CONFIG_KEYSTR_DEBUG, filename);
-        crinitFreeConfList(c);
-        crinitDestroyFileSeries(series);
-        return -1;
-    }
-    if (crinitGlobOptSetBoolean(CRINIT_GLOBOPT_DEBUG, &confDbg) == -1) {
-        crinitErrPrint("Could not store global boolean option value for \'%s\'.", CRINIT_CONFIG_KEYSTR_DEBUG);
-        crinitFreeConfList(c);
-        crinitDestroyFileSeries(series);
-        return -1;
-    }
-
-    bool confUseSyslog = CRINIT_CONFIG_DEFAULT_USE_SYSLOG;
-    if (crinitConfListExtractBoolean(&confUseSyslog, CRINIT_CONFIG_KEYSTR_USE_SYSLOG, false, c) == -1) {
-        crinitErrPrint("Failed to search for non-mandatory key \'%s\' in series config \'%s\'.",
-                      CRINIT_CONFIG_KEYSTR_USE_SYSLOG, filename);
-        crinitFreeConfList(c);
-        crinitDestroyFileSeries(series);
-        return -1;
-    }
-    if (crinitGlobOptSetBoolean(CRINIT_GLOBOPT_USE_SYSLOG, &confUseSyslog) == -1) {
-        crinitErrPrint("Could not store global boolean option value for \'%s\'.", CRINIT_CONFIG_KEYSTR_USE_SYSLOG);
-        crinitFreeConfList(c);
-        crinitDestroyFileSeries(series);
-        return -1;
-    }
-
-    unsigned long long shdnGracePeriodUs = CRINIT_CONFIG_DEFAULT_SHDGRACEP;
-    if (crinitConfListExtractUnsignedLL(&shdnGracePeriodUs, 10, CRINIT_CONFIG_KEYSTR_SHDGRACEP, false, c) == -1) {
-        crinitErrPrint("Failed to search for non-mandatory key \'%s\' in series config \'%s\'.",
-                      CRINIT_CONFIG_KEYSTR_SHDGRACEP, filename);
-        crinitFreeConfList(c);
-        crinitDestroyFileSeries(series);
-        return -1;
-    }
-    if (crinitGlobOptSetUnsignedLL(CRINIT_GLOBOPT_SHDGRACEP, &shdnGracePeriodUs) == -1) {
-        crinitErrPrint("Could not store global unsigned long long option values for \'%s\'.",
-                      CRINIT_CONFIG_KEYSTR_SHDGRACEP);
-        crinitFreeConfList(c);
-        crinitDestroyFileSeries(series);
-        return -1;
-    }
-
-    crinitEnvSet_t globEnv;
-    if (crinitEnvSetCreateFromConfKvList(&globEnv, NULL, c) == -1) {
-        crinitErrPrint("Could not parse global environment variables from series config.");
-        crinitFreeConfList(c);
-        crinitDestroyFileSeries(series);
-        return -1;
-    }
-
-    if (crinitGlobOptSetEnvSet(&globEnv) == -1) {
-        crinitErrPrint("Could not store global environment variable set.");
-        crinitFreeConfList(c);
-        crinitDestroyFileSeries(series);
-        crinitEnvSetDestroy(&globEnv);
-        return -1;
-    }
-
+    free(tDir);
+    free(tSuffix);
     crinitFreeConfList(c);
-    crinitEnvSetDestroy(&globEnv);
     return 0;
 }

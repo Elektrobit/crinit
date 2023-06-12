@@ -75,7 +75,6 @@ make -C "$BUILDDIR"
 # copy binaries
 cp "$BUILDDIR"/src/crinit "$RESULTDIR"/bin/
 cp "$BUILDDIR"/src/crinit-ctl "$RESULTDIR"/bin/
-cp "$BUILDDIR"/src/crinit_parsecheck "$RESULTDIR"/bin/
 cp "$BUILDDIR"/src/*.so* "$RESULTDIR"/lib/
 
 # build and copy documentation

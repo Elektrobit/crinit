@@ -25,25 +25,35 @@
  *
  * @return  0 on success, -1 on error
  */
-typedef int (*crinitConfigHandler_t)(crinitTask_t *tgt, const char *val);
+typedef int (*crinitConfigHandler_t)(void *tgt, const char *val, crinitConfigType_t type);
 
 /** Handler for `COMMAND` config directives. See crinitConfigHandler_t. **/
-int crinitTaskCfgCmdHandler(crinitTask_t *tgt, const char *val);
+int crinitCfgCmdHandler(void *tgt, const char *val, crinitConfigType_t type);
 /** Handler for `DEPENDS` config directives. See crinitConfigHandler_t. **/
-int crinitTaskCfgDepHandler(crinitTask_t *tgt, const char *val);
+int crinitCfgDepHandler(void *tgt, const char *val, crinitConfigType_t type);
 /** Handler for `ENV_SET` config directives. See crinitConfigHandler_t. **/
-int crinitTaskCfgEnvHandler(crinitTask_t *tgt, const char *val);
+int crinitCfgEnvHandler(void *tgt, const char *val, crinitConfigType_t type);
 /** Handler for `IO_REDIRECT` config directives. See crinitConfigHandler_t. **/
-int crinitTaskCfgIoRedirHandler(crinitTask_t *tgt, const char *val);
+int crinitCfgIoRedirHandler(void *tgt, const char *val, crinitConfigType_t type);
 /** Handler for `NAME` config directives. See crinitConfigHandler_t. **/
-int crinitTaskCfgNameHandler(crinitTask_t *tgt, const char *val);
+int crinitCfgNameHandler(void *tgt, const char *val, crinitConfigType_t type);
 /** Handler for `PROVIDES` config directives. See crinitConfigHandler_t. **/
-int crinitTaskCfgPrvHandler(crinitTask_t *tgt, const char *val);
+int crinitCfgPrvHandler(void *tgt, const char *val, crinitConfigType_t type);
 /** Handler for `RESPAWN` config directives. See crinitConfigHandler_t. **/
-int crinitTaskCfgRespHandler(crinitTask_t *tgt, const char *val);
+int crinitCfgRespHandler(void *tgt, const char *val, crinitConfigType_t type);
 /** Handler for `RESPAWN_RETRIES` config directives. See crinitConfigHandler_t. **/
-int crinitTaskCfgRespRetHandler(crinitTask_t *tgt, const char *val);
+int crinitCfgRespRetHandler(void *tgt, const char *val, crinitConfigType_t type);
 /** Handler for `INCLUDE` config directives. See crinitConfigHandler_t. **/
-int crinitTaskIncludeHandler(crinitTask_t *tgt, const char *val);
+int crinitTaskIncludeHandler(void *tgt, const char *val, crinitConfigType_t type);
+
+int crinitCfgDebugHandler(void *tgt, const char *val, crinitConfigType_t type);
+int crinitCfgInclSuffixHandler(void *tgt, const char *val, crinitConfigType_t type);
+int crinitCfgInclDirHandler(void *tgt, const char *val, crinitConfigType_t type);
+int crinitCfgShdGpHandler(void *tgt, const char *val, crinitConfigType_t type);
+int crinitCfgTaskSuffixHandler(void *tgt, const char *val, crinitConfigType_t type);
+int crinitCfgTaskDirHandler(void *tgt, const char *val, crinitConfigType_t type);
+int crinitCfgTaskDirSlHandler(void *tgt, const char *val, crinitConfigType_t type);
+int crinitCfgTasksHandler(void *tgt, const char *val, crinitConfigType_t type);
+int crinitCfgSyslogHandler(void *tgt, const char *val, crinitConfigType_t type);
 
 #endif /* __CONFHDL_H__ */

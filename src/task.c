@@ -32,7 +32,7 @@
  * @return  0 on success, -1 on error
  */
 static inline int crinitTaskSetFromConfKvList(crinitTask_t *tgt, const crinitConfKvList_t *src, crinitTaskType_t type,
-                                             char *importList);
+                                              char *importList);
 
 int crinitTaskCreateFromConfKvList(crinitTask_t **out, const crinitConfKvList_t *in) {
     crinitNullCheck(-1, out, in);
@@ -309,10 +309,11 @@ int crinitTaskMergeInclude(crinitTask_t *tgt, const char *src, char *importList)
 }
 
 static inline int crinitTaskSetFromConfKvList(crinitTask_t *tgt, const crinitConfKvList_t *src, crinitTaskType_t type,
-                                             char *importList) {
+                                              char *importList) {
     crinitNullCheck(-1, tgt, src);
 
     bool importArr[CRINIT_CONFIGS_SIZE] = {false};
+    bool duplCheckArr[CRINIT_CONFIGS_SIZE] = {false};
     if (type == CRINIT_TASK_TYPE_STANDARD || importList == NULL) {
         for (size_t i = 0; i < crinitNumElements(importArr); i++) {
             importArr[i] = true;
@@ -321,7 +322,7 @@ static inline int crinitTaskSetFromConfKvList(crinitTask_t *tgt, const crinitCon
         char *strtokState;
         char *token = strtok_r(importList, ",", &strtokState);
         while (token != NULL) {
-            const crinitConfigMapping_t *cfg = crinitFindConfigMapping(token);
+            const crinitConfigMapping_t *cfg = crinitFindConfigMapping(crinitTaskCfgMap, crinitTaskCfgMapSize, token);
             if (cfg == NULL) {
                 crinitErrPrint("Unexpected configuration string in include import list: '%s'", token);
                 return -1;
@@ -334,7 +335,7 @@ static inline int crinitTaskSetFromConfKvList(crinitTask_t *tgt, const crinitCon
     const crinitConfKvList_t *pEntry = src;
     const char *val = NULL;
     while (pEntry != NULL) {
-        const crinitConfigMapping_t *tcm = crinitFindConfigMapping(pEntry->key);
+        const crinitConfigMapping_t *tcm = crinitFindConfigMapping(crinitTaskCfgMap, crinitTaskCfgMapSize, pEntry->key);
         if (tcm == NULL) {
             crinitInfoPrint("Warning: Unknown configuration key '%s' encountered.", pEntry->key);
         } else {
@@ -344,11 +345,12 @@ static inline int crinitTaskSetFromConfKvList(crinitTask_t *tgt, const crinitCon
                                pEntry->key);
                 return -1;
             }
-            if ((!tcm->arrayLike) && pEntry->keyArrIndex > 0) {
+            if ((!tcm->arrayLike) && duplCheckArr[tcm->config]) {
                 crinitErrPrint("Multiple values for non-array like configuration parameter '%s' given.", pEntry->key);
                 return -1;
             }
-            if (importArr[tcm->config] && tcm->cfgHandler(tgt, val) == -1) {
+            duplCheckArr[tcm->config] = true;
+            if (importArr[tcm->config] && tcm->cfgHandler(tgt, val, CRINIT_CONFIG_TYPE_TASK) == -1) {
                 crinitErrPrint("Could not parse configuration parameter '%s' with given value '%s'.", pEntry->key,
                                pEntry->val);
                 return -1;

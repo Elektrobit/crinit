@@ -22,7 +22,6 @@
 typedef enum {
     CRINIT_GLOBOPT_START,        ///< Marker for beginning of enum, used to calculate number of elements.
     CRINIT_GLOBOPT_DEBUG,        ///< DEBUG global option.
-    CRINIT_GLOBOPT_TASKDIR,      ///< TASKDIR global option.
     CRINIT_GLOBOPT_INCLDIR,      ///< INCLUDEDIR global option.
     CRINIT_GLOBOPT_INCL_SUFFIX,  ///< INCLUDE_SUFFIX global option
     CRINIT_GLOBOPT_SHDGRACEP,    ///< SHUTDOWN_GRACE_PERIOD_US global option
@@ -117,8 +116,8 @@ int crinitGlobOptGet(crinitGlobOptKey_t key, void *val, size_t sz);
 /**
  * Stores a string value for a global option.
  *
- * The length of the string is stored as well for later retrieval using crinitGlobOptGetString(). Uses crinitGlobOptSet()
- * and is therefore thread-safe.
+ * The length of the string is stored as well for later retrieval using crinitGlobOptGetString(). Uses
+ * crinitGlobOptSet() and is therefore thread-safe.
  *
  * @param key  The global option to set.
  * @param str  The string value to store, must be null-terminated.
