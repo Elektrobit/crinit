@@ -1,6 +1,6 @@
 /**
  * @file utest-envset-destroy.c
- * @brief Implementation of the EBCL_envSetDestroy() unit test group.
+ * @brief Implementation of the crinitEnvSetDestroy() unit test group.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -18,8 +18,8 @@
  */
 int main(void) {
     const struct CMUnitTest tests[] = {
-        cmocka_unit_test(EBCL_envSetDestroyTestSuccess),
-        cmocka_unit_test(EBCL_envSetDestroyTestNullInput),
+        cmocka_unit_test(crinitEnvSetDestroyTestSuccess),
+        cmocka_unit_test(crinitEnvSetDestroyTestNullInput),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);

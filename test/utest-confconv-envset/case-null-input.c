@@ -18,17 +18,17 @@
 void EBCL_confConvToEnvSetMemberTestNullInput(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
-    ebcl_EnvSet_t failureDummy = {NULL, 0, 0};
-    ebcl_EnvSet_t successDummy = {NULL, 0, 0};
+    crinitEnvSet_t failureDummy = {NULL, 0, 0};
+    crinitEnvSet_t successDummy = {NULL, 0, 0};
 
     const char *envConf = "VAR_NAME \"some val\"";
 
-    assert_int_equal(EBCL_envSetInit(&successDummy, EBCL_ENVSET_INITIAL_SIZE, EBCL_ENVSET_SIZE_INCREMENT), 0);
+    assert_int_equal(crinitEnvSetInit(&successDummy, CRINIT_ENVSET_INITIAL_SIZE, CRINIT_ENVSET_SIZE_INCREMENT), 0);
 
     assert_int_equal(EBCL_confConvToEnvSetMember(NULL, NULL), -1);
     assert_int_equal(EBCL_confConvToEnvSetMember(NULL, envConf), -1);
     assert_int_equal(EBCL_confConvToEnvSetMember(&successDummy, NULL), -1);
     assert_int_equal(EBCL_confConvToEnvSetMember(&failureDummy, envConf), -1);
 
-    assert_int_equal(EBCL_envSetDestroy(&successDummy), 0);
+    assert_int_equal(crinitEnvSetDestroy(&successDummy), 0);
 }

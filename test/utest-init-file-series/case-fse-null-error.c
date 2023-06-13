@@ -1,6 +1,6 @@
 /**
  * @file case-fse-null-error.c
- * @brief Unit test for EBCL_envSetDestroy(), given file series is NULL.
+ * @brief Unit test for crinitEnvSetDestroy(), given file series is NULL.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *

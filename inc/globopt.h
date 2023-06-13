@@ -143,25 +143,25 @@ int EBCL_globOptSetString(ebcl_GlobOptKey_t key, const char *str);
 int EBCL_globOptGetString(ebcl_GlobOptKey_t key, char **str);
 
 /**
- * Stores an ebcl_EnvSet_t structure.
+ * Stores an crinitEnvSet_t structure.
  *
- * The given instance will be duplicated using EBCL_envSetDup() and stored.
+ * The given instance will be duplicated using crinitEnvSetDup() and stored.
  *
- * @param es  The ebcl_EnvSet_t instance to store.
+ * @param es  The crinitEnvSet_t instance to store.
  *
  * @return  0 on success, -1 on error
  */
-int EBCL_globOptSetEnvSet(const ebcl_EnvSet_t *es);
+int EBCL_globOptSetEnvSet(const crinitEnvSet_t *es);
 /**
- * Retrieves an ebcl_EnvSet_t structure.
+ * Retrieves an crinitEnvSet_t structure.
  *
- * The instance will be duplicated from the stored one using EBCL_envSetDup(). Memory inside the returned instance will
- * be allocated and should be freed using EBCL_envSetDestroy() when no longer in use.
+ * The instance will be duplicated from the stored one using crinitEnvSetDup(). Memory inside the returned instance will
+ * be allocated and should be freed using crinitEnvSetDestroy() when no longer in use.
  *
- * @param es  Return pointer for the retrieved ebcl_EnvSet_t.
+ * @param es  Return pointer for the retrieved crinitEnvSet_t.
  *
  * @return  0 on success, -1 on error.
  */
-int EBCL_globOptGetEnvSet(ebcl_EnvSet_t *es);
+int EBCL_globOptGetEnvSet(crinitEnvSet_t *es);
 
 #endif /* __GLOBOPT_H__ */

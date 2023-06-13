@@ -1,6 +1,6 @@
 /**
  * @file case-null-input.c
- * @brief Unit test for EBCL_envSetSet() with NULL inputs.
+ * @brief Unit test for crinitEnvSetSet() with NULL inputs.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -14,23 +14,23 @@
 #include "unit_test.h"
 #include "utest-envset-set.h"
 
-void EBCL_envSetSetTestNullInput(void **state) {
+void crinitEnvSetSetTestNullInput(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
-    ebcl_EnvSet_t failureDummy = {NULL, 0, 0};
-    ebcl_EnvSet_t successDummy = {NULL, 0, 0};
+    crinitEnvSet_t failureDummy = {NULL, 0, 0};
+    crinitEnvSet_t successDummy = {NULL, 0, 0};
 
     const char *envName = "ENV", *envVal = "val";
 
-    assert_int_equal(EBCL_envSetInit(&successDummy, EBCL_ENVSET_INITIAL_SIZE, EBCL_ENVSET_SIZE_INCREMENT), 0);
+    assert_int_equal(crinitEnvSetInit(&successDummy, CRINIT_ENVSET_INITIAL_SIZE, CRINIT_ENVSET_SIZE_INCREMENT), 0);
 
-    assert_int_equal(EBCL_envSetSet(NULL, NULL, NULL), -1);
-    assert_int_equal(EBCL_envSetSet(NULL, NULL, envVal), -1);
-    assert_int_equal(EBCL_envSetSet(NULL, envName, envVal), -1);
-    assert_int_equal(EBCL_envSetSet(&successDummy, NULL, NULL), -1);
-    assert_int_equal(EBCL_envSetSet(&successDummy, NULL, envVal), -1);
-    assert_int_equal(EBCL_envSetSet(&successDummy, envName, NULL), -1);
-    assert_int_equal(EBCL_envSetSet(&failureDummy, envName, envVal), -1);
+    assert_int_equal(crinitEnvSetSet(NULL, NULL, NULL), -1);
+    assert_int_equal(crinitEnvSetSet(NULL, NULL, envVal), -1);
+    assert_int_equal(crinitEnvSetSet(NULL, envName, envVal), -1);
+    assert_int_equal(crinitEnvSetSet(&successDummy, NULL, NULL), -1);
+    assert_int_equal(crinitEnvSetSet(&successDummy, NULL, envVal), -1);
+    assert_int_equal(crinitEnvSetSet(&successDummy, envName, NULL), -1);
+    assert_int_equal(crinitEnvSetSet(&failureDummy, envName, envVal), -1);
 
-    assert_int_equal(EBCL_envSetDestroy(&successDummy), 0);
+    assert_int_equal(crinitEnvSetDestroy(&successDummy), 0);
 }

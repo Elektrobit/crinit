@@ -167,7 +167,7 @@ static void *EBCL_dispatchThreadFunc(void *args) {
 
     pthread_mutex_unlock(&ctx->lock);
 
-    if (EBCL_envSetSet(&tCopy->taskEnv, EBCL_CRINIT_ENV_NOTIFY_NAME, tCopy->name) == -1) {
+    if (crinitEnvSetSet(&tCopy->taskEnv, EBCL_CRINIT_ENV_NOTIFY_NAME, tCopy->name) == -1) {
         crinitErrPrint("Could not set notification environment variable for task \'%s\'", tCopy->name);
         goto threadExit;
     }

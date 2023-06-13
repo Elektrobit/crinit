@@ -60,7 +60,7 @@ typedef struct ebcl_Task_t {
     char *name;              ///< Name of the task, corresponds to NAME in the config file.
     ebcl_TaskCmd_t *cmds;    ///< Dynamic array of commands, corresponds to COMMAND[N] in the config file.
     size_t cmdsSize;         ///< Number of commands in cmds array.
-    ebcl_EnvSet_t taskEnv;   ///< Environment variables valid for each COMMAND in this task.
+    crinitEnvSet_t taskEnv;   ///< Environment variables valid for each COMMAND in this task.
     ebcl_TaskDep_t *deps;    ///< Dynamic array of dependencies, corresponds to DEPENDS in the config file.
     size_t depsSize;         ///< Number of dependencies in deps array.
     ebcl_TaskPrv_t *prv;     ///< Dynamic array of provided features, corresponds to PROVIDES in the config file.

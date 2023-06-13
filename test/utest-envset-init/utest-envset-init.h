@@ -1,6 +1,6 @@
 /**
  * @file utest-envset-init.h
- * @brief Header declaring the unit tests for EBCL_envSetInit().
+ * @brief Header declaring the unit tests for crinitEnvSetInit().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -14,14 +14,14 @@
 /**
  * Tests successful initialization of an environment set.
  */
-void EBCL_envSetInitTestSuccess(void **state);
+void crinitEnvSetInitTestSuccess(void **state);
 /**
  * Tests detection of NULL pointer input.
  */
-void EBCL_envSetInitTestNullInput(void **state);
+void crinitEnvSetInitTestNullInput(void **state);
 /**
  * Tests handling of a memory allocation error.
  */
-void EBCL_envSetInitTestMallocError(void **state);
+void crinitEnvSetInitTestMallocError(void **state);
 
 #endif /* __UTEST_ENVSET_INIT_H__ */

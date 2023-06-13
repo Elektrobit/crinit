@@ -1,6 +1,6 @@
 /**
  * @file utest-envset-set.h
- * @brief Header declaring the unit tests for EBCL_envSetSet().
+ * @brief Header declaring the unit tests for crinitEnvSetSet().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -14,10 +14,10 @@
 /**
  * Tests successful retrieval of an environment variable.
  */
-void EBCL_envSetSetTestSuccess(void **state);
+void crinitEnvSetSetTestSuccess(void **state);
 /**
  * Tests detection of NULL pointer input.
  */
-void EBCL_envSetSetTestNullInput(void **state);
+void crinitEnvSetSetTestNullInput(void **state);
 
 #endif /* __UTEST_ENVSET_SET_H__ */

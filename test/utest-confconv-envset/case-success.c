@@ -25,18 +25,18 @@ void EBCL_confConvToEnvSetMemberTestSuccess(void **state) {
     const char *combinedConf = "COMPLEX_VAR \"${ESCSEQ_VAR}\\t${VANILLA_VAR}\"",
                *combinedRes = "Hello, fans!\n\tThat is tasty.";
 
-    ebcl_EnvSet_t e = {NULL, 0, 0};
-    assert_int_equal(EBCL_envSetInit(&e, EBCL_ENVSET_INITIAL_SIZE, EBCL_ENVSET_SIZE_INCREMENT), 0);
+    crinitEnvSet_t e = {NULL, 0, 0};
+    assert_int_equal(crinitEnvSetInit(&e, CRINIT_ENVSET_INITIAL_SIZE, CRINIT_ENVSET_SIZE_INCREMENT), 0);
 
     assert_int_equal(EBCL_confConvToEnvSetMember(&e, vanillaConf), 0);
     assert_int_equal(EBCL_confConvToEnvSetMember(&e, escSeqConf), 0);
     assert_int_equal(EBCL_confConvToEnvSetMember(&e, substConf), 0);
     assert_int_equal(EBCL_confConvToEnvSetMember(&e, combinedConf), 0);
 
-    assert_string_equal(EBCL_envSetGet(&e, "VANILLA_VAR"), vanillaRes);
-    assert_string_equal(EBCL_envSetGet(&e, "ESCSEQ_VAR"), escSeqRes);
-    assert_string_equal(EBCL_envSetGet(&e, "SUBST_VAR"), substRes);
-    assert_string_equal(EBCL_envSetGet(&e, "COMPLEX_VAR"), combinedRes);
+    assert_string_equal(crinitEnvSetGet(&e, "VANILLA_VAR"), vanillaRes);
+    assert_string_equal(crinitEnvSetGet(&e, "ESCSEQ_VAR"), escSeqRes);
+    assert_string_equal(crinitEnvSetGet(&e, "SUBST_VAR"), substRes);
+    assert_string_equal(crinitEnvSetGet(&e, "COMPLEX_VAR"), combinedRes);
 
-    assert_int_equal(EBCL_envSetDestroy(&e), 0);
+    assert_int_equal(crinitEnvSetDestroy(&e), 0);
 }

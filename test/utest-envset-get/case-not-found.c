@@ -1,6 +1,6 @@
 /**
  * @file case-not-found.c
- * @brief Unit test for EBCL_envSetGet(), case for variable not found.
+ * @brief Unit test for crinitEnvSetGet(), case for variable not found.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -14,15 +14,15 @@
 #include "unit_test.h"
 #include "utest-envset-get.h"
 
-void EBCL_envSetGetTestNotFound(void **state) {
+void crinitEnvSetGetTestNotFound(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
-    ebcl_EnvSet_t e = {NULL, 0, 0};
-    assert_int_equal(EBCL_envSetInit(&e, EBCL_ENVSET_INITIAL_SIZE, EBCL_ENVSET_SIZE_INCREMENT), 0);
-    assert_int_equal(EBCL_envSetSet(&e, "VAR1", "val1"), 0);
-    assert_int_equal(EBCL_envSetSet(&e, "VAR3", "val3"), 0);
+    crinitEnvSet_t e = {NULL, 0, 0};
+    assert_int_equal(crinitEnvSetInit(&e, CRINIT_ENVSET_INITIAL_SIZE, CRINIT_ENVSET_SIZE_INCREMENT), 0);
+    assert_int_equal(crinitEnvSetSet(&e, "VAR1", "val1"), 0);
+    assert_int_equal(crinitEnvSetSet(&e, "VAR3", "val3"), 0);
 
-    assert_null(EBCL_envSetGet(&e, "VAR2"));
+    assert_null(crinitEnvSetGet(&e, "VAR2"));
 
-    assert_int_equal(EBCL_envSetDestroy(&e), 0);
+    assert_int_equal(crinitEnvSetDestroy(&e), 0);
 }

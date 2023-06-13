@@ -1,6 +1,6 @@
 /**
  * @file case-null-input.c
- * @brief Unit test for EBCL_envSetDestroy() with a NULL input.
+ * @brief Unit test for crinitEnvSetDestroy() with a NULL input.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -14,9 +14,9 @@
 #include "unit_test.h"
 #include "utest-envset-destroy.h"
 
-void EBCL_envSetDestroyTestNullInput(void **state) {
+void crinitEnvSetDestroyTestNullInput(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     expect_any(__wrap_crinitErrPrintFFL, format);
-    assert_int_equal(EBCL_envSetDestroy(NULL), -1);
+    assert_int_equal(crinitEnvSetDestroy(NULL), -1);
 }

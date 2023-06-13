@@ -1,6 +1,6 @@
 /**
  * @file utest-envset-dup.h
- * @brief Header declaring the unit tests for EBCL_envSetDup().
+ * @brief Header declaring the unit tests for crinitEnvSetDup().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -14,10 +14,10 @@
 /**
  * Tests successful duplication of an environment set.
  */
-void EBCL_envSetDupTestSuccess(void **state);
+void crinitEnvSetDupTestSuccess(void **state);
 /**
  * Tests detection of NULL pointer input.
  */
-void EBCL_envSetDupTestNullInput(void **state);
+void crinitEnvSetDupTestNullInput(void **state);
 
 #endif /* __UTEST_ENVSET_DUP_H__ */

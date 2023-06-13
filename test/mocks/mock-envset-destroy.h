@@ -1,6 +1,6 @@
 /**
  * @file mock-envset-destroy.h
- * @brief Header declaring a mock function for EBCL_envSetDestroy().
+ * @brief Header declaring a mock function for crinitEnvSetDestroy().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -14,12 +14,12 @@
 #include "envset.h"
 
 /**
- * Mock function for EBCL_envSetDestroy().
+ * Mock function for crinitEnvSetDestroy().
  *
  * Checks that the right parameters are given and returns a preset value.
  */
 // Rationale: Naming scheme fixed due to linker wrapping.
 // NOLINTNEXTLINE(readability-identifier-naming)
-int __wrap_EBCL_envSetDestroy(ebcl_EnvSet_t *es);
+int __wrap_crinitEnvSetDestroy(crinitEnvSet_t *es);
 
 #endif /* __MOCK_ENVSET_DESTROY_H__ */

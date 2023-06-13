@@ -1,6 +1,6 @@
 /**
  * @file case-null-input.c
- * @brief Unit test for EBCL_envSetGet() with NULL inputs.
+ * @brief Unit test for crinitEnvSetGet() with NULL inputs.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -14,16 +14,16 @@
 #include "unit_test.h"
 #include "utest-envset-get.h"
 
-void EBCL_envSetGetTestNullInput(void **state) {
+void crinitEnvSetGetTestNullInput(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
-    ebcl_EnvSet_t failureDummy = {NULL, 0, 0};
-    ebcl_EnvSet_t successDummy = {NULL, 0, 0};
+    crinitEnvSet_t failureDummy = {NULL, 0, 0};
+    crinitEnvSet_t successDummy = {NULL, 0, 0};
 
-    assert_int_equal(EBCL_envSetInit(&successDummy, EBCL_ENVSET_INITIAL_SIZE, EBCL_ENVSET_SIZE_INCREMENT), 0);
-    assert_ptr_equal(EBCL_envSetGet(&successDummy, NULL), NULL);
-    assert_ptr_equal(EBCL_envSetGet(NULL, "VARNAME"), NULL);
-    assert_ptr_equal(EBCL_envSetGet(NULL, NULL), NULL);
-    assert_ptr_equal(EBCL_envSetGet(&failureDummy, "VARNAME"), NULL);
-    assert_int_equal(EBCL_envSetDestroy(&successDummy), 0);
+    assert_int_equal(crinitEnvSetInit(&successDummy, CRINIT_ENVSET_INITIAL_SIZE, CRINIT_ENVSET_SIZE_INCREMENT), 0);
+    assert_ptr_equal(crinitEnvSetGet(&successDummy, NULL), NULL);
+    assert_ptr_equal(crinitEnvSetGet(NULL, "VARNAME"), NULL);
+    assert_ptr_equal(crinitEnvSetGet(NULL, NULL), NULL);
+    assert_ptr_equal(crinitEnvSetGet(&failureDummy, "VARNAME"), NULL);
+    assert_int_equal(crinitEnvSetDestroy(&successDummy), 0);
 }
