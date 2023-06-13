@@ -1,6 +1,6 @@
 /**
  * @file utest-crinit-set-err-stream.h
- * @brief Header declaring the unit tests for EBCL_crinitSetErrStream().
+ * @brief Header declaring the unit tests for crinitClientSetErrStream().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -12,8 +12,8 @@
 #define __UTEST_CRINIT_SETERRSTREAM_H__
 
 /**
- * Unit test for EBCL_crinitSetErrStream().
+ * Unit test for crinitClientSetErrStream().
  */
-void EBCL_crinitSetErrStreamTestSet(void **state);
+void crinitClientSetErrStreamTestSet(void **state);
 
 #endif /* __UTEST_CRINIT_SETERRSTREAM_H__ */

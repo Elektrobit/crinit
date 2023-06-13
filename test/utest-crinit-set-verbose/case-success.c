@@ -1,6 +1,6 @@
 /**
  * @file case-success.c
- * @brief Implementation of a unit test for EBCL_crinitSetVerbose(), under the assumption no internal function calls
+ * @brief Implementation of a unit test for crinitClientSetVerbose(), under the assumption no internal function calls
  *        fail.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
@@ -15,7 +15,7 @@
 #include "unit_test.h"
 #include "utest-crinit-set-verbose.h"
 
-void EBCL_crinitSetVerboseTestSuccess(void **state) {
+void crinitClientSetVerboseTestSuccess(void **state) {
     CRINIT_PARAM_UNUSED(state);
     const bool t = true;
     const bool f = false;
@@ -25,12 +25,12 @@ void EBCL_crinitSetVerboseTestSuccess(void **state) {
     expect_memory(__wrap_EBCL_globOptSet, val, &t, sizeof(bool));
     expect_value(__wrap_EBCL_globOptSet, sz, sizeof(bool));
     will_return(__wrap_EBCL_globOptSet, 0);
-    assert_int_equal(EBCL_crinitSetVerbose(true), 0);
+    assert_int_equal(crinitClientSetVerbose(true), 0);
 
     // case for input == false
     expect_value(__wrap_EBCL_globOptSet, key, EBCL_GLOBOPT_DEBUG);
     expect_memory(__wrap_EBCL_globOptSet, val, &f, sizeof(bool));
     expect_value(__wrap_EBCL_globOptSet, sz, sizeof(bool));
     will_return(__wrap_EBCL_globOptSet, 0);
-    assert_int_equal(EBCL_crinitSetVerbose(false), 0);
+    assert_int_equal(crinitClientSetVerbose(false), 0);
 }

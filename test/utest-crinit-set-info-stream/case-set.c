@@ -1,6 +1,6 @@
 /**
  * @file case-set.c
- * @brief Implementation of a unit test for EBCL_crinitSetInfoStream().
+ * @brief Implementation of a unit test for crinitClientSetInfoStream().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -14,10 +14,10 @@
 #include "unit_test.h"
 #include "utest-crinit-set-info-stream.h"
 
-void EBCL_crinitSetInfoStreamTestSet(void **state) {
+void crinitClientSetInfoStreamTestSet(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     FILE *fp = (FILE *)0x12345678;
     expect_value(__wrap_crinitSetInfoStream, stream, fp);
-    EBCL_crinitSetInfoStream(fp);
+    crinitClientSetInfoStream(fp);
 }

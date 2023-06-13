@@ -28,21 +28,21 @@ extern "C" {
  *
  * By default, the crinit-client library will output error messages to stderr specifying where a failure occurred. This
  * function can be used to pipe them to a logfile instead or to completely suppress them by piping to /dev/null. The
- * stream can be the same as the one used for EBCL_crinitSetInfoStream().
+ * stream can be the same as the one used for crinitClientSetInfoStream().
  *
  * @param errStream  The stream to use.
  */
-void EBCL_crinitSetErrStream(FILE *errStream);
+void crinitClientSetErrStream(FILE *errStream);
 /**
  * Selects the stream on which to output (debug) information messages.
  *
  * By default, the crinit-client library will output debug information messages to stdout if activated by
- * EBCL_crinitSetVerbose(). This function can be used to pipe them to a logfile instead. The stream can be the same as
- * the one used for EBCL_crinitSetInfoStream().
+ * crinitClientSetVerbose(). This function can be used to pipe them to a logfile instead. The stream can be the same as
+ * the one used for crinitClientSetInfoStream().
  *
  * @param infoStream  The stream to use.
  */
-void EBCL_crinitSetInfoStream(FILE *infoStream);
+void crinitClientSetInfoStream(FILE *infoStream);
 
 /**
  * Queries the version of the crinit daemon.
@@ -53,7 +53,7 @@ void EBCL_crinitSetInfoStream(FILE *infoStream);
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_crinitGetVersion(crinitVersion_t *v);
+int crinitClientGetVersion(crinitVersion_t *v);
 /**
  * Returns version information for the crinit-client shared library.
  *
@@ -61,7 +61,7 @@ int EBCL_crinitGetVersion(crinitVersion_t *v);
  *
  * @return  A pointer to an crinitVersion_t constant containing this library's version info.
  */
-const crinitVersion_t *EBCL_crinitLibGetVersion(void);
+const crinitVersion_t *crinitClientLibGetVersion(void);
 
 /**
  * Sets the task name reported to Crinit by sd_notify().
@@ -70,7 +70,7 @@ const crinitVersion_t *EBCL_crinitLibGetVersion(void);
  *
  * @param taskName  The task name to use.
  */
-void EBCL_crinitSetNotifyTaskName(const char *taskName);
+void crinitClientSetNotifyTaskName(const char *taskName);
 /**
  * Sets the path to Crinit's AF_UNIX communication socket.
  *
@@ -78,7 +78,7 @@ void EBCL_crinitSetNotifyTaskName(const char *taskName);
  *
  * @param sockFile  Path to the socket file.
  */
-void EBCL_crinitSetSocketPath(const char *sockFile);
+void crinitClientSetSocketPath(const char *sockFile);
 /**
  * Turns debug output on or off.
  *
@@ -86,7 +86,7 @@ void EBCL_crinitSetSocketPath(const char *sockFile);
  *
  * @param v  If there should be debug output (YES==true).
  */
-int EBCL_crinitSetVerbose(bool v);
+int crinitClientSetVerbose(bool v);
 
 /**
  * Notifies Crinit of task state changes.
@@ -125,7 +125,7 @@ int sd_notifyf(int unset_environment, const char *format, ...);  // NOLINT(reada
  *
  * Using \a forceDeps, it is possible to specify a DEPENDS value which overrides the one in the configuration file. An
  * empty string will cause the task to be started immediately. Specifying `@ctl:enable` will let the task wait for
- * EBCL_crinitTaskEnable(). If the dependencies from the task config file should be used, \a forceDeps must be `NULL` or
+ * crinitClientTaskEnable(). If the dependencies from the task config file should be used, \a forceDeps must be `NULL` or
  * `"@unchanged"`.
  *
  * Note, that Crinit does not keep track of already fulfilled dependencies, i.e. in order to not be blocked forever a
@@ -140,7 +140,7 @@ int sd_notifyf(int unset_environment, const char *format, ...);  // NOLINT(reada
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_crinitTaskAdd(const char *configFilePath, bool overwrite, const char *forceDeps);
+int crinitClientTaskAdd(const char *configFilePath, bool overwrite, const char *forceDeps);
 /**
  * Requests Crinit to load tasks and options from a series file.
  *
@@ -158,23 +158,23 @@ int EBCL_crinitTaskAdd(const char *configFilePath, bool overwrite, const char *f
  *
  * @return  0 on success, -1 otherwise
  */
-int EBCL_crinitSeriesAdd(const char *seriesFilePath, bool overwriteTasks);
+int crinitClientSeriesAdd(const char *seriesFilePath, bool overwriteTasks);
 
 /**
  * Requests Crinit to remove the dependency `"@ctl:enable"` from a specific task.
  *
- * This can be used in tandem with EBCL_crinitTaskDisable() or config files which already contain the above dependency
+ * This can be used in tandem with crinitClientTaskDisable() or config files which already contain the above dependency
  * to implement starting on command.
  *
  * @param taskName  The name of the task.
  *
  * @return 0 on success, -1 on error
  */
-int EBCL_crinitTaskEnable(const char *taskName);
+int crinitClientTaskEnable(const char *taskName);
 /**
  * Requests Crinit to add the dependency `"@ctl:enable"` to a specific task.
  *
- * This can be used in tandem with EBCL_crinitTaskEnable() to implement starting on command.
+ * This can be used in tandem with crinitClientTaskEnable() to implement starting on command.
  *
  * Note, that this function can also be used to prevent tasks with the `RESPAWN` option set to `YES` from respawning,
  * temporarily or permanently.
@@ -183,7 +183,7 @@ int EBCL_crinitTaskEnable(const char *taskName);
  *
  * @return 0 on success, -1 on error
  */
-int EBCL_crinitTaskDisable(const char *taskName);
+int crinitClientTaskDisable(const char *taskName);
 /**
  * Request Crinit to send SIGTERM to a task process.
  *
@@ -194,7 +194,7 @@ int EBCL_crinitTaskDisable(const char *taskName);
  *
  * @return 0 on success, -1 on error
  */
-int EBCL_crinitTaskStop(const char *taskName);
+int crinitClientTaskStop(const char *taskName);
 /**
  * Request Crinit to send SIGKILL to a task process.
  *
@@ -205,7 +205,7 @@ int EBCL_crinitTaskStop(const char *taskName);
  *
  * @return 0 on success, -1 on error
  */
-int EBCL_crinitTaskKill(const char *taskName);
+int crinitClientTaskKill(const char *taskName);
 /**
  * Request Crinit to reset the state of a task within the TaskDB.
  *
@@ -213,14 +213,14 @@ int EBCL_crinitTaskKill(const char *taskName);
  * unfulfilled dependencies, this will cause an immediate restart.
  *
  * Note, that the semantics are different than with e.g. `systemctl restart`. To get equivalent behaviour, i.e. restart
- * a task that is currently running, a possibility is a call to EBCL_crinitTaskStop() followed by a call to this
+ * a task that is currently running, a possibility is a call to crinitClientTaskStop() followed by a call to this
  * function.
  *
  * @param taskName  The name of the task.
  *
  * @return 0 on success, -1 on error
  */
-int EBCL_crinitTaskRestart(const char *taskName);
+int crinitClientTaskRestart(const char *taskName);
 /**
  * Request Crinit to report the current state and PID of a task from its TaskDB.
  *
@@ -230,23 +230,23 @@ int EBCL_crinitTaskRestart(const char *taskName);
  *
  * @return 0 on success, -1 on error
  */
-int EBCL_crinitTaskGetStatus(ebcl_TaskState_t *s, pid_t *pid, const char *taskName);
+int crinitClientTaskGetStatus(ebcl_TaskState_t *s, pid_t *pid, const char *taskName);
 /**
  * Request Crinit to report the list of task names from its TaskDB.
  *
- * The returned object should be freed with EBCL_crinitFreeTaskList().
+ * The returned object should be freed with crinitClientFreeTaskList().
  *
  * @param tl    Return pointer for the list of tasks.
  *
  * @return 0 on success, -1 on error
  */
-int EBCL_crinitGetTaskList(ebcl_TaskList_t **tl);
+int crinitClientGetTaskList(ebcl_TaskList_t **tl);
 /**
- * Free the list of tasks obtained from EBCL_crinitGetTaskList().
+ * Free the list of tasks obtained from crinitClientGetTaskList().
  *
  * @param tl    The list of tasks.
  */
-void EBCL_crinitFreeTaskList(ebcl_TaskList_t *tl);
+void crinitClientFreeTaskList(ebcl_TaskList_t *tl);
 /**
  * Request Crinit to initiate an immediate shutdown or reboot.
  *
@@ -261,7 +261,7 @@ void EBCL_crinitFreeTaskList(ebcl_TaskList_t *tl);
  *
  * @return 0 on success, -1 on error
  */
-int EBCL_crinitShutdown(int shutdownCmd);
+int crinitClientShutdown(int shutdownCmd);
 
 #ifdef __cplusplus
 }

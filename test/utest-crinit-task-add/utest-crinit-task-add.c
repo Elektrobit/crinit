@@ -1,6 +1,6 @@
 /**
  * @file utest-crinit-task-add.c
- * @brief Implementation of the EBCL_crinitTaskAdd() unit test group.
+ * @brief Implementation of the crinitClientTaskAdd() unit test group.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -33,19 +33,19 @@ int EBCL_checkRtimCmd(const uintmax_t value, const uintmax_t context) {
 }
 
 /**
- * Runs the unit test group for EBCL_crinitTaskAdd using the cmocka API.
+ * Runs the unit test group for crinitClientTaskAdd using the cmocka API.
  */
 int main(void) {
     const struct CMUnitTest tests[] = {
-        cmocka_unit_test(EBCL_crinitTaskAddTestSuccess),
-        cmocka_unit_test(EBCL_crinitTaskAddTestConfPathNull),
-        cmocka_unit_test(EBCL_crinitTaskAddTestForceDepsNull),
-        cmocka_unit_test(EBCL_crinitTaskAddTestForceDepsEmpty),
-        cmocka_unit_test(EBCL_crinitTaskAddTestOverwriteBoolToString),
-        cmocka_unit_test(EBCL_crinitTaskAddTestBuildRtimCmdError),
-        cmocka_unit_test(EBCL_crinitTaskAddTestCrinitXferError),
-        cmocka_unit_test(EBCL_crinitTaskAddTestCrinitResponseCodeError),
-        cmocka_unit_test(EBCL_crinitTaskAddTestCrinitResponseCmdError),
+        cmocka_unit_test(crinitClientTaskAddTestSuccess),
+        cmocka_unit_test(crinitClientTaskAddTestConfPathNull),
+        cmocka_unit_test(crinitClientTaskAddTestForceDepsNull),
+        cmocka_unit_test(crinitClientTaskAddTestForceDepsEmpty),
+        cmocka_unit_test(crinitClientTaskAddTestOverwriteBoolToString),
+        cmocka_unit_test(crinitClientTaskAddTestBuildRtimCmdError),
+        cmocka_unit_test(crinitClientTaskAddTestCrinitXferError),
+        cmocka_unit_test(crinitClientTaskAddTestCrinitResponseCodeError),
+        cmocka_unit_test(crinitClientTaskAddTestCrinitResponseCmdError),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);

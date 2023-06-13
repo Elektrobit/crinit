@@ -1,6 +1,6 @@
 /**
  * @file case-set.c
- * @brief Implementation of a unit test for EBCL_crinitSetErrStream().
+ * @brief Implementation of a unit test for crinitClientSetErrStream().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -14,10 +14,10 @@
 #include "unit_test.h"
 #include "utest-crinit-set-err-stream.h"
 
-void EBCL_crinitSetErrStreamTestSet(void **state) {
+void crinitClientSetErrStreamTestSet(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     FILE *fp = (FILE *)0x12345678;
     expect_value(__wrap_crinitSetErrStream, stream, fp);
-    EBCL_crinitSetErrStream(fp);
+    crinitClientSetErrStream(fp);
 }

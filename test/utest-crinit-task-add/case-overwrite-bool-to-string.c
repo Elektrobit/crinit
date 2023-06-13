@@ -1,6 +1,6 @@
 /**
  * @file case-overwrite-bool-to-string.c
- * @brief Unit test for EBCL_crinitTaskAdd() testing overwrite is passed on correctly.
+ * @brief Unit test for crinitClientTaskAdd() testing overwrite is passed on correctly.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -28,7 +28,7 @@ static struct EBCL_storeRtimCmdArgs EBCL_crinitXferArgResContext = {
     &EBCL_crinitXferArgResOK,
 };
 
-void EBCL_crinitTaskAddTestOverwriteBoolToString(void **state) {
+void crinitClientTaskAddTestOverwriteBoolToString(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     // overwrite == true
@@ -47,7 +47,7 @@ void EBCL_crinitTaskAddTestOverwriteBoolToString(void **state) {
     will_return(__wrap_EBCL_destroyRtimCmd, 0);
     expect_check(__wrap_EBCL_destroyRtimCmd, c, EBCL_checkRtimCmd, &EBCL_crinitXferArgRes);
     will_return(__wrap_EBCL_destroyRtimCmd, 0);
-    assert_int_equal(EBCL_crinitTaskAdd(TEST_CONFIG_FILE, true, TEST_FORCE_DEPS), 0);
+    assert_int_equal(crinitClientTaskAdd(TEST_CONFIG_FILE, true, TEST_FORCE_DEPS), 0);
 
     // overwrite == false
     expect_check(__wrap_EBCL_buildRtimCmd, c, EBCL_storeRtimCmd, &EBCL_buildRtimArgCmd);
@@ -65,5 +65,5 @@ void EBCL_crinitTaskAddTestOverwriteBoolToString(void **state) {
     will_return(__wrap_EBCL_destroyRtimCmd, 0);
     expect_check(__wrap_EBCL_destroyRtimCmd, c, EBCL_checkRtimCmd, &EBCL_crinitXferArgRes);
     will_return(__wrap_EBCL_destroyRtimCmd, 0);
-    assert_int_equal(EBCL_crinitTaskAdd(TEST_CONFIG_FILE, false, TEST_FORCE_DEPS), 0);
+    assert_int_equal(crinitClientTaskAdd(TEST_CONFIG_FILE, false, TEST_FORCE_DEPS), 0);
 }
