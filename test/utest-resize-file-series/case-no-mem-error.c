@@ -1,6 +1,6 @@
 /**
  * @file case-no-mem-error.c
- * @brief Unit test for EBCL_resizeFileSeries(), realloc returns NULL.
+ * @brief Unit test for crinitResizeFileSeries(), realloc returns NULL.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -16,10 +16,10 @@
 #include "fseries.h"
 #include "unit_test.h"
 
-void EBCL_resizeFileSeriesTestNoMemError(void **state) {
+void crinitResizeFileSeriesTestNoMemError(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
-    struct ebcl_FileSeries_t fse = {
+    struct crinitFileSeries_t fse = {
         .fnames = (void *)0xd3adda7a,
     };
 
@@ -29,10 +29,10 @@ void EBCL_resizeFileSeriesTestNoMemError(void **state) {
 
     expect_any_count(__wrap_crinitErrnoPrintFFL, format, 2);
 
-    assert_int_equal(EBCL_resizeFileSeries(&fse, 100), -1);
+    assert_int_equal(crinitResizeFileSeries(&fse, 100), -1);
 
     /* fse.fnames should not be changed on error */
     assert_ptr_not_equal(fse.fnames, NULL);
 
-    assert_int_equal(EBCL_resizeFileSeries(&fse, SIZE_MAX), -1);
+    assert_int_equal(crinitResizeFileSeries(&fse, SIZE_MAX), -1);
 }

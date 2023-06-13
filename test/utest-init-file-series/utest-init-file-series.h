@@ -1,6 +1,6 @@
 /**
  * @file utest-init-file-series.h
- * @brief Header declaring the unit tests for EBCL_initFileSeries().
+ * @brief Header declaring the unit tests for crinitInitFileSeries().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -12,18 +12,18 @@
 #define __UTEST_INIT_FILE_SERIES_H__
 
 /**
- * Unit test for EBCL_initFileSeries(), successful execution.
+ * Unit test for crinitInitFileSeries(), successful execution.
  */
-void EBCL_initFileSeriesTestSuccess(void **state);
+void crinitInitFileSeriesTestSuccess(void **state);
 
 /**
- * Unit test for EBCL_initFileSeries(), copying of base dir fails.
+ * Unit test for crinitInitFileSeries(), copying of base dir fails.
  */
-void EBCL_initFileSeriesTestNoMemError(void **state);
+void crinitInitFileSeriesTestNoMemError(void **state);
 
 /**
- * Unit test for EBCL_initFileSeries(), given file series is NULL.
+ * Unit test for crinitInitFileSeries(), given file series is NULL.
  */
-void EBCL_initFileSeriesTestFseNullError(void **state);
+void crinitInitFileSeriesTestFseNullError(void **state);
 
 #endif /* __UTEST_INIT_FILE_SERIES_H__ */

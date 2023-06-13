@@ -393,7 +393,7 @@ ssize_t EBCL_confListKeyGetMaxIdx(const ebcl_ConfKvList_t *c, const char *key) {
     return maxIdx;
 }
 
-int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
+int EBCL_loadSeriesConf(crinitFileSeries_t *series, const char *filename) {
     if (series == NULL || filename == NULL || !crinitIsAbsPath(filename)) {
         crinitErrPrint("Parameters must not be NULL and filename must be an absolute path.");
         return -1;
@@ -437,7 +437,7 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
     }
 
     if (seriesArr == NULL) {  // No TASKS array given, scan TASKDIR.
-        if (EBCL_fileSeriesFromDir(series, taskDir,
+        if (crinitFileSeriesFromDir(series, taskDir,
                                    (fileSuffix != NULL) ? fileSuffix : EBCL_CONFIG_DEFAULT_TASK_FILE_SUFFIX,
                                    followLinks) == -1) {
             crinitErrPrint("Could not generate list of tasks from task directory '%s'.", taskDir);
@@ -445,7 +445,7 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
             return -1;
         }
     } else {  // TASKS taken from config
-        if (EBCL_fileSeriesFromStrArr(series, taskDir, seriesArr) == -1) {
+        if (crinitFileSeriesFromStrArr(series, taskDir, seriesArr) == -1) {
             crinitErrPrint("Could not generate list of tasks from '%s' option.", EBCL_CONFIG_KEYSTR_TASKS);
             EBCL_freeConfList(c);
             EBCL_freeArgvArray(seriesArr);
@@ -458,7 +458,7 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
     if (EBCL_globOptSetString(EBCL_GLOBOPT_INCLDIR, inclDir) == -1) {
         crinitErrPrint("Could not store global string option values for '%s'.", EBCL_CONFIG_KEYSTR_INCLDIR);
         EBCL_freeConfList(c);
-        EBCL_destroyFileSeries(series);
+        crinitDestroyFileSeries(series);
         return -1;
     }
 
@@ -466,7 +466,7 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
         EBCL_globOptSetString(EBCL_GLOBOPT_INCL_SUFFIX, fileSuffix) == -1) {
         crinitErrPrint("Could not store global string option values for '%s'.", EBCL_CONFIG_KEYSTR_INCL_SUFFIX);
         EBCL_freeConfList(c);
-        EBCL_destroyFileSeries(series);
+        crinitDestroyFileSeries(series);
         return -1;
     }
 
@@ -475,13 +475,13 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
         crinitErrPrint("Failed to search for non-mandatory key \'%s\' in series config \'%s\'.",
                       EBCL_CONFIG_KEYSTR_DEBUG, filename);
         EBCL_freeConfList(c);
-        EBCL_destroyFileSeries(series);
+        crinitDestroyFileSeries(series);
         return -1;
     }
     if (EBCL_globOptSetBoolean(EBCL_GLOBOPT_DEBUG, &confDbg) == -1) {
         crinitErrPrint("Could not store global boolean option value for \'%s\'.", EBCL_CONFIG_KEYSTR_DEBUG);
         EBCL_freeConfList(c);
-        EBCL_destroyFileSeries(series);
+        crinitDestroyFileSeries(series);
         return -1;
     }
 
@@ -490,13 +490,13 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
         crinitErrPrint("Failed to search for non-mandatory key \'%s\' in series config \'%s\'.",
                       EBCL_CONFIG_KEYSTR_USE_SYSLOG, filename);
         EBCL_freeConfList(c);
-        EBCL_destroyFileSeries(series);
+        crinitDestroyFileSeries(series);
         return -1;
     }
     if (EBCL_globOptSetBoolean(EBCL_GLOBOPT_USE_SYSLOG, &confUseSyslog) == -1) {
         crinitErrPrint("Could not store global boolean option value for \'%s\'.", EBCL_CONFIG_KEYSTR_USE_SYSLOG);
         EBCL_freeConfList(c);
-        EBCL_destroyFileSeries(series);
+        crinitDestroyFileSeries(series);
         return -1;
     }
 
@@ -505,14 +505,14 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
         crinitErrPrint("Failed to search for non-mandatory key \'%s\' in series config \'%s\'.",
                       EBCL_CONFIG_KEYSTR_SHDGRACEP, filename);
         EBCL_freeConfList(c);
-        EBCL_destroyFileSeries(series);
+        crinitDestroyFileSeries(series);
         return -1;
     }
     if (EBCL_globOptSetUnsignedLL(EBCL_GLOBOPT_SHDGRACEP, &shdnGracePeriodUs) == -1) {
         crinitErrPrint("Could not store global unsigned long long option values for \'%s\'.",
                       EBCL_CONFIG_KEYSTR_SHDGRACEP);
         EBCL_freeConfList(c);
-        EBCL_destroyFileSeries(series);
+        crinitDestroyFileSeries(series);
         return -1;
     }
 
@@ -520,14 +520,14 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
     if (crinitEnvSetCreateFromConfKvList(&globEnv, NULL, c) == -1) {
         crinitErrPrint("Could not parse global environment variables from series config.");
         EBCL_freeConfList(c);
-        EBCL_destroyFileSeries(series);
+        crinitDestroyFileSeries(series);
         return -1;
     }
 
     if (EBCL_globOptSetEnvSet(&globEnv) == -1) {
         crinitErrPrint("Could not store global environment variable set.");
         EBCL_freeConfList(c);
-        EBCL_destroyFileSeries(series);
+        crinitDestroyFileSeries(series);
         crinitEnvSetDestroy(&globEnv);
         return -1;
     }

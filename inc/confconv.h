@@ -30,7 +30,7 @@
  */
 char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQuoting);
 /**
- * Initializes an instance of ebcl_IoRedir_t from an IO redirection statement in a string.
+ * Initializes an instance of crinitIoRedir_t from an IO redirection statement in a string.
  *
  * The string must be of the form
  * ```
@@ -41,14 +41,14 @@ char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQ
  * or truncated. Default ist TRUNCATE. OCTAL MODE sets the permission bits if the file is newly created. Default is
  * 0644.
  *
- * The function may allocate memory inside the ebcl_IoRedir_t struct which must be freed using EBCL_destroyIoRedir().
+ * The function may allocate memory inside the crinitIoRedir_t struct which must be freed using crinitDestroyIoRedir().
  *
- * @param ior      The ebcl_IoRedir_t instance to initialize.
+ * @param ior      The crinitIoRedir_t instance to initialize.
  * @param confVal  The string with the statement to parse.
  *
  * @return  0 on success, -1 otherwise
  */
-int EBCL_confConvToIoRedir(ebcl_IoRedir_t *ior, const char *confVal);
+int EBCL_confConvToIoRedir(crinitIoRedir_t *ior, const char *confVal);
 
 /**
  * Parses a single ENV_SET directive and sets the variable in question accordingly.

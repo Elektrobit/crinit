@@ -1,6 +1,6 @@
 /**
  * @file case-fse-null-error.c
- * @brief Unit test for EBCL_resizeFileSeries(), given file series is NULL.
+ * @brief Unit test for crinitResizeFileSeries(), given file series is NULL.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -16,12 +16,12 @@
 #include "fseries.h"
 #include "unit_test.h"
 
-void EBCL_resizeFileSeriesTestFseNullError(void **state) {
+void crinitResizeFileSeriesTestFseNullError(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     expect_any_count(__wrap_crinitErrPrintFFL, format, 3);
 
-    assert_int_equal(EBCL_resizeFileSeries(NULL, 0), -1);
-    assert_int_equal(EBCL_resizeFileSeries(NULL, 100), -1);
-    assert_int_equal(EBCL_resizeFileSeries(NULL, SIZE_MAX), -1);
+    assert_int_equal(crinitResizeFileSeries(NULL, 0), -1);
+    assert_int_equal(crinitResizeFileSeries(NULL, 100), -1);
+    assert_int_equal(crinitResizeFileSeries(NULL, SIZE_MAX), -1);
 }

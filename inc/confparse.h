@@ -275,6 +275,6 @@ ssize_t EBCL_confListKeyGetMaxIdx(const ebcl_ConfKvList_t *c, const char *key);
  *
  * @return 0 on success, -1 on failure
  */
-int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename);
+int EBCL_loadSeriesConf(crinitFileSeries_t *series, const char *filename);
 
 #endif /* __CONFPARSE_H__ */

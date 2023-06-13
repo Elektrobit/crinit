@@ -1,6 +1,6 @@
 /**
  * @file utest-file-series-from-dir.h
- * @brief Header declaring the unit tests for EBCL_fileSeriesFromDir().
+ * @brief Header declaring the unit tests for crinitFileSeriesFromDir().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -12,38 +12,38 @@
 #define __UTEST_FILE_SERIES_FROM_DIR_H__
 
 /**
- * Unit test for EBCL_fileSeriesFromDir(), successful execution.
+ * Unit test for crinitFileSeriesFromDir(), successful execution.
  */
-void EBCL_fileSeriesFromDirTestSuccess(void **state);
+void crinitFileSeriesFromDirTestSuccess(void **state);
 
 /**
- * Unit test for EBCL_fileSeriesFromDir(), parameter error.
+ * Unit test for crinitFileSeriesFromDir(), parameter error.
  */
-void EBCL_fileSeriesFromDirParamNullError(void **state);
+void crinitFileSeriesFromDirParamNullError(void **state);
 
 /**
- * Unit test for EBCL_fileSeriesFromDir(), opendir error.
+ * Unit test for crinitFileSeriesFromDir(), opendir error.
  */
-void EBCL_fileSeriesFromDirOpendirError(void **state);
+void crinitFileSeriesFromDirOpendirError(void **state);
 
 /**
- * Unit test for EBCL_fileSeriesFromDir(), dirfd error.
+ * Unit test for crinitFileSeriesFromDir(), dirfd error.
  */
-void EBCL_fileSeriesFromDirDirfdError(void **state);
+void crinitFileSeriesFromDirDirfdError(void **state);
 
 /**
- * Unit test for EBCL_fileSeriesFromDir(), scandir error.
+ * Unit test for crinitFileSeriesFromDir(), scandir error.
  */
-void EBCL_fileSeriesFromDirScandirError(void **state);
+void crinitFileSeriesFromDirScandirError(void **state);
 
 /**
- * Unit test for EBCL_fileSeriesFromDir(), init error.
+ * Unit test for crinitFileSeriesFromDir(), init error.
  */
-void EBCL_fileSeriesFromDirInitError(void **state);
+void crinitFileSeriesFromDirInitError(void **state);
 
 /**
- * Unit test for EBCL_fileSeriesFromDir(), malloc error.
+ * Unit test for crinitFileSeriesFromDir(), malloc error.
  */
-void EBCL_fileSeriesFromDirNoMemError(void **state);
+void crinitFileSeriesFromDirNoMemError(void **state);
 
 #endif /* __UTEST_FILE_SERIES_FROM_DIR_H__ */

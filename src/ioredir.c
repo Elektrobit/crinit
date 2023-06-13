@@ -20,7 +20,7 @@
 #include "confconv.h"
 #include "logio.h"
 
-int EBCL_initIoRedirFromConfKvList(ebcl_IoRedir_t *out, const char *key, size_t keyArrIndex,
+int crinitInitIoRedirFromConfKvList(crinitIoRedir_t *out, const char *key, size_t keyArrIndex,
                                    const ebcl_ConfKvList_t *in) {
     crinitNullCheck(-1, out, key, in);
     char *confVal;
@@ -35,13 +35,13 @@ int EBCL_initIoRedirFromConfKvList(ebcl_IoRedir_t *out, const char *key, size_t 
     return 0;
 }
 
-void EBCL_destroyIoRedir(ebcl_IoRedir_t *ior) {
+void crinitDestroyIoRedir(crinitIoRedir_t *ior) {
     free(ior->path);
 }
 
-int EBCL_ioRedirCpy(ebcl_IoRedir_t *dest, const ebcl_IoRedir_t *src) {
+int crinitIoRedirCpy(crinitIoRedir_t *dest, const crinitIoRedir_t *src) {
     crinitNullCheck(-1, dest, src);
-    memcpy(dest, src, sizeof(ebcl_IoRedir_t));
+    memcpy(dest, src, sizeof(crinitIoRedir_t));
     if (src->path != NULL) {
         dest->path = strdup(src->path);
         if (dest->path == NULL) {

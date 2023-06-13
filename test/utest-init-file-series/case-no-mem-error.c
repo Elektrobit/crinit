@@ -1,6 +1,6 @@
 /**
  * @file case-no-mem-error.c
- * @brief Unit test for EBCL_initFileSeries(), strdup returns NULL.
+ * @brief Unit test for crinitInitFileSeries(), strdup returns NULL.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -15,10 +15,10 @@
 #include "fseries.h"
 #include "unit_test.h"
 
-void EBCL_initFileSeriesTestNoMemError(void **state) {
+void crinitInitFileSeriesTestNoMemError(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
-    struct ebcl_FileSeries_t fse;
+    struct crinitFileSeries_t fse;
     char *baseDir = (void *)0xDEADB33F;
 
     expect_value(__wrap_strdup, s, baseDir);
@@ -26,5 +26,5 @@ void EBCL_initFileSeriesTestNoMemError(void **state) {
 
     expect_any(__wrap_crinitErrnoPrintFFL, format);
 
-    assert_int_equal(EBCL_initFileSeries(&fse, 0, baseDir), -1);
+    assert_int_equal(crinitInitFileSeries(&fse, 0, baseDir), -1);
 }

@@ -68,7 +68,7 @@ typedef struct crinitTask_t {
     crinitTaskOpts_t opts;    ///< Task options.
     ebcl_TaskState_t state;  ///< Task state.
     pid_t pid;               ///< PID of currently running process subordinate to the task, if any.
-    ebcl_IoRedir_t *redirs;  ///< IO redirection descriptions.
+    crinitIoRedir_t *redirs;  ///< IO redirection descriptions.
     size_t redirsSize;       ///< Number of IO redirections.
     int maxRetries;          ///< If crinitTask_t::opts includes #CRINIT_TASK_OPT_RESPAWN, this variable specifies a
                              ///< maximum consecutive number of respawns after failure (default: -1 for infinite).

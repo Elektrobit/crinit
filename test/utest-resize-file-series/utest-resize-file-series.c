@@ -1,6 +1,6 @@
 /**
  * @file utest-resize-file-series.c
- * @brief Implementation of the EBCL_resizeFileSeries() unit test group.
+ * @brief Implementation of the crinitResizeFileSeries() unit test group.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -14,14 +14,14 @@
 #include "unit_test.h"
 
 /**
- * Runs the unit test group for EBCL_resizeFileSeries using the cmocka API.
+ * Runs the unit test group for crinitResizeFileSeries using the cmocka API.
  */
 int main(void) {
     const struct CMUnitTest tests[] = {
-        cmocka_unit_test(EBCL_resizeFileSeriesTestSuccess),
-        cmocka_unit_test(EBCL_resizeFileSeriesTestNoMemError),
-        cmocka_unit_test(EBCL_resizeFileSeriesTestFseNullError),
-        cmocka_unit_test(EBCL_resizeFileSeriesTestShrinkZeroError),
+        cmocka_unit_test(crinitResizeFileSeriesTestSuccess),
+        cmocka_unit_test(crinitResizeFileSeriesTestNoMemError),
+        cmocka_unit_test(crinitResizeFileSeriesTestFseNullError),
+        cmocka_unit_test(crinitResizeFileSeriesTestShrinkZeroError),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);

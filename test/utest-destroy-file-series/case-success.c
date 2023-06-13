@@ -1,6 +1,6 @@
 /**
  * @file case-success.c
- * @brief Unit test for EBCL_destroyFileSeries(), successful execution.
+ * @brief Unit test for crinitDestroyFileSeries(), successful execution.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -18,13 +18,13 @@
 
 static void EBCL_testVariant(size_t numElements, const char *baseDir) {
     char *fnamesBuff[numElements + 1];
-    struct ebcl_FileSeries_t fse = {.baseDir = (char *)baseDir, .size = numElements};
+    struct crinitFileSeries_t fse = {.baseDir = (char *)baseDir, .size = numElements};
 
     if (baseDir) {
-        print_message("Testing EBCL_destroyFileSeriesTestSuccess with numElement = %ld and baseDir = %s.\n",
+        print_message("Testing crinitDestroyFileSeriesTestSuccess with numElement = %ld and baseDir = %s.\n",
                       numElements, baseDir);
     } else {
-        print_message("Testing EBCL_destroyFileSeriesTestSuccess with numElement = %ld and baseDir = NULL.\n",
+        print_message("Testing crinitDestroyFileSeriesTestSuccess with numElement = %ld and baseDir = NULL.\n",
                       numElements);
     }
 
@@ -38,7 +38,7 @@ static void EBCL_testVariant(size_t numElements, const char *baseDir) {
 
     expect_value(__wrap_free, ptr, baseDir);
 
-    EBCL_destroyFileSeries(&fse);
+    crinitDestroyFileSeries(&fse);
 
     if (numElements > 0) {
         assert_ptr_equal(fse.fnames, NULL);
@@ -50,7 +50,7 @@ static void EBCL_testVariant(size_t numElements, const char *baseDir) {
     assert_int_equal(fse.size, 0);
 }
 
-void EBCL_destroyFileSeriesTestSuccess(void **state) {
+void crinitDestroyFileSeriesTestSuccess(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     const char *baseDir = "/some/path/to/testdir/";

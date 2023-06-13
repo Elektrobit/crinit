@@ -27,17 +27,17 @@
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_threadPoolGrow(ebcl_ThreadPool_t *ctx, size_t newSize);
+static int EBCL_threadPoolGrow(crinitThreadPool_t *ctx, size_t newSize);
 /**
  * Thread function to monitor the current load of the thread pool and grow its size if needed.
  *
  * To be started as a pthread running alongside the worker threads. Will monitor the given thread pool via
- * ebcl_ThreadPool_t::threadAvail and ebcl_ThreadPool_t::threadAvailChanged.
+ * crinitThreadPool_t::threadAvail and crinitThreadPool_t::threadAvailChanged.
  *
  * A "dry pool" condition is detected and the thread pool grown if 90% or more of the pool's worker threads are
  * currently unavailable.
  *
- * @param thrpool  The ebcl_ThreadPool_t to monitor.
+ * @param thrpool  The crinitThreadPool_t to monitor.
  */
 static void *EBCL_dryPoolWatchdog(void *thrpool);
 
@@ -50,7 +50,7 @@ static void *EBCL_dryPoolWatchdog(void *thrpool);
  */
 #define EBCL_dryPoolThreshold(poolSize) ((poolSize) / 10)
 
-int EBCL_threadPoolInit(ebcl_ThreadPool_t *ctx, size_t initialSize, void *(*threadFunc)(void *), const void *thrArgs,
+int crinitThreadPoolInit(crinitThreadPool_t *ctx, size_t initialSize, void *(*threadFunc)(void *), const void *thrArgs,
                         size_t thrArgsSize) {
     if (ctx == NULL) {
         crinitErrPrint("Given ThreadPool context must not be NULL.");
@@ -68,7 +68,7 @@ int EBCL_threadPoolInit(ebcl_ThreadPool_t *ctx, size_t initialSize, void *(*thre
     }
 
     if (initialSize == 0) {
-        initialSize = EBCL_THREADPOOL_DEFAULT_INITIAL_SIZE;
+        initialSize = CRINIT_THREADPOOL_DEFAULT_INITIAL_SIZE;
     }
 
     ctx->poolSizeIncrement = initialSize;
@@ -100,8 +100,8 @@ int EBCL_threadPoolInit(ebcl_ThreadPool_t *ctx, size_t initialSize, void *(*thre
         goto fail;
     }
 
-    if ((errno = pthread_attr_setstacksize(&thrAttrs, EBCL_THREADPOOL_THREAD_STACK_SIZE)) != 0) {
-        crinitErrnoPrint("Could not set pthread stack size to %d.", EBCL_THREADPOOL_THREAD_STACK_SIZE);
+    if ((errno = pthread_attr_setstacksize(&thrAttrs, CRINIT_THREADPOOL_THREAD_STACK_SIZE)) != 0) {
+        crinitErrnoPrint("Could not set pthread stack size to %d.", CRINIT_THREADPOOL_THREAD_STACK_SIZE);
         pthread_mutex_unlock(&ctx->lock);
         pthread_attr_destroy(&thrAttrs);
         goto fail;
@@ -132,7 +132,7 @@ fail:
     return -1;
 }
 
-int EBCL_threadPoolThreadBusyCallback(ebcl_ThreadPool_t *ctx) {
+int crinitThreadPoolThreadBusyCallback(crinitThreadPool_t *ctx) {
     if (ctx == NULL) {
         crinitErrPrint("The given thread pool context must not be NULL.");
         return -1;
@@ -149,7 +149,7 @@ int EBCL_threadPoolThreadBusyCallback(ebcl_ThreadPool_t *ctx) {
     return 0;
 }
 
-int EBCL_threadPoolThreadAvailCallback(ebcl_ThreadPool_t *ctx) {
+int crinitThreadPoolThreadAvailCallback(crinitThreadPool_t *ctx) {
     if (ctx == NULL) {
         crinitErrPrint("The given thread pool context must not be NULL.");
         return -1;
@@ -164,7 +164,7 @@ int EBCL_threadPoolThreadAvailCallback(ebcl_ThreadPool_t *ctx) {
     return 0;
 }
 
-static int EBCL_threadPoolGrow(ebcl_ThreadPool_t *ctx, size_t newSize) {
+static int EBCL_threadPoolGrow(crinitThreadPool_t *ctx, size_t newSize) {
     if (ctx == NULL) {
         crinitErrPrint("The given thread pool context must not be NULL.");
         return -1;
@@ -193,8 +193,8 @@ static int EBCL_threadPoolGrow(ebcl_ThreadPool_t *ctx, size_t newSize) {
         pthread_attr_destroy(&thrAttrs);
         return -1;
     }
-    if ((errno = pthread_attr_setstacksize(&thrAttrs, EBCL_THREADPOOL_THREAD_STACK_SIZE)) != 0) {
-        crinitErrnoPrint("Could not set pthread stack size to %d.", EBCL_THREADPOOL_THREAD_STACK_SIZE);
+    if ((errno = pthread_attr_setstacksize(&thrAttrs, CRINIT_THREADPOOL_THREAD_STACK_SIZE)) != 0) {
+        crinitErrnoPrint("Could not set pthread stack size to %d.", CRINIT_THREADPOOL_THREAD_STACK_SIZE);
         pthread_mutex_unlock(&ctx->lock);
         pthread_attr_destroy(&thrAttrs);
         return -1;
@@ -221,7 +221,7 @@ static int EBCL_threadPoolGrow(ebcl_ThreadPool_t *ctx, size_t newSize) {
 }
 
 static void *EBCL_dryPoolWatchdog(void *thrpool) {
-    ebcl_ThreadPool_t *ctx = (ebcl_ThreadPool_t *)thrpool;
+    crinitThreadPool_t *ctx = (crinitThreadPool_t *)thrpool;
 
     if (ctx == NULL) {
         crinitErrPrint("The given thread pool context must not be NULL.");

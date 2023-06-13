@@ -1,6 +1,6 @@
 /**
  * @file case-no-mem-error.c
- * @brief Unit test for EBCL_fileSeriesFromDir(), given malloc fails.
+ * @brief Unit test for crinitFileSeriesFromDir(), given malloc fails.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -17,12 +17,12 @@
 #include "fseries.h"
 #include "unit_test.h"
 
-void EBCL_fileSeriesFromDirNoMemError(void **state) {
+void crinitFileSeriesFromDirNoMemError(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     /* Use special pointer to trigger error */
     char *fnamesBuff[1];
-    ebcl_FileSeries_t fse = {.fnames = fnamesBuff};
+    crinitFileSeries_t fse = {.fnames = fnamesBuff};
     const char *path = (void *)0xd3adda7a;
     const DIR *dptr = (void *)0xd3adda7a;
 
@@ -48,5 +48,5 @@ void EBCL_fileSeriesFromDirNoMemError(void **state) {
 
     expect_any(__wrap_crinitErrnoPrintFFL, format);
 
-    assert_int_equal(EBCL_fileSeriesFromDir(&fse, path, NULL, false), -1);
+    assert_int_equal(crinitFileSeriesFromDir(&fse, path, NULL, false), -1);
 }

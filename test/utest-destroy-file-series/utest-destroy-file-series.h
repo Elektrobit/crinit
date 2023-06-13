@@ -1,6 +1,6 @@
 /**
  * @file utest-destroy-file-series.h
- * @brief Header declaring the unit tests for EBCL_destroyFileSeries().
+ * @brief Header declaring the unit tests for crinitDestroyFileSeries().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -12,8 +12,8 @@
 #define __UTEST_DESTROY_FILE_SERIES_H__
 
 /**
- * Unit test for EBCL_destroyFileSeries(), successful execution.
+ * Unit test for crinitDestroyFileSeries(), successful execution.
  */
-void EBCL_destroyFileSeriesTestSuccess(void **state);
+void crinitDestroyFileSeriesTestSuccess(void **state);
 
 #endif /* __UTEST_DESTROY_FILE_SERIES_H__ */

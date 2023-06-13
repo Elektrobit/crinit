@@ -14,7 +14,7 @@
 
 // clang-format off
 //     Rationale: clang-format does not play nice with the CMake variables.
-const ebcl_Version_t EBCL_crinitVersion = {
+const crinitVersion_t crinitVersion = {
     .major = @CRINIT_VERSION_MAJOR@,
     .minor = @CRINIT_VERSION_MINOR@,
     .micro = @CRINIT_VERSION_MICRO@,
@@ -22,7 +22,7 @@ const ebcl_Version_t EBCL_crinitVersion = {
 };
 // clang-format on
 
-const char *EBCL_getVersionString(void) {
+const char *crinitGetVersionString(void) {
     return (sizeof("@CRINIT_VERSION_GIT@") > 1)
                ? "@CRINIT_VERSION_MAJOR@.@CRINIT_VERSION_MINOR@.@CRINIT_VERSION_MICRO@.@CRINIT_VERSION_GIT@"
                : "@CRINIT_VERSION_MAJOR@.@CRINIT_VERSION_MINOR@.@CRINIT_VERSION_MICRO@";

@@ -1,6 +1,6 @@
 /**
  * @file utest-file-series-from-str-arr.c
- * @brief Implementation of the EBCL_fileSeriesFromStrArr() unit test group.
+ * @brief Implementation of the crinitFileSeriesFromStrArr() unit test group.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -14,13 +14,13 @@
 #include "unit_test.h"
 
 /**
- * Runs the unit test group for EBCL_fileSeriesFromStrArr using the cmocka API.
+ * Runs the unit test group for crinitFileSeriesFromStrArr using the cmocka API.
  */
 int main(void) {
     const struct CMUnitTest tests[] = {
-        cmocka_unit_test(EBCL_fileSeriesFromStrArrTestSuccess),
-        cmocka_unit_test(EBCL_fileSeriesFromStrArrTestNoMemError),
-        cmocka_unit_test(EBCL_fileSeriesFromStrArrTestNullParamError),
+        cmocka_unit_test(crinitFileSeriesFromStrArrTestSuccess),
+        cmocka_unit_test(crinitFileSeriesFromStrArrTestNoMemError),
+        cmocka_unit_test(crinitFileSeriesFromStrArrTestNullParamError),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);

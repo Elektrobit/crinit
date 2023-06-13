@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
         }
         seriesFname = argv[1];
     }
-    crinitInfoPrint("Crinit daemon version %s started.", EBCL_getVersionString());
+    crinitInfoPrint("Crinit daemon version %s started.", crinitGetVersionString());
     if (getpid() == 1) {
         if (EBCL_forkZombieReaper() == -1) {
             crinitErrPrint("I am PID 1 but failed to create a zombie reaper process.");
@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    ebcl_FileSeries_t taskSeries;
+    crinitFileSeries_t taskSeries;
     if (EBCL_loadSeriesConf(&taskSeries, seriesFname) == -1) {
         crinitErrPrint("Could not load series file \'%s\'.", seriesFname);
         EBCL_globOptDestroy();
@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
             if (confFn == NULL) {
                 crinitErrnoPrint("Could not allocate string with full path for \'%s\'.", taskSeries.fnames[n]);
                 EBCL_globOptDestroy();
-                EBCL_destroyFileSeries(&taskSeries);
+                crinitDestroyFileSeries(&taskSeries);
                 EBCL_taskDBDestroy(&tdb);
                 return EXIT_FAILURE;
             }
@@ -124,7 +124,7 @@ int main(int argc, char *argv[]) {
             if (confFnAllocated) {
                 free(confFn);
             }
-            EBCL_destroyFileSeries(&taskSeries);
+            crinitDestroyFileSeries(&taskSeries);
             EBCL_taskDBDestroy(&tdb);
             return EXIT_FAILURE;
         }
@@ -139,7 +139,7 @@ int main(int argc, char *argv[]) {
             crinitErrPrint("Could not extract task from ConfKvList.");
             EBCL_freeConfList(c);
             EBCL_globOptDestroy();
-            EBCL_destroyFileSeries(&taskSeries);
+            crinitDestroyFileSeries(&taskSeries);
             EBCL_taskDBDestroy(&tdb);
             return EXIT_FAILURE;
         }
@@ -151,14 +151,14 @@ int main(int argc, char *argv[]) {
         if (EBCL_taskDBInsert(&tdb, t, false) == -1) {
             crinitErrPrint("Could not insert Task '%s' into TaskDB.", t->name);
             EBCL_globOptDestroy();
-            EBCL_destroyFileSeries(&taskSeries);
+            crinitDestroyFileSeries(&taskSeries);
             crinitFreeTask(t);
             EBCL_taskDBDestroy(&tdb);
             return EXIT_FAILURE;
         }
         crinitFreeTask(t);
     }
-    EBCL_destroyFileSeries(&taskSeries);
+    crinitDestroyFileSeries(&taskSeries);
     crinitDbgInfoPrint("Done parsing.");
 
     char *sockFile = getenv("CRINIT_SOCK");
@@ -185,7 +185,7 @@ int main(int argc, char *argv[]) {
 }
 
 static void EBCL_printVersion(void) {
-    fprintf(stderr, "Crinit version %s\n", EBCL_getVersionString());
+    fprintf(stderr, "Crinit version %s\n", crinitGetVersionString());
 }
 
 static void EBCL_printUsage(const char *basename) {

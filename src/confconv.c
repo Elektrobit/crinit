@@ -173,7 +173,7 @@ int EBCL_confConvToBool(bool *b, const char *confVal) {
     return -1;
 }
 
-int EBCL_confConvToIoRedir(ebcl_IoRedir_t *ior, const char *confVal) {
+int EBCL_confConvToIoRedir(crinitIoRedir_t *ior, const char *confVal) {
     crinitNullCheck(-1, ior, confVal);
 
     memset(ior, 0, sizeof(*ior));

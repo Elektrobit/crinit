@@ -202,7 +202,7 @@ int EBCL_taskCfgIoRedirHandler(crinitTask_t *tgt, const char *val) {
     EBCL_cfgHandlerCommonNullCheck();
 
     size_t newIdx = tgt->redirsSize;
-    ebcl_IoRedir_t *newArr =
+    crinitIoRedir_t *newArr =
         EBCL_cfgHandlerManageArrayMem(tgt->redirs, sizeof(*tgt->redirs), tgt->redirsSize, tgt->redirsSize + 1);
     if (newArr == NULL) {
         crinitErrPrint("Could not perform memory allocation during handler for configuration key '%s'.",

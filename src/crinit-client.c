@@ -104,8 +104,8 @@ EBCL_LIB_EXPORTED void EBCL_crinitSetSocketPath(const char *sockFile) {
     }
 }
 
-EBCL_LIB_EXPORTED const ebcl_Version_t *EBCL_crinitLibGetVersion(void) {
-    return &EBCL_crinitVersion;
+EBCL_LIB_EXPORTED const crinitVersion_t *EBCL_crinitLibGetVersion(void) {
+    return &crinitVersion;
 }
 
 EBCL_LIB_EXPORTED int sd_notify(int unset_environment, const char *state) {  // NOLINT(readability-identifier-naming)
@@ -475,7 +475,7 @@ EBCL_LIB_EXPORTED int EBCL_crinitShutdown(int shutdownCmd) {
     return ret;
 }
 
-EBCL_LIB_EXPORTED int EBCL_crinitGetVersion(ebcl_Version_t *v) {
+EBCL_LIB_EXPORTED int EBCL_crinitGetVersion(crinitVersion_t *v) {
     if (v == NULL) {
         crinitErrPrint("Return pointer must not be NULL.");
         return -1;
