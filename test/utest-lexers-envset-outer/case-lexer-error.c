@@ -1,6 +1,6 @@
 /**
  * @file case-lexer-error.c
- * @brief Unit test for EBCL_envVarOuterLex() testing error handling of the lexer.
+ * @brief Unit test for crinitEnvVarOuterLex() testing error handling of the lexer.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -14,13 +14,13 @@
 #include "unit_test.h"
 #include "utest-lexers-envset-outer.h"
 
-void EBCL_envVarOuterLexTestLexerError(void **state) {
+void crinitEnvVarOuterLexTestLexerError(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     const char *mbegin = NULL, *mend = NULL;
     const char *errorInvalidCharStart = "$key";
     const char *errorKeyStartWithNumber = "0key";
 
-    assert_int_equal(EBCL_envVarOuterLex(&errorInvalidCharStart, &mbegin, &mend), EBCL_TK_ERR);
-    assert_int_equal(EBCL_envVarOuterLex(&errorKeyStartWithNumber, &mbegin, &mend), EBCL_TK_ERR);
+    assert_int_equal(crinitEnvVarOuterLex(&errorInvalidCharStart, &mbegin, &mend), CRINIT_TK_ERR);
+    assert_int_equal(crinitEnvVarOuterLex(&errorKeyStartWithNumber, &mbegin, &mend), CRINIT_TK_ERR);
 }

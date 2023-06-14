@@ -14,7 +14,7 @@
 #include "unit_test.h"
 
 /**
- * Runs the unit test group for EBCL_envVarInnerLex using the cmocka API.
+ * Runs the unit test group for crinitEnvVarInnerLex using the cmocka API.
  */
 int main(void) {
     const struct CMUnitTest tests[] = {

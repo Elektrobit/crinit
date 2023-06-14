@@ -127,7 +127,7 @@ static int EBCL_iniHandler(void *parserCtx, const char *section, const char *key
 
     // Handle quotes around value.
     const char *mbegin, *mend;
-    if (EBCL_matchQuotedConfig(value, &mbegin, &mend) == 1) {
+    if (crinitMatchQuotedConfig(value, &mbegin, &mend) == 1) {
         valLen = mend - mbegin;
         value = mbegin;
     }

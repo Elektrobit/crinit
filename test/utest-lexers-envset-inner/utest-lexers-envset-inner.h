@@ -1,6 +1,6 @@
 /**
  * @file utest-lexers-envset-inner.h
- * @brief Header declaring the unit tests for EBCL_envVarInnerLex().
+ * @brief Header declaring the unit tests for crinitEnvVarInnerLex().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -14,22 +14,22 @@
 /**
  * Tests successful lex-ing of valid inputs.
  *
- * All possible return values of EBCL_envVarInnerLex() save for EBCL_TK_ERR are triggered using accordingly built input
+ * All possible return values of crinitEnvVarInnerLex() save for CRINIT_TK_ERR are triggered using accordingly built input
  * strings.
  */
-void EBCL_envVarInnerLexTestSuccess(void **state);
+void crinitEnvVarInnerLexTestSuccess(void **state);
 /**
  * Tests detection of NULL pointer inputs.
  *
- * EBCL_envVarInnerLex() shall fail if any pointer input parameter is NULL and/or the string in *s is NULL.
+ * crinitEnvVarInnerLex() shall fail if any pointer input parameter is NULL and/or the string in *s is NULL.
  */
-void EBCL_envVarInnerLexTestNullInput(void **state);
+void crinitEnvVarInnerLexTestNullInput(void **state);
 /**
- * Tests cases leading to a lexer error (EBCL_TK_ERR).
+ * Tests cases leading to a lexer error (CRINIT_TK_ERR).
  *
- * For EBCL_envVarInnerLex() that can only happen if the input string starts with a character not allowed in an
+ * For crinitEnvVarInnerLex() that can only happen if the input string starts with a character not allowed in an
  * environment key _AND_ is not an opening double quote.
  */
-void EBCL_envVarInnerLexTestLexerError(void **state);
+void crinitEnvVarInnerLexTestLexerError(void **state);
 
 #endif /* __UTEST_LEXERS_ENVSET_INNER_H__ */

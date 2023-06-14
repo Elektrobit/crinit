@@ -17,7 +17,7 @@
 
 #define EBCL_DUMMY_ENVIRONMENT_VALUE "Some quoted value with $VAR\\x2e"
 
-void EBCL_envVarOuterLexTestSuccess(void **state) {
+void crinitEnvVarOuterLexTestSuccess(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     const char *mbegin = NULL, *mend = NULL;
@@ -30,7 +30,7 @@ void EBCL_envVarOuterLexTestSuccess(void **state) {
 
     /* Should be matched as an environment key */
     s = validEnvKey;
-    assert_int_equal(EBCL_envVarOuterLex(&s, &mbegin, &mend), EBCL_TK_ENVKEY);
+    assert_int_equal(crinitEnvVarOuterLex(&s, &mbegin, &mend), CRINIT_TK_ENVKEY);
     assert_ptr_equal(mbegin, validEnvKey);
     assert_ptr_equal(mend, validEnvKey + strlen(validEnvKey));
     assert_ptr_equal(mend, s);
@@ -38,7 +38,7 @@ void EBCL_envVarOuterLexTestSuccess(void **state) {
     /* Should be matched as an environment value. The quotes should be consumed but not be contained in the match
      * (between mbegin and mend) */
     s = validEnvVal;
-    assert_int_equal(EBCL_envVarOuterLex(&s, &mbegin, &mend), EBCL_TK_ENVVAL);
+    assert_int_equal(crinitEnvVarOuterLex(&s, &mbegin, &mend), CRINIT_TK_ENVVAL);
     assert_ptr_equal(mbegin, validEnvVal + 1);
     assert_ptr_equal(mend, validEnvVal + strlen(validEnvVal) - 1);
     assert_ptr_equal(mend, s - 1);
@@ -47,14 +47,14 @@ void EBCL_envVarOuterLexTestSuccess(void **state) {
 
     /* Should consume/match all whitespace */
     s = wSpc;
-    assert_int_equal(EBCL_envVarOuterLex(&s, &mbegin, &mend), EBCL_TK_WSPC);
+    assert_int_equal(crinitEnvVarOuterLex(&s, &mbegin, &mend), CRINIT_TK_WSPC);
     assert_ptr_equal(mbegin, wSpc);
     assert_ptr_equal(mend, wSpc + strlen(wSpc));
     assert_ptr_equal(mend, s);
 
     /* Should match the end-of-string */
     s = end;
-    assert_int_equal(EBCL_envVarOuterLex(&s, &mbegin, &mend), EBCL_TK_END);
+    assert_int_equal(crinitEnvVarOuterLex(&s, &mbegin, &mend), CRINIT_TK_END);
     assert_ptr_equal(mbegin, end);
     assert_ptr_equal(mend, end + 1);
     assert_ptr_equal(mend, s);

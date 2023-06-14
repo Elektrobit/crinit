@@ -1,6 +1,6 @@
 /**
  * @file case-success.c
- * @brief Unit test for EBCL_envVarInnerLex(), successful execution.
+ * @brief Unit test for crinitEnvVarInnerLex(), successful execution.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -17,7 +17,7 @@
 
 #define EBCL_UTEST_DUMMY_ENVVAR_NAME "SOME_VAR"
 
-void EBCL_envVarInnerLexTestSuccess(void **state) {
+void crinitEnvVarInnerLexTestSuccess(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     const char *mbegin = NULL, *mend = NULL;
@@ -31,28 +31,28 @@ void EBCL_envVarInnerLexTestSuccess(void **state) {
 
     /* Should consume/match a single character. */
     s = cpyStr;
-    assert_int_equal(EBCL_envVarInnerLex(&s, &mbegin, &mend), EBCL_TK_CPY);
+    assert_int_equal(crinitEnvVarInnerLex(&s, &mbegin, &mend), CRINIT_TK_CPY);
     assert_ptr_equal(mbegin, cpyStr);
     assert_ptr_equal(mend, cpyStr + 1);
     assert_ptr_equal(mend, s);
 
     /* Should match a regular (backslash plus single character) escape sequence. */
     s = escSeq;
-    assert_int_equal(EBCL_envVarInnerLex(&s, &mbegin, &mend), EBCL_TK_ESC);
+    assert_int_equal(crinitEnvVarInnerLex(&s, &mbegin, &mend), CRINIT_TK_ESC);
     assert_ptr_equal(mbegin, escSeq);
     assert_ptr_equal(mend, escSeq + strlen(escSeq));
     assert_ptr_equal(mend, s);
 
     /* Should consume a hexadecimal escape sequence and match its two-digit hexadecimal code. */
     s = escSeqHex;
-    assert_int_equal(EBCL_envVarInnerLex(&s, &mbegin, &mend), EBCL_TK_ESCX);
+    assert_int_equal(crinitEnvVarInnerLex(&s, &mbegin, &mend), CRINIT_TK_ESCX);
     assert_ptr_equal(mbegin, escSeqHex + 2);
     assert_ptr_equal(mend, escSeqHex + 4);
     assert_ptr_equal(mend, s);
 
     /* Should consume the whole variable to expand but match only its name. */
     s = var;
-    assert_int_equal(EBCL_envVarInnerLex(&s, &mbegin, &mend), EBCL_TK_VAR);
+    assert_int_equal(crinitEnvVarInnerLex(&s, &mbegin, &mend), CRINIT_TK_VAR);
     assert_ptr_equal(mbegin, var + 2);
     assert_ptr_equal(mend, var + 2 + strlen(EBCL_UTEST_DUMMY_ENVVAR_NAME));
     assert_ptr_equal(mend, s - 1);
@@ -61,7 +61,7 @@ void EBCL_envVarInnerLexTestSuccess(void **state) {
 
     /* Should match the end-of-string */
     s = end;
-    assert_int_equal(EBCL_envVarInnerLex(&s, &mbegin, &mend), EBCL_TK_END);
+    assert_int_equal(crinitEnvVarInnerLex(&s, &mbegin, &mend), CRINIT_TK_END);
     assert_ptr_equal(mbegin, end);
     assert_ptr_equal(mend, end + 1);
     assert_ptr_equal(mend, s);

@@ -16,28 +16,28 @@
 /**
  * Enum data type for token types return by the lexers.
  */
-typedef enum ebcl_TokenType_t {
-    EBCL_TK_ERR = -1,  ///< Lexer error.
-    EBCL_TK_END = 0,   ///< End-of-string encountered.
-    EBCL_TK_ENVKEY,    ///< Environment key encountered (EBCL_envVarOuterLex())
-    EBCL_TK_ENVVAL,    ///< Environment value encountered (EBCL_envVarOuterLex())
-    EBCL_TK_WSPC,      ///< Whitespace  encountered (EBCL_envVarOuterLex())
-    EBCL_TK_VAR,       ///< Variable reference encountered (EBCL_envVarInnerLex())
-    EBCL_TK_ESC,       ///< Regular escape sequence encountered (EBCL_envVarInnerLex())
-    EBCL_TK_ESCX,      ///< Hexadecimal escape sequence encountered (EBCL_envVarInnerLex())
-    EBCL_TK_CPY,       ///< Single character to copy encountered (EBCL_envVarInnerLex())
-    EBCL_TK_DQSTR,     ///< Double-quoted string encountered (EBCL_argvLex())
-    EBCL_TK_UQSTR      ///< Unquoted string encountered (EBCL_argvLex())
-} ebcl_TokenType_t;
+typedef enum crinitTokenType_t {
+    CRINIT_TK_ERR = -1,  ///< Lexer error.
+    CRINIT_TK_END = 0,   ///< End-of-string encountered.
+    CRINIT_TK_ENVKEY,    ///< Environment key encountered (crinitEnvVarOuterLex())
+    CRINIT_TK_ENVVAL,    ///< Environment value encountered (crinitEnvVarOuterLex())
+    CRINIT_TK_WSPC,      ///< Whitespace  encountered (crinitEnvVarOuterLex())
+    CRINIT_TK_VAR,       ///< Variable reference encountered (crinitEnvVarInnerLex())
+    CRINIT_TK_ESC,       ///< Regular escape sequence encountered (crinitEnvVarInnerLex())
+    CRINIT_TK_ESCX,      ///< Hexadecimal escape sequence encountered (crinitEnvVarInnerLex())
+    CRINIT_TK_CPY,       ///< Single character to copy encountered (crinitEnvVarInnerLex())
+    CRINIT_TK_DQSTR,     ///< Double-quoted string encountered (crinitArgvLex())
+    CRINIT_TK_UQSTR      ///< Unquoted string encountered (crinitArgvLex())
+} crinitTokenType_t;
 
 /**
  * Escape sequence map.
  *
- * EBCL_escMap[c] will return the character which the escape sequence \\'c' specifies.
+ * crinitEscMap[c] will return the character which the escape sequence \\'c' specifies.
  *
  * Values initialized in src/lexers.re
  */
-extern const char EBCL_escMap[128];
+extern const char crinitEscMap[128];
 
 /**
  * Lexer/Tokenizer for argv-like string Arrays.
@@ -52,11 +52,11 @@ extern const char EBCL_escMap[128];
  * @param mend    End of a matched token, will not include enclosing quotes if dq==true.
  * @param dq      Set to true to activate handling of double quoted strings.
  *
- * @return  The token type that was just consumed. EBCL_TK_UQSTR for an unquoted string, EBCL_TK_DQSTR for a doubly-
- *          quoted string (only if dq==true), EBCL_TK_WSPC for whitespace, EBCL_TK_END for end-of-string, and
- *          EBCL_TK_ERR if the lexer encountered an error.
+ * @return  The token type that was just consumed. CRINIT_TK_UQSTR for an unquoted string, CRINIT_TK_DQSTR for a doubly-
+ *          quoted string (only if dq==true), CRINIT_TK_WSPC for whitespace, CRINIT_TK_END for end-of-string, and
+ *          CRINIT_TK_ERR if the lexer encountered an error.
  */
-ebcl_TokenType_t EBCL_argvLex(const char **s, const char **mbegin, const char **mend, bool dq);
+crinitTokenType_t crinitArgvLex(const char **s, const char **mbegin, const char **mend, bool dq);
 /**
  * Lexer/Tokenizer for escape characters.
  *
@@ -68,11 +68,11 @@ ebcl_TokenType_t EBCL_argvLex(const char **s, const char **mbegin, const char **
  * @param mbegin  Begin of a matched token.
  * @param mend    End of a matched token.
  *
- * @return The token type that was just consumed. EBCL_TK_CPY for a single character to copy, EBCL_TK_ESCSEQ for a
- *         two-character escape sequence (like `\n` for example), EBCL_TK_ESCSEQX for a hexadecimal escape sequence
- *         (like `\x4f` for `O`), EBCL_TK_END for end-of-string, and EBCL_TK_ERR if the lexer encountered an error.
+ * @return The token type that was just consumed. CRINIT_TK_CPY for a single character to copy, CRINIT_TK_ESCSEQ for a
+ *         two-character escape sequence (like `\n` for example), CRINIT_TK_ESCSEQX for a hexadecimal escape sequence
+ *         (like `\x4f` for `O`), CRINIT_TK_END for end-of-string, and CRINIT_TK_ERR if the lexer encountered an error.
  */
-ebcl_TokenType_t EBCL_escLex(const char **s, const char **mbegin, const char **mend); 
+crinitTokenType_t crinitEscLex(const char **s, const char **mbegin, const char **mend); 
 
 /**
  * Matches a fully quoted config value and removes quotes from match.
@@ -93,19 +93,19 @@ ebcl_TokenType_t EBCL_escLex(const char **s, const char **mbegin, const char **m
  *
  * @return 1 on a match, 0 on no match, -1 on error
  */
-int EBCL_matchQuotedConfig(const char *s, const char **mbegin, const char **mend);
+int crinitMatchQuotedConfig(const char *s, const char **mbegin, const char **mend);
 
 /**
  * Lexer/tokenizer for parsing an ENV_SET directive on the upper level.
  *
  * When repeatedly fed a string of the form `ENV_VAR_NAME "env var content"`, this function will advance the given
- * pointer over each token and tokenize that string as `<EBCL_TK_ENVKEY EBCL_TK_ENVVAR>`.
+ * pointer over each token and tokenize that string as `<CRINIT_TK_ENVKEY CRINIT_TK_ENVVAR>`.
  *
  * In general, the function will tokenize any free-standing alphanumeric text as an env key and any quoted characters
  * as an env value. Sanity-checking to make sure we get a single key followed by a single value is left to the upper
  * layer.
  *
- * The function will return an EBCL_TK_ERR if a free-standing (unquoted) non-alphanumeric character is encountered or
+ * The function will return an CRINIT_TK_ERR if a free-standing (unquoted) non-alphanumeric character is encountered or
  * if a key begins with a number.
  *
  * Environment keys are matched fully while the quotes of environment values are consumed but left out of the matched
@@ -117,10 +117,10 @@ int EBCL_matchQuotedConfig(const char *s, const char **mbegin, const char **mend
  * @param mbegin  Begin of a token match.
  * @param mend    End of a token match.
  *
- * @return EBCL_TK_ERR on any error, EBCL_TK_END on the end of the string, EBCL_TK_ENVKEY on an env key match,
- *         EBCL_TK_ENVVAL on an env value match, EBCL_TK_WSPC on a whitespace (block) match.
+ * @return CRINIT_TK_ERR on any error, CRINIT_TK_END on the end of the string, CRINIT_TK_ENVKEY on an env key match,
+ *         CRINIT_TK_ENVVAL on an env value match, CRINIT_TK_WSPC on a whitespace (block) match.
  */
-ebcl_TokenType_t EBCL_envVarOuterLex(const char **s, const char **mbegin, const char **mend);
+crinitTokenType_t crinitEnvVarOuterLex(const char **s, const char **mbegin, const char **mend);
 /**
  * Lexer/tokenizer for parsing the value part of an ENV_SET directive.
  *
@@ -128,8 +128,8 @@ ebcl_TokenType_t EBCL_envVarOuterLex(const char **s, const char **mbegin, const 
  * `${VAR_NAME}`.
  *
  * In general, the match will contain the full token with two exceptions:
- *     - EBCL_TK_VAR will consume `${VAR_NAME}` but match only `VAR_NAME`.
- *     - EBCL_TK_ESCX will consume for example `\x5e` but match only `5e`.
+ *     - CRINIT_TK_VAR will consume `${VAR_NAME}` but match only `VAR_NAME`.
+ *     - CRINIT_TK_ESCX will consume for example `\x5e` but match only `5e`.
  *
  * The only parser error to be encountered is a single backslash followed by the end-of-string, resulting in an illegal
  * escape sequence.
@@ -138,8 +138,8 @@ ebcl_TokenType_t EBCL_envVarOuterLex(const char **s, const char **mbegin, const 
  * @param mbegin  Begin of a token match.
  * @param mend    End of a token match.
  *
- * @return  An ebcl_TokenType_t as detailed above.
+ * @return  An crinitTokenType_t as detailed above.
  */
-ebcl_TokenType_t EBCL_envVarInnerLex(const char **s, const char **mbegin, const char **mend);
+crinitTokenType_t crinitEnvVarInnerLex(const char **s, const char **mbegin, const char **mend);
 
 #endif /* __LEXERS_H__ */
