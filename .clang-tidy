@@ -12,27 +12,27 @@ Checks: '
 '
 WarningsAsErrors: '*'
 CheckOptions:
-  - { key: readability-identifier-naming.TypedefCase,          value: CamelCase              }
-  - { key: readability-identifier-naming.TypedefPrefix,        value: ebcl_                  }
+#  - { key: readability-identifier-naming.TypedefCase,          value: CamelCase              }
+#  - { key: readability-identifier-naming.TypedefPrefix,        value: crinit                 }
   - { key: readability-identifier-naming.TypedefSuffix,        value: _t                     }
-  - { key: readability-identifier-naming.StructCase,           value: CamelCase              }
-  - { key: readability-identifier-naming.StructPrefix,         value: ebcl_                  }
+#  - { key: readability-identifier-naming.StructCase,           value: CamelCase              }
+#  - { key: readability-identifier-naming.StructPrefix,         value: crinit                 }
   - { key: readability-identifier-naming.StructSuffix,         value: _t                     }
-  - { key: readability-identifier-naming.EnumCase,             value: CamelCase              }
-  - { key: readability-identifier-naming.EnumPrefix,           value: ebcl_                  }
+#  - { key: readability-identifier-naming.EnumCase,             value: CamelCase              }
+#  - { key: readability-identifier-naming.EnumPrefix,           value: crinit                 }
   - { key: readability-identifier-naming.EnumSuffix,           value: _t                     }
-  - { key: readability-identifier-naming.UnionCase,            value: CamelCase              }
-  - { key: readability-identifier-naming.UnionPrefix,          value: ebcl_                  }
-  - { key: readability-identifier-naming.UnionSuffix,          value: _t                     }
-  - { key: readability-identifier-naming.FunctionCase,         value: camelBack              }
-  - { key: readability-identifier-naming.FunctionPrefix,       value: EBCL_                  }
-  - { key: readability-identifier-naming.VariableCase,         value: camelBack              }
-  - { key: readability-identifier-naming.ParameterCase,        value: camelBack              }
-  - { key: readability-identifier-naming.MemberCase,           value: camelBack              }
-  - { key: readability-identifier-naming.GlobalVariableCase,   value: camelBack              }
-  - { key: readability-identifier-naming.GlobalVariablePrefix, value: EBCL_                  }
-  - { key: readability-identifier-naming.GlobalConstantCase,   value: camelBack              }
-  - { key: readability-identifier-naming.GlobalConstantPrefix, value: EBCL_                  }
+#  - { key: readability-identifier-naming.UnionCase,            value: CamelCase              }
+#  - { key: readability-identifier-naming.UnionPrefix,          value: crinit                 }
+#  - { key: readability-identifier-naming.UnionSuffix,          value: _t                     }
+#  - { key: readability-identifier-naming.FunctionCase,         value: CamelCase              }
+#  - { key: readability-identifier-naming.FunctionPrefix,       value: crinit                 }
+#  - { key: readability-identifier-naming.VariableCase,         value: camelBack              }
+#  - { key: readability-identifier-naming.ParameterCase,        value: camelBack              }
+#  - { key: readability-identifier-naming.MemberCase,           value: camelBack              }
+#  - { key: readability-identifier-naming.GlobalVariableCase,   value: CamelCase              }
+#  - { key: readability-identifier-naming.GlobalVariablePrefix, value: crinit                 }
+#  - { key: readability-identifier-naming.GlobalConstantCase,   value: CamelCase              }
+#  - { key: readability-identifier-naming.GlobalConstantPrefix, value: crinit                 }
   - { key: readability-uppercase-literal-suffix.IgnoreMacros,  value: 0                      }
   - { key: readability-uppercase-literal-suffix.NewSuffixes,   value: u;L;F;uL;LL;uLL;Lu;LLu }
 
