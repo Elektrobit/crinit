@@ -34,7 +34,7 @@
  * Argument structure for shdnThread().
  */
 typedef struct ebcl_ShdnThrArgs_t {
-    ebcl_TaskDB_t *ctx;  ///< TaskDB which holds the tasks to be terminated/killed on shutdown.
+    crinitTaskDB_t *ctx;  ///< TaskDB which holds the tasks to be terminated/killed on shutdown.
     int shutdownCmd;     ///< The command for the reboot() syscall, see documentation of RB_* macros in man 7 reboot.
 } ebcl_ShdnThrArgs_t;
 
@@ -47,138 +47,138 @@ typedef struct ebcl_UnMountList_t {
 } ebcl_UnMountList_t;
 
 /**
- * Internal implementation of the "addtask" command on an ebcl_TaskDB_t.
+ * Internal implementation of the "addtask" command on an crinitTaskDB_t.
  *
  * For documentation on the command itself, see crinitClientTaskAdd().
  *
- * @param ctx  The ebcl_TaskDB_t to operate on.
+ * @param ctx  The crinitTaskDB_t to operate on.
  * @param res  Return pointer for response/result.
  * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_execRtimCmdAddTask(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+static int EBCL_execRtimCmdAddTask(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
 /**
  * Internal implementation of the "addseries" command on an ebcl_TaskDB.
  *
  * For documentation on the command itself, see crinitClientSeriesAdd().
  *
- * @param ctx  The ebcl_TaskDB_t to operate on.
+ * @param ctx  The crinitTaskDB_t to operate on.
  * @param res  Return pointer for response/result.
  * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+static int EBCL_execRtimCmdAddSeries(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
 /**
- * Internal implementation of the "enable" command on an ebcl_TaskDB_t.
+ * Internal implementation of the "enable" command on an crinitTaskDB_t.
  *
  * For documentation on the command itself, see crinitClientTaskEnable().
  *
- * @param ctx  The ebcl_TaskDB_t to operate on.
+ * @param ctx  The crinitTaskDB_t to operate on.
  * @param res  Return pointer for response/result.
  * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_execRtimCmdEnable(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+static int EBCL_execRtimCmdEnable(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
 /**
- * Internal implementation of the "disable" command on an ebcl_TaskDB_t.
+ * Internal implementation of the "disable" command on an crinitTaskDB_t.
  *
  * For documentation on the command itself, see crinitClientTaskDisable().
  *
- * @param ctx  The ebcl_TaskDB_t to operate on.
+ * @param ctx  The crinitTaskDB_t to operate on.
  * @param res  Return pointer for response/result.
  * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_execRtimCmdDisable(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+static int EBCL_execRtimCmdDisable(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
 /**
- * Internal implementation of the "stop" command on an ebcl_TaskDB_t.
+ * Internal implementation of the "stop" command on an crinitTaskDB_t.
  *
  * For documentation on the command itself, see crinitClientTaskStop().
  *
- * @param ctx  The ebcl_TaskDB_t to operate on.
+ * @param ctx  The crinitTaskDB_t to operate on.
  * @param res  Return pointer for response/result.
  * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_execRtimCmdStop(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+static int EBCL_execRtimCmdStop(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
 /**
- * Internal implementation of the "kill" command on an ebcl_TaskDB_t.
+ * Internal implementation of the "kill" command on an crinitTaskDB_t.
  *
  * For documentation on the command itself, see crinitClientTaskKill().
  *
- * @param ctx  The ebcl_TaskDB_t to operate on.
+ * @param ctx  The crinitTaskDB_t to operate on.
  * @param res  Return pointer for response/result.
  * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_execRtimCmdKill(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+static int EBCL_execRtimCmdKill(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
 /**
- * Internal implementation of the "restart" command on an ebcl_TaskDB_t.
+ * Internal implementation of the "restart" command on an crinitTaskDB_t.
  *
  * For documentation on the command itself, see crinitClientTaskRestart().
  *
- * @param ctx  The ebcl_TaskDB_t to operate on.
+ * @param ctx  The crinitTaskDB_t to operate on.
  * @param res  Return pointer for response/result.
  * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_execRtimCmdRestart(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+static int EBCL_execRtimCmdRestart(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
 /**
- * Internal implementation of the "notify" command on an ebcl_TaskDB_t.
+ * Internal implementation of the "notify" command on an crinitTaskDB_t.
  *
  * For documentation on the command itself, see sd_notify() and sd_notifyf().
  *
- * @param ctx  The ebcl_TaskDB_t to operate on.
+ * @param ctx  The crinitTaskDB_t to operate on.
  * @param res  Return pointer for response/result.
  * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_execRtimCmdNotify(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+static int EBCL_execRtimCmdNotify(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
 /**
- * Internal implementation of the "status" command on an ebcl_TaskDB_t.
+ * Internal implementation of the "status" command on an crinitTaskDB_t.
  *
  * For documentation on the command itself, see crinitClientTaskGetStatus().
  *
- * @param ctx  The ebcl_TaskDB_t to operate on.
+ * @param ctx  The crinitTaskDB_t to operate on.
  * @param res  Return pointer for response/result.
  * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_execRtimCmdStatus(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+static int EBCL_execRtimCmdStatus(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
 /**
- * Internal implementation of the "list" command on an ebcl_TaskDB_t.
+ * Internal implementation of the "list" command on an crinitTaskDB_t.
  *
  * For documentation on the command itself, see crinitClientGetTaskList().
  *
- * @param ctx  The ebcl_TaskDB_t to operate on.
+ * @param ctx  The crinitTaskDB_t to operate on.
  * @param res  Return pointer for response/result.
  * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_execRtimCmdTaskList(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+static int EBCL_execRtimCmdTaskList(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
 
 /**
  * Internal implementation of the version query from the client library to crinit.
  *
  * For documentation on the command itself, see crinitClientGetVersion().
  *
- * @param ctx  The ebcl_TaskDB_t to operate on.
+ * @param ctx  The crinitTaskDB_t to operate on.
  * @param res  Return pointer for response/result.
  * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_execRtimCmdGetVer(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+static int EBCL_execRtimCmdGetVer(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
 
 /**
  * Internal implementation of the "shutdown" command.
@@ -191,7 +191,7 @@ static int EBCL_execRtimCmdGetVer(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_execRtimCmdShutdown(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+static int EBCL_execRtimCmdShutdown(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
 /**
  * Shutdown thread function.
  *
@@ -342,7 +342,7 @@ int EBCL_rtimCmdToMsgStr(char **out, size_t *outLen, const ebcl_RtimCmd_t *cmd) 
     return 0;
 }
 
-int EBCL_execRtimCmd(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+int EBCL_execRtimCmd(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     if (res == NULL || cmd == NULL) {
         crinitErrPrint("Pointer parameters must not be NULL.");
         return -1;
@@ -541,7 +541,7 @@ int EBCL_destroyRtimCmd(ebcl_RtimCmd_t *c) {
     return 0;
 }
 
-static int EBCL_execRtimCmdAddTask(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+static int EBCL_execRtimCmdAddTask(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     if (ctx == NULL || res == NULL || cmd == NULL) {
         crinitErrPrint("Pointer parameters must not be NULL.");
     }
@@ -590,7 +590,7 @@ static int EBCL_execRtimCmdAddTask(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
         overwrite = true;
     }
 
-    if (EBCL_taskDBInsert(ctx, t, overwrite) == -1) {
+    if (crinitTaskDBInsert(ctx, t, overwrite) == -1) {
         crinitFreeTask(t);
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR,
                                  "Could not insert new task into TaskDB.");
@@ -599,7 +599,7 @@ static int EBCL_execRtimCmdAddTask(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
     return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 1, EBCL_RTIMCMD_RES_OK);
 }
 
-static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+static int EBCL_execRtimCmdAddSeries(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     if (ctx == NULL || res == NULL || cmd == NULL) {
         crinitErrPrint("Pointer parameters must not be NULL.");
     }
@@ -618,7 +618,7 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
                                  "Path to series file must be absolute.");
     }
 
-    if (EBCL_taskDBSetSpawnInhibit(ctx, true) == -1) {
+    if (crinitTaskDBSetSpawnInhibit(ctx, true) == -1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
                                  "Could not inhibit process spawning to load new series file.");
     }
@@ -642,7 +642,7 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
             confFn = malloc(prefixLen + suffixLen + 2);
             if (confFn == NULL) {
                 crinitDestroyFileSeries(&taskSeries);
-                EBCL_taskDBSetSpawnInhibit(ctx, false);
+                crinitTaskDBSetSpawnInhibit(ctx, false);
                 return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
                                          "Memory allocation error.");
             }
@@ -659,7 +659,7 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
                 free(confFn);
             }
             crinitDestroyFileSeries(&taskSeries);
-            EBCL_taskDBSetSpawnInhibit(ctx, false);
+            crinitTaskDBSetSpawnInhibit(ctx, false);
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not parse config file.");
         }
@@ -672,13 +672,13 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
         if (crinitTaskCreateFromConfKvList(&t, c) == -1) {
             EBCL_freeConfList(c);
             crinitDestroyFileSeries(&taskSeries);
-            EBCL_taskDBSetSpawnInhibit(ctx, false);
+            crinitTaskDBSetSpawnInhibit(ctx, false);
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not create task from config file.");
         }
 
         EBCL_freeConfList(c);
-        if (EBCL_taskDBInsert(ctx, t, overwriteTasks) == -1) {
+        if (crinitTaskDBInsert(ctx, t, overwriteTasks) == -1) {
             crinitFreeTask(t);
             crinitDestroyFileSeries(&taskSeries);
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR,
@@ -689,14 +689,14 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
     }
 
     crinitDestroyFileSeries(&taskSeries);
-    if (EBCL_taskDBSetSpawnInhibit(ctx, false) == -1) {
+    if (crinitTaskDBSetSpawnInhibit(ctx, false) == -1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
                                  "Could not re-enable spawning of processes.");
     }
     return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 1, EBCL_RTIMCMD_RES_OK);
 }
 
-static int EBCL_execRtimCmdEnable(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+static int EBCL_execRtimCmdEnable(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     crinitDbgInfoPrint("Will execute runtime command \'ENABLE\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
         crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
@@ -713,7 +713,7 @@ static int EBCL_execRtimCmdEnable(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
     memcpy(tempDep.name, depStr, sizeof(depStr));
     tempDep.event = tempDep.name + strlen(tempDep.name) + 1;
 
-    if (EBCL_taskDBRemoveDepFromTask(ctx, &tempDep, cmd->args[0]) == -1) {
+    if (crinitTaskDBRemoveDepFromTask(ctx, &tempDep, cmd->args[0]) == -1) {
         free(tempDep.name);
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ENABLE, 2, EBCL_RTIMCMD_RES_ERR,
                                  "Could not remove \'enable\' dependency from task.");
@@ -722,7 +722,7 @@ static int EBCL_execRtimCmdEnable(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
     return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ENABLE, 1, EBCL_RTIMCMD_RES_OK);
 }
 
-static int EBCL_execRtimCmdDisable(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+static int EBCL_execRtimCmdDisable(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     crinitDbgInfoPrint("Will execute runtime command \'DISABLE\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
         crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
@@ -739,7 +739,7 @@ static int EBCL_execRtimCmdDisable(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
     memcpy(tempDep.name, newDepStr, sizeof(newDepStr));
     tempDep.event = tempDep.name + strlen(tempDep.name) + 1;
 
-    if (EBCL_taskDBAddDepToTask(ctx, &tempDep, cmd->args[0]) == -1) {
+    if (crinitTaskDBAddDepToTask(ctx, &tempDep, cmd->args[0]) == -1) {
         free(tempDep.name);
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_DISABLE, 2, EBCL_RTIMCMD_RES_ERR,
                                  "Could not add dependency to task.");
@@ -748,7 +748,7 @@ static int EBCL_execRtimCmdDisable(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
     return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_DISABLE, 1, EBCL_RTIMCMD_RES_OK);
 }
 
-static int EBCL_execRtimCmdStop(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+static int EBCL_execRtimCmdStop(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     crinitDbgInfoPrint("Will execute runtime command \'STOP\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
         crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
@@ -761,7 +761,7 @@ static int EBCL_execRtimCmdStop(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const e
                                  "Could not inhibit waiting for processes.");
     }
     pid_t taskPid = 0;
-    if (EBCL_taskDBGetTaskPID(ctx, &taskPid, cmd->args[0]) == -1) {
+    if (crinitTaskDBGetTaskPID(ctx, &taskPid, cmd->args[0]) == -1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, EBCL_RTIMCMD_RES_ERR, "Could not access task.");
     }
     if (taskPid <= 0) {
@@ -778,7 +778,7 @@ static int EBCL_execRtimCmdStop(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const e
     return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 1, EBCL_RTIMCMD_RES_OK);
 }
 
-static int EBCL_execRtimCmdKill(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+static int EBCL_execRtimCmdKill(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     crinitDbgInfoPrint("Will execute runtime command \'KILL\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
         crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
@@ -792,7 +792,7 @@ static int EBCL_execRtimCmdKill(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const e
                                  "Could not inhibit waiting for processes.");
     }
     pid_t taskPid = 0;
-    if (EBCL_taskDBGetTaskPID(ctx, &taskPid, cmd->args[0]) == -1) {
+    if (crinitTaskDBGetTaskPID(ctx, &taskPid, cmd->args[0]) == -1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_KILL, 2, EBCL_RTIMCMD_RES_ERR, "Could not access task.");
     }
     if (taskPid <= 0) {
@@ -809,7 +809,7 @@ static int EBCL_execRtimCmdKill(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const e
     return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_KILL, 1, EBCL_RTIMCMD_RES_OK);
 }
 
-static int EBCL_execRtimCmdRestart(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+static int EBCL_execRtimCmdRestart(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     crinitDbgInfoPrint("Will execute runtime command \'RESTART\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
         crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
@@ -819,7 +819,7 @@ static int EBCL_execRtimCmdRestart(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
     }
 
     ebcl_TaskState_t s = 0;
-    if (EBCL_taskDBGetTaskState(ctx, &s, cmd->args[0]) == -1) {
+    if (crinitTaskDBGetTaskState(ctx, &s, cmd->args[0]) == -1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_RESTART, 2, EBCL_RTIMCMD_RES_ERR,
                                  "Could not get task state from TaskDB.");
     }
@@ -829,13 +829,13 @@ static int EBCL_execRtimCmdRestart(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
                                  "Task is not either DONE or FAILED.");
     }
 
-    if (EBCL_taskDBSetTaskState(ctx, 0, cmd->args[0]) == -1) {
+    if (crinitTaskDBSetTaskState(ctx, 0, cmd->args[0]) == -1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_RESTART, 2, EBCL_RTIMCMD_RES_ERR, "Could not reset task state.");
     }
     return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_RESTART, 1, EBCL_RTIMCMD_RES_OK);
 }
 
-static int EBCL_execRtimCmdNotify(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+static int EBCL_execRtimCmdNotify(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     crinitDbgInfoPrint("Will execute runtime command \'NOTIFY\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
         crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
@@ -872,7 +872,7 @@ static int EBCL_execRtimCmdNotify(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
     }
 
     if (pid > 0) {
-        if (EBCL_taskDBSetTaskPID(ctx, pid, cmd->args[0]) == -1) {
+        if (crinitTaskDBSetTaskPID(ctx, pid, cmd->args[0]) == -1) {
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not set main PID of task.");
         }
@@ -881,18 +881,18 @@ static int EBCL_execRtimCmdNotify(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
     if (ready > 0) {
         const ebcl_TaskState_t s = EBCL_TASK_STATE_RUNNING | EBCL_TASK_STATE_NOTIFIED;
         char depEvent[] = CRINIT_TASK_EVENT_RUNNING CRINIT_TASK_EVENT_NOTIFY_SUFFIX;
-        if (EBCL_taskDBSetTaskState(ctx, s, cmd->args[0]) == -1) {
+        if (crinitTaskDBSetTaskState(ctx, s, cmd->args[0]) == -1) {
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not set task state to RUNNING.");
         }
 
         crinitTaskDep_t dep = {cmd->args[0], depEvent};
-        if (EBCL_taskDBFulfillDep(ctx, &dep) == -1) {
+        if (crinitTaskDBFulfillDep(ctx, &dep) == -1) {
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not fulfill dependency \'%s:%s\'.", cmd->args[0], depEvent);
         }
 
-        if (EBCL_taskDBProvideFeatureByTaskName(ctx, cmd->args[0], s) == -1) {
+        if (crinitTaskDBProvideFeatureByTaskName(ctx, cmd->args[0], s) == -1) {
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not set features of spawned task \'%s\' as provided.", cmd->args[0]);
         }
@@ -902,18 +902,18 @@ static int EBCL_execRtimCmdNotify(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
         const ebcl_TaskState_t s = EBCL_TASK_STATE_DONE | EBCL_TASK_STATE_NOTIFIED;
         char depEvent[] = CRINIT_TASK_EVENT_DONE CRINIT_TASK_EVENT_NOTIFY_SUFFIX;
 
-        if (EBCL_taskDBSetTaskState(ctx, s, cmd->args[0]) == -1) {
+        if (crinitTaskDBSetTaskState(ctx, s, cmd->args[0]) == -1) {
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not set task state to DONE.");
         }
 
         const crinitTaskDep_t dep = {cmd->args[0], depEvent};
-        if (EBCL_taskDBFulfillDep(ctx, &dep) == -1) {
+        if (crinitTaskDBFulfillDep(ctx, &dep) == -1) {
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not fulfill dependency \'%s:%s\'.", cmd->args[0], depEvent);
         }
 
-        if (EBCL_taskDBProvideFeatureByTaskName(ctx, cmd->args[0], s) == -1) {
+        if (crinitTaskDBProvideFeatureByTaskName(ctx, cmd->args[0], s) == -1) {
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not set features of spawned task \'%s\' as provided.", cmd->args[0]);
         }
@@ -922,7 +922,7 @@ static int EBCL_execRtimCmdNotify(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
     return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 1, EBCL_RTIMCMD_RES_OK);
 }
 
-static int EBCL_execRtimCmdStatus(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+static int EBCL_execRtimCmdStatus(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     crinitDbgInfoPrint("Will execute runtime command \'STATUS\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
         crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
@@ -933,7 +933,7 @@ static int EBCL_execRtimCmdStatus(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
     ebcl_TaskState_t s = 0;
     pid_t pid = -1;
 
-    if (EBCL_taskDBGetTaskStateAndPID(ctx, &s, &pid, cmd->args[0]) == -1) {
+    if (crinitTaskDBGetTaskStateAndPID(ctx, &s, &pid, cmd->args[0]) == -1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 2, EBCL_RTIMCMD_RES_ERR,
                                  "Could not get state and PID of task.");
     }
@@ -955,7 +955,7 @@ static int EBCL_execRtimCmdStatus(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
     return 0;
 }
 
-static int EBCL_execRtimCmdTaskList(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+static int EBCL_execRtimCmdTaskList(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     crinitDbgInfoPrint("Will execute runtime command \'TASKLIST\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
         crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
@@ -968,7 +968,7 @@ static int EBCL_execRtimCmdTaskList(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, con
     size_t numTasks;
     char **tasks;
 
-    if (EBCL_taskDBExportTaskNamesToArray(ctx, &tasks, &numTasks) == -1) {
+    if (crinitTaskDBExportTaskNamesToArray(ctx, &tasks, &numTasks) == -1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 2, EBCL_RTIMCMD_RES_ERR, "Memory allocation error.");
     }
 
@@ -995,7 +995,7 @@ out:
     return ret;
 }
 
-static int EBCL_execRtimCmdGetVer(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+static int EBCL_execRtimCmdGetVer(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     if (ctx == NULL || res == NULL || cmd == NULL) {
         crinitErrPrint("Pointer parameters must not be NULL");
         return -1;
@@ -1015,7 +1015,7 @@ static int EBCL_execRtimCmdGetVer(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
                              crinitVersion.git);
 }
 
-static int EBCL_execRtimCmdShutdown(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+static int EBCL_execRtimCmdShutdown(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
     if (ctx == NULL || res == NULL || cmd == NULL) {
         crinitErrPrint("Pointer parameters must not be NULL");
         return -1;
@@ -1058,11 +1058,11 @@ static int EBCL_execRtimCmdShutdown(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, con
 
 static void *EBCL_shdnThread(void *args) {
     ebcl_ShdnThrArgs_t *a = (ebcl_ShdnThrArgs_t *)args;
-    ebcl_TaskDB_t *ctx = a->ctx;
+    crinitTaskDB_t *ctx = a->ctx;
     int shutdownCmd = a->shutdownCmd;
     free(args);
 
-    if (EBCL_taskDBSetSpawnInhibit(ctx, true) == -1) {
+    if (crinitTaskDBSetSpawnInhibit(ctx, true) == -1) {
         crinitErrPrint("Could not inhibit spawning of new tasks. Continuing anyway.");
     }
 

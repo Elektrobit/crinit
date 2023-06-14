@@ -95,8 +95,8 @@ int main(int argc, char *argv[]) {
 
     EBCL_rtimOpMapDebugPrintAll();
 
-    ebcl_TaskDB_t tdb;
-    EBCL_taskDBInit(&tdb, EBCL_procDispatchSpawnFunc);
+    crinitTaskDB_t tdb;
+    crinitTaskDBInit(&tdb, EBCL_procDispatchSpawnFunc);
 
     for (size_t n = 0; n < taskSeries.size; n++) {
         char *confFn = taskSeries.fnames[n];
@@ -109,7 +109,7 @@ int main(int argc, char *argv[]) {
                 crinitErrnoPrint("Could not allocate string with full path for \'%s\'.", taskSeries.fnames[n]);
                 EBCL_globOptDestroy();
                 crinitDestroyFileSeries(&taskSeries);
-                EBCL_taskDBDestroy(&tdb);
+                crinitTaskDBDestroy(&tdb);
                 return EXIT_FAILURE;
             }
             memcpy(confFn, taskSeries.baseDir, prefixLen);
@@ -125,7 +125,7 @@ int main(int argc, char *argv[]) {
                 free(confFn);
             }
             crinitDestroyFileSeries(&taskSeries);
-            EBCL_taskDBDestroy(&tdb);
+            crinitTaskDBDestroy(&tdb);
             return EXIT_FAILURE;
         }
         crinitInfoPrint("File \'%s\' loaded.", confFn);
@@ -140,7 +140,7 @@ int main(int argc, char *argv[]) {
             EBCL_freeConfList(c);
             EBCL_globOptDestroy();
             crinitDestroyFileSeries(&taskSeries);
-            EBCL_taskDBDestroy(&tdb);
+            crinitTaskDBDestroy(&tdb);
             return EXIT_FAILURE;
         }
         EBCL_freeConfList(c);
@@ -148,12 +148,12 @@ int main(int argc, char *argv[]) {
         crinitDbgInfoPrint("Task extracted without error.");
         EBCL_taskPrint(t);
 
-        if (EBCL_taskDBInsert(&tdb, t, false) == -1) {
+        if (crinitTaskDBInsert(&tdb, t, false) == -1) {
             crinitErrPrint("Could not insert Task '%s' into TaskDB.", t->name);
             EBCL_globOptDestroy();
             crinitDestroyFileSeries(&taskSeries);
             crinitFreeTask(t);
-            EBCL_taskDBDestroy(&tdb);
+            crinitTaskDBDestroy(&tdb);
             return EXIT_FAILURE;
         }
         crinitFreeTask(t);
@@ -167,19 +167,19 @@ int main(int argc, char *argv[]) {
     }
     if (EBCL_startInterfaceServer(&tdb, sockFile) == -1) {
         crinitErrPrint("Could not start notification and service interface.");
-        EBCL_taskDBDestroy(&tdb);
+        crinitTaskDBDestroy(&tdb);
         EBCL_globOptDestroy();
         return EXIT_FAILURE;
     }
 
     while (true) {
-        EBCL_taskDBSpawnReady(&tdb);
+        crinitTaskDBSpawnReady(&tdb);
         pthread_mutex_lock(&tdb.lock);
         crinitDbgInfoPrint("Waiting for Task to be ready.");
         pthread_cond_wait(&tdb.changed, &tdb.lock);
         pthread_mutex_unlock(&tdb.lock);
     }
-    EBCL_taskDBDestroy(&tdb);
+    crinitTaskDBDestroy(&tdb);
     EBCL_globOptDestroy();
     return EXIT_SUCCESS;
 }

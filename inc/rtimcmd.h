@@ -90,12 +90,12 @@ int EBCL_rtimCmdToMsgStr(char **out, size_t *outLen, const ebcl_RtimCmd_t *cmd);
  *
  * For the implementations of the different possible commands see rtimcmd.c.
  *
- * @param ctx  Pointer to the ebcl_TaskDB_t the command shall be executed on.
+ * @param ctx  Pointer to the crinitTaskDB_t the command shall be executed on.
  * @param res  Result/response output.
  * @param cmd  The command to execute.
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_execRtimCmd(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+int EBCL_execRtimCmd(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
 
 #endif /* __RTIMCMD_H__ */
