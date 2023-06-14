@@ -17,6 +17,6 @@
 void EBCL_envSetInitTestNullInput(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
-    expect_any(__wrap_EBCL_errPrintFFL, format);
+    expect_any(__wrap_crinitErrPrintFFL, format);
     assert_int_equal(EBCL_envSetInit(NULL, EBCL_ENVSET_INITIAL_SIZE, EBCL_ENVSET_SIZE_INCREMENT), -1);
 }

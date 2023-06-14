@@ -12,8 +12,8 @@ create_unit_test(
     libmockfunctions
   WRAPS
     -Wl,--wrap=calloc
-    -Wl,--wrap=EBCL_errPrintFFL
-    -Wl,--wrap=EBCL_errnoPrintFFL
+    -Wl,--wrap=crinitErrPrintFFL
+    -Wl,--wrap=crinitErrnoPrintFFL
 )
 
 target_compile_options(utest-envset-init PRIVATE "-fno-builtin-malloc") 

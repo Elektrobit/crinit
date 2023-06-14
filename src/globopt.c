@@ -15,7 +15,7 @@
 
 #include "logio.h"
 
-#define EBCL_globOptSetErrPrint(keyStr) EBCL_errPrint("Could not set default value for global option '%s'.", (keyStr))
+#define EBCL_globOptSetErrPrint(keyStr) crinitErrPrint("Could not set default value for global option '%s'.", (keyStr))
 
 /** Array to hold pointers to the global option values, one pointer per global option. **/
 static void *EBCL_globOptArr[EBCL_GLOBOPT_END - EBCL_GLOBOPT_START] = {NULL};
@@ -74,7 +74,7 @@ int EBCL_globOptInitDefault(void) {
             case EBCL_GLOBOPT_START:
             default:
                 if (EBCL_globOptSet(i, NULL, 0) == -1) {
-                    EBCL_errPrint("Could not set unknown global option to default NULL pointer.");
+                    crinitErrPrint("Could not set unknown global option to default NULL pointer.");
                     return -1;
                 }
             case EBCL_GLOBOPT_END:
@@ -86,7 +86,7 @@ int EBCL_globOptInitDefault(void) {
 
 int EBCL_globOptSet(ebcl_GlobOptKey_t key, const void *val, size_t sz) {
     if ((errno = pthread_mutex_lock(&EBCL_optLock)) == -1) {
-        EBCL_errnoPrint("Could not wait for global option array mutex lock.");
+        crinitErrnoPrint("Could not wait for global option array mutex lock.");
         return -1;
     }
     size_t idx = (size_t)key;
@@ -98,7 +98,7 @@ int EBCL_globOptSet(ebcl_GlobOptKey_t key, const void *val, size_t sz) {
     } else {
         EBCL_globOptArr[idx] = malloc(sz);
         if (EBCL_globOptArr[idx] == NULL) {
-            EBCL_errPrint("Could not allocate memory for global option.");
+            crinitErrPrint("Could not allocate memory for global option.");
             pthread_mutex_unlock(&EBCL_optLock);
             return -1;
         }
@@ -110,16 +110,16 @@ int EBCL_globOptSet(ebcl_GlobOptKey_t key, const void *val, size_t sz) {
 
 int EBCL_globOptGet(ebcl_GlobOptKey_t key, void *val, size_t sz) {
     if (val == NULL || sz == 0) {
-        EBCL_errPrint("Return value pointer must not be NULL and at least 1 Byte must be read.");
+        crinitErrPrint("Return value pointer must not be NULL and at least 1 Byte must be read.");
         return -1;
     }
     if ((errno = pthread_mutex_lock(&EBCL_optLock)) == -1) {
-        EBCL_errnoPrint("Could not wait for global option array mutex lock.");
+        crinitErrnoPrint("Could not wait for global option array mutex lock.");
         return -1;
     }
     size_t idx = (size_t)key;
     if (EBCL_globOptArr[idx] == NULL) {
-        EBCL_errPrint("Could not read global option as it is uninitialized.");
+        crinitErrPrint("Could not read global option as it is uninitialized.");
         pthread_mutex_unlock(&EBCL_optLock);
         return -1;
     }
@@ -130,19 +130,19 @@ int EBCL_globOptGet(ebcl_GlobOptKey_t key, void *val, size_t sz) {
 
 int EBCL_globOptSetString(ebcl_GlobOptKey_t key, const char *str) {
     if (str == NULL) {
-        EBCL_errPrint("Input string must not be NULL.");
+        crinitErrPrint("Input string must not be NULL.");
         return -1;
     }
     size_t len = strlen(str) + 1;
     char *copyData = malloc(len + sizeof(size_t));
     if (copyData == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for global option string.");
+        crinitErrnoPrint("Could not allocate memory for global option string.");
         return -1;
     }
     memcpy(copyData, &len, sizeof(size_t));
     memcpy(copyData + sizeof(size_t), str, len);
     if (EBCL_globOptSet(key, copyData, len + sizeof(size_t)) == -1) {
-        EBCL_errPrint("Could not store global option string.");
+        crinitErrPrint("Could not store global option string.");
         free(copyData);
         return -1;
     }
@@ -153,22 +153,22 @@ int EBCL_globOptSetString(ebcl_GlobOptKey_t key, const char *str) {
 int EBCL_globOptGetString(ebcl_GlobOptKey_t key, char **str) {
     size_t len = 0;
     if (EBCL_globOptGet(key, &len, sizeof(size_t)) == -1 || len == 0) {
-        EBCL_errPrint("Could not get global option string.");
+        crinitErrPrint("Could not get global option string.");
         return -1;
     }
     char *temp = malloc(len + sizeof(size_t));
     if (temp == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for temporary string");
+        crinitErrnoPrint("Could not allocate memory for temporary string");
         return -1;
     }
     if (EBCL_globOptGet(key, temp, len + sizeof(size_t)) == -1) {
-        EBCL_errPrint("Could not get global option string.");
+        crinitErrPrint("Could not get global option string.");
         free(temp);
         return -1;
     }
     *str = malloc(len);
     if (*str == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for output.");
+        crinitErrnoPrint("Could not allocate memory for output.");
         free(temp);
         return -1;
     }
@@ -180,27 +180,27 @@ int EBCL_globOptGetString(ebcl_GlobOptKey_t key, char **str) {
 int EBCL_globOptSetEnvSet(const ebcl_EnvSet_t *es) {
     ebcl_EnvSet_t tgt;
     if (EBCL_globOptGet(EBCL_GLOBOPT_ENV, &tgt, sizeof(ebcl_EnvSet_t)) == -1) {
-        EBCL_errPrint("Could not retrieve current global environment set.");
+        crinitErrPrint("Could not retrieve current global environment set.");
         return -1;
     }
 
     if ((errno = pthread_mutex_lock(&EBCL_optLock)) == -1) {
-        EBCL_errnoPrint("Could not wait for global option array mutex lock.");
+        crinitErrnoPrint("Could not wait for global option array mutex lock.");
         return -1;
     }
     if (EBCL_envSetDestroy(&tgt) == -1) {
-        EBCL_errPrint("Could not free old environment set during update of set.");
+        crinitErrPrint("Could not free old environment set during update of set.");
         pthread_mutex_unlock(&EBCL_optLock);
         return -1;
     }
     if (EBCL_envSetDup(&tgt, es) == -1) {
-        EBCL_errPrint("Could not duplicate new environment set for use as a global option.");
+        crinitErrPrint("Could not duplicate new environment set for use as a global option.");
     }
 
     free(EBCL_globOptArr[EBCL_GLOBOPT_ENV]);
     EBCL_globOptArr[EBCL_GLOBOPT_ENV] = malloc(sizeof(ebcl_EnvSet_t));
     if (EBCL_globOptArr[EBCL_GLOBOPT_ENV] == NULL) {
-        EBCL_errPrint("Could not allocate memory for global option.");
+        crinitErrPrint("Could not allocate memory for global option.");
         pthread_mutex_unlock(&EBCL_optLock);
         return -1;
     }
@@ -212,15 +212,15 @@ int EBCL_globOptSetEnvSet(const ebcl_EnvSet_t *es) {
 int EBCL_globOptGetEnvSet(ebcl_EnvSet_t *es) {
     ebcl_EnvSet_t temp;
     if (EBCL_globOptGet(EBCL_GLOBOPT_ENV, &temp, sizeof(ebcl_EnvSet_t)) == -1) {
-        EBCL_errPrint("Could not retrieve global environment set.");
+        crinitErrPrint("Could not retrieve global environment set.");
         return -1;
     }
     if ((errno = pthread_mutex_lock(&EBCL_optLock)) == -1) {
-        EBCL_errnoPrint("Could not wait for global option array mutex lock.");
+        crinitErrnoPrint("Could not wait for global option array mutex lock.");
         return -1;
     }
     if (EBCL_envSetDup(es, &temp) == -1) {
-        EBCL_errPrint("Could not duplicate environment set during retrieval from global options.");
+        crinitErrPrint("Could not duplicate environment set during retrieval from global options.");
         pthread_mutex_unlock(&EBCL_optLock);
         return -1;
     }
@@ -230,7 +230,7 @@ int EBCL_globOptGetEnvSet(ebcl_EnvSet_t *es) {
 
 void EBCL_globOptDestroy(void) {
     if (pthread_mutex_lock(&EBCL_optLock) == -1) {
-        EBCL_errnoPrint("Could not wait for global option array mutex lock during deinitialization.");
+        crinitErrnoPrint("Could not wait for global option array mutex lock during deinitialization.");
         return;
     }
 

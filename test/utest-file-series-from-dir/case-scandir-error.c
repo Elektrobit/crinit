@@ -39,7 +39,7 @@ void EBCL_fileSeriesFromDirScandirError(void **state) {
     expect_any(__wrap_scandir, compar);
     will_return(__wrap_scandir, -1);
 
-    expect_any(__wrap_EBCL_errnoPrintFFL, format);
+    expect_any(__wrap_crinitErrnoPrintFFL, format);
 
     expect_value(__wrap_closedir, dirp, dptr);
 

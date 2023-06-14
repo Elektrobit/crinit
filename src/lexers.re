@@ -20,7 +20,7 @@ const char EBCL_escMap[128] = {['n'] = '\n',  ['r'] = '\r', ['b'] = '\b', ['a'] 
 
 ebcl_TokenType_t EBCL_argvLex(const char **s, const char **mbegin, const char **mend, bool dq) {
     if (s == NULL || *s == NULL || mbegin == NULL || mend == NULL) {
-        EBCL_errPrint("Input parameters must not be NULL.");
+        crinitErrPrint("Input parameters must not be NULL.");
         return EBCL_TK_ERR;
     }
 
@@ -57,7 +57,7 @@ ebcl_TokenType_t EBCL_argvLex(const char **s, const char **mbegin, const char **
 
 ebcl_TokenType_t EBCL_escLex(const char **s, const char **mbegin, const char **mend) {
     if (s == NULL || *s == NULL || mbegin == NULL || mend == NULL) {
-        EBCL_errPrint("Input parameters must not be NULL.");
+        crinitErrPrint("Input parameters must not be NULL.");
         return EBCL_TK_ERR;
     }
 
@@ -84,7 +84,7 @@ ebcl_TokenType_t EBCL_escLex(const char **s, const char **mbegin, const char **m
 
 int EBCL_matchQuotedConfig(const char *s, const char **mbegin, const char **mend) {
     if (s == NULL || mbegin == NULL || mend == NULL) {
-        EBCL_errPrint("Input parameters must not be NULL.");
+        crinitErrPrint("Input parameters must not be NULL.");
         return -1;
     }
 
@@ -106,7 +106,7 @@ int EBCL_matchQuotedConfig(const char *s, const char **mbegin, const char **mend
 
 ebcl_TokenType_t EBCL_envVarOuterLex(const char **s, const char **mbegin, const char **mend) {
     if (s == NULL || *s == NULL || mbegin == NULL || mend == NULL) {
-        EBCL_errPrint("Input parameters must not be NULL.");
+        crinitErrPrint("Input parameters must not be NULL.");
         return EBCL_TK_ERR;
     }
 
@@ -132,7 +132,7 @@ ebcl_TokenType_t EBCL_envVarOuterLex(const char **s, const char **mbegin, const 
 
 ebcl_TokenType_t EBCL_envVarInnerLex(const char **s, const char **mbegin, const char **mend) {
     if (s == NULL || *s == NULL || mbegin == NULL || mend == NULL) {
-        EBCL_errPrint("Input parameters must not be NULL.");
+        crinitErrPrint("Input parameters must not be NULL.");
         return EBCL_TK_ERR;
     }
 

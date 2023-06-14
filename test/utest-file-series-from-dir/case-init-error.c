@@ -42,7 +42,7 @@ void EBCL_fileSeriesFromDirInitError(void **state) {
 
     expect_value(__wrap_closedir, dirp, dptr);
 
-    expect_any(__wrap_EBCL_errPrintFFL, format);
+    expect_any(__wrap_crinitErrPrintFFL, format);
 
     assert_int_equal(EBCL_fileSeriesFromDir(fse, path, NULL, false), -1);
 }

@@ -32,7 +32,7 @@ static void EBCL_testVariant(size_t numElements) {
     expect_value(__wrap_strdup, s, baseDir);
     will_return(__wrap_strdup, NULL);
 
-    expect_any(__wrap_EBCL_errnoPrintFFL, format);
+    expect_any(__wrap_crinitErrnoPrintFFL, format);
 
     assert_int_equal(EBCL_fileSeriesFromStrArr(&fse, baseDir, strArr), -1);
 }

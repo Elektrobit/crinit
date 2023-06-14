@@ -18,7 +18,7 @@
 void EBCL_initFileSeriesTestFseNullError(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
-    expect_any(__wrap_EBCL_errPrintFFL, format);
+    expect_any(__wrap_crinitErrPrintFFL, format);
 
     assert_int_equal(EBCL_initFileSeries(NULL, 0, NULL), -1);
 }

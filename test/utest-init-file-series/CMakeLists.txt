@@ -13,6 +13,6 @@ create_unit_test(
   WRAPS
     -Wl,--wrap=strdup
     -Wl,--wrap=realloc
-    -Wl,--wrap=EBCL_errPrintFFL
-    -Wl,--wrap=EBCL_errnoPrintFFL
+    -Wl,--wrap=crinitErrPrintFFL
+    -Wl,--wrap=crinitErrnoPrintFFL
 )

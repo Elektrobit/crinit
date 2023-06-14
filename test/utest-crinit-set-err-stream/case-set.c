@@ -18,6 +18,6 @@ void EBCL_crinitSetErrStreamTestSet(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     FILE *fp = (FILE *)0x12345678;
-    expect_value(__wrap_EBCL_setErrStream, stream, fp);
+    expect_value(__wrap_crinitSetErrStream, stream, fp);
     EBCL_crinitSetErrStream(fp);
 }

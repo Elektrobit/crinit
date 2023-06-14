@@ -11,5 +11,5 @@ create_unit_test(
     libmockfunctions
   WRAPS
     -Wl,--wrap=free
-    -Wl,--wrap=EBCL_errPrintFFL
+    -Wl,--wrap=crinitErrPrintFFL
 )

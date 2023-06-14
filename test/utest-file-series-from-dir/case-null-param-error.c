@@ -22,7 +22,7 @@ void EBCL_fileSeriesFromDirParamNullError(void **state) {
     const char *path = (void *)0xd3adda7a;
     const char *fileSuffix = (void *)0xd3adda7a;
 
-    expect_any_count(__wrap_EBCL_errPrintFFL, format, 8);
+    expect_any_count(__wrap_crinitErrPrintFFL, format, 8);
 
     assert_int_equal(EBCL_fileSeriesFromDir(fse, NULL, NULL, false), -1);
     assert_int_equal(EBCL_fileSeriesFromDir(fse, NULL, fileSuffix, false), -1);

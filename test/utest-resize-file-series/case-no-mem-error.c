@@ -27,7 +27,7 @@ void EBCL_resizeFileSeriesTestNoMemError(void **state) {
     expect_any_count(__wrap_realloc, size, 2);
     will_return_count(__wrap_realloc, NULL, 2);
 
-    expect_any_count(__wrap_EBCL_errnoPrintFFL, format, 2);
+    expect_any_count(__wrap_crinitErrnoPrintFFL, format, 2);
 
     assert_int_equal(EBCL_resizeFileSeries(&fse, 100), -1);
 

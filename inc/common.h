@@ -72,7 +72,7 @@
         const void *_macroPtrsToCheck[] = {__VA_ARGS__};                                     \
         for (size_t _macroI = 0; _macroI < crinitNumElements(_macroPtrsToCheck); _macroI++) { \
             if (_macroPtrsToCheck[_macroI] == NULL) {                                        \
-                EBCL_errPrint("Input parameters must not be NULL.");                         \
+                crinitErrPrint("Input parameters must not be NULL.");                         \
                 return (errcode);                                                            \
             }                                                                                \
         }                                                                                    \

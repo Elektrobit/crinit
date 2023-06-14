@@ -53,7 +53,7 @@ static void *EBCL_dryPoolWatchdog(void *thrpool);
 int EBCL_threadPoolInit(ebcl_ThreadPool_t *ctx, size_t initialSize, void *(*threadFunc)(void *), const void *thrArgs,
                         size_t thrArgsSize) {
     if (ctx == NULL) {
-        EBCL_errPrint("Given ThreadPool context must not be NULL.");
+        crinitErrPrint("Given ThreadPool context must not be NULL.");
         return -1;
     }
     ctx->threadAvail = 0;
@@ -63,7 +63,7 @@ int EBCL_threadPoolInit(ebcl_ThreadPool_t *ctx, size_t initialSize, void *(*thre
     ctx->thrArgsSize = 0;
 
     if ((errno = pthread_mutex_init(&ctx->lock, NULL)) != 0) {
-        EBCL_errnoPrint("Could not initialize thread pool mutex.");
+        crinitErrnoPrint("Could not initialize thread pool mutex.");
         return -1;
     }
 
@@ -75,7 +75,7 @@ int EBCL_threadPoolInit(ebcl_ThreadPool_t *ctx, size_t initialSize, void *(*thre
 
     ctx->thrArgs = malloc(thrArgsSize);
     if (ctx->thrArgs == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for thread arguments.");
+        crinitErrnoPrint("Could not allocate memory for thread arguments.");
         goto fail;
     }
     ctx->thrArgsSize = thrArgsSize;
@@ -83,46 +83,46 @@ int EBCL_threadPoolInit(ebcl_ThreadPool_t *ctx, size_t initialSize, void *(*thre
     ctx->threadFunc = threadFunc;
 
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
-        EBCL_errnoPrint("Could not queue up for mutex lock on thread pool.");
+        crinitErrnoPrint("Could not queue up for mutex lock on thread pool.");
         goto fail;
     }
 
     pthread_attr_t thrAttrs;
     if ((errno = pthread_attr_init(&thrAttrs)) != 0) {
-        EBCL_errnoPrint("Could not initialize pthread attributes.");
+        crinitErrnoPrint("Could not initialize pthread attributes.");
         pthread_mutex_unlock(&ctx->lock);
         goto fail;
     }
     if ((errno = pthread_attr_setdetachstate(&thrAttrs, PTHREAD_CREATE_DETACHED)) != 0) {
-        EBCL_errnoPrint("Could not set PTHREAD_CREATE_DETACHED attribute.");
+        crinitErrnoPrint("Could not set PTHREAD_CREATE_DETACHED attribute.");
         pthread_mutex_unlock(&ctx->lock);
         pthread_attr_destroy(&thrAttrs);
         goto fail;
     }
 
     if ((errno = pthread_attr_setstacksize(&thrAttrs, EBCL_THREADPOOL_THREAD_STACK_SIZE)) != 0) {
-        EBCL_errnoPrint("Could not set pthread stack size to %d.", EBCL_THREADPOOL_THREAD_STACK_SIZE);
+        crinitErrnoPrint("Could not set pthread stack size to %d.", EBCL_THREADPOOL_THREAD_STACK_SIZE);
         pthread_mutex_unlock(&ctx->lock);
         pthread_attr_destroy(&thrAttrs);
         goto fail;
     }
 
-    EBCL_dbgInfoPrint("Initializing thread pool.");
+    crinitDbgInfoPrint("Initializing thread pool.");
     if ((errno = pthread_create(&ctx->dryPoolWdRef, &thrAttrs, EBCL_dryPoolWatchdog, ctx)) != 0) {
-        EBCL_errnoPrint("Could not create dry thread pool watchdog thread.");
+        crinitErrnoPrint("Could not create dry thread pool watchdog thread.");
         pthread_mutex_unlock(&ctx->lock);
         pthread_attr_destroy(&thrAttrs);
         goto fail;
     }
-    EBCL_dbgInfoPrint("Created dry pool watchdog.");
+    crinitDbgInfoPrint("Created dry pool watchdog.");
     pthread_mutex_unlock(&ctx->lock);
     pthread_attr_destroy(&thrAttrs);
 
     if (EBCL_threadPoolGrow(ctx, initialSize) == -1) {
-        EBCL_errPrint("Could not create worker threads.");
+        crinitErrPrint("Could not create worker threads.");
         goto fail;
     }
-    EBCL_dbgInfoPrint("Created %zu worker threads.", initialSize);
+    crinitDbgInfoPrint("Created %zu worker threads.", initialSize);
     return 0;
 
 fail:
@@ -134,11 +134,11 @@ fail:
 
 int EBCL_threadPoolThreadBusyCallback(ebcl_ThreadPool_t *ctx) {
     if (ctx == NULL) {
-        EBCL_errPrint("The given thread pool context must not be NULL.");
+        crinitErrPrint("The given thread pool context must not be NULL.");
         return -1;
     }
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
-        EBCL_errnoPrint("Could not queue up for mutex lock on thread pool.");
+        crinitErrnoPrint("Could not queue up for mutex lock on thread pool.");
         return -1;
     }
     ctx->threadAvail--;
@@ -151,11 +151,11 @@ int EBCL_threadPoolThreadBusyCallback(ebcl_ThreadPool_t *ctx) {
 
 int EBCL_threadPoolThreadAvailCallback(ebcl_ThreadPool_t *ctx) {
     if (ctx == NULL) {
-        EBCL_errPrint("The given thread pool context must not be NULL.");
+        crinitErrPrint("The given thread pool context must not be NULL.");
         return -1;
     }
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
-        EBCL_errnoPrint("Could not queue up for mutex lock on thread pool.");
+        crinitErrnoPrint("Could not queue up for mutex lock on thread pool.");
         return -1;
     }
     ctx->threadAvail++;
@@ -166,35 +166,35 @@ int EBCL_threadPoolThreadAvailCallback(ebcl_ThreadPool_t *ctx) {
 
 static int EBCL_threadPoolGrow(ebcl_ThreadPool_t *ctx, size_t newSize) {
     if (ctx == NULL) {
-        EBCL_errPrint("The given thread pool context must not be NULL.");
+        crinitErrPrint("The given thread pool context must not be NULL.");
         return -1;
     }
 
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
-        EBCL_errnoPrint("Could not queue up for mutex lock on thread pool.");
+        crinitErrnoPrint("Could not queue up for mutex lock on thread pool.");
         return -1;
     }
 
     if (newSize <= ctx->poolSize) {
-        EBCL_errPrint("New size of thread pool (%zu) must be larger than the old size (%zu).", newSize, ctx->poolSize);
+        crinitErrPrint("New size of thread pool (%zu) must be larger than the old size (%zu).", newSize, ctx->poolSize);
         pthread_mutex_unlock(&ctx->lock);
         return -1;
     }
 
     pthread_attr_t thrAttrs;
     if ((errno = pthread_attr_init(&thrAttrs)) != 0) {
-        EBCL_errnoPrint("Could not initialize pthread attributes.");
+        crinitErrnoPrint("Could not initialize pthread attributes.");
         pthread_mutex_unlock(&ctx->lock);
         return -1;
     }
     if ((errno = pthread_attr_setdetachstate(&thrAttrs, PTHREAD_CREATE_DETACHED)) != 0) {
-        EBCL_errnoPrint("Could not set PTHREAD_CREATE_DETACHED attribute.");
+        crinitErrnoPrint("Could not set PTHREAD_CREATE_DETACHED attribute.");
         pthread_mutex_unlock(&ctx->lock);
         pthread_attr_destroy(&thrAttrs);
         return -1;
     }
     if ((errno = pthread_attr_setstacksize(&thrAttrs, EBCL_THREADPOOL_THREAD_STACK_SIZE)) != 0) {
-        EBCL_errnoPrint("Could not set pthread stack size to %d.", EBCL_THREADPOOL_THREAD_STACK_SIZE);
+        crinitErrnoPrint("Could not set pthread stack size to %d.", EBCL_THREADPOOL_THREAD_STACK_SIZE);
         pthread_mutex_unlock(&ctx->lock);
         pthread_attr_destroy(&thrAttrs);
         return -1;
@@ -204,12 +204,12 @@ static int EBCL_threadPoolGrow(ebcl_ThreadPool_t *ctx, size_t newSize) {
     size_t oldSize = ctx->poolSize;
     for (size_t i = oldSize; i < newSize; i++) {
         if ((errno = pthread_create(&thr, &thrAttrs, ctx->threadFunc, ctx->thrArgs)) != 0) {
-            EBCL_errnoPrint("Could not create thread pool pthread number %zu.", i);
+            crinitErrnoPrint("Could not create thread pool pthread number %zu.", i);
             pthread_mutex_unlock(&ctx->lock);
             pthread_attr_destroy(&thrAttrs);
             return -1;
         } else {
-            EBCL_dbgInfoPrint("Created worker thread %zu.", i);
+            crinitDbgInfoPrint("Created worker thread %zu.", i);
             ctx->poolSize++;
             ctx->threadAvail++;
         }
@@ -224,13 +224,13 @@ static void *EBCL_dryPoolWatchdog(void *thrpool) {
     ebcl_ThreadPool_t *ctx = (ebcl_ThreadPool_t *)thrpool;
 
     if (ctx == NULL) {
-        EBCL_errPrint("The given thread pool context must not be NULL.");
+        crinitErrPrint("The given thread pool context must not be NULL.");
         return NULL;
     }
-    EBCL_dbgInfoPrint("Dry pool watchdog thread started.");
+    crinitDbgInfoPrint("Dry pool watchdog thread started.");
     while (true) {
         if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
-            EBCL_errnoPrint("Could not queue up for mutex lock on thread pool.");
+            crinitErrnoPrint("Could not queue up for mutex lock on thread pool.");
             return NULL;
         }
         pthread_cond_wait(&ctx->threadAvailChanged, &ctx->lock);
@@ -238,7 +238,7 @@ static void *EBCL_dryPoolWatchdog(void *thrpool) {
             size_t newSize = ctx->poolSize + ctx->poolSizeIncrement;
             pthread_mutex_unlock(&ctx->lock);
             if (EBCL_threadPoolGrow(ctx, newSize) == -1) {
-                EBCL_errPrint("Could not grow thread pool.");
+                crinitErrPrint("Could not grow thread pool.");
             }
         } else {
             pthread_mutex_unlock(&ctx->lock);

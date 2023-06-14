@@ -39,7 +39,7 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in
 
     *out = calloc(1, sizeof(**out));
     if (*out == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for ebcl_Task.");
+        crinitErrnoPrint("Could not allocate memory for ebcl_Task.");
         return -1;
     }
     ebcl_Task_t *pTask = *out;
@@ -47,23 +47,23 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in
     pTask->maxRetries = -1;
 
     if (EBCL_globOptGetEnvSet(&pTask->taskEnv) == -1) {
-        EBCL_errPrint("Could not retrieve global environment set during Task creation.");
+        crinitErrPrint("Could not retrieve global environment set during Task creation.");
         goto fail;
     }
 
     if (EBCL_taskSetFromConfKvList(pTask, in, EBCL_TASK_TYPE_STANDARD, NULL) == -1) {
-        EBCL_errPrint("Could not set parameters of new task from configuration list.");
+        crinitErrPrint("Could not set parameters of new task from configuration list.");
         goto fail;
     }
 
     // Check that resulting task has a name and at least either a DEPENDS or COMMAND (as a meta-task only makes sense
     // with a DEPENDS and a regular task only with at least one COMMAND)
     if (pTask->name == NULL) {
-        EBCL_errPrint("All task configurations must have a NAME.");
+        crinitErrPrint("All task configurations must have a NAME.");
         goto fail;
     }
     if (pTask->cmdsSize == 0 && pTask->depsSize == 0) {
-        EBCL_errPrint("The task '%s' seems to lack both COMMAND and DEPENDS which is unsupported.", pTask->name);
+        crinitErrPrint("The task '%s' seems to lack both COMMAND and DEPENDS which is unsupported.", pTask->name);
         goto fail;
     }
 
@@ -77,7 +77,7 @@ fail:
 int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
     *out = malloc(sizeof(ebcl_Task_t));
     if (*out == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for duplicate of Task \'%s\'.", orig->name);
+        crinitErrnoPrint("Could not allocate memory for duplicate of Task \'%s\'.", orig->name);
         return -1;
     }
     ebcl_Task_t *pTask = *out;
@@ -91,27 +91,27 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
 
     pTask->name = strdup(orig->name);
     if (pTask->name == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for task name during copy of Task \'%s\'.", orig->name);
+        crinitErrnoPrint("Could not allocate memory for task name during copy of Task \'%s\'.", orig->name);
         goto fail;
     }
 
     if (pTask->cmdsSize > 0) {
         pTask->cmds = calloc(pTask->cmdsSize, sizeof(*pTask->cmds));
         if (pTask->cmds == NULL) {
-            EBCL_errnoPrint("Could not allocate memory for %zu COMMANDs during copy of Task \'%s\'.", pTask->cmdsSize,
+            crinitErrnoPrint("Could not allocate memory for %zu COMMANDs during copy of Task \'%s\'.", pTask->cmdsSize,
                             orig->name);
             goto fail;
         }
 
         for (size_t i = 0; i < pTask->cmdsSize; i++) {
             if (orig->cmds[i].argc < 1) {
-                EBCL_errPrint("COMMANDs must have at least one argument.");
+                crinitErrPrint("COMMANDs must have at least one argument.");
                 goto fail;
             }
             pTask->cmds[i].argc = orig->cmds[i].argc;
             pTask->cmds[i].argv = calloc((pTask->cmds[i].argc + 1), sizeof(*pTask->cmds[i].argv));
             if (pTask->cmds[i].argv == NULL) {
-                EBCL_errnoPrint(
+                crinitErrnoPrint(
                     "Could not allocate memory for argv-array of size %d during copy of task \'%s\', cmds[%zu].",
                     pTask->cmds[i].argc + 1, orig->name, i);
                 goto fail;
@@ -122,7 +122,7 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
 
             char *argvBackbuf = malloc(argvBackbufLen);
             if (argvBackbuf == NULL) {
-                EBCL_errnoPrint("Could not allocate memory for cmds[%zu].argv of task \'%s\'.", i, orig->name);
+                crinitErrnoPrint("Could not allocate memory for cmds[%zu].argv of task \'%s\'.", i, orig->name);
                 goto fail;
             }
 
@@ -134,14 +134,14 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
     }
 
     if (EBCL_envSetDup(&pTask->taskEnv, &orig->taskEnv) == -1) {
-        EBCL_errPrint("Could not duplicate task environment during task duplication.");
+        crinitErrPrint("Could not duplicate task environment during task duplication.");
         goto fail;
     }
 
     if (pTask->depsSize > 0) {
         pTask->deps = calloc(pTask->depsSize, sizeof(*pTask->deps));
         if (pTask->deps == NULL) {
-            EBCL_errnoPrint("Could not allocate memory for %zu TaskDeps during copy of Task \'%s\'.", pTask->depsSize,
+            crinitErrnoPrint("Could not allocate memory for %zu TaskDeps during copy of Task \'%s\'.", pTask->depsSize,
                             orig->name);
             goto fail;
         }
@@ -151,7 +151,7 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
             size_t depEventLen = strlen(orig->deps[i].event) + 1;
             pTask->deps[i].name = malloc(depNameLen + depEventLen);
             if (pTask->deps[i].name == NULL) {
-                EBCL_errnoPrint("Could not allocate memory for backing string in deps[%zu] during copy of Task \'%s\'.",
+                crinitErrnoPrint("Could not allocate memory for backing string in deps[%zu] during copy of Task \'%s\'.",
                                 i, orig->name);
                 goto fail;
             }
@@ -165,7 +165,7 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
     if (pTask->prvSize > 0) {
         pTask->prv = calloc(pTask->prvSize, sizeof(*pTask->prv));
         if (pTask->prv == NULL) {
-            EBCL_errnoPrint("Could not allocate memory for %zu TaskPrvs during copy of Task \'%s\'.", pTask->prvSize,
+            crinitErrnoPrint("Could not allocate memory for %zu TaskPrvs during copy of Task \'%s\'.", pTask->prvSize,
                             orig->name);
             goto fail;
         }
@@ -174,7 +174,7 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
             pTask->prv[i].name = strdup(orig->prv[i].name);
             pTask->prv[i].stateReq = orig->prv[i].stateReq;
             if (pTask->prv[i].name == NULL) {
-                EBCL_errnoPrint("Could not allocate memory for TaskPrv at index %zu during copy of Task '%s'.", i,
+                crinitErrnoPrint("Could not allocate memory for TaskPrv at index %zu during copy of Task '%s'.", i,
                                 pTask->name);
                 goto fail;
             }
@@ -186,13 +186,13 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
     if (pTask->redirsSize > 0) {
         pTask->redirs = calloc(pTask->redirsSize, sizeof(*pTask->redirs));
         if (pTask->redirs == NULL) {
-            EBCL_errnoPrint("Could not allocate memory for %zu IO redirection(s) during copy of task '%s'.",
+            crinitErrnoPrint("Could not allocate memory for %zu IO redirection(s) during copy of task '%s'.",
                             pTask->redirsSize, orig->name);
             goto fail;
         }
         for (size_t i = 0; i < pTask->redirsSize; i++) {
             if (EBCL_ioRedirCpy(&pTask->redirs[i], &orig->redirs[i]) == -1) {
-                EBCL_errPrint("Could not copy all IO redirections during copy of task '%s'.", orig->name);
+                crinitErrPrint("Could not copy all IO redirections during copy of task '%s'.", orig->name);
                 goto fail;
             }
         }
@@ -255,11 +255,11 @@ int EBCL_taskMergeInclude(ebcl_Task_t *tgt, const char *src, char *importList) {
 
     char *inclDir = NULL, *inclSuffix = NULL, *inclPath = NULL;
     if (EBCL_globOptGetString(EBCL_GLOBOPT_INCLDIR, &inclDir) == -1) {
-        EBCL_errPrint("Could not recall path include directory from global options.");
+        crinitErrPrint("Could not recall path include directory from global options.");
         return -1;
     }
     if (EBCL_globOptGetString(EBCL_GLOBOPT_INCL_SUFFIX, &inclSuffix) == -1) {
-        EBCL_errPrint("Could not recall include file suffix from global options.");
+        crinitErrPrint("Could not recall include file suffix from global options.");
         free(inclDir);
         return -1;
     }
@@ -267,7 +267,7 @@ int EBCL_taskMergeInclude(ebcl_Task_t *tgt, const char *src, char *importList) {
     size_t pathLen = snprintf(NULL, 0, "%s/%s%s", inclDir, src, inclSuffix);
     inclPath = malloc(pathLen + 1);
     if (inclPath == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for full include file path.");
+        crinitErrnoPrint("Could not allocate memory for full include file path.");
         free(inclDir);
         free(inclSuffix);
         return -1;
@@ -280,13 +280,13 @@ int EBCL_taskMergeInclude(ebcl_Task_t *tgt, const char *src, char *importList) {
 
     ebcl_ConfKvList_t *inclConfList;
     if (EBCL_parseConf(&inclConfList, inclPath) == -1) {
-        EBCL_errPrint("Could not parse include file at '%s'.", inclPath);
+        crinitErrPrint("Could not parse include file at '%s'.", inclPath);
         free(inclPath);
         return -1;
     }
 
     if (EBCL_taskSetFromConfKvList(tgt, inclConfList, EBCL_TASK_TYPE_INCLUDE, importList) == -1) {
-        EBCL_errPrint("Could not merge include file '%s' into task.", inclPath);
+        crinitErrPrint("Could not merge include file '%s' into task.", inclPath);
         free(inclPath);
         EBCL_freeConfList(inclConfList);
         return -1;
@@ -312,7 +312,7 @@ static inline int EBCL_taskSetFromConfKvList(ebcl_Task_t *tgt, const ebcl_ConfKv
         while (token != NULL) {
             const ebcl_ConfigMapping_t *cfg = EBCL_findConfigMapping(token);
             if (cfg == NULL) {
-                EBCL_errPrint("Unexpected configuration string in include import list: '%s'", token);
+                crinitErrPrint("Unexpected configuration string in include import list: '%s'", token);
                 return -1;
             }
             importArr[cfg->config] = true;
@@ -325,20 +325,20 @@ static inline int EBCL_taskSetFromConfKvList(ebcl_Task_t *tgt, const ebcl_ConfKv
     while (pEntry != NULL) {
         const ebcl_ConfigMapping_t *tcm = EBCL_findConfigMapping(pEntry->key);
         if (tcm == NULL) {
-            EBCL_infoPrint("Warning: Unknown configuration key '%s' encountered.", pEntry->key);
+            crinitInfoPrint("Warning: Unknown configuration key '%s' encountered.", pEntry->key);
         } else {
             val = pEntry->val;
             if ((!tcm->includeSafe) && type == EBCL_TASK_TYPE_INCLUDE) {
-                EBCL_errPrint("Non include-safe configuration parameter '%s' encountered in include file.",
+                crinitErrPrint("Non include-safe configuration parameter '%s' encountered in include file.",
                               pEntry->key);
                 return -1;
             }
             if ((!tcm->arrayLike) && pEntry->keyArrIndex > 0) {
-                EBCL_errPrint("Multiple values for non-array like configuration parameter '%s' given.", pEntry->key);
+                crinitErrPrint("Multiple values for non-array like configuration parameter '%s' given.", pEntry->key);
                 return -1;
             }
             if (importArr[tcm->config] && tcm->cfgHandler(tgt, val) == -1) {
-                EBCL_errPrint("Could not parse configuration parameter '%s' with given value '%s'.", pEntry->key,
+                crinitErrPrint("Could not parse configuration parameter '%s' with given value '%s'.", pEntry->key,
                               pEntry->val);
                 return -1;
             }

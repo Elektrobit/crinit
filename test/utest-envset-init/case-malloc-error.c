@@ -23,7 +23,7 @@ void EBCL_envSetInitTestMallocError(void **state) {
     expect_value(__wrap_calloc, size, sizeof(char *));
     will_return(__wrap_calloc, NULL);
 
-    expect_any(__wrap_EBCL_errnoPrintFFL, format);
+    expect_any(__wrap_crinitErrnoPrintFFL, format);
 
     assert_int_equal(EBCL_envSetInit(&e, EBCL_ENVSET_INITIAL_SIZE, EBCL_ENVSET_SIZE_INCREMENT), -1);
 }

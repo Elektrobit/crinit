@@ -21,7 +21,7 @@ void EBCL_resizeFileSeriesTestShrinkZeroError(void **state) {
 
     struct ebcl_FileSeries_t fse = {.size = 100};
 
-    expect_any(__wrap_EBCL_errPrintFFL, format);
+    expect_any(__wrap_crinitErrPrintFFL, format);
 
     assert_int_equal(EBCL_resizeFileSeries(&fse, 0), -1);
 }

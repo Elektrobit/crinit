@@ -19,7 +19,7 @@ static void EBCL_testVariant(ebcl_FileSeries_t *fse, const char *baseDir, char *
     print_message("Testing EBCL_fileSeriesFromStrArr with fse = %p, baseDir = %p and strArr = %p.\n", (void *)fse,
                   (void *)baseDir, (void *)strArr);
 
-    expect_any(__wrap_EBCL_errPrintFFL, format);
+    expect_any(__wrap_crinitErrPrintFFL, format);
 
     assert_int_equal(EBCL_fileSeriesFromStrArr(fse, baseDir, strArr), -1);
 }

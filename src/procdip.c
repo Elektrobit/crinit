@@ -105,7 +105,7 @@ int EBCL_procDispatchSpawnFunc(ebcl_TaskDB_t *ctx, const ebcl_Task_t *t) {
     pthread_attr_t dispatchThreadAttr;
     ebcl_DispThrArgs_t *threadArgs = malloc(sizeof(ebcl_DispThrArgs_t));
     if (threadArgs == NULL) {
-        EBCL_errnoPrint("Could not allocate memory for thread arguments. Meant to create thread for task \'%s\'.",
+        crinitErrnoPrint("Could not allocate memory for thread arguments. Meant to create thread for task \'%s\'.",
                         t->name);
         return -1;
     }
@@ -113,26 +113,26 @@ int EBCL_procDispatchSpawnFunc(ebcl_TaskDB_t *ctx, const ebcl_Task_t *t) {
     threadArgs->t = t;
 
     if ((errno = pthread_attr_init(&dispatchThreadAttr)) != 0) {
-        EBCL_errnoPrint("Could not initialize pthread attributes. Meant to create thread for task \'%s\'.", t->name);
+        crinitErrnoPrint("Could not initialize pthread attributes. Meant to create thread for task \'%s\'.", t->name);
         free(threadArgs);
         return -1;
     }
 
     if ((errno = pthread_attr_setdetachstate(&dispatchThreadAttr, PTHREAD_CREATE_DETACHED)) != 0) {
-        EBCL_errnoPrint("Could not set PTHREAD_CREATE_DETACHED attribute. Meant to create thread for task \'%s\'.",
+        crinitErrnoPrint("Could not set PTHREAD_CREATE_DETACHED attribute. Meant to create thread for task \'%s\'.",
                         t->name);
         goto fail;
     }
 
     if ((errno = pthread_attr_setstacksize(&dispatchThreadAttr, EBCL_PROC_DISPATCH_THREAD_STACK_SIZE)) != 0) {
-        EBCL_errnoPrint("Could not set pthread stack size to %d. Meant to create thread for task \'%s\'.",
+        crinitErrnoPrint("Could not set pthread stack size to %d. Meant to create thread for task \'%s\'.",
                         EBCL_PROC_DISPATCH_THREAD_STACK_SIZE, t->name);
         goto fail;
     }
 
-    EBCL_dbgInfoPrint("Creating new thread for Task \'%s\'.", t->name);
+    crinitDbgInfoPrint("Creating new thread for Task \'%s\'.", t->name);
     if ((errno = pthread_create(&dispatchThread, &dispatchThreadAttr, EBCL_dispatchThreadFunc, threadArgs)) != 0) {
-        EBCL_errnoPrint("Could not create pthread for task \'%s\'.", t->name);
+        crinitErrnoPrint("Could not create pthread for task \'%s\'.", t->name);
         goto fail;
     }
 
@@ -152,15 +152,15 @@ static void *EBCL_dispatchThreadFunc(void *args) {
     pid_t threadId = EBCL_gettid();
     pid_t pid = -1;
 
-    EBCL_dbgInfoPrint("(TID: %d) New thread started.", threadId);
+    crinitDbgInfoPrint("(TID: %d) New thread started.", threadId);
 
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
-        EBCL_errnoPrint("(TID: %d) Could not queue up for mutex lock.", threadId);
+        crinitErrnoPrint("(TID: %d) Could not queue up for mutex lock.", threadId);
         goto threadExit;
     }
 
     if (EBCL_taskDup(&tCopy, t) == -1) {
-        EBCL_errPrint("(TID: %d) Could not get duplicate of Task to spawn.", threadId);
+        crinitErrPrint("(TID: %d) Could not get duplicate of Task to spawn.", threadId);
         pthread_mutex_unlock(&ctx->lock);
         goto threadExit;
     }
@@ -168,17 +168,17 @@ static void *EBCL_dispatchThreadFunc(void *args) {
     pthread_mutex_unlock(&ctx->lock);
 
     if (EBCL_envSetSet(&tCopy->taskEnv, EBCL_CRINIT_ENV_NOTIFY_NAME, tCopy->name) == -1) {
-        EBCL_errPrint("Could not set notification environment variable for task \'%s\'", tCopy->name);
+        crinitErrPrint("Could not set notification environment variable for task \'%s\'", tCopy->name);
         goto threadExit;
     }
 
-    EBCL_dbgInfoPrint("(TID: %d) Will spawn Task \'%s\'.", threadId, tCopy->name);
+    crinitDbgInfoPrint("(TID: %d) Will spawn Task \'%s\'.", threadId, tCopy->name);
 
     for (size_t i = 0; i < tCopy->cmdsSize; i++) {
         posix_spawn_file_actions_t fileact;
         errno = posix_spawn_file_actions_init(&fileact);
         if (errno != 0) {
-            EBCL_errnoPrint("(TID: %d) Could not initialize posix_spawn file actions for command %zu of Task '%s'",
+            crinitErrnoPrint("(TID: %d) Could not initialize posix_spawn file actions for command %zu of Task '%s'",
                             threadId, i, tCopy->name);
             goto threadExit;
         }
@@ -188,7 +188,7 @@ static void *EBCL_dispatchThreadFunc(void *args) {
             //       We may want to make that configurable in the future.
 
             if (tCopy->redirs[j].fifo && EBCL_ensureFifo(tCopy->redirs[j].path, tCopy->redirs[j].mode) == -1) {
-                EBCL_errPrint(
+                crinitErrPrint(
                     "(TID: %d) Unexpected result while ensuring '%s' is a FIFO special file for command %zu of Task "
                     "'%s'",
                     threadId, tCopy->redirs[j].path, i, tCopy->name);
@@ -196,7 +196,7 @@ static void *EBCL_dispatchThreadFunc(void *args) {
             }
 
             if (EBCL_posixSpawnAddIOFileAction(&fileact, &(tCopy->redirs[j])) == -1) {
-                EBCL_errPrint("(TID: %d) Could not add IO file action to posix_spawn for command %zu of Task '%s'",
+                crinitErrPrint("(TID: %d) Could not add IO file action to posix_spawn for command %zu of Task '%s'",
                               threadId, i, tCopy->name);
                 goto threadExit;
             }
@@ -204,38 +204,38 @@ static void *EBCL_dispatchThreadFunc(void *args) {
 
         errno = posix_spawn(&pid, tCopy->cmds[i].argv[0], &fileact, NULL, tCopy->cmds[i].argv, tCopy->taskEnv.envp);
         if (errno != 0 || pid == -1) {
-            EBCL_errnoPrint("(TID: %d) Could not spawn new process for command %zu of Task \'%s\'", threadId, i,
+            crinitErrnoPrint("(TID: %d) Could not spawn new process for command %zu of Task \'%s\'", threadId, i,
                             tCopy->name);
             posix_spawn_file_actions_destroy(&fileact);
             goto threadExit;
         }
         posix_spawn_file_actions_destroy(&fileact);
-        EBCL_infoPrint("(TID: %d) Started new process %d for command %zu of Task \'%s\' (\'%s\').", threadId, pid, i,
+        crinitInfoPrint("(TID: %d) Started new process %d for command %zu of Task \'%s\' (\'%s\').", threadId, pid, i,
                        tCopy->name, tCopy->cmds[i].argv[0]);
 
         if (EBCL_taskDBSetTaskPID(ctx, pid, tCopy->name) == -1) {
-            EBCL_errPrint("(TID: %d) Could not set PID of Task \'%s\' to %d.", threadId, tCopy->name, pid);
+            crinitErrPrint("(TID: %d) Could not set PID of Task \'%s\' to %d.", threadId, tCopy->name, pid);
             goto threadExit;
         }
 
         if (i == 0) {
             if (EBCL_taskDBSetTaskState(ctx, EBCL_TASK_STATE_RUNNING, tCopy->name) == -1) {
-                EBCL_errPrint("(TID: %d) Could not set state of Task \'%s\' to running.", threadId, tCopy->name);
+                crinitErrPrint("(TID: %d) Could not set state of Task \'%s\' to running.", threadId, tCopy->name);
                 goto threadExit;
             }
             char depEvent[sizeof(EBCL_TASK_EVENT_RUNNING)] = EBCL_TASK_EVENT_RUNNING;
             ebcl_TaskDep_t spawnDep = {tCopy->name, depEvent};
             if (EBCL_taskDBFulfillDep(ctx, &spawnDep) == -1) {
-                EBCL_errPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, spawnDep.name, spawnDep.event);
+                crinitErrPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, spawnDep.name, spawnDep.event);
                 goto threadExit;
             }
-            EBCL_dbgInfoPrint("(TID: %d) Dependency \'%s:%s\' fulfilled.", threadId, spawnDep.name, spawnDep.event);
+            crinitDbgInfoPrint("(TID: %d) Dependency \'%s:%s\' fulfilled.", threadId, spawnDep.name, spawnDep.event);
 
             if (EBCL_taskDBProvideFeature(ctx, tCopy, EBCL_TASK_STATE_RUNNING) == -1) {
-                EBCL_errPrint("(TID: %d) Could not fulfill provided features of spawned task \'%s\'.", threadId,
+                crinitErrPrint("(TID: %d) Could not fulfill provided features of spawned task \'%s\'.", threadId,
                               tCopy->name);
             }
-            EBCL_dbgInfoPrint("(TID: %d) Features of spawned task \'%s\' fulfilled.", threadId, tCopy->name);
+            crinitDbgInfoPrint("(TID: %d) Features of spawned task \'%s\' fulfilled.", threadId, tCopy->name);
         }
 
         int wret;
@@ -249,72 +249,72 @@ static void *EBCL_dispatchThreadFunc(void *args) {
             // There was some error, either Crinit-internal or the task returned an error code or the task was
             // killed
             if (errno) {
-                EBCL_errnoPrint("(TID: %d) Failed to wait for Task \'%s\' (PID %d).", threadId, tCopy->name, pid);
+                crinitErrnoPrint("(TID: %d) Failed to wait for Task \'%s\' (PID %d).", threadId, tCopy->name, pid);
                 goto threadExit;
             } else if (status.si_code == CLD_EXITED) {
-                EBCL_infoPrint("(TID: %d) Task \'%s\' (PID %d) returned error code %d.", threadId, tCopy->name, pid,
+                crinitInfoPrint("(TID: %d) Task \'%s\' (PID %d) returned error code %d.", threadId, tCopy->name, pid,
                                status.si_status);
             } else {
-                EBCL_infoPrint("(TID: %d) Task \'%s\' (PID %d) failed.", threadId, tCopy->name, pid);
+                crinitInfoPrint("(TID: %d) Task \'%s\' (PID %d) failed.", threadId, tCopy->name, pid);
             }
 
             if (EBCL_taskDBSetTaskState(ctx, EBCL_TASK_STATE_FAILED, tCopy->name) == -1) {
-                EBCL_errPrint("(TID: %d) Could not set state of Task \'%s\' to failed.", threadId, tCopy->name);
+                crinitErrPrint("(TID: %d) Could not set state of Task \'%s\' to failed.", threadId, tCopy->name);
                 goto threadExit;
             }
             if (EBCL_taskDBSetTaskPID(ctx, -1, tCopy->name) == -1) {
-                EBCL_errPrint("(TID: %d) Could not reset PID of failed Task \'%s\' to -1.", threadId, tCopy->name);
+                crinitErrPrint("(TID: %d) Could not reset PID of failed Task \'%s\' to -1.", threadId, tCopy->name);
                 goto threadExit;
             }
             // Reap zombie of failed command.
             if (EBCL_reapPid(pid) == -1) {
-                EBCL_errnoPrint("(TID: %d) Could not reap zombie for task \'%s\'.", threadId, tCopy->name);
+                crinitErrnoPrint("(TID: %d) Could not reap zombie for task \'%s\'.", threadId, tCopy->name);
             }
 
             char depEvent[sizeof(EBCL_TASK_EVENT_FAILED)] = EBCL_TASK_EVENT_FAILED;
             ebcl_TaskDep_t failDep = {tCopy->name, depEvent};
             if (EBCL_taskDBFulfillDep(ctx, &failDep) == -1) {
-                EBCL_errPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, failDep.name, failDep.event);
+                crinitErrPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, failDep.name, failDep.event);
             }
-            EBCL_dbgInfoPrint("(TID: %d) Dependency \'%s:%s\' fulfilled.", threadId, failDep.name, failDep.event);
+            crinitDbgInfoPrint("(TID: %d) Dependency \'%s:%s\' fulfilled.", threadId, failDep.name, failDep.event);
 
             if (EBCL_taskDBProvideFeature(ctx, tCopy, EBCL_TASK_STATE_FAILED) == -1) {
-                EBCL_errPrint("(TID: %d) Could not fulfill provided features of failed task \'%s\'.", threadId,
+                crinitErrPrint("(TID: %d) Could not fulfill provided features of failed task \'%s\'.", threadId,
                               tCopy->name);
             }
-            EBCL_dbgInfoPrint("(TID: %d) Features of failed task \'%s\' fulfilled.", threadId, tCopy->name);
+            crinitDbgInfoPrint("(TID: %d) Features of failed task \'%s\' fulfilled.", threadId, tCopy->name);
 
             goto threadExit;
         }
 
         // command of task has returned successfully
         if (EBCL_taskDBSetTaskPID(ctx, -1, tCopy->name) == -1) {
-            EBCL_errPrint("(TID: %d) Could not reset PID of Task \'%s\' to -1.", threadId, tCopy->name);
+            crinitErrPrint("(TID: %d) Could not reset PID of Task \'%s\' to -1.", threadId, tCopy->name);
             goto threadExit;
         }
         // Reap zombie of successful command.
         if (EBCL_reapPid(pid) == -1) {
-            EBCL_errnoPrint("(TID: %d) Could not reap zombie for task \'%s\'.", threadId, tCopy->name);
+            crinitErrnoPrint("(TID: %d) Could not reap zombie for task \'%s\'.", threadId, tCopy->name);
         }
     }
 
     // chain of commands is done successfully
-    EBCL_infoPrint("(TID: %d) Task \'%s\' done.", threadId, tCopy->name);
+    crinitInfoPrint("(TID: %d) Task \'%s\' done.", threadId, tCopy->name);
     if (EBCL_taskDBSetTaskState(ctx, EBCL_TASK_STATE_DONE, tCopy->name) == -1) {
-        EBCL_errPrint("(TID: %d) Could not set state of Task \'%s\' to done.", threadId, tCopy->name);
+        crinitErrPrint("(TID: %d) Could not set state of Task \'%s\' to done.", threadId, tCopy->name);
         goto threadExit;
     }
     char depEvent[sizeof(EBCL_TASK_EVENT_DONE)] = EBCL_TASK_EVENT_DONE;
     ebcl_TaskDep_t doneDep = {tCopy->name, depEvent};
     if (EBCL_taskDBFulfillDep(ctx, &doneDep) == -1) {
-        EBCL_errPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, doneDep.name, doneDep.event);
+        crinitErrPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, doneDep.name, doneDep.event);
     }
-    EBCL_dbgInfoPrint("(TID: %d) Dependency \'%s:%s\' fulfilled.", threadId, doneDep.name, doneDep.event);
+    crinitDbgInfoPrint("(TID: %d) Dependency \'%s:%s\' fulfilled.", threadId, doneDep.name, doneDep.event);
 
     if (EBCL_taskDBProvideFeature(ctx, tCopy, EBCL_TASK_STATE_DONE) == -1) {
-        EBCL_errPrint("(TID: %d) Could not fulfill provided features of finished task \'%s\'.", threadId, tCopy->name);
+        crinitErrPrint("(TID: %d) Could not fulfill provided features of finished task \'%s\'.", threadId, tCopy->name);
     }
-    EBCL_dbgInfoPrint("(TID: %d) Features of finished task \'%s\' fulfilled.", threadId, tCopy->name);
+    crinitDbgInfoPrint("(TID: %d) Features of finished task \'%s\' fulfilled.", threadId, tCopy->name);
 
 threadExit:
     EBCL_freeTask(tCopy);
@@ -326,7 +326,7 @@ int EBCL_setInhibitWait(bool inh) {
     int ret = 0;
     errno = pthread_mutex_lock(&EBCL_waitInhibitLock);
     if (errno != 0) {
-        EBCL_errnoPrint("Could not lock on mutex.");
+        crinitErrnoPrint("Could not lock on mutex.");
         return -1;
     }
     EBCL_waitInhibit = inh;
@@ -334,12 +334,12 @@ int EBCL_setInhibitWait(bool inh) {
         errno = pthread_cond_broadcast(&EBCL_waitInhibitCond);
         if (errno != 0) {
             ret = -1;
-            EBCL_errnoPrint("Could not broadcast on condition variable.");
+            crinitErrnoPrint("Could not broadcast on condition variable.");
         }
     }
     if (pthread_mutex_unlock(&EBCL_waitInhibitLock)) {
         ret = -1;
-        EBCL_errnoPrint("Could not unlock mutex.");
+        crinitErrnoPrint("Could not unlock mutex.");
     }
     return ret;
 }
@@ -347,18 +347,18 @@ int EBCL_setInhibitWait(bool inh) {
 static int EBCL_blockOnWaitInhibit(void) {
     errno = pthread_mutex_lock(&EBCL_waitInhibitLock);
     if (errno != 0) {
-        EBCL_errnoPrint("Could not lock on mutex.");
+        crinitErrnoPrint("Could not lock on mutex.");
         return -1;
     }
     while (EBCL_waitInhibit) {
         errno = pthread_cond_wait(&EBCL_waitInhibitCond, &EBCL_waitInhibitLock);
         if (errno != 0) {
-            EBCL_errnoPrint("Could not wait on condition variable.");
+            crinitErrnoPrint("Could not wait on condition variable.");
             return -1;
         }
     }
     if (pthread_mutex_unlock(&EBCL_waitInhibitLock)) {
-        EBCL_errnoPrint("Could not unlock mutex.");
+        crinitErrnoPrint("Could not unlock mutex.");
         return -1;
     }
     return 0;
@@ -366,14 +366,14 @@ static int EBCL_blockOnWaitInhibit(void) {
 
 static int EBCL_reapPid(pid_t pid) {
     if (EBCL_blockOnWaitInhibit() == -1) {
-        EBCL_errPrint("Could not block on wait inhibition condition.");
+        crinitErrPrint("Could not block on wait inhibition condition.");
         return -1;
     }
     do {
         waitpid(pid, NULL, 0);
     } while (errno == EINTR);
     if (errno != 0) {
-        EBCL_errnoPrint("Could not reap zombie for PID \'%d\'.", pid);
+        crinitErrnoPrint("Could not reap zombie for PID \'%d\'.", pid);
         return -1;
     }
     return 0;
@@ -381,32 +381,32 @@ static int EBCL_reapPid(pid_t pid) {
 
 static int EBCL_posixSpawnAddIOFileAction(posix_spawn_file_actions_t *fileact, const ebcl_IoRedir_t *ior) {
     if (fileact == NULL || ior == NULL) {
-        EBCL_errPrint("Input parameters must not be NULL.");
+        crinitErrPrint("Input parameters must not be NULL.");
         return -1;
     }
     errno = 0;
     int streamFd = ior->newFd;
     if (streamFd != STDOUT_FILENO && streamFd != STDERR_FILENO && streamFd != STDIN_FILENO) {
-        EBCL_errPrint("Given IO stream must be either stdout, stderr, or stdin.");
+        crinitErrPrint("Given IO stream must be either stdout, stderr, or stdin.");
         return -1;
     }
     if (ior->path != NULL) {
         errno = posix_spawn_file_actions_addopen(fileact, streamFd, ior->path, ior->oflags, ior->mode);
         if (errno != 0) {
-            EBCL_errnoPrint("Could not add file redirection to posix spawn.");
+            crinitErrnoPrint("Could not add file redirection to posix spawn.");
             return -1;
         }
         return 0;
     }
 
     if (ior->oldFd == -1) {
-        EBCL_errPrint("An IO redirection must specify either a path or a stream file descriptor as a target.");
+        crinitErrPrint("An IO redirection must specify either a path or a stream file descriptor as a target.");
         return -1;
     }
 
     errno = posix_spawn_file_actions_adddup2(fileact, ior->oldFd, ior->newFd);
     if (errno != 0) {
-        EBCL_errnoPrint("Could not add stream fd redirection to posix spawn.");
+        crinitErrnoPrint("Could not add stream fd redirection to posix spawn.");
         return -1;
     }
     return 0;
@@ -414,7 +414,7 @@ static int EBCL_posixSpawnAddIOFileAction(posix_spawn_file_actions_t *fileact, c
 
 static int EBCL_ensureFifo(const char *path, mode_t mode) {
     if (path == NULL) {
-        EBCL_errPrint("Path to the FIFO must not be NULL.");
+        crinitErrPrint("Path to the FIFO must not be NULL.");
         return -1;
     }
 
@@ -424,19 +424,19 @@ static int EBCL_ensureFifo(const char *path, mode_t mode) {
             // There already is something there, check what it is.
             struct stat stbuf;
             if (stat(path, &stbuf) == -1) {
-                EBCL_errnoPrint(
+                crinitErrnoPrint(
                     "There is already an existing file at '%s' but I can not stat() it to make sure it is a FIFO.",
                     path);
                 return -1;
             } else if (!S_ISFIFO(stbuf.st_mode)) {
-                EBCL_errPrint("The given file '%s' already exists but is not a FIFO.", path);
+                crinitErrPrint("The given file '%s' already exists but is not a FIFO.", path);
                 return -1;
             } else {
                 // If we're here, that means there already is a FIFO and we're good.
                 return 0;
             }
         }
-        EBCL_errnoPrint("Could not create FIFO special file at '%s'.", path);
+        crinitErrnoPrint("Could not create FIFO special file at '%s'.", path);
         return -1;
     }
     return 0;

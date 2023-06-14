@@ -72,7 +72,7 @@ int EBCL_opStrGetByRtimOp(const char **out, ebcl_RtimOp_t opCode);
  * List available opcodes.
  *
  * Will print the full list of available opcodes in their string representation and the corresponding numerical opcode.
- * Output will only be generated if global option `DEBUG` is `true` as it uses EBCL_dbgInfoPrint().
+ * Output will only be generated if global option `DEBUG` is `true` as it uses crinitDbgInfoPrint().
  */
 void EBCL_rtimOpMapDebugPrintAll(void);
 

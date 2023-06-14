@@ -23,8 +23,8 @@
 #define EBCL_ERRNO_FMT " Errno: %s"                   ///< Format string errno suffix, to use with strerror().
 #define EBCL_CRINIT_SYSLOG_IDENT "crinit"             ///< Identification string for crinit logging to syslog.
 
-/** Holds the Prefix to put in front of every printed line, defaults to #EBCL_CRINIT_PRINT_PREFIX **/
-static char EBCL_printPrefix[EBCL_PRINT_PREFIX_MAX_LEN] = EBCL_CRINIT_PRINT_PREFIX;
+/** Holds the Prefix to put in front of every printed line, defaults to #CRINIT_PRINT_PREFIX **/
+static char EBCL_printPrefix[CRINIT_PRINT_PREFIX_MAX_LEN] = CRINIT_PRINT_PREFIX;
 
 static FILE *EBCL_infoStream = NULL;  ///< holds the stream to use for info messages.
 static FILE *EBCL_errStream = NULL;   ///< holds the stream to use for error messages.
@@ -45,25 +45,25 @@ static pthread_mutex_t EBCL_logLock = PTHREAD_MUTEX_INITIALIZER;
  */
 static char *EBCL_threadSafeStrerror(int errnum);
 
-void EBCL_setPrintPrefix(const char *prefix) {
+void crinitSetPrintPrefix(const char *prefix) {
     pthread_mutex_lock(&EBCL_logLock);
-    strncpy(EBCL_printPrefix, (prefix == NULL) ? EBCL_CRINIT_PRINT_PREFIX : prefix, EBCL_PRINT_PREFIX_MAX_LEN);
+    strncpy(EBCL_printPrefix, (prefix == NULL) ? CRINIT_PRINT_PREFIX : prefix, CRINIT_PRINT_PREFIX_MAX_LEN);
     pthread_mutex_unlock(&EBCL_logLock);
 }
 
-void EBCL_setInfoStream(FILE *stream) {
+void crinitSetInfoStream(FILE *stream) {
     pthread_mutex_lock(&EBCL_logLock);
     EBCL_infoStream = (stream == NULL) ? stdout : stream;
     pthread_mutex_unlock(&EBCL_logLock);
 }
 
-void EBCL_setErrStream(FILE *stream) {
+void crinitSetErrStream(FILE *stream) {
     pthread_mutex_lock(&EBCL_logLock);
     EBCL_errStream = (stream == NULL) ? stderr : stream;
     pthread_mutex_unlock(&EBCL_logLock);
 }
 
-void EBCL_setUseSyslog(bool sl) {
+void crinitSetUseSyslog(bool sl) {
     pthread_mutex_lock(&EBCL_logLock);
     if (sl && !EBCL_useSyslog) {
         openlog(EBCL_CRINIT_SYSLOG_IDENT, LOG_CONS, LOG_DAEMON);
@@ -74,10 +74,10 @@ void EBCL_setUseSyslog(bool sl) {
     pthread_mutex_unlock(&EBCL_logLock);
 }
 
-void EBCL_dbgInfoPrint(const char *format, ...) {
+void crinitDbgInfoPrint(const char *format, ...) {
     bool globOptDbg = false;
     if (EBCL_globOptGetBoolean(EBCL_GLOBOPT_DEBUG, &globOptDbg) == -1) {
-        EBCL_errPrint("Could not read value for \'DEBUG\' from global options, assuming default.");
+        crinitErrPrint("Could not read value for \'DEBUG\' from global options, assuming default.");
         globOptDbg = EBCL_CONFIG_DEFAULT_DEBUG;
     }
     if (!globOptDbg) {
@@ -102,7 +102,7 @@ void EBCL_dbgInfoPrint(const char *format, ...) {
     pthread_mutex_unlock(&EBCL_logLock);
 }
 
-void EBCL_infoPrint(const char *format, ...) {
+void crinitInfoPrint(const char *format, ...) {
     va_list args;
     pthread_mutex_lock(&EBCL_logLock);
     if (EBCL_infoStream == NULL) {
@@ -122,7 +122,7 @@ void EBCL_infoPrint(const char *format, ...) {
     pthread_mutex_unlock(&EBCL_logLock);
 }
 
-void EBCL_errPrintFFL(const char *file, const char *func, int line, const char *format, ...) {
+void crinitErrPrintFFL(const char *file, const char *func, int line, const char *format, ...) {
     va_list args;
     pthread_mutex_lock(&EBCL_logLock);
     if (EBCL_errStream == NULL) {
@@ -149,7 +149,7 @@ void EBCL_errPrintFFL(const char *file, const char *func, int line, const char *
     pthread_mutex_unlock(&EBCL_logLock);
 }
 
-void EBCL_errnoPrintFFL(const char *file, const char *func, int line, const char *format, ...) {
+void crinitErrnoPrintFFL(const char *file, const char *func, int line, const char *format, ...) {
     va_list args;
     pthread_mutex_lock(&EBCL_logLock);
     if (EBCL_errStream == NULL) {

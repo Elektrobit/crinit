@@ -25,11 +25,11 @@ int EBCL_initIoRedirFromConfKvList(ebcl_IoRedir_t *out, const char *key, size_t 
     crinitNullCheck(-1, out, key, in);
     char *confVal;
     if (EBCL_confListGetValWithIdx(&confVal, key, keyArrIndex, in) == -1) {
-        EBCL_errPrint("Could not find %s statement with index %zu in config.", key, keyArrIndex);
+        crinitErrPrint("Could not find %s statement with index %zu in config.", key, keyArrIndex);
         return -1;
     }
     if (EBCL_confConvToIoRedir(out, confVal) == -1) {
-        EBCL_errPrint("Could not parse IO redirection statement '%s'.", confVal);
+        crinitErrPrint("Could not parse IO redirection statement '%s'.", confVal);
         return -1;
     }
     return 0;
@@ -45,7 +45,7 @@ int EBCL_ioRedirCpy(ebcl_IoRedir_t *dest, const ebcl_IoRedir_t *src) {
     if (src->path != NULL) {
         dest->path = strdup(src->path);
         if (dest->path == NULL) {
-            EBCL_errnoPrint("Could not duplicate path string during deep copy of IO redirection definition.");
+            crinitErrnoPrint("Could not duplicate path string during deep copy of IO redirection definition.");
             return -1;
         }
     }

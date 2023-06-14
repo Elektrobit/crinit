@@ -24,13 +24,13 @@ typedef struct ebcl_OptFeatMap_t {
 } ebcl_OptFeatMap_t;
 
 static int EBCL_activateSyslog(void) {
-    EBCL_setUseSyslog(true);
+    crinitSetUseSyslog(true);
     return 0;
 }
 
 int EBCL_crinitFeatureHook(const char *sysFeatName) {
     if (sysFeatName == NULL) {
-        EBCL_errPrint("Input parameter must not be NULL.");
+        crinitErrPrint("Input parameter must not be NULL.");
         return -1;
     }
 
@@ -43,7 +43,7 @@ int EBCL_crinitFeatureHook(const char *sysFeatName) {
         if (strcmp(fmap[i].name, sysFeatName) == 0) {
             bool armed;
             if (EBCL_globOptGetBoolean(fmap[i].optkey, &armed) == -1) {
-                EBCL_errPrint("Could not get global setting for optional feature \'%s\'.", fmap[i].name);
+                crinitErrPrint("Could not get global setting for optional feature \'%s\'.", fmap[i].name);
                 return -1;
             }
             return (armed) ? fmap[i].af() : 0;
