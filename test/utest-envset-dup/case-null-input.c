@@ -15,7 +15,7 @@
 #include "utest-envset-dup.h"
 
 void EBCL_envSetDupTestNullInput(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     ebcl_EnvSet_t successDummy = {(char **)0xdeadc0de, 0, 0}, failureDummy = {NULL, 0, 0};
     assert_int_equal(EBCL_envSetDup(&successDummy, NULL), -1);

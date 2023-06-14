@@ -45,7 +45,7 @@ static void EBCL_testVariant(size_t initialSize, size_t numElements) {
 }
 
 void EBCL_resizeFileSeriesTestSuccess(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     size_t maxElements = 0x10000;
 

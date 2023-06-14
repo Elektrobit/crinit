@@ -16,7 +16,7 @@
 #include "utest-crinit-set-verbose.h"
 
 void EBCL_crinitSetVerboseTestGlobOptError(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
     const bool t = true;
     const bool f = false;
 

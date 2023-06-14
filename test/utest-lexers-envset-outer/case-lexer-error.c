@@ -15,7 +15,7 @@
 #include "utest-lexers-envset-outer.h"
 
 void EBCL_envVarOuterLexTestLexerError(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     const char *mbegin = NULL, *mend = NULL;
     const char *errorInvalidCharStart = "$key";

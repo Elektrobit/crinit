@@ -18,7 +18,7 @@
 #define EBCL_DUMMY_ENVIRONMENT_VALUE "Some quoted value with $VAR\\x2e"
 
 void EBCL_envVarOuterLexTestSuccess(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     const char *mbegin = NULL, *mend = NULL;
     const char *validEnvKey = "SUPER_key9000";

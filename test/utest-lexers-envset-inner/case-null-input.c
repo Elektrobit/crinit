@@ -15,7 +15,7 @@
 #include "utest-lexers-envset-inner.h"
 
 void EBCL_envVarInnerLexTestNullInput(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     const char *s = "Dummy string.", *mbegin = NULL, *mend = NULL;
 

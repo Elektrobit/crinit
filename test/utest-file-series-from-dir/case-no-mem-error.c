@@ -18,7 +18,7 @@
 #include "unit_test.h"
 
 void EBCL_fileSeriesFromDirNoMemError(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     /* Use special pointer to trigger error */
     char *fnamesBuff[1];

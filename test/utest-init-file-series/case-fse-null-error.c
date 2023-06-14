@@ -16,7 +16,7 @@
 #include "unit_test.h"
 
 void EBCL_initFileSeriesTestFseNullError(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     expect_any(__wrap_EBCL_errPrintFFL, format);
 

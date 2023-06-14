@@ -16,7 +16,7 @@
 #include "utest-confconv-envset.h"
 
 void EBCL_confConvToEnvSetMemberTestWrongInput(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     const char *unquoted = "VANILLA_VAR That is tasty.", *wronglyQuoted = "\"VANILLA_VAR\" That is tasty.",
                *noKey = "\"That is tasty.\"", *noVal = "VANILLA_VAR";

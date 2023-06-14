@@ -25,7 +25,7 @@ static void EBCL_testVariant(ebcl_FileSeries_t *fse, const char *baseDir, char *
 }
 
 void EBCL_fileSeriesFromStrArrTestNullParamError(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     struct ebcl_FileSeries_t fse;
     const char *baseDir = (void *)0xdeadda7a;

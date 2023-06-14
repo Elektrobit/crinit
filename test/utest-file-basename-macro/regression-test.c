@@ -18,7 +18,7 @@
 #include "utest-file-basename-macro.h"
 
 void EBCL_fileBasenameMacroRegressionTest(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     // Check that __FILE_BASENAME__ is indeed the basename of __FILE__
     // We need a working copy as POSIX does not guarantee that basename does not modify its argument.

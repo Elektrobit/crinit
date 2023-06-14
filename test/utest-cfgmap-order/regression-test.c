@@ -16,7 +16,7 @@
 #include "utest-cfgmap-order.h"
 
 void EBCL_cfgMapRegressionTest(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     // Check size of EBCL_cfgMap.
     assert_int_equal(EBCL_cfgMapSize, EBCL_CONFIGS_SIZE);

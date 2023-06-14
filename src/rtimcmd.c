@@ -613,7 +613,7 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
 
-    if (!EBCL_isAbsPath(cmd->args[0])) {
+    if (!crinitIsAbsPath(cmd->args[0])) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
                                  "Path to series file must be absolute.");
     }
@@ -636,7 +636,7 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
     for (size_t n = 0; n < taskSeries.size; n++) {
         char *confFn = taskSeries.fnames[n];
         bool confFnAllocated = false;
-        if (!EBCL_isAbsPath(confFn)) {
+        if (!crinitIsAbsPath(confFn)) {
             size_t prefixLen = strlen(taskSeries.baseDir);
             size_t suffixLen = strlen(taskSeries.fnames[n]);
             confFn = malloc(prefixLen + suffixLen + 2);

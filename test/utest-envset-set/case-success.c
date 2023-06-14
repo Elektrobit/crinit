@@ -15,7 +15,7 @@
 #include "utest-envset-set.h"
 
 void EBCL_envSetSetTestSuccess(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     ebcl_EnvSet_t e = {NULL, 0, 0};
     assert_int_equal(EBCL_envSetInit(&e, 4, 2), 0);

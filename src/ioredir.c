@@ -22,7 +22,7 @@
 
 int EBCL_initIoRedirFromConfKvList(ebcl_IoRedir_t *out, const char *key, size_t keyArrIndex,
                                    const ebcl_ConfKvList_t *in) {
-    EBCL_nullCheck(-1, out, key, in);
+    crinitNullCheck(-1, out, key, in);
     char *confVal;
     if (EBCL_confListGetValWithIdx(&confVal, key, keyArrIndex, in) == -1) {
         EBCL_errPrint("Could not find %s statement with index %zu in config.", key, keyArrIndex);
@@ -40,7 +40,7 @@ void EBCL_destroyIoRedir(ebcl_IoRedir_t *ior) {
 }
 
 int EBCL_ioRedirCpy(ebcl_IoRedir_t *dest, const ebcl_IoRedir_t *src) {
-    EBCL_nullCheck(-1, dest, src);
+    crinitNullCheck(-1, dest, src);
     memcpy(dest, src, sizeof(ebcl_IoRedir_t));
     if (src->path != NULL) {
         dest->path = strdup(src->path);

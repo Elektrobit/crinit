@@ -51,7 +51,7 @@ static void EBCL_testVariant(size_t numElements, const char *baseDir) {
 }
 
 void EBCL_destroyFileSeriesTestSuccess(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     const char *baseDir = "/some/path/to/testdir/";
 

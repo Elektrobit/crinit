@@ -20,7 +20,7 @@
 #define EBCL_DUMMY_INITIALIZED_ELEMENTS (EBCL_ENVSET_INITIAL_SIZE / 2uL)
 
 void EBCL_envSetDestroyTestSuccess(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     char *envp[EBCL_ENVSET_INITIAL_SIZE];
     for (size_t i = 0; i < EBCL_ENVSET_INITIAL_SIZE; i++) {

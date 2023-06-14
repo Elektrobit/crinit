@@ -17,7 +17,7 @@
 #include "unit_test.h"
 
 void EBCL_resizeFileSeriesTestNoMemError(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     struct ebcl_FileSeries_t fse = {
         .fnames = (void *)0xd3adda7a,

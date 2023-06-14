@@ -17,7 +17,7 @@
 #include "unit_test.h"
 
 void EBCL_resizeFileSeriesTestShrinkZeroError(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     struct ebcl_FileSeries_t fse = {.size = 100};
 

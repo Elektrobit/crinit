@@ -32,7 +32,7 @@
 static char *EBCL_copyEscaped(char *dst, const char *src, const char *end);
 
 char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQuoting) {
-    EBCL_nullCheck(NULL, numElements, confVal);
+    crinitNullCheck(NULL, numElements, confVal);
     char *backbuf = calloc(strlen(confVal) + 1, sizeof(*backbuf));
     if (backbuf == NULL) {
         EBCL_errnoPrint("Could not allocate memory for argv backing string.");
@@ -136,7 +136,7 @@ char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQ
         }                                                                                                \
         char *endptr = NULL;                                                                             \
         errno = 0;                                                                                       \
-        (resType) = EBCL_strtoGenericInteger(resType, confVal, &endptr, base);                           \
+        (resType) = crinitStrtoGenericInteger(resType, confVal, &endptr, base);                           \
         if (errno != 0) {                                                                                \
             EBCL_errnoPrint("Could not convert string to int.");                                         \
             return -1;                                                                                   \
@@ -148,19 +148,19 @@ char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQ
     } while (0)
 
 int EBCL_confConvToIntegerI(int *x, const char *confVal, int base) {
-    EBCL_nullCheck(-1, x, confVal);
+    crinitNullCheck(-1, x, confVal);
     EBCL_confConvToIntegerFnBody(*x, confVal);
     return 0;
 }
 
 int EBCL_confConvToIntegerULL(unsigned long long *x, const char *confVal, int base) {
-    EBCL_nullCheck(-1, x, confVal);
+    crinitNullCheck(-1, x, confVal);
     EBCL_confConvToIntegerFnBody(*x, confVal);
     return 0;
 }
 
 int EBCL_confConvToBool(bool *b, const char *confVal) {
-    EBCL_nullCheck(-1, b, confVal);
+    crinitNullCheck(-1, b, confVal);
     if (strcmp(confVal, "YES") == 0) {
         *b = true;
         return 0;
@@ -174,7 +174,7 @@ int EBCL_confConvToBool(bool *b, const char *confVal) {
 }
 
 int EBCL_confConvToIoRedir(ebcl_IoRedir_t *ior, const char *confVal) {
-    EBCL_nullCheck(-1, ior, confVal);
+    crinitNullCheck(-1, ior, confVal);
 
     memset(ior, 0, sizeof(*ior));
     ior->newFd = -1;
@@ -213,7 +213,7 @@ int EBCL_confConvToIoRedir(ebcl_IoRedir_t *ior, const char *confVal) {
         ior->oldFd = STDERR_FILENO;
     } else if (strcmp(confStrArr[1], EBCL_CONFIG_STDIN_NAME) == 0) {
         ior->oldFd = STDIN_FILENO;
-    } else if (EBCL_isAbsPath(confStrArr[1])) {
+    } else if (crinitIsAbsPath(confStrArr[1])) {
         ior->path = strdup(confStrArr[1]);
         if (ior->path == NULL) {
             EBCL_errnoPrint("Could not duplicate path string during parsing of IO redirection statement.");
@@ -241,14 +241,14 @@ int EBCL_confConvToIoRedir(ebcl_IoRedir_t *ior, const char *confVal) {
                     "Third parameter of redirection statement - if it is given - must be either APPEND, TRUNCATE, or "
                     "PIPE.");
                 EBCL_freeArgvArray(confStrArr);
-                EBCL_nullify(ior->path);
+                crinitNullify(ior->path);
                 return -1;
             }
         }
 
         if (numParams > 3) {
             char *endPtr;
-            ior->mode = EBCL_strtoGenericInteger(ior->mode, confStrArr[3], &endPtr, 8);
+            ior->mode = crinitStrtoGenericInteger(ior->mode, confStrArr[3], &endPtr, 8);
             if (ior->mode == 0 && (errno != 0 || endPtr == confStrArr[3])) {
                 if (errno == 0) {
                     EBCL_errPrint(
@@ -257,12 +257,12 @@ int EBCL_confConvToIoRedir(ebcl_IoRedir_t *ior, const char *confVal) {
                     EBCL_errnoPrint("Could not perform conversion of octal mode digits in IO redirection statement.");
                 }
                 EBCL_freeArgvArray(confStrArr);
-                EBCL_nullify(ior->path);
+                crinitNullify(ior->path);
                 return -1;
             } else if (ior->mode > 0777) {
                 EBCL_errPrint("0%o is not a supported file mode.", ior->mode);
                 EBCL_freeArgvArray(confStrArr);
-                EBCL_nullify(ior->path);
+                crinitNullify(ior->path);
                 return -1;
             }
         }
@@ -457,7 +457,7 @@ int EBCL_confConvToEnvSetMember(ebcl_EnvSet_t *es, const char *confVal) {
 }
 
 static char *EBCL_copyEscaped(char *dst, const char *src, const char *end) {
-    EBCL_nullCheck(NULL, dst, src, end);
+    crinitNullCheck(NULL, dst, src, end);
     if (src > end) {
         EBCL_errPrint("String start pointer must not point behind the end pointer.");
         return NULL;

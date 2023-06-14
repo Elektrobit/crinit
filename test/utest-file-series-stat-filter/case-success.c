@@ -40,7 +40,7 @@ static void EBCL_testVariant(const char *path, int baseDirFd, bool followLinks) 
 }
 
 void EBCL_statFilterTestSuccess(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     int baseDirFd[] = {0, 10, 100};
     const bool followLinks[] = {true, false};

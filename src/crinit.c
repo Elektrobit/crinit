@@ -54,16 +54,16 @@ int main(int argc, char *argv[]) {
     const char *seriesFname = EBCL_CRINIT_DEFAULT_CONFIG_SERIES;
     if (argc > 1) {
         for (int i = 0; i < argc; i++) {
-            if (EBCL_paramCheck(argv[i], "-V", "--version")) {
+            if (crinitParamCheck(argv[i], "-V", "--version")) {
                 EBCL_printVersion();
                 return EXIT_FAILURE;
             }
-            if (EBCL_paramCheck(argv[i], "-h", "--help")) {
+            if (crinitParamCheck(argv[i], "-h", "--help")) {
                 EBCL_printUsage(argv[0]);
                 return EXIT_FAILURE;
             }
         }
-        if (!EBCL_isAbsPath(argv[1])) {
+        if (!crinitIsAbsPath(argv[1])) {
             EBCL_errPrint("Program argument must be an absolute path.");
             EBCL_printUsage(argv[0]);
             return EXIT_FAILURE;
@@ -101,7 +101,7 @@ int main(int argc, char *argv[]) {
     for (size_t n = 0; n < taskSeries.size; n++) {
         char *confFn = taskSeries.fnames[n];
         bool confFnAllocated = false;
-        if (!EBCL_isAbsPath(confFn)) {
+        if (!crinitIsAbsPath(confFn)) {
             size_t prefixLen = strlen(taskSeries.baseDir);
             size_t suffixLen = strlen(taskSeries.fnames[n]);
             confFn = malloc(prefixLen + suffixLen + 2);

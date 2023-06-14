@@ -18,7 +18,7 @@
 #include "unit_test.h"
 
 void EBCL_fileSeriesFromDirDirfdError(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     ebcl_FileSeries_t *fse = (void *)0xd3adda7a;
     const char *path = (void *)0xd3adda7a;

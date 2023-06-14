@@ -19,7 +19,7 @@
 #include "utest-file-series-stat-filter.h"
 
 void EBCL_statFilterTestFstatatFail(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
     struct stat buf = {0};
 
     int baseDirFd = 0xd3adda7a;

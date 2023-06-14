@@ -19,7 +19,7 @@
 #define UTEST_ENVSET_DUP_ORIG_SET_ELEMENTS (UTEST_ENVSET_DUP_ORIG_SET_ALLOCSIZE - 3uL)
 
 void EBCL_envSetDupTestSuccess(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     char dummyStr[] = "foo bar baz";
     char *origEnvp[UTEST_ENVSET_DUP_ORIG_SET_ALLOCSIZE];

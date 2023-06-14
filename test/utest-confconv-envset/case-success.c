@@ -16,7 +16,7 @@
 #include "utest-confconv-envset.h"
 
 void EBCL_confConvToEnvSetMemberTestSuccess(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     const char *vanillaConf = "VANILLA_VAR \"That is tasty.\"", *vanillaRes = "That is tasty.";
     const char *escSeqConf = "ESCSEQ_VAR \"Hello,\\x20fans!\n\"", *escSeqRes = "Hello, fans!\n";

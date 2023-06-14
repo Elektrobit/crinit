@@ -16,7 +16,7 @@
 #include "utest-envset-init.h"
 
 void EBCL_envSetInitTestSuccess(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     char *envp[EBCL_ENVSET_INITIAL_SIZE];
 

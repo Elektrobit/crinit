@@ -29,7 +29,7 @@ static struct EBCL_storeRtimCmdArgs EBCL_crinitXferArgResContext = {
 };
 
 void EBCL_crinitTaskAddTestOverwriteBoolToString(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     // overwrite == true
     expect_check(__wrap_EBCL_buildRtimCmd, c, EBCL_storeRtimCmd, &EBCL_buildRtimArgCmd);

@@ -35,7 +35,7 @@ static inline int EBCL_taskSetFromConfKvList(ebcl_Task_t *tgt, const ebcl_ConfKv
                                              char *importList);
 
 int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in) {
-    EBCL_nullCheck(-1, out, in);
+    crinitNullCheck(-1, out, in);
 
     *out = calloc(1, sizeof(**out));
     if (*out == NULL) {
@@ -251,7 +251,7 @@ void EBCL_destroyTask(ebcl_Task_t *t) {
 }
 
 int EBCL_taskMergeInclude(ebcl_Task_t *tgt, const char *src, char *importList) {
-    EBCL_nullCheck(-1, tgt, src);
+    crinitNullCheck(-1, tgt, src);
 
     char *inclDir = NULL, *inclSuffix = NULL, *inclPath = NULL;
     if (EBCL_globOptGetString(EBCL_GLOBOPT_INCLDIR, &inclDir) == -1) {
@@ -299,11 +299,11 @@ int EBCL_taskMergeInclude(ebcl_Task_t *tgt, const char *src, char *importList) {
 
 static inline int EBCL_taskSetFromConfKvList(ebcl_Task_t *tgt, const ebcl_ConfKvList_t *src, ebcl_TaskType_t type,
                                              char *importList) {
-    EBCL_nullCheck(-1, tgt, src);
+    crinitNullCheck(-1, tgt, src);
 
     bool importArr[EBCL_CONFIGS_SIZE] = {false};
     if (type == EBCL_TASK_TYPE_STANDARD || importList == NULL) {
-        for (size_t i = 0; i < EBCL_numElements(importArr); i++) {
+        for (size_t i = 0; i < crinitNumElements(importArr); i++) {
             importArr[i] = true;
         }
     } else {

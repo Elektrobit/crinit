@@ -44,7 +44,7 @@ static void EBCL_testVariant(int size) {
 }
 
 void EBCL_freeScandirListTestSuccess(void **state) {
-    EBCL_PARAM_UNUSED(state);
+    CRINIT_PARAM_UNUSED(state);
 
     EBCL_testVariant(-1);
     EBCL_testVariant(0);
