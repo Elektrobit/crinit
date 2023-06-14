@@ -15,11 +15,11 @@
 #include "ioredir.h"
 
 /**
- * Extract an array of strings from the value mapped to an indexed key in an ebcl_ConfKvList_t.
+ * Extract an array of strings from the value mapped to an indexed key in an crinitConfKvList_t.
  *
  * Will split \a confVal along spaces. Will optionally respect quoting using double quotes if \a doubleQuoting is set to
  * true. A dynamically-allocated array-of-strings is returned. If no longer needed it should be freed using
- * EBCL_freeArgvArray(). \a numElements will contain the number of strings inside the output array and the output array
+ * crinitFreeArgvArray(). \a numElements will contain the number of strings inside the output array and the output array
  * will be additionally NULL-terminated, same as argc/argv in `main()`.
  *
  * @param numElements    Will contain the number of strings in the output.

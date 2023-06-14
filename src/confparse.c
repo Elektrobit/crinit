@@ -27,9 +27,9 @@
  * Struct definition for the parser context used by EBCL_iniHandler()
  */
 typedef struct {
-    ebcl_ConfKvList_t *anchor;  ///< Anchor pointer to the beginning of the list.
-    ebcl_ConfKvList_t *pList;   ///< Running pointer to the element being currently constructed.
-    ebcl_ConfKvList_t *last;    ///< Running pointer to the last element just constructed.
+    crinitConfKvList_t *anchor;  ///< Anchor pointer to the beginning of the list.
+    crinitConfKvList_t *pList;   ///< Running pointer to the element being currently constructed.
+    crinitConfKvList_t *last;    ///< Running pointer to the last element just constructed.
     size_t keyArrayCount;       ///< Counter variable for array-like config options.
     size_t envSetCount;         ///< Counter variable for ENV_SET config directives.
     size_t ioRedirCount;        ///< Counter variable for IO_REDIRECT config directives.
@@ -41,15 +41,15 @@ typedef struct {
 static int EBCL_iniHandler(void *parserCtx, const char *section, const char *name, const char *value);
 
 /* Parses config file and fills confList. confList is dynamically allocated and needs to be freed
- * using EBCL_freeConfList() */
-int EBCL_parseConf(ebcl_ConfKvList_t **confList, const char *filename) {
+ * using crinitFreeConfList() */
+int crinitParseConf(crinitConfKvList_t **confList, const char *filename) {
     FILE *cf = fopen(filename, "re");
     if (cf == NULL) {
         crinitErrnoPrint("Could not open \'%s\'.", filename);
         return -1;
     }
     // Alloc first element
-    if ((*confList = malloc(sizeof(ebcl_ConfKvList_t))) == NULL) {
+    if ((*confList = malloc(sizeof(crinitConfKvList_t))) == NULL) {
         crinitErrnoPrint("Could not allocate memory for a ConfKVList.");
         fclose(cf);
         return -1;
@@ -74,7 +74,7 @@ int EBCL_parseConf(ebcl_ConfKvList_t **confList, const char *filename) {
         } else {
             crinitErrPrint("Parser error in configuration file '%s', line %d.", filename, parseResult);
         }
-        EBCL_freeConfList(*confList);
+        crinitFreeConfList(*confList);
         *confList = NULL;
         return -1;
     }
@@ -115,12 +115,12 @@ static int EBCL_iniHandler(void *parserCtx, const char *section, const char *key
             }
             keyLen -= strlen(brck);
         }
-    } else if (strcmp(key, EBCL_CONFIG_KEYSTR_ENV_SET) == 0) {
+    } else if (strcmp(key, CRINIT_CONFIG_KEYSTR_ENV_SET) == 0) {
         /* Handle ENV_SET (TODO: As we will likely change the whole array handling syntax we should consolidate this
          * with everything else and just differentiate between keys which may be given multiple times and keys which may
          * appear only once. */
         ctx->pList->keyArrIndex = ctx->envSetCount++;
-    } else if (strcmp(key, EBCL_CONFIG_KEYSTR_IOREDIR) == 0) {
+    } else if (strcmp(key, CRINIT_CONFIG_KEYSTR_IOREDIR) == 0) {
         // Handle REDIRECT_IO the same way as ENV_SET for now. Same criticism applies.
         ctx->pList->keyArrIndex = ctx->ioRedirCount++;
     }
@@ -142,7 +142,7 @@ static int EBCL_iniHandler(void *parserCtx, const char *section, const char *key
 
     // Grow list
     ctx->last = ctx->pList;
-    if ((ctx->pList->next = malloc(sizeof(ebcl_ConfKvList_t))) == NULL) {
+    if ((ctx->pList->next = malloc(sizeof(crinitConfKvList_t))) == NULL) {
         crinitErrnoPrint("Could not allocate memory for a ConfKVList.");
         return 0;
     }
@@ -151,11 +151,11 @@ static int EBCL_iniHandler(void *parserCtx, const char *section, const char *key
 }
 
 /* Goes through all parts of config list and frees mem */
-void EBCL_freeConfList(ebcl_ConfKvList_t *confList) {
+void crinitFreeConfList(crinitConfKvList_t *confList) {
     if (confList == NULL) {
         return;
     }
-    ebcl_ConfKvList_t *last;
+    crinitConfKvList_t *last;
     do {
         free(confList->key);
         free(confList->val);
@@ -165,7 +165,7 @@ void EBCL_freeConfList(ebcl_ConfKvList_t *confList) {
     } while (confList != NULL);
 }
 
-int EBCL_confListGetValWithIdx(char **val, const char *key, size_t keyArrIndex, const ebcl_ConfKvList_t *c) {
+int crinitConfListGetValWithIdx(char **val, const char *key, size_t keyArrIndex, const crinitConfKvList_t *c) {
     if (val == NULL || key == NULL || c == NULL) {
         crinitErrPrint("Input parameters must not be NULL.");
         return -1;
@@ -200,7 +200,7 @@ int EBCL_confListGetValWithIdx(char **val, const char *key, size_t keyArrIndex, 
     return 0;
 }
 
-int EBCL_confListSetValWithIdx(const char *val, const char *key, size_t keyArrIndex, ebcl_ConfKvList_t *c) {
+int crinitConfListSetValWithIdx(const char *val, const char *key, size_t keyArrIndex, crinitConfKvList_t *c) {
     if (val == NULL || key == NULL || c == NULL) {
         crinitErrPrint("Input Parameters must not be NULL.");
         return -1;
@@ -236,13 +236,13 @@ int EBCL_confListSetValWithIdx(const char *val, const char *key, size_t keyArrIn
     return 0;
 }
 
-int EBCL_confListExtractBoolean(bool *out, const char *key, bool mandatory, const ebcl_ConfKvList_t *in) {
+int crinitConfListExtractBoolean(bool *out, const char *key, bool mandatory, const crinitConfKvList_t *in) {
     if (key == NULL || in == NULL || out == NULL) {
         crinitErrPrint("Input parameters must not be NULL.");
         return -1;
     }
     char *val = NULL;
-    if (EBCL_confListGetVal(&val, key, in) == -1) {
+    if (crinitConfListGetVal(&val, key, in) == -1) {
         if (mandatory) {
             crinitErrPrint("Could not get value for mandatory key \"%s\".", key);
             return -1;
@@ -263,13 +263,13 @@ int EBCL_confListExtractBoolean(bool *out, const char *key, bool mandatory, cons
     return -1;
 }
 
-int EBCL_confListExtractSignedInt(int *out, int base, const char *key, bool mandatory, const ebcl_ConfKvList_t *in) {
+int crinitConfListExtractSignedInt(int *out, int base, const char *key, bool mandatory, const crinitConfKvList_t *in) {
     if (key == NULL || in == NULL || out == NULL) {
         crinitErrPrint("Input parameters must not be NULL.");
         return -1;
     }
     char *val = NULL;
-    if (EBCL_confListGetVal(&val, key, in) == -1) {
+    if (crinitConfListGetVal(&val, key, in) == -1) {
         if (mandatory) {
             crinitErrPrint("Could not get value for mandatory key \"%s\".", key);
             return -1;
@@ -296,14 +296,14 @@ int EBCL_confListExtractSignedInt(int *out, int base, const char *key, bool mand
     return 0;
 }
 
-int EBCL_confListExtractUnsignedLL(unsigned long long *out, int base, const char *key, bool mandatory,
-                                   const ebcl_ConfKvList_t *in) {
+int crinitConfListExtractUnsignedLL(unsigned long long *out, int base, const char *key, bool mandatory,
+                                   const crinitConfKvList_t *in) {
     if (key == NULL || in == NULL || out == NULL) {
         crinitErrPrint("Input parameters must not be NULL.");
         return -1;
     }
     char *val = NULL;
-    if (EBCL_confListGetVal(&val, key, in) == -1) {
+    if (crinitConfListGetVal(&val, key, in) == -1) {
         if (mandatory) {
             crinitErrPrint("Could not get value for mandatory key \"%s\".", key);
             return -1;
@@ -330,14 +330,14 @@ int EBCL_confListExtractUnsignedLL(unsigned long long *out, int base, const char
     return 0;
 }
 
-int EBCL_confListExtractArgvArrayWithIdx(int *outArgc, char ***outArgv, const char *key, size_t keyArrIndex,
-                                         bool mandatory, const ebcl_ConfKvList_t *in, bool doubleQuoting) {
+int crinitConfListExtractArgvArrayWithIdx(int *outArgc, char ***outArgv, const char *key, size_t keyArrIndex,
+                                         bool mandatory, const crinitConfKvList_t *in, bool doubleQuoting) {
     if (key == NULL || in == NULL || outArgc == NULL || outArgv == NULL) {
         crinitErrPrint("\'key\', \'in\', outArgv, and \'outArgc\' parameters must not be NULL.");
         return -1;
     }
     char *val = NULL;
-    if (EBCL_confListGetValWithIdx(&val, key, keyArrIndex, in) == -1) {
+    if (crinitConfListGetValWithIdx(&val, key, keyArrIndex, in) == -1) {
         if (mandatory) {
             crinitErrPrint("Could not get value for mandatory key \"%s\" (index %zu).", key, keyArrIndex);
             return -1;
@@ -355,7 +355,7 @@ int EBCL_confListExtractArgvArrayWithIdx(int *outArgc, char ***outArgv, const ch
     return 0;
 }
 
-void EBCL_freeArgvArray(char **inArgv) {
+void crinitFreeArgvArray(char **inArgv) {
     if (inArgv != NULL) {
         // free the backing string
         free(*inArgv);
@@ -364,7 +364,7 @@ void EBCL_freeArgvArray(char **inArgv) {
     }
 }
 
-ssize_t EBCL_confListKeyGetMaxIdx(const ebcl_ConfKvList_t *c, const char *key) {
+ssize_t crinitConfListKeyGetMaxIdx(const crinitConfKvList_t *c, const char *key) {
     if (c == NULL || key == NULL) {
         crinitErrPrint("Parameters must not be NULL.");
         return -1;
@@ -393,125 +393,125 @@ ssize_t EBCL_confListKeyGetMaxIdx(const ebcl_ConfKvList_t *c, const char *key) {
     return maxIdx;
 }
 
-int EBCL_loadSeriesConf(crinitFileSeries_t *series, const char *filename) {
+int crinitLoadSeriesConf(crinitFileSeries_t *series, const char *filename) {
     if (series == NULL || filename == NULL || !crinitIsAbsPath(filename)) {
         crinitErrPrint("Parameters must not be NULL and filename must be an absolute path.");
         return -1;
     }
-    ebcl_ConfKvList_t *c;
-    if (EBCL_parseConf(&c, filename) == -1) {
+    crinitConfKvList_t *c;
+    if (crinitParseConf(&c, filename) == -1) {
         crinitErrPrint("Could not parse file \'%s\'.", filename);
         return -1;
     }
 
     char *taskDir = NULL;
-    if (EBCL_confListGetVal(&taskDir, EBCL_CONFIG_KEYSTR_TASKDIR, c) == -1) {
+    if (crinitConfListGetVal(&taskDir, CRINIT_CONFIG_KEYSTR_TASKDIR, c) == -1) {
         crinitErrPrint("Could not get value for mandatory key \'%s\' in series config \'%s\'.",
-                      EBCL_CONFIG_KEYSTR_TASKDIR, filename);
-        EBCL_freeConfList(c);
+                      CRINIT_CONFIG_KEYSTR_TASKDIR, filename);
+        crinitFreeConfList(c);
         return -1;
     }
 
     if (EBCL_globOptSetString(EBCL_GLOBOPT_TASKDIR, taskDir) == -1) {
-        crinitErrPrint("Could not store global string option values for '%s'.", EBCL_CONFIG_KEYSTR_TASKDIR);
-        EBCL_freeConfList(c);
+        crinitErrPrint("Could not store global string option values for '%s'.", CRINIT_CONFIG_KEYSTR_TASKDIR);
+        crinitFreeConfList(c);
         return -1;
     }
 
     bool followLinks = true;
-    if (EBCL_confListExtractBoolean(&followLinks, EBCL_CONFIG_KEYSTR_TASKDIR_SYMLINKS, false, c) == -1) {
-        crinitErrPrint("Could not extract boolean value for key '%s'.", EBCL_CONFIG_KEYSTR_TASKDIR_SYMLINKS);
-        EBCL_freeConfList(c);
+    if (crinitConfListExtractBoolean(&followLinks, CRINIT_CONFIG_KEYSTR_TASKDIR_SYMLINKS, false, c) == -1) {
+        crinitErrPrint("Could not extract boolean value for key '%s'.", CRINIT_CONFIG_KEYSTR_TASKDIR_SYMLINKS);
+        crinitFreeConfList(c);
         return -1;
     }
 
     char *fileSuffix = NULL;
-    EBCL_confListGetVal(&fileSuffix, EBCL_CONFIG_KEYSTR_TASK_FILE_SUFFIX, c);
+    crinitConfListGetVal(&fileSuffix, CRINIT_CONFIG_KEYSTR_TASK_FILE_SUFFIX, c);
 
     char **seriesArr = NULL;
     int seriesLen = 0;
-    if (EBCL_confListExtractArgvArray(&seriesLen, &seriesArr, EBCL_CONFIG_KEYSTR_TASKS, false, c, true) == -1) {
-        crinitErrPrint("Could not extract value for key '%s' from '%s'.", EBCL_CONFIG_KEYSTR_TASKS, filename);
-        EBCL_freeConfList(c);
+    if (crinitConfListExtractArgvArray(&seriesLen, &seriesArr, CRINIT_CONFIG_KEYSTR_TASKS, false, c, true) == -1) {
+        crinitErrPrint("Could not extract value for key '%s' from '%s'.", CRINIT_CONFIG_KEYSTR_TASKS, filename);
+        crinitFreeConfList(c);
         return -1;
     }
 
     if (seriesArr == NULL) {  // No TASKS array given, scan TASKDIR.
         if (crinitFileSeriesFromDir(series, taskDir,
-                                   (fileSuffix != NULL) ? fileSuffix : EBCL_CONFIG_DEFAULT_TASK_FILE_SUFFIX,
+                                   (fileSuffix != NULL) ? fileSuffix : CRINIT_CONFIG_DEFAULT_TASK_FILE_SUFFIX,
                                    followLinks) == -1) {
             crinitErrPrint("Could not generate list of tasks from task directory '%s'.", taskDir);
-            EBCL_freeConfList(c);
+            crinitFreeConfList(c);
             return -1;
         }
     } else {  // TASKS taken from config
         if (crinitFileSeriesFromStrArr(series, taskDir, seriesArr) == -1) {
-            crinitErrPrint("Could not generate list of tasks from '%s' option.", EBCL_CONFIG_KEYSTR_TASKS);
-            EBCL_freeConfList(c);
-            EBCL_freeArgvArray(seriesArr);
+            crinitErrPrint("Could not generate list of tasks from '%s' option.", CRINIT_CONFIG_KEYSTR_TASKS);
+            crinitFreeConfList(c);
+            crinitFreeArgvArray(seriesArr);
             return -1;
         }
     }
 
     char *inclDir = taskDir;
-    EBCL_confListGetVal(&inclDir, EBCL_CONFIG_KEYSTR_INCLDIR, c);
+    crinitConfListGetVal(&inclDir, CRINIT_CONFIG_KEYSTR_INCLDIR, c);
     if (EBCL_globOptSetString(EBCL_GLOBOPT_INCLDIR, inclDir) == -1) {
-        crinitErrPrint("Could not store global string option values for '%s'.", EBCL_CONFIG_KEYSTR_INCLDIR);
-        EBCL_freeConfList(c);
+        crinitErrPrint("Could not store global string option values for '%s'.", CRINIT_CONFIG_KEYSTR_INCLDIR);
+        crinitFreeConfList(c);
         crinitDestroyFileSeries(series);
         return -1;
     }
 
-    if (EBCL_confListGetVal(&fileSuffix, EBCL_CONFIG_KEYSTR_INCL_SUFFIX, c) == 0 &&
+    if (crinitConfListGetVal(&fileSuffix, CRINIT_CONFIG_KEYSTR_INCL_SUFFIX, c) == 0 &&
         EBCL_globOptSetString(EBCL_GLOBOPT_INCL_SUFFIX, fileSuffix) == -1) {
-        crinitErrPrint("Could not store global string option values for '%s'.", EBCL_CONFIG_KEYSTR_INCL_SUFFIX);
-        EBCL_freeConfList(c);
+        crinitErrPrint("Could not store global string option values for '%s'.", CRINIT_CONFIG_KEYSTR_INCL_SUFFIX);
+        crinitFreeConfList(c);
         crinitDestroyFileSeries(series);
         return -1;
     }
 
-    bool confDbg = EBCL_CONFIG_DEFAULT_DEBUG;
-    if (EBCL_confListExtractBoolean(&confDbg, EBCL_CONFIG_KEYSTR_DEBUG, false, c) == -1) {
+    bool confDbg = CRINIT_CONFIG_DEFAULT_DEBUG;
+    if (crinitConfListExtractBoolean(&confDbg, CRINIT_CONFIG_KEYSTR_DEBUG, false, c) == -1) {
         crinitErrPrint("Failed to search for non-mandatory key \'%s\' in series config \'%s\'.",
-                      EBCL_CONFIG_KEYSTR_DEBUG, filename);
-        EBCL_freeConfList(c);
+                      CRINIT_CONFIG_KEYSTR_DEBUG, filename);
+        crinitFreeConfList(c);
         crinitDestroyFileSeries(series);
         return -1;
     }
     if (EBCL_globOptSetBoolean(EBCL_GLOBOPT_DEBUG, &confDbg) == -1) {
-        crinitErrPrint("Could not store global boolean option value for \'%s\'.", EBCL_CONFIG_KEYSTR_DEBUG);
-        EBCL_freeConfList(c);
+        crinitErrPrint("Could not store global boolean option value for \'%s\'.", CRINIT_CONFIG_KEYSTR_DEBUG);
+        crinitFreeConfList(c);
         crinitDestroyFileSeries(series);
         return -1;
     }
 
-    bool confUseSyslog = EBCL_CONFIG_DEFAULT_USE_SYSLOG;
-    if (EBCL_confListExtractBoolean(&confUseSyslog, EBCL_CONFIG_KEYSTR_USE_SYSLOG, false, c) == -1) {
+    bool confUseSyslog = CRINIT_CONFIG_DEFAULT_USE_SYSLOG;
+    if (crinitConfListExtractBoolean(&confUseSyslog, CRINIT_CONFIG_KEYSTR_USE_SYSLOG, false, c) == -1) {
         crinitErrPrint("Failed to search for non-mandatory key \'%s\' in series config \'%s\'.",
-                      EBCL_CONFIG_KEYSTR_USE_SYSLOG, filename);
-        EBCL_freeConfList(c);
+                      CRINIT_CONFIG_KEYSTR_USE_SYSLOG, filename);
+        crinitFreeConfList(c);
         crinitDestroyFileSeries(series);
         return -1;
     }
     if (EBCL_globOptSetBoolean(EBCL_GLOBOPT_USE_SYSLOG, &confUseSyslog) == -1) {
-        crinitErrPrint("Could not store global boolean option value for \'%s\'.", EBCL_CONFIG_KEYSTR_USE_SYSLOG);
-        EBCL_freeConfList(c);
+        crinitErrPrint("Could not store global boolean option value for \'%s\'.", CRINIT_CONFIG_KEYSTR_USE_SYSLOG);
+        crinitFreeConfList(c);
         crinitDestroyFileSeries(series);
         return -1;
     }
 
-    unsigned long long shdnGracePeriodUs = EBCL_CONFIG_DEFAULT_SHDGRACEP;
-    if (EBCL_confListExtractUnsignedLL(&shdnGracePeriodUs, 10, EBCL_CONFIG_KEYSTR_SHDGRACEP, false, c) == -1) {
+    unsigned long long shdnGracePeriodUs = CRINIT_CONFIG_DEFAULT_SHDGRACEP;
+    if (crinitConfListExtractUnsignedLL(&shdnGracePeriodUs, 10, CRINIT_CONFIG_KEYSTR_SHDGRACEP, false, c) == -1) {
         crinitErrPrint("Failed to search for non-mandatory key \'%s\' in series config \'%s\'.",
-                      EBCL_CONFIG_KEYSTR_SHDGRACEP, filename);
-        EBCL_freeConfList(c);
+                      CRINIT_CONFIG_KEYSTR_SHDGRACEP, filename);
+        crinitFreeConfList(c);
         crinitDestroyFileSeries(series);
         return -1;
     }
     if (EBCL_globOptSetUnsignedLL(EBCL_GLOBOPT_SHDGRACEP, &shdnGracePeriodUs) == -1) {
         crinitErrPrint("Could not store global unsigned long long option values for \'%s\'.",
-                      EBCL_CONFIG_KEYSTR_SHDGRACEP);
-        EBCL_freeConfList(c);
+                      CRINIT_CONFIG_KEYSTR_SHDGRACEP);
+        crinitFreeConfList(c);
         crinitDestroyFileSeries(series);
         return -1;
     }
@@ -519,20 +519,20 @@ int EBCL_loadSeriesConf(crinitFileSeries_t *series, const char *filename) {
     crinitEnvSet_t globEnv;
     if (crinitEnvSetCreateFromConfKvList(&globEnv, NULL, c) == -1) {
         crinitErrPrint("Could not parse global environment variables from series config.");
-        EBCL_freeConfList(c);
+        crinitFreeConfList(c);
         crinitDestroyFileSeries(series);
         return -1;
     }
 
     if (EBCL_globOptSetEnvSet(&globEnv) == -1) {
         crinitErrPrint("Could not store global environment variable set.");
-        EBCL_freeConfList(c);
+        crinitFreeConfList(c);
         crinitDestroyFileSeries(series);
         crinitEnvSetDestroy(&globEnv);
         return -1;
     }
 
-    EBCL_freeConfList(c);
+    crinitFreeConfList(c);
     crinitEnvSetDestroy(&globEnv);
     return 0;
 }

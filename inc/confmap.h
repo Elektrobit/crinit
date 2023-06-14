@@ -17,7 +17,7 @@
  * A structure defining a mapping between a configuration option, its string respresentation, and further properties.
  */
 typedef struct ebcl_ConfigMapping_t {
-    ebcl_Configs_t config;            ///< The index of the configuration option.
+    crinitConfigs_t config;            ///< The index of the configuration option.
     const char *configKey;            ///< The string representation (name) of the option.
     bool arrayLike;                   ///< If the configuration option is array-like, i.e. may be defined multiple
                                       ///< times and appended to.

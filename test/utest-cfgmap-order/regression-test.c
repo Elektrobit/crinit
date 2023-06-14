@@ -19,7 +19,7 @@ void EBCL_cfgMapRegressionTest(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     // Check size of EBCL_cfgMap.
-    assert_int_equal(EBCL_cfgMapSize, EBCL_CONFIGS_SIZE);
+    assert_int_equal(EBCL_cfgMapSize, CRINIT_CONFIGS_SIZE);
 
     // Check order
     for (size_t i = 1; i < EBCL_cfgMapSize; i++) {

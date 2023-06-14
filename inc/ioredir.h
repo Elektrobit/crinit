@@ -49,7 +49,7 @@ typedef struct crinitIoRedir_t {
  * @return  0 on success, -1 otherwise
  */
 int crinitInitIoRedirFromConfKvList(crinitIoRedir_t *out, const char *key, size_t keyArrIndex,
-                                   const ebcl_ConfKvList_t *in);
+                                   const crinitConfKvList_t *in);
 
 /**
  * Frees memory associated with an initialized instance of crinitIoRedir_t.

@@ -18,7 +18,7 @@
 #include "logio.h"
 
 /**
- * Helper function to go through an ebcl_ConfKvList_t and apply all contained settings to a target task.
+ * Helper function to go through an crinitConfKvList_t and apply all contained settings to a target task.
  *
  * Will call appropriate config handlers (see confhdl.h).
  *
@@ -31,10 +31,10 @@
  *
  * @return  0 on success, -1 on error
  */
-static inline int EBCL_taskSetFromConfKvList(crinitTask_t *tgt, const ebcl_ConfKvList_t *src, crinitTaskType_t type,
+static inline int EBCL_taskSetFromConfKvList(crinitTask_t *tgt, const crinitConfKvList_t *src, crinitTaskType_t type,
                                              char *importList);
 
-int crinitTaskCreateFromConfKvList(crinitTask_t **out, const ebcl_ConfKvList_t *in) {
+int crinitTaskCreateFromConfKvList(crinitTask_t **out, const crinitConfKvList_t *in) {
     crinitNullCheck(-1, out, in);
 
     *out = calloc(1, sizeof(**out));
@@ -225,7 +225,7 @@ void crinitDestroyTask(crinitTask_t *t) {
     free(t->name);
     if (t->cmds != NULL) {
         for (size_t i = 0; i < t->cmdsSize; i++) {
-            EBCL_freeArgvArray(t->cmds[i].argv);
+            crinitFreeArgvArray(t->cmds[i].argv);
         }
     }
     free(t->cmds);
@@ -278,8 +278,8 @@ int crinitTaskMergeInclude(crinitTask_t *tgt, const char *src, char *importList)
     free(inclDir);
     free(inclSuffix);
 
-    ebcl_ConfKvList_t *inclConfList;
-    if (EBCL_parseConf(&inclConfList, inclPath) == -1) {
+    crinitConfKvList_t *inclConfList;
+    if (crinitParseConf(&inclConfList, inclPath) == -1) {
         crinitErrPrint("Could not parse include file at '%s'.", inclPath);
         free(inclPath);
         return -1;
@@ -288,20 +288,20 @@ int crinitTaskMergeInclude(crinitTask_t *tgt, const char *src, char *importList)
     if (EBCL_taskSetFromConfKvList(tgt, inclConfList, CRINIT_TASK_TYPE_INCLUDE, importList) == -1) {
         crinitErrPrint("Could not merge include file '%s' into task.", inclPath);
         free(inclPath);
-        EBCL_freeConfList(inclConfList);
+        crinitFreeConfList(inclConfList);
         return -1;
     }
 
     free(inclPath);
-    EBCL_freeConfList(inclConfList);
+    crinitFreeConfList(inclConfList);
     return 0;
 }
 
-static inline int EBCL_taskSetFromConfKvList(crinitTask_t *tgt, const ebcl_ConfKvList_t *src, crinitTaskType_t type,
+static inline int EBCL_taskSetFromConfKvList(crinitTask_t *tgt, const crinitConfKvList_t *src, crinitTaskType_t type,
                                              char *importList) {
     crinitNullCheck(-1, tgt, src);
 
-    bool importArr[EBCL_CONFIGS_SIZE] = {false};
+    bool importArr[CRINIT_CONFIGS_SIZE] = {false};
     if (type == CRINIT_TASK_TYPE_STANDARD || importList == NULL) {
         for (size_t i = 0; i < crinitNumElements(importArr); i++) {
             importArr[i] = true;
@@ -320,7 +320,7 @@ static inline int EBCL_taskSetFromConfKvList(crinitTask_t *tgt, const ebcl_ConfK
         }
     }
 
-    const ebcl_ConfKvList_t *pEntry = src;
+    const crinitConfKvList_t *pEntry = src;
     const char *val = NULL;
     while (pEntry != NULL) {
         const ebcl_ConfigMapping_t *tcm = EBCL_findConfigMapping(pEntry->key);

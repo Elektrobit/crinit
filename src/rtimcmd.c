@@ -555,21 +555,21 @@ static int EBCL_execRtimCmdAddTask(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, con
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
 
-    ebcl_ConfKvList_t *c;
-    if (EBCL_parseConf(&c, cmd->args[0]) == -1) {
+    crinitConfKvList_t *c;
+    if (crinitParseConf(&c, cmd->args[0]) == -1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR, "Could not parse given config.");
     }
     crinitDbgInfoPrint("File \'%s\' loaded.", cmd->args[0]);
 
     if (strcmp(cmd->args[2], "@unchanged") != 0) {
         if (strcmp(cmd->args[2], "@empty") == 0) {
-            if (EBCL_confListSetVal("", "DEPENDS", c) == -1) {
+            if (crinitConfListSetVal("", "DEPENDS", c) == -1) {
                 return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR,
                                          "Could not set dependencies to empty.");
             }
         } else {
-            if (EBCL_confListSetVal(cmd->args[2], "DEPENDS", c) == -1) {
-                EBCL_freeConfList(c);
+            if (crinitConfListSetVal(cmd->args[2], "DEPENDS", c) == -1) {
+                crinitFreeConfList(c);
                 return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR,
                                          "Could not set dependencies to given string.");
             }
@@ -578,11 +578,11 @@ static int EBCL_execRtimCmdAddTask(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, con
 
     crinitTask_t *t = NULL;
     if (crinitTaskCreateFromConfKvList(&t, c) == -1) {
-        EBCL_freeConfList(c);
+        crinitFreeConfList(c);
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR,
                                  "Could not create task from config.");
     }
-    EBCL_freeConfList(c);
+    crinitFreeConfList(c);
 
     crinitDbgInfoPrint("Task extracted without error.");
     bool overwrite = false;
@@ -624,7 +624,7 @@ static int EBCL_execRtimCmdAddSeries(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, c
     }
 
     crinitFileSeries_t taskSeries;
-    if (EBCL_loadSeriesConf(&taskSeries, cmd->args[0]) == -1) {
+    if (crinitLoadSeriesConf(&taskSeries, cmd->args[0]) == -1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR, "Could not load series file.");
     }
 
@@ -651,9 +651,9 @@ static int EBCL_execRtimCmdAddSeries(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, c
             memcpy(confFn + prefixLen + 1, taskSeries.fnames[n], suffixLen + 1);
             confFnAllocated = true;
         }
-        ebcl_ConfKvList_t *c;
+        crinitConfKvList_t *c;
 
-        if (EBCL_parseConf(&c, confFn) == -1) {
+        if (crinitParseConf(&c, confFn) == -1) {
             crinitErrPrint("Could not parse file \'%s\'.", confFn);
             if (confFnAllocated) {
                 free(confFn);
@@ -670,14 +670,14 @@ static int EBCL_execRtimCmdAddSeries(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, c
 
         crinitTask_t *t = NULL;
         if (crinitTaskCreateFromConfKvList(&t, c) == -1) {
-            EBCL_freeConfList(c);
+            crinitFreeConfList(c);
             crinitDestroyFileSeries(&taskSeries);
             crinitTaskDBSetSpawnInhibit(ctx, false);
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not create task from config file.");
         }
 
-        EBCL_freeConfList(c);
+        crinitFreeConfList(c);
         if (crinitTaskDBInsert(ctx, t, overwriteTasks) == -1) {
             crinitFreeTask(t);
             crinitDestroyFileSeries(&taskSeries);
@@ -1066,9 +1066,9 @@ static void *EBCL_shdnThread(void *args) {
         crinitErrPrint("Could not inhibit spawning of new tasks. Continuing anyway.");
     }
 
-    unsigned long long gpMicros = EBCL_CONFIG_DEFAULT_SHDGRACEP;
+    unsigned long long gpMicros = CRINIT_CONFIG_DEFAULT_SHDGRACEP;
     if (EBCL_globOptGetUnsignedLL(EBCL_GLOBOPT_SHDGRACEP, &gpMicros) == -1) {
-        gpMicros = EBCL_CONFIG_DEFAULT_SHDGRACEP;
+        gpMicros = CRINIT_CONFIG_DEFAULT_SHDGRACEP;
         crinitErrPrint("Could not read global option for shutdown grace period, using default: %lluus.", gpMicros);
     }
 

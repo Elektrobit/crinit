@@ -52,8 +52,8 @@ static void EBCL_taskPrint(const crinitTask_t *t) {
  */
 int main(int argc, char *argv[]) {
     for (int n = 1; n < argc; n++) {
-        ebcl_ConfKvList_t *c;
-        if (EBCL_parseConf(&c, argv[n]) == -1) {
+        crinitConfKvList_t *c;
+        if (crinitParseConf(&c, argv[n]) == -1) {
             crinitErrPrint("Could not parse file \'%s\'.", argv[n]);
             return EXIT_FAILURE;
         }
@@ -61,22 +61,22 @@ int main(int argc, char *argv[]) {
         crinitInfoPrint("---------");
         crinitInfoPrint("Contents:");
         crinitInfoPrint("---------");
-        ebcl_ConfKvList_t *runner = c;
+        crinitConfKvList_t *runner = c;
         do {
             if (runner->key != NULL && runner->val != NULL) {
                 if (strncmp(runner->key, "COMMAND", 7) == 0) {
                     char **argArr = NULL;
                     int argCount = 0;
                     crinitInfoPrint("\'%s\':", runner->key);
-                    if (EBCL_confListExtractArgvArray(&argCount, &argArr, runner->key, true, c, true) == -1) {
+                    if (crinitConfListExtractArgvArray(&argCount, &argArr, runner->key, true, c, true) == -1) {
                         crinitErrPrint("Could not get argv-array for key \'%s\'.", runner->key);
-                        EBCL_freeConfList(c);
+                        crinitFreeConfList(c);
                         return EXIT_FAILURE;
                     }
                     for (int i = 0; i < argCount; i++) {
                         crinitInfoPrint("    ARGV[%d] = \'%s\'", i, argArr[i]);
                     }
-                    EBCL_freeArgvArray(argArr);
+                    crinitFreeArgvArray(argArr);
                 } else {
                     crinitInfoPrint("\'%s\'=\'%s\'", runner->key, runner->val);
                 }
@@ -88,10 +88,10 @@ int main(int argc, char *argv[]) {
         crinitTask_t *t = NULL;
         if (crinitTaskCreateFromConfKvList(&t, c) == -1) {
             crinitErrPrint("Could not extract task from ConfKvList.");
-            EBCL_freeConfList(c);
+            crinitFreeConfList(c);
             return EXIT_FAILURE;
         }
-        EBCL_freeConfList(c);
+        crinitFreeConfList(c);
 
         crinitInfoPrint("Task extracted without error.");
         EBCL_taskPrint(t);

@@ -191,38 +191,38 @@ int EBCL_confConvToIoRedir(crinitIoRedir_t *ior, const char *confVal) {
 
     if (numParams < 2) {
         crinitErrPrint("The IO redirection statement must have at least 2 parameters.");
-        EBCL_freeArgvArray(confStrArr);
+        crinitFreeArgvArray(confStrArr);
         return -1;
     }
 
-    if (strcmp(confStrArr[0], EBCL_CONFIG_STDOUT_NAME) == 0) {
+    if (strcmp(confStrArr[0], CRINIT_CONFIG_STDOUT_NAME) == 0) {
         ior->newFd = STDOUT_FILENO;
-    } else if (strcmp(confStrArr[0], EBCL_CONFIG_STDERR_NAME) == 0) {
+    } else if (strcmp(confStrArr[0], CRINIT_CONFIG_STDERR_NAME) == 0) {
         ior->newFd = STDERR_FILENO;
-    } else if (strcmp(confStrArr[0], EBCL_CONFIG_STDIN_NAME) == 0) {
+    } else if (strcmp(confStrArr[0], CRINIT_CONFIG_STDIN_NAME) == 0) {
         ior->newFd = STDIN_FILENO;
     } else {
         crinitErrPrint("Redirecting other file descriptors than STDOUT, STDERR, or STDIN is not supported.");
-        EBCL_freeArgvArray(confStrArr);
+        crinitFreeArgvArray(confStrArr);
         return -1;
     }
 
-    if (strcmp(confStrArr[1], EBCL_CONFIG_STDOUT_NAME) == 0) {
+    if (strcmp(confStrArr[1], CRINIT_CONFIG_STDOUT_NAME) == 0) {
         ior->oldFd = STDOUT_FILENO;
-    } else if (strcmp(confStrArr[1], EBCL_CONFIG_STDERR_NAME) == 0) {
+    } else if (strcmp(confStrArr[1], CRINIT_CONFIG_STDERR_NAME) == 0) {
         ior->oldFd = STDERR_FILENO;
-    } else if (strcmp(confStrArr[1], EBCL_CONFIG_STDIN_NAME) == 0) {
+    } else if (strcmp(confStrArr[1], CRINIT_CONFIG_STDIN_NAME) == 0) {
         ior->oldFd = STDIN_FILENO;
     } else if (crinitIsAbsPath(confStrArr[1])) {
         ior->path = strdup(confStrArr[1]);
         if (ior->path == NULL) {
             crinitErrnoPrint("Could not duplicate path string during parsing of IO redirection statement.");
-            EBCL_freeArgvArray(confStrArr);
+            crinitFreeArgvArray(confStrArr);
             return -1;
         }
     } else {
         crinitErrPrint("Redirection target must be a standard file descriptor or an absolute path.");
-        EBCL_freeArgvArray(confStrArr);
+        crinitFreeArgvArray(confStrArr);
         return -1;
     }
 
@@ -240,7 +240,7 @@ int EBCL_confConvToIoRedir(crinitIoRedir_t *ior, const char *confVal) {
                 crinitErrPrint(
                     "Third parameter of redirection statement - if it is given - must be either APPEND, TRUNCATE, or "
                     "PIPE.");
-                EBCL_freeArgvArray(confStrArr);
+                crinitFreeArgvArray(confStrArr);
                 crinitNullify(ior->path);
                 return -1;
             }
@@ -256,12 +256,12 @@ int EBCL_confConvToIoRedir(crinitIoRedir_t *ior, const char *confVal) {
                 } else {
                     crinitErrnoPrint("Could not perform conversion of octal mode digits in IO redirection statement.");
                 }
-                EBCL_freeArgvArray(confStrArr);
+                crinitFreeArgvArray(confStrArr);
                 crinitNullify(ior->path);
                 return -1;
             } else if (ior->mode > 0777) {
                 crinitErrPrint("0%o is not a supported file mode.", ior->mode);
-                EBCL_freeArgvArray(confStrArr);
+                crinitFreeArgvArray(confStrArr);
                 crinitNullify(ior->path);
                 return -1;
             }
@@ -274,7 +274,7 @@ int EBCL_confConvToIoRedir(crinitIoRedir_t *ior, const char *confVal) {
         }
     }
 
-    EBCL_freeArgvArray(confStrArr);
+    crinitFreeArgvArray(confStrArr);
     return 0;
 }
 

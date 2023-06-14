@@ -87,7 +87,7 @@ int main(int argc, char *argv[]) {
     }
 
     crinitFileSeries_t taskSeries;
-    if (EBCL_loadSeriesConf(&taskSeries, seriesFname) == -1) {
+    if (crinitLoadSeriesConf(&taskSeries, seriesFname) == -1) {
         crinitErrPrint("Could not load series file \'%s\'.", seriesFname);
         EBCL_globOptDestroy();
         return EXIT_FAILURE;
@@ -117,8 +117,8 @@ int main(int argc, char *argv[]) {
             memcpy(confFn + prefixLen + 1, taskSeries.fnames[n], suffixLen + 1);
             confFnAllocated = true;
         }
-        ebcl_ConfKvList_t *c;
-        if (EBCL_parseConf(&c, confFn) == -1) {
+        crinitConfKvList_t *c;
+        if (crinitParseConf(&c, confFn) == -1) {
             crinitErrPrint("Could not parse file \'%s\'.", confFn);
             EBCL_globOptDestroy();
             if (confFnAllocated) {
@@ -137,13 +137,13 @@ int main(int argc, char *argv[]) {
         crinitTask_t *t = NULL;
         if (crinitTaskCreateFromConfKvList(&t, c) == -1) {
             crinitErrPrint("Could not extract task from ConfKvList.");
-            EBCL_freeConfList(c);
+            crinitFreeConfList(c);
             EBCL_globOptDestroy();
             crinitDestroyFileSeries(&taskSeries);
             crinitTaskDBDestroy(&tdb);
             return EXIT_FAILURE;
         }
-        EBCL_freeConfList(c);
+        crinitFreeConfList(c);
 
         crinitDbgInfoPrint("Task extracted without error.");
         EBCL_taskPrint(t);

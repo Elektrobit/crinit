@@ -16,15 +16,15 @@
 #include "logio.h"
 
 const ebcl_ConfigMapping_t EBCL_cfgMap[] = {
-    {EBCL_CONFIG_COMMAND, EBCL_CONFIG_KEYSTR_COMMAND, true, false, EBCL_taskCfgCmdHandler},
-    {EBCL_CONFIG_DEPENDS, EBCL_CONFIG_KEYSTR_DEPENDS, true, true, EBCL_taskCfgDepHandler},
-    {EBCL_CONFIG_ENV_SET, EBCL_CONFIG_KEYSTR_ENV_SET, true, true, EBCL_taskCfgEnvHandler},
-    {EBCL_CONFIG_INCLUDE, EBCL_CONFIG_KEYSTR_INCLUDE, true, false, EBCL_taskIncludeHandler},
-    {EBCL_CONFIG_IOREDIR, EBCL_CONFIG_KEYSTR_IOREDIR, true, true, EBCL_taskCfgIoRedirHandler},
-    {EBCL_CONFIG_NAME, EBCL_CONFIG_KEYSTR_NAME, false, false, EBCL_taskCfgNameHandler},
-    {EBCL_CONFIG_PROVIDES, EBCL_CONFIG_KEYSTR_PROVIDES, true, false, EBCL_taskCfgPrvHandler},
-    {EBCL_CONFIG_RESPAWN, EBCL_CONFIG_KEYSTR_RESPAWN, false, false, EBCL_taskCfgRespHandler},
-    {EBCL_CONFIG_RESPAWN_RETRIES, EBCL_CONFIG_KEYSTR_RESPAWN_RETRIES, false, false, EBCL_taskCfgRespRetHandler},
+    {CRINIT_CONFIG_COMMAND, CRINIT_CONFIG_KEYSTR_COMMAND, true, false, EBCL_taskCfgCmdHandler},
+    {CRINIT_CONFIG_DEPENDS, CRINIT_CONFIG_KEYSTR_DEPENDS, true, true, EBCL_taskCfgDepHandler},
+    {CRINIT_CONFIG_ENV_SET, CRINIT_CONFIG_KEYSTR_ENV_SET, true, true, EBCL_taskCfgEnvHandler},
+    {CRINIT_CONFIG_INCLUDE, CRINIT_CONFIG_KEYSTR_INCLUDE, true, false, EBCL_taskIncludeHandler},
+    {CRINIT_CONFIG_IOREDIR, CRINIT_CONFIG_KEYSTR_IOREDIR, true, true, EBCL_taskCfgIoRedirHandler},
+    {CRINIT_CONFIG_NAME, CRINIT_CONFIG_KEYSTR_NAME, false, false, EBCL_taskCfgNameHandler},
+    {CRINIT_CONFIG_PROVIDES, CRINIT_CONFIG_KEYSTR_PROVIDES, true, false, EBCL_taskCfgPrvHandler},
+    {CRINIT_CONFIG_RESPAWN, CRINIT_CONFIG_KEYSTR_RESPAWN, false, false, EBCL_taskCfgRespHandler},
+    {CRINIT_CONFIG_RESPAWN_RETRIES, CRINIT_CONFIG_KEYSTR_RESPAWN_RETRIES, false, false, EBCL_taskCfgRespRetHandler},
 };
 const size_t EBCL_cfgMapSize = crinitNumElements(EBCL_cfgMap);
 

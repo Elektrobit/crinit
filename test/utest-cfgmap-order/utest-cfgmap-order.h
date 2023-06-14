@@ -15,7 +15,7 @@
  * Regression test for the EBCL_cfgMap constant array.
  *
  * Checks that the array is alphabetically ordered (by its ebcl_ConfigMapping_t::configKey field) and that it contains
- * EBCL_CONFIGS_SIZE number of elements.
+ * CRINIT_CONFIGS_SIZE number of elements.
  */
 void EBCL_cfgMapRegressionTest(void **state);
 

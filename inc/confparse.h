@@ -16,74 +16,74 @@
 
 #include "fseries.h"
 
-#define EBCL_CONFIG_KEYSTR_TASKS "TASKS"        ///< Config key for the list of task file names.
-#define EBCL_CONFIG_KEYSTR_INCLUDES "INCLUDES"  ///< Config key for the list of task file names.
-#define EBCL_CONFIG_KEYSTR_TASKDIR_SYMLINKS \
+#define CRINIT_CONFIG_KEYSTR_TASKS "TASKS"        ///< Config key for the list of task file names.
+#define CRINIT_CONFIG_KEYSTR_INCLUDES "INCLUDES"  ///< Config key for the list of task file names.
+#define CRINIT_CONFIG_KEYSTR_TASKDIR_SYMLINKS \
     "TASKDIR_FOLLOW_SYMLINKS"  ///< Config key for the option to follow symbolic links from `TASKDIR` in dynamic
                                ///< configurations.
-#define EBCL_CONFIG_KEYSTR_DEBUG "DEBUG"         ///< Config file key for DEBUG global option.
-#define EBCL_CONFIG_KEYSTR_TASKDIR "TASKDIR"     ///< Config file key for TASKDIR global option.
-#define EBCL_CONFIG_KEYSTR_INCLDIR "INCLUDEDIR"  ///< Config file key for INCLUDEDIR global option.
-#define EBCL_CONFIG_KEYSTR_SHDGRACEP \
+#define CRINIT_CONFIG_KEYSTR_DEBUG "DEBUG"         ///< Config file key for DEBUG global option.
+#define CRINIT_CONFIG_KEYSTR_TASKDIR "TASKDIR"     ///< Config file key for TASKDIR global option.
+#define CRINIT_CONFIG_KEYSTR_INCLDIR "INCLUDEDIR"  ///< Config file key for INCLUDEDIR global option.
+#define CRINIT_CONFIG_KEYSTR_SHDGRACEP \
     "SHUTDOWN_GRACE_PERIOD_US"                           ///< Config file key for SHUTDOWN_GRACE_PERIOD_US global option
-#define EBCL_CONFIG_KEYSTR_USE_SYSLOG "USE_SYSLOG"       ///< Config file key for USE_SYSLOG global option.
-#define EBCL_CONFIG_KEYSTR_INCL_SUFFIX "INCLUDE_SUFFIX"  ///< Config file key for INCLUDE_SUFFIX global option.
-#define EBCL_CONFIG_KEYSTR_TASK_FILE_SUFFIX \
+#define CRINIT_CONFIG_KEYSTR_USE_SYSLOG "USE_SYSLOG"       ///< Config file key for USE_SYSLOG global option.
+#define CRINIT_CONFIG_KEYSTR_INCL_SUFFIX "INCLUDE_SUFFIX"  ///< Config file key for INCLUDE_SUFFIX global option.
+#define CRINIT_CONFIG_KEYSTR_TASK_FILE_SUFFIX \
     "TASK_FILE_SUFFIX"  ///< Config key for the task file extension in dynamic configurations.
 
-#define EBCL_CONFIG_KEYSTR_COMMAND "COMMAND"      ///< Config key to add a command to the task.
-#define EBCL_CONFIG_KEYSTR_DEPENDS "DEPENDS"      ///< Config key to add dependencies to the task.
-#define EBCL_CONFIG_KEYSTR_ENV_SET "ENV_SET"      ///< Config key to set an environment variable with.
-#define EBCL_CONFIG_KEYSTR_INCLUDE "INCLUDE"      ///< Config key for file include directives.
-#define EBCL_CONFIG_KEYSTR_IOREDIR "IO_REDIRECT"  ///< Config key for IO redirections.
-#define EBCL_CONFIG_KEYSTR_NAME "NAME"            ///< Config key for the task name.
-#define EBCL_CONFIG_KEYSTR_PROVIDES "PROVIDES"    ///< Config key for provided features.
-#define EBCL_CONFIG_KEYSTR_RESPAWN "RESPAWN"      ///< Config key to set a task to be respawning.
-#define EBCL_CONFIG_KEYSTR_RESPAWN_RETRIES \
+#define CRINIT_CONFIG_KEYSTR_COMMAND "COMMAND"      ///< Config key to add a command to the task.
+#define CRINIT_CONFIG_KEYSTR_DEPENDS "DEPENDS"      ///< Config key to add dependencies to the task.
+#define CRINIT_CONFIG_KEYSTR_ENV_SET "ENV_SET"      ///< Config key to set an environment variable with.
+#define CRINIT_CONFIG_KEYSTR_INCLUDE "INCLUDE"      ///< Config key for file include directives.
+#define CRINIT_CONFIG_KEYSTR_IOREDIR "IO_REDIRECT"  ///< Config key for IO redirections.
+#define CRINIT_CONFIG_KEYSTR_NAME "NAME"            ///< Config key for the task name.
+#define CRINIT_CONFIG_KEYSTR_PROVIDES "PROVIDES"    ///< Config key for provided features.
+#define CRINIT_CONFIG_KEYSTR_RESPAWN "RESPAWN"      ///< Config key to set a task to be respawning.
+#define CRINIT_CONFIG_KEYSTR_RESPAWN_RETRIES \
     "RESPAWN_RETRIES"  ///< Config key to set how often a task is allowed to respawn on failure.
 
-#define EBCL_CONFIG_DEFAULT_TASK_FILE_SUFFIX ".crinit"  ///< Default filename extension of task files.
-#define EBCL_CONFIG_KEYSTR_INCL_FILE_SUFFIX \
+#define CRINIT_CONFIG_DEFAULT_TASK_FILE_SUFFIX ".crinit"  ///< Default filename extension of task files.
+#define CRINIT_CONFIG_KEYSTR_INCL_FILE_SUFFIX \
     "INCL_FILE_SUFFIX"  ///< Config key for the task include file extension in dynamic configurations.
-#define EBCL_CONFIG_DEFAULT_INCL_FILE_SUFFIX ".crincl"  ///< Default filename extension of task include files.
-#define EBCL_CONFIG_DEFAULT_DEBUG false                 ///< Default value for DEBUG global option.
-#define EBCL_CONFIG_DEFAULT_TASKDIR "/etc/crinit"       ///< Default value for TASKDIR global option.
-#define EBCL_CONFIG_DEFAULT_INCLDIR "/etc/crinit"       ///< Default value for INCLUDEDIR global option.
-#define EBCL_CONFIG_DEFAULT_SHDGRACEP 100000uLL         ///< Default value for SHUTDOWN_GRACE_PERIOD_US global option
-#define EBCL_CONFIG_DEFAULT_USE_SYSLOG false            ///< Default value for USE_SYSLOG global option.
-#define EBCL_CONFIG_DEFAULT_INCL_SUFFIX ".crincl"       ///< Default filename extension of include files.
+#define CRINIT_CONFIG_DEFAULT_INCL_FILE_SUFFIX ".crincl"  ///< Default filename extension of task include files.
+#define CRINIT_CONFIG_DEFAULT_DEBUG false                 ///< Default value for DEBUG global option.
+#define CRINIT_CONFIG_DEFAULT_TASKDIR "/etc/crinit"       ///< Default value for TASKDIR global option.
+#define CRINIT_CONFIG_DEFAULT_INCLDIR "/etc/crinit"       ///< Default value for INCLUDEDIR global option.
+#define CRINIT_CONFIG_DEFAULT_SHDGRACEP 100000uLL         ///< Default value for SHUTDOWN_GRACE_PERIOD_US global option
+#define CRINIT_CONFIG_DEFAULT_USE_SYSLOG false            ///< Default value for USE_SYSLOG global option.
+#define CRINIT_CONFIG_DEFAULT_INCL_SUFFIX ".crincl"       ///< Default filename extension of include files.
 
-#define EBCL_CONFIG_STDOUT_NAME "STDOUT"  ///< What stdout is called in task configs.
-#define EBCL_CONFIG_STDERR_NAME "STDERR"  ///< What stderr is called in task configs.
-#define EBCL_CONFIG_STDIN_NAME "STDIN"    ///< What stdin is called in task configs.
+#define CRINIT_CONFIG_STDOUT_NAME "STDOUT"  ///< What stdout is called in task configs.
+#define CRINIT_CONFIG_STDERR_NAME "STDERR"  ///< What stderr is called in task configs.
+#define CRINIT_CONFIG_STDIN_NAME "STDIN"    ///< What stdin is called in task configs.
 
 /** Enumeration of all (task) configuration keys. Goes together with EBCL_cfgMap. **/
-typedef enum ebcl_Configs_t {
-    EBCL_CONFIG_COMMAND = 0,
-    EBCL_CONFIG_DEPENDS,
-    EBCL_CONFIG_ENV_SET,
-    EBCL_CONFIG_INCLUDE,
-    EBCL_CONFIG_IOREDIR,
-    EBCL_CONFIG_NAME,
-    EBCL_CONFIG_PROVIDES,
-    EBCL_CONFIG_RESPAWN,
-    EBCL_CONFIG_RESPAWN_RETRIES,
-    EBCL_CONFIGS_SIZE
-} ebcl_Configs_t;
+typedef enum crinitConfigs_t {
+    CRINIT_CONFIG_COMMAND = 0,
+    CRINIT_CONFIG_DEPENDS,
+    CRINIT_CONFIG_ENV_SET,
+    CRINIT_CONFIG_INCLUDE,
+    CRINIT_CONFIG_IOREDIR,
+    CRINIT_CONFIG_NAME,
+    CRINIT_CONFIG_PROVIDES,
+    CRINIT_CONFIG_RESPAWN,
+    CRINIT_CONFIG_RESPAWN_RETRIES,
+    CRINIT_CONFIGS_SIZE
+} crinitConfigs_t;
 
 /**
  * Linked list to hold key/value pairs read from the config file.
  */
-typedef struct ebcl_ConfKvList_t {
-    struct ebcl_ConfKvList_t *next;  ///< Pointer to next element
+typedef struct crinitConfKvList_t {
+    struct crinitConfKvList_t *next;  ///< Pointer to next element
     char *key;                       ///< string with "KEY"
     char *val;                       ///< string with "VALUE"
     size_t keyArrIndex;              ///< Index if this is a key array (e.g. COMMAND[keyArrIndex]), always 0 for
                                      ///< singular keys
-} ebcl_ConfKvList_t;
+} crinitConfKvList_t;
 
 /**
- * Parse a config file into a ebcl_ConfKvList_t.
+ * Parse a config file into a crinitConfKvList_t.
  *
  * Parses a config file and fills \a confList. Items of \a confList are dynamically allocated
  * (grown) and need to be freed using free_confList(). The format of the config file is expected
@@ -97,18 +97,18 @@ typedef struct ebcl_ConfKvList_t {
  * @return 0 on success, -1 on error
  *
  */
-int EBCL_parseConf(ebcl_ConfKvList_t **confList, const char *filename);
+int crinitParseConf(crinitConfKvList_t **confList, const char *filename);
 
 /**
- * Frees memory allocated for an ebcl_ConfKvList_t by EBCL_parseConf().
+ * Frees memory allocated for an crinitConfKvList_t by crinitParseConf().
  *
- * @param confList Pointer to ebcl_ConfKvList_t allocated by EBCL_parseConf() and not freed before. If
- *                 confList is NULL, EBCL_freeConfList() will return without freeing any memory.
+ * @param confList Pointer to crinitConfKvList_t allocated by crinitParseConf() and not freed before. If
+ *                 confList is NULL, crinitFreeConfList() will return without freeing any memory.
  */
-void EBCL_freeConfList(ebcl_ConfKvList_t *confList);
+void crinitFreeConfList(crinitConfKvList_t *confList);
 
 /**
- * Get value mapped to a key with an index in an ebcl_ConfKvList_t.
+ * Get value mapped to a key with an index in an crinitConfKvList_t.
  *
  * Searches for \a key with index \a keyArrIndex in \a confList and writes its value's address to \a *val. If a \a key
  * with that index is not found, \a *val is unchanged and -1 is returned.
@@ -116,24 +116,24 @@ void EBCL_freeConfList(ebcl_ConfKvList_t *confList);
  * @param val          String return pointer containing the value after execution if it was found.
  * @param key          The key to search for.
  * @param keyArrIndex  The index of the key to search for. The index of a singular (non-array) key is 0.
- * @param c            Pointer to the ebcl_ConfKvList_t to search in.
+ * @param c            Pointer to the crinitConfKvList_t to search in.
  *
  * @return 0 if key is found, -1 otherwise
  *
  */
-int EBCL_confListGetValWithIdx(char **val, const char *key, size_t keyArrIndex, const ebcl_ConfKvList_t *c);
+int crinitConfListGetValWithIdx(char **val, const char *key, size_t keyArrIndex, const crinitConfKvList_t *c);
 /**
- * Get a value mapped to a key in an ebcl_confKvList.
+ * Get a value mapped to a key in an crinitConfKvList.
  *
- * Maps to a call of EBCL_confListGetValWithIdx() with \a keyArrIndex set to 0. Meant to be used with singular
+ * Maps to a call of crinitConfListGetValWithIdx() with \a keyArrIndex set to 0. Meant to be used with singular
  * (non-array) keys.
  *
- * See EBCL_confListGetValWithIdx() for further documentation.
+ * See crinitConfListGetValWithIdx() for further documentation.
  */
-#define EBCL_confListGetVal(val, key, c) EBCL_confListGetValWithIdx(val, key, 0, c)
+#define crinitConfListGetVal(val, key, c) crinitConfListGetValWithIdx(val, key, 0, c)
 
 /**
- * Set value mapped to a key with an index in an ebcl_ConfKvList_t.
+ * Set value mapped to a key with an index in an crinitConfKvList_t.
  *
  * Searches for \a key with index \a keyArrindex in \a confList and replaces its value with \a val. Memory is
  * de-/allocated as needed. If a key with that index is not found, -1 is returned.
@@ -141,42 +141,42 @@ int EBCL_confListGetValWithIdx(char **val, const char *key, size_t keyArrIndex, 
  * @param val          The value to write.
  * @param key          The key to search for.
  * @param keyArrIndex  The index of the key to search for. The index of a singular (non-array) key is 0.
- * @param c            Pointer to the ebcl_ConfKvList_t to search in.
+ * @param c            Pointer to the crinitConfKvList_t to search in.
  *
  * @return 0 if key is found, -1 otherwise
  *
  */
-int EBCL_confListSetValWithIdx(const char *val, const char *key, size_t keyArrIndex, ebcl_ConfKvList_t *c);
+int crinitConfListSetValWithIdx(const char *val, const char *key, size_t keyArrIndex, crinitConfKvList_t *c);
 /**
- * Set value mapped to a key in an ebcl_confKvList.
+ * Set value mapped to a key in an crinitConfKvList.
  *
- * Maps to a call of EBCL_confListSetValWithIdx() with \a keyArrIndex set to 0. Meant to be used with singular
+ * Maps to a call of crinitConfListSetValWithIdx() with \a keyArrIndex set to 0. Meant to be used with singular
  * (non-array) keys.
  *
- * See EBCL_confListSetValWithIdx() for further documentation.
+ * See crinitConfListSetValWithIdx() for further documentation.
  */
-#define EBCL_confListSetVal(val, key, c) EBCL_confListSetValWithIdx(val, key, 0, c)
+#define crinitConfListSetVal(val, key, c) crinitConfListSetValWithIdx(val, key, 0, c)
 
 /**
- * Extract a boolean value from a ebcl_ConfKvList_t.
+ * Extract a boolean value from a crinitConfKvList_t.
  *
- * Given a ebcl_ConfKvList_t \a in containing a boolean ("YES"/"NO") key \a key, set \a out to
+ * Given a crinitConfKvList_t \a in containing a boolean ("YES"/"NO") key \a key, set \a out to
  * the corresponding truth value ("YES"==true and "NO"==false).
  *
  * @param out        Pointer to a boolean to be set according to the value found.
  * @param key        String with the key to search for in \a in.
  * @param mandatory  If true, this function will return an error if \a key is not found in \a in. If false, a
  *                   non-existent \a key will result in successful return and \a out being left untouched.
- * @param in         Pointer to an ebcl_ConfKvList_t to search in.
+ * @param in         Pointer to an crinitConfKvList_t to search in.
  *
  * @return 0 on success, -1 on error.
  */
-int EBCL_confListExtractBoolean(bool *out, const char *key, bool mandatory, const ebcl_ConfKvList_t *in);
+int crinitConfListExtractBoolean(bool *out, const char *key, bool mandatory, const crinitConfKvList_t *in);
 
 /**
- * Extract an unsigned long long value from an ebcl_ConfKvList.
+ * Extract an unsigned long long value from an crinitConfKvList.
  *
- * Given an ebcl_ConfKvList_t \a in containing a key \a key with a value representing an unsigned long long (with base
+ * Given an crinitConfKvList_t \a in containing a key \a key with a value representing an unsigned long long (with base
  * \a base), set \a out to the corresponding value.
  *
  * @param out        Pointer to an unsigned long long to be set according to the value found.
@@ -184,17 +184,17 @@ int EBCL_confListExtractBoolean(bool *out, const char *key, bool mandatory, cons
  * @param key        String with the key to search for in \a in.
  * @param mandatory  If true, this function will return an error if \a key is not found in \a in. If false, a
  *                   non-existent \a key will result in successful return and \a out being left untouched.
- * @param in         Pointer to an ebcl_ConfKvList to search in..
+ * @param in         Pointer to an crinitConfKvList to search in..
  *
  * @return 0 on success, -1 on error.
  */
-int EBCL_confListExtractUnsignedLL(unsigned long long *out, int base, const char *key, bool mandatory,
-                                   const ebcl_ConfKvList_t *in);
+int crinitConfListExtractUnsignedLL(unsigned long long *out, int base, const char *key, bool mandatory,
+                                   const crinitConfKvList_t *in);
 
 /**
- * Extract a signed integer value from an ebcl_ConfKvList.
+ * Extract a signed integer value from an crinitConfKvList.
  *
- * Given an ebcl_ConfKvList_t \a in containing a key \a key with a value representing an Integer (with base \a base),
+ * Given an crinitConfKvList_t \a in containing a key \a key with a value representing an Integer (with base \a base),
  * set \a out to the corresponding value.
  *
  * @param out        Pointer to an int to be set according to the value found.
@@ -202,28 +202,28 @@ int EBCL_confListExtractUnsignedLL(unsigned long long *out, int base, const char
  * @param key        String with the key to search for in \a in.
  * @param mandatory  If true, this function will return an error if \a key is not found in \a in. If false, a
  *                   non-existent \a key will result in successful return and \a out being left untouched.
- * @param in         Pointer to an ebcl_ConfKvList to search in.
+ * @param in         Pointer to an crinitConfKvList to search in.
  *
  * @return 0 on success, -1 on error.
  */
-int EBCL_confListExtractSignedInt(int *out, int base, const char *key, bool mandatory, const ebcl_ConfKvList_t *in);
+int crinitConfListExtractSignedInt(int *out, int base, const char *key, bool mandatory, const crinitConfKvList_t *in);
 
 /**
- * Extract an array of strings from the value mapped to a key in an ebcl_ConfKvList_t.
+ * Extract an array of strings from the value mapped to a key in an crinitConfKvList_t.
  *
- * Maps to a call of EBCL_confExtractArgvArrayWithIdx() with \a keyArrIndex set to 0. Meant to be used with singular
+ * Maps to a call of crinitConfListExtractArgvArrayWithIdx() with \a keyArrIndex set to 0. Meant to be used with singular
  * (non-array) keys.
  *
- * See EBCL_confListExtractArgvArrayWithIdx() for further documentation.
+ * See crinitConfListExtractArgvArrayWithIdx() for further documentation.
  */
-#define EBCL_confListExtractArgvArray(outArgc, outArgv, key, mandatory, in, doubleQuoting) \
-    EBCL_confListExtractArgvArrayWithIdx(outArgc, outArgv, key, 0, mandatory, in, doubleQuoting)
+#define crinitConfListExtractArgvArray(outArgc, outArgv, key, mandatory, in, doubleQuoting) \
+    crinitConfListExtractArgvArrayWithIdx(outArgc, outArgv, key, 0, mandatory, in, doubleQuoting)
 /**
- * Extract an array of strings from the value mapped to an indexed key in an ebcl_ConfKvList_t.
+ * Extract an array of strings from the value mapped to an indexed key in an crinitConfKvList_t.
  *
  * Will search \a in for \a key with index \a keyArrIndex and split its value along spaces. Will optionally respect
  * quoting using double quotes if \a doubleQuoting is set to true. The dynamically-allocated array-of-strings is
- * written to \a *outArgv. If no longer needed it should be freed using EBCL_freeArgvArray(). \a outArgc will contain
+ * written to \a *outArgv. If no longer needed it should be freed using crinitFreeArgvArray(). \a outArgc will contain
  * the number of strings inside \a *outArgv and \a *outArgv will be additionally NULL-terminated, same as argc/argv in
  * main().
  *
@@ -233,35 +233,35 @@ int EBCL_confListExtractSignedInt(int *out, int base, const char *key, bool mand
  * @param keyArrIndex     The index of the key to search for. The index of a singular (non-array) key is 0.
  * @param mandatory       If true, this function will return an error if \a key is not found in \a in. If false, a
  *                        non-existent \a key will result in successful return and \a out being left untouched.
- * @param in              The ebcl_ConfKvList_t to search in.
- * @param doubleQuoting   If true, EBCL_confListExtractArgvArray() will respect quoting with double quotes.
+ * @param in              The crinitConfKvList_t to search in.
+ * @param doubleQuoting   If true, crinitConfListExtractArgvArray() will respect quoting with double quotes.
  *
  * @return 0 on success, -1 on error
  */
-int EBCL_confListExtractArgvArrayWithIdx(int *outArgc, char ***outArgv, const char *key, size_t keyArrIndex,
-                                         bool mandatory, const ebcl_ConfKvList_t *in, bool doubleQuoting);
+int crinitConfListExtractArgvArrayWithIdx(int *outArgc, char ***outArgv, const char *key, size_t keyArrIndex,
+                                         bool mandatory, const crinitConfKvList_t *in, bool doubleQuoting);
 
 /**
- * Free an argv array created by EBCL_confListExtractArgvArray()/EBCL_confListExtractArgvArrayWithIdx().
+ * Free an argv array created by crinitConfListExtractArgvArray()/crinitConfListExtractArgvArrayWithIdx().
  *
- * @param inArgv   The argv array to free, must have been constructed by EBCL_confListExtractArgvArray() or
- *                 EBCL_confListExtractArgvArrayWithIdx(). If it is NULL, the function will return without freeing any
+ * @param inArgv   The argv array to free, must have been constructed by crinitConfListExtractArgvArray() or
+ *                 crinitConfListExtractArgvArrayWithIdx(). If it is NULL, the function will return without freeing any
  *                 memory.
  */
-void EBCL_freeArgvArray(char **inArgv);
+void crinitFreeArgvArray(char **inArgv);
 
 /**
- * Get the maximum index of a key in an ebcl_ConfKvList_t.
+ * Get the maximum index of a key in an crinitConfKvList_t.
  *
  * Keys without a specified index in the config file are parsed as having index 0 (i.e. `COMMAND=...` is equivalent to
  * `COMMAND[0]=...`).
  *
- * @param    c The ebcl_ConfKvList_t to search in.
+ * @param    c The crinitConfKvList_t to search in.
  * @param  key The key to search for in \a c.
  *
  * @return The key's maximum index within \a c or -1 on error.
  */
-ssize_t EBCL_confListKeyGetMaxIdx(const ebcl_ConfKvList_t *c, const char *key);
+ssize_t crinitConfListKeyGetMaxIdx(const crinitConfKvList_t *c, const char *key);
 
 /**
  * Parse a series file.
@@ -275,6 +275,6 @@ ssize_t EBCL_confListKeyGetMaxIdx(const ebcl_ConfKvList_t *c, const char *key);
  *
  * @return 0 on success, -1 on failure
  */
-int EBCL_loadSeriesConf(crinitFileSeries_t *series, const char *filename);
+int crinitLoadSeriesConf(crinitFileSeries_t *series, const char *filename);
 
 #endif /* __CONFPARSE_H__ */

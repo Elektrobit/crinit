@@ -77,17 +77,17 @@ typedef struct crinitTask_t {
 } crinitTask_t;
 
 /**
- * Given an ebcl_ConfKvList_t created from a task config, build an equivalent crinitTask.
+ * Given an crinitConfKvList_t created from a task config, build an equivalent crinitTask.
  *
  * The crinitTask returned via \a out is dynamically allocated and should be freed using crinitFreeTask if no longer
  * needed.
  *
  * @param out  The return pointer for the newly created task.
- * @param in   The ebcl_ConfKvList_t from which to build the task.
+ * @param in   The crinitConfKvList_t from which to build the task.
  *
  * @return 0 on success, -1 on error
  */
-int crinitTaskCreateFromConfKvList(crinitTask_t **out, const ebcl_ConfKvList_t *in);
+int crinitTaskCreateFromConfKvList(crinitTask_t **out, const crinitConfKvList_t *in);
 
 /**
  * Frees memory associated with an crinitTask created by crinitTaskCreateFromConfKvList() or crinitTaskDup().
