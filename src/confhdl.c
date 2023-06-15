@@ -187,7 +187,7 @@ int EBCL_taskCfgPrvHandler(ebcl_Task_t *tgt, const char *val) {
 int EBCL_taskCfgEnvHandler(ebcl_Task_t *tgt, const char *val) {
     EBCL_cfgHandlerCommonNullCheck();
     if (tgt->taskEnv.envp == NULL &&
-        EBCL_envSetInit(&tgt->taskEnv, EBCL_ENVSET_INITIAL_SIZE, EBCL_ENVSET_SIZE_INCREMENT) == -1) {
+        crinitEnvSetInit(&tgt->taskEnv, CRINIT_ENVSET_INITIAL_SIZE, CRINIT_ENVSET_SIZE_INCREMENT) == -1) {
         crinitErrPrint("Could not initialize task environment.");
         return -1;
     }

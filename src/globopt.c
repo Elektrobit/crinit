@@ -65,8 +65,8 @@ int EBCL_globOptInitDefault(void) {
                 }
             } break;
             case EBCL_GLOBOPT_ENV: {
-                ebcl_EnvSet_t init = {NULL, 0, 0};
-                if (EBCL_globOptSet(i, &init, sizeof(ebcl_EnvSet_t)) == -1) {
+                crinitEnvSet_t init = {NULL, 0, 0};
+                if (EBCL_globOptSet(i, &init, sizeof(crinitEnvSet_t)) == -1) {
                     EBCL_globOptSetErrPrint(EBCL_CONFIG_KEYSTR_ENV_SET);
                     return -1;
                 }
@@ -177,9 +177,9 @@ int EBCL_globOptGetString(ebcl_GlobOptKey_t key, char **str) {
     return 0;
 }
 
-int EBCL_globOptSetEnvSet(const ebcl_EnvSet_t *es) {
-    ebcl_EnvSet_t tgt;
-    if (EBCL_globOptGet(EBCL_GLOBOPT_ENV, &tgt, sizeof(ebcl_EnvSet_t)) == -1) {
+int EBCL_globOptSetEnvSet(const crinitEnvSet_t *es) {
+    crinitEnvSet_t tgt;
+    if (EBCL_globOptGet(EBCL_GLOBOPT_ENV, &tgt, sizeof(crinitEnvSet_t)) == -1) {
         crinitErrPrint("Could not retrieve current global environment set.");
         return -1;
     }
@@ -188,30 +188,30 @@ int EBCL_globOptSetEnvSet(const ebcl_EnvSet_t *es) {
         crinitErrnoPrint("Could not wait for global option array mutex lock.");
         return -1;
     }
-    if (EBCL_envSetDestroy(&tgt) == -1) {
+    if (crinitEnvSetDestroy(&tgt) == -1) {
         crinitErrPrint("Could not free old environment set during update of set.");
         pthread_mutex_unlock(&EBCL_optLock);
         return -1;
     }
-    if (EBCL_envSetDup(&tgt, es) == -1) {
+    if (crinitEnvSetDup(&tgt, es) == -1) {
         crinitErrPrint("Could not duplicate new environment set for use as a global option.");
     }
 
     free(EBCL_globOptArr[EBCL_GLOBOPT_ENV]);
-    EBCL_globOptArr[EBCL_GLOBOPT_ENV] = malloc(sizeof(ebcl_EnvSet_t));
+    EBCL_globOptArr[EBCL_GLOBOPT_ENV] = malloc(sizeof(crinitEnvSet_t));
     if (EBCL_globOptArr[EBCL_GLOBOPT_ENV] == NULL) {
         crinitErrPrint("Could not allocate memory for global option.");
         pthread_mutex_unlock(&EBCL_optLock);
         return -1;
     }
-    memcpy(EBCL_globOptArr[EBCL_GLOBOPT_ENV], &tgt, sizeof(ebcl_EnvSet_t));
+    memcpy(EBCL_globOptArr[EBCL_GLOBOPT_ENV], &tgt, sizeof(crinitEnvSet_t));
     pthread_mutex_unlock(&EBCL_optLock);
     return 0;
 }
 
-int EBCL_globOptGetEnvSet(ebcl_EnvSet_t *es) {
-    ebcl_EnvSet_t temp;
-    if (EBCL_globOptGet(EBCL_GLOBOPT_ENV, &temp, sizeof(ebcl_EnvSet_t)) == -1) {
+int EBCL_globOptGetEnvSet(crinitEnvSet_t *es) {
+    crinitEnvSet_t temp;
+    if (EBCL_globOptGet(EBCL_GLOBOPT_ENV, &temp, sizeof(crinitEnvSet_t)) == -1) {
         crinitErrPrint("Could not retrieve global environment set.");
         return -1;
     }
@@ -219,7 +219,7 @@ int EBCL_globOptGetEnvSet(ebcl_EnvSet_t *es) {
         crinitErrnoPrint("Could not wait for global option array mutex lock.");
         return -1;
     }
-    if (EBCL_envSetDup(es, &temp) == -1) {
+    if (crinitEnvSetDup(es, &temp) == -1) {
         crinitErrPrint("Could not duplicate environment set during retrieval from global options.");
         pthread_mutex_unlock(&EBCL_optLock);
         return -1;
@@ -237,7 +237,7 @@ void EBCL_globOptDestroy(void) {
     for (ebcl_GlobOptKey_t i = EBCL_GLOBOPT_START; i < EBCL_GLOBOPT_END; i++) {
         if (EBCL_globOptArr[i] != NULL) {
             if (i == EBCL_GLOBOPT_ENV) {
-                EBCL_envSetDestroy(EBCL_globOptArr[i]);
+                crinitEnvSetDestroy(EBCL_globOptArr[i]);
             }
             free(EBCL_globOptArr[i]);
         }

@@ -1,6 +1,6 @@
 /**
  * @file utest-envset-get.h
- * @brief Header declaring the unit tests for EBCL_envSetGet().
+ * @brief Header declaring the unit tests for crinitEnvSetGet().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -14,14 +14,14 @@
 /**
  * Tests successful retrieval of an environment variable.
  */
-void EBCL_envSetGetTestSuccess(void **state);
+void crinitEnvSetGetTestSuccess(void **state);
 /**
  * Tests detection of NULL pointer input.
  */
-void EBCL_envSetGetTestNullInput(void **state);
+void crinitEnvSetGetTestNullInput(void **state);
 /**
  * Tests unsuccessful retrieval of non-existent environment variable.
  */
-void EBCL_envSetGetTestNotFound(void **state);
+void crinitEnvSetGetTestNotFound(void **state);
 
 #endif /* __UTEST_ENVSET_GET_H__ */

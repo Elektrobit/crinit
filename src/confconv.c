@@ -278,7 +278,7 @@ int EBCL_confConvToIoRedir(ebcl_IoRedir_t *ior, const char *confVal) {
     return 0;
 }
 
-int EBCL_confConvToEnvSetMember(ebcl_EnvSet_t *es, const char *confVal) {
+int EBCL_confConvToEnvSetMember(crinitEnvSet_t *es, const char *confVal) {
     if (es == NULL || confVal == NULL || es->envp == NULL || es->allocSz == 0) {
         crinitErrPrint("Input parameters must not be NULL and given environment set must be initialized.");
         return -1;
@@ -395,7 +395,7 @@ int EBCL_confConvToEnvSetMember(ebcl_EnvSet_t *es, const char *confVal) {
                     tt = EBCL_TK_ERR;
                     break;
                 }
-                substVal = EBCL_envSetGet(es, substKey);
+                substVal = crinitEnvSetGet(es, substKey);
                 free(substKey);
                 // empty substitution
                 if (substVal == NULL) {
@@ -444,7 +444,7 @@ int EBCL_confConvToEnvSetMember(ebcl_EnvSet_t *es, const char *confVal) {
         return -1;
     }
 
-    if (EBCL_envSetSet(es, envKey, parsedVal) == -1) {
+    if (crinitEnvSetSet(es, envKey, parsedVal) == -1) {
         crinitErrPrint("Could not set environment variable '%s' to '%s'.", envKey, parsedVal);
         free(envKey);
         free(parsedVal);

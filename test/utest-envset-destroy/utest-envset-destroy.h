@@ -1,6 +1,6 @@
 /**
  * @file utest-envset-destroy.h
- * @brief Header declaring the unit tests for EBCL_envSetDestroy().
+ * @brief Header declaring the unit tests for crinitEnvSetDestroy().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -16,10 +16,10 @@
  *
  * Will check that all allocated pointers in the EnvSet are freed.
  */
-void EBCL_envSetDestroyTestSuccess(void **state);
+void crinitEnvSetDestroyTestSuccess(void **state);
 /**
  * Tests detection of NULL pointer input.
  */
-void EBCL_envSetDestroyTestNullInput(void **state);
+void crinitEnvSetDestroyTestNullInput(void **state);
 
 #endif /* __UTEST_ENVSET_DESTROY_H__ */

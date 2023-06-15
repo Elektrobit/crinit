@@ -516,8 +516,8 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
         return -1;
     }
 
-    ebcl_EnvSet_t globEnv;
-    if (EBCL_envSetCreateFromConfKvList(&globEnv, NULL, c) == -1) {
+    crinitEnvSet_t globEnv;
+    if (crinitEnvSetCreateFromConfKvList(&globEnv, NULL, c) == -1) {
         crinitErrPrint("Could not parse global environment variables from series config.");
         EBCL_freeConfList(c);
         EBCL_destroyFileSeries(series);
@@ -528,11 +528,11 @@ int EBCL_loadSeriesConf(ebcl_FileSeries_t *series, const char *filename) {
         crinitErrPrint("Could not store global environment variable set.");
         EBCL_freeConfList(c);
         EBCL_destroyFileSeries(series);
-        EBCL_envSetDestroy(&globEnv);
+        crinitEnvSetDestroy(&globEnv);
         return -1;
     }
 
     EBCL_freeConfList(c);
-    EBCL_envSetDestroy(&globEnv);
+    crinitEnvSetDestroy(&globEnv);
     return 0;
 }

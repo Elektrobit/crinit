@@ -1,6 +1,6 @@
 /**
  * @file case-success.c
- * @brief Unit test for EBCL_envSetDup(), successful execution.
+ * @brief Unit test for crinitEnvSetDup(), successful execution.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -18,7 +18,7 @@
 #define UTEST_ENVSET_DUP_ORIG_SET_ALLOCSIZE 8uL
 #define UTEST_ENVSET_DUP_ORIG_SET_ELEMENTS (UTEST_ENVSET_DUP_ORIG_SET_ALLOCSIZE - 3uL)
 
-void EBCL_envSetDupTestSuccess(void **state) {
+void crinitEnvSetDupTestSuccess(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     char dummyStr[] = "foo bar baz";
@@ -26,10 +26,10 @@ void EBCL_envSetDupTestSuccess(void **state) {
     for (size_t i = 0; i < UTEST_ENVSET_DUP_ORIG_SET_ALLOCSIZE; i++) {
         origEnvp[i] = (i < UTEST_ENVSET_DUP_ORIG_SET_ELEMENTS) ? dummyStr : NULL;
     }
-    ebcl_EnvSet_t origSet = {&origEnvp[0], sizeof(origEnvp), sizeof(origEnvp) / 2};
-    ebcl_EnvSet_t copySet = {NULL, 0, 0};
+    crinitEnvSet_t origSet = {&origEnvp[0], sizeof(origEnvp), sizeof(origEnvp) / 2};
+    crinitEnvSet_t copySet = {NULL, 0, 0};
 
-    assert_int_equal(EBCL_envSetDup(&copySet, &origSet), 0);
+    assert_int_equal(crinitEnvSetDup(&copySet, &origSet), 0);
 
     assert_non_null(copySet.envp);
     assert_int_equal(copySet.allocSz, origSet.allocSz);
@@ -41,5 +41,5 @@ void EBCL_envSetDupTestSuccess(void **state) {
             assert_null(copySet.envp[i]);
         }
     }
-    assert_int_equal(EBCL_envSetDestroy(&copySet), 0);
+    assert_int_equal(crinitEnvSetDestroy(&copySet), 0);
 }

@@ -60,7 +60,7 @@ int EBCL_confConvToIoRedir(ebcl_IoRedir_t *ior, const char *confVal);
  *
  * @return  0 on success, -1 otherwise
  */
-int EBCL_confConvToEnvSetMember(ebcl_EnvSet_t *es, const char *confVal);
+int EBCL_confConvToEnvSetMember(crinitEnvSet_t *es, const char *confVal);
 
 /** Converts a string to a signed integer, see EBCL_confConvToInteger() **/
 int EBCL_confConvToIntegerI(int *x, const char *confVal, int base);

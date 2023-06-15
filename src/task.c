@@ -133,7 +133,7 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
         }
     }
 
-    if (EBCL_envSetDup(&pTask->taskEnv, &orig->taskEnv) == -1) {
+    if (crinitEnvSetDup(&pTask->taskEnv, &orig->taskEnv) == -1) {
         crinitErrPrint("Could not duplicate task environment during task duplication.");
         goto fail;
     }
@@ -247,7 +247,7 @@ void EBCL_destroyTask(ebcl_Task_t *t) {
         }
     }
     free(t->redirs);
-    EBCL_envSetDestroy(&t->taskEnv);
+    crinitEnvSetDestroy(&t->taskEnv);
 }
 
 int EBCL_taskMergeInclude(ebcl_Task_t *tgt, const char *src, char *importList) {

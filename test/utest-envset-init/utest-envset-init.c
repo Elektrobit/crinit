@@ -1,6 +1,6 @@
 /**
  * @file utest-envset-init.c
- * @brief Implementation of the EBCL_envSetInit() unit test group.
+ * @brief Implementation of the crinitEnvSetInit() unit test group.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -18,9 +18,9 @@
  */
 int main(void) {
     const struct CMUnitTest tests[] = {
-        cmocka_unit_test(EBCL_envSetInitTestSuccess),
-        cmocka_unit_test(EBCL_envSetInitTestNullInput),
-        cmocka_unit_test(EBCL_envSetInitTestMallocError),
+        cmocka_unit_test(crinitEnvSetInitTestSuccess),
+        cmocka_unit_test(crinitEnvSetInitTestNullInput),
+        cmocka_unit_test(crinitEnvSetInitTestMallocError),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);

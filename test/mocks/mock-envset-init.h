@@ -1,6 +1,6 @@
 /**
  * @file mock-envset-init.h
- * @brief Header declaring a mock function for EBCL_envSetInit().
+ * @brief Header declaring a mock function for crinitEnvSetInit().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -16,12 +16,12 @@
 #include "envset.h"
 
 /**
- * Mock function for EBCL_envSetInit().
+ * Mock function for crinitEnvSetInit().
  *
  * Checks that the right parameters are given and returns a preset value.
  */
 // Rationale: Naming scheme fixed due to linker wrapping.
 // NOLINTNEXTLINE(readability-identifier-naming)
-int __wrap_EBCL_envSetInit(ebcl_EnvSet_t *es, size_t initSize, size_t sizeIncrement);
+int __wrap_crinitEnvSetInit(crinitEnvSet_t *es, size_t initSize, size_t sizeIncrement);
 
 #endif /* __MOCK_ENVSET_INIT_H__ */

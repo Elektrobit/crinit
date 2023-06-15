@@ -1,6 +1,6 @@
 /**
  * @file case-null-input.c
- * @brief Unit test for EBCL_envSetInit() with a NULL input.
+ * @brief Unit test for crinitEnvSetInit() with a NULL input.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -14,9 +14,9 @@
 #include "unit_test.h"
 #include "utest-envset-init.h"
 
-void EBCL_envSetInitTestNullInput(void **state) {
+void crinitEnvSetInitTestNullInput(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     expect_any(__wrap_crinitErrPrintFFL, format);
-    assert_int_equal(EBCL_envSetInit(NULL, EBCL_ENVSET_INITIAL_SIZE, EBCL_ENVSET_SIZE_INCREMENT), -1);
+    assert_int_equal(crinitEnvSetInit(NULL, CRINIT_ENVSET_INITIAL_SIZE, CRINIT_ENVSET_SIZE_INCREMENT), -1);
 }

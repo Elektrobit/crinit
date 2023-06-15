@@ -21,13 +21,13 @@ void EBCL_confConvToEnvSetMemberTestWrongInput(void **state) {
     const char *unquoted = "VANILLA_VAR That is tasty.", *wronglyQuoted = "\"VANILLA_VAR\" That is tasty.",
                *noKey = "\"That is tasty.\"", *noVal = "VANILLA_VAR";
 
-    ebcl_EnvSet_t e = {NULL, 0, 0};
-    assert_int_equal(EBCL_envSetInit(&e, EBCL_ENVSET_INITIAL_SIZE, EBCL_ENVSET_SIZE_INCREMENT), 0);
+    crinitEnvSet_t e = {NULL, 0, 0};
+    assert_int_equal(crinitEnvSetInit(&e, CRINIT_ENVSET_INITIAL_SIZE, CRINIT_ENVSET_SIZE_INCREMENT), 0);
 
     assert_int_equal(EBCL_confConvToEnvSetMember(&e, unquoted), -1);
     assert_int_equal(EBCL_confConvToEnvSetMember(&e, wronglyQuoted), -1);
     assert_int_equal(EBCL_confConvToEnvSetMember(&e, noKey), -1);
     assert_int_equal(EBCL_confConvToEnvSetMember(&e, noVal), -1);
 
-    assert_int_equal(EBCL_envSetDestroy(&e), 0);
+    assert_int_equal(crinitEnvSetDestroy(&e), 0);
 }
