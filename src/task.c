@@ -24,17 +24,17 @@
  *
  * @param tgt         The target task to be modified.
  * @param src         The list of config parameters from a task config file.
- * @param type        The ebcl_TaskType_t of the source task configuration file, i.e. if it is a regular task or an
+ * @param type        The crinitTaskType_t of the source task configuration file, i.e. if it is a regular task or an
  *                    include file. Relevant for checking include safety of options and for \a importList behavior.
  * @param importList  A comma-separated list of option names to be used from src. If NULL, all are used. Only relevant
- *                    if `type == EBCL_TASK_TYPE_INCLUDE`.
+ *                    if `type == CRINIT_TASK_TYPE_INCLUDE`.
  *
  * @return  0 on success, -1 on error
  */
-static inline int EBCL_taskSetFromConfKvList(ebcl_Task_t *tgt, const ebcl_ConfKvList_t *src, ebcl_TaskType_t type,
+static inline int EBCL_taskSetFromConfKvList(crinitTask_t *tgt, const ebcl_ConfKvList_t *src, crinitTaskType_t type,
                                              char *importList);
 
-int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in) {
+int crinitTaskCreateFromConfKvList(crinitTask_t **out, const ebcl_ConfKvList_t *in) {
     crinitNullCheck(-1, out, in);
 
     *out = calloc(1, sizeof(**out));
@@ -42,7 +42,7 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in
         crinitErrnoPrint("Could not allocate memory for ebcl_Task.");
         return -1;
     }
-    ebcl_Task_t *pTask = *out;
+    crinitTask_t *pTask = *out;
     pTask->pid = -1;
     pTask->maxRetries = -1;
 
@@ -51,7 +51,7 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in
         goto fail;
     }
 
-    if (EBCL_taskSetFromConfKvList(pTask, in, EBCL_TASK_TYPE_STANDARD, NULL) == -1) {
+    if (EBCL_taskSetFromConfKvList(pTask, in, CRINIT_TASK_TYPE_STANDARD, NULL) == -1) {
         crinitErrPrint("Could not set parameters of new task from configuration list.");
         goto fail;
     }
@@ -69,18 +69,18 @@ int EBCL_taskCreateFromConfKvList(ebcl_Task_t **out, const ebcl_ConfKvList_t *in
 
     return 0;
 fail:
-    EBCL_freeTask(*out);
+    crinitFreeTask(*out);
     *out = NULL;
     return -1;
 }
 
-int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
-    *out = malloc(sizeof(ebcl_Task_t));
+int crinitTaskDup(crinitTask_t **out, const crinitTask_t *orig) {
+    *out = malloc(sizeof(crinitTask_t));
     if (*out == NULL) {
         crinitErrnoPrint("Could not allocate memory for duplicate of Task \'%s\'.", orig->name);
         return -1;
     }
-    ebcl_Task_t *pTask = *out;
+    crinitTask_t *pTask = *out;
     memcpy(pTask, orig, sizeof(*pTask));
     pTask->name = NULL;
     pTask->deps = NULL;
@@ -207,20 +207,20 @@ int EBCL_taskDup(ebcl_Task_t **out, const ebcl_Task_t *orig) {
     return 0;
 
 fail:
-    EBCL_freeTask(*out);
+    crinitFreeTask(*out);
     *out = NULL;
     return -1;
 }
 
-void EBCL_freeTask(ebcl_Task_t *t) {
+void crinitFreeTask(crinitTask_t *t) {
     if (t == NULL) {
         return;
     }
-    EBCL_destroyTask(t);
+    crinitDestroyTask(t);
     free(t);
 }
 
-void EBCL_destroyTask(ebcl_Task_t *t) {
+void crinitDestroyTask(crinitTask_t *t) {
     if (t == NULL) return;
     free(t->name);
     if (t->cmds != NULL) {
@@ -250,7 +250,7 @@ void EBCL_destroyTask(ebcl_Task_t *t) {
     crinitEnvSetDestroy(&t->taskEnv);
 }
 
-int EBCL_taskMergeInclude(ebcl_Task_t *tgt, const char *src, char *importList) {
+int crinitTaskMergeInclude(crinitTask_t *tgt, const char *src, char *importList) {
     crinitNullCheck(-1, tgt, src);
 
     char *inclDir = NULL, *inclSuffix = NULL, *inclPath = NULL;
@@ -285,7 +285,7 @@ int EBCL_taskMergeInclude(ebcl_Task_t *tgt, const char *src, char *importList) {
         return -1;
     }
 
-    if (EBCL_taskSetFromConfKvList(tgt, inclConfList, EBCL_TASK_TYPE_INCLUDE, importList) == -1) {
+    if (EBCL_taskSetFromConfKvList(tgt, inclConfList, CRINIT_TASK_TYPE_INCLUDE, importList) == -1) {
         crinitErrPrint("Could not merge include file '%s' into task.", inclPath);
         free(inclPath);
         EBCL_freeConfList(inclConfList);
@@ -297,12 +297,12 @@ int EBCL_taskMergeInclude(ebcl_Task_t *tgt, const char *src, char *importList) {
     return 0;
 }
 
-static inline int EBCL_taskSetFromConfKvList(ebcl_Task_t *tgt, const ebcl_ConfKvList_t *src, ebcl_TaskType_t type,
+static inline int EBCL_taskSetFromConfKvList(crinitTask_t *tgt, const ebcl_ConfKvList_t *src, crinitTaskType_t type,
                                              char *importList) {
     crinitNullCheck(-1, tgt, src);
 
     bool importArr[EBCL_CONFIGS_SIZE] = {false};
-    if (type == EBCL_TASK_TYPE_STANDARD || importList == NULL) {
+    if (type == CRINIT_TASK_TYPE_STANDARD || importList == NULL) {
         for (size_t i = 0; i < crinitNumElements(importArr); i++) {
             importArr[i] = true;
         }
@@ -328,7 +328,7 @@ static inline int EBCL_taskSetFromConfKvList(ebcl_Task_t *tgt, const ebcl_ConfKv
             crinitInfoPrint("Warning: Unknown configuration key '%s' encountered.", pEntry->key);
         } else {
             val = pEntry->val;
-            if ((!tcm->includeSafe) && type == EBCL_TASK_TYPE_INCLUDE) {
+            if ((!tcm->includeSafe) && type == CRINIT_TASK_TYPE_INCLUDE) {
                 crinitErrPrint("Non include-safe configuration parameter '%s' encountered in include file.",
                               pEntry->key);
                 return -1;

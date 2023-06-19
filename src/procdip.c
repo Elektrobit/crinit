@@ -32,7 +32,7 @@
 /** Struct wrapper for arguments to dispatchThreadFunc **/
 typedef struct ebcl_DispThrArgs_t {
     ebcl_TaskDB_t *ctx;    ///< The TaskDB context to update on task state changes.
-    const ebcl_Task_t *t;  ///< The task to run.
+    const crinitTask_t *t;  ///< The task to run.
 } ebcl_DispThrArgs_t;
 
 /** Mutex to guard #EBCL_waitInhibit **/
@@ -100,7 +100,7 @@ static int EBCL_posixSpawnAddIOFileAction(posix_spawn_file_actions_t *fileact, c
  */
 static int EBCL_ensureFifo(const char *path, mode_t mode);
 
-int EBCL_procDispatchSpawnFunc(ebcl_TaskDB_t *ctx, const ebcl_Task_t *t) {
+int EBCL_procDispatchSpawnFunc(ebcl_TaskDB_t *ctx, const crinitTask_t *t) {
     pthread_t dispatchThread;
     pthread_attr_t dispatchThreadAttr;
     ebcl_DispThrArgs_t *threadArgs = malloc(sizeof(ebcl_DispThrArgs_t));
@@ -147,8 +147,8 @@ fail:
 static void *EBCL_dispatchThreadFunc(void *args) {
     ebcl_DispThrArgs_t *a = (ebcl_DispThrArgs_t *)args;
     ebcl_TaskDB_t *ctx = a->ctx;
-    const ebcl_Task_t *t = a->t;
-    ebcl_Task_t *tCopy = NULL;
+    const crinitTask_t *t = a->t;
+    crinitTask_t *tCopy = NULL;
     pid_t threadId = EBCL_gettid();
     pid_t pid = -1;
 
@@ -159,7 +159,7 @@ static void *EBCL_dispatchThreadFunc(void *args) {
         goto threadExit;
     }
 
-    if (EBCL_taskDup(&tCopy, t) == -1) {
+    if (crinitTaskDup(&tCopy, t) == -1) {
         crinitErrPrint("(TID: %d) Could not get duplicate of Task to spawn.", threadId);
         pthread_mutex_unlock(&ctx->lock);
         goto threadExit;
@@ -223,8 +223,8 @@ static void *EBCL_dispatchThreadFunc(void *args) {
                 crinitErrPrint("(TID: %d) Could not set state of Task \'%s\' to running.", threadId, tCopy->name);
                 goto threadExit;
             }
-            char depEvent[sizeof(EBCL_TASK_EVENT_RUNNING)] = EBCL_TASK_EVENT_RUNNING;
-            ebcl_TaskDep_t spawnDep = {tCopy->name, depEvent};
+            char depEvent[sizeof(CRINIT_TASK_EVENT_RUNNING)] = CRINIT_TASK_EVENT_RUNNING;
+            crinitTaskDep_t spawnDep = {tCopy->name, depEvent};
             if (EBCL_taskDBFulfillDep(ctx, &spawnDep) == -1) {
                 crinitErrPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, spawnDep.name, spawnDep.event);
                 goto threadExit;
@@ -271,8 +271,8 @@ static void *EBCL_dispatchThreadFunc(void *args) {
                 crinitErrnoPrint("(TID: %d) Could not reap zombie for task \'%s\'.", threadId, tCopy->name);
             }
 
-            char depEvent[sizeof(EBCL_TASK_EVENT_FAILED)] = EBCL_TASK_EVENT_FAILED;
-            ebcl_TaskDep_t failDep = {tCopy->name, depEvent};
+            char depEvent[sizeof(CRINIT_TASK_EVENT_FAILED)] = CRINIT_TASK_EVENT_FAILED;
+            crinitTaskDep_t failDep = {tCopy->name, depEvent};
             if (EBCL_taskDBFulfillDep(ctx, &failDep) == -1) {
                 crinitErrPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, failDep.name, failDep.event);
             }
@@ -304,8 +304,8 @@ static void *EBCL_dispatchThreadFunc(void *args) {
         crinitErrPrint("(TID: %d) Could not set state of Task \'%s\' to done.", threadId, tCopy->name);
         goto threadExit;
     }
-    char depEvent[sizeof(EBCL_TASK_EVENT_DONE)] = EBCL_TASK_EVENT_DONE;
-    ebcl_TaskDep_t doneDep = {tCopy->name, depEvent};
+    char depEvent[sizeof(CRINIT_TASK_EVENT_DONE)] = CRINIT_TASK_EVENT_DONE;
+    crinitTaskDep_t doneDep = {tCopy->name, depEvent};
     if (EBCL_taskDBFulfillDep(ctx, &doneDep) == -1) {
         crinitErrPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, doneDep.name, doneDep.event);
     }
@@ -317,7 +317,7 @@ static void *EBCL_dispatchThreadFunc(void *args) {
     crinitDbgInfoPrint("(TID: %d) Features of finished task \'%s\' fulfilled.", threadId, tCopy->name);
 
 threadExit:
-    EBCL_freeTask(tCopy);
+    crinitFreeTask(tCopy);
     free(args);
     return NULL;
 }

@@ -23,15 +23,15 @@
 #define EBCL_cfgHandlerCommonNullCheck() crinitNullCheck(-1, tgt, val)
 
 /**
- * Helper function to set a bitmask value in ebcl_Task_t::opts.
+ * Helper function to set a bitmask value in crinitTask_t::opts.
  *
- * @param tgt  Direct pointer to the ebcl_TaskOpts_t inside an ebcl_Task_t which shall be modified.
+ * @param tgt  Direct pointer to the crinitTaskOpts_t inside an crinitTask_t which shall be modified.
  * @param opt  Bitmask of the task option to be set, one of `EBCL_TASK_OPT_*`
  * @param val  The string value indicating if the bit should be set or unset. Uses EBCL_confConvToBool().
  *
  * @return  0 on success, -1 on error
  */
-static inline int EBCL_cfgHandlerSetTaskOptFromStr(ebcl_TaskOpts_t *tgt, ebcl_TaskOpts_t opt, const char *val);
+static inline int EBCL_cfgHandlerSetTaskOptFromStr(crinitTaskOpts_t *tgt, crinitTaskOpts_t opt, const char *val);
 /**
  * (Re-)allocate memory for generic arrays.
  *
@@ -47,11 +47,11 @@ static inline int EBCL_cfgHandlerSetTaskOptFromStr(ebcl_TaskOpts_t *tgt, ebcl_Ta
  */
 static inline void *EBCL_cfgHandlerManageArrayMem(void *dynArr, size_t elementSize, size_t curSize, size_t reqSize);
 
-int EBCL_taskCfgCmdHandler(ebcl_Task_t *tgt, const char *val) {
+int EBCL_taskCfgCmdHandler(crinitTask_t *tgt, const char *val) {
     EBCL_cfgHandlerCommonNullCheck();
 
     size_t newIdx = tgt->cmdsSize;
-    ebcl_TaskCmd_t *newArr = EBCL_cfgHandlerManageArrayMem(tgt->cmds, sizeof(*tgt->cmds), tgt->cmdsSize, newIdx + 1);
+    crinitTaskCmd_t *newArr = EBCL_cfgHandlerManageArrayMem(tgt->cmds, sizeof(*tgt->cmds), tgt->cmdsSize, newIdx + 1);
     if (newArr == NULL) {
         crinitErrPrint("Could not perform memory allocation during handler for configuration key '%s'.",
                       EBCL_CONFIG_KEYSTR_COMMAND);
@@ -68,7 +68,7 @@ int EBCL_taskCfgCmdHandler(ebcl_Task_t *tgt, const char *val) {
     return 0;
 }
 
-int EBCL_taskCfgDepHandler(ebcl_Task_t *tgt, const char *val) {
+int EBCL_taskCfgDepHandler(crinitTask_t *tgt, const char *val) {
     EBCL_cfgHandlerCommonNullCheck();
 
     int tempDepsSize = 0;
@@ -86,7 +86,7 @@ int EBCL_taskCfgDepHandler(ebcl_Task_t *tgt, const char *val) {
     }
 
     size_t oldSz = tgt->depsSize, newSz = (size_t)(oldSz + tempDepsSize);
-    ebcl_TaskDep_t *newArr = EBCL_cfgHandlerManageArrayMem(tgt->deps, sizeof(*tgt->deps), oldSz, newSz);
+    crinitTaskDep_t *newArr = EBCL_cfgHandlerManageArrayMem(tgt->deps, sizeof(*tgt->deps), oldSz, newSz);
     if (newArr == NULL) {
         crinitErrPrint("Could not perform memory allocation during handler for configuration key '%s'.",
                       EBCL_CONFIG_KEYSTR_DEPENDS);
@@ -119,7 +119,7 @@ int EBCL_taskCfgDepHandler(ebcl_Task_t *tgt, const char *val) {
     return 0;
 }
 
-int EBCL_taskCfgPrvHandler(ebcl_Task_t *tgt, const char *val) {
+int EBCL_taskCfgPrvHandler(crinitTask_t *tgt, const char *val) {
     EBCL_cfgHandlerCommonNullCheck();
 
     int tempPrvsSize = 0;
@@ -135,7 +135,7 @@ int EBCL_taskCfgPrvHandler(ebcl_Task_t *tgt, const char *val) {
     }
 
     size_t oldSz = tgt->prvSize, newSz = (size_t)(oldSz + tempPrvsSize);
-    ebcl_TaskPrv_t *newArr = EBCL_cfgHandlerManageArrayMem(tgt->prv, sizeof(*tgt->prv), oldSz, newSz);
+    crinitTaskPrv_t *newArr = EBCL_cfgHandlerManageArrayMem(tgt->prv, sizeof(*tgt->prv), oldSz, newSz);
     if (newArr == NULL) {
         crinitErrPrint("Could not perform memory allocation during handler for configuration key '%s'.",
                       EBCL_CONFIG_KEYSTR_PROVIDES);
@@ -146,7 +146,7 @@ int EBCL_taskCfgPrvHandler(ebcl_Task_t *tgt, const char *val) {
     tgt->prvSize = newSz;
 
     for (size_t i = oldSz; i < tgt->prvSize; i++) {
-        ebcl_TaskPrv_t *ptr = &tgt->prv[i];
+        crinitTaskPrv_t *ptr = &tgt->prv[i];
         ptr->stateReq = 0;
         ptr->name = strdup(tempPrvs[i]);
         if (ptr->name == NULL) {
@@ -162,11 +162,11 @@ int EBCL_taskCfgPrvHandler(ebcl_Task_t *tgt, const char *val) {
             return -1;
         }
         *delimPtr++ = '\0';
-        if (strncmp(delimPtr, EBCL_TASK_EVENT_RUNNING, strlen(EBCL_TASK_EVENT_RUNNING)) == 0) {
+        if (strncmp(delimPtr, CRINIT_TASK_EVENT_RUNNING, strlen(CRINIT_TASK_EVENT_RUNNING)) == 0) {
             ptr->stateReq = EBCL_TASK_STATE_RUNNING;
-        } else if (strncmp(delimPtr, EBCL_TASK_EVENT_DONE, strlen(EBCL_TASK_EVENT_RUNNING)) == 0) {
+        } else if (strncmp(delimPtr, CRINIT_TASK_EVENT_DONE, strlen(CRINIT_TASK_EVENT_RUNNING)) == 0) {
             ptr->stateReq = EBCL_TASK_STATE_DONE;
-        } else if (strncmp(delimPtr, EBCL_TASK_EVENT_FAILED, strlen(EBCL_TASK_EVENT_FAILED)) == 0) {
+        } else if (strncmp(delimPtr, CRINIT_TASK_EVENT_FAILED, strlen(CRINIT_TASK_EVENT_FAILED)) == 0) {
             ptr->stateReq = EBCL_TASK_STATE_FAILED;
         } else {
             crinitErrnoPrint("Could not parse '%s' in %s.", ptr->name, EBCL_CONFIG_KEYSTR_PROVIDES);
@@ -175,7 +175,7 @@ int EBCL_taskCfgPrvHandler(ebcl_Task_t *tgt, const char *val) {
         }
 
         delimPtr = strchr(delimPtr, '-');
-        if (delimPtr != NULL && strcmp(delimPtr, EBCL_TASK_EVENT_NOTIFY_SUFFIX) == 0) {
+        if (delimPtr != NULL && strcmp(delimPtr, CRINIT_TASK_EVENT_NOTIFY_SUFFIX) == 0) {
             ptr->stateReq |= EBCL_TASK_STATE_NOTIFIED;
         }
     }
@@ -184,7 +184,7 @@ int EBCL_taskCfgPrvHandler(ebcl_Task_t *tgt, const char *val) {
     return 0;
 }
 
-int EBCL_taskCfgEnvHandler(ebcl_Task_t *tgt, const char *val) {
+int EBCL_taskCfgEnvHandler(crinitTask_t *tgt, const char *val) {
     EBCL_cfgHandlerCommonNullCheck();
     if (tgt->taskEnv.envp == NULL &&
         crinitEnvSetInit(&tgt->taskEnv, CRINIT_ENVSET_INITIAL_SIZE, CRINIT_ENVSET_SIZE_INCREMENT) == -1) {
@@ -198,7 +198,7 @@ int EBCL_taskCfgEnvHandler(ebcl_Task_t *tgt, const char *val) {
     return 0;
 }
 
-int EBCL_taskCfgIoRedirHandler(ebcl_Task_t *tgt, const char *val) {
+int EBCL_taskCfgIoRedirHandler(crinitTask_t *tgt, const char *val) {
     EBCL_cfgHandlerCommonNullCheck();
 
     size_t newIdx = tgt->redirsSize;
@@ -220,7 +220,7 @@ int EBCL_taskCfgIoRedirHandler(ebcl_Task_t *tgt, const char *val) {
     return 0;
 }
 
-int EBCL_taskCfgNameHandler(ebcl_Task_t *tgt, const char *val) {
+int EBCL_taskCfgNameHandler(crinitTask_t *tgt, const char *val) {
     EBCL_cfgHandlerCommonNullCheck();
     tgt->name = strdup(val);
     if (tgt->name == NULL) {
@@ -230,16 +230,16 @@ int EBCL_taskCfgNameHandler(ebcl_Task_t *tgt, const char *val) {
     return 0;
 }
 
-int EBCL_taskCfgRespHandler(ebcl_Task_t *tgt, const char *val) {
+int EBCL_taskCfgRespHandler(crinitTask_t *tgt, const char *val) {
     EBCL_cfgHandlerCommonNullCheck();
-    if (EBCL_cfgHandlerSetTaskOptFromStr(&tgt->opts, EBCL_TASK_OPT_RESPAWN, val) == -1) {
+    if (EBCL_cfgHandlerSetTaskOptFromStr(&tgt->opts, CRINIT_TASK_OPT_RESPAWN, val) == -1) {
         crinitErrPrint("Could not parse value of boolean option '%s'.", EBCL_CONFIG_KEYSTR_RESPAWN);
         return -1;
     }
     return 0;
 }
 
-int EBCL_taskCfgRespRetHandler(ebcl_Task_t *tgt, const char *val) {
+int EBCL_taskCfgRespRetHandler(crinitTask_t *tgt, const char *val) {
     EBCL_cfgHandlerCommonNullCheck();
     if (EBCL_confConvToInteger(&tgt->maxRetries, val, 10) == -1) {
         crinitErrPrint("Could not parse value of integral numeric option '%s'.", EBCL_CONFIG_KEYSTR_RESPAWN_RETRIES);
@@ -248,7 +248,7 @@ int EBCL_taskCfgRespRetHandler(ebcl_Task_t *tgt, const char *val) {
     return 0;
 }
 
-int EBCL_taskIncludeHandler(ebcl_Task_t *tgt, const char *val) {
+int EBCL_taskIncludeHandler(crinitTask_t *tgt, const char *val) {
     EBCL_cfgHandlerCommonNullCheck();
 
     int inclCfgSz;
@@ -267,7 +267,7 @@ int EBCL_taskIncludeHandler(ebcl_Task_t *tgt, const char *val) {
         EBCL_freeArgvArray(inclCfgStrArr);
         return -1;
     }
-    if (EBCL_taskMergeInclude(tgt, inclCfgStrArr[0], importList) == -1) {
+    if (crinitTaskMergeInclude(tgt, inclCfgStrArr[0], importList) == -1) {
         crinitErrPrint("Could not merge include '%s' into task.", inclCfgStrArr[0]);
         EBCL_freeArgvArray(inclCfgStrArr);
         return -1;
@@ -276,7 +276,7 @@ int EBCL_taskIncludeHandler(ebcl_Task_t *tgt, const char *val) {
     return 0;
 }
 
-static inline int EBCL_cfgHandlerSetTaskOptFromStr(ebcl_TaskOpts_t *tgt, ebcl_TaskOpts_t opt, const char *val) {
+static inline int EBCL_cfgHandlerSetTaskOptFromStr(crinitTaskOpts_t *tgt, crinitTaskOpts_t opt, const char *val) {
     bool b;
     if (EBCL_confConvToBool(&b, val) == -1) {
         crinitErrPrint("Could not convert from configuration file value to boolean.");

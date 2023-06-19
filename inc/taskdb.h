@@ -24,12 +24,12 @@
  * Type to store a task database.
  */
 typedef struct ebcl_TaskDB_t {
-    ebcl_Task_t *taskSet;  ///< Dynamic array of tasks, corresponds to task configs specified in the series config.
+    crinitTask_t *taskSet;  ///< Dynamic array of tasks, corresponds to task configs specified in the series config.
     size_t taskSetSize;    ///< Current maximum size of the task array.
     size_t taskSetItems;   ///< Number of elements in the task array.
 
     /** Pointer specifying a function for spawning ready tasks, used by EBCL_taskDBSpawnReady() **/
-    int (*spawnFunc)(struct ebcl_TaskDB_t *ctx, const ebcl_Task_t *);
+    int (*spawnFunc)(struct ebcl_TaskDB_t *ctx, const crinitTask_t *);
 
     bool spawnInhibit;  ///< Specifies if process spawning is currently inhibited, respected by EBCL_taskDBSpawnReady().
 
@@ -53,7 +53,7 @@ typedef struct ebcl_TaskDB_t {
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_taskDBInsert(ebcl_TaskDB_t *ctx, const ebcl_Task_t *t, bool overwrite);
+int EBCL_taskDBInsert(ebcl_TaskDB_t *ctx, const crinitTask_t *t, bool overwrite);
 /**
  * Insert a task into a task database, overwriting a task with the same name if it exists.
  *
@@ -65,7 +65,7 @@ int EBCL_taskDBInsert(ebcl_TaskDB_t *ctx, const ebcl_Task_t *t, bool overwrite);
  * Fulfill a dependency for all tasks inside a task database.
  *
  * Will search \a ctx for tasks containing a dependency equal to \a dep (i.e. specifying the same name and event,
- * according to strcmp()) and, if found, remove the dependency from ebcl_Task_t::deps. Will signal
+ * according to strcmp()) and, if found, remove the dependency from crinitTask_t::deps. Will signal
  * ebcl_TaskDB_t::changed on successful completion. The function uses ebcl_TaskDB_t::lock for synchronization and is
  * thread-safe.
  *
@@ -74,21 +74,21 @@ int EBCL_taskDBInsert(ebcl_TaskDB_t *ctx, const ebcl_Task_t *t, bool overwrite);
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_taskDBFulfillDep(ebcl_TaskDB_t *ctx, const ebcl_TaskDep_t *dep);
+int EBCL_taskDBFulfillDep(ebcl_TaskDB_t *ctx, const crinitTaskDep_t *dep);
 /**
  * Fulfill feature dependencies implemented by a provider task.
  *
  * Will search \a ctx for tasks containing feature dependencies PROVIDE-ed by \a provider given its new state
- * \a newState and, if found, remove the dependency from ebcl_Task_t::dep by using EBCL_taskDBFulfillDep().
+ * \a newState and, if found, remove the dependency from crinitTask_t::dep by using EBCL_taskDBFulfillDep().
  * Synchronization and signalling remains the same as with a direct call to EBCL_taskDBFulfillDep().
  *
  * @param ctx       The ebcl_TaskDB_t context in which to fulfill the feature dependency.
- * @param provider  The ebcl_Task_t providing the feature(s).
+ * @param provider  The crinitTask_t providing the feature(s).
  * @param newState  The ebcl_TaskState_t which has been newly reached by \a provider.
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_taskDBProvideFeature(ebcl_TaskDB_t *ctx, const ebcl_Task_t *provider, ebcl_TaskState_t newState);
+int EBCL_taskDBProvideFeature(ebcl_TaskDB_t *ctx, const crinitTask_t *provider, ebcl_TaskState_t newState);
 /**
  * Fulfill feature dependencies implemented by a provider task (searched for by name).
  *
@@ -105,8 +105,8 @@ int EBCL_taskDBProvideFeatureByTaskName(ebcl_TaskDB_t *ctx, const char *taskName
 /**
  * Add a dependency to a specific task inside a task database.
  *
- * Will search \a ctx for a task with name \a taskName and add \a dep to its ebcl_Task_t::deps and adjust
- * ebcl_Task_t::depsSize.
+ * Will search \a ctx for a task with name \a taskName and add \a dep to its crinitTask_t::deps and adjust
+ * crinitTask_t::depsSize.
  *
  * @param ctx       The ebcl_taskDb context to work on.
  * @param dep       The dependency to be added.
@@ -114,13 +114,13 @@ int EBCL_taskDBProvideFeatureByTaskName(ebcl_TaskDB_t *ctx, const char *taskName
  *
  * @return 0 on success, -1 otherweise
  */
-int EBCL_taskDBAddDepToTask(ebcl_TaskDB_t *ctx, const ebcl_TaskDep_t *dep, const char *taskName);
+int EBCL_taskDBAddDepToTask(ebcl_TaskDB_t *ctx, const crinitTaskDep_t *dep, const char *taskName);
 /**
  * Remove a dependency from a specific task inside a task database.
  *
  * Will search \a ctx for a task with name \a taskName and remove a dependency equal to \a dep from its
- * ebcl_Task_t::deps and adjust ebcl_Task_t::depsSize, if such a dependency is present. The equality condition
- * between two ebcl_TaskDep_t instances is the same as in EBCL_taskDBFulfillDep(), i.e. their contents are
+ * crinitTask_t::deps and adjust crinitTask_t::depsSize, if such a dependency is present. The equality condition
+ * between two crinitTaskDep_t instances is the same as in EBCL_taskDBFulfillDep(), i.e. their contents are
  * lexicographically equal.
  *
  * @param ctx       The ebcl_taskDb context to work on.
@@ -129,15 +129,15 @@ int EBCL_taskDBAddDepToTask(ebcl_TaskDB_t *ctx, const ebcl_TaskDep_t *dep, const
  *
  * @return 0 on success, -1 otherweise
  */
-int EBCL_taskDBRemoveDepFromTask(ebcl_TaskDB_t *ctx, const ebcl_TaskDep_t *dep, const char *taskName);
+int EBCL_taskDBRemoveDepFromTask(ebcl_TaskDB_t *ctx, const crinitTaskDep_t *dep, const char *taskName);
 
 /**
  * Set the ebcl_TaskState_t of a task in a task database
  *
- * Will search \a ctx for an ebcl_Task_t with ebcl_Task_t::name lexicographically equal to \a taskName and set its
- * ebcl_Task_t::state to \a s. If such a task does not exist in \a ctx, an error is returned. If \a s equals
- * #EBCL_TASK_STATE_FAILED, ebcl_Task_t::failCount will be incremented by 1. If \a s equals #EBCL_TASK_STATE_DONE,
- * ebcl_Task_t::failCount will be reset to 0. The function uses ebcl_TaskDB_t::lock for synchronization and is
+ * Will search \a ctx for an crinitTask_t with crinitTask_t::name lexicographically equal to \a taskName and set its
+ * crinitTask_t::state to \a s. If such a task does not exist in \a ctx, an error is returned. If \a s equals
+ * #EBCL_TASK_STATE_FAILED, crinitTask_t::failCount will be incremented by 1. If \a s equals #EBCL_TASK_STATE_DONE,
+ * crinitTask_t::failCount will be reset to 0. The function uses ebcl_TaskDB_t::lock for synchronization and is
  * thread-safe.
  *
  * @param ctx       The ebcl_TaskDB_t context in which the task is held.
@@ -150,8 +150,8 @@ int EBCL_taskDBSetTaskState(ebcl_TaskDB_t *ctx, ebcl_TaskState_t s, const char *
 /**
  * Get the ebcl_TaskState_t of a task in a task database
  *
- * Will search \a ctx for an ebcl_Task_t with ebcl_Task_t::name lexicographically equal to \a taskName and write its
- * ebcl_Task_t::state to \a s. If such a task does not exist in \a ctx, an error is returned. The function uses
+ * Will search \a ctx for an crinitTask_t with crinitTask_t::name lexicographically equal to \a taskName and write its
+ * crinitTask_t::state to \a s. If such a task does not exist in \a ctx, an error is returned. The function uses
  * ebcl_TaskDB_t::lock for synchronization and is thread-safe.
  *
  * @param ctx       The ebcl_TaskDB_t context in which the task is held.
@@ -165,8 +165,8 @@ int EBCL_taskDBGetTaskState(ebcl_TaskDB_t *ctx, ebcl_TaskState_t *s, const char 
 /**
  * Set the PID a task in a task database
  *
- * Will search \a ctx for an ebcl_Task_t with ebcl_Task_t::name lexicographically equal to \a taskName and set its
- * ebcl_Task_t::pid to \a pid. If such a task does not exit in \a ctx, an error is returned. The function uses
+ * Will search \a ctx for an crinitTask_t with crinitTask_t::name lexicographically equal to \a taskName and set its
+ * crinitTask_t::pid to \a pid. If such a task does not exit in \a ctx, an error is returned. The function uses
  * ebcl_TaskDB_t::lock for synchronization and is thread-safe.
  *
  * @param ctx       The ebcl_TaskDB_t context in which the task is held.
@@ -179,7 +179,7 @@ int EBCL_taskDBSetTaskPID(ebcl_TaskDB_t *ctx, pid_t pid, const char *taskName);
 /**
  * Get the PID of a task in a task database
  *
- * Will search \a ctx for an ebcl_Task_t with ebcl_Task_t::name lexicographically equal to \a taskName and write its
+ * Will search \a ctx for an crinitTask_t with crinitTask_t::name lexicographically equal to \a taskName and write its
  * PID to \a pid. If such a task does not exit in \a ctx, an error is returned. If the task does not currently have a
  * running process, \a pid will be -1 but the function will indicate success. The function uses ebcl_TaskDB_t::lock for
  * synchronization and is thread-safe.
@@ -195,8 +195,8 @@ int EBCL_taskDBGetTaskPID(ebcl_TaskDB_t *ctx, pid_t *pid, const char *taskName);
 /**
  * Get the ebcl_TaskState_t and the PID of a task in a task database
  *
- * Will search \a ctx for an ebcl_Task_t with ebcl_Task_t::name lexicographically equal to \a taskName and write its
- * ebcl_Task_t::state to \a s and its PID to \a pid. If such a task does not exist in \a ctx, an error is returned. If
+ * Will search \a ctx for an crinitTask_t with crinitTask_t::name lexicographically equal to \a taskName and write its
+ * crinitTask_t::state to \a s and its PID to \a pid. If such a task does not exist in \a ctx, an error is returned. If
  * the task does not currently have a running process, \a pid will be -1 but the function will indicate success. The
  * function uses ebcl_TaskDB_t::lock for synchronization and is thread-safe.
  *
@@ -212,10 +212,10 @@ int EBCL_taskDBGetTaskStateAndPID(ebcl_TaskDB_t *ctx, ebcl_TaskState_t *s, pid_t
 /**
  * Run ebcl_TaskDB_t::spawnFunc for each startable task in a task database.
  *
- * A task is startable if and only if it has no remaining ebcl_Task_t::deps and it has either not been started before
- * according to ebcl_Task_t::state or it should be respawned. A task should be respawned if and only if
- * ebcl_Task_t::opts contains the flag #EBCL_TASK_OPT_RESPAWN and either ebcl_Task_t::maxRetries is -1 or
- * ebcl_Task_t::failCount is less than ebcl_Task_t::maxRetries. The function uses ebcl_TaskDB_t::lock for
+ * A task is startable if and only if it has no remaining crinitTask_t::deps and it has either not been started before
+ * according to crinitTask_t::state or it should be respawned. A task should be respawned if and only if
+ * crinitTask_t::opts contains the flag #CRINIT_TASK_OPT_RESPAWN and either crinitTask_t::maxRetries is -1 or
+ * crinitTask_t::failCount is less than crinitTask_t::maxRetries. The function uses ebcl_TaskDB_t::lock for
  * synchronization and is thread-safe.
  *
  * If ebcl_TaskDB::spawnInhibit is true, no tasks are considered startable and this function will return successfully
@@ -251,7 +251,7 @@ int EBCL_taskDBSetSpawnInhibit(ebcl_TaskDB_t *ctx, bool inh);
  *
  *  @return 0 on success, -1 otherwise
  */
-int EBCL_taskDBInitWithSize(ebcl_TaskDB_t *ctx, int (*spawnFunc)(ebcl_TaskDB_t *ctx, const ebcl_Task_t *),
+int EBCL_taskDBInitWithSize(ebcl_TaskDB_t *ctx, int (*spawnFunc)(ebcl_TaskDB_t *ctx, const crinitTask_t *),
                             size_t initialSize);
 /**
  * Initialize the internals of an ebcl_TaskDB_t with the default initial size of EBCL_TASKDB_INITIAL_SIZE.

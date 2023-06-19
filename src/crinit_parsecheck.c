@@ -15,11 +15,11 @@
 #include "taskdb.h"
 
 /**
- * Print out the contents of an ebcl_Task_t structure in a readable format using crinitInfoPrint().
+ * Print out the contents of an crinitTask_t structure in a readable format using crinitInfoPrint().
  *
  * @param t  The task to be printed.
  */
-static void EBCL_taskPrint(const ebcl_Task_t *t) {
+static void EBCL_taskPrint(const crinitTask_t *t) {
     crinitInfoPrint("---------------");
     crinitInfoPrint("Data Structure:");
     crinitInfoPrint("---------------");
@@ -42,7 +42,7 @@ static void EBCL_taskPrint(const ebcl_Task_t *t) {
     }
 
     crinitInfoPrint("TaskOpts:");
-    crinitInfoPrint("    EBCL_TASK_OPT_RESPAWN = %s", (t->opts & EBCL_TASK_OPT_RESPAWN) ? "true" : "false");
+    crinitInfoPrint("    CRINIT_TASK_OPT_RESPAWN = %s", (t->opts & CRINIT_TASK_OPT_RESPAWN) ? "true" : "false");
 }
 
 /**
@@ -85,8 +85,8 @@ int main(int argc, char *argv[]) {
         } while (runner != NULL);
         crinitInfoPrint(CRINIT_PRINT_EMPTY_LINE);
         crinitInfoPrint("Will now attempt to extract a Task out of the config.");
-        ebcl_Task_t *t = NULL;
-        if (EBCL_taskCreateFromConfKvList(&t, c) == -1) {
+        crinitTask_t *t = NULL;
+        if (crinitTaskCreateFromConfKvList(&t, c) == -1) {
             crinitErrPrint("Could not extract task from ConfKvList.");
             EBCL_freeConfList(c);
             return EXIT_FAILURE;
@@ -97,14 +97,14 @@ int main(int argc, char *argv[]) {
         EBCL_taskPrint(t);
 
         crinitInfoPrint("Will now attempt to duplicate the task and print out its (hopefully equal) contents.");
-        ebcl_Task_t *u = NULL;
-        if (EBCL_taskDup(&u, t) == -1) {
+        crinitTask_t *u = NULL;
+        if (crinitTaskDup(&u, t) == -1) {
             crinitErrPrint("Could not duplicate the task.");
             return EXIT_FAILURE;
         }
-        EBCL_freeTask(t);
+        crinitFreeTask(t);
         EBCL_taskPrint(u);
-        EBCL_freeTask(u);
+        crinitFreeTask(u);
     }
     crinitInfoPrint("Done.");
     return EXIT_SUCCESS;

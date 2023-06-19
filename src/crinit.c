@@ -38,11 +38,11 @@ static void EBCL_printVersion(void);
  */
 static void EBCL_printUsage(const char *basename);
 /**
- * Print out the contents of an ebcl_Task_t structure in a readable format using crinitDbgInfoPrint().
+ * Print out the contents of an crinitTask_t structure in a readable format using crinitDbgInfoPrint().
  *
  * @param t  The task to be printed.
  */
-static void EBCL_taskPrint(const ebcl_Task_t *t);
+static void EBCL_taskPrint(const crinitTask_t *t);
 
 /**
  * Main function of crinit.
@@ -134,8 +134,8 @@ int main(int argc, char *argv[]) {
         }
         crinitDbgInfoPrint("Will now attempt to extract a Task out of the config.");
 
-        ebcl_Task_t *t = NULL;
-        if (EBCL_taskCreateFromConfKvList(&t, c) == -1) {
+        crinitTask_t *t = NULL;
+        if (crinitTaskCreateFromConfKvList(&t, c) == -1) {
             crinitErrPrint("Could not extract task from ConfKvList.");
             EBCL_freeConfList(c);
             EBCL_globOptDestroy();
@@ -152,11 +152,11 @@ int main(int argc, char *argv[]) {
             crinitErrPrint("Could not insert Task '%s' into TaskDB.", t->name);
             EBCL_globOptDestroy();
             EBCL_destroyFileSeries(&taskSeries);
-            EBCL_freeTask(t);
+            crinitFreeTask(t);
             EBCL_taskDBDestroy(&tdb);
             return EXIT_FAILURE;
         }
-        EBCL_freeTask(t);
+        crinitFreeTask(t);
     }
     EBCL_destroyFileSeries(&taskSeries);
     crinitDbgInfoPrint("Done parsing.");
@@ -194,7 +194,7 @@ static void EBCL_printUsage(const char *basename) {
     fprintf(stderr, "If nothing is specified, the default path \'%s\' is used.\n", EBCL_CRINIT_DEFAULT_CONFIG_SERIES);
 }
 
-static void EBCL_taskPrint(const ebcl_Task_t *t) {
+static void EBCL_taskPrint(const crinitTask_t *t) {
     crinitDbgInfoPrint("---------------");
     crinitDbgInfoPrint("Data Structure:");
     crinitDbgInfoPrint("---------------");
@@ -222,5 +222,5 @@ static void EBCL_taskPrint(const ebcl_Task_t *t) {
     }
 
     crinitDbgInfoPrint("TaskOpts:");
-    crinitDbgInfoPrint("    EBCL_TASK_OPT_RESPAWN = %s", (t->opts & EBCL_TASK_OPT_RESPAWN) ? "true" : "false");
+    crinitDbgInfoPrint("    CRINIT_TASK_OPT_RESPAWN = %s", (t->opts & CRINIT_TASK_OPT_RESPAWN) ? "true" : "false");
 }

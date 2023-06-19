@@ -23,14 +23,14 @@
  * Find index of a task in the ebcl_TaskDB_t::taskSet of an ebcl_TaskDB_t by name.
  *
  * @param idx       Pointer to return the index with.
- * @param taskName  The ebcl_Task_t::name to search for.
+ * @param taskName  The crinitTask_t::name to search for.
  * @param in        The ebcl_TaskDB_t_t to search in.
  *
  * @return 0 on success, -1 otherwise
  */
 static int EBCL_findInTaskDB(ssize_t *idx, const char *taskName, const ebcl_TaskDB_t *in);
 /**
- * Check if an ebcl_Task_t is considered ready to be started (startable).
+ * Check if an crinitTask_t is considered ready to be started (startable).
  *
  * See EBCL_taskDBSpawnReady() for further explanation.
  *
@@ -38,9 +38,9 @@ static int EBCL_findInTaskDB(ssize_t *idx, const char *taskName, const ebcl_Task
  *
  * @return true if \a t is ready, false otherwise
  */
-static bool EBCL_taskReady(const ebcl_Task_t *t);
+static bool EBCL_taskReady(const crinitTask_t *t);
 
-int EBCL_taskDBInitWithSize(ebcl_TaskDB_t *ctx, int (*spawnFunc)(ebcl_TaskDB_t *ctx, const ebcl_Task_t *),
+int EBCL_taskDBInitWithSize(ebcl_TaskDB_t *ctx, int (*spawnFunc)(ebcl_TaskDB_t *ctx, const crinitTask_t *),
                             size_t initialSize) {
     if (ctx == NULL) {
         crinitErrPrint("Given ebcl_TaskDB_t to initialize must not be NULL.");
@@ -88,7 +88,7 @@ int EBCL_taskDBDestroy(ebcl_TaskDB_t *ctx) {
     ctx->spawnFunc = NULL;
     ctx->taskSetSize = 0;
     for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        EBCL_destroyTask(&ctx->taskSet[i]);
+        crinitDestroyTask(&ctx->taskSet[i]);
     }
     ctx->taskSetItems = 0;
 
@@ -102,7 +102,7 @@ int EBCL_taskDBDestroy(ebcl_TaskDB_t *ctx) {
     return 0;
 }
 
-int EBCL_taskDBInsert(ebcl_TaskDB_t *ctx, const ebcl_Task_t *t, bool overwrite) {
+int EBCL_taskDBInsert(ebcl_TaskDB_t *ctx, const crinitTask_t *t, bool overwrite) {
     crinitNullCheck(-1, ctx, t);
 
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
@@ -113,7 +113,7 @@ int EBCL_taskDBInsert(ebcl_TaskDB_t *ctx, const ebcl_Task_t *t, bool overwrite) 
     ssize_t idx = -1;
     if (EBCL_findInTaskDB(&idx, t->name, ctx) == 0) {
         if (overwrite) {
-            EBCL_destroyTask(&ctx->taskSet[idx]);
+            crinitDestroyTask(&ctx->taskSet[idx]);
         } else {
             crinitErrPrint("Found task/include with name '%s' already in TaskDB but will not overwrite", t->name);
             goto fail;
@@ -121,7 +121,7 @@ int EBCL_taskDBInsert(ebcl_TaskDB_t *ctx, const ebcl_Task_t *t, bool overwrite) 
     }
     if (idx == -1 && ctx->taskSetItems == ctx->taskSetSize) {
         // We need to grow the backing array
-        ebcl_Task_t *newSet = realloc(ctx->taskSet, ctx->taskSetSize * 2 * sizeof(ebcl_Task_t));
+        crinitTask_t *newSet = realloc(ctx->taskSet, ctx->taskSetSize * 2 * sizeof(crinitTask_t));
         if (newSet == NULL) {
             crinitErrnoPrint("Could not allocate additional memory for more task/include elements.");
             goto fail;
@@ -133,12 +133,12 @@ int EBCL_taskDBInsert(ebcl_TaskDB_t *ctx, const ebcl_Task_t *t, bool overwrite) 
         idx = ctx->taskSetItems++;
     }
 
-    ebcl_Task_t *tempDuplicate = NULL;
-    if (EBCL_taskDup(&tempDuplicate, t) == -1) {
+    crinitTask_t *tempDuplicate = NULL;
+    if (crinitTaskDup(&tempDuplicate, t) == -1) {
         crinitErrPrint("Could not duplicate new Task into temporary variable.");
         goto fail;
     }
-    memcpy(&ctx->taskSet[idx], tempDuplicate, sizeof(ebcl_Task_t));
+    memcpy(&ctx->taskSet[idx], tempDuplicate, sizeof(crinitTask_t));
     free(tempDuplicate);
 
     pthread_cond_broadcast(&ctx->changed);
@@ -171,7 +171,7 @@ int EBCL_taskDBSpawnReady(ebcl_TaskDB_t *ctx) {
     }
 
     for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        ebcl_Task_t *pTask = &ctx->taskSet[i];
+        crinitTask_t *pTask = &ctx->taskSet[i];
         if (EBCL_taskReady(pTask)) {
             crinitDbgInfoPrint("Task \'%s\' ready to spawn.", pTask->name);
             pTask->state = EBCL_TASK_STATE_STARTING;
@@ -220,7 +220,7 @@ int EBCL_taskDBSetTaskState(ebcl_TaskDB_t *ctx, ebcl_TaskState_t s, const char *
         return -1;
     }
     for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        ebcl_Task_t *pTask = &ctx->taskSet[i];
+        crinitTask_t *pTask = &ctx->taskSet[i];
         if (strcmp(pTask->name, taskName) == 0) {
             pTask->state = s;
             s &= ~EBCL_TASK_STATE_NOTIFIED;  // Here we don't care if we got the state via notification or directly.
@@ -250,7 +250,7 @@ int EBCL_taskDBGetTaskState(ebcl_TaskDB_t *ctx, ebcl_TaskState_t *s, const char 
         return -1;
     }
     for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        ebcl_Task_t *pTask = &ctx->taskSet[i];
+        crinitTask_t *pTask = &ctx->taskSet[i];
         if (strcmp(pTask->name, taskName) == 0) {
             *s = pTask->state;
             pthread_mutex_unlock(&ctx->lock);
@@ -273,7 +273,7 @@ int EBCL_taskDBSetTaskPID(ebcl_TaskDB_t *ctx, pid_t pid, const char *taskName) {
         return -1;
     }
     for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        ebcl_Task_t *pTask = &ctx->taskSet[i];
+        crinitTask_t *pTask = &ctx->taskSet[i];
         if (strcmp(pTask->name, taskName) == 0) {
             pTask->pid = pid;
             pthread_mutex_unlock(&ctx->lock);
@@ -296,7 +296,7 @@ int EBCL_taskDBGetTaskPID(ebcl_TaskDB_t *ctx, pid_t *pid, const char *taskName) 
         return -1;
     }
     for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        ebcl_Task_t *pTask = &ctx->taskSet[i];
+        crinitTask_t *pTask = &ctx->taskSet[i];
         if (strcmp(pTask->name, taskName) == 0) {
             *pid = pTask->pid;
             pthread_mutex_unlock(&ctx->lock);
@@ -320,7 +320,7 @@ int EBCL_taskDBGetTaskStateAndPID(ebcl_TaskDB_t *ctx, ebcl_TaskState_t *s, pid_t
         return -1;
     }
     for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        ebcl_Task_t *pTask = &ctx->taskSet[i];
+        crinitTask_t *pTask = &ctx->taskSet[i];
         if (strcmp(pTask->name, taskName) == 0) {
             *s = pTask->state;
             *pid = pTask->pid;
@@ -333,7 +333,7 @@ int EBCL_taskDBGetTaskStateAndPID(ebcl_TaskDB_t *ctx, ebcl_TaskState_t *s, pid_t
     return -1;
 }
 
-int EBCL_taskDBAddDepToTask(ebcl_TaskDB_t *ctx, const ebcl_TaskDep_t *dep, const char *taskName) {
+int EBCL_taskDBAddDepToTask(ebcl_TaskDB_t *ctx, const crinitTaskDep_t *dep, const char *taskName) {
     if (ctx == NULL || dep == NULL || taskName == NULL) {
         crinitErrPrint("The TaskDB context, the TaskDep to add, and the task name to search for must not be NULL.");
         return -1;
@@ -343,7 +343,7 @@ int EBCL_taskDBAddDepToTask(ebcl_TaskDB_t *ctx, const ebcl_TaskDep_t *dep, const
         return -1;
     }
     for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        ebcl_Task_t *pTask = &ctx->taskSet[i];
+        crinitTask_t *pTask = &ctx->taskSet[i];
         if (strcmp(pTask->name, taskName) == 0) {
             // Return immediately if dependency is already present
             for (size_t j = 0; j < pTask->depsSize; j++) {
@@ -353,7 +353,7 @@ int EBCL_taskDBAddDepToTask(ebcl_TaskDB_t *ctx, const ebcl_TaskDep_t *dep, const
                 }
             }
             pTask->depsSize++;
-            ebcl_TaskDep_t *pTempDeps = realloc(pTask->deps, pTask->depsSize * sizeof(ebcl_TaskDep_t));
+            crinitTaskDep_t *pTempDeps = realloc(pTask->deps, pTask->depsSize * sizeof(crinitTaskDep_t));
             if (pTempDeps == NULL) {
                 crinitErrnoPrint("Could not reallocate memory of dependency array for task \'%s\'.", taskName);
                 pTask->depsSize--;
@@ -384,7 +384,7 @@ int EBCL_taskDBAddDepToTask(ebcl_TaskDB_t *ctx, const ebcl_TaskDep_t *dep, const
     return -1;
 }
 
-int EBCL_taskDBRemoveDepFromTask(ebcl_TaskDB_t *ctx, const ebcl_TaskDep_t *dep, const char *taskName) {
+int EBCL_taskDBRemoveDepFromTask(ebcl_TaskDB_t *ctx, const crinitTaskDep_t *dep, const char *taskName) {
     if (ctx == NULL || dep == NULL || taskName == NULL) {
         crinitErrPrint("The TaskDB context, the TaskDep to remove, and the task name to search for must not be NULL.");
         return -1;
@@ -396,7 +396,7 @@ int EBCL_taskDBRemoveDepFromTask(ebcl_TaskDB_t *ctx, const ebcl_TaskDep_t *dep, 
     }
 
     for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        ebcl_Task_t *pTask = &ctx->taskSet[i];
+        crinitTask_t *pTask = &ctx->taskSet[i];
         if (strcmp(pTask->name, taskName) == 0) {
             for (size_t j = 0; j < pTask->depsSize; j++) {
                 if ((strcmp(pTask->deps[j].name, dep->name) == 0) && (strcmp(pTask->deps[j].event, dep->event) == 0)) {
@@ -418,7 +418,7 @@ int EBCL_taskDBRemoveDepFromTask(ebcl_TaskDB_t *ctx, const ebcl_TaskDep_t *dep, 
     return -1;
 }
 
-int EBCL_taskDBFulfillDep(ebcl_TaskDB_t *ctx, const ebcl_TaskDep_t *dep) {
+int EBCL_taskDBFulfillDep(ebcl_TaskDB_t *ctx, const crinitTaskDep_t *dep) {
     if (ctx == NULL || dep == NULL) {
         crinitErrPrint("The TaskDB context and the TaskDep to fulfill must not be NULL.");
         return -1;
@@ -430,7 +430,7 @@ int EBCL_taskDBFulfillDep(ebcl_TaskDB_t *ctx, const ebcl_TaskDep_t *dep) {
     }
 
     for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        ebcl_Task_t *pTask = &ctx->taskSet[i];
+        crinitTask_t *pTask = &ctx->taskSet[i];
         for (size_t j = 0; j < pTask->depsSize; j++) {
             if ((strcmp(pTask->deps[j].name, dep->name) == 0) && (strcmp(pTask->deps[j].event, dep->event) == 0)) {
                 crinitDbgInfoPrint("Removing fulfilled dependency \'%s:%s\' in \'%s\'.", dep->name, dep->event,
@@ -448,7 +448,7 @@ int EBCL_taskDBFulfillDep(ebcl_TaskDB_t *ctx, const ebcl_TaskDep_t *dep) {
     return 0;
 }
 
-int EBCL_taskDBProvideFeature(ebcl_TaskDB_t *ctx, const ebcl_Task_t *provider, ebcl_TaskState_t newState) {
+int EBCL_taskDBProvideFeature(ebcl_TaskDB_t *ctx, const crinitTask_t *provider, ebcl_TaskState_t newState) {
     if (ctx == NULL || provider == NULL) {
         crinitErrPrint("The TaskDB context and the feature-providing task must not be NULL.");
         return -1;
@@ -457,7 +457,7 @@ int EBCL_taskDBProvideFeature(ebcl_TaskDB_t *ctx, const ebcl_Task_t *provider, e
     for (size_t i = 0; i < provider->prvSize; i++) {
         if (provider->prv[i].stateReq == newState) {
             char depName[] = EBCL_PROVIDE_DEP_NAME;
-            const ebcl_TaskDep_t dep = {depName, provider->prv[i].name};
+            const crinitTaskDep_t dep = {depName, provider->prv[i].name};
             if (EBCL_taskDBFulfillDep(ctx, &dep) == -1) {
                 crinitErrPrint("Could not fulfill dependency \'%s:%s\'.", dep.name, dep.event);
                 return -1;
@@ -478,7 +478,7 @@ int EBCL_taskDBProvideFeatureByTaskName(ebcl_TaskDB_t *ctx, const char *taskName
         return -1;
     }
 
-    const ebcl_Task_t *provider = NULL;
+    const crinitTask_t *provider = NULL;
 
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
         crinitErrnoPrint("Could not queue up for mutex lock.");
@@ -517,7 +517,7 @@ int EBCL_taskDBExportTaskNamesToArray(ebcl_TaskDB_t *ctx, char **tasks[], size_t
     }
 
     for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        ebcl_Task_t *pTask = &ctx->taskSet[i];
+        crinitTask_t *pTask = &ctx->taskSet[i];
         (*tasks)[i] = strdup(pTask->name);
         if ((*tasks)[i] == NULL) {
             crinitErrnoPrint("Could not allocate memory for task name.");
@@ -559,7 +559,7 @@ static int EBCL_findInTaskDB(ssize_t *idx, const char *taskName, const ebcl_Task
     return -1;
 }
 
-static bool EBCL_taskReady(const ebcl_Task_t *t) {
+static bool EBCL_taskReady(const crinitTask_t *t) {
     if (t == NULL) {
         return false;
     }
@@ -570,7 +570,7 @@ static bool EBCL_taskReady(const ebcl_Task_t *t) {
         return false;
     }
     if (t->state & (EBCL_TASK_STATE_FAILED | EBCL_TASK_STATE_DONE)) {
-        if (!(t->opts & EBCL_TASK_OPT_RESPAWN)) {
+        if (!(t->opts & CRINIT_TASK_OPT_RESPAWN)) {
             return false;
         }
         if (t->maxRetries != -1 && t->failCount > t->maxRetries) {

@@ -576,8 +576,8 @@ static int EBCL_execRtimCmdAddTask(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
         }
     }
 
-    ebcl_Task_t *t = NULL;
-    if (EBCL_taskCreateFromConfKvList(&t, c) == -1) {
+    crinitTask_t *t = NULL;
+    if (crinitTaskCreateFromConfKvList(&t, c) == -1) {
         EBCL_freeConfList(c);
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR,
                                  "Could not create task from config.");
@@ -591,11 +591,11 @@ static int EBCL_execRtimCmdAddTask(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
     }
 
     if (EBCL_taskDBInsert(ctx, t, overwrite) == -1) {
-        EBCL_freeTask(t);
+        crinitFreeTask(t);
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR,
                                  "Could not insert new task into TaskDB.");
     }
-    EBCL_freeTask(t);
+    crinitFreeTask(t);
     return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 1, EBCL_RTIMCMD_RES_OK);
 }
 
@@ -668,8 +668,8 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
             free(confFn);
         }
 
-        ebcl_Task_t *t = NULL;
-        if (EBCL_taskCreateFromConfKvList(&t, c) == -1) {
+        crinitTask_t *t = NULL;
+        if (crinitTaskCreateFromConfKvList(&t, c) == -1) {
             EBCL_freeConfList(c);
             EBCL_destroyFileSeries(&taskSeries);
             EBCL_taskDBSetSpawnInhibit(ctx, false);
@@ -679,13 +679,13 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
 
         EBCL_freeConfList(c);
         if (EBCL_taskDBInsert(ctx, t, overwriteTasks) == -1) {
-            EBCL_freeTask(t);
+            crinitFreeTask(t);
             EBCL_destroyFileSeries(&taskSeries);
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not insert new task into TaskDB.");
         }
 
-        EBCL_freeTask(t);
+        crinitFreeTask(t);
     }
 
     EBCL_destroyFileSeries(&taskSeries);
@@ -705,7 +705,7 @@ static int EBCL_execRtimCmdEnable(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ENABLE, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
     const char depStr[] = "@ctl\0enable";
-    ebcl_TaskDep_t tempDep = {NULL, NULL};
+    crinitTaskDep_t tempDep = {NULL, NULL};
     tempDep.name = malloc(sizeof(depStr));
     if (tempDep.name == NULL) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ENABLE, 2, EBCL_RTIMCMD_RES_ERR, "Memory allocation error.");
@@ -731,7 +731,7 @@ static int EBCL_execRtimCmdDisable(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_DISABLE, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
     const char newDepStr[] = "@ctl\0enable";
-    ebcl_TaskDep_t tempDep = {NULL, NULL};
+    crinitTaskDep_t tempDep = {NULL, NULL};
     tempDep.name = malloc(sizeof(newDepStr));
     if (tempDep.name == NULL) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_DISABLE, 2, EBCL_RTIMCMD_RES_ERR, "Memory allocation error.");
@@ -880,13 +880,13 @@ static int EBCL_execRtimCmdNotify(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
 
     if (ready > 0) {
         const ebcl_TaskState_t s = EBCL_TASK_STATE_RUNNING | EBCL_TASK_STATE_NOTIFIED;
-        char depEvent[] = EBCL_TASK_EVENT_RUNNING EBCL_TASK_EVENT_NOTIFY_SUFFIX;
+        char depEvent[] = CRINIT_TASK_EVENT_RUNNING CRINIT_TASK_EVENT_NOTIFY_SUFFIX;
         if (EBCL_taskDBSetTaskState(ctx, s, cmd->args[0]) == -1) {
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not set task state to RUNNING.");
         }
 
-        ebcl_TaskDep_t dep = {cmd->args[0], depEvent};
+        crinitTaskDep_t dep = {cmd->args[0], depEvent};
         if (EBCL_taskDBFulfillDep(ctx, &dep) == -1) {
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not fulfill dependency \'%s:%s\'.", cmd->args[0], depEvent);
@@ -900,14 +900,14 @@ static int EBCL_execRtimCmdNotify(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
 
     if (stopping > 0) {
         const ebcl_TaskState_t s = EBCL_TASK_STATE_DONE | EBCL_TASK_STATE_NOTIFIED;
-        char depEvent[] = EBCL_TASK_EVENT_DONE EBCL_TASK_EVENT_NOTIFY_SUFFIX;
+        char depEvent[] = CRINIT_TASK_EVENT_DONE CRINIT_TASK_EVENT_NOTIFY_SUFFIX;
 
         if (EBCL_taskDBSetTaskState(ctx, s, cmd->args[0]) == -1) {
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not set task state to DONE.");
         }
 
-        const ebcl_TaskDep_t dep = {cmd->args[0], depEvent};
+        const crinitTaskDep_t dep = {cmd->args[0], depEvent};
         if (EBCL_taskDBFulfillDep(ctx, &dep) == -1) {
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not fulfill dependency \'%s:%s\'.", cmd->args[0], depEvent);
