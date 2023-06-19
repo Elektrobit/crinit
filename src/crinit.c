@@ -163,7 +163,7 @@ int main(int argc, char *argv[]) {
 
     char *sockFile = getenv("CRINIT_SOCK");
     if (sockFile == NULL) {
-        sockFile = EBCL_CRINIT_SOCKFILE;
+        sockFile = CRINIT_SOCKFILE;
     }
     if (EBCL_startInterfaceServer(&tdb, sockFile) == -1) {
         crinitErrPrint("Could not start notification and service interface.");

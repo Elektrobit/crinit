@@ -14,7 +14,7 @@
 
 // Rationale: Naming scheme fixed due to linker wrapping.
 // NOLINTNEXTLINE(readability-identifier-naming)
-int __wrap_EBCL_destroyRtimCmd(ebcl_RtimCmd_t *c) {
+int __wrap_crinitDestroyRtimCmd(crinitRtimCmd_t *c) {
     check_expected(c);
 
     return mock_type(int);

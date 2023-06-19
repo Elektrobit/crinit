@@ -20,6 +20,6 @@
  * Otherwise the function is a no-op.
  */
 // NOLINTNEXTLINE(readability-identifier-naming) Rationale: Naming scheme fixed due to linker wrapping.
-int __wrap_EBCL_crinitXfer(const char *sockFile, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+int __wrap_EBCL_crinitXfer(const char *sockFile, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd);
 
 #endif /* __MOCK_BUILD_RTIM_CMD_H__ */

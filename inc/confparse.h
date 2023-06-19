@@ -57,7 +57,7 @@
 #define CRINIT_CONFIG_STDERR_NAME "STDERR"  ///< What stderr is called in task configs.
 #define CRINIT_CONFIG_STDIN_NAME "STDIN"    ///< What stdin is called in task configs.
 
-/** Enumeration of all (task) configuration keys. Goes together with EBCL_cfgMap. **/
+/** Enumeration of all (task) configuration keys. Goes together with crinitCfgMap. **/
 typedef enum crinitConfigs_t {
     CRINIT_CONFIG_COMMAND = 0,
     CRINIT_CONFIG_DEPENDS,

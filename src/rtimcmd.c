@@ -53,11 +53,11 @@ typedef struct ebcl_UnMountList_t {
  *
  * @param ctx  The crinitTaskDB_t to operate on.
  * @param res  Return pointer for response/result.
- * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
+ * @param cmd  The crinitRtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_execRtimCmdAddTask(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+static int crinitExecRtimCmdAddTask(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd);
 /**
  * Internal implementation of the "addseries" command on an ebcl_TaskDB.
  *
@@ -65,11 +65,11 @@ static int EBCL_execRtimCmdAddTask(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, con
  *
  * @param ctx  The crinitTaskDB_t to operate on.
  * @param res  Return pointer for response/result.
- * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
+ * @param cmd  The crinitRtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_execRtimCmdAddSeries(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+static int crinitExecRtimCmdAddSeries(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd);
 /**
  * Internal implementation of the "enable" command on an crinitTaskDB_t.
  *
@@ -77,11 +77,11 @@ static int EBCL_execRtimCmdAddSeries(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, c
  *
  * @param ctx  The crinitTaskDB_t to operate on.
  * @param res  Return pointer for response/result.
- * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
+ * @param cmd  The crinitRtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_execRtimCmdEnable(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+static int crinitExecRtimCmdEnable(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd);
 /**
  * Internal implementation of the "disable" command on an crinitTaskDB_t.
  *
@@ -89,11 +89,11 @@ static int EBCL_execRtimCmdEnable(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
  *
  * @param ctx  The crinitTaskDB_t to operate on.
  * @param res  Return pointer for response/result.
- * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
+ * @param cmd  The crinitRtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_execRtimCmdDisable(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+static int crinitExecRtimCmdDisable(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd);
 /**
  * Internal implementation of the "stop" command on an crinitTaskDB_t.
  *
@@ -101,11 +101,11 @@ static int EBCL_execRtimCmdDisable(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, con
  *
  * @param ctx  The crinitTaskDB_t to operate on.
  * @param res  Return pointer for response/result.
- * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
+ * @param cmd  The crinitRtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_execRtimCmdStop(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+static int crinitExecRtimCmdStop(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd);
 /**
  * Internal implementation of the "kill" command on an crinitTaskDB_t.
  *
@@ -113,11 +113,11 @@ static int EBCL_execRtimCmdStop(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const 
  *
  * @param ctx  The crinitTaskDB_t to operate on.
  * @param res  Return pointer for response/result.
- * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
+ * @param cmd  The crinitRtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_execRtimCmdKill(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+static int crinitExecRtimCmdKill(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd);
 /**
  * Internal implementation of the "restart" command on an crinitTaskDB_t.
  *
@@ -125,11 +125,11 @@ static int EBCL_execRtimCmdKill(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const 
  *
  * @param ctx  The crinitTaskDB_t to operate on.
  * @param res  Return pointer for response/result.
- * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
+ * @param cmd  The crinitRtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_execRtimCmdRestart(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+static int crinitExecRtimCmdRestart(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd);
 /**
  * Internal implementation of the "notify" command on an crinitTaskDB_t.
  *
@@ -137,11 +137,11 @@ static int EBCL_execRtimCmdRestart(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, con
  *
  * @param ctx  The crinitTaskDB_t to operate on.
  * @param res  Return pointer for response/result.
- * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
+ * @param cmd  The crinitRtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_execRtimCmdNotify(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+static int crinitExecRtimCmdNotify(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd);
 /**
  * Internal implementation of the "status" command on an crinitTaskDB_t.
  *
@@ -149,11 +149,11 @@ static int EBCL_execRtimCmdNotify(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
  *
  * @param ctx  The crinitTaskDB_t to operate on.
  * @param res  Return pointer for response/result.
- * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
+ * @param cmd  The crinitRtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_execRtimCmdStatus(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+static int crinitExecRtimCmdStatus(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd);
 /**
  * Internal implementation of the "list" command on an crinitTaskDB_t.
  *
@@ -161,11 +161,11 @@ static int EBCL_execRtimCmdStatus(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
  *
  * @param ctx  The crinitTaskDB_t to operate on.
  * @param res  Return pointer for response/result.
- * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
+ * @param cmd  The crinitRtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_execRtimCmdTaskList(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+static int crinitExecRtimCmdTaskList(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd);
 
 /**
  * Internal implementation of the version query from the client library to crinit.
@@ -174,11 +174,11 @@ static int EBCL_execRtimCmdTaskList(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, co
  *
  * @param ctx  The crinitTaskDB_t to operate on.
  * @param res  Return pointer for response/result.
- * @param cmd  The ebcl_RtimCmd_t to execute, used to pass the argument list.
+ * @param cmd  The crinitRtimCmd_t to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_execRtimCmdGetVer(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+static int crinitExecRtimCmdGetVer(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd);
 
 /**
  * Internal implementation of the "shutdown" command.
@@ -191,11 +191,11 @@ static int EBCL_execRtimCmdGetVer(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_execRtimCmdShutdown(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+static int crinitExecRtimCmdShutdown(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd);
 /**
  * Shutdown thread function.
  *
- * Run as a pthread, so that EBCL_execRtimCmdShutdown() may return before the actual shutdown syscall is issued and the
+ * Run as a pthread, so that crinitExecRtimCmdShutdown() may return before the actual shutdown syscall is issued and the
  * requesting process is not blocked.
  *
  * @param args  Argument pointer, see ShdnThrArgs.
@@ -241,7 +241,7 @@ static inline int EBCL_genUnMountList(ebcl_UnMountList_t **um, bool *rootfsIsRo)
  */
 static inline void EBCL_freeUnMountList(ebcl_UnMountList_t *um);
 
-int EBCL_parseRtimCmd(ebcl_RtimCmd_t *out, const char *cmdStr) {
+int crinitParseRtimCmd(crinitRtimCmd_t *out, const char *cmdStr) {
     if (out == NULL || cmdStr == NULL) {
         crinitErrPrint("Pointer parameters must not be NULL.");
         return -1;
@@ -310,7 +310,7 @@ int EBCL_parseRtimCmd(ebcl_RtimCmd_t *out, const char *cmdStr) {
     return 0;
 }
 
-int EBCL_rtimCmdToMsgStr(char **out, size_t *outLen, const ebcl_RtimCmd_t *cmd) {
+int crinitRtimCmdToMsgStr(char **out, size_t *outLen, const crinitRtimCmd_t *cmd) {
     if (out == NULL || outLen == NULL || cmd == NULL) {
         crinitErrPrint("Pointer parameters must not be NULL.");
         return -1;
@@ -342,80 +342,80 @@ int EBCL_rtimCmdToMsgStr(char **out, size_t *outLen, const ebcl_RtimCmd_t *cmd) 
     return 0;
 }
 
-int EBCL_execRtimCmd(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+int crinitExecRtimCmd(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd) {
     if (res == NULL || cmd == NULL) {
         crinitErrPrint("Pointer parameters must not be NULL.");
         return -1;
     }
     switch (cmd->op) {
         case EBCL_RTIMCMD_C_ADDTASK:
-            if (EBCL_execRtimCmdAddTask(ctx, res, cmd) == -1) {
+            if (crinitExecRtimCmdAddTask(ctx, res, cmd) == -1) {
                 crinitErrPrint("Could not execute runtime command \'ADDTASK\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_ADDSERIES:
-            if (EBCL_execRtimCmdAddSeries(ctx, res, cmd) == -1) {
+            if (crinitExecRtimCmdAddSeries(ctx, res, cmd) == -1) {
                 crinitErrPrint("Could not execute runtime command \'ADDSERIES\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_ENABLE:
-            if (EBCL_execRtimCmdEnable(ctx, res, cmd) == -1) {
+            if (crinitExecRtimCmdEnable(ctx, res, cmd) == -1) {
                 crinitErrPrint("Could not execute runtime command \'ENABLE\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_DISABLE:
-            if (EBCL_execRtimCmdDisable(ctx, res, cmd) == -1) {
+            if (crinitExecRtimCmdDisable(ctx, res, cmd) == -1) {
                 crinitErrPrint("Could not execute runtime command \'DISABLE\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_STOP:
-            if (EBCL_execRtimCmdStop(ctx, res, cmd) == -1) {
+            if (crinitExecRtimCmdStop(ctx, res, cmd) == -1) {
                 crinitErrPrint("Could not execute runtime command \'STOP\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_KILL:
-            if (EBCL_execRtimCmdKill(ctx, res, cmd) == -1) {
+            if (crinitExecRtimCmdKill(ctx, res, cmd) == -1) {
                 crinitErrPrint("Could not execute runtime command \'KILL\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_RESTART:
-            if (EBCL_execRtimCmdRestart(ctx, res, cmd) == -1) {
+            if (crinitExecRtimCmdRestart(ctx, res, cmd) == -1) {
                 crinitErrPrint("Could not execute runtime command \'RESTART\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_NOTIFY:
-            if (EBCL_execRtimCmdNotify(ctx, res, cmd) == -1) {
+            if (crinitExecRtimCmdNotify(ctx, res, cmd) == -1) {
                 crinitErrPrint("Could not execute runtime command \'NOTIFY\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_STATUS:
-            if (EBCL_execRtimCmdStatus(ctx, res, cmd) == -1) {
+            if (crinitExecRtimCmdStatus(ctx, res, cmd) == -1) {
                 crinitErrPrint("Could not execute runtime command \'STATUS\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_TASKLIST:
-            if (EBCL_execRtimCmdTaskList(ctx, res, cmd) == -1) {
+            if (crinitExecRtimCmdTaskList(ctx, res, cmd) == -1) {
                 crinitErrPrint("Could not execute runtime command \'TASKLIST\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_SHUTDOWN:
-            if (EBCL_execRtimCmdShutdown(ctx, res, cmd) == -1) {
+            if (crinitExecRtimCmdShutdown(ctx, res, cmd) == -1) {
                 crinitErrPrint("Could not execute runtime command \'SHUTDOWN\'.");
                 return -1;
             }
             return 0;
         case EBCL_RTIMCMD_C_GETVER:
-            if (EBCL_execRtimCmdGetVer(ctx, res, cmd) == -1) {
+            if (crinitExecRtimCmdGetVer(ctx, res, cmd) == -1) {
                 crinitErrPrint("Could not execute runtime command \'GETVER\'.");
                 return -1;
             }
@@ -440,7 +440,7 @@ int EBCL_execRtimCmd(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCm
     return 0;
 }
 
-int EBCL_buildRtimCmd(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, size_t argc, ...) {
+int crinitBuildRtimCmd(crinitRtimCmd_t *c, ebcl_RtimOp_t op, size_t argc, ...) {
     if (c == NULL) {
         crinitErrPrint("Return pointer must not be NULL.");
         return -1;
@@ -489,7 +489,7 @@ int EBCL_buildRtimCmd(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, size_t argc, ...) {
     return 0;
 }
 
-int EBCL_buildRtimCmdArray(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, int argc, const char *args[]) {
+int crinitBuildRtimCmdArray(crinitRtimCmd_t *c, ebcl_RtimOp_t op, int argc, const char *args[]) {
     if (c == NULL) {
         crinitErrPrint("Return pointer must not be NULL.");
         return -1;
@@ -531,7 +531,7 @@ int EBCL_buildRtimCmdArray(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, int argc, const 
     return 0;
 }
 
-int EBCL_destroyRtimCmd(ebcl_RtimCmd_t *c) {
+int crinitDestroyRtimCmd(crinitRtimCmd_t *c) {
     if (c == NULL) {
         crinitErrPrint("RtimCmd pointer must not be NULL.");
         return -1;
@@ -541,7 +541,7 @@ int EBCL_destroyRtimCmd(ebcl_RtimCmd_t *c) {
     return 0;
 }
 
-static int EBCL_execRtimCmdAddTask(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+static int crinitExecRtimCmdAddTask(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd) {
     if (ctx == NULL || res == NULL || cmd == NULL) {
         crinitErrPrint("Pointer parameters must not be NULL.");
     }
@@ -552,25 +552,25 @@ static int EBCL_execRtimCmdAddTask(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, con
     }
 
     if (cmd->argc != 3) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, CRINIT_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
 
     crinitConfKvList_t *c;
     if (crinitParseConf(&c, cmd->args[0]) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR, "Could not parse given config.");
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, CRINIT_RTIMCMD_RES_ERR, "Could not parse given config.");
     }
     crinitDbgInfoPrint("File \'%s\' loaded.", cmd->args[0]);
 
     if (strcmp(cmd->args[2], "@unchanged") != 0) {
         if (strcmp(cmd->args[2], "@empty") == 0) {
             if (crinitConfListSetVal("", "DEPENDS", c) == -1) {
-                return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR,
+                return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, CRINIT_RTIMCMD_RES_ERR,
                                          "Could not set dependencies to empty.");
             }
         } else {
             if (crinitConfListSetVal(cmd->args[2], "DEPENDS", c) == -1) {
                 crinitFreeConfList(c);
-                return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR,
+                return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, CRINIT_RTIMCMD_RES_ERR,
                                          "Could not set dependencies to given string.");
             }
         }
@@ -579,7 +579,7 @@ static int EBCL_execRtimCmdAddTask(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, con
     crinitTask_t *t = NULL;
     if (crinitTaskCreateFromConfKvList(&t, c) == -1) {
         crinitFreeConfList(c);
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR,
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, CRINIT_RTIMCMD_RES_ERR,
                                  "Could not create task from config.");
     }
     crinitFreeConfList(c);
@@ -592,14 +592,14 @@ static int EBCL_execRtimCmdAddTask(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, con
 
     if (crinitTaskDBInsert(ctx, t, overwrite) == -1) {
         crinitFreeTask(t);
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR,
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, CRINIT_RTIMCMD_RES_ERR,
                                  "Could not insert new task into TaskDB.");
     }
     crinitFreeTask(t);
-    return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 1, EBCL_RTIMCMD_RES_OK);
+    return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 1, CRINIT_RTIMCMD_RES_OK);
 }
 
-static int EBCL_execRtimCmdAddSeries(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+static int crinitExecRtimCmdAddSeries(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd) {
     if (ctx == NULL || res == NULL || cmd == NULL) {
         crinitErrPrint("Pointer parameters must not be NULL.");
     }
@@ -610,22 +610,22 @@ static int EBCL_execRtimCmdAddSeries(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, c
     }
 
     if (cmd->argc != 2) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, CRINIT_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
 
     if (!crinitIsAbsPath(cmd->args[0])) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, CRINIT_RTIMCMD_RES_ERR,
                                  "Path to series file must be absolute.");
     }
 
     if (crinitTaskDBSetSpawnInhibit(ctx, true) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, CRINIT_RTIMCMD_RES_ERR,
                                  "Could not inhibit process spawning to load new series file.");
     }
 
     crinitFileSeries_t taskSeries;
     if (crinitLoadSeriesConf(&taskSeries, cmd->args[0]) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR, "Could not load series file.");
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, CRINIT_RTIMCMD_RES_ERR, "Could not load series file.");
     }
 
     bool overwriteTasks = false;
@@ -643,7 +643,7 @@ static int EBCL_execRtimCmdAddSeries(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, c
             if (confFn == NULL) {
                 crinitDestroyFileSeries(&taskSeries);
                 crinitTaskDBSetSpawnInhibit(ctx, false);
-                return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
+                return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, CRINIT_RTIMCMD_RES_ERR,
                                          "Memory allocation error.");
             }
             memcpy(confFn, taskSeries.baseDir, prefixLen);
@@ -660,7 +660,7 @@ static int EBCL_execRtimCmdAddSeries(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, c
             }
             crinitDestroyFileSeries(&taskSeries);
             crinitTaskDBSetSpawnInhibit(ctx, false);
-            return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
+            return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, CRINIT_RTIMCMD_RES_ERR,
                                      "Could not parse config file.");
         }
         crinitInfoPrint("File \'%s\' loaded.", confFn);
@@ -673,7 +673,7 @@ static int EBCL_execRtimCmdAddSeries(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, c
             crinitFreeConfList(c);
             crinitDestroyFileSeries(&taskSeries);
             crinitTaskDBSetSpawnInhibit(ctx, false);
-            return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
+            return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, CRINIT_RTIMCMD_RES_ERR,
                                      "Could not create task from config file.");
         }
 
@@ -681,7 +681,7 @@ static int EBCL_execRtimCmdAddSeries(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, c
         if (crinitTaskDBInsert(ctx, t, overwriteTasks) == -1) {
             crinitFreeTask(t);
             crinitDestroyFileSeries(&taskSeries);
-            return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR,
+            return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, CRINIT_RTIMCMD_RES_ERR,
                                      "Could not insert new task into TaskDB.");
         }
 
@@ -690,152 +690,152 @@ static int EBCL_execRtimCmdAddSeries(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, c
 
     crinitDestroyFileSeries(&taskSeries);
     if (crinitTaskDBSetSpawnInhibit(ctx, false) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, CRINIT_RTIMCMD_RES_ERR,
                                  "Could not re-enable spawning of processes.");
     }
-    return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 1, EBCL_RTIMCMD_RES_OK);
+    return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 1, CRINIT_RTIMCMD_RES_OK);
 }
 
-static int EBCL_execRtimCmdEnable(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+static int crinitExecRtimCmdEnable(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd) {
     crinitDbgInfoPrint("Will execute runtime command \'ENABLE\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
         crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
     if (cmd->argc != 1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ENABLE, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_ENABLE, 2, CRINIT_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
     const char depStr[] = "@ctl\0enable";
     crinitTaskDep_t tempDep = {NULL, NULL};
     tempDep.name = malloc(sizeof(depStr));
     if (tempDep.name == NULL) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ENABLE, 2, EBCL_RTIMCMD_RES_ERR, "Memory allocation error.");
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_ENABLE, 2, CRINIT_RTIMCMD_RES_ERR, "Memory allocation error.");
     }
     memcpy(tempDep.name, depStr, sizeof(depStr));
     tempDep.event = tempDep.name + strlen(tempDep.name) + 1;
 
     if (crinitTaskDBRemoveDepFromTask(ctx, &tempDep, cmd->args[0]) == -1) {
         free(tempDep.name);
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ENABLE, 2, EBCL_RTIMCMD_RES_ERR,
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_ENABLE, 2, CRINIT_RTIMCMD_RES_ERR,
                                  "Could not remove \'enable\' dependency from task.");
     }
     free(tempDep.name);
-    return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ENABLE, 1, EBCL_RTIMCMD_RES_OK);
+    return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_ENABLE, 1, CRINIT_RTIMCMD_RES_OK);
 }
 
-static int EBCL_execRtimCmdDisable(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+static int crinitExecRtimCmdDisable(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd) {
     crinitDbgInfoPrint("Will execute runtime command \'DISABLE\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
         crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
     if (cmd->argc != 1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_DISABLE, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_DISABLE, 2, CRINIT_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
     const char newDepStr[] = "@ctl\0enable";
     crinitTaskDep_t tempDep = {NULL, NULL};
     tempDep.name = malloc(sizeof(newDepStr));
     if (tempDep.name == NULL) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_DISABLE, 2, EBCL_RTIMCMD_RES_ERR, "Memory allocation error.");
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_DISABLE, 2, CRINIT_RTIMCMD_RES_ERR, "Memory allocation error.");
     }
     memcpy(tempDep.name, newDepStr, sizeof(newDepStr));
     tempDep.event = tempDep.name + strlen(tempDep.name) + 1;
 
     if (crinitTaskDBAddDepToTask(ctx, &tempDep, cmd->args[0]) == -1) {
         free(tempDep.name);
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_DISABLE, 2, EBCL_RTIMCMD_RES_ERR,
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_DISABLE, 2, CRINIT_RTIMCMD_RES_ERR,
                                  "Could not add dependency to task.");
     }
     free(tempDep.name);
-    return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_DISABLE, 1, EBCL_RTIMCMD_RES_OK);
+    return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_DISABLE, 1, CRINIT_RTIMCMD_RES_OK);
 }
 
-static int EBCL_execRtimCmdStop(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+static int crinitExecRtimCmdStop(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd) {
     crinitDbgInfoPrint("Will execute runtime command \'STOP\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
         crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
     if (cmd->argc != 1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
     if (EBCL_setInhibitWait(true) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, EBCL_RTIMCMD_RES_ERR,
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
                                  "Could not inhibit waiting for processes.");
     }
     pid_t taskPid = 0;
     if (crinitTaskDBGetTaskPID(ctx, &taskPid, cmd->args[0]) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, EBCL_RTIMCMD_RES_ERR, "Could not access task.");
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR, "Could not access task.");
     }
     if (taskPid <= 0) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, EBCL_RTIMCMD_RES_ERR, "No PID registered for task.");
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR, "No PID registered for task.");
     }
     if (kill(taskPid, SIGTERM) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, EBCL_RTIMCMD_RES_ERR,
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
                                  "Could not send SIGTERM to process.");
     }
     if (EBCL_setInhibitWait(false) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, EBCL_RTIMCMD_RES_ERR,
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
                                  "Could not reactivate waiting for processes.");
     }
-    return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 1, EBCL_RTIMCMD_RES_OK);
+    return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 1, CRINIT_RTIMCMD_RES_OK);
 }
 
-static int EBCL_execRtimCmdKill(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+static int crinitExecRtimCmdKill(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd) {
     crinitDbgInfoPrint("Will execute runtime command \'KILL\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
         crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
     if (cmd->argc != 1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_KILL, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_KILL, 2, CRINIT_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
 
     if (EBCL_setInhibitWait(true) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, EBCL_RTIMCMD_RES_ERR,
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
                                  "Could not inhibit waiting for processes.");
     }
     pid_t taskPid = 0;
     if (crinitTaskDBGetTaskPID(ctx, &taskPid, cmd->args[0]) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_KILL, 2, EBCL_RTIMCMD_RES_ERR, "Could not access task.");
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_KILL, 2, CRINIT_RTIMCMD_RES_ERR, "Could not access task.");
     }
     if (taskPid <= 0) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_KILL, 2, EBCL_RTIMCMD_RES_ERR, "No PID registered for task.");
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_KILL, 2, CRINIT_RTIMCMD_RES_ERR, "No PID registered for task.");
     }
     if (kill(taskPid, SIGKILL) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_KILL, 2, EBCL_RTIMCMD_RES_ERR,
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_KILL, 2, CRINIT_RTIMCMD_RES_ERR,
                                  "Could not send SIGKILL to Process.");
     }
     if (EBCL_setInhibitWait(false) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, EBCL_RTIMCMD_RES_ERR,
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
                                  "Could not reactivate waiting for processes.");
     }
-    return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_KILL, 1, EBCL_RTIMCMD_RES_OK);
+    return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_KILL, 1, CRINIT_RTIMCMD_RES_OK);
 }
 
-static int EBCL_execRtimCmdRestart(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+static int crinitExecRtimCmdRestart(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd) {
     crinitDbgInfoPrint("Will execute runtime command \'RESTART\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
         crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
     if (cmd->argc != 1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_RESTART, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_RESTART, 2, CRINIT_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
 
-    ebcl_TaskState_t s = 0;
+    crinitTaskState_t s = 0;
     if (crinitTaskDBGetTaskState(ctx, &s, cmd->args[0]) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_RESTART, 2, EBCL_RTIMCMD_RES_ERR,
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_RESTART, 2, CRINIT_RTIMCMD_RES_ERR,
                                  "Could not get task state from TaskDB.");
     }
 
-    if (!(s & (EBCL_TASK_STATE_DONE | EBCL_TASK_STATE_FAILED))) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_RESTART, 2, EBCL_RTIMCMD_RES_ERR,
+    if (!(s & (CRINIT_TASK_STATE_DONE | CRINIT_TASK_STATE_FAILED))) {
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_RESTART, 2, CRINIT_RTIMCMD_RES_ERR,
                                  "Task is not either DONE or FAILED.");
     }
 
     if (crinitTaskDBSetTaskState(ctx, 0, cmd->args[0]) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_RESTART, 2, EBCL_RTIMCMD_RES_ERR, "Could not reset task state.");
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_RESTART, 2, CRINIT_RTIMCMD_RES_ERR, "Could not reset task state.");
     }
-    return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_RESTART, 1, EBCL_RTIMCMD_RES_OK);
+    return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_RESTART, 1, CRINIT_RTIMCMD_RES_OK);
 }
 
-static int EBCL_execRtimCmdNotify(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+static int crinitExecRtimCmdNotify(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd) {
     crinitDbgInfoPrint("Will execute runtime command \'NOTIFY\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
         crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
@@ -844,7 +844,7 @@ static int EBCL_execRtimCmdNotify(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
     // Notify library will need to send task name. So process dispatch will need to set it in an environment for
     // execve.
     if (cmd->argc < 2) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, CRINIT_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
 
     pid_t pid = -1;
@@ -873,81 +873,81 @@ static int EBCL_execRtimCmdNotify(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
 
     if (pid > 0) {
         if (crinitTaskDBSetTaskPID(ctx, pid, cmd->args[0]) == -1) {
-            return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, EBCL_RTIMCMD_RES_ERR,
+            return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, CRINIT_RTIMCMD_RES_ERR,
                                      "Could not set main PID of task.");
         }
     }
 
     if (ready > 0) {
-        const ebcl_TaskState_t s = EBCL_TASK_STATE_RUNNING | EBCL_TASK_STATE_NOTIFIED;
+        const crinitTaskState_t s = CRINIT_TASK_STATE_RUNNING | CRINIT_TASK_STATE_NOTIFIED;
         char depEvent[] = CRINIT_TASK_EVENT_RUNNING CRINIT_TASK_EVENT_NOTIFY_SUFFIX;
         if (crinitTaskDBSetTaskState(ctx, s, cmd->args[0]) == -1) {
-            return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, EBCL_RTIMCMD_RES_ERR,
+            return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, CRINIT_RTIMCMD_RES_ERR,
                                      "Could not set task state to RUNNING.");
         }
 
         crinitTaskDep_t dep = {cmd->args[0], depEvent};
         if (crinitTaskDBFulfillDep(ctx, &dep) == -1) {
-            return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, EBCL_RTIMCMD_RES_ERR,
+            return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, CRINIT_RTIMCMD_RES_ERR,
                                      "Could not fulfill dependency \'%s:%s\'.", cmd->args[0], depEvent);
         }
 
         if (crinitTaskDBProvideFeatureByTaskName(ctx, cmd->args[0], s) == -1) {
-            return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, EBCL_RTIMCMD_RES_ERR,
+            return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, CRINIT_RTIMCMD_RES_ERR,
                                      "Could not set features of spawned task \'%s\' as provided.", cmd->args[0]);
         }
     }
 
     if (stopping > 0) {
-        const ebcl_TaskState_t s = EBCL_TASK_STATE_DONE | EBCL_TASK_STATE_NOTIFIED;
+        const crinitTaskState_t s = CRINIT_TASK_STATE_DONE | CRINIT_TASK_STATE_NOTIFIED;
         char depEvent[] = CRINIT_TASK_EVENT_DONE CRINIT_TASK_EVENT_NOTIFY_SUFFIX;
 
         if (crinitTaskDBSetTaskState(ctx, s, cmd->args[0]) == -1) {
-            return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, EBCL_RTIMCMD_RES_ERR,
+            return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, CRINIT_RTIMCMD_RES_ERR,
                                      "Could not set task state to DONE.");
         }
 
         const crinitTaskDep_t dep = {cmd->args[0], depEvent};
         if (crinitTaskDBFulfillDep(ctx, &dep) == -1) {
-            return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, EBCL_RTIMCMD_RES_ERR,
+            return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, CRINIT_RTIMCMD_RES_ERR,
                                      "Could not fulfill dependency \'%s:%s\'.", cmd->args[0], depEvent);
         }
 
         if (crinitTaskDBProvideFeatureByTaskName(ctx, cmd->args[0], s) == -1) {
-            return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, EBCL_RTIMCMD_RES_ERR,
+            return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 2, CRINIT_RTIMCMD_RES_ERR,
                                      "Could not set features of spawned task \'%s\' as provided.", cmd->args[0]);
         }
     }
 
-    return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 1, EBCL_RTIMCMD_RES_OK);
+    return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_NOTIFY, 1, CRINIT_RTIMCMD_RES_OK);
 }
 
-static int EBCL_execRtimCmdStatus(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+static int crinitExecRtimCmdStatus(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd) {
     crinitDbgInfoPrint("Will execute runtime command \'STATUS\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
         crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
     if (cmd->argc != 1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 2, CRINIT_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
-    ebcl_TaskState_t s = 0;
+    crinitTaskState_t s = 0;
     pid_t pid = -1;
 
     if (crinitTaskDBGetTaskStateAndPID(ctx, &s, &pid, cmd->args[0]) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 2, EBCL_RTIMCMD_RES_ERR,
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 2, CRINIT_RTIMCMD_RES_ERR,
                                  "Could not get state and PID of task.");
     }
 
     size_t resStrLen = snprintf(NULL, 0, "%lu\n%d", s, pid) + 1;
     char *resStr = malloc(resStrLen);
     if (resStr == NULL) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 2, EBCL_RTIMCMD_RES_ERR, "Memory allocation error.");
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 2, CRINIT_RTIMCMD_RES_ERR, "Memory allocation error.");
     }
     snprintf(resStr, resStrLen, "%lu\n%d", s, pid);
     char *pidStr = strchr(resStr, '\n');
     *pidStr = '\0';
     pidStr++;
-    if (EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 3, EBCL_RTIMCMD_RES_OK, resStr, pidStr) == -1) {
+    if (crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 3, CRINIT_RTIMCMD_RES_OK, resStr, pidStr) == -1) {
         free(resStr);
         return -1;
     }
@@ -955,13 +955,13 @@ static int EBCL_execRtimCmdStatus(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
     return 0;
 }
 
-static int EBCL_execRtimCmdTaskList(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+static int crinitExecRtimCmdTaskList(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd) {
     crinitDbgInfoPrint("Will execute runtime command \'TASKLIST\' with following arguments:");
     for (size_t i = 0; i < cmd->argc; i++) {
         crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
     if (cmd->argc != 0) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_TASKLIST, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_TASKLIST, 2, CRINIT_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
 
     int ret = 0;
@@ -969,21 +969,21 @@ static int EBCL_execRtimCmdTaskList(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, co
     char **tasks;
 
     if (crinitTaskDBExportTaskNamesToArray(ctx, &tasks, &numTasks) == -1) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 2, EBCL_RTIMCMD_RES_ERR, "Memory allocation error.");
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 2, CRINIT_RTIMCMD_RES_ERR, "Memory allocation error.");
     }
 
     const char **args = malloc((numTasks + 1) * sizeof(*args));
     if (args == NULL) {
-        ret = EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 2, EBCL_RTIMCMD_RES_ERR, "Memory allocation error.");
+        ret = crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_STATUS, 2, CRINIT_RTIMCMD_RES_ERR, "Memory allocation error.");
         goto out;
     }
 
-    args[0] = EBCL_RTIMCMD_RES_OK;
+    args[0] = CRINIT_RTIMCMD_RES_OK;
     for (size_t i = 0; i < numTasks; i++) {
         args[i + 1] = tasks[i];
     }
 
-    ret = EBCL_buildRtimCmdArray(res, EBCL_RTIMCMD_R_TASKLIST, numTasks + 1, args);
+    ret = crinitBuildRtimCmdArray(res, EBCL_RTIMCMD_R_TASKLIST, numTasks + 1, args);
 
 out:
     free(args);
@@ -995,7 +995,7 @@ out:
     return ret;
 }
 
-static int EBCL_execRtimCmdGetVer(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+static int crinitExecRtimCmdGetVer(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd) {
     if (ctx == NULL || res == NULL || cmd == NULL) {
         crinitErrPrint("Pointer parameters must not be NULL");
         return -1;
@@ -1003,7 +1003,7 @@ static int EBCL_execRtimCmdGetVer(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
 
     crinitDbgInfoPrint("Will execute runtime command \'GETVER\'.");
     if (cmd->argc != 0) {
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_GETVER, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_GETVER, 2, CRINIT_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
 
     char major[8] = {'\0'}, minor[8] = {'\0'}, micro[8] = {'\0'};
@@ -1011,11 +1011,11 @@ static int EBCL_execRtimCmdGetVer(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
     snprintf(minor, sizeof(minor) - 1, "%u", crinitVersion.minor);
     snprintf(micro, sizeof(micro) - 1, "%u", crinitVersion.micro);
 
-    return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_GETVER, 5, EBCL_RTIMCMD_RES_OK, major, minor, micro,
+    return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_GETVER, 5, CRINIT_RTIMCMD_RES_OK, major, minor, micro,
                              crinitVersion.git);
 }
 
-static int EBCL_execRtimCmdShutdown(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+static int crinitExecRtimCmdShutdown(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd) {
     if (ctx == NULL || res == NULL || cmd == NULL) {
         crinitErrPrint("Pointer parameters must not be NULL");
         return -1;
@@ -1023,12 +1023,12 @@ static int EBCL_execRtimCmdShutdown(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, co
     ebcl_ShdnThrArgs_t *thrArgs = malloc(sizeof(ebcl_ShdnThrArgs_t));
     if (thrArgs == NULL) {
         crinitErrnoPrint("Could not allocate memory for shutdown thread arguments.");
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_SHUTDOWN, 2, EBCL_RTIMCMD_RES_ERR, "Memory allocation error.");
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_SHUTDOWN, 2, CRINIT_RTIMCMD_RES_ERR, "Memory allocation error.");
     }
 
     if (cmd->argc != 1) {
         free(thrArgs);
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_SHUTDOWN, 2, EBCL_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_SHUTDOWN, 2, CRINIT_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
 
     thrArgs->ctx = ctx;
@@ -1036,24 +1036,24 @@ static int EBCL_execRtimCmdShutdown(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, co
     thrArgs->shutdownCmd = (int)strtol(cmd->args[0], NULL, 16);
     if (thrArgs->shutdownCmd != RB_AUTOBOOT && thrArgs->shutdownCmd != RB_POWER_OFF) {
         free(thrArgs);
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_SHUTDOWN, 2, EBCL_RTIMCMD_RES_ERR, "Invalid argument.");
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_SHUTDOWN, 2, CRINIT_RTIMCMD_RES_ERR, "Invalid argument.");
     }
 
     pthread_t shdnThreadRef;
     pthread_attr_t thrAttrs;
     pthread_attr_init(&thrAttrs);
-    pthread_attr_setstacksize(&thrAttrs, EBCL_RTIMCMD_SHDN_THREAD_STACK_SIZE);
+    pthread_attr_setstacksize(&thrAttrs, CRINIT_RTIMCMD_SHDN_THREAD_STACK_SIZE);
     pthread_attr_setdetachstate(&thrAttrs, PTHREAD_CREATE_DETACHED);
     errno = pthread_create(&shdnThreadRef, &thrAttrs, EBCL_shdnThread, thrArgs);
     pthread_attr_destroy(&thrAttrs);
     if (errno != 0) {
         crinitErrnoPrint("Could not start shutdown thread");
         free(thrArgs);
-        return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_SHUTDOWN, 2, EBCL_RTIMCMD_RES_ERR,
+        return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_SHUTDOWN, 2, CRINIT_RTIMCMD_RES_ERR,
                                  "Could not start shutdown thread.");
     }
 
-    return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_SHUTDOWN, 1, EBCL_RTIMCMD_RES_OK);
+    return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_SHUTDOWN, 1, CRINIT_RTIMCMD_RES_OK);
 }
 
 static void *EBCL_shdnThread(void *args) {

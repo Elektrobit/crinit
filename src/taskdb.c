@@ -174,11 +174,11 @@ int crinitTaskDBSpawnReady(crinitTaskDB_t *ctx) {
         crinitTask_t *pTask = &ctx->taskSet[i];
         if (EBCL_taskReady(pTask)) {
             crinitDbgInfoPrint("Task \'%s\' ready to spawn.", pTask->name);
-            pTask->state = EBCL_TASK_STATE_STARTING;
+            pTask->state = CRINIT_TASK_STATE_STARTING;
 
             if (ctx->spawnFunc(ctx, pTask) == -1) {
                 crinitErrPrint("Could not spawn new thread for execution of task \'%s\'.", pTask->name);
-                pTask->state &= ~EBCL_TASK_STATE_STARTING;
+                pTask->state &= ~CRINIT_TASK_STATE_STARTING;
                 pthread_mutex_unlock(&ctx->lock);
                 return -1;
             }
@@ -209,7 +209,7 @@ int crinitTaskDBSetSpawnInhibit(crinitTaskDB_t *ctx, bool inh) {
     return 0;
 }
 
-int crinitTaskDBSetTaskState(crinitTaskDB_t *ctx, ebcl_TaskState_t s, const char *taskName) {
+int crinitTaskDBSetTaskState(crinitTaskDB_t *ctx, crinitTaskState_t s, const char *taskName) {
     if (ctx == NULL || taskName == NULL) {
         crinitErrPrint("The TaskDB context and the taskName must not be NULL.");
         return -1;
@@ -223,10 +223,10 @@ int crinitTaskDBSetTaskState(crinitTaskDB_t *ctx, ebcl_TaskState_t s, const char
         crinitTask_t *pTask = &ctx->taskSet[i];
         if (strcmp(pTask->name, taskName) == 0) {
             pTask->state = s;
-            s &= ~EBCL_TASK_STATE_NOTIFIED;  // Here we don't care if we got the state via notification or directly.
-            if (s == EBCL_TASK_STATE_FAILED) {
+            s &= ~CRINIT_TASK_STATE_NOTIFIED;  // Here we don't care if we got the state via notification or directly.
+            if (s == CRINIT_TASK_STATE_FAILED) {
                 pTask->failCount++;
-            } else if (s == EBCL_TASK_STATE_DONE) {
+            } else if (s == CRINIT_TASK_STATE_DONE) {
                 pTask->failCount = 0;
             }
             pthread_cond_broadcast(&ctx->changed);
@@ -239,7 +239,7 @@ int crinitTaskDBSetTaskState(crinitTaskDB_t *ctx, ebcl_TaskState_t s, const char
     return -1;
 }
 
-int crinitTaskDBGetTaskState(crinitTaskDB_t *ctx, ebcl_TaskState_t *s, const char *taskName) {
+int crinitTaskDBGetTaskState(crinitTaskDB_t *ctx, crinitTaskState_t *s, const char *taskName) {
     if (ctx == NULL || taskName == NULL || s == NULL) {
         crinitErrPrint("The TaskDB context, taskName, and result pointer must not be NULL.");
         return -1;
@@ -308,7 +308,7 @@ int crinitTaskDBGetTaskPID(crinitTaskDB_t *ctx, pid_t *pid, const char *taskName
     return -1;
 }
 
-int crinitTaskDBGetTaskStateAndPID(crinitTaskDB_t *ctx, ebcl_TaskState_t *s, pid_t *pid, const char *taskName) {
+int crinitTaskDBGetTaskStateAndPID(crinitTaskDB_t *ctx, crinitTaskState_t *s, pid_t *pid, const char *taskName) {
     if (ctx == NULL || taskName == NULL || s == NULL || pid == NULL) {
         crinitErrPrint("The TaskDB context, taskName, and result pointers must not be NULL.");
         return -1;
@@ -448,7 +448,7 @@ int crinitTaskDBFulfillDep(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep) {
     return 0;
 }
 
-int crinitTaskDBProvideFeature(crinitTaskDB_t *ctx, const crinitTask_t *provider, ebcl_TaskState_t newState) {
+int crinitTaskDBProvideFeature(crinitTaskDB_t *ctx, const crinitTask_t *provider, crinitTaskState_t newState) {
     if (ctx == NULL || provider == NULL) {
         crinitErrPrint("The TaskDB context and the feature-providing task must not be NULL.");
         return -1;
@@ -472,7 +472,7 @@ int crinitTaskDBProvideFeature(crinitTaskDB_t *ctx, const crinitTask_t *provider
     return 0;
 }
 
-int crinitTaskDBProvideFeatureByTaskName(crinitTaskDB_t *ctx, const char *taskName, ebcl_TaskState_t newState) {
+int crinitTaskDBProvideFeatureByTaskName(crinitTaskDB_t *ctx, const char *taskName, crinitTaskState_t newState) {
     if (ctx == NULL || taskName == NULL) {
         crinitErrPrint("The TaskDB context and the name of the feature-providing task must not be NULL.");
         return -1;
@@ -566,10 +566,10 @@ static bool EBCL_taskReady(const crinitTask_t *t) {
     if (t->depsSize != 0) {
         return false;
     }
-    if (t->state & (EBCL_TASK_STATE_RUNNING | EBCL_TASK_STATE_STARTING)) {
+    if (t->state & (CRINIT_TASK_STATE_RUNNING | CRINIT_TASK_STATE_STARTING)) {
         return false;
     }
-    if (t->state & (EBCL_TASK_STATE_FAILED | EBCL_TASK_STATE_DONE)) {
+    if (t->state & (CRINIT_TASK_STATE_FAILED | CRINIT_TASK_STATE_DONE)) {
         if (!(t->opts & CRINIT_TASK_OPT_RESPAWN)) {
             return false;
         }

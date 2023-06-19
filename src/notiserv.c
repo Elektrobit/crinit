@@ -295,8 +295,8 @@ static void *EBCL_connThread(void *args) {
         crinitDbgInfoPrint("(TID %d) Received following credentials from peer process: PID=%d, UID=%d, GID=%d", threadId,
                           msgCreds.pid, msgCreds.uid, msgCreds.gid);
 
-        ebcl_RtimCmd_t cmd, res;
-        if (EBCL_parseRtimCmd(&cmd, clientMsg) == -1) {
+        crinitRtimCmd_t cmd, res;
+        if (crinitParseRtimCmd(&cmd, clientMsg) == -1) {
             crinitErrPrint("(TID %d) Could not parse command from client.", threadId);
             free(clientMsg);
             close(connSockFd);
@@ -305,29 +305,29 @@ static void *EBCL_connThread(void *args) {
         free(clientMsg);
         if (!EBCL_checkPerm(cmd.op, &msgCreds)) {
             crinitErrPrint("(TID %d) Client does not have permission to issue command.", threadId);
-            if (EBCL_buildRtimCmd(&res, cmd.op + 1, 2, EBCL_RTIMCMD_RES_ERR, "Permission denied.") == -1) {
+            if (crinitBuildRtimCmd(&res, cmd.op + 1, 2, CRINIT_RTIMCMD_RES_ERR, "Permission denied.") == -1) {
                 crinitErrPrint("Could not generate response to client.");
-                EBCL_destroyRtimCmd(&cmd);
+                crinitDestroyRtimCmd(&cmd);
                 close(connSockFd);
                 continue;
             }
         } else {
-            if (EBCL_execRtimCmd(EBCL_tdbRef, &res, &cmd) == -1) {
+            if (crinitExecRtimCmd(EBCL_tdbRef, &res, &cmd) == -1) {
                 crinitErrPrint("(TID %d) Could not execute command from client.", threadId);
-                EBCL_destroyRtimCmd(&cmd);
+                crinitDestroyRtimCmd(&cmd);
                 close(connSockFd);
                 continue;
             }
         }
-        EBCL_destroyRtimCmd(&cmd);
+        crinitDestroyRtimCmd(&cmd);
         char *resStr;
         size_t resLen;
-        if (EBCL_rtimCmdToMsgStr(&resStr, &resLen, &res) == -1) {
-            EBCL_destroyRtimCmd(&res);
+        if (crinitRtimCmdToMsgStr(&resStr, &resLen, &res) == -1) {
+            crinitDestroyRtimCmd(&res);
             crinitErrPrint("(TID %d) Could not transform command result to response string.", threadId);
             continue;
         }
-        EBCL_destroyRtimCmd(&res);
+        crinitDestroyRtimCmd(&res);
         crinitDbgInfoPrint("(TID %d) Will send response message \'%s\' to client.", threadId, resStr);
         if (EBCL_sendStr(connSockFd, resStr) == -1) {
             crinitErrPrint("(TID %d) Could not send response message to client.", threadId);

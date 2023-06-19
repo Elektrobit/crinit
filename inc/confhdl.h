@@ -16,7 +16,7 @@
 /**
  * Function pointer type definition for configuration directive handlers.
  *
- * Each configuration directive has its own handler function implementation, mapped by EBCL_cfgMap. It will use the
+ * Each configuration directive has its own handler function implementation, mapped by crinitCfgMap. It will use the
  * appropriate parsing/conversion functions (see confconv.h) to extract desired settings and then write them to the
  * \a tgt crinitTask_t.
  *

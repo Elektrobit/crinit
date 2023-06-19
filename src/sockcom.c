@@ -29,7 +29,7 @@ static int EBCL_crinitConnect(int *sockFd, const char *sockFile);
 /**
  * Send a command/request to Crinit.
  *
- * Uses EBCL_rtimCmdToMsgStr() to generate a string and sends it using the same protocol as sendStr()/recvStr() in
+ * Uses crinitRtimCmdToMsgStr() to generate a string and sends it using the same protocol as sendStr()/recvStr() in
  * notiserv.c. First, a binary size_t with the string size is sent, then the string itself in a second message/packet.
  *
  * The following diagram illustrates the low-level protocol:
@@ -40,12 +40,12 @@ static int EBCL_crinitConnect(int *sockFd, const char *sockFile);
  *
  * @return 0 on success, -1 otherwise
  */
-static int EBCL_crinitSend(int sockFd, const ebcl_RtimCmd_t *cmd);
+static int EBCL_crinitSend(int sockFd, const crinitRtimCmd_t *cmd);
 /**
  * Receive a response from Crinit.
  *
- * Receives a string using the same protocol as sendStr()/recvStr() in notiserv.c and then uses EBCL_parseRtimCmd() to
- * generate an equivalent ebcl_RtimCmd_t.
+ * Receives a string using the same protocol as sendStr()/recvStr() in notiserv.c and then uses crinitParseRtimCmd() to
+ * generate an equivalent crinitRtimCmd_t.
  *
  * First, a binary size_t with the string size is received, memory allocation made accordingly, and then the string
  * itself in a second message/packet is received.
@@ -58,7 +58,7 @@ static int EBCL_crinitSend(int sockFd, const ebcl_RtimCmd_t *cmd);
  *
  * @return 0 on success, -1 otherwise
  */
-static int EBCL_crinitRecv(int sockFd, ebcl_RtimCmd_t *res);
+static int EBCL_crinitRecv(int sockFd, crinitRtimCmd_t *res);
 /**
  * Wait for a ready-to-receive message from Crinit.
  *
@@ -68,7 +68,7 @@ static int EBCL_crinitRecv(int sockFd, ebcl_RtimCmd_t *res);
  */
 static int EBCL_waitForRtr(int sockFd);
 
-int EBCL_crinitXfer(const char *sockFile, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {
+int EBCL_crinitXfer(const char *sockFile, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd) {
     if (res == NULL || cmd == NULL) {
         crinitErrPrint("Pointer arguments must not be NULL");
         return -1;
@@ -125,7 +125,7 @@ static int EBCL_crinitConnect(int *sockFd, const char *sockFile) {
     return 0;
 }
 
-static int EBCL_crinitSend(int sockFd, const ebcl_RtimCmd_t *cmd) {
+static int EBCL_crinitSend(int sockFd, const crinitRtimCmd_t *cmd) {
     if (cmd == NULL) {
         crinitErrPrint("Pointer arguments must not be NULL");
         return -1;
@@ -133,7 +133,7 @@ static int EBCL_crinitSend(int sockFd, const ebcl_RtimCmd_t *cmd) {
 
     char *sendStr = NULL;
     size_t sendLen = 0;
-    if (EBCL_rtimCmdToMsgStr(&sendStr, &sendLen, cmd) == -1) {
+    if (crinitRtimCmdToMsgStr(&sendStr, &sendLen, cmd) == -1) {
         crinitErrPrint("Could not transform RtimCmd into sendable string.");
         return -1;
     }
@@ -154,7 +154,7 @@ static int EBCL_crinitSend(int sockFd, const ebcl_RtimCmd_t *cmd) {
     return 0;
 }
 
-static int EBCL_crinitRecv(int sockFd, ebcl_RtimCmd_t *res) {
+static int EBCL_crinitRecv(int sockFd, crinitRtimCmd_t *res) {
     if (res == NULL) {
         crinitErrPrint("Return pointer must not be NULL.");
         return -1;
@@ -193,7 +193,7 @@ static int EBCL_crinitRecv(int sockFd, ebcl_RtimCmd_t *res) {
     recvStr[recvLen - 1] = '\0';
     crinitDbgInfoPrint("Received message of %ld Bytes. Content:\n\'%s\'", bytesRead, recvStr);
 
-    if (EBCL_parseRtimCmd(res, recvStr) == -1) {
+    if (crinitParseRtimCmd(res, recvStr) == -1) {
         free(recvStr);
         crinitErrPrint("Could not parse response message.");
         return -1;

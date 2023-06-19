@@ -310,7 +310,7 @@ static inline int EBCL_taskSetFromConfKvList(crinitTask_t *tgt, const crinitConf
         char *strtokState;
         char *token = strtok_r(importList, ",", &strtokState);
         while (token != NULL) {
-            const ebcl_ConfigMapping_t *cfg = EBCL_findConfigMapping(token);
+            const crinitConfigMapping_t *cfg = crinitFindConfigMapping(token);
             if (cfg == NULL) {
                 crinitErrPrint("Unexpected configuration string in include import list: '%s'", token);
                 return -1;
@@ -323,7 +323,7 @@ static inline int EBCL_taskSetFromConfKvList(crinitTask_t *tgt, const crinitConf
     const crinitConfKvList_t *pEntry = src;
     const char *val = NULL;
     while (pEntry != NULL) {
-        const ebcl_ConfigMapping_t *tcm = EBCL_findConfigMapping(pEntry->key);
+        const crinitConfigMapping_t *tcm = crinitFindConfigMapping(pEntry->key);
         if (tcm == NULL) {
             crinitInfoPrint("Warning: Unknown configuration key '%s' encountered.", pEntry->key);
         } else {

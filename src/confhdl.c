@@ -163,11 +163,11 @@ int EBCL_taskCfgPrvHandler(crinitTask_t *tgt, const char *val) {
         }
         *delimPtr++ = '\0';
         if (strncmp(delimPtr, CRINIT_TASK_EVENT_RUNNING, strlen(CRINIT_TASK_EVENT_RUNNING)) == 0) {
-            ptr->stateReq = EBCL_TASK_STATE_RUNNING;
+            ptr->stateReq = CRINIT_TASK_STATE_RUNNING;
         } else if (strncmp(delimPtr, CRINIT_TASK_EVENT_DONE, strlen(CRINIT_TASK_EVENT_RUNNING)) == 0) {
-            ptr->stateReq = EBCL_TASK_STATE_DONE;
+            ptr->stateReq = CRINIT_TASK_STATE_DONE;
         } else if (strncmp(delimPtr, CRINIT_TASK_EVENT_FAILED, strlen(CRINIT_TASK_EVENT_FAILED)) == 0) {
-            ptr->stateReq = EBCL_TASK_STATE_FAILED;
+            ptr->stateReq = CRINIT_TASK_STATE_FAILED;
         } else {
             crinitErrnoPrint("Could not parse '%s' in %s.", ptr->name, CRINIT_CONFIG_KEYSTR_PROVIDES);
             crinitFreeArgvArray(tempPrvs);
@@ -176,7 +176,7 @@ int EBCL_taskCfgPrvHandler(crinitTask_t *tgt, const char *val) {
 
         delimPtr = strchr(delimPtr, '-');
         if (delimPtr != NULL && strcmp(delimPtr, CRINIT_TASK_EVENT_NOTIFY_SUFFIX) == 0) {
-            ptr->stateReq |= EBCL_TASK_STATE_NOTIFIED;
+            ptr->stateReq |= CRINIT_TASK_STATE_NOTIFIED;
         }
     }
 

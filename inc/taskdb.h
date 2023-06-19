@@ -84,11 +84,11 @@ int crinitTaskDBFulfillDep(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep);
  *
  * @param ctx       The crinitTaskDB_t context in which to fulfill the feature dependency.
  * @param provider  The crinitTask_t providing the feature(s).
- * @param newState  The ebcl_TaskState_t which has been newly reached by \a provider.
+ * @param newState  The crinitTaskState_t which has been newly reached by \a provider.
  *
  * @return 0 on success, -1 otherwise
  */
-int crinitTaskDBProvideFeature(crinitTaskDB_t *ctx, const crinitTask_t *provider, ebcl_TaskState_t newState);
+int crinitTaskDBProvideFeature(crinitTaskDB_t *ctx, const crinitTask_t *provider, crinitTaskState_t newState);
 /**
  * Fulfill feature dependencies implemented by a provider task (searched for by name).
  *
@@ -97,11 +97,11 @@ int crinitTaskDBProvideFeature(crinitTaskDB_t *ctx, const crinitTask_t *provider
  *
  * @param ctx       The crinitTaskDB_t context in which to fulfill the feature dependency.
  * @param taskName  The name of the task providing the feature(s).
- * @param newState  The ebcl_TaskState_t which has been newly reached by the provider task.
+ * @param newState  The crinitTaskState_t which has been newly reached by the provider task.
  *
  * @return 0 on success, -1 otherwise
  */
-int crinitTaskDBProvideFeatureByTaskName(crinitTaskDB_t *ctx, const char *taskName, ebcl_TaskState_t newState);
+int crinitTaskDBProvideFeatureByTaskName(crinitTaskDB_t *ctx, const char *taskName, crinitTaskState_t newState);
 /**
  * Add a dependency to a specific task inside a task database.
  *
@@ -132,11 +132,11 @@ int crinitTaskDBAddDepToTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep, co
 int crinitTaskDBRemoveDepFromTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep, const char *taskName);
 
 /**
- * Set the ebcl_TaskState_t of a task in a task database
+ * Set the crinitTaskState_t of a task in a task database
  *
  * Will search \a ctx for an crinitTask_t with crinitTask_t::name lexicographically equal to \a taskName and set its
  * crinitTask_t::state to \a s. If such a task does not exist in \a ctx, an error is returned. If \a s equals
- * #EBCL_TASK_STATE_FAILED, crinitTask_t::failCount will be incremented by 1. If \a s equals #EBCL_TASK_STATE_DONE,
+ * #CRINIT_TASK_STATE_FAILED, crinitTask_t::failCount will be incremented by 1. If \a s equals #CRINIT_TASK_STATE_DONE,
  * crinitTask_t::failCount will be reset to 0. The function uses crinitTaskDB_t::lock for synchronization and is
  * thread-safe.
  *
@@ -146,21 +146,21 @@ int crinitTaskDBRemoveDepFromTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *de
  *
  * @return 0 on success, -1 otherwise.
  */
-int crinitTaskDBSetTaskState(crinitTaskDB_t *ctx, ebcl_TaskState_t s, const char *taskName);
+int crinitTaskDBSetTaskState(crinitTaskDB_t *ctx, crinitTaskState_t s, const char *taskName);
 /**
- * Get the ebcl_TaskState_t of a task in a task database
+ * Get the crinitTaskState_t of a task in a task database
  *
  * Will search \a ctx for an crinitTask_t with crinitTask_t::name lexicographically equal to \a taskName and write its
  * crinitTask_t::state to \a s. If such a task does not exist in \a ctx, an error is returned. The function uses
  * crinitTaskDB_t::lock for synchronization and is thread-safe.
  *
  * @param ctx       The crinitTaskDB_t context in which the task is held.
- * @param s         Pointer to store the returned ebcl_TaskState_t.
+ * @param s         Pointer to store the returned crinitTaskState_t.
  * @param taskName  The task's name.
  *
  * @return 0 on success, -1 otherwise.
  */
-int crinitTaskDBGetTaskState(crinitTaskDB_t *ctx, ebcl_TaskState_t *s, const char *taskName);
+int crinitTaskDBGetTaskState(crinitTaskDB_t *ctx, crinitTaskState_t *s, const char *taskName);
 
 /**
  * Set the PID a task in a task database
@@ -193,7 +193,7 @@ int crinitTaskDBSetTaskPID(crinitTaskDB_t *ctx, pid_t pid, const char *taskName)
 int crinitTaskDBGetTaskPID(crinitTaskDB_t *ctx, pid_t *pid, const char *taskName);
 
 /**
- * Get the ebcl_TaskState_t and the PID of a task in a task database
+ * Get the crinitTaskState_t and the PID of a task in a task database
  *
  * Will search \a ctx for an crinitTask_t with crinitTask_t::name lexicographically equal to \a taskName and write its
  * crinitTask_t::state to \a s and its PID to \a pid. If such a task does not exist in \a ctx, an error is returned. If
@@ -201,13 +201,13 @@ int crinitTaskDBGetTaskPID(crinitTaskDB_t *ctx, pid_t *pid, const char *taskName
  * function uses crinitTaskDB_t::lock for synchronization and is thread-safe.
  *
  * @param ctx       The crinitTaskDB_t context in which the task is held.
- * @param s         Pointer to store the returned ebcl_TaskState_t.
+ * @param s         Pointer to store the returned crinitTaskState_t.
  * @param pid       Pointer to store the returned PID.
  * @param taskName  The task's name.
  *
  * @return 0 on success, -1 otherwise.
  */
-int crinitTaskDBGetTaskStateAndPID(crinitTaskDB_t *ctx, ebcl_TaskState_t *s, pid_t *pid, const char *taskName);
+int crinitTaskDBGetTaskStateAndPID(crinitTaskDB_t *ctx, crinitTaskState_t *s, pid_t *pid, const char *taskName);
 
 /**
  * Run crinitTaskDB_t::spawnFunc for each startable task in a task database.
