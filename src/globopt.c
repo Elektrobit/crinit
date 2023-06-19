@@ -15,76 +15,76 @@
 
 #include "logio.h"
 
-#define EBCL_globOptSetErrPrint(keyStr) crinitErrPrint("Could not set default value for global option '%s'.", (keyStr))
+#define crinitGlobOptSetErrPrint(keyStr) crinitErrPrint("Could not set default value for global option '%s'.", (keyStr))
 
 /** Array to hold pointers to the global option values, one pointer per global option. **/
-static void *EBCL_globOptArr[EBCL_GLOBOPT_END - EBCL_GLOBOPT_START] = {NULL};
+static void *EBCL_globOptArr[CRINIT_GLOBOPT_END - CRINIT_GLOBOPT_START] = {NULL};
 /** Mutex to synchronize access to globOptArr **/
 static pthread_mutex_t EBCL_optLock = PTHREAD_MUTEX_INITIALIZER;
 
-int EBCL_globOptInitDefault(void) {
-    for (ebcl_GlobOptKey_t i = EBCL_GLOBOPT_START; i < EBCL_GLOBOPT_END; i++) {
+int crinitGlobOptInitDefault(void) {
+    for (crinitGlobOptKey_t i = CRINIT_GLOBOPT_START; i < CRINIT_GLOBOPT_END; i++) {
         switch (i) {
-            case EBCL_GLOBOPT_DEBUG: {
+            case CRINIT_GLOBOPT_DEBUG: {
                 bool def = CRINIT_CONFIG_DEFAULT_DEBUG;
-                if (EBCL_globOptSetBoolean(i, &def) == -1) {
-                    EBCL_globOptSetErrPrint(CRINIT_CONFIG_KEYSTR_DEBUG);
+                if (crinitGlobOptSetBoolean(i, &def) == -1) {
+                    crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_DEBUG);
                     return -1;
                 }
             } break;
-            case EBCL_GLOBOPT_TASKDIR:
-                if (EBCL_globOptSetString(i, CRINIT_CONFIG_DEFAULT_TASKDIR) == -1) {
-                    EBCL_globOptSetErrPrint(CRINIT_CONFIG_KEYSTR_TASKDIR);
+            case CRINIT_GLOBOPT_TASKDIR:
+                if (crinitGlobOptSetString(i, CRINIT_CONFIG_DEFAULT_TASKDIR) == -1) {
+                    crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_TASKDIR);
                     return -1;
                 }
                 break;
-            case EBCL_GLOBOPT_INCLDIR:
-                if (EBCL_globOptSetString(i, CRINIT_CONFIG_DEFAULT_INCLDIR) == -1) {
-                    EBCL_globOptSetErrPrint(CRINIT_CONFIG_KEYSTR_INCLDIR);
+            case CRINIT_GLOBOPT_INCLDIR:
+                if (crinitGlobOptSetString(i, CRINIT_CONFIG_DEFAULT_INCLDIR) == -1) {
+                    crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_INCLDIR);
                     return -1;
                 }
                 break;
-            case EBCL_GLOBOPT_INCL_SUFFIX:
-                if (EBCL_globOptSetString(i, CRINIT_CONFIG_DEFAULT_INCL_SUFFIX) == -1) {
-                    EBCL_globOptSetErrPrint(CRINIT_CONFIG_KEYSTR_INCL_SUFFIX);
+            case CRINIT_GLOBOPT_INCL_SUFFIX:
+                if (crinitGlobOptSetString(i, CRINIT_CONFIG_DEFAULT_INCL_SUFFIX) == -1) {
+                    crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_INCL_SUFFIX);
                     return -1;
                 }
                 break;
-            case EBCL_GLOBOPT_SHDGRACEP: {
+            case CRINIT_GLOBOPT_SHDGRACEP: {
                 unsigned long long def = CRINIT_CONFIG_DEFAULT_SHDGRACEP;
-                if (EBCL_globOptSetUnsignedLL(i, &def) == -1) {
-                    EBCL_globOptSetErrPrint(CRINIT_CONFIG_KEYSTR_SHDGRACEP);
+                if (crinitGlobOptSetUnsignedLL(i, &def) == -1) {
+                    crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_SHDGRACEP);
                     return -1;
                 }
             } break;
-            case EBCL_GLOBOPT_USE_SYSLOG: {
+            case CRINIT_GLOBOPT_USE_SYSLOG: {
                 bool def = CRINIT_CONFIG_DEFAULT_USE_SYSLOG;
-                if (EBCL_globOptSetBoolean(i, &def) == -1) {
-                    EBCL_globOptSetErrPrint(CRINIT_CONFIG_KEYSTR_USE_SYSLOG);
+                if (crinitGlobOptSetBoolean(i, &def) == -1) {
+                    crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_USE_SYSLOG);
                     return -1;
                 }
             } break;
-            case EBCL_GLOBOPT_ENV: {
+            case CRINIT_GLOBOPT_ENV: {
                 crinitEnvSet_t init = {NULL, 0, 0};
-                if (EBCL_globOptSet(i, &init, sizeof(crinitEnvSet_t)) == -1) {
-                    EBCL_globOptSetErrPrint(CRINIT_CONFIG_KEYSTR_ENV_SET);
+                if (crinitGlobOptSet(i, &init, sizeof(crinitEnvSet_t)) == -1) {
+                    crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_ENV_SET);
                     return -1;
                 }
             } break;
-            case EBCL_GLOBOPT_START:
+            case CRINIT_GLOBOPT_START:
             default:
-                if (EBCL_globOptSet(i, NULL, 0) == -1) {
+                if (crinitGlobOptSet(i, NULL, 0) == -1) {
                     crinitErrPrint("Could not set unknown global option to default NULL pointer.");
                     return -1;
                 }
-            case EBCL_GLOBOPT_END:
+            case CRINIT_GLOBOPT_END:
                 break;
         }
     }
     return 0;
 }
 
-int EBCL_globOptSet(ebcl_GlobOptKey_t key, const void *val, size_t sz) {
+int crinitGlobOptSet(crinitGlobOptKey_t key, const void *val, size_t sz) {
     if ((errno = pthread_mutex_lock(&EBCL_optLock)) == -1) {
         crinitErrnoPrint("Could not wait for global option array mutex lock.");
         return -1;
@@ -108,7 +108,7 @@ int EBCL_globOptSet(ebcl_GlobOptKey_t key, const void *val, size_t sz) {
     return 0;
 }
 
-int EBCL_globOptGet(ebcl_GlobOptKey_t key, void *val, size_t sz) {
+int crinitGlobOptGet(crinitGlobOptKey_t key, void *val, size_t sz) {
     if (val == NULL || sz == 0) {
         crinitErrPrint("Return value pointer must not be NULL and at least 1 Byte must be read.");
         return -1;
@@ -128,7 +128,7 @@ int EBCL_globOptGet(ebcl_GlobOptKey_t key, void *val, size_t sz) {
     return 0;
 }
 
-int EBCL_globOptSetString(ebcl_GlobOptKey_t key, const char *str) {
+int crinitGlobOptSetString(crinitGlobOptKey_t key, const char *str) {
     if (str == NULL) {
         crinitErrPrint("Input string must not be NULL.");
         return -1;
@@ -141,7 +141,7 @@ int EBCL_globOptSetString(ebcl_GlobOptKey_t key, const char *str) {
     }
     memcpy(copyData, &len, sizeof(size_t));
     memcpy(copyData + sizeof(size_t), str, len);
-    if (EBCL_globOptSet(key, copyData, len + sizeof(size_t)) == -1) {
+    if (crinitGlobOptSet(key, copyData, len + sizeof(size_t)) == -1) {
         crinitErrPrint("Could not store global option string.");
         free(copyData);
         return -1;
@@ -150,9 +150,9 @@ int EBCL_globOptSetString(ebcl_GlobOptKey_t key, const char *str) {
     return 0;
 }
 
-int EBCL_globOptGetString(ebcl_GlobOptKey_t key, char **str) {
+int crinitGlobOptGetString(crinitGlobOptKey_t key, char **str) {
     size_t len = 0;
-    if (EBCL_globOptGet(key, &len, sizeof(size_t)) == -1 || len == 0) {
+    if (crinitGlobOptGet(key, &len, sizeof(size_t)) == -1 || len == 0) {
         crinitErrPrint("Could not get global option string.");
         return -1;
     }
@@ -161,7 +161,7 @@ int EBCL_globOptGetString(ebcl_GlobOptKey_t key, char **str) {
         crinitErrnoPrint("Could not allocate memory for temporary string");
         return -1;
     }
-    if (EBCL_globOptGet(key, temp, len + sizeof(size_t)) == -1) {
+    if (crinitGlobOptGet(key, temp, len + sizeof(size_t)) == -1) {
         crinitErrPrint("Could not get global option string.");
         free(temp);
         return -1;
@@ -177,9 +177,9 @@ int EBCL_globOptGetString(ebcl_GlobOptKey_t key, char **str) {
     return 0;
 }
 
-int EBCL_globOptSetEnvSet(const crinitEnvSet_t *es) {
+int crinitGlobOptSetEnvSet(const crinitEnvSet_t *es) {
     crinitEnvSet_t tgt;
-    if (EBCL_globOptGet(EBCL_GLOBOPT_ENV, &tgt, sizeof(crinitEnvSet_t)) == -1) {
+    if (crinitGlobOptGet(CRINIT_GLOBOPT_ENV, &tgt, sizeof(crinitEnvSet_t)) == -1) {
         crinitErrPrint("Could not retrieve current global environment set.");
         return -1;
     }
@@ -197,21 +197,21 @@ int EBCL_globOptSetEnvSet(const crinitEnvSet_t *es) {
         crinitErrPrint("Could not duplicate new environment set for use as a global option.");
     }
 
-    free(EBCL_globOptArr[EBCL_GLOBOPT_ENV]);
-    EBCL_globOptArr[EBCL_GLOBOPT_ENV] = malloc(sizeof(crinitEnvSet_t));
-    if (EBCL_globOptArr[EBCL_GLOBOPT_ENV] == NULL) {
+    free(EBCL_globOptArr[CRINIT_GLOBOPT_ENV]);
+    EBCL_globOptArr[CRINIT_GLOBOPT_ENV] = malloc(sizeof(crinitEnvSet_t));
+    if (EBCL_globOptArr[CRINIT_GLOBOPT_ENV] == NULL) {
         crinitErrPrint("Could not allocate memory for global option.");
         pthread_mutex_unlock(&EBCL_optLock);
         return -1;
     }
-    memcpy(EBCL_globOptArr[EBCL_GLOBOPT_ENV], &tgt, sizeof(crinitEnvSet_t));
+    memcpy(EBCL_globOptArr[CRINIT_GLOBOPT_ENV], &tgt, sizeof(crinitEnvSet_t));
     pthread_mutex_unlock(&EBCL_optLock);
     return 0;
 }
 
-int EBCL_globOptGetEnvSet(crinitEnvSet_t *es) {
+int crinitGlobOptGetEnvSet(crinitEnvSet_t *es) {
     crinitEnvSet_t temp;
-    if (EBCL_globOptGet(EBCL_GLOBOPT_ENV, &temp, sizeof(crinitEnvSet_t)) == -1) {
+    if (crinitGlobOptGet(CRINIT_GLOBOPT_ENV, &temp, sizeof(crinitEnvSet_t)) == -1) {
         crinitErrPrint("Could not retrieve global environment set.");
         return -1;
     }
@@ -228,15 +228,15 @@ int EBCL_globOptGetEnvSet(crinitEnvSet_t *es) {
     return 0;
 }
 
-void EBCL_globOptDestroy(void) {
+void crinitGlobOptDestroy(void) {
     if (pthread_mutex_lock(&EBCL_optLock) == -1) {
         crinitErrnoPrint("Could not wait for global option array mutex lock during deinitialization.");
         return;
     }
 
-    for (ebcl_GlobOptKey_t i = EBCL_GLOBOPT_START; i < EBCL_GLOBOPT_END; i++) {
+    for (crinitGlobOptKey_t i = CRINIT_GLOBOPT_START; i < CRINIT_GLOBOPT_END; i++) {
         if (EBCL_globOptArr[i] != NULL) {
-            if (i == EBCL_GLOBOPT_ENV) {
+            if (i == CRINIT_GLOBOPT_ENV) {
                 crinitEnvSetDestroy(EBCL_globOptArr[i]);
             }
             free(EBCL_globOptArr[i]);

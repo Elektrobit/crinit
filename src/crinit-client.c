@@ -61,7 +61,7 @@ static inline int EBCL_crinitResponseCheck(const crinitRtimCmd_t *res, ebcl_Rtim
 static EBCL_LIB_CONSTRUCTOR void EBCL_libInit(void) {
     bool v = false;
     crinitSetPrintPrefix("");
-    EBCL_globOptSetBoolean(EBCL_GLOBOPT_DEBUG, &v);
+    crinitGlobOptSetBoolean(CRINIT_GLOBOPT_DEBUG, &v);
     const char *envNotifyName = getenv(CRINIT_ENV_NOTIFY_NAME);
     if (envNotifyName != NULL) {
         EBCL_notifyName = envNotifyName;
@@ -77,11 +77,11 @@ static EBCL_LIB_CONSTRUCTOR void EBCL_libInit(void) {
  * option memory allocated as a consequence of EBCL_libInit().
  */
 static EBCL_LIB_DESTRUCTOR void EBCL_libDestroy(void) {
-    EBCL_globOptDestroy();
+    crinitGlobOptDestroy();
 }
 
 EBCL_LIB_EXPORTED int crinitClientSetVerbose(bool v) {
-    return EBCL_globOptSetBoolean(EBCL_GLOBOPT_DEBUG, &v);
+    return crinitGlobOptSetBoolean(CRINIT_GLOBOPT_DEBUG, &v);
 }
 
 EBCL_LIB_EXPORTED void crinitClientSetErrStream(FILE *errStream) {

@@ -412,7 +412,7 @@ int crinitLoadSeriesConf(crinitFileSeries_t *series, const char *filename) {
         return -1;
     }
 
-    if (EBCL_globOptSetString(EBCL_GLOBOPT_TASKDIR, taskDir) == -1) {
+    if (crinitGlobOptSetString(CRINIT_GLOBOPT_TASKDIR, taskDir) == -1) {
         crinitErrPrint("Could not store global string option values for '%s'.", CRINIT_CONFIG_KEYSTR_TASKDIR);
         crinitFreeConfList(c);
         return -1;
@@ -455,7 +455,7 @@ int crinitLoadSeriesConf(crinitFileSeries_t *series, const char *filename) {
 
     char *inclDir = taskDir;
     crinitConfListGetVal(&inclDir, CRINIT_CONFIG_KEYSTR_INCLDIR, c);
-    if (EBCL_globOptSetString(EBCL_GLOBOPT_INCLDIR, inclDir) == -1) {
+    if (crinitGlobOptSetString(CRINIT_GLOBOPT_INCLDIR, inclDir) == -1) {
         crinitErrPrint("Could not store global string option values for '%s'.", CRINIT_CONFIG_KEYSTR_INCLDIR);
         crinitFreeConfList(c);
         crinitDestroyFileSeries(series);
@@ -463,7 +463,7 @@ int crinitLoadSeriesConf(crinitFileSeries_t *series, const char *filename) {
     }
 
     if (crinitConfListGetVal(&fileSuffix, CRINIT_CONFIG_KEYSTR_INCL_SUFFIX, c) == 0 &&
-        EBCL_globOptSetString(EBCL_GLOBOPT_INCL_SUFFIX, fileSuffix) == -1) {
+        crinitGlobOptSetString(CRINIT_GLOBOPT_INCL_SUFFIX, fileSuffix) == -1) {
         crinitErrPrint("Could not store global string option values for '%s'.", CRINIT_CONFIG_KEYSTR_INCL_SUFFIX);
         crinitFreeConfList(c);
         crinitDestroyFileSeries(series);
@@ -478,7 +478,7 @@ int crinitLoadSeriesConf(crinitFileSeries_t *series, const char *filename) {
         crinitDestroyFileSeries(series);
         return -1;
     }
-    if (EBCL_globOptSetBoolean(EBCL_GLOBOPT_DEBUG, &confDbg) == -1) {
+    if (crinitGlobOptSetBoolean(CRINIT_GLOBOPT_DEBUG, &confDbg) == -1) {
         crinitErrPrint("Could not store global boolean option value for \'%s\'.", CRINIT_CONFIG_KEYSTR_DEBUG);
         crinitFreeConfList(c);
         crinitDestroyFileSeries(series);
@@ -493,7 +493,7 @@ int crinitLoadSeriesConf(crinitFileSeries_t *series, const char *filename) {
         crinitDestroyFileSeries(series);
         return -1;
     }
-    if (EBCL_globOptSetBoolean(EBCL_GLOBOPT_USE_SYSLOG, &confUseSyslog) == -1) {
+    if (crinitGlobOptSetBoolean(CRINIT_GLOBOPT_USE_SYSLOG, &confUseSyslog) == -1) {
         crinitErrPrint("Could not store global boolean option value for \'%s\'.", CRINIT_CONFIG_KEYSTR_USE_SYSLOG);
         crinitFreeConfList(c);
         crinitDestroyFileSeries(series);
@@ -508,7 +508,7 @@ int crinitLoadSeriesConf(crinitFileSeries_t *series, const char *filename) {
         crinitDestroyFileSeries(series);
         return -1;
     }
-    if (EBCL_globOptSetUnsignedLL(EBCL_GLOBOPT_SHDGRACEP, &shdnGracePeriodUs) == -1) {
+    if (crinitGlobOptSetUnsignedLL(CRINIT_GLOBOPT_SHDGRACEP, &shdnGracePeriodUs) == -1) {
         crinitErrPrint("Could not store global unsigned long long option values for \'%s\'.",
                       CRINIT_CONFIG_KEYSTR_SHDGRACEP);
         crinitFreeConfList(c);
@@ -524,7 +524,7 @@ int crinitLoadSeriesConf(crinitFileSeries_t *series, const char *filename) {
         return -1;
     }
 
-    if (EBCL_globOptSetEnvSet(&globEnv) == -1) {
+    if (crinitGlobOptSetEnvSet(&globEnv) == -1) {
         crinitErrPrint("Could not store global environment variable set.");
         crinitFreeConfList(c);
         crinitDestroyFileSeries(series);

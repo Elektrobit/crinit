@@ -20,32 +20,32 @@
  * Type to specify a global option (set in the series file)
  */
 typedef enum {
-    EBCL_GLOBOPT_START,        ///< Marker for beginning of enum, used to calculate number of elements.
-    EBCL_GLOBOPT_DEBUG,        ///< DEBUG global option.
-    EBCL_GLOBOPT_TASKDIR,      ///< TASKDIR global option.
-    EBCL_GLOBOPT_INCLDIR,      ///< INCLUDEDIR global option.
-    EBCL_GLOBOPT_INCL_SUFFIX,  ///< INCLUDE_SUFFIX global option
-    EBCL_GLOBOPT_SHDGRACEP,    ///< SHUTDOWN_GRACE_PERIOD_US global option
-    EBCL_GLOBOPT_USE_SYSLOG,   ///< USE_SYSLOG global option
-    EBCL_GLOBOPT_ENV,          ///< Global task environment variables.
-    EBCL_GLOBOPT_END           ///< Marker for end of enum, used to calculate number of elements.
-} ebcl_GlobOptKey_t;
+    CRINIT_GLOBOPT_START,        ///< Marker for beginning of enum, used to calculate number of elements.
+    CRINIT_GLOBOPT_DEBUG,        ///< DEBUG global option.
+    CRINIT_GLOBOPT_TASKDIR,      ///< TASKDIR global option.
+    CRINIT_GLOBOPT_INCLDIR,      ///< INCLUDEDIR global option.
+    CRINIT_GLOBOPT_INCL_SUFFIX,  ///< INCLUDE_SUFFIX global option
+    CRINIT_GLOBOPT_SHDGRACEP,    ///< SHUTDOWN_GRACE_PERIOD_US global option
+    CRINIT_GLOBOPT_USE_SYSLOG,   ///< USE_SYSLOG global option
+    CRINIT_GLOBOPT_ENV,          ///< Global task environment variables.
+    CRINIT_GLOBOPT_END           ///< Marker for end of enum, used to calculate number of elements.
+} crinitGlobOptKey_t;
 
 /**
  * Sets global options to their default values.
  *
- * Uses EBCL_globOptSet() and is therefore thread-safe.
+ * Uses crinitGlobOptSet() and is therefore thread-safe.
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_globOptInitDefault(void);
+int crinitGlobOptInitDefault(void);
 
 /**
  * Deletes all set global options from storage.
  *
  * Any allocated memory is freed. The function uses mutexes internally and is thread-safe.
  */
-void EBCL_globOptDestroy(void);
+void crinitGlobOptDestroy(void);
 
 /**
  * Stores a global option value.
@@ -60,7 +60,7 @@ void EBCL_globOptDestroy(void);
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_globOptSet(ebcl_GlobOptKey_t key, const void *val, size_t sz);
+int crinitGlobOptSet(crinitGlobOptKey_t key, const void *val, size_t sz);
 
 /**
  * Retrieves a global option value.
@@ -76,48 +76,48 @@ int EBCL_globOptSet(ebcl_GlobOptKey_t key, const void *val, size_t sz);
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_globOptGet(ebcl_GlobOptKey_t key, void *val, size_t sz);
+int crinitGlobOptGet(crinitGlobOptKey_t key, void *val, size_t sz);
 
 /**
- * Function macro to store a bool type option value using EBCL_globOptSet().
+ * Function macro to store a bool type option value using crinitGlobOptSet().
  */
-#define EBCL_globOptSetBoolean(key, pVal) EBCL_globOptSet(key, pVal, sizeof(bool))
+#define crinitGlobOptSetBoolean(key, pVal) crinitGlobOptSet(key, pVal, sizeof(bool))
 /**
- * Function macro to retrieve a bool type option value using EBCL_globOptGet().
+ * Function macro to retrieve a bool type option value using crinitGlobOptGet().
  */
-#define EBCL_globOptGetBoolean(key, pVal) EBCL_globOptGet(key, pVal, sizeof(bool))
+#define crinitGlobOptGetBoolean(key, pVal) crinitGlobOptGet(key, pVal, sizeof(bool))
 
 /**
- * Function macro to store a long int type option value using EBCL_globOptSet().
+ * Function macro to store a long int type option value using crinitGlobOptSet().
  */
-#define EBCL_globOptSetInteger(key, pVal) EBCL_globOptSet(key, pVal, sizeof(long))
+#define crinitGlobOptSetInteger(key, pVal) crinitGlobOptSet(key, pVal, sizeof(long))
 /**
- * Function macro to retrieve a long int type option value EBCL_globOptGet().
+ * Function macro to retrieve a long int type option value crinitGlobOptGet().
  */
-#define EBCL_globOptGetInteger(key, pVal) EBCL_globOptGet(key, pVal, sizeof(long))
+#define crinitGlobOptGetInteger(key, pVal) crinitGlobOptGet(key, pVal, sizeof(long))
 
 /**
- * Function macro to store an unsigned long int type option value using EBCL_globOptSet().
+ * Function macro to store an unsigned long int type option value using crinitGlobOptSet().
  */
-#define EBCL_globOptSetUnsigned(key, pVal) EBCL_globOptSet(key, pVal, sizeof(unsigned long))
+#define crinitGlobOptSetUnsigned(key, pVal) crinitGlobOptSet(key, pVal, sizeof(unsigned long))
 /**
- * Function macro to retrieve an unsigned long int type option value EBCL_globOptGet().
+ * Function macro to retrieve an unsigned long int type option value crinitGlobOptGet().
  */
-#define EBCL_globOptGetUnsigned(key, pVal) EBCL_globOptGet(key, pVal, sizeof(unsigned long))
+#define crinitGlobOptGetUnsigned(key, pVal) crinitGlobOptGet(key, pVal, sizeof(unsigned long))
 
 /**
- * Function macro to store an unsigned long long type option value using EBCL_globOptSet().
+ * Function macro to store an unsigned long long type option value using crinitGlobOptSet().
  */
-#define EBCL_globOptSetUnsignedLL(key, pVal) EBCL_globOptSet(key, pVal, sizeof(unsigned long long))
+#define crinitGlobOptSetUnsignedLL(key, pVal) crinitGlobOptSet(key, pVal, sizeof(unsigned long long))
 /**
- * Function macro to retrieve an unsigned long long type option value EBCL_globOptGet().
+ * Function macro to retrieve an unsigned long long type option value crinitGlobOptGet().
  */
-#define EBCL_globOptGetUnsignedLL(key, pVal) EBCL_globOptGet(key, pVal, sizeof(unsigned long long))
+#define crinitGlobOptGetUnsignedLL(key, pVal) crinitGlobOptGet(key, pVal, sizeof(unsigned long long))
 
 /**
  * Stores a string value for a global option.
  *
- * The length of the string is stored as well for later retrieval using EBCL_globOptGetString(). Uses EBCL_globOptSet()
+ * The length of the string is stored as well for later retrieval using crinitGlobOptGetString(). Uses crinitGlobOptSet()
  * and is therefore thread-safe.
  *
  * @param key  The global option to set.
@@ -125,22 +125,22 @@ int EBCL_globOptGet(ebcl_GlobOptKey_t key, void *val, size_t sz);
  *
  * @return 0 on success, -1 on error
  */
-int EBCL_globOptSetString(ebcl_GlobOptKey_t key, const char *str);
+int crinitGlobOptSetString(crinitGlobOptKey_t key, const char *str);
 
 /**
  * Retrieves a string value stores for a global option.
  *
- * Must be used for a global option value that has been stored using EBCL_globOptSetString(). If this is not the case,
+ * Must be used for a global option value that has been stored using crinitGlobOptSetString(). If this is not the case,
  * behavior is undefined unless the option has not been set, in which case the function will return an error. If
  * successful, the function will write a dynamically allocated string pointer to \a str. The pointer should freed if no
- * longer used. Uses EBCL_globOptGet and is therefore thread-safe.
+ * longer used. Uses crinitGlobOptGet and is therefore thread-safe.
  *
  * @param key  The global option to get.
  * @param str  Pointer to return a dynamically-allocated copy of the global option value.
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_globOptGetString(ebcl_GlobOptKey_t key, char **str);
+int crinitGlobOptGetString(crinitGlobOptKey_t key, char **str);
 
 /**
  * Stores an crinitEnvSet_t structure.
@@ -151,7 +151,7 @@ int EBCL_globOptGetString(ebcl_GlobOptKey_t key, char **str);
  *
  * @return  0 on success, -1 on error
  */
-int EBCL_globOptSetEnvSet(const crinitEnvSet_t *es);
+int crinitGlobOptSetEnvSet(const crinitEnvSet_t *es);
 /**
  * Retrieves an crinitEnvSet_t structure.
  *
@@ -162,6 +162,6 @@ int EBCL_globOptSetEnvSet(const crinitEnvSet_t *es);
  *
  * @return  0 on success, -1 on error.
  */
-int EBCL_globOptGetEnvSet(crinitEnvSet_t *es);
+int crinitGlobOptGetEnvSet(crinitEnvSet_t *es);
 
 #endif /* __GLOBOPT_H__ */

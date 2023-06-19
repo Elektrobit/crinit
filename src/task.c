@@ -46,7 +46,7 @@ int crinitTaskCreateFromConfKvList(crinitTask_t **out, const crinitConfKvList_t 
     pTask->pid = -1;
     pTask->maxRetries = -1;
 
-    if (EBCL_globOptGetEnvSet(&pTask->taskEnv) == -1) {
+    if (crinitGlobOptGetEnvSet(&pTask->taskEnv) == -1) {
         crinitErrPrint("Could not retrieve global environment set during Task creation.");
         goto fail;
     }
@@ -254,11 +254,11 @@ int crinitTaskMergeInclude(crinitTask_t *tgt, const char *src, char *importList)
     crinitNullCheck(-1, tgt, src);
 
     char *inclDir = NULL, *inclSuffix = NULL, *inclPath = NULL;
-    if (EBCL_globOptGetString(EBCL_GLOBOPT_INCLDIR, &inclDir) == -1) {
+    if (crinitGlobOptGetString(CRINIT_GLOBOPT_INCLDIR, &inclDir) == -1) {
         crinitErrPrint("Could not recall path include directory from global options.");
         return -1;
     }
-    if (EBCL_globOptGetString(EBCL_GLOBOPT_INCL_SUFFIX, &inclSuffix) == -1) {
+    if (crinitGlobOptGetString(CRINIT_GLOBOPT_INCL_SUFFIX, &inclSuffix) == -1) {
         crinitErrPrint("Could not recall include file suffix from global options.");
         free(inclDir);
         return -1;
