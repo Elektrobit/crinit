@@ -171,7 +171,7 @@ static inline int EBCL_procCapget(cap_user_data_t out, pid_t pid);
  */
 static inline int EBCL_mkdirp(char *pathname, mode_t mode);
 
-int EBCL_startInterfaceServer(crinitTaskDB_t *ctx, const char *sockFile) {
+int crinitStartInterfaceServer(crinitTaskDB_t *ctx, const char *sockFile) {
     if (ctx == NULL || sockFile == NULL) {
         crinitErrPrint("Given arguments must not be NULL.");
         return -1;

@@ -28,7 +28,7 @@ int crinitInitIoRedirFromConfKvList(crinitIoRedir_t *out, const char *key, size_
         crinitErrPrint("Could not find %s statement with index %zu in config.", key, keyArrIndex);
         return -1;
     }
-    if (EBCL_confConvToIoRedir(out, confVal) == -1) {
+    if (crinitConfConvToIoRedir(out, confVal) == -1) {
         crinitErrPrint("Could not parse IO redirection statement '%s'.", confVal);
         return -1;
     }

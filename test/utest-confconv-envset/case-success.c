@@ -1,6 +1,6 @@
 /**
  * @file case-success.c
- * @brief Unit test for EBCL_confConvToEnvSetMember(), successful execution.
+ * @brief Unit test for crinitConfConvToEnvSetMember(), successful execution.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -15,7 +15,7 @@
 #include "unit_test.h"
 #include "utest-confconv-envset.h"
 
-void EBCL_confConvToEnvSetMemberTestSuccess(void **state) {
+void crinitConfConvToEnvSetMemberTestSuccess(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     const char *vanillaConf = "VANILLA_VAR \"That is tasty.\"", *vanillaRes = "That is tasty.";
@@ -28,10 +28,10 @@ void EBCL_confConvToEnvSetMemberTestSuccess(void **state) {
     crinitEnvSet_t e = {NULL, 0, 0};
     assert_int_equal(crinitEnvSetInit(&e, CRINIT_ENVSET_INITIAL_SIZE, CRINIT_ENVSET_SIZE_INCREMENT), 0);
 
-    assert_int_equal(EBCL_confConvToEnvSetMember(&e, vanillaConf), 0);
-    assert_int_equal(EBCL_confConvToEnvSetMember(&e, escSeqConf), 0);
-    assert_int_equal(EBCL_confConvToEnvSetMember(&e, substConf), 0);
-    assert_int_equal(EBCL_confConvToEnvSetMember(&e, combinedConf), 0);
+    assert_int_equal(crinitConfConvToEnvSetMember(&e, vanillaConf), 0);
+    assert_int_equal(crinitConfConvToEnvSetMember(&e, escSeqConf), 0);
+    assert_int_equal(crinitConfConvToEnvSetMember(&e, substConf), 0);
+    assert_int_equal(crinitConfConvToEnvSetMember(&e, combinedConf), 0);
 
     assert_string_equal(crinitEnvSetGet(&e, "VANILLA_VAR"), vanillaRes);
     assert_string_equal(crinitEnvSetGet(&e, "ESCSEQ_VAR"), escSeqRes);

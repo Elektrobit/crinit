@@ -1,6 +1,6 @@
 /**
  * @file utest-confconv-envset.c
- * @brief Implementation of the EBCL_confConvToEnvSetMember() unit test group.
+ * @brief Implementation of the crinitConfConvToEnvSetMember() unit test group.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -14,13 +14,13 @@
 #include "unit_test.h"
 
 /**
- * Runs the unit test group for EBCL_confConvToEnvSetMember() using the cmocka API.
+ * Runs the unit test group for crinitConfConvToEnvSetMember() using the cmocka API.
  */
 int main(void) {
     const struct CMUnitTest tests[] = {
-        cmocka_unit_test(EBCL_confConvToEnvSetMemberTestSuccess),
-        cmocka_unit_test(EBCL_confConvToEnvSetMemberTestWrongInput),
-        cmocka_unit_test(EBCL_confConvToEnvSetMemberTestNullInput),
+        cmocka_unit_test(crinitConfConvToEnvSetMemberTestSuccess),
+        cmocka_unit_test(crinitConfConvToEnvSetMemberTestWrongInput),
+        cmocka_unit_test(crinitConfConvToEnvSetMemberTestNullInput),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);

@@ -22,7 +22,7 @@ typedef struct crinitConfigMapping_t {
     bool arrayLike;                   ///< If the configuration option is array-like, i.e. may be defined multiple
                                       ///< times and appended to.
     bool includeSafe;                 ///< If the configuration option may be used inside an include file.
-    ebcl_ConfigHandler_t cfgHandler;  ///< Pointer to the handler function to use if the configuration
+    crinitConfigHandler_t cfgHandler;  ///< Pointer to the handler function to use if the configuration
                                       ///< option is encountered.
 } crinitConfigMapping_t;
 

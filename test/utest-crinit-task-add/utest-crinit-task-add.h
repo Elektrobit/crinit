@@ -52,20 +52,20 @@ int EBCL_storeRtimCmd(const uintmax_t value, const uintmax_t context);
  * \a context->ptr member, while the member \a context->value will be placed into the object pointed to by \a value.
  *
  * Example usage:
- *   crinitRtimCmd_t *EBCL_crinitXferArgRes;
- *   char *EBCL_crinitXferArgResOKArgs[1] = {
+ *   crinitRtimCmd_t *crinitXferArgRes;
+ *   char *crinitXferArgResOKArgs[1] = {
  *       CRINIT_RTIMCMD_RES_OK
  *   };
- *   crinitRtimCmd_t EBCL_crinitXferArgResOK = {
+ *   crinitRtimCmd_t crinitXferArgResOK = {
  *       .op = EBCL_RTIMCMD_R_ADDTASK,
  *       .argc = 1,
- *       .args = EBCL_crinitXferArgResOKArgs
+ *       .args = crinitXferArgResOKArgs
  *   };
- *   struct EBCL_storeRtimCmdArgs EBCL_crinitXferArgResContext = {
- *       &EBCL_crinitXferArgRes,
- *       &EBCL_crinitXferArgResOK,
+ *   struct EBCL_storeRtimCmdArgs crinitXferArgResContext = {
+ *       &crinitXferArgRes,
+ *       &crinitXferArgResOK,
  *   };
- *   expect_check(__wrap_EBCL_crinitXfer, res, EBCL_storeRtimCmdContext, &EBCL_crinitXferArgResContext);
+ *   expect_check(__wrap_crinitXfer, res, EBCL_storeRtimCmdContext, &crinitXferArgResContext);
  */
 int EBCL_storeRtimCmdContext(const uintmax_t value, const uintmax_t context);
 /**
@@ -77,7 +77,7 @@ int EBCL_storeRtimCmdContext(const uintmax_t value, const uintmax_t context);
  *
  * Example usage:
  *   crinitRtimCmd_t *EBCL_buildRtimArgCmd;
- *   expect_check(__wrap_EBCL_crinitXfer, cmd, EBCL_checkRtimCmd, &EBCL_buildRtimArgCmd);
+ *   expect_check(__wrap_crinitXfer, cmd, EBCL_checkRtimCmd, &EBCL_buildRtimArgCmd);
  */
 int EBCL_checkRtimCmd(const uintmax_t value, const uintmax_t context);
 
@@ -106,7 +106,7 @@ void crinitClientTaskAddTestOverwriteBoolToString(void **state);
  */
 void crinitClientTaskAddTestBuildRtimCmdError(void **state);
 /**
- * Unit test for crinitClientTaskAdd() testing error handling for EBCL_crinitXfer().
+ * Unit test for crinitClientTaskAdd() testing error handling for crinitXfer().
  */
 void crinitClientTaskAddTestCrinitXferError(void **state);
 /**

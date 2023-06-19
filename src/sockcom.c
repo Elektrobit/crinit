@@ -68,7 +68,7 @@ static int EBCL_crinitRecv(int sockFd, crinitRtimCmd_t *res);
  */
 static int EBCL_waitForRtr(int sockFd);
 
-int EBCL_crinitXfer(const char *sockFile, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd) {
+int crinitXfer(const char *sockFile, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd) {
     if (res == NULL || cmd == NULL) {
         crinitErrPrint("Pointer arguments must not be NULL");
         return -1;

@@ -347,7 +347,7 @@ int crinitConfListExtractArgvArrayWithIdx(int *outArgc, char ***outArgv, const c
         }
     }
 
-    *outArgv = EBCL_confConvToStrArr(outArgc, val, doubleQuoting);
+    *outArgv = crinitConfConvToStrArr(outArgc, val, doubleQuoting);
     if (outArgv == NULL) {
         crinitErrPrint("Could not convert configuration value to string array.");
         return -1;

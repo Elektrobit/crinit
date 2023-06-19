@@ -1,6 +1,6 @@
 /**
  * @file case-null-input.c
- * @brief Unit test for EBCL_confConvToEnvSetMember() with NULL inputs.
+ * @brief Unit test for crinitConfConvToEnvSetMember() with NULL inputs.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -15,7 +15,7 @@
 #include "unit_test.h"
 #include "utest-confconv-envset.h"
 
-void EBCL_confConvToEnvSetMemberTestNullInput(void **state) {
+void crinitConfConvToEnvSetMemberTestNullInput(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     crinitEnvSet_t failureDummy = {NULL, 0, 0};
@@ -25,10 +25,10 @@ void EBCL_confConvToEnvSetMemberTestNullInput(void **state) {
 
     assert_int_equal(crinitEnvSetInit(&successDummy, CRINIT_ENVSET_INITIAL_SIZE, CRINIT_ENVSET_SIZE_INCREMENT), 0);
 
-    assert_int_equal(EBCL_confConvToEnvSetMember(NULL, NULL), -1);
-    assert_int_equal(EBCL_confConvToEnvSetMember(NULL, envConf), -1);
-    assert_int_equal(EBCL_confConvToEnvSetMember(&successDummy, NULL), -1);
-    assert_int_equal(EBCL_confConvToEnvSetMember(&failureDummy, envConf), -1);
+    assert_int_equal(crinitConfConvToEnvSetMember(NULL, NULL), -1);
+    assert_int_equal(crinitConfConvToEnvSetMember(NULL, envConf), -1);
+    assert_int_equal(crinitConfConvToEnvSetMember(&successDummy, NULL), -1);
+    assert_int_equal(crinitConfConvToEnvSetMember(&failureDummy, envConf), -1);
 
     assert_int_equal(crinitEnvSetDestroy(&successDummy), 0);
 }

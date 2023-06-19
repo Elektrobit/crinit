@@ -31,7 +31,7 @@
  */
 static char *EBCL_copyEscaped(char *dst, const char *src, const char *end);
 
-char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQuoting) {
+char **crinitConfConvToStrArr(int *numElements, const char *confVal, bool doubleQuoting) {
     crinitNullCheck(NULL, numElements, confVal);
     char *backbuf = calloc(strlen(confVal) + 1, sizeof(*backbuf));
     if (backbuf == NULL) {
@@ -128,7 +128,7 @@ char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQ
 }
 
 /** Function body for type-generic string-to-integer functions, used internally to deduplicate code. **/
-#define EBCL_confConvToIntegerFnBody(resType, confVal)                                                   \
+#define crinitConfConvToIntegerFnBody(resType, confVal)                                                   \
     do {                                                                                                 \
         if (*(confVal) == '\0') {                                                                        \
             crinitErrPrint("Could not convert string to int. String is empty.");                          \
@@ -147,19 +147,19 @@ char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQ
         }                                                                                                \
     } while (0)
 
-int EBCL_confConvToIntegerI(int *x, const char *confVal, int base) {
+int crinitConfConvToIntegerI(int *x, const char *confVal, int base) {
     crinitNullCheck(-1, x, confVal);
-    EBCL_confConvToIntegerFnBody(*x, confVal);
+    crinitConfConvToIntegerFnBody(*x, confVal);
     return 0;
 }
 
-int EBCL_confConvToIntegerULL(unsigned long long *x, const char *confVal, int base) {
+int crinitConfConvToIntegerULL(unsigned long long *x, const char *confVal, int base) {
     crinitNullCheck(-1, x, confVal);
-    EBCL_confConvToIntegerFnBody(*x, confVal);
+    crinitConfConvToIntegerFnBody(*x, confVal);
     return 0;
 }
 
-int EBCL_confConvToBool(bool *b, const char *confVal) {
+int crinitConfConvToBool(bool *b, const char *confVal) {
     crinitNullCheck(-1, b, confVal);
     if (strcmp(confVal, "YES") == 0) {
         *b = true;
@@ -173,7 +173,7 @@ int EBCL_confConvToBool(bool *b, const char *confVal) {
     return -1;
 }
 
-int EBCL_confConvToIoRedir(crinitIoRedir_t *ior, const char *confVal) {
+int crinitConfConvToIoRedir(crinitIoRedir_t *ior, const char *confVal) {
     crinitNullCheck(-1, ior, confVal);
 
     memset(ior, 0, sizeof(*ior));
@@ -183,7 +183,7 @@ int EBCL_confConvToIoRedir(crinitIoRedir_t *ior, const char *confVal) {
     ior->mode = 0644;
 
     int numParams = 0;
-    char **confStrArr = EBCL_confConvToStrArr(&numParams, confVal, true);
+    char **confStrArr = crinitConfConvToStrArr(&numParams, confVal, true);
     if (confStrArr == NULL) {
         crinitErrPrint("Could not extract IO redirection parameters from configuration.");
         return -1;
@@ -278,7 +278,7 @@ int EBCL_confConvToIoRedir(crinitIoRedir_t *ior, const char *confVal) {
     return 0;
 }
 
-int EBCL_confConvToEnvSetMember(crinitEnvSet_t *es, const char *confVal) {
+int crinitConfConvToEnvSetMember(crinitEnvSet_t *es, const char *confVal) {
     if (es == NULL || confVal == NULL || es->envp == NULL || es->allocSz == 0) {
         crinitErrPrint("Input parameters must not be NULL and given environment set must be initialized.");
         return -1;

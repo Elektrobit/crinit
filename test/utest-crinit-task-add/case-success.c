@@ -19,13 +19,13 @@
 #define TEST_FORCE_DEPS "foo:wait"
 
 static crinitRtimCmd_t *EBCL_buildRtimArgCmd;
-static crinitRtimCmd_t *EBCL_crinitXferArgRes;
-static char *EBCL_crinitXferArgResOKArgs[1] = {CRINIT_RTIMCMD_RES_OK};
-static crinitRtimCmd_t EBCL_crinitXferArgResOK = {
-    .op = EBCL_RTIMCMD_R_ADDTASK, .argc = 1, .args = EBCL_crinitXferArgResOKArgs};
-static struct EBCL_storeRtimCmdArgs EBCL_crinitXferArgResContext = {
-    &EBCL_crinitXferArgRes,
-    &EBCL_crinitXferArgResOK,
+static crinitRtimCmd_t *crinitXferArgRes;
+static char *crinitXferArgResOKArgs[1] = {CRINIT_RTIMCMD_RES_OK};
+static crinitRtimCmd_t crinitXferArgResOK = {
+    .op = EBCL_RTIMCMD_R_ADDTASK, .argc = 1, .args = crinitXferArgResOKArgs};
+static struct EBCL_storeRtimCmdArgs crinitXferArgResContext = {
+    &crinitXferArgRes,
+    &crinitXferArgResOK,
 };
 
 void crinitClientTaskAddTestSuccess(void **state) {
@@ -38,13 +38,13 @@ void crinitClientTaskAddTestSuccess(void **state) {
     expect_string(__wrap_crinitBuildRtimCmd, vargs[1], "false");
     expect_string(__wrap_crinitBuildRtimCmd, vargs[2], TEST_FORCE_DEPS);
     will_return(__wrap_crinitBuildRtimCmd, 0);
-    expect_any(__wrap_EBCL_crinitXfer, sockFile);
-    expect_check(__wrap_EBCL_crinitXfer, res, EBCL_storeRtimCmdContext, &EBCL_crinitXferArgResContext);
-    expect_check(__wrap_EBCL_crinitXfer, cmd, EBCL_checkRtimCmd, &EBCL_buildRtimArgCmd);
-    will_return(__wrap_EBCL_crinitXfer, 0);
+    expect_any(__wrap_crinitXfer, sockFile);
+    expect_check(__wrap_crinitXfer, res, EBCL_storeRtimCmdContext, &crinitXferArgResContext);
+    expect_check(__wrap_crinitXfer, cmd, EBCL_checkRtimCmd, &EBCL_buildRtimArgCmd);
+    will_return(__wrap_crinitXfer, 0);
     expect_check(__wrap_crinitDestroyRtimCmd, c, EBCL_checkRtimCmd, &EBCL_buildRtimArgCmd);
     will_return(__wrap_crinitDestroyRtimCmd, 0);
-    expect_check(__wrap_crinitDestroyRtimCmd, c, EBCL_checkRtimCmd, &EBCL_crinitXferArgRes);
+    expect_check(__wrap_crinitDestroyRtimCmd, c, EBCL_checkRtimCmd, &crinitXferArgRes);
     will_return(__wrap_crinitDestroyRtimCmd, 0);
     assert_int_equal(crinitClientTaskAdd(TEST_CONFIG_FILE, false, TEST_FORCE_DEPS), 0);
 }

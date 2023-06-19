@@ -125,7 +125,7 @@ EBCL_LIB_EXPORTED int sd_notify(int unset_environment, const char *state) {  // 
         crinitErrPrint("Could not build RtimCmd to send to Crinit.");
         return -1;
     }
-    if (EBCL_crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+    if (crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
         crinitDestroyRtimCmd(&cmd);
         crinitErrPrint("Could not complete data transfer from/to Crinit.");
         return -1;
@@ -185,7 +185,7 @@ EBCL_LIB_EXPORTED int crinitClientTaskAdd(const char *configFilePath, bool overw
         return -1;
     }
 
-    if (EBCL_crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+    if (crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
         crinitDestroyRtimCmd(&cmd);
         crinitErrPrint("Could not complete data transfer from/to Crinit.");
         return -1;
@@ -211,7 +211,7 @@ EBCL_LIB_EXPORTED int crinitClientSeriesAdd(const char *seriesFilePath, bool ove
         return -1;
     }
 
-    if (EBCL_crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+    if (crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
         crinitDestroyRtimCmd(&cmd);
         crinitErrPrint("Could not complete data transfer from/to Crinit.");
         return -1;
@@ -235,7 +235,7 @@ EBCL_LIB_EXPORTED int crinitClientTaskEnable(const char *taskName) {
         return -1;
     }
 
-    if (EBCL_crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+    if (crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
         crinitDestroyRtimCmd(&cmd);
         crinitErrPrint("Could not complete data transfer from/to Crinit.");
         return -1;
@@ -258,7 +258,7 @@ EBCL_LIB_EXPORTED int crinitClientTaskDisable(const char *taskName) {
         return -1;
     }
 
-    if (EBCL_crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+    if (crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
         crinitDestroyRtimCmd(&cmd);
         crinitErrPrint("Could not complete data transfer from/to Crinit.");
         return -1;
@@ -282,7 +282,7 @@ EBCL_LIB_EXPORTED int crinitClientTaskStop(const char *taskName) {
         return -1;
     }
 
-    if (EBCL_crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+    if (crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
         crinitDestroyRtimCmd(&cmd);
         crinitErrPrint("Could not complete data transfer from/to Crinit.");
         return -1;
@@ -306,7 +306,7 @@ EBCL_LIB_EXPORTED int crinitClientTaskKill(const char *taskName) {
         return -1;
     }
 
-    if (EBCL_crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+    if (crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
         crinitDestroyRtimCmd(&cmd);
         crinitErrPrint("Could not complete data transfer from/to Crinit.");
         return -1;
@@ -330,7 +330,7 @@ EBCL_LIB_EXPORTED int crinitClientTaskRestart(const char *taskName) {
         return -1;
     }
 
-    if (EBCL_crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+    if (crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
         crinitDestroyRtimCmd(&cmd);
         crinitErrPrint("Could not complete data transfer from/to Crinit.");
         return -1;
@@ -354,7 +354,7 @@ EBCL_LIB_EXPORTED int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *pid
         return -1;
     }
 
-    if (EBCL_crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+    if (crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
         crinitDestroyRtimCmd(&cmd);
         crinitErrPrint("Could not complete data transfer from/to Crinit.");
         return -1;
@@ -383,7 +383,7 @@ EBCL_LIB_EXPORTED int crinitClientGetTaskList(crinitTaskList_t **tlptr) {
         return -1;
     }
 
-    if (EBCL_crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+    if (crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
         crinitDestroyRtimCmd(&cmd);
         crinitErrPrint("Could not complete data transfer from/to Crinit.");
         return -1;
@@ -463,7 +463,7 @@ EBCL_LIB_EXPORTED int crinitClientShutdown(int shutdownCmd) {
         return -1;
     }
 
-    if (EBCL_crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+    if (crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
         crinitDestroyRtimCmd(&cmd);
         crinitErrPrint("Could not complete data transfer from/to Crinit.");
         return -1;
@@ -487,7 +487,7 @@ EBCL_LIB_EXPORTED int crinitClientGetVersion(crinitVersion_t *v) {
         return -1;
     }
 
-    if (EBCL_crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+    if (crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
         crinitDestroyRtimCmd(&cmd);
         crinitErrPrint("Could not complete data transfer from/to Crinit.");
         return -1;

@@ -1,6 +1,6 @@
 /**
  * @file mock-crinit-xfer.c
- * @brief Implementation of a mock function for EBCL_crinitXfer().
+ * @brief Implementation of a mock function for crinitXfer().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -14,7 +14,7 @@
 
 // Rationale: Naming scheme fixed due to linker wrapping.
 // NOLINTNEXTLINE(readability-identifier-naming)
-int __wrap_EBCL_crinitXfer(const char *sockFile, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd) {
+int __wrap_crinitXfer(const char *sockFile, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd) {
     check_expected(sockFile);
     check_expected(res);
     check_expected(cmd);

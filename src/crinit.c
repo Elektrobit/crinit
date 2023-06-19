@@ -72,11 +72,11 @@ int main(int argc, char *argv[]) {
     }
     crinitInfoPrint("Crinit daemon version %s started.", crinitGetVersionString());
     if (getpid() == 1) {
-        if (EBCL_forkZombieReaper() == -1) {
+        if (crinitForkZombieReaper() == -1) {
             crinitErrPrint("I am PID 1 but failed to create a zombie reaper process.");
             return EXIT_FAILURE;
         }
-        if (EBCL_setupSystemFs() == -1) {
+        if (crinitSetupSystemFs() == -1) {
             crinitErrPrint("I started as PID 1 but failed to do minimal system setup.");
             return EXIT_FAILURE;
         }
@@ -165,7 +165,7 @@ int main(int argc, char *argv[]) {
     if (sockFile == NULL) {
         sockFile = CRINIT_SOCKFILE;
     }
-    if (EBCL_startInterfaceServer(&tdb, sockFile) == -1) {
+    if (crinitStartInterfaceServer(&tdb, sockFile) == -1) {
         crinitErrPrint("Could not start notification and service interface.");
         crinitTaskDBDestroy(&tdb);
         EBCL_globOptDestroy();

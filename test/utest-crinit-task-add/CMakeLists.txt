@@ -25,7 +25,7 @@ create_unit_test(
     libmockfunctions
   WRAPS
     -Wl,--wrap=crinitBuildRtimCmd
-    -Wl,--wrap=EBCL_crinitXfer
+    -Wl,--wrap=crinitXfer
     -Wl,--wrap=crinitDestroyRtimCmd
 )
 

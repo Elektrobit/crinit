@@ -176,7 +176,7 @@ int crinitEnvSetCreateFromConfKvList(crinitEnvSet_t *newSet, const crinitEnvSet_
             crinitEnvSetDestroy(newSet);
             return -1;
         }
-        if (EBCL_confConvToEnvSetMember(newSet, val) == -1) {
+        if (crinitConfConvToEnvSetMember(newSet, val) == -1) {
             crinitErrPrint("Failed to process " CRINIT_CONFIG_KEYSTR_ENV_SET " config item with value '%s'", val);
             crinitEnvSetDestroy(newSet);
             return -1;

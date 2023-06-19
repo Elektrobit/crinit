@@ -19,7 +19,7 @@
 
 #include "logio.h"
 
-int EBCL_forkZombieReaper(void) {
+int crinitForkZombieReaper(void) {
     pid_t pid = fork();
     if (pid == -1) {
         crinitErrnoPrint("Could not fork to create a PID 1 zombie reaper parent.");
@@ -39,7 +39,7 @@ int EBCL_forkZombieReaper(void) {
     return 0;
 }
 
-int EBCL_setupSystemFs(void) {
+int crinitSetupSystemFs(void) {
     umask(0);
 
     if (mkdir("/dev", 0777) == -1) {
