@@ -28,7 +28,7 @@ static int EBCL_activateSyslog(void) {
     return 0;
 }
 
-int EBCL_crinitFeatureHook(const char *sysFeatName) {
+int crinitFeatureHook(const char *sysFeatName) {
     if (sysFeatName == NULL) {
         crinitErrPrint("Input parameter must not be NULL.");
         return -1;

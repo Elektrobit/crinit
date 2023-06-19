@@ -93,10 +93,10 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    EBCL_rtimOpMapDebugPrintAll();
+    crinitRtimOpMapDebugPrintAll();
 
     crinitTaskDB_t tdb;
-    crinitTaskDBInit(&tdb, EBCL_procDispatchSpawnFunc);
+    crinitTaskDBInit(&tdb, crinitProcDispatchSpawnFunc);
 
     for (size_t n = 0; n < taskSeries.size; n++) {
         char *confFn = taskSeries.fnames[n];

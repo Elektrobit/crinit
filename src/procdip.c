@@ -100,7 +100,7 @@ static int EBCL_posixSpawnAddIOFileAction(posix_spawn_file_actions_t *fileact, c
  */
 static int EBCL_ensureFifo(const char *path, mode_t mode);
 
-int EBCL_procDispatchSpawnFunc(crinitTaskDB_t *ctx, const crinitTask_t *t) {
+int crinitProcDispatchSpawnFunc(crinitTaskDB_t *ctx, const crinitTask_t *t) {
     pthread_t dispatchThread;
     pthread_attr_t dispatchThreadAttr;
     ebcl_DispThrArgs_t *threadArgs = malloc(sizeof(ebcl_DispThrArgs_t));
@@ -124,9 +124,9 @@ int EBCL_procDispatchSpawnFunc(crinitTaskDB_t *ctx, const crinitTask_t *t) {
         goto fail;
     }
 
-    if ((errno = pthread_attr_setstacksize(&dispatchThreadAttr, EBCL_PROC_DISPATCH_THREAD_STACK_SIZE)) != 0) {
+    if ((errno = pthread_attr_setstacksize(&dispatchThreadAttr, CRINIT_PROC_DISPATCH_THREAD_STACK_SIZE)) != 0) {
         crinitErrnoPrint("Could not set pthread stack size to %d. Meant to create thread for task \'%s\'.",
-                        EBCL_PROC_DISPATCH_THREAD_STACK_SIZE, t->name);
+                        CRINIT_PROC_DISPATCH_THREAD_STACK_SIZE, t->name);
         goto fail;
     }
 
@@ -322,7 +322,7 @@ threadExit:
     return NULL;
 }
 
-int EBCL_setInhibitWait(bool inh) {
+int crinitSetInhibitWait(bool inh) {
     int ret = 0;
     errno = pthread_mutex_lock(&EBCL_waitInhibitLock);
     if (errno != 0) {

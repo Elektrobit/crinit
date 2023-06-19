@@ -16,7 +16,7 @@
 
 // Rationale: Naming scheme fixed due to linker wrapping.
 // NOLINTNEXTLINE(readability-identifier-naming)
-int __wrap_crinitBuildRtimCmd(crinitRtimCmd_t *c, ebcl_RtimOp_t op, int argc, ...) {
+int __wrap_crinitBuildRtimCmd(crinitRtimCmd_t *c, crinitRtimOp_t op, int argc, ...) {
     check_expected(c);
     check_expected(op);
     check_expected(argc);

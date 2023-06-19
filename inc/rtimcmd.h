@@ -23,10 +23,10 @@
 #define CRINIT_RTIMCMD_RES_ERR "RES_ERR"  ///< Value of first argument in a negative (unsuccessful) response message.
 
 /**
- * Structure holding a command or response message with its ebcl_RtimOp_t opcode and arguments array.
+ * Structure holding a command or response message with its crinitRtimOp_t opcode and arguments array.
  */
 typedef struct crinitRtimCmd_t {
-    ebcl_RtimOp_t op;  ///< The command or response opcode (see rtimopmap.h).
+    crinitRtimOp_t op;  ///< The command or response opcode (see rtimopmap.h).
     size_t argc;       ///< The number of arguments.
     char **args;       ///< String array of arguments.
 } crinitRtimCmd_t;
@@ -44,7 +44,7 @@ typedef struct crinitRtimCmd_t {
  *
  * @return 0 on success, -1 otherwise
  */
-int crinitBuildRtimCmd(crinitRtimCmd_t *c, ebcl_RtimOp_t op, size_t argc, ...);
+int crinitBuildRtimCmd(crinitRtimCmd_t *c, crinitRtimOp_t op, size_t argc, ...);
 /**
  * Free memory in an crinitRtimCmd_t allocated by crinitBuildRtimCmd() or crinitParseRtimCmd().
  *

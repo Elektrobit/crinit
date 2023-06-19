@@ -15,36 +15,36 @@
 
 #include "logio.h"
 
-const ebcl_RtimOpMap_t EBCL_rtimOps[] = {EBCL_genOpMap(EBCL_genOpStruct)};
+const crinitRtimOpMap_t crinitRtimOps[] = {crinitGenOpMap(crinitGenOpStruct)};
 
 /**  The number of elements in the generated map. **/
-#define EBCL_RTIMOPMAP_ELEMENTS (sizeof(EBCL_rtimOps) / sizeof(ebcl_RtimOpMap_t))
+#define EBCL_RTIMOPMAP_ELEMENTS (sizeof(crinitRtimOps) / sizeof(crinitRtimOpMap_t))
 
 /**
- * Gives the length of a string, delimited either by terminating zero or #EBCL_RTIMCMD_ARGDELIM.
+ * Gives the length of a string, delimited either by terminating zero or #CRINIT_RTIMCMD_ARGDELIM.
  *
- * @param str  The string. Must be at least one of: null-terminated #EBCL_RTIMCMD_ARGDELIM-terminated.
+ * @param str  The string. Must be at least one of: null-terminated #CRINIT_RTIMCMD_ARGDELIM-terminated.
  *
  * @return  The length of \a str, not including the delimiting character (or the terminating zero).
  */
 static inline size_t EBCL_delimitedStrlen(const char *str);
 
-void EBCL_rtimOpMapDebugPrintAll(void) {
+void crinitRtimOpMapDebugPrintAll(void) {
     crinitDbgInfoPrint("List of available API Operations:");
     for (size_t i = 0; i < EBCL_RTIMOPMAP_ELEMENTS; i++) {
-        crinitDbgInfoPrint("opCode: %d, opStr: %s", EBCL_rtimOps[i].opCode, EBCL_rtimOps[i].opStr);
+        crinitDbgInfoPrint("opCode: %d, opStr: %s", crinitRtimOps[i].opCode, crinitRtimOps[i].opStr);
     }
 }
 
-int EBCL_rtimOpGetByOpStr(ebcl_RtimOp_t *out, const char *opStr) {
+int crinitRtimOpGetByOpStr(crinitRtimOp_t *out, const char *opStr) {
     if (out == NULL || opStr == NULL) {
         crinitErrPrint("Pointer arguments must not be NULL.");
         return -1;
     }
     size_t n = EBCL_delimitedStrlen(opStr);
     for (size_t i = 0; i < EBCL_RTIMOPMAP_ELEMENTS; i++) {
-        if (n == strlen(EBCL_rtimOps[i].opStr) && strncmp(EBCL_rtimOps[i].opStr, opStr, n) == 0) {
-            *out = EBCL_rtimOps[i].opCode;
+        if (n == strlen(crinitRtimOps[i].opStr) && strncmp(crinitRtimOps[i].opStr, opStr, n) == 0) {
+            *out = crinitRtimOps[i].opCode;
             return 0;
         }
     }
@@ -53,15 +53,15 @@ int EBCL_rtimOpGetByOpStr(ebcl_RtimOp_t *out, const char *opStr) {
     return -1;
 }
 
-int EBCL_opStrGetByRtimOp(const char **out, ebcl_RtimOp_t opCode) {
+int crinitOpStrGetByRtimOp(const char **out, crinitRtimOp_t opCode) {
     if (out == NULL) {
         crinitErrPrint("Return pointer must not be NULL.");
         return -1;
     }
 
     for (size_t i = 0; i < EBCL_RTIMOPMAP_ELEMENTS; i++) {
-        if (EBCL_rtimOps[i].opCode == opCode) {
-            *out = EBCL_rtimOps[i].opStr;
+        if (crinitRtimOps[i].opCode == opCode) {
+            *out = crinitRtimOps[i].opStr;
             return 0;
         }
     }
@@ -72,7 +72,7 @@ int EBCL_opStrGetByRtimOp(const char **out, ebcl_RtimOp_t opCode) {
 
 static inline size_t EBCL_delimitedStrlen(const char *str) {
     size_t len = 0;
-    while (*str != '\0' && *str != EBCL_RTIMCMD_ARGDELIM) {
+    while (*str != '\0' && *str != CRINIT_RTIMCMD_ARGDELIM) {
         len++;
         str++;
     }

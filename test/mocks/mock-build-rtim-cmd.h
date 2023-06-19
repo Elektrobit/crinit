@@ -20,6 +20,6 @@
  * Otherwise the function is a no-op.
  */
 // NOLINTNEXTLINE(readability-identifier-naming) Rationale: Naming scheme fixed due to linker wrapping.
-int __wrap_crinitBuildRtimCmd(crinitRtimCmd_t *c, ebcl_RtimOp_t op, int argc, ...);
+int __wrap_crinitBuildRtimCmd(crinitRtimCmd_t *c, crinitRtimOp_t op, int argc, ...);
 
 #endif /* __MOCK_BUILD_RTIM_CMD_H__ */

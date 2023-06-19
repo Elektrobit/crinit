@@ -147,7 +147,7 @@ static inline int EBCL_recvStr(int sockFd, char **str, struct ucred *passedCreds
  * @return true if \a passedCreds imply the sending process is permitted to execute \a op. Returns false otherwise, also
  * on errors.
  */
-static inline bool EBCL_checkPerm(ebcl_RtimOp_t op, const struct ucred *passedCreds);
+static inline bool EBCL_checkPerm(crinitRtimOp_t op, const struct ucred *passedCreds);
 /**
  * Gets capabilities of process specified by PID.
  *
@@ -489,7 +489,7 @@ static inline bool EBCL_ucredCheckEqual(const struct ucred *a, const struct ucre
     return (a->pid == b->pid) && (a->uid == b->uid) && (a->gid == b->gid);
 }
 
-static inline bool EBCL_checkPerm(ebcl_RtimOp_t op, const struct ucred *passedCreds) {
+static inline bool EBCL_checkPerm(crinitRtimOp_t op, const struct ucred *passedCreds) {
     if (passedCreds == NULL) {
         crinitErrPrint("Pointer arguments must not be NULL.");
         return false;

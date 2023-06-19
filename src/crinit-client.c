@@ -50,7 +50,7 @@ static const char *EBCL_crinitSockFile = CRINIT_SOCKFILE;
  *
  * @return 0 if \a res is valid and indicates success, -1 if not
  */
-static inline int EBCL_crinitResponseCheck(const crinitRtimCmd_t *res, ebcl_RtimOp_t resCode);
+static inline int EBCL_crinitResponseCheck(const crinitRtimCmd_t *res, crinitRtimOp_t resCode);
 
 /**
  * Library initialization function.
@@ -533,7 +533,7 @@ EBCL_LIB_EXPORTED int crinitClientGetVersion(crinitVersion_t *v) {
     return ret;
 }
 
-static inline int EBCL_crinitResponseCheck(const crinitRtimCmd_t *res, ebcl_RtimOp_t resCode) {
+static inline int EBCL_crinitResponseCheck(const crinitRtimCmd_t *res, crinitRtimOp_t resCode) {
     if (res == NULL) {
         crinitErrPrint("Pointer arguments must not be NULL.");
         return -1;

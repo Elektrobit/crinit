@@ -463,7 +463,7 @@ int crinitTaskDBProvideFeature(crinitTaskDB_t *ctx, const crinitTask_t *provider
                 return -1;
             }
             crinitDbgInfoPrint("Fulfilled feature dependency \'%s:%s\'.", dep.name, dep.event);
-            if (EBCL_crinitFeatureHook(dep.event) == -1) {
+            if (crinitFeatureHook(dep.event) == -1) {
                 crinitErrPrint("Could not run activiation hook for feature \'%s\'.", dep.event);
                 return -1;
             }

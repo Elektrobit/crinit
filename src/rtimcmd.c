@@ -246,18 +246,18 @@ int crinitParseRtimCmd(crinitRtimCmd_t *out, const char *cmdStr) {
         crinitErrPrint("Pointer parameters must not be NULL.");
         return -1;
     }
-    if (EBCL_rtimOpGetByOpStr(&out->op, cmdStr) == -1) {
+    if (crinitRtimOpGetByOpStr(&out->op, cmdStr) == -1) {
         crinitErrPrint("Could not parse runtime command. Unknown or invalid opcode string.");
         return -1;
     }
 
     size_t cmdStrLen = strlen(cmdStr);
     const char *argStart = cmdStr;
-    while (*argStart != EBCL_RTIMCMD_ARGDELIM && *argStart != '\0') {
+    while (*argStart != CRINIT_RTIMCMD_ARGDELIM && *argStart != '\0') {
         argStart++;
     }
-    // Ignore multiple EBCL_RTIMCMD_ARGDELIM in a row.
-    while (*argStart != '\0' && *(argStart + 1) == EBCL_RTIMCMD_ARGDELIM) {
+    // Ignore multiple CRINIT_RTIMCMD_ARGDELIM in a row.
+    while (*argStart != '\0' && *(argStart + 1) == CRINIT_RTIMCMD_ARGDELIM) {
         argStart++;
     }
     const char *argEnd = &cmdStr[cmdStrLen];
@@ -266,8 +266,8 @@ int crinitParseRtimCmd(crinitRtimCmd_t *out, const char *cmdStr) {
     if (argStart < argEnd) {
         const char *runner = argStart;
         while (*runner != '\0') {
-            if ((*runner == EBCL_RTIMCMD_ARGDELIM) && (*(runner + 1) != '\0') &&
-                (*(runner + 1) != EBCL_RTIMCMD_ARGDELIM)) {
+            if ((*runner == CRINIT_RTIMCMD_ARGDELIM) && (*(runner + 1) != '\0') &&
+                (*(runner + 1) != CRINIT_RTIMCMD_ARGDELIM)) {
                 argCount++;
             }
             runner++;
@@ -299,7 +299,7 @@ int crinitParseRtimCmd(crinitRtimCmd_t *out, const char *cmdStr) {
     char *token = NULL;
     char *start = out->args[0];
     size_t i = 0;
-    char tokenList[2] = {EBCL_RTIMCMD_ARGDELIM, '\0'};
+    char tokenList[2] = {CRINIT_RTIMCMD_ARGDELIM, '\0'};
     while ((token = strtok_r(start, tokenList, &strtokState)) != NULL && i < argCount) {
         start = NULL;
         out->args[i] = token;
@@ -317,7 +317,7 @@ int crinitRtimCmdToMsgStr(char **out, size_t *outLen, const crinitRtimCmd_t *cmd
     }
 
     const char *opStr = NULL;
-    if (EBCL_opStrGetByRtimOp(&opStr, cmd->op) == -1) {
+    if (crinitOpStrGetByRtimOp(&opStr, cmd->op) == -1) {
         crinitErrPrint("Could not get a string representation of the command's opcode.");
         return -1;
     }
@@ -335,7 +335,7 @@ int crinitRtimCmdToMsgStr(char **out, size_t *outLen, const crinitRtimCmd_t *cmd
     char *runner = *out;
     runner = stpcpy(runner, opStr);
     for (size_t i = 0; i < cmd->argc; i++) {
-        *runner = EBCL_RTIMCMD_ARGDELIM;
+        *runner = CRINIT_RTIMCMD_ARGDELIM;
         runner++;
         runner = stpcpy(runner, cmd->args[i]);
     }
@@ -440,7 +440,7 @@ int crinitExecRtimCmd(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRti
     return 0;
 }
 
-int crinitBuildRtimCmd(crinitRtimCmd_t *c, ebcl_RtimOp_t op, size_t argc, ...) {
+int crinitBuildRtimCmd(crinitRtimCmd_t *c, crinitRtimOp_t op, size_t argc, ...) {
     if (c == NULL) {
         crinitErrPrint("Return pointer must not be NULL.");
         return -1;
@@ -489,7 +489,7 @@ int crinitBuildRtimCmd(crinitRtimCmd_t *c, ebcl_RtimOp_t op, size_t argc, ...) {
     return 0;
 }
 
-int crinitBuildRtimCmdArray(crinitRtimCmd_t *c, ebcl_RtimOp_t op, int argc, const char *args[]) {
+int crinitBuildRtimCmdArray(crinitRtimCmd_t *c, crinitRtimOp_t op, int argc, const char *args[]) {
     if (c == NULL) {
         crinitErrPrint("Return pointer must not be NULL.");
         return -1;
@@ -756,7 +756,7 @@ static int crinitExecRtimCmdStop(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, cons
     if (cmd->argc != 1) {
         return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
-    if (EBCL_setInhibitWait(true) == -1) {
+    if (crinitSetInhibitWait(true) == -1) {
         return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
                                  "Could not inhibit waiting for processes.");
     }
@@ -771,7 +771,7 @@ static int crinitExecRtimCmdStop(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, cons
         return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
                                  "Could not send SIGTERM to process.");
     }
-    if (EBCL_setInhibitWait(false) == -1) {
+    if (crinitSetInhibitWait(false) == -1) {
         return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
                                  "Could not reactivate waiting for processes.");
     }
@@ -787,7 +787,7 @@ static int crinitExecRtimCmdKill(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, cons
         return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_KILL, 2, CRINIT_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
 
-    if (EBCL_setInhibitWait(true) == -1) {
+    if (crinitSetInhibitWait(true) == -1) {
         return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
                                  "Could not inhibit waiting for processes.");
     }
@@ -802,7 +802,7 @@ static int crinitExecRtimCmdKill(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, cons
         return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_KILL, 2, CRINIT_RTIMCMD_RES_ERR,
                                  "Could not send SIGKILL to Process.");
     }
-    if (EBCL_setInhibitWait(false) == -1) {
+    if (crinitSetInhibitWait(false) == -1) {
         return crinitBuildRtimCmd(res, EBCL_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
                                  "Could not reactivate waiting for processes.");
     }

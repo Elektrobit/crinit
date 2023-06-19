@@ -18,7 +18,7 @@
 /**
  * Stack size for process dispatch threads.
  */
-#define EBCL_PROC_DISPATCH_THREAD_STACK_SIZE (PTHREAD_STACK_MIN + 112 * 1024)
+#define CRINIT_PROC_DISPATCH_THREAD_STACK_SIZE (PTHREAD_STACK_MIN + 112 * 1024)
 
 /**
  * Process dispatcher function to spawn a task that is ready.
@@ -29,7 +29,7 @@
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_procDispatchSpawnFunc(crinitTaskDB_t *ctx, const crinitTask_t *t);
+int crinitProcDispatchSpawnFunc(crinitTaskDB_t *ctx, const crinitTask_t *t);
 
 /**
  * Turn waiting for child processes on or off.
@@ -41,6 +41,6 @@ int EBCL_procDispatchSpawnFunc(crinitTaskDB_t *ctx, const crinitTask_t *t);
  *
  * @return 0 on success, -1 on error
  */
-int EBCL_setInhibitWait(bool inh);
+int crinitSetInhibitWait(bool inh);
 
 #endif /* __PROCDIP_H__ */
