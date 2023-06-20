@@ -23,26 +23,26 @@
 /**
  * The default series file. Used if nothing is specified on command line.
  */
-#define EBCL_CRINIT_DEFAULT_CONFIG_SERIES "/etc/crinit/default.series"
+#define CRINIT_DEFAULT_CONFIG_SERIES "/etc/crinit/default.series"
 
 /**
  * Prints a message indicating Crinit's version to stderr.
  */
-static void EBCL_printVersion(void);
+static void crinitPrintVersion(void);
 /**
  * Print usage information for Crinit to stderr.
  *
- * Includes version message via EBCL_printVersion().
+ * Includes version message via crinitPrintVersion().
  *
  * @param basename  The name of this executable, according to argv[0].
  */
-static void EBCL_printUsage(const char *basename);
+static void crinitPrintUsage(const char *basename);
 /**
  * Print out the contents of an crinitTask_t structure in a readable format using crinitDbgInfoPrint().
  *
  * @param t  The task to be printed.
  */
-static void EBCL_taskPrint(const crinitTask_t *t);
+static void crinirTaskPrint(const crinitTask_t *t);
 
 /**
  * Main function of crinit.
@@ -51,21 +51,21 @@ static void EBCL_taskPrint(const crinitTask_t *t);
  * from the given configuration and then spawn tasks as they are ready.
  */
 int main(int argc, char *argv[]) {
-    const char *seriesFname = EBCL_CRINIT_DEFAULT_CONFIG_SERIES;
+    const char *seriesFname = CRINIT_DEFAULT_CONFIG_SERIES;
     if (argc > 1) {
         for (int i = 0; i < argc; i++) {
             if (crinitParamCheck(argv[i], "-V", "--version")) {
-                EBCL_printVersion();
+                crinitPrintVersion();
                 return EXIT_FAILURE;
             }
             if (crinitParamCheck(argv[i], "-h", "--help")) {
-                EBCL_printUsage(argv[0]);
+                crinitPrintUsage(argv[0]);
                 return EXIT_FAILURE;
             }
         }
         if (!crinitIsAbsPath(argv[1])) {
             crinitErrPrint("Program argument must be an absolute path.");
-            EBCL_printUsage(argv[0]);
+            crinitPrintUsage(argv[0]);
             return EXIT_FAILURE;
         }
         seriesFname = argv[1];
@@ -146,7 +146,7 @@ int main(int argc, char *argv[]) {
         crinitFreeConfList(c);
 
         crinitDbgInfoPrint("Task extracted without error.");
-        EBCL_taskPrint(t);
+        crinirTaskPrint(t);
 
         if (crinitTaskDBInsert(&tdb, t, false) == -1) {
             crinitErrPrint("Could not insert Task '%s' into TaskDB.", t->name);
@@ -184,17 +184,17 @@ int main(int argc, char *argv[]) {
     return EXIT_SUCCESS;
 }
 
-static void EBCL_printVersion(void) {
+static void crinitPrintVersion(void) {
     fprintf(stderr, "Crinit version %s\n", crinitGetVersionString());
 }
 
-static void EBCL_printUsage(const char *basename) {
-    EBCL_printVersion();
+static void crinitPrintUsage(const char *basename) {
+    crinitPrintVersion();
     fprintf(stderr, "USAGE: %s [path/to/config.series]\n", basename);
-    fprintf(stderr, "If nothing is specified, the default path \'%s\' is used.\n", EBCL_CRINIT_DEFAULT_CONFIG_SERIES);
+    fprintf(stderr, "If nothing is specified, the default path \'%s\' is used.\n", CRINIT_DEFAULT_CONFIG_SERIES);
 }
 
-static void EBCL_taskPrint(const crinitTask_t *t) {
+static void crinirTaskPrint(const crinitTask_t *t) {
     crinitDbgInfoPrint("---------------");
     crinitDbgInfoPrint("Data Structure:");
     crinitDbgInfoPrint("---------------");

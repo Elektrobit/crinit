@@ -52,7 +52,7 @@
  *
  * @param basename  The name of this program.
  */
-static void EBCL_printUsage(const char *basename);
+static void crinitPrintUsage(const char *basename);
 
 /**
  * Tries to get the machine-id from the Kernel command line.
@@ -123,7 +123,7 @@ static int EBCL_checkS32(bool *onS32);
 
 int main(int argc, char *argv[]) {
     if (argc != 1) {
-        EBCL_printUsage(argv[0]);
+        crinitPrintUsage(argv[0]);
         return 0;
     }
 
@@ -176,7 +176,7 @@ int main(int argc, char *argv[]) {
     return EXIT_SUCCESS;
 }
 
-static void EBCL_printUsage(const char *basename) {
+static void crinitPrintUsage(const char *basename) {
     fprintf(stderr,
             "USAGE: %s"
             "This program shall be called without additional arguments through a Crinit task. It will generate an "

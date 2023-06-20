@@ -22,25 +22,25 @@
  * Attribute macro for exported/visible functions, used together with -fvisibility=hidden to export only selected
  * functions
  */
-#define EBCL_LIB_EXPORTED __attribute__((visibility("default")))
+#define CRINIT_LIB_EXPORTED __attribute__((visibility("default")))
 
-#ifndef EBCL_LIB_CONSTRUCTOR  // Guard so unit tests can define as empty.
+#ifndef CRINIT_LIB_CONSTRUCTOR  // Guard so unit tests can define as empty.
 /** Attribute macro for a function executed on loading of the shared library. **/
-#define EBCL_LIB_CONSTRUCTOR __attribute__((constructor))
+#define CRINIT_LIB_CONSTRUCTOR __attribute__((constructor))
 #endif
 
-#ifndef EBCL_LIB_DESTRUCTOR  // Guard so unit tests can define as empty.
+#ifndef CRINIT_LIB_DESTRUCTOR  // Guard so unit tests can define as empty.
 /** Attribute macro for a function executed on program exit if the shared library has been loaded before. **/
-#define EBCL_LIB_DESTRUCTOR __attribute__((destructor))
+#define CRINIT_LIB_DESTRUCTOR __attribute__((destructor))
 #endif
 
 /** String to be used if no task name for sd_notify() is currently set. **/
 #define CRINIT_ENV_NOTIFY_NAME_UNDEF "@undefined"
 
 /** Holds the task name for sd_notify() **/
-static const char *EBCL_notifyName = CRINIT_ENV_NOTIFY_NAME_UNDEF;
+static const char *crinitNotifyName = CRINIT_ENV_NOTIFY_NAME_UNDEF;
 /** Holds the path to the Crinit AF_UNIX socket file **/
-static const char *EBCL_crinitSockFile = CRINIT_SOCKFILE;
+static const char *crinitSockFile = CRINIT_SOCKFILE;
 
 /**
  * Check if a response from Crinit is valid and/or an error.
@@ -50,65 +50,65 @@ static const char *EBCL_crinitSockFile = CRINIT_SOCKFILE;
  *
  * @return 0 if \a res is valid and indicates success, -1 if not
  */
-static inline int EBCL_crinitResponseCheck(const crinitRtimCmd_t *res, crinitRtimOp_t resCode);
+static inline int crinitResponseCheck(const crinitRtimCmd_t *res, crinitRtimOp_t resCode);
 
 /**
  * Library initialization function.
  *
- * Gets called on shared object loading through #EBCL_LIB_CONSTRUCTOR attribute. Initializes options to default values
+ * Gets called on shared object loading through #CRINIT_LIB_CONSTRUCTOR attribute. Initializes options to default values
  * and tries to get the task name for sd_notify() from the environment if it is present.
  */
-static EBCL_LIB_CONSTRUCTOR void EBCL_libInit(void) {
+static CRINIT_LIB_CONSTRUCTOR void crinitLibInit(void) {
     bool v = false;
     crinitSetPrintPrefix("");
     crinitGlobOptSetBoolean(CRINIT_GLOBOPT_DEBUG, &v);
     const char *envNotifyName = getenv(CRINIT_ENV_NOTIFY_NAME);
     if (envNotifyName != NULL) {
-        EBCL_notifyName = envNotifyName;
+        crinitNotifyName = envNotifyName;
     } else {
-        EBCL_notifyName = CRINIT_ENV_NOTIFY_NAME_UNDEF;
+        crinitNotifyName = CRINIT_ENV_NOTIFY_NAME_UNDEF;
     }
 }
 
 /**
  * Library cleanup function.
  *
- * Gets called on program end through #EBCL_LIB_DESTRUCTOR attribute if the shared library was loaded. Frees global
- * option memory allocated as a consequence of EBCL_libInit().
+ * Gets called on program end through #CRINIT_LIB_DESTRUCTOR attribute if the shared library was loaded. Frees global
+ * option memory allocated as a consequence of crinitLibInit().
  */
-static EBCL_LIB_DESTRUCTOR void EBCL_libDestroy(void) {
+static CRINIT_LIB_DESTRUCTOR void crinitLibDestroy(void) {
     crinitGlobOptDestroy();
 }
 
-EBCL_LIB_EXPORTED int crinitClientSetVerbose(bool v) {
+CRINIT_LIB_EXPORTED int crinitClientSetVerbose(bool v) {
     return crinitGlobOptSetBoolean(CRINIT_GLOBOPT_DEBUG, &v);
 }
 
-EBCL_LIB_EXPORTED void crinitClientSetErrStream(FILE *errStream) {
+CRINIT_LIB_EXPORTED void crinitClientSetErrStream(FILE *errStream) {
     crinitSetErrStream(errStream);
 }
 
-EBCL_LIB_EXPORTED void crinitClientSetInfoStream(FILE *infoStream) {
+CRINIT_LIB_EXPORTED void crinitClientSetInfoStream(FILE *infoStream) {
     crinitSetInfoStream(infoStream);
 }
 
-EBCL_LIB_EXPORTED void crinitClientSetNotifyTaskName(const char *taskName) {
+CRINIT_LIB_EXPORTED void crinitClientSetNotifyTaskName(const char *taskName) {
     if (taskName != NULL) {
-        EBCL_notifyName = taskName;
+        crinitNotifyName = taskName;
     }
 }
 
-EBCL_LIB_EXPORTED void crinitClientSetSocketPath(const char *sockFile) {
+CRINIT_LIB_EXPORTED void crinitClientSetSocketPath(const char *sockFile) {
     if (sockFile != NULL) {
-        EBCL_crinitSockFile = sockFile;
+        crinitSockFile = sockFile;
     }
 }
 
-EBCL_LIB_EXPORTED const crinitVersion_t *crinitClientLibGetVersion(void) {
+CRINIT_LIB_EXPORTED const crinitVersion_t *crinitClientLibGetVersion(void) {
     return &crinitVersion;
 }
 
-EBCL_LIB_EXPORTED int sd_notify(int unset_environment, const char *state) {  // NOLINT(readability-identifier-naming)
+CRINIT_LIB_EXPORTED int sd_notify(int unset_environment, const char *state) {  // NOLINT(readability-identifier-naming)
                                                                              // Rationale: Naming determined by
                                                                              // external API.
     if (state == NULL) {
@@ -121,23 +121,23 @@ EBCL_LIB_EXPORTED int sd_notify(int unset_environment, const char *state) {  // 
     }
 
     crinitRtimCmd_t cmd, res;
-    if (crinitBuildRtimCmd(&cmd, CRINIT_RTIMCMD_C_NOTIFY, 2, EBCL_notifyName, state) == -1) {
+    if (crinitBuildRtimCmd(&cmd, CRINIT_RTIMCMD_C_NOTIFY, 2, crinitNotifyName, state) == -1) {
         crinitErrPrint("Could not build RtimCmd to send to Crinit.");
         return -1;
     }
-    if (crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+    if (crinitXfer(crinitSockFile, &res, &cmd) == -1) {
         crinitDestroyRtimCmd(&cmd);
         crinitErrPrint("Could not complete data transfer from/to Crinit.");
         return -1;
     }
     crinitDestroyRtimCmd(&cmd);
 
-    int ret = EBCL_crinitResponseCheck(&res, CRINIT_RTIMCMD_R_NOTIFY);
+    int ret = crinitResponseCheck(&res, CRINIT_RTIMCMD_R_NOTIFY);
     crinitDestroyRtimCmd(&res);
     return ret;
 }
 
-EBCL_LIB_EXPORTED int sd_notifyf(                      // NOLINT(readability-identifier-naming)
+CRINIT_LIB_EXPORTED int sd_notifyf(                      // NOLINT(readability-identifier-naming)
     int unset_environment, const char *format, ...) {  // NOLINT(readability-identifier-naming)
                                                        // Rationale (both): Naming determined by external API.
     if (format == NULL) {
@@ -164,7 +164,7 @@ EBCL_LIB_EXPORTED int sd_notifyf(                      // NOLINT(readability-ide
     return ret;
 }
 
-EBCL_LIB_EXPORTED int crinitClientTaskAdd(const char *configFilePath, bool overwrite, const char *forceDeps) {
+CRINIT_LIB_EXPORTED int crinitClientTaskAdd(const char *configFilePath, bool overwrite, const char *forceDeps) {
     if (configFilePath == NULL) {
         crinitErrPrint("Config file path must not be NULL");
         return -1;
@@ -185,19 +185,19 @@ EBCL_LIB_EXPORTED int crinitClientTaskAdd(const char *configFilePath, bool overw
         return -1;
     }
 
-    if (crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+    if (crinitXfer(crinitSockFile, &res, &cmd) == -1) {
         crinitDestroyRtimCmd(&cmd);
         crinitErrPrint("Could not complete data transfer from/to Crinit.");
         return -1;
     }
     crinitDestroyRtimCmd(&cmd);
 
-    int ret = EBCL_crinitResponseCheck(&res, CRINIT_RTIMCMD_R_ADDTASK);
+    int ret = crinitResponseCheck(&res, CRINIT_RTIMCMD_R_ADDTASK);
     crinitDestroyRtimCmd(&res);
     return ret;
 }
 
-EBCL_LIB_EXPORTED int crinitClientSeriesAdd(const char *seriesFilePath, bool overwriteTasks) {
+CRINIT_LIB_EXPORTED int crinitClientSeriesAdd(const char *seriesFilePath, bool overwriteTasks) {
     if (seriesFilePath == NULL) {
         crinitErrPrint("Series file path must not be NULL");
         return -1;
@@ -211,19 +211,19 @@ EBCL_LIB_EXPORTED int crinitClientSeriesAdd(const char *seriesFilePath, bool ove
         return -1;
     }
 
-    if (crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+    if (crinitXfer(crinitSockFile, &res, &cmd) == -1) {
         crinitDestroyRtimCmd(&cmd);
         crinitErrPrint("Could not complete data transfer from/to Crinit.");
         return -1;
     }
     crinitDestroyRtimCmd(&cmd);
 
-    int ret = EBCL_crinitResponseCheck(&res, CRINIT_RTIMCMD_R_ADDSERIES);
+    int ret = crinitResponseCheck(&res, CRINIT_RTIMCMD_R_ADDSERIES);
     crinitDestroyRtimCmd(&res);
     return ret;
 }
 
-EBCL_LIB_EXPORTED int crinitClientTaskEnable(const char *taskName) {
+CRINIT_LIB_EXPORTED int crinitClientTaskEnable(const char *taskName) {
     if (taskName == NULL) {
         crinitErrPrint("Task name must not be NULL");
         return -1;
@@ -235,19 +235,19 @@ EBCL_LIB_EXPORTED int crinitClientTaskEnable(const char *taskName) {
         return -1;
     }
 
-    if (crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+    if (crinitXfer(crinitSockFile, &res, &cmd) == -1) {
         crinitDestroyRtimCmd(&cmd);
         crinitErrPrint("Could not complete data transfer from/to Crinit.");
         return -1;
     }
     crinitDestroyRtimCmd(&cmd);
 
-    int ret = EBCL_crinitResponseCheck(&res, CRINIT_RTIMCMD_R_ENABLE);
+    int ret = crinitResponseCheck(&res, CRINIT_RTIMCMD_R_ENABLE);
     crinitDestroyRtimCmd(&res);
     return ret;
 }
 
-EBCL_LIB_EXPORTED int crinitClientTaskDisable(const char *taskName) {
+CRINIT_LIB_EXPORTED int crinitClientTaskDisable(const char *taskName) {
     if (taskName == NULL) {
         crinitErrPrint("Task name must not be NULL");
         return -1;
@@ -258,19 +258,19 @@ EBCL_LIB_EXPORTED int crinitClientTaskDisable(const char *taskName) {
         return -1;
     }
 
-    if (crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+    if (crinitXfer(crinitSockFile, &res, &cmd) == -1) {
         crinitDestroyRtimCmd(&cmd);
         crinitErrPrint("Could not complete data transfer from/to Crinit.");
         return -1;
     }
     crinitDestroyRtimCmd(&cmd);
 
-    int ret = EBCL_crinitResponseCheck(&res, CRINIT_RTIMCMD_R_DISABLE);
+    int ret = crinitResponseCheck(&res, CRINIT_RTIMCMD_R_DISABLE);
     crinitDestroyRtimCmd(&res);
     return ret;
 }
 
-EBCL_LIB_EXPORTED int crinitClientTaskStop(const char *taskName) {
+CRINIT_LIB_EXPORTED int crinitClientTaskStop(const char *taskName) {
     if (taskName == NULL) {
         crinitErrPrint("Task name must not be NULL");
         return -1;
@@ -282,19 +282,19 @@ EBCL_LIB_EXPORTED int crinitClientTaskStop(const char *taskName) {
         return -1;
     }
 
-    if (crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+    if (crinitXfer(crinitSockFile, &res, &cmd) == -1) {
         crinitDestroyRtimCmd(&cmd);
         crinitErrPrint("Could not complete data transfer from/to Crinit.");
         return -1;
     }
     crinitDestroyRtimCmd(&cmd);
 
-    int ret = EBCL_crinitResponseCheck(&res, CRINIT_RTIMCMD_R_STOP);
+    int ret = crinitResponseCheck(&res, CRINIT_RTIMCMD_R_STOP);
     crinitDestroyRtimCmd(&res);
     return ret;
 }
 
-EBCL_LIB_EXPORTED int crinitClientTaskKill(const char *taskName) {
+CRINIT_LIB_EXPORTED int crinitClientTaskKill(const char *taskName) {
     if (taskName == NULL) {
         crinitErrPrint("Task name must not be NULL");
         return -1;
@@ -306,19 +306,19 @@ EBCL_LIB_EXPORTED int crinitClientTaskKill(const char *taskName) {
         return -1;
     }
 
-    if (crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+    if (crinitXfer(crinitSockFile, &res, &cmd) == -1) {
         crinitDestroyRtimCmd(&cmd);
         crinitErrPrint("Could not complete data transfer from/to Crinit.");
         return -1;
     }
     crinitDestroyRtimCmd(&cmd);
 
-    int ret = EBCL_crinitResponseCheck(&res, CRINIT_RTIMCMD_R_KILL);
+    int ret = crinitResponseCheck(&res, CRINIT_RTIMCMD_R_KILL);
     crinitDestroyRtimCmd(&res);
     return ret;
 }
 
-EBCL_LIB_EXPORTED int crinitClientTaskRestart(const char *taskName) {
+CRINIT_LIB_EXPORTED int crinitClientTaskRestart(const char *taskName) {
     if (taskName == NULL) {
         crinitErrPrint("Task name must not be NULL");
         return -1;
@@ -330,19 +330,19 @@ EBCL_LIB_EXPORTED int crinitClientTaskRestart(const char *taskName) {
         return -1;
     }
 
-    if (crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+    if (crinitXfer(crinitSockFile, &res, &cmd) == -1) {
         crinitDestroyRtimCmd(&cmd);
         crinitErrPrint("Could not complete data transfer from/to Crinit.");
         return -1;
     }
     crinitDestroyRtimCmd(&cmd);
 
-    int ret = EBCL_crinitResponseCheck(&res, CRINIT_RTIMCMD_R_RESTART);
+    int ret = crinitResponseCheck(&res, CRINIT_RTIMCMD_R_RESTART);
     crinitDestroyRtimCmd(&res);
     return ret;
 }
 
-EBCL_LIB_EXPORTED int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *pid, const char *taskName) {
+CRINIT_LIB_EXPORTED int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *pid, const char *taskName) {
     if (taskName == NULL || s == NULL) {
         crinitErrPrint("Pointer arguments must not be NULL");
         return -1;
@@ -354,14 +354,14 @@ EBCL_LIB_EXPORTED int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *pid
         return -1;
     }
 
-    if (crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+    if (crinitXfer(crinitSockFile, &res, &cmd) == -1) {
         crinitDestroyRtimCmd(&cmd);
         crinitErrPrint("Could not complete data transfer from/to Crinit.");
         return -1;
     }
     crinitDestroyRtimCmd(&cmd);
 
-    if (EBCL_crinitResponseCheck(&res, CRINIT_RTIMCMD_R_STATUS) == 0 && res.argc == 3) {
+    if (crinitResponseCheck(&res, CRINIT_RTIMCMD_R_STATUS) == 0 && res.argc == 3) {
         *s = strtoul(res.args[1], NULL, 10);
         *pid = strtol(res.args[2], NULL, 10);
         crinitDestroyRtimCmd(&res);
@@ -371,7 +371,7 @@ EBCL_LIB_EXPORTED int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *pid
     return -1;
 }
 
-EBCL_LIB_EXPORTED int crinitClientGetTaskList(crinitTaskList_t **tlptr) {
+CRINIT_LIB_EXPORTED int crinitClientGetTaskList(crinitTaskList_t **tlptr) {
     if (tlptr == NULL) {
         crinitErrPrint("Pointer arguments must not be NULL");
         return -1;
@@ -383,14 +383,14 @@ EBCL_LIB_EXPORTED int crinitClientGetTaskList(crinitTaskList_t **tlptr) {
         return -1;
     }
 
-    if (crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+    if (crinitXfer(crinitSockFile, &res, &cmd) == -1) {
         crinitDestroyRtimCmd(&cmd);
         crinitErrPrint("Could not complete data transfer from/to Crinit.");
         return -1;
     }
     crinitDestroyRtimCmd(&cmd);
 
-    if (EBCL_crinitResponseCheck(&res, CRINIT_RTIMCMD_R_TASKLIST) == -1) {
+    if (crinitResponseCheck(&res, CRINIT_RTIMCMD_R_TASKLIST) == -1) {
         crinitDestroyRtimCmd(&res);
         return -1;
     }
@@ -443,7 +443,7 @@ fail_status:
     return ret;
 }
 
-EBCL_LIB_EXPORTED void crinitClientFreeTaskList(crinitTaskList_t *tl) {
+CRINIT_LIB_EXPORTED void crinitClientFreeTaskList(crinitTaskList_t *tl) {
     if (tl == NULL) {
         return;
     }
@@ -454,7 +454,7 @@ EBCL_LIB_EXPORTED void crinitClientFreeTaskList(crinitTaskList_t *tl) {
     free(tl);
 }
 
-EBCL_LIB_EXPORTED int crinitClientShutdown(int shutdownCmd) {
+CRINIT_LIB_EXPORTED int crinitClientShutdown(int shutdownCmd) {
     crinitRtimCmd_t cmd, res;
     char shdCmdStr[16] = {0};
     snprintf(shdCmdStr, 16, "0x%x", shutdownCmd);
@@ -463,19 +463,19 @@ EBCL_LIB_EXPORTED int crinitClientShutdown(int shutdownCmd) {
         return -1;
     }
 
-    if (crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+    if (crinitXfer(crinitSockFile, &res, &cmd) == -1) {
         crinitDestroyRtimCmd(&cmd);
         crinitErrPrint("Could not complete data transfer from/to Crinit.");
         return -1;
     }
     crinitDestroyRtimCmd(&cmd);
 
-    int ret = EBCL_crinitResponseCheck(&res, CRINIT_RTIMCMD_R_SHUTDOWN);
+    int ret = crinitResponseCheck(&res, CRINIT_RTIMCMD_R_SHUTDOWN);
     crinitDestroyRtimCmd(&res);
     return ret;
 }
 
-EBCL_LIB_EXPORTED int crinitClientGetVersion(crinitVersion_t *v) {
+CRINIT_LIB_EXPORTED int crinitClientGetVersion(crinitVersion_t *v) {
     if (v == NULL) {
         crinitErrPrint("Return pointer must not be NULL.");
         return -1;
@@ -487,14 +487,14 @@ EBCL_LIB_EXPORTED int crinitClientGetVersion(crinitVersion_t *v) {
         return -1;
     }
 
-    if (crinitXfer(EBCL_crinitSockFile, &res, &cmd) == -1) {
+    if (crinitXfer(crinitSockFile, &res, &cmd) == -1) {
         crinitDestroyRtimCmd(&cmd);
         crinitErrPrint("Could not complete data transfer from/to Crinit.");
         return -1;
     }
     crinitDestroyRtimCmd(&cmd);
 
-    int ret = EBCL_crinitResponseCheck(&res, CRINIT_RTIMCMD_R_GETVER);
+    int ret = crinitResponseCheck(&res, CRINIT_RTIMCMD_R_GETVER);
     if (ret == 0) {
         if (res.argc != 5) {
             crinitErrPrint("Got unexpected response length from Crinit.");
@@ -533,7 +533,7 @@ EBCL_LIB_EXPORTED int crinitClientGetVersion(crinitVersion_t *v) {
     return ret;
 }
 
-static inline int EBCL_crinitResponseCheck(const crinitRtimCmd_t *res, crinitRtimOp_t resCode) {
+static inline int crinitResponseCheck(const crinitRtimCmd_t *res, crinitRtimOp_t resCode) {
     if (res == NULL) {
         crinitErrPrint("Pointer arguments must not be NULL.");
         return -1;
