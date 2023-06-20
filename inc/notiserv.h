@@ -19,11 +19,11 @@
  * Will create the AF_UNIX socket for clients to connect to and spawn a number of worker threads to service incoming
  * connections (see notiserv.c and thrpool.h).
  *
- * @param ctx       Pointer to the ebcl_TaskDB_t which the Server should use for incoming requests.
+ * @param ctx       Pointer to the crinitTaskDB_t which the Server should use for incoming requests.
  * @param sockfile  Path where to create the AF_UNIX socket file.
  *
  * @return 0 on success, -1 on error
  */
-int EBCL_startInterfaceServer(ebcl_TaskDB_t *ctx, const char *sockfile);
+int EBCL_startInterfaceServer(crinitTaskDB_t *ctx, const char *sockfile);
 
 #endif /*__NOTISERV_H__ */

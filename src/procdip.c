@@ -31,7 +31,7 @@
 
 /** Struct wrapper for arguments to dispatchThreadFunc **/
 typedef struct ebcl_DispThrArgs_t {
-    ebcl_TaskDB_t *ctx;    ///< The TaskDB context to update on task state changes.
+    crinitTaskDB_t *ctx;    ///< The TaskDB context to update on task state changes.
     const crinitTask_t *t;  ///< The task to run.
 } ebcl_DispThrArgs_t;
 
@@ -45,7 +45,7 @@ static bool EBCL_waitInhibit = false;
 /**
  * Function to be started as a pthread from EBCL_procDispatchThread().
  *
- * Takes care of process spawning/waiting and ebcl_TaskDB_t status updates.
+ * Takes care of process spawning/waiting and crinitTaskDB_t status updates.
  *
  * @param args  See ebcl_DispThrArgs_t.
  */
@@ -100,7 +100,7 @@ static int EBCL_posixSpawnAddIOFileAction(posix_spawn_file_actions_t *fileact, c
  */
 static int EBCL_ensureFifo(const char *path, mode_t mode);
 
-int EBCL_procDispatchSpawnFunc(ebcl_TaskDB_t *ctx, const crinitTask_t *t) {
+int EBCL_procDispatchSpawnFunc(crinitTaskDB_t *ctx, const crinitTask_t *t) {
     pthread_t dispatchThread;
     pthread_attr_t dispatchThreadAttr;
     ebcl_DispThrArgs_t *threadArgs = malloc(sizeof(ebcl_DispThrArgs_t));
@@ -146,7 +146,7 @@ fail:
 
 static void *EBCL_dispatchThreadFunc(void *args) {
     ebcl_DispThrArgs_t *a = (ebcl_DispThrArgs_t *)args;
-    ebcl_TaskDB_t *ctx = a->ctx;
+    crinitTaskDB_t *ctx = a->ctx;
     const crinitTask_t *t = a->t;
     crinitTask_t *tCopy = NULL;
     pid_t threadId = EBCL_gettid();
@@ -213,25 +213,25 @@ static void *EBCL_dispatchThreadFunc(void *args) {
         crinitInfoPrint("(TID: %d) Started new process %d for command %zu of Task \'%s\' (\'%s\').", threadId, pid, i,
                        tCopy->name, tCopy->cmds[i].argv[0]);
 
-        if (EBCL_taskDBSetTaskPID(ctx, pid, tCopy->name) == -1) {
+        if (crinitTaskDBSetTaskPID(ctx, pid, tCopy->name) == -1) {
             crinitErrPrint("(TID: %d) Could not set PID of Task \'%s\' to %d.", threadId, tCopy->name, pid);
             goto threadExit;
         }
 
         if (i == 0) {
-            if (EBCL_taskDBSetTaskState(ctx, EBCL_TASK_STATE_RUNNING, tCopy->name) == -1) {
+            if (crinitTaskDBSetTaskState(ctx, EBCL_TASK_STATE_RUNNING, tCopy->name) == -1) {
                 crinitErrPrint("(TID: %d) Could not set state of Task \'%s\' to running.", threadId, tCopy->name);
                 goto threadExit;
             }
             char depEvent[sizeof(CRINIT_TASK_EVENT_RUNNING)] = CRINIT_TASK_EVENT_RUNNING;
             crinitTaskDep_t spawnDep = {tCopy->name, depEvent};
-            if (EBCL_taskDBFulfillDep(ctx, &spawnDep) == -1) {
+            if (crinitTaskDBFulfillDep(ctx, &spawnDep) == -1) {
                 crinitErrPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, spawnDep.name, spawnDep.event);
                 goto threadExit;
             }
             crinitDbgInfoPrint("(TID: %d) Dependency \'%s:%s\' fulfilled.", threadId, spawnDep.name, spawnDep.event);
 
-            if (EBCL_taskDBProvideFeature(ctx, tCopy, EBCL_TASK_STATE_RUNNING) == -1) {
+            if (crinitTaskDBProvideFeature(ctx, tCopy, EBCL_TASK_STATE_RUNNING) == -1) {
                 crinitErrPrint("(TID: %d) Could not fulfill provided features of spawned task \'%s\'.", threadId,
                               tCopy->name);
             }
@@ -258,11 +258,11 @@ static void *EBCL_dispatchThreadFunc(void *args) {
                 crinitInfoPrint("(TID: %d) Task \'%s\' (PID %d) failed.", threadId, tCopy->name, pid);
             }
 
-            if (EBCL_taskDBSetTaskState(ctx, EBCL_TASK_STATE_FAILED, tCopy->name) == -1) {
+            if (crinitTaskDBSetTaskState(ctx, EBCL_TASK_STATE_FAILED, tCopy->name) == -1) {
                 crinitErrPrint("(TID: %d) Could not set state of Task \'%s\' to failed.", threadId, tCopy->name);
                 goto threadExit;
             }
-            if (EBCL_taskDBSetTaskPID(ctx, -1, tCopy->name) == -1) {
+            if (crinitTaskDBSetTaskPID(ctx, -1, tCopy->name) == -1) {
                 crinitErrPrint("(TID: %d) Could not reset PID of failed Task \'%s\' to -1.", threadId, tCopy->name);
                 goto threadExit;
             }
@@ -273,12 +273,12 @@ static void *EBCL_dispatchThreadFunc(void *args) {
 
             char depEvent[sizeof(CRINIT_TASK_EVENT_FAILED)] = CRINIT_TASK_EVENT_FAILED;
             crinitTaskDep_t failDep = {tCopy->name, depEvent};
-            if (EBCL_taskDBFulfillDep(ctx, &failDep) == -1) {
+            if (crinitTaskDBFulfillDep(ctx, &failDep) == -1) {
                 crinitErrPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, failDep.name, failDep.event);
             }
             crinitDbgInfoPrint("(TID: %d) Dependency \'%s:%s\' fulfilled.", threadId, failDep.name, failDep.event);
 
-            if (EBCL_taskDBProvideFeature(ctx, tCopy, EBCL_TASK_STATE_FAILED) == -1) {
+            if (crinitTaskDBProvideFeature(ctx, tCopy, EBCL_TASK_STATE_FAILED) == -1) {
                 crinitErrPrint("(TID: %d) Could not fulfill provided features of failed task \'%s\'.", threadId,
                               tCopy->name);
             }
@@ -288,7 +288,7 @@ static void *EBCL_dispatchThreadFunc(void *args) {
         }
 
         // command of task has returned successfully
-        if (EBCL_taskDBSetTaskPID(ctx, -1, tCopy->name) == -1) {
+        if (crinitTaskDBSetTaskPID(ctx, -1, tCopy->name) == -1) {
             crinitErrPrint("(TID: %d) Could not reset PID of Task \'%s\' to -1.", threadId, tCopy->name);
             goto threadExit;
         }
@@ -300,18 +300,18 @@ static void *EBCL_dispatchThreadFunc(void *args) {
 
     // chain of commands is done successfully
     crinitInfoPrint("(TID: %d) Task \'%s\' done.", threadId, tCopy->name);
-    if (EBCL_taskDBSetTaskState(ctx, EBCL_TASK_STATE_DONE, tCopy->name) == -1) {
+    if (crinitTaskDBSetTaskState(ctx, EBCL_TASK_STATE_DONE, tCopy->name) == -1) {
         crinitErrPrint("(TID: %d) Could not set state of Task \'%s\' to done.", threadId, tCopy->name);
         goto threadExit;
     }
     char depEvent[sizeof(CRINIT_TASK_EVENT_DONE)] = CRINIT_TASK_EVENT_DONE;
     crinitTaskDep_t doneDep = {tCopy->name, depEvent};
-    if (EBCL_taskDBFulfillDep(ctx, &doneDep) == -1) {
+    if (crinitTaskDBFulfillDep(ctx, &doneDep) == -1) {
         crinitErrPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, doneDep.name, doneDep.event);
     }
     crinitDbgInfoPrint("(TID: %d) Dependency \'%s:%s\' fulfilled.", threadId, doneDep.name, doneDep.event);
 
-    if (EBCL_taskDBProvideFeature(ctx, tCopy, EBCL_TASK_STATE_DONE) == -1) {
+    if (crinitTaskDBProvideFeature(ctx, tCopy, EBCL_TASK_STATE_DONE) == -1) {
         crinitErrPrint("(TID: %d) Could not fulfill provided features of finished task \'%s\'.", threadId, tCopy->name);
     }
     crinitDbgInfoPrint("(TID: %d) Features of finished task \'%s\' fulfilled.", threadId, tCopy->name);

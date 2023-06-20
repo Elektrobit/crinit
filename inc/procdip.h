@@ -29,7 +29,7 @@
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_procDispatchSpawnFunc(ebcl_TaskDB_t *ctx, const crinitTask_t *t);
+int EBCL_procDispatchSpawnFunc(crinitTaskDB_t *ctx, const crinitTask_t *t);
 
 /**
  * Turn waiting for child processes on or off.

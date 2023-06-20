@@ -20,19 +20,19 @@
 #include "optfeat.h"
 
 /**
- * Find index of a task in the ebcl_TaskDB_t::taskSet of an ebcl_TaskDB_t by name.
+ * Find index of a task in the crinitTaskDB_t::taskSet of an crinitTaskDB_t by name.
  *
  * @param idx       Pointer to return the index with.
  * @param taskName  The crinitTask_t::name to search for.
- * @param in        The ebcl_TaskDB_t_t to search in.
+ * @param in        The crinitTaskDB_t_t to search in.
  *
  * @return 0 on success, -1 otherwise
  */
-static int EBCL_findInTaskDB(ssize_t *idx, const char *taskName, const ebcl_TaskDB_t *in);
+static int EBCL_findInTaskDB(ssize_t *idx, const char *taskName, const crinitTaskDB_t *in);
 /**
  * Check if an crinitTask_t is considered ready to be started (startable).
  *
- * See EBCL_taskDBSpawnReady() for further explanation.
+ * See crinitTaskDBSpawnReady() for further explanation.
  *
  * @param t The task to be checked for readiness.
  *
@@ -40,10 +40,10 @@ static int EBCL_findInTaskDB(ssize_t *idx, const char *taskName, const ebcl_Task
  */
 static bool EBCL_taskReady(const crinitTask_t *t);
 
-int EBCL_taskDBInitWithSize(ebcl_TaskDB_t *ctx, int (*spawnFunc)(ebcl_TaskDB_t *ctx, const crinitTask_t *),
+int crinitTaskDBInitWithSize(crinitTaskDB_t *ctx, int (*spawnFunc)(crinitTaskDB_t *ctx, const crinitTask_t *),
                             size_t initialSize) {
     if (ctx == NULL) {
-        crinitErrPrint("Given ebcl_TaskDB_t to initialize must not be NULL.");
+        crinitErrPrint("Given crinitTaskDB_t to initialize must not be NULL.");
         return -1;
     }
     if (initialSize < 1) {
@@ -80,9 +80,9 @@ fail:
     return -1;
 }
 
-int EBCL_taskDBDestroy(ebcl_TaskDB_t *ctx) {
+int crinitTaskDBDestroy(crinitTaskDB_t *ctx) {
     if (ctx == NULL) {
-        crinitErrPrint("Given ebcl_TaskDB_t to destroy must not be NULL.");
+        crinitErrPrint("Given crinitTaskDB_t to destroy must not be NULL.");
         return -1;
     }
     ctx->spawnFunc = NULL;
@@ -102,7 +102,7 @@ int EBCL_taskDBDestroy(ebcl_TaskDB_t *ctx) {
     return 0;
 }
 
-int EBCL_taskDBInsert(ebcl_TaskDB_t *ctx, const crinitTask_t *t, bool overwrite) {
+int crinitTaskDBInsert(crinitTaskDB_t *ctx, const crinitTask_t *t, bool overwrite) {
     crinitNullCheck(-1, ctx, t);
 
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
@@ -149,7 +149,7 @@ fail:
     return -1;
 }
 
-int EBCL_taskDBSpawnReady(ebcl_TaskDB_t *ctx) {
+int crinitTaskDBSpawnReady(crinitTaskDB_t *ctx) {
     if (ctx == NULL) {
         crinitErrPrint("The TaskDB context must not be NULL.");
         return -1;
@@ -189,7 +189,7 @@ int EBCL_taskDBSpawnReady(ebcl_TaskDB_t *ctx) {
     return 0;
 }
 
-int EBCL_taskDBSetSpawnInhibit(ebcl_TaskDB_t *ctx, bool inh) {
+int crinitTaskDBSetSpawnInhibit(crinitTaskDB_t *ctx, bool inh) {
     if (ctx == NULL) {
         crinitErrPrint("The TaskDB context must not be NULL.");
         return -1;
@@ -209,7 +209,7 @@ int EBCL_taskDBSetSpawnInhibit(ebcl_TaskDB_t *ctx, bool inh) {
     return 0;
 }
 
-int EBCL_taskDBSetTaskState(ebcl_TaskDB_t *ctx, ebcl_TaskState_t s, const char *taskName) {
+int crinitTaskDBSetTaskState(crinitTaskDB_t *ctx, ebcl_TaskState_t s, const char *taskName) {
     if (ctx == NULL || taskName == NULL) {
         crinitErrPrint("The TaskDB context and the taskName must not be NULL.");
         return -1;
@@ -239,7 +239,7 @@ int EBCL_taskDBSetTaskState(ebcl_TaskDB_t *ctx, ebcl_TaskState_t s, const char *
     return -1;
 }
 
-int EBCL_taskDBGetTaskState(ebcl_TaskDB_t *ctx, ebcl_TaskState_t *s, const char *taskName) {
+int crinitTaskDBGetTaskState(crinitTaskDB_t *ctx, ebcl_TaskState_t *s, const char *taskName) {
     if (ctx == NULL || taskName == NULL || s == NULL) {
         crinitErrPrint("The TaskDB context, taskName, and result pointer must not be NULL.");
         return -1;
@@ -262,7 +262,7 @@ int EBCL_taskDBGetTaskState(ebcl_TaskDB_t *ctx, ebcl_TaskState_t *s, const char 
     return -1;
 }
 
-int EBCL_taskDBSetTaskPID(ebcl_TaskDB_t *ctx, pid_t pid, const char *taskName) {
+int crinitTaskDBSetTaskPID(crinitTaskDB_t *ctx, pid_t pid, const char *taskName) {
     if (ctx == NULL || taskName == NULL) {
         crinitErrPrint("The TaskDB context and the taskName must not be NULL.");
         return -1;
@@ -285,7 +285,7 @@ int EBCL_taskDBSetTaskPID(ebcl_TaskDB_t *ctx, pid_t pid, const char *taskName) {
     return -1;
 }
 
-int EBCL_taskDBGetTaskPID(ebcl_TaskDB_t *ctx, pid_t *pid, const char *taskName) {
+int crinitTaskDBGetTaskPID(crinitTaskDB_t *ctx, pid_t *pid, const char *taskName) {
     if (ctx == NULL || taskName == NULL || pid == NULL) {
         crinitErrPrint("The TaskDB context, taskName, and result pointer must not be NULL.");
         return -1;
@@ -308,7 +308,7 @@ int EBCL_taskDBGetTaskPID(ebcl_TaskDB_t *ctx, pid_t *pid, const char *taskName) 
     return -1;
 }
 
-int EBCL_taskDBGetTaskStateAndPID(ebcl_TaskDB_t *ctx, ebcl_TaskState_t *s, pid_t *pid, const char *taskName) {
+int crinitTaskDBGetTaskStateAndPID(crinitTaskDB_t *ctx, ebcl_TaskState_t *s, pid_t *pid, const char *taskName) {
     if (ctx == NULL || taskName == NULL || s == NULL || pid == NULL) {
         crinitErrPrint("The TaskDB context, taskName, and result pointers must not be NULL.");
         return -1;
@@ -333,7 +333,7 @@ int EBCL_taskDBGetTaskStateAndPID(ebcl_TaskDB_t *ctx, ebcl_TaskState_t *s, pid_t
     return -1;
 }
 
-int EBCL_taskDBAddDepToTask(ebcl_TaskDB_t *ctx, const crinitTaskDep_t *dep, const char *taskName) {
+int crinitTaskDBAddDepToTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep, const char *taskName) {
     if (ctx == NULL || dep == NULL || taskName == NULL) {
         crinitErrPrint("The TaskDB context, the TaskDep to add, and the task name to search for must not be NULL.");
         return -1;
@@ -384,7 +384,7 @@ int EBCL_taskDBAddDepToTask(ebcl_TaskDB_t *ctx, const crinitTaskDep_t *dep, cons
     return -1;
 }
 
-int EBCL_taskDBRemoveDepFromTask(ebcl_TaskDB_t *ctx, const crinitTaskDep_t *dep, const char *taskName) {
+int crinitTaskDBRemoveDepFromTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep, const char *taskName) {
     if (ctx == NULL || dep == NULL || taskName == NULL) {
         crinitErrPrint("The TaskDB context, the TaskDep to remove, and the task name to search for must not be NULL.");
         return -1;
@@ -418,7 +418,7 @@ int EBCL_taskDBRemoveDepFromTask(ebcl_TaskDB_t *ctx, const crinitTaskDep_t *dep,
     return -1;
 }
 
-int EBCL_taskDBFulfillDep(ebcl_TaskDB_t *ctx, const crinitTaskDep_t *dep) {
+int crinitTaskDBFulfillDep(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep) {
     if (ctx == NULL || dep == NULL) {
         crinitErrPrint("The TaskDB context and the TaskDep to fulfill must not be NULL.");
         return -1;
@@ -448,7 +448,7 @@ int EBCL_taskDBFulfillDep(ebcl_TaskDB_t *ctx, const crinitTaskDep_t *dep) {
     return 0;
 }
 
-int EBCL_taskDBProvideFeature(ebcl_TaskDB_t *ctx, const crinitTask_t *provider, ebcl_TaskState_t newState) {
+int crinitTaskDBProvideFeature(crinitTaskDB_t *ctx, const crinitTask_t *provider, ebcl_TaskState_t newState) {
     if (ctx == NULL || provider == NULL) {
         crinitErrPrint("The TaskDB context and the feature-providing task must not be NULL.");
         return -1;
@@ -456,9 +456,9 @@ int EBCL_taskDBProvideFeature(ebcl_TaskDB_t *ctx, const crinitTask_t *provider, 
 
     for (size_t i = 0; i < provider->prvSize; i++) {
         if (provider->prv[i].stateReq == newState) {
-            char depName[] = EBCL_PROVIDE_DEP_NAME;
+            char depName[] = CRINIT_PROVIDE_DEP_NAME;
             const crinitTaskDep_t dep = {depName, provider->prv[i].name};
-            if (EBCL_taskDBFulfillDep(ctx, &dep) == -1) {
+            if (crinitTaskDBFulfillDep(ctx, &dep) == -1) {
                 crinitErrPrint("Could not fulfill dependency \'%s:%s\'.", dep.name, dep.event);
                 return -1;
             }
@@ -472,7 +472,7 @@ int EBCL_taskDBProvideFeature(ebcl_TaskDB_t *ctx, const crinitTask_t *provider, 
     return 0;
 }
 
-int EBCL_taskDBProvideFeatureByTaskName(ebcl_TaskDB_t *ctx, const char *taskName, ebcl_TaskState_t newState) {
+int crinitTaskDBProvideFeatureByTaskName(crinitTaskDB_t *ctx, const char *taskName, ebcl_TaskState_t newState) {
     if (ctx == NULL || taskName == NULL) {
         crinitErrPrint("The TaskDB context and the name of the feature-providing task must not be NULL.");
         return -1;
@@ -492,10 +492,10 @@ int EBCL_taskDBProvideFeatureByTaskName(ebcl_TaskDB_t *ctx, const char *taskName
     provider = &ctx->taskSet[taskIdx];
     pthread_mutex_unlock(&ctx->lock);
 
-    return EBCL_taskDBProvideFeature(ctx, provider, newState);
+    return crinitTaskDBProvideFeature(ctx, provider, newState);
 }
 
-int EBCL_taskDBExportTaskNamesToArray(ebcl_TaskDB_t *ctx, char **tasks[], size_t *numTasks) {
+int crinitTaskDBExportTaskNamesToArray(crinitTaskDB_t *ctx, char **tasks[], size_t *numTasks) {
     int ret = 0;
 
     if (ctx == NULL || tasks == NULL || numTasks == NULL) {
@@ -540,7 +540,7 @@ success:
     return ret;
 }
 
-static int EBCL_findInTaskDB(ssize_t *idx, const char *taskName, const ebcl_TaskDB_t *in) {
+static int EBCL_findInTaskDB(ssize_t *idx, const char *taskName, const crinitTaskDB_t *in) {
     if (taskName == NULL || in == NULL) {
         return -1;
     }
