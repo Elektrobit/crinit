@@ -1,6 +1,6 @@
 /**
  * @file utest-crinit-task-add.h
- * @brief Header declaring the unit tests for EBCL_crinitTaskAdd().
+ * @brief Header declaring the unit tests for crinitClientTaskAdd().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -82,40 +82,40 @@ int EBCL_storeRtimCmdContext(const uintmax_t value, const uintmax_t context);
 int EBCL_checkRtimCmd(const uintmax_t value, const uintmax_t context);
 
 /**
- * Unit test for EBCL_crinitTaskAdd(), successful execution.
+ * Unit test for crinitClientTaskAdd(), successful execution.
  */
-void EBCL_crinitTaskAddTestSuccess(void **state);
+void crinitClientTaskAddTestSuccess(void **state);
 /**
- * Unit test for EBCL_crinitTaskAdd() with confFilePath as NULL.
+ * Unit test for crinitClientTaskAdd() with confFilePath as NULL.
  */
-void EBCL_crinitTaskAddTestConfPathNull(void **state);
+void crinitClientTaskAddTestConfPathNull(void **state);
 /**
- * Unit test for EBCL_crinitTaskAdd() with forceDeps as NULL.
+ * Unit test for crinitClientTaskAdd() with forceDeps as NULL.
  */
-void EBCL_crinitTaskAddTestForceDepsNull(void **state);
+void crinitClientTaskAddTestForceDepsNull(void **state);
 /**
- * Unit test for EBCL_crinitTaskAdd() with forceDeps as empty string.
+ * Unit test for crinitClientTaskAdd() with forceDeps as empty string.
  */
-void EBCL_crinitTaskAddTestForceDepsEmpty(void **state);
+void crinitClientTaskAddTestForceDepsEmpty(void **state);
 /**
- * Unit test for EBCL_crinitTaskAdd() testing overwrite is passed on correctly.
+ * Unit test for crinitClientTaskAdd() testing overwrite is passed on correctly.
  */
-void EBCL_crinitTaskAddTestOverwriteBoolToString(void **state);
+void crinitClientTaskAddTestOverwriteBoolToString(void **state);
 /**
- * Unit test for EBCL_crinitTaskAdd() testing error handling for EBCL_buildRtimCmd().
+ * Unit test for crinitClientTaskAdd() testing error handling for EBCL_buildRtimCmd().
  */
-void EBCL_crinitTaskAddTestBuildRtimCmdError(void **state);
+void crinitClientTaskAddTestBuildRtimCmdError(void **state);
 /**
- * Unit test for EBCL_crinitTaskAdd() testing error handling for EBCL_crinitXfer().
+ * Unit test for crinitClientTaskAdd() testing error handling for EBCL_crinitXfer().
  */
-void EBCL_crinitTaskAddTestCrinitXferError(void **state);
+void crinitClientTaskAddTestCrinitXferError(void **state);
 /**
- * Unit test for EBCL_crinitTaskAdd() testing error handling for error code response.
+ * Unit test for crinitClientTaskAdd() testing error handling for error code response.
  */
-void EBCL_crinitTaskAddTestCrinitResponseCodeError(void **state);
+void crinitClientTaskAddTestCrinitResponseCodeError(void **state);
 /**
- * Unit test for EBCL_crinitTaskAdd() testing error handling for wrong command in response.
+ * Unit test for crinitClientTaskAdd() testing error handling for wrong command in response.
  */
-void EBCL_crinitTaskAddTestCrinitResponseCmdError(void **state);
+void crinitClientTaskAddTestCrinitResponseCmdError(void **state);
 
 #endif /* __UTEST_CRINIT_TASK_ADD_H__ */

@@ -1,6 +1,6 @@
 /**
  * @file case-success.c
- * @brief Unit test for EBCL_crinitTaskAdd(), successful execution.
+ * @brief Unit test for crinitClientTaskAdd(), successful execution.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -28,7 +28,7 @@ static struct EBCL_storeRtimCmdArgs EBCL_crinitXferArgResContext = {
     &EBCL_crinitXferArgResOK,
 };
 
-void EBCL_crinitTaskAddTestSuccess(void **state) {
+void crinitClientTaskAddTestSuccess(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     expect_check(__wrap_EBCL_buildRtimCmd, c, EBCL_storeRtimCmd, &EBCL_buildRtimArgCmd);
@@ -46,5 +46,5 @@ void EBCL_crinitTaskAddTestSuccess(void **state) {
     will_return(__wrap_EBCL_destroyRtimCmd, 0);
     expect_check(__wrap_EBCL_destroyRtimCmd, c, EBCL_checkRtimCmd, &EBCL_crinitXferArgRes);
     will_return(__wrap_EBCL_destroyRtimCmd, 0);
-    assert_int_equal(EBCL_crinitTaskAdd(TEST_CONFIG_FILE, false, TEST_FORCE_DEPS), 0);
+    assert_int_equal(crinitClientTaskAdd(TEST_CONFIG_FILE, false, TEST_FORCE_DEPS), 0);
 }

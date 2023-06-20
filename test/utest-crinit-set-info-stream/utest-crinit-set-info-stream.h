@@ -1,6 +1,6 @@
 /**
  * @file utest-crinit-set-info-stream.h
- * @brief Header declaring the unit tests for EBCL_crinitSetInfoStream().
+ * @brief Header declaring the unit tests for crinitClientSetInfoStream().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -12,8 +12,8 @@
 #define __UTEST_CRINIT_SETINFOSTREAM_H__
 
 /**
- * Unit test for EBCL_crinitSetInfoStream().
+ * Unit test for crinitClientSetInfoStream().
  */
-void EBCL_crinitSetInfoStreamTestSet(void **state);
+void crinitClientSetInfoStreamTestSet(void **state);
 
 #endif /* __UTEST_CRINIT_SETINFOSTREAM_H__ */

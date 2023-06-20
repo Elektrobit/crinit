@@ -1,6 +1,6 @@
 /**
  * @file utest-crinit-set-verbose.h
- * @brief Header declaring the unit tests for EBCL_crinitSetVerbose().
+ * @brief Header declaring the unit tests for crinitClientSetVerbose().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -12,16 +12,16 @@
 #define __UTEST_CRINIT_SET_VERBOSE_H__
 
 /**
- * Unit test for EBCL_crinitSetVerbose(), unsuccessful case (failure of EBCL_globOptSet()).
+ * Unit test for crinitClientSetVerbose(), unsuccessful case (failure of EBCL_globOptSet()).
  *
  * Checks that the right values are delivered to EBCL_globOptSet() and that -1 is returned.
  */
-void EBCL_crinitSetVerboseTestGlobOptError(void **state);
+void crinitClientSetVerboseTestGlobOptError(void **state);
 /**
- * Unit test for EBCL_crinitSetVerbose(), successful case.
+ * Unit test for crinitClientSetVerbose(), successful case.
  *
  * Checks that the right values are delivered to EBCL_globOptSet() and that 0 is returned.
  */
-void EBCL_crinitSetVerboseTestSuccess(void **state);
+void crinitClientSetVerboseTestSuccess(void **state);
 
 #endif /* __UTEST_CRINIT_SET_VERBOSE_H__ */

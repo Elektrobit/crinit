@@ -149,11 +149,11 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    EBCL_crinitSetVerbose(verbose);
+    crinitClientSetVerbose(verbose);
 
     char *sockFile = getenv("CRINIT_SOCK");
     if (sockFile != NULL) {
-        EBCL_crinitSetSocketPath(sockFile);
+        crinitClientSetSocketPath(sockFile);
     }
 
     if (ignoreDeps) {
@@ -169,7 +169,7 @@ int main(int argc, char *argv[]) {
             crinitErrPrint("The path to the task config to load must be absolute.");
             return EXIT_FAILURE;
         }
-        if (EBCL_crinitTaskAdd(getoptArgv[optind], overwrite, overDeps) == -1) {
+        if (crinitClientTaskAdd(getoptArgv[optind], overwrite, overDeps) == -1) {
             crinitErrPrint("Adding task from \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
         }
@@ -184,7 +184,7 @@ int main(int argc, char *argv[]) {
             crinitErrPrint("The path to the series config to load must be absolute.");
             return EXIT_FAILURE;
         }
-        if (EBCL_crinitSeriesAdd(getoptArgv[optind], overwrite) == -1) {
+        if (crinitClientSeriesAdd(getoptArgv[optind], overwrite) == -1) {
             crinitErrPrint("Loading series file \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
         }
@@ -195,7 +195,7 @@ int main(int argc, char *argv[]) {
             EBCL_printUsage(getoptArgv[0]);
             return EXIT_FAILURE;
         }
-        if (EBCL_crinitTaskEnable(getoptArgv[optind]) == -1) {
+        if (crinitClientTaskEnable(getoptArgv[optind]) == -1) {
             crinitErrPrint("Enabling task \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
         }
@@ -206,7 +206,7 @@ int main(int argc, char *argv[]) {
             EBCL_printUsage(argv[0]);
             return EXIT_FAILURE;
         }
-        if (EBCL_crinitTaskDisable(getoptArgv[optind]) == -1) {
+        if (crinitClientTaskDisable(getoptArgv[optind]) == -1) {
             crinitErrPrint("Disabling task \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
         }
@@ -217,7 +217,7 @@ int main(int argc, char *argv[]) {
             EBCL_printUsage(argv[0]);
             return EXIT_FAILURE;
         }
-        if (EBCL_crinitTaskStop(getoptArgv[optind]) == -1) {
+        if (crinitClientTaskStop(getoptArgv[optind]) == -1) {
             crinitErrPrint("Stopping task \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
         }
@@ -228,7 +228,7 @@ int main(int argc, char *argv[]) {
             EBCL_printUsage(argv[0]);
             return EXIT_FAILURE;
         }
-        if (EBCL_crinitTaskKill(getoptArgv[optind]) == -1) {
+        if (crinitClientTaskKill(getoptArgv[optind]) == -1) {
             crinitErrPrint("Killing task \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
         }
@@ -239,7 +239,7 @@ int main(int argc, char *argv[]) {
             EBCL_printUsage(argv[0]);
             return EXIT_FAILURE;
         }
-        if (EBCL_crinitTaskRestart(getoptArgv[optind]) == -1) {
+        if (crinitClientTaskRestart(getoptArgv[optind]) == -1) {
             crinitErrPrint("Restarting task \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
         }
@@ -253,7 +253,7 @@ int main(int argc, char *argv[]) {
         ebcl_TaskState_t s = 0;
         pid_t pid = -1;
         const char *state;
-        if (EBCL_crinitTaskGetStatus(&s, &pid, getoptArgv[optind]) == -1) {
+        if (crinitClientTaskGetStatus(&s, &pid, getoptArgv[optind]) == -1) {
             crinitErrPrint("Querying status of task \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
         }
@@ -266,7 +266,7 @@ int main(int argc, char *argv[]) {
             EBCL_printUsage(argv[0]);
             return EXIT_FAILURE;
         }
-        EBCL_crinitSetNotifyTaskName(getoptArgv[optind]);
+        crinitClientSetNotifyTaskName(getoptArgv[optind]);
         if (sd_notify(0, getoptArgv[optind + 1]) == -1) {
             crinitErrPrint("sd_notify() for task \'%s\' with notify-string \'%s\' failed.", getoptArgv[optind],
                           getoptArgv[optind + 1]);
@@ -280,7 +280,7 @@ int main(int argc, char *argv[]) {
             return EXIT_FAILURE;
         }
         ebcl_TaskList_t *tl;
-        if (EBCL_crinitGetTaskList(&tl) == -1) {
+        if (crinitClientGetTaskList(&tl) == -1) {
             crinitErrPrint("Querying list of task \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
         }
@@ -296,18 +296,18 @@ int main(int argc, char *argv[]) {
             const char *state = EBCL_taskStateToStr(tl->tasks[i].state);
             crinitInfoPrint("%-*s  %4d  %s", maxNameLen, tl->tasks[i].name, tl->tasks[i].pid, state);
         }
-        EBCL_crinitFreeTaskList(tl);
+        crinitClientFreeTaskList(tl);
         return EXIT_SUCCESS;
     }
     if (strcmp(basename(getoptArgv[0]), "poweroff") == 0) {
-        if (EBCL_crinitShutdown(RB_POWER_OFF) == -1) {
+        if (crinitClientShutdown(RB_POWER_OFF) == -1) {
             crinitErrPrint("System poweroff request failed.");
             return EXIT_FAILURE;
         }
         return EXIT_SUCCESS;
     }
     if (strcmp(basename(getoptArgv[0]), "reboot") == 0) {
-        if (EBCL_crinitShutdown(RB_AUTOBOOT) == -1) {
+        if (crinitClientShutdown(RB_AUTOBOOT) == -1) {
             crinitErrPrint("System reboot request failed.");
             return EXIT_FAILURE;
         }
@@ -385,11 +385,11 @@ static void EBCL_printUsage(char *prgmPath) {
 
 static void EBCL_printVersion(void) {
     fprintf(stderr, "crinit-ctl version %s\n", crinitGetVersionString());
-    const crinitVersion_t *libVer = EBCL_crinitLibGetVersion();
+    const crinitVersion_t *libVer = crinitClientLibGetVersion();
     fprintf(stderr, "crinit-client library version %u.%u.%u%s%s\n", libVer->major, libVer->minor, libVer->micro,
             (strlen(libVer->git) == 0) ? "" : ".", libVer->git);
     crinitVersion_t daemonVer;
-    if (EBCL_crinitGetVersion(&daemonVer) == -1) {
+    if (crinitClientGetVersion(&daemonVer) == -1) {
         crinitErrPrint("Could not get version of Crinit daemon.");
         return;
     }

@@ -14,7 +14,7 @@
 #include "unit_test.h"
 
 /**
- * Runs the unit test group for EBCL_crinitSetVerbose using the cmocka API.
+ * Runs the unit test group for crinitClientSetVerbose using the cmocka API.
  */
 int main(void) {
     const struct CMUnitTest tests[] = {cmocka_unit_test(EBCL_cfgMapRegressionTest)};

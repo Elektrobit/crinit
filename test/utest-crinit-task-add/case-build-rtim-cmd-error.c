@@ -1,6 +1,6 @@
 /**
  * @file case-build-rtim-cmd-error.c
- * @brief Unit test for EBCL_crinitTaskAdd() testing error handling for EBCL_buildRtimCmd().
+ * @brief Unit test for crinitClientTaskAdd() testing error handling for EBCL_buildRtimCmd().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -20,7 +20,7 @@
 
 static ebcl_RtimCmd_t *EBCL_buildRtimArgCmd;
 
-void EBCL_crinitTaskAddTestBuildRtimCmdError(void **state) {
+void crinitClientTaskAddTestBuildRtimCmdError(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     expect_check(__wrap_EBCL_buildRtimCmd, c, EBCL_storeRtimCmd, &EBCL_buildRtimArgCmd);
@@ -30,5 +30,5 @@ void EBCL_crinitTaskAddTestBuildRtimCmdError(void **state) {
     expect_string(__wrap_EBCL_buildRtimCmd, vargs[1], "false");
     expect_string(__wrap_EBCL_buildRtimCmd, vargs[2], TEST_FORCE_DEPS);
     will_return(__wrap_EBCL_buildRtimCmd, -1);
-    assert_int_equal(EBCL_crinitTaskAdd(TEST_CONFIG_FILE, false, TEST_FORCE_DEPS), -1);
+    assert_int_equal(crinitClientTaskAdd(TEST_CONFIG_FILE, false, TEST_FORCE_DEPS), -1);
 }

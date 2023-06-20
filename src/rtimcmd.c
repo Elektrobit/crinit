@@ -49,7 +49,7 @@ typedef struct ebcl_UnMountList_t {
 /**
  * Internal implementation of the "addtask" command on an ebcl_TaskDB_t.
  *
- * For documentation on the command itself, see EBCL_crinitTaskAdd().
+ * For documentation on the command itself, see crinitClientTaskAdd().
  *
  * @param ctx  The ebcl_TaskDB_t to operate on.
  * @param res  Return pointer for response/result.
@@ -61,7 +61,7 @@ static int EBCL_execRtimCmdAddTask(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
 /**
  * Internal implementation of the "addseries" command on an ebcl_TaskDB.
  *
- * For documentation on the command itself, see EBCL_crinitSeriesAdd().
+ * For documentation on the command itself, see crinitClientSeriesAdd().
  *
  * @param ctx  The ebcl_TaskDB_t to operate on.
  * @param res  Return pointer for response/result.
@@ -73,7 +73,7 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
 /**
  * Internal implementation of the "enable" command on an ebcl_TaskDB_t.
  *
- * For documentation on the command itself, see EBCL_crinitTaskEnable().
+ * For documentation on the command itself, see crinitClientTaskEnable().
  *
  * @param ctx  The ebcl_TaskDB_t to operate on.
  * @param res  Return pointer for response/result.
@@ -85,7 +85,7 @@ static int EBCL_execRtimCmdEnable(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
 /**
  * Internal implementation of the "disable" command on an ebcl_TaskDB_t.
  *
- * For documentation on the command itself, see EBCL_crinitTaskDisable().
+ * For documentation on the command itself, see crinitClientTaskDisable().
  *
  * @param ctx  The ebcl_TaskDB_t to operate on.
  * @param res  Return pointer for response/result.
@@ -97,7 +97,7 @@ static int EBCL_execRtimCmdDisable(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, cons
 /**
  * Internal implementation of the "stop" command on an ebcl_TaskDB_t.
  *
- * For documentation on the command itself, see EBCL_crinitTaskStop().
+ * For documentation on the command itself, see crinitClientTaskStop().
  *
  * @param ctx  The ebcl_TaskDB_t to operate on.
  * @param res  Return pointer for response/result.
@@ -109,7 +109,7 @@ static int EBCL_execRtimCmdStop(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const e
 /**
  * Internal implementation of the "kill" command on an ebcl_TaskDB_t.
  *
- * For documentation on the command itself, see EBCL_crinitTaskKill().
+ * For documentation on the command itself, see crinitClientTaskKill().
  *
  * @param ctx  The ebcl_TaskDB_t to operate on.
  * @param res  Return pointer for response/result.
@@ -121,7 +121,7 @@ static int EBCL_execRtimCmdKill(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const e
 /**
  * Internal implementation of the "restart" command on an ebcl_TaskDB_t.
  *
- * For documentation on the command itself, see EBCL_crinitTaskRestart().
+ * For documentation on the command itself, see crinitClientTaskRestart().
  *
  * @param ctx  The ebcl_TaskDB_t to operate on.
  * @param res  Return pointer for response/result.
@@ -145,7 +145,7 @@ static int EBCL_execRtimCmdNotify(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
 /**
  * Internal implementation of the "status" command on an ebcl_TaskDB_t.
  *
- * For documentation on the command itself, see EBCL_crinitTaskGetStatus().
+ * For documentation on the command itself, see crinitClientTaskGetStatus().
  *
  * @param ctx  The ebcl_TaskDB_t to operate on.
  * @param res  Return pointer for response/result.
@@ -157,7 +157,7 @@ static int EBCL_execRtimCmdStatus(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
 /**
  * Internal implementation of the "list" command on an ebcl_TaskDB_t.
  *
- * For documentation on the command itself, see EBCL_crinitGetTaskList().
+ * For documentation on the command itself, see crinitClientGetTaskList().
  *
  * @param ctx  The ebcl_TaskDB_t to operate on.
  * @param res  Return pointer for response/result.
@@ -170,7 +170,7 @@ static int EBCL_execRtimCmdTaskList(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, con
 /**
  * Internal implementation of the version query from the client library to crinit.
  *
- * For documentation on the command itself, see EBCL_crinitGetVersion().
+ * For documentation on the command itself, see crinitClientGetVersion().
  *
  * @param ctx  The ebcl_TaskDB_t to operate on.
  * @param res  Return pointer for response/result.
@@ -183,7 +183,7 @@ static int EBCL_execRtimCmdGetVer(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
 /**
  * Internal implementation of the "shutdown" command.
  *
- * For documentation on the command itself, see EBCL_crinitShutdown().
+ * For documentation on the command itself, see crinitClientShutdown().
  *
  * @param ctx  The currently running ebcl_TaskDB, needed to inhibit spawning of new processes during shutdown.
  * @param res  Return pointer for response/result.

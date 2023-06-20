@@ -80,31 +80,31 @@ static EBCL_LIB_DESTRUCTOR void EBCL_libDestroy(void) {
     EBCL_globOptDestroy();
 }
 
-EBCL_LIB_EXPORTED int EBCL_crinitSetVerbose(bool v) {
+EBCL_LIB_EXPORTED int crinitClientSetVerbose(bool v) {
     return EBCL_globOptSetBoolean(EBCL_GLOBOPT_DEBUG, &v);
 }
 
-EBCL_LIB_EXPORTED void EBCL_crinitSetErrStream(FILE *errStream) {
+EBCL_LIB_EXPORTED void crinitClientSetErrStream(FILE *errStream) {
     crinitSetErrStream(errStream);
 }
 
-EBCL_LIB_EXPORTED void EBCL_crinitSetInfoStream(FILE *infoStream) {
+EBCL_LIB_EXPORTED void crinitClientSetInfoStream(FILE *infoStream) {
     crinitSetInfoStream(infoStream);
 }
 
-EBCL_LIB_EXPORTED void EBCL_crinitSetNotifyTaskName(const char *taskName) {
+EBCL_LIB_EXPORTED void crinitClientSetNotifyTaskName(const char *taskName) {
     if (taskName != NULL) {
         EBCL_notifyName = taskName;
     }
 }
 
-EBCL_LIB_EXPORTED void EBCL_crinitSetSocketPath(const char *sockFile) {
+EBCL_LIB_EXPORTED void crinitClientSetSocketPath(const char *sockFile) {
     if (sockFile != NULL) {
         EBCL_crinitSockFile = sockFile;
     }
 }
 
-EBCL_LIB_EXPORTED const crinitVersion_t *EBCL_crinitLibGetVersion(void) {
+EBCL_LIB_EXPORTED const crinitVersion_t *crinitClientLibGetVersion(void) {
     return &crinitVersion;
 }
 
@@ -164,7 +164,7 @@ EBCL_LIB_EXPORTED int sd_notifyf(                      // NOLINT(readability-ide
     return ret;
 }
 
-EBCL_LIB_EXPORTED int EBCL_crinitTaskAdd(const char *configFilePath, bool overwrite, const char *forceDeps) {
+EBCL_LIB_EXPORTED int crinitClientTaskAdd(const char *configFilePath, bool overwrite, const char *forceDeps) {
     if (configFilePath == NULL) {
         crinitErrPrint("Config file path must not be NULL");
         return -1;
@@ -197,7 +197,7 @@ EBCL_LIB_EXPORTED int EBCL_crinitTaskAdd(const char *configFilePath, bool overwr
     return ret;
 }
 
-EBCL_LIB_EXPORTED int EBCL_crinitSeriesAdd(const char *seriesFilePath, bool overwriteTasks) {
+EBCL_LIB_EXPORTED int crinitClientSeriesAdd(const char *seriesFilePath, bool overwriteTasks) {
     if (seriesFilePath == NULL) {
         crinitErrPrint("Series file path must not be NULL");
         return -1;
@@ -223,7 +223,7 @@ EBCL_LIB_EXPORTED int EBCL_crinitSeriesAdd(const char *seriesFilePath, bool over
     return ret;
 }
 
-EBCL_LIB_EXPORTED int EBCL_crinitTaskEnable(const char *taskName) {
+EBCL_LIB_EXPORTED int crinitClientTaskEnable(const char *taskName) {
     if (taskName == NULL) {
         crinitErrPrint("Task name must not be NULL");
         return -1;
@@ -247,7 +247,7 @@ EBCL_LIB_EXPORTED int EBCL_crinitTaskEnable(const char *taskName) {
     return ret;
 }
 
-EBCL_LIB_EXPORTED int EBCL_crinitTaskDisable(const char *taskName) {
+EBCL_LIB_EXPORTED int crinitClientTaskDisable(const char *taskName) {
     if (taskName == NULL) {
         crinitErrPrint("Task name must not be NULL");
         return -1;
@@ -270,7 +270,7 @@ EBCL_LIB_EXPORTED int EBCL_crinitTaskDisable(const char *taskName) {
     return ret;
 }
 
-EBCL_LIB_EXPORTED int EBCL_crinitTaskStop(const char *taskName) {
+EBCL_LIB_EXPORTED int crinitClientTaskStop(const char *taskName) {
     if (taskName == NULL) {
         crinitErrPrint("Task name must not be NULL");
         return -1;
@@ -294,7 +294,7 @@ EBCL_LIB_EXPORTED int EBCL_crinitTaskStop(const char *taskName) {
     return ret;
 }
 
-EBCL_LIB_EXPORTED int EBCL_crinitTaskKill(const char *taskName) {
+EBCL_LIB_EXPORTED int crinitClientTaskKill(const char *taskName) {
     if (taskName == NULL) {
         crinitErrPrint("Task name must not be NULL");
         return -1;
@@ -318,7 +318,7 @@ EBCL_LIB_EXPORTED int EBCL_crinitTaskKill(const char *taskName) {
     return ret;
 }
 
-EBCL_LIB_EXPORTED int EBCL_crinitTaskRestart(const char *taskName) {
+EBCL_LIB_EXPORTED int crinitClientTaskRestart(const char *taskName) {
     if (taskName == NULL) {
         crinitErrPrint("Task name must not be NULL");
         return -1;
@@ -342,7 +342,7 @@ EBCL_LIB_EXPORTED int EBCL_crinitTaskRestart(const char *taskName) {
     return ret;
 }
 
-EBCL_LIB_EXPORTED int EBCL_crinitTaskGetStatus(ebcl_TaskState_t *s, pid_t *pid, const char *taskName) {
+EBCL_LIB_EXPORTED int crinitClientTaskGetStatus(ebcl_TaskState_t *s, pid_t *pid, const char *taskName) {
     if (taskName == NULL || s == NULL) {
         crinitErrPrint("Pointer arguments must not be NULL");
         return -1;
@@ -371,7 +371,7 @@ EBCL_LIB_EXPORTED int EBCL_crinitTaskGetStatus(ebcl_TaskState_t *s, pid_t *pid, 
     return -1;
 }
 
-EBCL_LIB_EXPORTED int EBCL_crinitGetTaskList(ebcl_TaskList_t **tlptr) {
+EBCL_LIB_EXPORTED int crinitClientGetTaskList(ebcl_TaskList_t **tlptr) {
     if (tlptr == NULL) {
         crinitErrPrint("Pointer arguments must not be NULL");
         return -1;
@@ -417,7 +417,7 @@ EBCL_LIB_EXPORTED int EBCL_crinitGetTaskList(ebcl_TaskList_t **tlptr) {
         pid_t pid = -1;
         ebcl_TaskState_t state = 0;
 
-        if (EBCL_crinitTaskGetStatus(&state, &pid, name) == -1) {
+        if (crinitClientTaskGetStatus(&state, &pid, name) == -1) {
             crinitErrPrint("Querying status of task \'%s\' failed.", name);
             ret = -1;
             goto fail_status;
@@ -438,12 +438,12 @@ EBCL_LIB_EXPORTED int EBCL_crinitGetTaskList(ebcl_TaskList_t **tlptr) {
     return 0;
 
 fail_status:
-    EBCL_crinitFreeTaskList(tl);
+    crinitClientFreeTaskList(tl);
     EBCL_destroyRtimCmd(&res);
     return ret;
 }
 
-EBCL_LIB_EXPORTED void EBCL_crinitFreeTaskList(ebcl_TaskList_t *tl) {
+EBCL_LIB_EXPORTED void crinitClientFreeTaskList(ebcl_TaskList_t *tl) {
     if (tl == NULL) {
         return;
     }
@@ -454,7 +454,7 @@ EBCL_LIB_EXPORTED void EBCL_crinitFreeTaskList(ebcl_TaskList_t *tl) {
     free(tl);
 }
 
-EBCL_LIB_EXPORTED int EBCL_crinitShutdown(int shutdownCmd) {
+EBCL_LIB_EXPORTED int crinitClientShutdown(int shutdownCmd) {
     ebcl_RtimCmd_t cmd, res;
     char shdCmdStr[16] = {0};
     snprintf(shdCmdStr, 16, "0x%x", shutdownCmd);
@@ -475,7 +475,7 @@ EBCL_LIB_EXPORTED int EBCL_crinitShutdown(int shutdownCmd) {
     return ret;
 }
 
-EBCL_LIB_EXPORTED int EBCL_crinitGetVersion(crinitVersion_t *v) {
+EBCL_LIB_EXPORTED int crinitClientGetVersion(crinitVersion_t *v) {
     if (v == NULL) {
         crinitErrPrint("Return pointer must not be NULL.");
         return -1;

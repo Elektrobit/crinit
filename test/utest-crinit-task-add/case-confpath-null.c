@@ -1,6 +1,6 @@
 /**
  * @file case-confpath-null.c
- * @brief Unit test for EBCL_crinitTaskAdd() with confFilePath as NULL.
+ * @brief Unit test for crinitClientTaskAdd() with confFilePath as NULL.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -16,8 +16,8 @@
 
 #define TEST_FORCE_DEPS "foo:wait"
 
-void EBCL_crinitTaskAddTestConfPathNull(void **state) {
+void crinitClientTaskAddTestConfPathNull(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
-    assert_int_equal(EBCL_crinitTaskAdd(NULL, false, TEST_FORCE_DEPS), -1);
+    assert_int_equal(crinitClientTaskAdd(NULL, false, TEST_FORCE_DEPS), -1);
 }
