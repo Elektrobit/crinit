@@ -21,14 +21,14 @@
 #include "logio.h"
 
 int crinitInitIoRedirFromConfKvList(crinitIoRedir_t *out, const char *key, size_t keyArrIndex,
-                                   const ebcl_ConfKvList_t *in) {
+                                   const crinitConfKvList_t *in) {
     crinitNullCheck(-1, out, key, in);
     char *confVal;
-    if (EBCL_confListGetValWithIdx(&confVal, key, keyArrIndex, in) == -1) {
+    if (crinitConfListGetValWithIdx(&confVal, key, keyArrIndex, in) == -1) {
         crinitErrPrint("Could not find %s statement with index %zu in config.", key, keyArrIndex);
         return -1;
     }
-    if (EBCL_confConvToIoRedir(out, confVal) == -1) {
+    if (crinitConfConvToIoRedir(out, confVal) == -1) {
         crinitErrPrint("Could not parse IO redirection statement '%s'.", confVal);
         return -1;
     }

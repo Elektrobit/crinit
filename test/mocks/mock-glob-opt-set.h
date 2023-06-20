@@ -1,6 +1,6 @@
 /**
  * @file mock-glob-opt-set.h
- * @brief Header declaring a mock function for EBCL_globOptSet().
+ * @brief Header declaring a mock function for crinitGlobOptSet().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -14,12 +14,12 @@
 #include "globopt.h"
 
 /**
- * Mock function for EBCL_globOptSet().
+ * Mock function for crinitGlobOptSet().
  *
  * Checks that the right parameters are given and returns a pre-set value through the cmocka API. Otherwise the function
  * is a no-op.
  */
-int __wrap_EBCL_globOptSet(ebcl_GlobOptKey_t key, const void *val,  // NOLINT(readability-identifier-naming)
+int __wrap_crinitGlobOptSet(crinitGlobOptKey_t key, const void *val,  // NOLINT(readability-identifier-naming)
                            size_t sz);                              // Rationale: Naming scheme fixed due to linker
                                                                     // wrapping.
 

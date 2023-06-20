@@ -85,7 +85,7 @@ static void EBCL_printVersion(void);
  *
  * @return a string representing the given task status code.
  */
-static const char *EBCL_taskStateToStr(ebcl_TaskState_t s);
+static const char *EBCL_taskStateToStr(crinitTaskState_t s);
 
 int main(int argc, char *argv[]) {
     int getoptArgc = argc;
@@ -250,7 +250,7 @@ int main(int argc, char *argv[]) {
             EBCL_printUsage(argv[0]);
             return EXIT_FAILURE;
         }
-        ebcl_TaskState_t s = 0;
+        crinitTaskState_t s = 0;
         pid_t pid = -1;
         const char *state;
         if (crinitClientTaskGetStatus(&s, &pid, getoptArgv[optind]) == -1) {
@@ -279,7 +279,7 @@ int main(int argc, char *argv[]) {
             EBCL_printUsage(argv[0]);
             return EXIT_FAILURE;
         }
-        ebcl_TaskList_t *tl;
+        crinitTaskList_t *tl;
         if (crinitClientGetTaskList(&tl) == -1) {
             crinitErrPrint("Querying list of task \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
@@ -397,20 +397,20 @@ static void EBCL_printVersion(void) {
             (strlen(daemonVer.git) == 0) ? "" : ".", daemonVer.git);
 }
 
-static const char *EBCL_taskStateToStr(ebcl_TaskState_t s) {
-    bool notified = s & EBCL_TASK_STATE_NOTIFIED;
-    s &= ~EBCL_TASK_STATE_NOTIFIED;
+static const char *EBCL_taskStateToStr(crinitTaskState_t s) {
+    bool notified = s & CRINIT_TASK_STATE_NOTIFIED;
+    s &= ~CRINIT_TASK_STATE_NOTIFIED;
 
     switch (s) {
-        case EBCL_TASK_STATE_LOADED:
+        case CRINIT_TASK_STATE_LOADED:
             return "loaded";
-        case EBCL_TASK_STATE_STARTING:
+        case CRINIT_TASK_STATE_STARTING:
             return "starting";
-        case EBCL_TASK_STATE_RUNNING:
+        case CRINIT_TASK_STATE_RUNNING:
             return (notified) ? "running (notified)" : "running";
-        case EBCL_TASK_STATE_DONE:
+        case CRINIT_TASK_STATE_DONE:
             return (notified) ? "done (notified)" : "done";
-        case EBCL_TASK_STATE_FAILED:
+        case CRINIT_TASK_STATE_FAILED:
             return (notified) ? "failed (notified)" : "failed";
         default:
             return "(invalid)";

@@ -15,21 +15,21 @@
 #include "unit_test.h"
 
 int EBCL_storeRtimCmd(const uintmax_t value, const uintmax_t context) {
-    ebcl_RtimCmd_t **dest = (ebcl_RtimCmd_t **)context;
-    *dest = (ebcl_RtimCmd_t *)value;
+    crinitRtimCmd_t **dest = (crinitRtimCmd_t **)context;
+    *dest = (crinitRtimCmd_t *)value;
     return 1;
 }
 
 int EBCL_storeRtimCmdContext(const uintmax_t value, const uintmax_t context) {
     struct EBCL_storeRtimCmdArgs *rtimContext = (struct EBCL_storeRtimCmdArgs *)context;
-    *rtimContext->ptr = (ebcl_RtimCmd_t *)value;
+    *rtimContext->ptr = (crinitRtimCmd_t *)value;
     **rtimContext->ptr = *rtimContext->value;
     return 1;
 }
 
 int EBCL_checkRtimCmd(const uintmax_t value, const uintmax_t context) {
-    ebcl_RtimCmd_t *expected = *((ebcl_RtimCmd_t **)context);
-    return (ebcl_RtimCmd_t *)value == expected;
+    crinitRtimCmd_t *expected = *((crinitRtimCmd_t **)context);
+    return (crinitRtimCmd_t *)value == expected;
 }
 
 /**

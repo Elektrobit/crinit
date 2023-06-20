@@ -1,6 +1,6 @@
 /**
  * @file mock-crinit-xfer.h
- * @brief Implementation of a mock function for EBCL_crinitXfer().
+ * @brief Implementation of a mock function for crinitXfer().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -14,12 +14,12 @@
 #include "rtimcmd.h"
 
 /**
- * Mock function for EBCL_crinitXfer().
+ * Mock function for crinitXfer().
  *
  * Checks that the right parameters are given and returns a pre-set value through the cmocka API.
  * Otherwise the function is a no-op.
  */
 // NOLINTNEXTLINE(readability-identifier-naming) Rationale: Naming scheme fixed due to linker wrapping.
-int __wrap_EBCL_crinitXfer(const char *sockFile, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+int __wrap_crinitXfer(const char *sockFile, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd);
 
 #endif /* __MOCK_BUILD_RTIM_CMD_H__ */

@@ -24,6 +24,6 @@
  *
  * @return 0 on success, -1 on error
  */
-int EBCL_startInterfaceServer(crinitTaskDB_t *ctx, const char *sockfile);
+int crinitStartInterfaceServer(crinitTaskDB_t *ctx, const char *sockfile);
 
 #endif /*__NOTISERV_H__ */

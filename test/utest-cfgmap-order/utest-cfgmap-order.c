@@ -1,6 +1,6 @@
 /**
  * @file utest-cfgmap-order.c
- * @brief Implementation of the unit test group for the order/size of EBCL_cfgMap.
+ * @brief Implementation of the unit test group for the order/size of crinitCfgMap.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -17,7 +17,7 @@
  * Runs the unit test group for crinitClientSetVerbose using the cmocka API.
  */
 int main(void) {
-    const struct CMUnitTest tests[] = {cmocka_unit_test(EBCL_cfgMapRegressionTest)};
+    const struct CMUnitTest tests[] = {cmocka_unit_test(crinitCfgMapRegressionTest)};
 
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

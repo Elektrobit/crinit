@@ -14,5 +14,5 @@ create_unit_test(
   LIBRARIES
     libmockfunctions
   WRAPS
-    -Wl,--wrap=EBCL_globOptSet
+    -Wl,--wrap=crinitGlobOptSet
 )

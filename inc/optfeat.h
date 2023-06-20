@@ -24,6 +24,6 @@
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_crinitFeatureHook(const char *sysFeatName);
+int crinitFeatureHook(const char *sysFeatName);
 
 #endif /*__OPTFEAT_H__ */

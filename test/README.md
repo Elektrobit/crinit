@@ -14,7 +14,7 @@ follow the naming scheme as shown below.
 ```
 test/
 |-- mocks
-|   |-- mock-glob-opt-set.c                     The mock for EBCL_globOptSet()
+|   |-- mock-glob-opt-set.c                     The mock for crinitGlobOptSet()
 |   |-- mock-glot-opt-set.h                     The corresponding header for the mock
 |   `-- mock-*.[ch]                             Additional mocks for functions used in tests
 |-- utest-crinit-function-name                  Tests for EBCL_crinitFunctionName()

@@ -18,7 +18,7 @@
  *
  * @return 0 on success, -1 on error
  */
-int EBCL_setupSystemFs(void);
+int crinitSetupSystemFs(void);
 
 /**
  * Forks the calling process, parent will enter a wait-loop, child will return.
@@ -28,6 +28,6 @@ int EBCL_setupSystemFs(void);
  *
  * @return -1 if fork() fails, 0 on success in the child process, parent process will never return
  */
-int EBCL_forkZombieReaper(void);
+int crinitForkZombieReaper(void);
 
 #endif /* __MINSETUP_H__ */

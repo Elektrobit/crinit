@@ -21,16 +21,16 @@ void crinitClientSetVerboseTestSuccess(void **state) {
     const bool f = false;
 
     // case for input == true
-    expect_value(__wrap_EBCL_globOptSet, key, EBCL_GLOBOPT_DEBUG);
-    expect_memory(__wrap_EBCL_globOptSet, val, &t, sizeof(bool));
-    expect_value(__wrap_EBCL_globOptSet, sz, sizeof(bool));
-    will_return(__wrap_EBCL_globOptSet, 0);
+    expect_value(__wrap_crinitGlobOptSet, key, CRINIT_GLOBOPT_DEBUG);
+    expect_memory(__wrap_crinitGlobOptSet, val, &t, sizeof(bool));
+    expect_value(__wrap_crinitGlobOptSet, sz, sizeof(bool));
+    will_return(__wrap_crinitGlobOptSet, 0);
     assert_int_equal(crinitClientSetVerbose(true), 0);
 
     // case for input == false
-    expect_value(__wrap_EBCL_globOptSet, key, EBCL_GLOBOPT_DEBUG);
-    expect_memory(__wrap_EBCL_globOptSet, val, &f, sizeof(bool));
-    expect_value(__wrap_EBCL_globOptSet, sz, sizeof(bool));
-    will_return(__wrap_EBCL_globOptSet, 0);
+    expect_value(__wrap_crinitGlobOptSet, key, CRINIT_GLOBOPT_DEBUG);
+    expect_memory(__wrap_crinitGlobOptSet, val, &f, sizeof(bool));
+    expect_value(__wrap_crinitGlobOptSet, sz, sizeof(bool));
+    will_return(__wrap_crinitGlobOptSet, 0);
     assert_int_equal(crinitClientSetVerbose(false), 0);
 }

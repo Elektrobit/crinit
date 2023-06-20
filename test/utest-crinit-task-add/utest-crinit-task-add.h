@@ -19,8 +19,8 @@
  * Structure used for \a EBCL_storeRtimCmdContext().
  */
 struct EBCL_storeRtimCmdArgs {
-    ebcl_RtimCmd_t **ptr;
-    ebcl_RtimCmd_t *value;
+    crinitRtimCmd_t **ptr;
+    crinitRtimCmd_t *value;
 };
 
 /**
@@ -31,11 +31,11 @@ struct EBCL_storeRtimCmdArgs {
  * the parameter, but saves a copy of the pointer.
  *
  * The parameter types of this function match the Cmocka interface, but will be casted internally as if they were:
- *   int EBCL_storeRtimCmd(const ebcl_RtimCmd_t *value, const ebcl_RtimCmd_t **context);
+ *   int EBCL_storeRtimCmd(const crinitRtimCmd_t *value, const crinitRtimCmd_t **context);
  *
  * Example usage:
- *   ebcl_RtimCmd_t *EBCL_buildRtimArgCmd;
- *   expect_check(__wrap_EBCL_buildRtimCmd, c, EBCL_storeRtimCmd, &EBCL_buildRtimArgCmd);
+ *   crinitRtimCmd_t *EBCL_buildRtimArgCmd;
+ *   expect_check(__wrap_crinitBuildRtimCmd, c, EBCL_storeRtimCmd, &EBCL_buildRtimArgCmd);
  */
 int EBCL_storeRtimCmd(const uintmax_t value, const uintmax_t context);
 /**
@@ -46,26 +46,26 @@ int EBCL_storeRtimCmd(const uintmax_t value, const uintmax_t context);
  * actually check the parameter, but saves a copy of the pointer and writes a mocked value to the pointed object.
  *
  * The parameter types of this function match the Cmocka interface, but will be casted internally as if they were:
- *   int EBCL_storeRtimCmd(const ebcl_RtimCmd_t *value, const EBCL_storeRtimCmdArgs *context);
+ *   int EBCL_storeRtimCmd(const crinitRtimCmd_t *value, const EBCL_storeRtimCmdArgs *context);
  *
  * The \a context is a casted pointer to a \a EBCL_storeRtimCmdArgs. The argument \a value will be written to the
  * \a context->ptr member, while the member \a context->value will be placed into the object pointed to by \a value.
  *
  * Example usage:
- *   ebcl_RtimCmd_t *EBCL_crinitXferArgRes;
- *   char *EBCL_crinitXferArgResOKArgs[1] = {
- *       EBCL_RTIMCMD_RES_OK
+ *   crinitRtimCmd_t *crinitXferArgRes;
+ *   char *crinitXferArgResOKArgs[1] = {
+ *       CRINIT_RTIMCMD_RES_OK
  *   };
- *   ebcl_RtimCmd_t EBCL_crinitXferArgResOK = {
- *       .op = EBCL_RTIMCMD_R_ADDTASK,
+ *   crinitRtimCmd_t crinitXferArgResOK = {
+ *       .op = CRINIT_RTIMCMD_R_ADDTASK,
  *       .argc = 1,
- *       .args = EBCL_crinitXferArgResOKArgs
+ *       .args = crinitXferArgResOKArgs
  *   };
- *   struct EBCL_storeRtimCmdArgs EBCL_crinitXferArgResContext = {
- *       &EBCL_crinitXferArgRes,
- *       &EBCL_crinitXferArgResOK,
+ *   struct EBCL_storeRtimCmdArgs crinitXferArgResContext = {
+ *       &crinitXferArgRes,
+ *       &crinitXferArgResOK,
  *   };
- *   expect_check(__wrap_EBCL_crinitXfer, res, EBCL_storeRtimCmdContext, &EBCL_crinitXferArgResContext);
+ *   expect_check(__wrap_crinitXfer, res, EBCL_storeRtimCmdContext, &crinitXferArgResContext);
  */
 int EBCL_storeRtimCmdContext(const uintmax_t value, const uintmax_t context);
 /**
@@ -76,8 +76,8 @@ int EBCL_storeRtimCmdContext(const uintmax_t value, const uintmax_t context);
  * setup before the function under test runs, but the by-reference pointer is only known at runtime.
  *
  * Example usage:
- *   ebcl_RtimCmd_t *EBCL_buildRtimArgCmd;
- *   expect_check(__wrap_EBCL_crinitXfer, cmd, EBCL_checkRtimCmd, &EBCL_buildRtimArgCmd);
+ *   crinitRtimCmd_t *EBCL_buildRtimArgCmd;
+ *   expect_check(__wrap_crinitXfer, cmd, EBCL_checkRtimCmd, &EBCL_buildRtimArgCmd);
  */
 int EBCL_checkRtimCmd(const uintmax_t value, const uintmax_t context);
 
@@ -102,11 +102,11 @@ void crinitClientTaskAddTestForceDepsEmpty(void **state);
  */
 void crinitClientTaskAddTestOverwriteBoolToString(void **state);
 /**
- * Unit test for crinitClientTaskAdd() testing error handling for EBCL_buildRtimCmd().
+ * Unit test for crinitClientTaskAdd() testing error handling for crinitBuildRtimCmd().
  */
 void crinitClientTaskAddTestBuildRtimCmdError(void **state);
 /**
- * Unit test for crinitClientTaskAdd() testing error handling for EBCL_crinitXfer().
+ * Unit test for crinitClientTaskAdd() testing error handling for crinitXfer().
  */
 void crinitClientTaskAddTestCrinitXferError(void **state);
 /**

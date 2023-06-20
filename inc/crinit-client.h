@@ -66,7 +66,7 @@ const crinitVersion_t *crinitClientLibGetVersion(void);
 /**
  * Sets the task name reported to Crinit by sd_notify().
  *
- * The default is set via the environment variable specified by #EBCL_CRINIT_ENV_NOTIFY_NAME if it is present.
+ * The default is set via the environment variable specified by #CRINIT_ENV_NOTIFY_NAME if it is present.
  *
  * @param taskName  The task name to use.
  */
@@ -74,7 +74,7 @@ void crinitClientSetNotifyTaskName(const char *taskName);
 /**
  * Sets the path to Crinit's AF_UNIX communication socket.
  *
- * The default is set by #EBCL_CRINIT_SOCKFILE.
+ * The default is set by #CRINIT_SOCKFILE.
  *
  * @param sockFile  Path to the socket file.
  */
@@ -98,7 +98,7 @@ int crinitClientSetVerbose(bool v);
  * READY=1 lets Crinit know the task is currently running. MAINPID=[pid] tells Crinit its PID. Delimiting character is a
  * newline.
  *
- * Example: `"READY=1\nMAINPID=42"` will update the task's state to #EBCL_TASK_STATE_RUNNING and its PID to 42.
+ * Example: `"READY=1\nMAINPID=42"` will update the task's state to #CRINIT_TASK_STATE_RUNNING and its PID to 42.
  *
  * For more information regarding the use cases of this interface, refer to the official SD_NOTIFY documentation.
  *
@@ -209,7 +209,7 @@ int crinitClientTaskKill(const char *taskName);
 /**
  * Request Crinit to reset the state of a task within the TaskDB.
  *
- * State will be reset to 0 it is currently #EBCL_TASK_STATE_DONE or #EBCL_TASK_STATE_FAILED. If the task has no
+ * State will be reset to 0 it is currently #CRINIT_TASK_STATE_DONE or #CRINIT_TASK_STATE_FAILED. If the task has no
  * unfulfilled dependencies, this will cause an immediate restart.
  *
  * Note, that the semantics are different than with e.g. `systemctl restart`. To get equivalent behaviour, i.e. restart
@@ -230,7 +230,7 @@ int crinitClientTaskRestart(const char *taskName);
  *
  * @return 0 on success, -1 on error
  */
-int crinitClientTaskGetStatus(ebcl_TaskState_t *s, pid_t *pid, const char *taskName);
+int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *pid, const char *taskName);
 /**
  * Request Crinit to report the list of task names from its TaskDB.
  *
@@ -240,13 +240,13 @@ int crinitClientTaskGetStatus(ebcl_TaskState_t *s, pid_t *pid, const char *taskN
  *
  * @return 0 on success, -1 on error
  */
-int crinitClientGetTaskList(ebcl_TaskList_t **tl);
+int crinitClientGetTaskList(crinitTaskList_t **tl);
 /**
  * Free the list of tasks obtained from crinitClientGetTaskList().
  *
  * @param tl    The list of tasks.
  */
-void crinitClientFreeTaskList(ebcl_TaskList_t *tl);
+void crinitClientFreeTaskList(crinitTaskList_t *tl);
 /**
  * Request Crinit to initiate an immediate shutdown or reboot.
  *

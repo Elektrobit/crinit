@@ -17,76 +17,76 @@
 /**
  * Stack size for the shutdown/reboot handling thread.
  */
-#define EBCL_RTIMCMD_SHDN_THREAD_STACK_SIZE (PTHREAD_STACK_MIN + 112 * 1024)
+#define CRINIT_RTIMCMD_SHDN_THREAD_STACK_SIZE (PTHREAD_STACK_MIN + 112 * 1024)
 
-#define EBCL_RTIMCMD_RES_OK "RES_OK"    ///< Value of first argument in a positive (successful) response message.
-#define EBCL_RTIMCMD_RES_ERR "RES_ERR"  ///< Value of first argument in a negative (unsuccessful) response message.
+#define CRINIT_RTIMCMD_RES_OK "RES_OK"    ///< Value of first argument in a positive (successful) response message.
+#define CRINIT_RTIMCMD_RES_ERR "RES_ERR"  ///< Value of first argument in a negative (unsuccessful) response message.
 
 /**
- * Structure holding a command or response message with its ebcl_RtimOp_t opcode and arguments array.
+ * Structure holding a command or response message with its crinitRtimOp_t opcode and arguments array.
  */
-typedef struct ebcl_RtimCmd_t {
-    ebcl_RtimOp_t op;  ///< The command or response opcode (see rtimopmap.h).
+typedef struct crinitRtimCmd_t {
+    crinitRtimOp_t op;  ///< The command or response opcode (see rtimopmap.h).
     size_t argc;       ///< The number of arguments.
     char **args;       ///< String array of arguments.
-} ebcl_RtimCmd_t;
+} crinitRtimCmd_t;
 
 /**
- * Create an ebcl_RtimCmd_t from an opcode and an argument list.
+ * Create an crinitRtimCmd_t from an opcode and an argument list.
  *
- * Will allocate memory for the argument string array which should be freed using EBCL_destroyRtimCmd() when no longer
+ * Will allocate memory for the argument string array which should be freed using crinitDestroyRtimCmd() when no longer
  * needed.
  *
- * @param c     The ebcl_RtimCmd_t to build.
+ * @param c     The crinitRtimCmd_t to build.
  * @param op    The opcode of the command or response.
  * @param argc  The number of arguments to the command/response.
  * @param ...   List of \a argc arguments of type `const char*`.
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_buildRtimCmd(ebcl_RtimCmd_t *c, ebcl_RtimOp_t op, size_t argc, ...);
+int crinitBuildRtimCmd(crinitRtimCmd_t *c, crinitRtimOp_t op, size_t argc, ...);
 /**
- * Free memory in an ebcl_RtimCmd_t allocated by EBCL_buildRtimCmd() or EBCL_parseRtimCmd().
+ * Free memory in an crinitRtimCmd_t allocated by crinitBuildRtimCmd() or crinitParseRtimCmd().
  *
  * Will free the memory for the argument array in the structure.
  *
- * @param c  The ebcl_RtimCmd_t from which the memory should be freed.
+ * @param c  The crinitRtimCmd_t from which the memory should be freed.
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_destroyRtimCmd(ebcl_RtimCmd_t *c);
+int crinitDestroyRtimCmd(crinitRtimCmd_t *c);
 
 /**
- * Parses a string into an ebcl_RtimCmd_t.
+ * Parses a string into an crinitRtimCmd_t.
  *
  * The string must be of the form `<OPCODE_STRING>\nARG1\n...\nARGn`. The mapping of an opcode to a string
- * representation is done in rtimopmap.h. EBCL_rtimCmdToMsgStr() can be used to obtain such a string from an
- * ebcl_RtimCmd_t.
+ * representation is done in rtimopmap.h. crinitRtimCmdToMsgStr() can be used to obtain such a string from an
+ * crinitRtimCmd_t.
  *
  * Will allocate memory for the argument array inside the output command which should be freed using
- * EBCL_destroyRtimCmd().
+ * crinitDestroyRtimCmd().
  *
- * @param out     The ebcl_RtimCmd_t to create.
+ * @param out     The crinitRtimCmd_t to create.
  * @param cmdStr  The string to parse.
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_parseRtimCmd(ebcl_RtimCmd_t *out, const char *cmdStr);
+int crinitParseRtimCmd(crinitRtimCmd_t *out, const char *cmdStr);
 /**
- * Generates a string representation of an ebcl_RtimCmd_t.
+ * Generates a string representation of an crinitRtimCmd_t.
  *
- * The generated string will be in a format parse-able by EBCL_parseRtimCmd(). Memory for the string will be allocated
+ * The generated string will be in a format parse-able by crinitParseRtimCmd(). Memory for the string will be allocated
  * using malloc() and should be freed using free() once no longer used.
  *
  * @param out     Pointer to the output string.
  * @param outLen  Size of the output string including the terminating zero.
- * @param cmd     The ebcl_RtimCmd_t to generate the string from.
+ * @param cmd     The crinitRtimCmd_t to generate the string from.
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_rtimCmdToMsgStr(char **out, size_t *outLen, const ebcl_RtimCmd_t *cmd);
+int crinitRtimCmdToMsgStr(char **out, size_t *outLen, const crinitRtimCmd_t *cmd);
 /**
- * Executes an ebcl_RtimCmd_t if it contains a valid command.
+ * Executes an crinitRtimCmd_t if it contains a valid command.
  *
  * For the implementations of the different possible commands see rtimcmd.c.
  *
@@ -96,6 +96,6 @@ int EBCL_rtimCmdToMsgStr(char **out, size_t *outLen, const ebcl_RtimCmd_t *cmd);
  *
  * @return 0 on success, -1 otherwise
  */
-int EBCL_execRtimCmd(crinitTaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd);
+int crinitExecRtimCmd(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd);
 
 #endif /* __RTIMCMD_H__ */

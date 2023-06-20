@@ -72,31 +72,31 @@ int main(int argc, char *argv[]) {
     }
     crinitInfoPrint("Crinit daemon version %s started.", crinitGetVersionString());
     if (getpid() == 1) {
-        if (EBCL_forkZombieReaper() == -1) {
+        if (crinitForkZombieReaper() == -1) {
             crinitErrPrint("I am PID 1 but failed to create a zombie reaper process.");
             return EXIT_FAILURE;
         }
-        if (EBCL_setupSystemFs() == -1) {
+        if (crinitSetupSystemFs() == -1) {
             crinitErrPrint("I started as PID 1 but failed to do minimal system setup.");
             return EXIT_FAILURE;
         }
     }
-    if (EBCL_globOptInitDefault() == -1) {
+    if (crinitGlobOptInitDefault() == -1) {
         crinitErrPrint("Could not initialize global option array.");
         return EXIT_FAILURE;
     }
 
     crinitFileSeries_t taskSeries;
-    if (EBCL_loadSeriesConf(&taskSeries, seriesFname) == -1) {
+    if (crinitLoadSeriesConf(&taskSeries, seriesFname) == -1) {
         crinitErrPrint("Could not load series file \'%s\'.", seriesFname);
-        EBCL_globOptDestroy();
+        crinitGlobOptDestroy();
         return EXIT_FAILURE;
     }
 
-    EBCL_rtimOpMapDebugPrintAll();
+    crinitRtimOpMapDebugPrintAll();
 
     crinitTaskDB_t tdb;
-    crinitTaskDBInit(&tdb, EBCL_procDispatchSpawnFunc);
+    crinitTaskDBInit(&tdb, crinitProcDispatchSpawnFunc);
 
     for (size_t n = 0; n < taskSeries.size; n++) {
         char *confFn = taskSeries.fnames[n];
@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
             confFn = malloc(prefixLen + suffixLen + 2);
             if (confFn == NULL) {
                 crinitErrnoPrint("Could not allocate string with full path for \'%s\'.", taskSeries.fnames[n]);
-                EBCL_globOptDestroy();
+                crinitGlobOptDestroy();
                 crinitDestroyFileSeries(&taskSeries);
                 crinitTaskDBDestroy(&tdb);
                 return EXIT_FAILURE;
@@ -117,10 +117,10 @@ int main(int argc, char *argv[]) {
             memcpy(confFn + prefixLen + 1, taskSeries.fnames[n], suffixLen + 1);
             confFnAllocated = true;
         }
-        ebcl_ConfKvList_t *c;
-        if (EBCL_parseConf(&c, confFn) == -1) {
+        crinitConfKvList_t *c;
+        if (crinitParseConf(&c, confFn) == -1) {
             crinitErrPrint("Could not parse file \'%s\'.", confFn);
-            EBCL_globOptDestroy();
+            crinitGlobOptDestroy();
             if (confFnAllocated) {
                 free(confFn);
             }
@@ -137,20 +137,20 @@ int main(int argc, char *argv[]) {
         crinitTask_t *t = NULL;
         if (crinitTaskCreateFromConfKvList(&t, c) == -1) {
             crinitErrPrint("Could not extract task from ConfKvList.");
-            EBCL_freeConfList(c);
-            EBCL_globOptDestroy();
+            crinitFreeConfList(c);
+            crinitGlobOptDestroy();
             crinitDestroyFileSeries(&taskSeries);
             crinitTaskDBDestroy(&tdb);
             return EXIT_FAILURE;
         }
-        EBCL_freeConfList(c);
+        crinitFreeConfList(c);
 
         crinitDbgInfoPrint("Task extracted without error.");
         EBCL_taskPrint(t);
 
         if (crinitTaskDBInsert(&tdb, t, false) == -1) {
             crinitErrPrint("Could not insert Task '%s' into TaskDB.", t->name);
-            EBCL_globOptDestroy();
+            crinitGlobOptDestroy();
             crinitDestroyFileSeries(&taskSeries);
             crinitFreeTask(t);
             crinitTaskDBDestroy(&tdb);
@@ -163,12 +163,12 @@ int main(int argc, char *argv[]) {
 
     char *sockFile = getenv("CRINIT_SOCK");
     if (sockFile == NULL) {
-        sockFile = EBCL_CRINIT_SOCKFILE;
+        sockFile = CRINIT_SOCKFILE;
     }
-    if (EBCL_startInterfaceServer(&tdb, sockFile) == -1) {
+    if (crinitStartInterfaceServer(&tdb, sockFile) == -1) {
         crinitErrPrint("Could not start notification and service interface.");
         crinitTaskDBDestroy(&tdb);
-        EBCL_globOptDestroy();
+        crinitGlobOptDestroy();
         return EXIT_FAILURE;
     }
 
@@ -180,7 +180,7 @@ int main(int argc, char *argv[]) {
         pthread_mutex_unlock(&tdb.lock);
     }
     crinitTaskDBDestroy(&tdb);
-    EBCL_globOptDestroy();
+    crinitGlobOptDestroy();
     return EXIT_SUCCESS;
 }
 

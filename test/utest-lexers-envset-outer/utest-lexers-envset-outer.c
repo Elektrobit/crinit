@@ -14,13 +14,13 @@
 #include "unit_test.h"
 
 /**
- * Runs the unit test group for EBCL_envVarOuterLex using the cmocka API.
+ * Runs the unit test group for crinitEnvVarOuterLex using the cmocka API.
  */
 int main(void) {
     const struct CMUnitTest tests[] = {
-        cmocka_unit_test(EBCL_envVarOuterLexTestSuccess),
-        cmocka_unit_test(EBCL_envVarOuterLexTestNullInput),
-        cmocka_unit_test(EBCL_envVarOuterLexTestLexerError),
+        cmocka_unit_test(crinitEnvVarOuterLexTestSuccess),
+        cmocka_unit_test(crinitEnvVarOuterLexTestNullInput),
+        cmocka_unit_test(crinitEnvVarOuterLexTestLexerError),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);

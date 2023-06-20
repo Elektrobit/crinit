@@ -38,9 +38,9 @@
 
 /** Helper structure defining the arguments to connThread() **/
 typedef struct ebcl_ConnThrArgs_t {
-    int sockFd;                ///< The socket to accept connections from.
+    int sockFd;                 ///< The socket to accept connections from.
     crinitThreadPool_t *tpRef;  ///< Pointer to the crinitThreadPool_t context, needed for
-                               ///< crinitThreadPoolThreadAvailCallback() and crinitThreadPoolThreadBusyCallback().
+                                ///< crinitThreadPoolThreadAvailCallback() and crinitThreadPoolThreadBusyCallback().
 } ebcl_ConnThrArgs_t;
 
 static crinitThreadPool_t EBCL_workers;  ///< The worker thread pool to run connThread() in.
@@ -53,8 +53,8 @@ static crinitTaskDB_t *EBCL_tdbRef;      ///< Pointer to the crinitTaskDB_t to o
  * informed of client PID, UID, and GID through `SO_PASSCRED`/`SCM_CREDENTIALS`, so that permission handling is
  * possible.
  *
- * Uses crinitThreadPoolThreadAvailCallback() and crinitThreadPoolThreadBusyCallback() to signal its status to the thread
- * pool.
+ * Uses crinitThreadPoolThreadAvailCallback() and crinitThreadPoolThreadBusyCallback() to signal its status to the
+ * thread pool.
  *
  * The client-side equivalent connection-handling function is crinitXfer() in crinit-client.c. The following image
  * illustrates the high level client/server protocol.
@@ -147,7 +147,7 @@ static inline int EBCL_recvStr(int sockFd, char **str, struct ucred *passedCreds
  * @return true if \a passedCreds imply the sending process is permitted to execute \a op. Returns false otherwise, also
  * on errors.
  */
-static inline bool EBCL_checkPerm(ebcl_RtimOp_t op, const struct ucred *passedCreds);
+static inline bool EBCL_checkPerm(crinitRtimOp_t op, const struct ucred *passedCreds);
 /**
  * Gets capabilities of process specified by PID.
  *
@@ -171,7 +171,7 @@ static inline int EBCL_procCapget(cap_user_data_t out, pid_t pid);
  */
 static inline int EBCL_mkdirp(char *pathname, mode_t mode);
 
-int EBCL_startInterfaceServer(crinitTaskDB_t *ctx, const char *sockFile) {
+int crinitStartInterfaceServer(crinitTaskDB_t *ctx, const char *sockFile) {
     if (ctx == NULL || sockFile == NULL) {
         crinitErrPrint("Given arguments must not be NULL.");
         return -1;
@@ -292,11 +292,11 @@ static void *EBCL_connThread(void *args) {
         }
 
         crinitDbgInfoPrint("(TID %d) Received string \'%s\' from client.", threadId, clientMsg);
-        crinitDbgInfoPrint("(TID %d) Received following credentials from peer process: PID=%d, UID=%d, GID=%d", threadId,
-                          msgCreds.pid, msgCreds.uid, msgCreds.gid);
+        crinitDbgInfoPrint("(TID %d) Received following credentials from peer process: PID=%d, UID=%d, GID=%d",
+                           threadId, msgCreds.pid, msgCreds.uid, msgCreds.gid);
 
-        ebcl_RtimCmd_t cmd, res;
-        if (EBCL_parseRtimCmd(&cmd, clientMsg) == -1) {
+        crinitRtimCmd_t cmd, res;
+        if (crinitParseRtimCmd(&cmd, clientMsg) == -1) {
             crinitErrPrint("(TID %d) Could not parse command from client.", threadId);
             free(clientMsg);
             close(connSockFd);
@@ -305,29 +305,29 @@ static void *EBCL_connThread(void *args) {
         free(clientMsg);
         if (!EBCL_checkPerm(cmd.op, &msgCreds)) {
             crinitErrPrint("(TID %d) Client does not have permission to issue command.", threadId);
-            if (EBCL_buildRtimCmd(&res, cmd.op + 1, 2, EBCL_RTIMCMD_RES_ERR, "Permission denied.") == -1) {
+            if (crinitBuildRtimCmd(&res, cmd.op + 1, 2, CRINIT_RTIMCMD_RES_ERR, "Permission denied.") == -1) {
                 crinitErrPrint("Could not generate response to client.");
-                EBCL_destroyRtimCmd(&cmd);
+                crinitDestroyRtimCmd(&cmd);
                 close(connSockFd);
                 continue;
             }
         } else {
-            if (EBCL_execRtimCmd(EBCL_tdbRef, &res, &cmd) == -1) {
+            if (crinitExecRtimCmd(EBCL_tdbRef, &res, &cmd) == -1) {
                 crinitErrPrint("(TID %d) Could not execute command from client.", threadId);
-                EBCL_destroyRtimCmd(&cmd);
+                crinitDestroyRtimCmd(&cmd);
                 close(connSockFd);
                 continue;
             }
         }
-        EBCL_destroyRtimCmd(&cmd);
+        crinitDestroyRtimCmd(&cmd);
         char *resStr;
         size_t resLen;
-        if (EBCL_rtimCmdToMsgStr(&resStr, &resLen, &res) == -1) {
-            EBCL_destroyRtimCmd(&res);
+        if (crinitRtimCmdToMsgStr(&resStr, &resLen, &res) == -1) {
+            crinitDestroyRtimCmd(&res);
             crinitErrPrint("(TID %d) Could not transform command result to response string.", threadId);
             continue;
         }
-        EBCL_destroyRtimCmd(&res);
+        crinitDestroyRtimCmd(&res);
         crinitDbgInfoPrint("(TID %d) Will send response message \'%s\' to client.", threadId, resStr);
         if (EBCL_sendStr(connSockFd, resStr) == -1) {
             crinitErrPrint("(TID %d) Could not send response message to client.", threadId);
@@ -382,7 +382,7 @@ static inline int EBCL_sendStr(int sockFd, const char *str) {
     size_t dataLen = strlen(str) + 1;
     if (send(sockFd, &dataLen, sizeof(size_t), MSG_NOSIGNAL) == -1) {
         crinitErrnoPrint("(TID %d) Could not send length packet (\'%zu\') of string \'%s\' to client. %d", threadId,
-                        dataLen, str, sockFd);
+                         dataLen, str, sockFd);
         return -1;
     }
 
@@ -451,12 +451,12 @@ static inline int EBCL_recvStr(int sockFd, char **str, struct ucred *passedCreds
     bytesRead = recvmsg(sockFd, &mHdr, 0);
     if (bytesRead < 0) {
         crinitErrnoPrint("(TID %d) Could not receive string data message of size %zu Bytes via socket.", threadId,
-                        dataLen);
+                         dataLen);
         goto fail;
     }
     if ((size_t)bytesRead != dataLen) {
         crinitErrPrint("Received data of unexpected length from client: %ld Bytes vs. announced %zu Bytes ", bytesRead,
-                      dataLen);
+                       dataLen);
         goto fail;
     }
     // force terminating zero
@@ -489,7 +489,7 @@ static inline bool EBCL_ucredCheckEqual(const struct ucred *a, const struct ucre
     return (a->pid == b->pid) && (a->uid == b->uid) && (a->gid == b->gid);
 }
 
-static inline bool EBCL_checkPerm(ebcl_RtimOp_t op, const struct ucred *passedCreds) {
+static inline bool EBCL_checkPerm(crinitRtimOp_t op, const struct ucred *passedCreds) {
     if (passedCreds == NULL) {
         crinitErrPrint("Pointer arguments must not be NULL.");
         return false;
@@ -497,42 +497,42 @@ static inline bool EBCL_checkPerm(ebcl_RtimOp_t op, const struct ucred *passedCr
 
     struct __user_cap_data_struct capdata[2];
     switch (op) {
-        case EBCL_RTIMCMD_C_ADDTASK:
-        case EBCL_RTIMCMD_C_ADDSERIES:
-        case EBCL_RTIMCMD_C_ENABLE:
-        case EBCL_RTIMCMD_C_DISABLE:
-        case EBCL_RTIMCMD_C_STOP:
-        case EBCL_RTIMCMD_C_KILL:
-        case EBCL_RTIMCMD_C_RESTART:
-        case EBCL_RTIMCMD_C_NOTIFY:
+        case CRINIT_RTIMCMD_C_ADDTASK:
+        case CRINIT_RTIMCMD_C_ADDSERIES:
+        case CRINIT_RTIMCMD_C_ENABLE:
+        case CRINIT_RTIMCMD_C_DISABLE:
+        case CRINIT_RTIMCMD_C_STOP:
+        case CRINIT_RTIMCMD_C_KILL:
+        case CRINIT_RTIMCMD_C_RESTART:
+        case CRINIT_RTIMCMD_C_NOTIFY:
             /*
              * Only allow the user running the crinit daemon to use these commands. With both
              * processes having the same effective user ID, the calling process already has the
              * privileges to execute any action specified by a crinit task.
              */
             return passedCreds->uid == geteuid();
-        case EBCL_RTIMCMD_C_STATUS:
-        case EBCL_RTIMCMD_C_TASKLIST:
-        case EBCL_RTIMCMD_C_GETVER:
+        case CRINIT_RTIMCMD_C_STATUS:
+        case CRINIT_RTIMCMD_C_TASKLIST:
+        case CRINIT_RTIMCMD_C_GETVER:
             return true;
-        case EBCL_RTIMCMD_C_SHUTDOWN:
+        case CRINIT_RTIMCMD_C_SHUTDOWN:
             if (EBCL_procCapget(capdata, passedCreds->pid) == -1) {
                 crinitErrPrint("Could not get process capabilities.");
                 return false;
             }
             return (capdata[CAP_TO_INDEX(CAP_SYS_BOOT)].effective & CAP_TO_MASK(CAP_SYS_BOOT)) != 0;
-        case EBCL_RTIMCMD_R_ADDTASK:
-        case EBCL_RTIMCMD_R_ADDSERIES:
-        case EBCL_RTIMCMD_R_ENABLE:
-        case EBCL_RTIMCMD_R_DISABLE:
-        case EBCL_RTIMCMD_R_STOP:
-        case EBCL_RTIMCMD_R_KILL:
-        case EBCL_RTIMCMD_R_RESTART:
-        case EBCL_RTIMCMD_R_NOTIFY:
-        case EBCL_RTIMCMD_R_STATUS:
-        case EBCL_RTIMCMD_R_TASKLIST:
-        case EBCL_RTIMCMD_R_GETVER:
-        case EBCL_RTIMCMD_R_SHUTDOWN:
+        case CRINIT_RTIMCMD_R_ADDTASK:
+        case CRINIT_RTIMCMD_R_ADDSERIES:
+        case CRINIT_RTIMCMD_R_ENABLE:
+        case CRINIT_RTIMCMD_R_DISABLE:
+        case CRINIT_RTIMCMD_R_STOP:
+        case CRINIT_RTIMCMD_R_KILL:
+        case CRINIT_RTIMCMD_R_RESTART:
+        case CRINIT_RTIMCMD_R_NOTIFY:
+        case CRINIT_RTIMCMD_R_STATUS:
+        case CRINIT_RTIMCMD_R_TASKLIST:
+        case CRINIT_RTIMCMD_R_GETVER:
+        case CRINIT_RTIMCMD_R_SHUTDOWN:
         default:
             crinitErrPrint("Unknown or unsupported opcode.");
             return false;

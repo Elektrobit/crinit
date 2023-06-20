@@ -1,6 +1,6 @@
 /**
  * @file utest-confconv-envset.h
- * @brief Header declaring the unit tests for EBCL_confConvToEnvSetMember().
+ * @brief Header declaring the unit tests for crinitConfConvToEnvSetMember().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -14,14 +14,14 @@
 /**
  * Tests successful parsing of an environment variable definition.
  */
-void EBCL_confConvToEnvSetMemberTestSuccess(void **state);
+void crinitConfConvToEnvSetMemberTestSuccess(void **state);
 /**
  * Tests unsuccessful parsing of an environment variable definition due to invalid syntax.
  */
-void EBCL_confConvToEnvSetMemberTestWrongInput(void **state);
+void crinitConfConvToEnvSetMemberTestWrongInput(void **state);
 /**
  * Tests detection of NULL pointer input.
  */
-void EBCL_confConvToEnvSetMemberTestNullInput(void **state);
+void crinitConfConvToEnvSetMemberTestNullInput(void **state);
 
 #endif /* __UTEST_ENVSET_PARSE_AND_SET_H__ */

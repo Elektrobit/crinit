@@ -75,11 +75,11 @@ int crinitEnvSetDup(crinitEnvSet_t *copy, const crinitEnvSet_t *orig);
  * @param newSet   The crinitEnvSet_t to create, must be uninitialized or freed via crinitEnvSetDestroy().
  * @param baseSet  The crinitEnvSet_t which serves as a base state, must be initialized or NULL if we "start from
  *                 scratch".
- * @param c        The ebcl_ConfKvList_t which may contain ENV_SET directives to be applied to the new set.
+ * @param c        The crinitConfKvList_t which may contain ENV_SET directives to be applied to the new set.
  *
  * @return  0 on success, -1 otherwise
  */
-int crinitEnvSetCreateFromConfKvList(crinitEnvSet_t *newSet, const crinitEnvSet_t *baseSet, const ebcl_ConfKvList_t *c);
+int crinitEnvSetCreateFromConfKvList(crinitEnvSet_t *newSet, const crinitEnvSet_t *baseSet, const crinitConfKvList_t *c);
 
 /**
  * Gets the value for a given variable from an environment set.

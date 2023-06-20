@@ -76,9 +76,9 @@ void crinitSetUseSyslog(bool sl) {
 
 void crinitDbgInfoPrint(const char *format, ...) {
     bool globOptDbg = false;
-    if (EBCL_globOptGetBoolean(EBCL_GLOBOPT_DEBUG, &globOptDbg) == -1) {
+    if (crinitGlobOptGetBoolean(CRINIT_GLOBOPT_DEBUG, &globOptDbg) == -1) {
         crinitErrPrint("Could not read value for \'DEBUG\' from global options, assuming default.");
-        globOptDbg = EBCL_CONFIG_DEFAULT_DEBUG;
+        globOptDbg = CRINIT_CONFIG_DEFAULT_DEBUG;
     }
     if (!globOptDbg) {
         return;

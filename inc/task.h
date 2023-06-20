@@ -50,7 +50,7 @@ typedef struct crinitTaskDep_t {
  */
 typedef struct crinitTaskPrv_t {
     char *name;                 ///< Name of the provided feature.
-    ebcl_TaskState_t stateReq;  ///< The task state required to be reached to provide the feature.
+    crinitTaskState_t stateReq;  ///< The task state required to be reached to provide the feature.
 } crinitTaskPrv_t;
 
 /**
@@ -66,7 +66,7 @@ typedef struct crinitTask_t {
     crinitTaskPrv_t *prv;     ///< Dynamic array of provided features, corresponds to PROVIDES in the config file.
     size_t prvSize;          ///< Number of provided features in prv array.
     crinitTaskOpts_t opts;    ///< Task options.
-    ebcl_TaskState_t state;  ///< Task state.
+    crinitTaskState_t state;  ///< Task state.
     pid_t pid;               ///< PID of currently running process subordinate to the task, if any.
     crinitIoRedir_t *redirs;  ///< IO redirection descriptions.
     size_t redirsSize;       ///< Number of IO redirections.
@@ -77,17 +77,17 @@ typedef struct crinitTask_t {
 } crinitTask_t;
 
 /**
- * Given an ebcl_ConfKvList_t created from a task config, build an equivalent crinitTask.
+ * Given an crinitConfKvList_t created from a task config, build an equivalent crinitTask.
  *
  * The crinitTask returned via \a out is dynamically allocated and should be freed using crinitFreeTask if no longer
  * needed.
  *
  * @param out  The return pointer for the newly created task.
- * @param in   The ebcl_ConfKvList_t from which to build the task.
+ * @param in   The crinitConfKvList_t from which to build the task.
  *
  * @return 0 on success, -1 on error
  */
-int crinitTaskCreateFromConfKvList(crinitTask_t **out, const ebcl_ConfKvList_t *in);
+int crinitTaskCreateFromConfKvList(crinitTask_t **out, const crinitConfKvList_t *in);
 
 /**
  * Frees memory associated with an crinitTask created by crinitTaskCreateFromConfKvList() or crinitTaskDup().
@@ -121,7 +121,7 @@ int crinitTaskDup(crinitTask_t **out, const crinitTask_t *orig);
  * Merges the options set in a given include file into the target crinitTask_t.
  *
  * Uses the same parser handlers as regular task files but will fail if configuration options are encountered where
- * ebcl_ConfigMapping_t::includeSafe is `false`. Optionally a comma-separated importList can be specified. If given,
+ * crinitConfigMapping_t::includeSafe is `false`. Optionally a comma-separated importList can be specified. If given,
  * only the configuration options in the list will be merged. If not given, everything in the include file will be
  * imported.
  *

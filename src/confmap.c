@@ -15,29 +15,29 @@
 #include "common.h"
 #include "logio.h"
 
-const ebcl_ConfigMapping_t EBCL_cfgMap[] = {
-    {EBCL_CONFIG_COMMAND, EBCL_CONFIG_KEYSTR_COMMAND, true, false, EBCL_taskCfgCmdHandler},
-    {EBCL_CONFIG_DEPENDS, EBCL_CONFIG_KEYSTR_DEPENDS, true, true, EBCL_taskCfgDepHandler},
-    {EBCL_CONFIG_ENV_SET, EBCL_CONFIG_KEYSTR_ENV_SET, true, true, EBCL_taskCfgEnvHandler},
-    {EBCL_CONFIG_INCLUDE, EBCL_CONFIG_KEYSTR_INCLUDE, true, false, EBCL_taskIncludeHandler},
-    {EBCL_CONFIG_IOREDIR, EBCL_CONFIG_KEYSTR_IOREDIR, true, true, EBCL_taskCfgIoRedirHandler},
-    {EBCL_CONFIG_NAME, EBCL_CONFIG_KEYSTR_NAME, false, false, EBCL_taskCfgNameHandler},
-    {EBCL_CONFIG_PROVIDES, EBCL_CONFIG_KEYSTR_PROVIDES, true, false, EBCL_taskCfgPrvHandler},
-    {EBCL_CONFIG_RESPAWN, EBCL_CONFIG_KEYSTR_RESPAWN, false, false, EBCL_taskCfgRespHandler},
-    {EBCL_CONFIG_RESPAWN_RETRIES, EBCL_CONFIG_KEYSTR_RESPAWN_RETRIES, false, false, EBCL_taskCfgRespRetHandler},
+const crinitConfigMapping_t crinitCfgMap[] = {
+    {CRINIT_CONFIG_COMMAND, CRINIT_CONFIG_KEYSTR_COMMAND, true, false, crinitTaskCfgCmdHandler},
+    {CRINIT_CONFIG_DEPENDS, CRINIT_CONFIG_KEYSTR_DEPENDS, true, true, crinitTaskCfgDepHandler},
+    {CRINIT_CONFIG_ENV_SET, CRINIT_CONFIG_KEYSTR_ENV_SET, true, true, crinitTaskCfgEnvHandler},
+    {CRINIT_CONFIG_INCLUDE, CRINIT_CONFIG_KEYSTR_INCLUDE, true, false, crinitTaskIncludeHandler},
+    {CRINIT_CONFIG_IOREDIR, CRINIT_CONFIG_KEYSTR_IOREDIR, true, true, crinitTaskCfgIoRedirHandler},
+    {CRINIT_CONFIG_NAME, CRINIT_CONFIG_KEYSTR_NAME, false, false, crinitTaskCfgNameHandler},
+    {CRINIT_CONFIG_PROVIDES, CRINIT_CONFIG_KEYSTR_PROVIDES, true, false, crinitTaskCfgPrvHandler},
+    {CRINIT_CONFIG_RESPAWN, CRINIT_CONFIG_KEYSTR_RESPAWN, false, false, crinitTaskCfgRespHandler},
+    {CRINIT_CONFIG_RESPAWN_RETRIES, CRINIT_CONFIG_KEYSTR_RESPAWN_RETRIES, false, false, crinitTaskCfgRespRetHandler},
 };
-const size_t EBCL_cfgMapSize = crinitNumElements(EBCL_cfgMap);
+const size_t crinitCfgMapSize = crinitNumElements(crinitCfgMap);
 
-/** Comparison function between two ebcl_ConfigMapping_t, for bsearch() **/
+/** Comparison function between two crinitConfigMapping_t, for bsearch() **/
 static int EBCL_compareConfigMappings(const void *a, const void *b);
 
-const ebcl_ConfigMapping_t *EBCL_findConfigMapping(const char *keyStr) {
+const crinitConfigMapping_t *crinitFindConfigMapping(const char *keyStr) {
     crinitNullCheck(NULL, keyStr);
-    ebcl_ConfigMapping_t searchKey = {0, keyStr, 0, 0, NULL};
-    return bsearch(&searchKey, EBCL_cfgMap, EBCL_cfgMapSize, sizeof(*EBCL_cfgMap), EBCL_compareConfigMappings);
+    crinitConfigMapping_t searchKey = {0, keyStr, 0, 0, NULL};
+    return bsearch(&searchKey, crinitCfgMap, crinitCfgMapSize, sizeof(*crinitCfgMap), EBCL_compareConfigMappings);
 }
 
 static int EBCL_compareConfigMappings(const void *a, const void *b) {
-    const ebcl_ConfigMapping_t *pKey = a, *pElem = b;
+    const crinitConfigMapping_t *pKey = a, *pElem = b;
     return strcmp(pKey->configKey, pElem->configKey);
 }

@@ -31,7 +31,7 @@
  */
 static char *EBCL_copyEscaped(char *dst, const char *src, const char *end);
 
-char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQuoting) {
+char **crinitConfConvToStrArr(int *numElements, const char *confVal, bool doubleQuoting) {
     crinitNullCheck(NULL, numElements, confVal);
     char *backbuf = calloc(strlen(confVal) + 1, sizeof(*backbuf));
     if (backbuf == NULL) {
@@ -39,34 +39,34 @@ char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQ
         return NULL;
     }
 
-    ebcl_TokenType_t tt;
+    crinitTokenType_t tt;
     const char *s = confVal, *mbegin, *mend;
 
     // Check how many argv's we're dealing with
     *numElements = 0;
     do {
-        tt = EBCL_argvLex(&s, &mbegin, &mend, doubleQuoting);
+        tt = crinitArgvLex(&s, &mbegin, &mend, doubleQuoting);
         switch (tt) {
-            case EBCL_TK_WSPC:
-            case EBCL_TK_END:
+            case CRINIT_TK_WSPC:
+            case CRINIT_TK_END:
                 break;
-            case EBCL_TK_UQSTR:
-            case EBCL_TK_DQSTR:
+            case CRINIT_TK_UQSTR:
+            case CRINIT_TK_DQSTR:
                 (*numElements)++;
                 break;
             default:
-            case EBCL_TK_ENVKEY:
-            case EBCL_TK_ENVVAL:
-            case EBCL_TK_VAR:
-            case EBCL_TK_CPY:
-            case EBCL_TK_ESC:
-            case EBCL_TK_ESCX:
-            case EBCL_TK_ERR:
+            case CRINIT_TK_ENVKEY:
+            case CRINIT_TK_ENVVAL:
+            case CRINIT_TK_VAR:
+            case CRINIT_TK_CPY:
+            case CRINIT_TK_ESC:
+            case CRINIT_TK_ESCX:
+            case CRINIT_TK_ERR:
                 crinitErrPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
                 free(backbuf);
                 return NULL;
         }
-    } while (tt != EBCL_TK_END);
+    } while (tt != CRINIT_TK_END);
 
     char **outArr = calloc((*numElements + 1), sizeof(*outArr));
     if (outArr == NULL) {
@@ -85,13 +85,13 @@ char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQ
     char *runner = backbuf;
     int argc = 0;
     do {
-        tt = EBCL_argvLex(&s, &mbegin, &mend, doubleQuoting);
+        tt = crinitArgvLex(&s, &mbegin, &mend, doubleQuoting);
         switch (tt) {
-            case EBCL_TK_WSPC:
-            case EBCL_TK_END:
+            case CRINIT_TK_WSPC:
+            case CRINIT_TK_END:
                 break;
-            case EBCL_TK_UQSTR:
-            case EBCL_TK_DQSTR:
+            case CRINIT_TK_UQSTR:
+            case CRINIT_TK_DQSTR:
                 outArr[argc++] = runner;
                 runner = EBCL_copyEscaped(runner, mbegin, mend);
                 if (runner == NULL) {
@@ -103,19 +103,19 @@ char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQ
                 runner++;
                 break;
             default:
-            case EBCL_TK_ENVKEY:
-            case EBCL_TK_ENVVAL:
-            case EBCL_TK_VAR:
-            case EBCL_TK_CPY:
-            case EBCL_TK_ESC:
-            case EBCL_TK_ESCX:
-            case EBCL_TK_ERR:
+            case CRINIT_TK_ENVKEY:
+            case CRINIT_TK_ENVVAL:
+            case CRINIT_TK_VAR:
+            case CRINIT_TK_CPY:
+            case CRINIT_TK_ESC:
+            case CRINIT_TK_ESCX:
+            case CRINIT_TK_ERR:
                 crinitErrPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
                 free(backbuf);
                 free(outArr);
                 return NULL;
         }
-    } while (tt != EBCL_TK_END);
+    } while (tt != CRINIT_TK_END);
 
     if (argc != *numElements) {
         crinitErrPrint("Error trying to parse string array '%s'\n", confVal);
@@ -128,7 +128,7 @@ char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQ
 }
 
 /** Function body for type-generic string-to-integer functions, used internally to deduplicate code. **/
-#define EBCL_confConvToIntegerFnBody(resType, confVal)                                                   \
+#define crinitConfConvToIntegerFnBody(resType, confVal)                                                   \
     do {                                                                                                 \
         if (*(confVal) == '\0') {                                                                        \
             crinitErrPrint("Could not convert string to int. String is empty.");                          \
@@ -147,19 +147,19 @@ char **EBCL_confConvToStrArr(int *numElements, const char *confVal, bool doubleQ
         }                                                                                                \
     } while (0)
 
-int EBCL_confConvToIntegerI(int *x, const char *confVal, int base) {
+int crinitConfConvToIntegerI(int *x, const char *confVal, int base) {
     crinitNullCheck(-1, x, confVal);
-    EBCL_confConvToIntegerFnBody(*x, confVal);
+    crinitConfConvToIntegerFnBody(*x, confVal);
     return 0;
 }
 
-int EBCL_confConvToIntegerULL(unsigned long long *x, const char *confVal, int base) {
+int crinitConfConvToIntegerULL(unsigned long long *x, const char *confVal, int base) {
     crinitNullCheck(-1, x, confVal);
-    EBCL_confConvToIntegerFnBody(*x, confVal);
+    crinitConfConvToIntegerFnBody(*x, confVal);
     return 0;
 }
 
-int EBCL_confConvToBool(bool *b, const char *confVal) {
+int crinitConfConvToBool(bool *b, const char *confVal) {
     crinitNullCheck(-1, b, confVal);
     if (strcmp(confVal, "YES") == 0) {
         *b = true;
@@ -173,7 +173,7 @@ int EBCL_confConvToBool(bool *b, const char *confVal) {
     return -1;
 }
 
-int EBCL_confConvToIoRedir(crinitIoRedir_t *ior, const char *confVal) {
+int crinitConfConvToIoRedir(crinitIoRedir_t *ior, const char *confVal) {
     crinitNullCheck(-1, ior, confVal);
 
     memset(ior, 0, sizeof(*ior));
@@ -183,7 +183,7 @@ int EBCL_confConvToIoRedir(crinitIoRedir_t *ior, const char *confVal) {
     ior->mode = 0644;
 
     int numParams = 0;
-    char **confStrArr = EBCL_confConvToStrArr(&numParams, confVal, true);
+    char **confStrArr = crinitConfConvToStrArr(&numParams, confVal, true);
     if (confStrArr == NULL) {
         crinitErrPrint("Could not extract IO redirection parameters from configuration.");
         return -1;
@@ -191,38 +191,38 @@ int EBCL_confConvToIoRedir(crinitIoRedir_t *ior, const char *confVal) {
 
     if (numParams < 2) {
         crinitErrPrint("The IO redirection statement must have at least 2 parameters.");
-        EBCL_freeArgvArray(confStrArr);
+        crinitFreeArgvArray(confStrArr);
         return -1;
     }
 
-    if (strcmp(confStrArr[0], EBCL_CONFIG_STDOUT_NAME) == 0) {
+    if (strcmp(confStrArr[0], CRINIT_CONFIG_STDOUT_NAME) == 0) {
         ior->newFd = STDOUT_FILENO;
-    } else if (strcmp(confStrArr[0], EBCL_CONFIG_STDERR_NAME) == 0) {
+    } else if (strcmp(confStrArr[0], CRINIT_CONFIG_STDERR_NAME) == 0) {
         ior->newFd = STDERR_FILENO;
-    } else if (strcmp(confStrArr[0], EBCL_CONFIG_STDIN_NAME) == 0) {
+    } else if (strcmp(confStrArr[0], CRINIT_CONFIG_STDIN_NAME) == 0) {
         ior->newFd = STDIN_FILENO;
     } else {
         crinitErrPrint("Redirecting other file descriptors than STDOUT, STDERR, or STDIN is not supported.");
-        EBCL_freeArgvArray(confStrArr);
+        crinitFreeArgvArray(confStrArr);
         return -1;
     }
 
-    if (strcmp(confStrArr[1], EBCL_CONFIG_STDOUT_NAME) == 0) {
+    if (strcmp(confStrArr[1], CRINIT_CONFIG_STDOUT_NAME) == 0) {
         ior->oldFd = STDOUT_FILENO;
-    } else if (strcmp(confStrArr[1], EBCL_CONFIG_STDERR_NAME) == 0) {
+    } else if (strcmp(confStrArr[1], CRINIT_CONFIG_STDERR_NAME) == 0) {
         ior->oldFd = STDERR_FILENO;
-    } else if (strcmp(confStrArr[1], EBCL_CONFIG_STDIN_NAME) == 0) {
+    } else if (strcmp(confStrArr[1], CRINIT_CONFIG_STDIN_NAME) == 0) {
         ior->oldFd = STDIN_FILENO;
     } else if (crinitIsAbsPath(confStrArr[1])) {
         ior->path = strdup(confStrArr[1]);
         if (ior->path == NULL) {
             crinitErrnoPrint("Could not duplicate path string during parsing of IO redirection statement.");
-            EBCL_freeArgvArray(confStrArr);
+            crinitFreeArgvArray(confStrArr);
             return -1;
         }
     } else {
         crinitErrPrint("Redirection target must be a standard file descriptor or an absolute path.");
-        EBCL_freeArgvArray(confStrArr);
+        crinitFreeArgvArray(confStrArr);
         return -1;
     }
 
@@ -240,7 +240,7 @@ int EBCL_confConvToIoRedir(crinitIoRedir_t *ior, const char *confVal) {
                 crinitErrPrint(
                     "Third parameter of redirection statement - if it is given - must be either APPEND, TRUNCATE, or "
                     "PIPE.");
-                EBCL_freeArgvArray(confStrArr);
+                crinitFreeArgvArray(confStrArr);
                 crinitNullify(ior->path);
                 return -1;
             }
@@ -256,12 +256,12 @@ int EBCL_confConvToIoRedir(crinitIoRedir_t *ior, const char *confVal) {
                 } else {
                     crinitErrnoPrint("Could not perform conversion of octal mode digits in IO redirection statement.");
                 }
-                EBCL_freeArgvArray(confStrArr);
+                crinitFreeArgvArray(confStrArr);
                 crinitNullify(ior->path);
                 return -1;
             } else if (ior->mode > 0777) {
                 crinitErrPrint("0%o is not a supported file mode.", ior->mode);
-                EBCL_freeArgvArray(confStrArr);
+                crinitFreeArgvArray(confStrArr);
                 crinitNullify(ior->path);
                 return -1;
             }
@@ -274,28 +274,28 @@ int EBCL_confConvToIoRedir(crinitIoRedir_t *ior, const char *confVal) {
         }
     }
 
-    EBCL_freeArgvArray(confStrArr);
+    crinitFreeArgvArray(confStrArr);
     return 0;
 }
 
-int EBCL_confConvToEnvSetMember(crinitEnvSet_t *es, const char *confVal) {
+int crinitConfConvToEnvSetMember(crinitEnvSet_t *es, const char *confVal) {
     if (es == NULL || confVal == NULL || es->envp == NULL || es->allocSz == 0) {
         crinitErrPrint("Input parameters must not be NULL and given environment set must be initialized.");
         return -1;
     }
     const char *s = confVal, *mbegin = NULL, *mend = NULL;
     char *envKey = NULL, *envVal = NULL;
-    ebcl_TokenType_t tt;
+    crinitTokenType_t tt;
     do {
-        tt = EBCL_envVarOuterLex(&s, &mbegin, &mend);
+        tt = crinitEnvVarOuterLex(&s, &mbegin, &mend);
         switch (tt) {
-            case EBCL_TK_ERR:
+            case CRINIT_TK_ERR:
                 crinitErrPrint("Error while parsing string at '%.*s'\n", (int)(mend - mbegin), mbegin);
                 break;
-            case EBCL_TK_ENVKEY:
+            case CRINIT_TK_ENVKEY:
                 if (envKey != NULL) {
                     crinitErrPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
-                    tt = EBCL_TK_ERR;
+                    tt = CRINIT_TK_ERR;
                     break;
                 }
                 envKey = strndup(mbegin, (size_t)(mend - mbegin));
@@ -304,10 +304,10 @@ int EBCL_confConvToEnvSetMember(crinitEnvSet_t *es, const char *confVal) {
                     return -1;
                 }
                 break;
-            case EBCL_TK_ENVVAL:
+            case CRINIT_TK_ENVVAL:
                 if (envKey == NULL || envVal != NULL) {
                     crinitErrPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
-                    tt = EBCL_TK_ERR;
+                    tt = CRINIT_TK_ERR;
                     break;
                 }
                 envVal = strndup(mbegin, (size_t)(mend - mbegin));
@@ -317,21 +317,21 @@ int EBCL_confConvToEnvSetMember(crinitEnvSet_t *es, const char *confVal) {
                     return -1;
                 }
                 break;
-            case EBCL_TK_WSPC:
-            case EBCL_TK_END:
+            case CRINIT_TK_WSPC:
+            case CRINIT_TK_END:
                 break;
             default:
-            case EBCL_TK_VAR:
-            case EBCL_TK_CPY:
-            case EBCL_TK_ESC:
-            case EBCL_TK_ESCX:
-            case EBCL_TK_UQSTR:
-            case EBCL_TK_DQSTR:
+            case CRINIT_TK_VAR:
+            case CRINIT_TK_CPY:
+            case CRINIT_TK_ESC:
+            case CRINIT_TK_ESCX:
+            case CRINIT_TK_UQSTR:
+            case CRINIT_TK_DQSTR:
                 crinitErrPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
-                tt = EBCL_TK_ERR;
+                tt = CRINIT_TK_ERR;
                 break;
         }
-    } while (tt != EBCL_TK_END && tt != EBCL_TK_ERR);
+    } while (tt != CRINIT_TK_END && tt != CRINIT_TK_ERR);
 
     if (envKey == NULL || envVal == NULL) {
         crinitErrPrint("Given string does not contain both an environment key and a value.\n");
@@ -340,7 +340,7 @@ int EBCL_confConvToEnvSetMember(crinitEnvSet_t *es, const char *confVal) {
         return -1;
     }
 
-    if (tt != EBCL_TK_END) {
+    if (tt != CRINIT_TK_END) {
         crinitErrPrint("Parsing of environment string '%s' ended with error.\n", confVal);
         free(envVal);
         free(envKey);
@@ -364,23 +364,23 @@ int EBCL_confConvToEnvSetMember(crinitEnvSet_t *es, const char *confVal) {
         char hexBuf[3] = {'\0'};
         char c = '\0';
         size_t escMapIdx = 0;
-        tt = EBCL_envVarInnerLex(&s, &mbegin, &mend);
+        tt = crinitEnvVarInnerLex(&s, &mbegin, &mend);
         switch (tt) {
-            case EBCL_TK_ERR:
+            case CRINIT_TK_ERR:
                 crinitErrPrint("Error while parsing string at '%.*s'\n", (int)(mend - mbegin), mbegin);
                 break;
-            case EBCL_TK_ESC:
+            case CRINIT_TK_ESC:
                 escMapIdx = (size_t)(*(mbegin + 1));
-                c = (escMapIdx < sizeof(EBCL_escMap)) ? EBCL_escMap[escMapIdx] : '\0';
+                c = (escMapIdx < sizeof(crinitEscMap)) ? crinitEscMap[escMapIdx] : '\0';
                 if (c == '\0') {
                     crinitErrPrint("Unimplemented escape sequence at '%.*s'\n", (int)(mend - mbegin), mbegin);
-                    tt = EBCL_TK_ERR;
+                    tt = CRINIT_TK_ERR;
                     break;
                 }
                 *pTgt = c;
                 pTgt++;
                 break;
-            case EBCL_TK_ESCX:
+            case CRINIT_TK_ESCX:
                 hexBuf[0] = mbegin[0];
                 hexBuf[1] = mbegin[1];
                 hexBuf[2] = '\0';
@@ -388,11 +388,11 @@ int EBCL_confConvToEnvSetMember(crinitEnvSet_t *es, const char *confVal) {
                 *pTgt = c;
                 pTgt++;
                 break;
-            case EBCL_TK_VAR:
+            case CRINIT_TK_VAR:
                 substKey = strndup(mbegin, (size_t)(mend - mbegin));
                 if (substKey == NULL) {
                     crinitErrnoPrint("Could not duplicate key of environment variable to expand.");
-                    tt = EBCL_TK_ERR;
+                    tt = CRINIT_TK_ERR;
                     break;
                 }
                 substVal = crinitEnvSetGet(es, substKey);
@@ -408,7 +408,7 @@ int EBCL_confConvToEnvSetMember(crinitEnvSet_t *es, const char *confVal) {
                     char *newPtr = realloc(parsedVal, newAllocSz);
                     if (newPtr == NULL) {
                         crinitErrnoPrint("Could not reallocate memory during environment variable expansion.");
-                        tt = EBCL_TK_ERR;
+                        tt = CRINIT_TK_ERR;
                         break;
                     }
                     parsedVal = newPtr;
@@ -416,28 +416,28 @@ int EBCL_confConvToEnvSetMember(crinitEnvSet_t *es, const char *confVal) {
                     pTgt = stpcpy(pTgt, substVal);
                 }
                 break;
-            case EBCL_TK_END:
+            case CRINIT_TK_END:
                 *pTgt = '\0';
                 break;
-            case EBCL_TK_CPY:
-            case EBCL_TK_WSPC:
+            case CRINIT_TK_CPY:
+            case CRINIT_TK_WSPC:
                 *pTgt = *mbegin;
                 pTgt++;
                 break;
-            case EBCL_TK_ENVKEY:
-            case EBCL_TK_ENVVAL:
-            case EBCL_TK_UQSTR:
-            case EBCL_TK_DQSTR:
+            case CRINIT_TK_ENVKEY:
+            case CRINIT_TK_ENVVAL:
+            case CRINIT_TK_UQSTR:
+            case CRINIT_TK_DQSTR:
             default:
                 crinitErrPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
-                tt = EBCL_TK_ERR;
+                tt = CRINIT_TK_ERR;
                 break;
         }
-    } while (tt != EBCL_TK_END && tt != EBCL_TK_ERR);
+    } while (tt != CRINIT_TK_END && tt != CRINIT_TK_ERR);
 
     free(envVal);
 
-    if (tt != EBCL_TK_END) {
+    if (tt != CRINIT_TK_END) {
         crinitErrPrint("Parsing of '%s' ended with an error state.", confVal);
         free(envKey);
         free(parsedVal);
@@ -466,20 +466,20 @@ static char *EBCL_copyEscaped(char *dst, const char *src, const char *end) {
     char *runner = stpncpy(dst, src, (end - src));
     *runner = '\0';
     runner = dst;
-    ebcl_TokenType_t tt;
+    crinitTokenType_t tt;
     const char *s = runner, *mbegin, *mend;
     do {
-        tt = EBCL_escLex(&s, &mbegin, &mend);
-        if (tt == EBCL_TK_END) {
+        tt = crinitEscLex(&s, &mbegin, &mend);
+        if (tt == CRINIT_TK_END) {
             *runner = '\0';
             break;
-        } else if (tt == EBCL_TK_CPY) {
+        } else if (tt == CRINIT_TK_CPY) {
             *runner = *mbegin;
             runner++;
-        } else if (tt == EBCL_TK_ESC) {
-            *runner = EBCL_escMap[(int)mbegin[1]];
+        } else if (tt == CRINIT_TK_ESC) {
+            *runner = crinitEscMap[(int)mbegin[1]];
             runner++;
-        } else if (tt == EBCL_TK_ESCX) {
+        } else if (tt == CRINIT_TK_ESCX) {
             char match[3] = {mbegin[0], mbegin[1], '\0'};
             *runner = (char)strtol(match, NULL, 16);
             runner++;

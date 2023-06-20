@@ -15,13 +15,13 @@
 
 /*!conditions:re2c*/
 
-const char EBCL_escMap[128] = {['n'] = '\n',  ['r'] = '\r', ['b'] = '\b', ['a'] = '\a', ['"'] = '"', ['\''] = '\'',
+const char crinitEscMap[128] = {['n'] = '\n',  ['r'] = '\r', ['b'] = '\b', ['a'] = '\a', ['"'] = '"', ['\''] = '\'',
                                ['\\'] = '\\', ['f'] = '\f', ['t'] = '\t', ['v'] = '\v', ['$'] = '$', [' '] = ' '};
 
-ebcl_TokenType_t EBCL_argvLex(const char **s, const char **mbegin, const char **mend, bool dq) {
+crinitTokenType_t crinitArgvLex(const char **s, const char **mbegin, const char **mend, bool dq) {
     if (s == NULL || *s == NULL || mbegin == NULL || mend == NULL) {
         crinitErrPrint("Input parameters must not be NULL.");
-        return EBCL_TK_ERR;
+        return CRINIT_TK_ERR;
     }
 
     const char *YYCURSOR = *s, *YYMARKER = *s, *anchor = *s;
@@ -46,19 +46,19 @@ ebcl_TokenType_t EBCL_argvLex(const char **s, const char **mbegin, const char **
         nqstr      = ([^ \\\n\x00\t] | [\\][^\x00])+;
 
 
-        <*>        *          { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return EBCL_TK_ERR; }
-        <*>        end        { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return EBCL_TK_END; }
-        <*>        whitespace { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return EBCL_TK_WSPC; }
-        <dquot>    uqstr      { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return EBCL_TK_UQSTR; }
-        <dquot>    dqstr      { *s = YYCURSOR; *mbegin = t1; *mend = t2; return EBCL_TK_DQSTR; }
-        <nquot>    nqstr      { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return EBCL_TK_UQSTR; }
+        <*>        *          { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return CRINIT_TK_ERR; }
+        <*>        end        { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return CRINIT_TK_END; }
+        <*>        whitespace { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return CRINIT_TK_WSPC; }
+        <dquot>    uqstr      { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return CRINIT_TK_UQSTR; }
+        <dquot>    dqstr      { *s = YYCURSOR; *mbegin = t1; *mend = t2; return CRINIT_TK_DQSTR; }
+        <nquot>    nqstr      { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return CRINIT_TK_UQSTR; }
     */
 }
 
-ebcl_TokenType_t EBCL_escLex(const char **s, const char **mbegin, const char **mend) {
+crinitTokenType_t crinitEscLex(const char **s, const char **mbegin, const char **mend) {
     if (s == NULL || *s == NULL || mbegin == NULL || mend == NULL) {
         crinitErrPrint("Input parameters must not be NULL.");
-        return EBCL_TK_ERR;
+        return CRINIT_TK_ERR;
     }
 
     const char *YYCURSOR = *s, *YYMARKER = *s, *anchor = *s;
@@ -74,15 +74,15 @@ ebcl_TokenType_t EBCL_escLex(const char **s, const char **mbegin, const char **m
         escseq     = [\\] ( any | [\\] );
         escseqx    = [\\][x] @t1 [0-9a-fA-F]{2} @t2;
 
-        *          { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return EBCL_TK_ERR; }
-        any        { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return EBCL_TK_CPY; }
-        escseq     { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return EBCL_TK_ESC; }
-        escseqx    { *s = YYCURSOR; *mbegin = t1; *mend = t2; return EBCL_TK_ESCX; }
-        end        { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return EBCL_TK_END; }
+        *          { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return CRINIT_TK_ERR; }
+        any        { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return CRINIT_TK_CPY; }
+        escseq     { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return CRINIT_TK_ESC; }
+        escseqx    { *s = YYCURSOR; *mbegin = t1; *mend = t2; return CRINIT_TK_ESCX; }
+        end        { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return CRINIT_TK_END; }
     */
 }
 
-int EBCL_matchQuotedConfig(const char *s, const char **mbegin, const char **mend) {
+int crinitMatchQuotedConfig(const char *s, const char **mbegin, const char **mend) {
     if (s == NULL || mbegin == NULL || mend == NULL) {
         crinitErrPrint("Input parameters must not be NULL.");
         return -1;
@@ -104,10 +104,10 @@ int EBCL_matchQuotedConfig(const char *s, const char **mbegin, const char **mend
     */
 }
 
-ebcl_TokenType_t EBCL_envVarOuterLex(const char **s, const char **mbegin, const char **mend) {
+crinitTokenType_t crinitEnvVarOuterLex(const char **s, const char **mbegin, const char **mend) {
     if (s == NULL || *s == NULL || mbegin == NULL || mend == NULL) {
         crinitErrPrint("Input parameters must not be NULL.");
-        return EBCL_TK_ERR;
+        return CRINIT_TK_ERR;
     }
 
     const char *YYCURSOR = *s, *YYMARKER = *s, *anchor = *s;
@@ -122,18 +122,18 @@ ebcl_TokenType_t EBCL_envVarOuterLex(const char **s, const char **mbegin, const 
         envkey     = [a-zA-Z_][a-zA-Z0-9_]*;
         envval     = ["]@t1[^\x00]*@t2["];
 
-        *          { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return EBCL_TK_ERR; }
-        envkey     { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return EBCL_TK_ENVKEY; }
-        end        { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return EBCL_TK_END; }
-        whitespace { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return EBCL_TK_WSPC; }
-        envval     { *s = YYCURSOR; *mbegin = t1; *mend = t2; return EBCL_TK_ENVVAL; }
+        *          { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return CRINIT_TK_ERR; }
+        envkey     { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return CRINIT_TK_ENVKEY; }
+        end        { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return CRINIT_TK_END; }
+        whitespace { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return CRINIT_TK_WSPC; }
+        envval     { *s = YYCURSOR; *mbegin = t1; *mend = t2; return CRINIT_TK_ENVVAL; }
     */
 }
 
-ebcl_TokenType_t EBCL_envVarInnerLex(const char **s, const char **mbegin, const char **mend) {
+crinitTokenType_t crinitEnvVarInnerLex(const char **s, const char **mbegin, const char **mend) {
     if (s == NULL || *s == NULL || mbegin == NULL || mend == NULL) {
         crinitErrPrint("Input parameters must not be NULL.");
-        return EBCL_TK_ERR;
+        return CRINIT_TK_ERR;
     }
 
     const char *YYCURSOR = *s, *YYMARKER = *s, *anchor = *s;
@@ -148,11 +148,11 @@ ebcl_TokenType_t EBCL_envVarInnerLex(const char **s, const char **mbegin, const 
         varname    = [a-zA-Z_][a-zA-Z0-9_]*;
         var        = "\$\{" @t1 varname @t2 "\}";
 
-        *          { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return EBCL_TK_ERR; }
-        any        { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return EBCL_TK_CPY; }
-        escseq     { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return EBCL_TK_ESC; }
-        escseqx    { *s = YYCURSOR; *mbegin = t1; *mend = t2; return EBCL_TK_ESCX; }
-        end        { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return EBCL_TK_END; }
-        var        { *s = YYCURSOR; *mbegin = t1; *mend = t2; return EBCL_TK_VAR; }
+        *          { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return CRINIT_TK_ERR; }
+        any        { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return CRINIT_TK_CPY; }
+        escseq     { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return CRINIT_TK_ESC; }
+        escseqx    { *s = YYCURSOR; *mbegin = t1; *mend = t2; return CRINIT_TK_ESCX; }
+        end        { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return CRINIT_TK_END; }
+        var        { *s = YYCURSOR; *mbegin = t1; *mend = t2; return CRINIT_TK_VAR; }
     */
 }

@@ -153,7 +153,7 @@ int crinitEnvSetSet(crinitEnvSet_t *es, const char *envName, const char *envVal)
     return 0;
 }
 
-int crinitEnvSetCreateFromConfKvList(crinitEnvSet_t *newSet, const crinitEnvSet_t *baseSet, const ebcl_ConfKvList_t *c) {
+int crinitEnvSetCreateFromConfKvList(crinitEnvSet_t *newSet, const crinitEnvSet_t *baseSet, const crinitConfKvList_t *c) {
     if (newSet == NULL || c == NULL) {
         crinitErrPrint("Input config list and output environment set must not be NULL.");
         return -1;
@@ -167,17 +167,17 @@ int crinitEnvSetCreateFromConfKvList(crinitEnvSet_t *newSet, const crinitEnvSet_
         crinitErrPrint("Could not initialize new environment set.");
         return -1;
     }
-    ssize_t numNewEnvs = EBCL_confListKeyGetMaxIdx(c, EBCL_CONFIG_KEYSTR_ENV_SET) + 1;
+    ssize_t numNewEnvs = crinitConfListKeyGetMaxIdx(c, CRINIT_CONFIG_KEYSTR_ENV_SET) + 1;
     // If EBCL_conflListKeyGetMaxIdx() returns -1, we assume no ENV_SET config lines present.
     for (size_t i = 0; i < (size_t)numNewEnvs; i++) {
         char *val = NULL;
-        if (EBCL_confListGetValWithIdx(&val, EBCL_CONFIG_KEYSTR_ENV_SET, i, c) == -1) {
-            crinitErrPrint("Could not retrieve config key '%s', index %zu from config.", EBCL_CONFIG_KEYSTR_ENV_SET, i);
+        if (crinitConfListGetValWithIdx(&val, CRINIT_CONFIG_KEYSTR_ENV_SET, i, c) == -1) {
+            crinitErrPrint("Could not retrieve config key '%s', index %zu from config.", CRINIT_CONFIG_KEYSTR_ENV_SET, i);
             crinitEnvSetDestroy(newSet);
             return -1;
         }
-        if (EBCL_confConvToEnvSetMember(newSet, val) == -1) {
-            crinitErrPrint("Failed to process " EBCL_CONFIG_KEYSTR_ENV_SET " config item with value '%s'", val);
+        if (crinitConfConvToEnvSetMember(newSet, val) == -1) {
+            crinitErrPrint("Failed to process " CRINIT_CONFIG_KEYSTR_ENV_SET " config item with value '%s'", val);
             crinitEnvSetDestroy(newSet);
             return -1;
         }

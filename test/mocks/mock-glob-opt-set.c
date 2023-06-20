@@ -1,6 +1,6 @@
 /**
  * @file mock-glob-opt-set.c
- * @brief Implementation of a mock function for EBCL_globOptSet().
+ * @brief Implementation of a mock function for crinitGlobOptSet().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -12,7 +12,7 @@
 
 #include "unit_test.h"
 
-int __wrap_EBCL_globOptSet(ebcl_GlobOptKey_t key, const void *val,  // NOLINT(readability-identifier-naming)
+int __wrap_crinitGlobOptSet(crinitGlobOptKey_t key, const void *val,  // NOLINT(readability-identifier-naming)
                            size_t sz) {                             // Rationale: Naming scheme fixed due to linker
                                                                     // wrapping.
     check_expected(key);
