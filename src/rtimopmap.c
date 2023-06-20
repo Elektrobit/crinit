@@ -18,7 +18,7 @@
 const crinitRtimOpMap_t crinitRtimOps[] = {crinitGenOpMap(crinitGenOpStruct)};
 
 /**  The number of elements in the generated map. **/
-#define EBCL_RTIMOPMAP_ELEMENTS (sizeof(crinitRtimOps) / sizeof(crinitRtimOpMap_t))
+#define CRINIT_RTIMOPMAP_ELEMENTS (sizeof(crinitRtimOps) / sizeof(crinitRtimOpMap_t))
 
 /**
  * Gives the length of a string, delimited either by terminating zero or #CRINIT_RTIMCMD_ARGDELIM.
@@ -31,7 +31,7 @@ static inline size_t EBCL_delimitedStrlen(const char *str);
 
 void crinitRtimOpMapDebugPrintAll(void) {
     crinitDbgInfoPrint("List of available API Operations:");
-    for (size_t i = 0; i < EBCL_RTIMOPMAP_ELEMENTS; i++) {
+    for (size_t i = 0; i < CRINIT_RTIMOPMAP_ELEMENTS; i++) {
         crinitDbgInfoPrint("opCode: %d, opStr: %s", crinitRtimOps[i].opCode, crinitRtimOps[i].opStr);
     }
 }
@@ -42,7 +42,7 @@ int crinitRtimOpGetByOpStr(crinitRtimOp_t *out, const char *opStr) {
         return -1;
     }
     size_t n = EBCL_delimitedStrlen(opStr);
-    for (size_t i = 0; i < EBCL_RTIMOPMAP_ELEMENTS; i++) {
+    for (size_t i = 0; i < CRINIT_RTIMOPMAP_ELEMENTS; i++) {
         if (n == strlen(crinitRtimOps[i].opStr) && strncmp(crinitRtimOps[i].opStr, opStr, n) == 0) {
             *out = crinitRtimOps[i].opCode;
             return 0;
@@ -59,7 +59,7 @@ int crinitOpStrGetByRtimOp(const char **out, crinitRtimOp_t opCode) {
         return -1;
     }
 
-    for (size_t i = 0; i < EBCL_RTIMOPMAP_ELEMENTS; i++) {
+    for (size_t i = 0; i < CRINIT_RTIMOPMAP_ELEMENTS; i++) {
         if (crinitRtimOps[i].opCode == opCode) {
             *out = crinitRtimOps[i].opStr;
             return 0;

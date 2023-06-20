@@ -22,7 +22,7 @@ static crinitRtimCmd_t *EBCL_buildRtimArgCmd;
 static crinitRtimCmd_t *crinitXferArgRes;
 static char *crinitXferArgResOKArgs[1] = {CRINIT_RTIMCMD_RES_OK};
 static crinitRtimCmd_t crinitXferArgResOK = {
-    .op = EBCL_RTIMCMD_R_ADDTASK, .argc = 1, .args = crinitXferArgResOKArgs};
+    .op = CRINIT_RTIMCMD_R_ADDTASK, .argc = 1, .args = crinitXferArgResOKArgs};
 static struct EBCL_storeRtimCmdArgs crinitXferArgResContext = {
     &crinitXferArgRes,
     &crinitXferArgResOK,
@@ -33,7 +33,7 @@ void crinitClientTaskAddTestOverwriteBoolToString(void **state) {
 
     // overwrite == true
     expect_check(__wrap_crinitBuildRtimCmd, c, EBCL_storeRtimCmd, &EBCL_buildRtimArgCmd);
-    expect_value(__wrap_crinitBuildRtimCmd, op, EBCL_RTIMCMD_C_ADDTASK);
+    expect_value(__wrap_crinitBuildRtimCmd, op, CRINIT_RTIMCMD_C_ADDTASK);
     expect_value(__wrap_crinitBuildRtimCmd, argc, 3);
     expect_string(__wrap_crinitBuildRtimCmd, vargs[0], TEST_CONFIG_FILE);
     expect_string(__wrap_crinitBuildRtimCmd, vargs[1], "true");
@@ -51,7 +51,7 @@ void crinitClientTaskAddTestOverwriteBoolToString(void **state) {
 
     // overwrite == false
     expect_check(__wrap_crinitBuildRtimCmd, c, EBCL_storeRtimCmd, &EBCL_buildRtimArgCmd);
-    expect_value(__wrap_crinitBuildRtimCmd, op, EBCL_RTIMCMD_C_ADDTASK);
+    expect_value(__wrap_crinitBuildRtimCmd, op, CRINIT_RTIMCMD_C_ADDTASK);
     expect_value(__wrap_crinitBuildRtimCmd, argc, 3);
     expect_string(__wrap_crinitBuildRtimCmd, vargs[0], TEST_CONFIG_FILE);
     expect_string(__wrap_crinitBuildRtimCmd, vargs[1], "false");

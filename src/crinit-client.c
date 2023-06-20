@@ -121,7 +121,7 @@ EBCL_LIB_EXPORTED int sd_notify(int unset_environment, const char *state) {  // 
     }
 
     crinitRtimCmd_t cmd, res;
-    if (crinitBuildRtimCmd(&cmd, EBCL_RTIMCMD_C_NOTIFY, 2, EBCL_notifyName, state) == -1) {
+    if (crinitBuildRtimCmd(&cmd, CRINIT_RTIMCMD_C_NOTIFY, 2, EBCL_notifyName, state) == -1) {
         crinitErrPrint("Could not build RtimCmd to send to Crinit.");
         return -1;
     }
@@ -132,7 +132,7 @@ EBCL_LIB_EXPORTED int sd_notify(int unset_environment, const char *state) {  // 
     }
     crinitDestroyRtimCmd(&cmd);
 
-    int ret = EBCL_crinitResponseCheck(&res, EBCL_RTIMCMD_R_NOTIFY);
+    int ret = EBCL_crinitResponseCheck(&res, CRINIT_RTIMCMD_R_NOTIFY);
     crinitDestroyRtimCmd(&res);
     return ret;
 }
@@ -180,7 +180,7 @@ EBCL_LIB_EXPORTED int crinitClientTaskAdd(const char *configFilePath, bool overw
         forceDeps = "@empty";
     }
 
-    if (crinitBuildRtimCmd(&cmd, EBCL_RTIMCMD_C_ADDTASK, 3, configFilePath, overwrStr, forceDeps) == -1) {
+    if (crinitBuildRtimCmd(&cmd, CRINIT_RTIMCMD_C_ADDTASK, 3, configFilePath, overwrStr, forceDeps) == -1) {
         crinitErrPrint("Could not build RtimCmd to send to Crinit.");
         return -1;
     }
@@ -192,7 +192,7 @@ EBCL_LIB_EXPORTED int crinitClientTaskAdd(const char *configFilePath, bool overw
     }
     crinitDestroyRtimCmd(&cmd);
 
-    int ret = EBCL_crinitResponseCheck(&res, EBCL_RTIMCMD_R_ADDTASK);
+    int ret = EBCL_crinitResponseCheck(&res, CRINIT_RTIMCMD_R_ADDTASK);
     crinitDestroyRtimCmd(&res);
     return ret;
 }
@@ -206,7 +206,7 @@ EBCL_LIB_EXPORTED int crinitClientSeriesAdd(const char *seriesFilePath, bool ove
     crinitRtimCmd_t cmd, res;
     const char *overwrStr = (overwriteTasks) ? "true" : "false";
 
-    if (crinitBuildRtimCmd(&cmd, EBCL_RTIMCMD_C_ADDSERIES, 2, seriesFilePath, overwrStr) == -1) {
+    if (crinitBuildRtimCmd(&cmd, CRINIT_RTIMCMD_C_ADDSERIES, 2, seriesFilePath, overwrStr) == -1) {
         crinitErrPrint("Could not build RtimCmd to send to Crinit.");
         return -1;
     }
@@ -218,7 +218,7 @@ EBCL_LIB_EXPORTED int crinitClientSeriesAdd(const char *seriesFilePath, bool ove
     }
     crinitDestroyRtimCmd(&cmd);
 
-    int ret = EBCL_crinitResponseCheck(&res, EBCL_RTIMCMD_R_ADDSERIES);
+    int ret = EBCL_crinitResponseCheck(&res, CRINIT_RTIMCMD_R_ADDSERIES);
     crinitDestroyRtimCmd(&res);
     return ret;
 }
@@ -230,7 +230,7 @@ EBCL_LIB_EXPORTED int crinitClientTaskEnable(const char *taskName) {
     }
 
     crinitRtimCmd_t cmd, res;
-    if (crinitBuildRtimCmd(&cmd, EBCL_RTIMCMD_C_ENABLE, 1, taskName) == -1) {
+    if (crinitBuildRtimCmd(&cmd, CRINIT_RTIMCMD_C_ENABLE, 1, taskName) == -1) {
         crinitErrPrint("Could not build RtimCmd to send to Crinit.");
         return -1;
     }
@@ -242,7 +242,7 @@ EBCL_LIB_EXPORTED int crinitClientTaskEnable(const char *taskName) {
     }
     crinitDestroyRtimCmd(&cmd);
 
-    int ret = EBCL_crinitResponseCheck(&res, EBCL_RTIMCMD_R_ENABLE);
+    int ret = EBCL_crinitResponseCheck(&res, CRINIT_RTIMCMD_R_ENABLE);
     crinitDestroyRtimCmd(&res);
     return ret;
 }
@@ -253,7 +253,7 @@ EBCL_LIB_EXPORTED int crinitClientTaskDisable(const char *taskName) {
         return -1;
     }
     crinitRtimCmd_t cmd, res;
-    if (crinitBuildRtimCmd(&cmd, EBCL_RTIMCMD_C_DISABLE, 1, taskName) == -1) {
+    if (crinitBuildRtimCmd(&cmd, CRINIT_RTIMCMD_C_DISABLE, 1, taskName) == -1) {
         crinitErrPrint("Could not build RtimCmd to send to Crinit.");
         return -1;
     }
@@ -265,7 +265,7 @@ EBCL_LIB_EXPORTED int crinitClientTaskDisable(const char *taskName) {
     }
     crinitDestroyRtimCmd(&cmd);
 
-    int ret = EBCL_crinitResponseCheck(&res, EBCL_RTIMCMD_R_DISABLE);
+    int ret = EBCL_crinitResponseCheck(&res, CRINIT_RTIMCMD_R_DISABLE);
     crinitDestroyRtimCmd(&res);
     return ret;
 }
@@ -277,7 +277,7 @@ EBCL_LIB_EXPORTED int crinitClientTaskStop(const char *taskName) {
     }
 
     crinitRtimCmd_t cmd, res;
-    if (crinitBuildRtimCmd(&cmd, EBCL_RTIMCMD_C_STOP, 1, taskName) == -1) {
+    if (crinitBuildRtimCmd(&cmd, CRINIT_RTIMCMD_C_STOP, 1, taskName) == -1) {
         crinitErrPrint("Could not build RtimCmd to send to Crinit.");
         return -1;
     }
@@ -289,7 +289,7 @@ EBCL_LIB_EXPORTED int crinitClientTaskStop(const char *taskName) {
     }
     crinitDestroyRtimCmd(&cmd);
 
-    int ret = EBCL_crinitResponseCheck(&res, EBCL_RTIMCMD_R_STOP);
+    int ret = EBCL_crinitResponseCheck(&res, CRINIT_RTIMCMD_R_STOP);
     crinitDestroyRtimCmd(&res);
     return ret;
 }
@@ -301,7 +301,7 @@ EBCL_LIB_EXPORTED int crinitClientTaskKill(const char *taskName) {
     }
 
     crinitRtimCmd_t cmd, res;
-    if (crinitBuildRtimCmd(&cmd, EBCL_RTIMCMD_C_KILL, 1, taskName) == -1) {
+    if (crinitBuildRtimCmd(&cmd, CRINIT_RTIMCMD_C_KILL, 1, taskName) == -1) {
         crinitErrPrint("Could not build RtimCmd to send to Crinit.");
         return -1;
     }
@@ -313,7 +313,7 @@ EBCL_LIB_EXPORTED int crinitClientTaskKill(const char *taskName) {
     }
     crinitDestroyRtimCmd(&cmd);
 
-    int ret = EBCL_crinitResponseCheck(&res, EBCL_RTIMCMD_R_KILL);
+    int ret = EBCL_crinitResponseCheck(&res, CRINIT_RTIMCMD_R_KILL);
     crinitDestroyRtimCmd(&res);
     return ret;
 }
@@ -325,7 +325,7 @@ EBCL_LIB_EXPORTED int crinitClientTaskRestart(const char *taskName) {
     }
 
     crinitRtimCmd_t cmd, res;
-    if (crinitBuildRtimCmd(&cmd, EBCL_RTIMCMD_C_RESTART, 1, taskName) == -1) {
+    if (crinitBuildRtimCmd(&cmd, CRINIT_RTIMCMD_C_RESTART, 1, taskName) == -1) {
         crinitErrPrint("Could not build RtimCmd to send to Crinit.");
         return -1;
     }
@@ -337,7 +337,7 @@ EBCL_LIB_EXPORTED int crinitClientTaskRestart(const char *taskName) {
     }
     crinitDestroyRtimCmd(&cmd);
 
-    int ret = EBCL_crinitResponseCheck(&res, EBCL_RTIMCMD_R_RESTART);
+    int ret = EBCL_crinitResponseCheck(&res, CRINIT_RTIMCMD_R_RESTART);
     crinitDestroyRtimCmd(&res);
     return ret;
 }
@@ -349,7 +349,7 @@ EBCL_LIB_EXPORTED int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *pid
     }
 
     crinitRtimCmd_t cmd, res;
-    if (crinitBuildRtimCmd(&cmd, EBCL_RTIMCMD_C_STATUS, 1, taskName) == -1) {
+    if (crinitBuildRtimCmd(&cmd, CRINIT_RTIMCMD_C_STATUS, 1, taskName) == -1) {
         crinitErrPrint("Could not build RtimCmd to send to Crinit.");
         return -1;
     }
@@ -361,7 +361,7 @@ EBCL_LIB_EXPORTED int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *pid
     }
     crinitDestroyRtimCmd(&cmd);
 
-    if (EBCL_crinitResponseCheck(&res, EBCL_RTIMCMD_R_STATUS) == 0 && res.argc == 3) {
+    if (EBCL_crinitResponseCheck(&res, CRINIT_RTIMCMD_R_STATUS) == 0 && res.argc == 3) {
         *s = strtoul(res.args[1], NULL, 10);
         *pid = strtol(res.args[2], NULL, 10);
         crinitDestroyRtimCmd(&res);
@@ -378,7 +378,7 @@ EBCL_LIB_EXPORTED int crinitClientGetTaskList(crinitTaskList_t **tlptr) {
     }
 
     crinitRtimCmd_t cmd, res;
-    if (crinitBuildRtimCmd(&cmd, EBCL_RTIMCMD_C_TASKLIST, 0) == -1) {
+    if (crinitBuildRtimCmd(&cmd, CRINIT_RTIMCMD_C_TASKLIST, 0) == -1) {
         crinitErrPrint("Could not build RtimCmd to send to Crinit.");
         return -1;
     }
@@ -390,7 +390,7 @@ EBCL_LIB_EXPORTED int crinitClientGetTaskList(crinitTaskList_t **tlptr) {
     }
     crinitDestroyRtimCmd(&cmd);
 
-    if (EBCL_crinitResponseCheck(&res, EBCL_RTIMCMD_R_TASKLIST) == -1) {
+    if (EBCL_crinitResponseCheck(&res, CRINIT_RTIMCMD_R_TASKLIST) == -1) {
         crinitDestroyRtimCmd(&res);
         return -1;
     }
@@ -458,7 +458,7 @@ EBCL_LIB_EXPORTED int crinitClientShutdown(int shutdownCmd) {
     crinitRtimCmd_t cmd, res;
     char shdCmdStr[16] = {0};
     snprintf(shdCmdStr, 16, "0x%x", shutdownCmd);
-    if (crinitBuildRtimCmd(&cmd, EBCL_RTIMCMD_C_SHUTDOWN, 1, shdCmdStr) == -1) {
+    if (crinitBuildRtimCmd(&cmd, CRINIT_RTIMCMD_C_SHUTDOWN, 1, shdCmdStr) == -1) {
         crinitErrPrint("Could not build RtimCmd to send to Crinit.");
         return -1;
     }
@@ -470,7 +470,7 @@ EBCL_LIB_EXPORTED int crinitClientShutdown(int shutdownCmd) {
     }
     crinitDestroyRtimCmd(&cmd);
 
-    int ret = EBCL_crinitResponseCheck(&res, EBCL_RTIMCMD_R_SHUTDOWN);
+    int ret = EBCL_crinitResponseCheck(&res, CRINIT_RTIMCMD_R_SHUTDOWN);
     crinitDestroyRtimCmd(&res);
     return ret;
 }
@@ -482,7 +482,7 @@ EBCL_LIB_EXPORTED int crinitClientGetVersion(crinitVersion_t *v) {
     }
     crinitRtimCmd_t cmd, res;
 
-    if (crinitBuildRtimCmd(&cmd, EBCL_RTIMCMD_C_GETVER, 0) == -1) {
+    if (crinitBuildRtimCmd(&cmd, CRINIT_RTIMCMD_C_GETVER, 0) == -1) {
         crinitErrPrint("Could not build RtimCmd to send to Crinit.");
         return -1;
     }
@@ -494,7 +494,7 @@ EBCL_LIB_EXPORTED int crinitClientGetVersion(crinitVersion_t *v) {
     }
     crinitDestroyRtimCmd(&cmd);
 
-    int ret = EBCL_crinitResponseCheck(&res, EBCL_RTIMCMD_R_GETVER);
+    int ret = EBCL_crinitResponseCheck(&res, CRINIT_RTIMCMD_R_GETVER);
     if (ret == 0) {
         if (res.argc != 5) {
             crinitErrPrint("Got unexpected response length from Crinit.");

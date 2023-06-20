@@ -57,7 +57,7 @@ int EBCL_storeRtimCmd(const uintmax_t value, const uintmax_t context);
  *       CRINIT_RTIMCMD_RES_OK
  *   };
  *   crinitRtimCmd_t crinitXferArgResOK = {
- *       .op = EBCL_RTIMCMD_R_ADDTASK,
+ *       .op = CRINIT_RTIMCMD_R_ADDTASK,
  *       .argc = 1,
  *       .args = crinitXferArgResOKArgs
  *   };
