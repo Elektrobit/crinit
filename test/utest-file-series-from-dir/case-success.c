@@ -1,6 +1,6 @@
 /**
  * @file case-success.c
- * @brief Unit test for EBCL_fileSeriesFromDir(), successful execution.
+ * @brief Unit test for crinitFileSeriesFromDir(), successful execution.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -35,16 +35,16 @@ static void EBCL_testVariant(size_t numElements, const char *path, const char *f
     }
     fnamesBuff[numElements] = NULL;
 
-    struct ebcl_FileSeries_t fse = {.size = numElements, .fnames = fnamesBuff};
+    struct crinitFileSeries_t fse = {.size = numElements, .fnames = fnamesBuff};
 
     if (followLinks) {
         print_message(
-            "Testing EBCL_fileSeriesFromDir with numElement = %ld, path = %s, fileSuffix = %s and following "
+            "Testing crinitFileSeriesFromDir with numElement = %ld, path = %s, fileSuffix = %s and following "
             "symlinks.\n",
             numElements, path, fileSuffix);
     } else {
         print_message(
-            "Testing EBCL_fileSeriesFromDir with numElement = %ld, path = %s, fileSuffix = %s and NOT following "
+            "Testing crinitFileSeriesFromDir with numElement = %ld, path = %s, fileSuffix = %s and NOT following "
             "symlinks.\n",
             numElements, path, fileSuffix);
     }
@@ -74,10 +74,10 @@ static void EBCL_testVariant(size_t numElements, const char *path, const char *f
     expect_any_count(__wrap_stpcpy, src, numElements);
     will_return_count(__wrap_stpcpy, runnerPtr, numElements);
 
-    assert_int_equal(EBCL_fileSeriesFromDir(&fse, path, fileSuffix, followLinks), 0);
+    assert_int_equal(crinitFileSeriesFromDir(&fse, path, fileSuffix, followLinks), 0);
 }
 
-void EBCL_fileSeriesFromDirTestSuccess(void **state) {
+void crinitFileSeriesFromDirTestSuccess(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     // clang-format off

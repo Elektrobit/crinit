@@ -1,6 +1,6 @@
 /**
  * @file case-success.c
- * @brief Unit test for EBCL_fileSeriesFromStrArr(), successful execution.
+ * @brief Unit test for crinitFileSeriesFromStrArr(), successful execution.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -17,7 +17,7 @@
 #include "unit_test.h"
 
 static void EBCL_testVariant(size_t numElements) {
-    struct ebcl_FileSeries_t fse;
+    struct crinitFileSeries_t fse;
 
     const char *baseDir = "/some/path/to/testdir/";
 
@@ -27,19 +27,19 @@ static void EBCL_testVariant(size_t numElements) {
     }
     fnamesBuff[numElements] = NULL;
 
-    print_message("Testing EBCL_fileSeriesFromStrArr with numElement = %ld and baseDir = %s.\n", numElements, baseDir);
+    print_message("Testing crinitFileSeriesFromStrArr with numElement = %ld and baseDir = %s.\n", numElements, baseDir);
 
     expect_value(__wrap_strdup, s, baseDir);
     will_return(__wrap_strdup, baseDir);
 
-    assert_int_equal(EBCL_fileSeriesFromStrArr(&fse, baseDir, fnamesBuff), 0);
+    assert_int_equal(crinitFileSeriesFromStrArr(&fse, baseDir, fnamesBuff), 0);
 
     assert_ptr_equal(fse.fnames, fnamesBuff);
     assert_int_equal(fse.size, numElements);
     assert_ptr_equal(fse.baseDir, baseDir);
 }
 
-void EBCL_fileSeriesFromStrArrTestSuccess(void **state) {
+void crinitFileSeriesFromStrArrTestSuccess(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     EBCL_testVariant(0);

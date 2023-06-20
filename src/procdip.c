@@ -70,21 +70,21 @@ static int EBCL_blockOnWaitInhibit(void);
 static int EBCL_reapPid(pid_t pid);
 
 /**
- * Adds an action to a posix_spawn_file_actions_t instance as defined by an ebcl_IoRedir_t instance.
+ * Adds an action to a posix_spawn_file_actions_t instance as defined by an crinitIoRedir_t instance.
  *
- * The file action will either be a call to open() including an IO redirection for an ebcl_IoRedir_t which contains a
- * non-NULL ebcl_IoRedir_t::path, or a single redirection via dup2() if ebcl_IoRedir_t::oldfd is positive. If both cases
- * are true, the ebcl_IoRedir_t::path takes precedence and ebcl_IoRedir_r::oldfd is ignored.
+ * The file action will either be a call to open() including an IO redirection for an crinitIoRedir_t which contains a
+ * non-NULL crinitIoRedir_t::path, or a single redirection via dup2() if crinitIoRedir_t::oldfd is positive. If both cases
+ * are true, the crinitIoRedir_t::path takes precedence and ebcl_IoRedir_r::oldfd is ignored.
  *
- * ebcl_IoRedir_t::oflags is respected for files and ebcl_IoRedir_t::mode is respected for files that are overwritten
+ * crinitIoRedir_t::oflags is respected for files and crinitIoRedir_t::mode is respected for files that are overwritten
  * or newly created.
  *
  * @param fileact  The posix_spawn_file_actions_t to be modified, must have been initialized.
- * @param ior      The ebcl_IoRedir_t defining the file action to be added.
+ * @param ior      The crinitIoRedir_t defining the file action to be added.
  *
  * @return 0 on success, -1 otherwise.
  */
-static int EBCL_posixSpawnAddIOFileAction(posix_spawn_file_actions_t *fileact, const ebcl_IoRedir_t *ior);
+static int EBCL_posixSpawnAddIOFileAction(posix_spawn_file_actions_t *fileact, const crinitIoRedir_t *ior);
 
 /**
  * Ensures the given path is a FIFO special file (named pipe).
@@ -379,7 +379,7 @@ static int EBCL_reapPid(pid_t pid) {
     return 0;
 }
 
-static int EBCL_posixSpawnAddIOFileAction(posix_spawn_file_actions_t *fileact, const ebcl_IoRedir_t *ior) {
+static int EBCL_posixSpawnAddIOFileAction(posix_spawn_file_actions_t *fileact, const crinitIoRedir_t *ior) {
     if (fileact == NULL || ior == NULL) {
         crinitErrPrint("Input parameters must not be NULL.");
         return -1;

@@ -191,7 +191,7 @@ int crinitTaskDup(crinitTask_t **out, const crinitTask_t *orig) {
             goto fail;
         }
         for (size_t i = 0; i < pTask->redirsSize; i++) {
-            if (EBCL_ioRedirCpy(&pTask->redirs[i], &orig->redirs[i]) == -1) {
+            if (crinitIoRedirCpy(&pTask->redirs[i], &orig->redirs[i]) == -1) {
                 crinitErrPrint("Could not copy all IO redirections during copy of task '%s'.", orig->name);
                 goto fail;
             }
@@ -243,7 +243,7 @@ void crinitDestroyTask(crinitTask_t *t) {
     free(t->prv);
     if (t->redirs != NULL) {
         for (size_t i = 0; i < t->redirsSize; i++) {
-            EBCL_destroyIoRedir(&(t->redirs[i]));
+            crinitDestroyIoRedir(&(t->redirs[i]));
         }
     }
     free(t->redirs);

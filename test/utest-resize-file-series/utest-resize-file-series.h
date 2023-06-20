@@ -1,6 +1,6 @@
 /**
  * @file utest-resize-file-series.h
- * @brief Header declaring the unit tests for EBCL_resizeFileSeries().
+ * @brief Header declaring the unit tests for crinitResizeFileSeries().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -12,23 +12,23 @@
 #define __UTEST_RESIZE_FILE_SERIES_H__
 
 /**
- * Unit test for EBCL_resizeFileSeries(), successful execution.
+ * Unit test for crinitResizeFileSeries(), successful execution.
  */
-void EBCL_resizeFileSeriesTestSuccess(void **state);
+void crinitResizeFileSeriesTestSuccess(void **state);
 
 /**
- * Unit test for EBCL_resizeFileSeries(), fails to reallocate memory.
+ * Unit test for crinitResizeFileSeries(), fails to reallocate memory.
  */
-void EBCL_resizeFileSeriesTestNoMemError(void **state);
+void crinitResizeFileSeriesTestNoMemError(void **state);
 
 /**
- * Unit test for EBCL_resizeFileSeries(), given file series is NULL.
+ * Unit test for crinitResizeFileSeries(), given file series is NULL.
  */
-void EBCL_resizeFileSeriesTestFseNullError(void **state);
+void crinitResizeFileSeriesTestFseNullError(void **state);
 
 /**
- * Unit test for EBCL_resizeFileSeries(), shrinking to zero fails.
+ * Unit test for crinitResizeFileSeries(), shrinking to zero fails.
  */
-void EBCL_resizeFileSeriesTestShrinkZeroError(void **state);
+void crinitResizeFileSeriesTestShrinkZeroError(void **state);
 
 #endif /* __UTEST_RESIZE_FILE_SERIES_H__ */

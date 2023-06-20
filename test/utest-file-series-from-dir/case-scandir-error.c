@@ -1,6 +1,6 @@
 /**
  * @file case-scandir-error.c
- * @brief Unit test for EBCL_fileSeriesFromDir(), given scandir fails.
+ * @brief Unit test for crinitFileSeriesFromDir(), given scandir fails.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -17,10 +17,10 @@
 #include "fseries.h"
 #include "unit_test.h"
 
-void EBCL_fileSeriesFromDirScandirError(void **state) {
+void crinitFileSeriesFromDirScandirError(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
-    ebcl_FileSeries_t *fse = (void *)0xd3adda7a;
+    crinitFileSeries_t *fse = (void *)0xd3adda7a;
     const char *path = (void *)0xd3adda7a;
     const DIR *dptr = (void *)0xd3adda7a;
 
@@ -43,5 +43,5 @@ void EBCL_fileSeriesFromDirScandirError(void **state) {
 
     expect_value(__wrap_closedir, dirp, dptr);
 
-    assert_int_equal(EBCL_fileSeriesFromDir(fse, path, NULL, false), -1);
+    assert_int_equal(crinitFileSeriesFromDir(fse, path, NULL, false), -1);
 }

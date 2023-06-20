@@ -30,7 +30,7 @@
 /**
  * Global state/option variable to store options and state of a directory scan for the dirscan() filters.
  *
- * Used to configure the filters for scandir() in EBCL_fileSeriesFromDir(). Needs to be used as a compilation-unit-
+ * Used to configure the filters for scandir() in crinitFileSeriesFromDir(). Needs to be used as a compilation-unit-
  * global variable as scandir() does not allow arbitrary arguments to the filters.
  */
 static struct {
@@ -82,7 +82,7 @@ TESTABLE_STATIC int EBCL_statFilter(const char *name, int baseDirFd, bool follow
  */
 TESTABLE_STATIC void EBCL_freeScandirList(struct dirent **scanList, int size);
 
-TESTABLE void EBCL_destroyFileSeries(ebcl_FileSeries_t *fse) {
+TESTABLE void crinitDestroyFileSeries(crinitFileSeries_t *fse) {
     if (fse == NULL) {
         return;
     }
@@ -97,7 +97,7 @@ TESTABLE void EBCL_destroyFileSeries(ebcl_FileSeries_t *fse) {
     fse->size = 0;
 }
 
-TESTABLE int EBCL_initFileSeries(ebcl_FileSeries_t *fse, size_t numElements, const char *baseDir) {
+TESTABLE int crinitInitFileSeries(crinitFileSeries_t *fse, size_t numElements, const char *baseDir) {
     if (fse == NULL) {
         crinitErrPrint("File series struct to initialize must not be NULL.");
         return -1;
@@ -112,10 +112,10 @@ TESTABLE int EBCL_initFileSeries(ebcl_FileSeries_t *fse, size_t numElements, con
             return -1;
         }
     }
-    return EBCL_resizeFileSeries(fse, numElements);
+    return crinitResizeFileSeries(fse, numElements);
 }
 
-int EBCL_resizeFileSeries(ebcl_FileSeries_t *fse, size_t numElements) {
+int crinitResizeFileSeries(crinitFileSeries_t *fse, size_t numElements) {
     if (fse == NULL) {
         crinitErrPrint("File series struct to resize must not be NULL.");
         return -1;
@@ -141,7 +141,7 @@ int EBCL_resizeFileSeries(ebcl_FileSeries_t *fse, size_t numElements) {
     return 0;
 }
 
-int EBCL_fileSeriesFromDir(ebcl_FileSeries_t *fse, const char *path, const char *fileSuffix, bool followLinks) {
+int crinitFileSeriesFromDir(crinitFileSeries_t *fse, const char *path, const char *fileSuffix, bool followLinks) {
     if (fse == NULL) {
         crinitErrPrint("Return pointer must not be NULL.");
         return -1;
@@ -193,7 +193,7 @@ int EBCL_fileSeriesFromDir(ebcl_FileSeries_t *fse, const char *path, const char 
 
     closedir(scd);
 
-    if (EBCL_initFileSeries(fse, scanRes, path) == -1) {
+    if (crinitInitFileSeries(fse, scanRes, path) == -1) {
         crinitErrPrint("Could not initialize file series struct holding %d elements.", scanRes);
         return -1;
     }
@@ -206,7 +206,7 @@ int EBCL_fileSeriesFromDir(ebcl_FileSeries_t *fse, const char *path, const char 
     fse->fnames[0] = malloc(backingStrAllocLen * sizeof(char));
     if (fse->fnames[0] == NULL) {
         crinitErrnoPrint("Could not allocate memory for file series backing string.");
-        EBCL_destroyFileSeries(fse);
+        crinitDestroyFileSeries(fse);
         return -1;
     }
 
@@ -219,7 +219,7 @@ int EBCL_fileSeriesFromDir(ebcl_FileSeries_t *fse, const char *path, const char 
     return 0;
 }
 
-int EBCL_fileSeriesFromStrArr(ebcl_FileSeries_t *fse, const char *baseDir, char **strArr) {
+int crinitFileSeriesFromStrArr(crinitFileSeries_t *fse, const char *baseDir, char **strArr) {
     if (fse == NULL || baseDir == NULL || strArr == NULL) {
         crinitErrPrint("Input parameters must not be NULL.");
         return -1;

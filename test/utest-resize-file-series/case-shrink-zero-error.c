@@ -1,6 +1,6 @@
 /**
  * @file case-shrink-zero-error.c
- * @brief Unit test for EBCL_resizeFileSeries(), successful execution.
+ * @brief Unit test for crinitResizeFileSeries(), successful execution.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -16,12 +16,12 @@
 #include "string.h"
 #include "unit_test.h"
 
-void EBCL_resizeFileSeriesTestShrinkZeroError(void **state) {
+void crinitResizeFileSeriesTestShrinkZeroError(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
-    struct ebcl_FileSeries_t fse = {.size = 100};
+    struct crinitFileSeries_t fse = {.size = 100};
 
     expect_any(__wrap_crinitErrPrintFFL, format);
 
-    assert_int_equal(EBCL_resizeFileSeries(&fse, 0), -1);
+    assert_int_equal(crinitResizeFileSeries(&fse, 0), -1);
 }

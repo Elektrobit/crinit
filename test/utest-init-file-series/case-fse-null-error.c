@@ -15,10 +15,10 @@
 #include "fseries.h"
 #include "unit_test.h"
 
-void EBCL_initFileSeriesTestFseNullError(void **state) {
+void crinitInitFileSeriesTestFseNullError(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     expect_any(__wrap_crinitErrPrintFFL, format);
 
-    assert_int_equal(EBCL_initFileSeries(NULL, 0, NULL), -1);
+    assert_int_equal(crinitInitFileSeries(NULL, 0, NULL), -1);
 }

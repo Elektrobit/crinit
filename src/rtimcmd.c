@@ -623,7 +623,7 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
                                  "Could not inhibit process spawning to load new series file.");
     }
 
-    ebcl_FileSeries_t taskSeries;
+    crinitFileSeries_t taskSeries;
     if (EBCL_loadSeriesConf(&taskSeries, cmd->args[0]) == -1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR, "Could not load series file.");
     }
@@ -641,7 +641,7 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
             size_t suffixLen = strlen(taskSeries.fnames[n]);
             confFn = malloc(prefixLen + suffixLen + 2);
             if (confFn == NULL) {
-                EBCL_destroyFileSeries(&taskSeries);
+                crinitDestroyFileSeries(&taskSeries);
                 EBCL_taskDBSetSpawnInhibit(ctx, false);
                 return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
                                          "Memory allocation error.");
@@ -658,7 +658,7 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
             if (confFnAllocated) {
                 free(confFn);
             }
-            EBCL_destroyFileSeries(&taskSeries);
+            crinitDestroyFileSeries(&taskSeries);
             EBCL_taskDBSetSpawnInhibit(ctx, false);
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not parse config file.");
@@ -671,7 +671,7 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
         crinitTask_t *t = NULL;
         if (crinitTaskCreateFromConfKvList(&t, c) == -1) {
             EBCL_freeConfList(c);
-            EBCL_destroyFileSeries(&taskSeries);
+            crinitDestroyFileSeries(&taskSeries);
             EBCL_taskDBSetSpawnInhibit(ctx, false);
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not create task from config file.");
@@ -680,7 +680,7 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
         EBCL_freeConfList(c);
         if (EBCL_taskDBInsert(ctx, t, overwriteTasks) == -1) {
             crinitFreeTask(t);
-            EBCL_destroyFileSeries(&taskSeries);
+            crinitDestroyFileSeries(&taskSeries);
             return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDTASK, 2, EBCL_RTIMCMD_RES_ERR,
                                      "Could not insert new task into TaskDB.");
         }
@@ -688,7 +688,7 @@ static int EBCL_execRtimCmdAddSeries(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, co
         crinitFreeTask(t);
     }
 
-    EBCL_destroyFileSeries(&taskSeries);
+    crinitDestroyFileSeries(&taskSeries);
     if (EBCL_taskDBSetSpawnInhibit(ctx, false) == -1) {
         return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_ADDSERIES, 2, EBCL_RTIMCMD_RES_ERR,
                                  "Could not re-enable spawning of processes.");
@@ -1007,12 +1007,12 @@ static int EBCL_execRtimCmdGetVer(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const
     }
 
     char major[8] = {'\0'}, minor[8] = {'\0'}, micro[8] = {'\0'};
-    snprintf(major, sizeof(major) - 1, "%u", EBCL_crinitVersion.major);
-    snprintf(minor, sizeof(minor) - 1, "%u", EBCL_crinitVersion.minor);
-    snprintf(micro, sizeof(micro) - 1, "%u", EBCL_crinitVersion.micro);
+    snprintf(major, sizeof(major) - 1, "%u", crinitVersion.major);
+    snprintf(minor, sizeof(minor) - 1, "%u", crinitVersion.minor);
+    snprintf(micro, sizeof(micro) - 1, "%u", crinitVersion.micro);
 
     return EBCL_buildRtimCmd(res, EBCL_RTIMCMD_R_GETVER, 5, EBCL_RTIMCMD_RES_OK, major, minor, micro,
-                             EBCL_crinitVersion.git);
+                             crinitVersion.git);
 }
 
 static int EBCL_execRtimCmdShutdown(ebcl_TaskDB_t *ctx, ebcl_RtimCmd_t *res, const ebcl_RtimCmd_t *cmd) {

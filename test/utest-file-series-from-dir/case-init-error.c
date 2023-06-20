@@ -1,6 +1,6 @@
 /**
  * @file case-init-error.c
- * @brief Unit test for EBCL_fileSeriesFromDir(), given init fails.
+ * @brief Unit test for crinitFileSeriesFromDir(), given init fails.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -17,11 +17,11 @@
 #include "fseries.h"
 #include "unit_test.h"
 
-void EBCL_fileSeriesFromDirInitError(void **state) {
+void crinitFileSeriesFromDirInitError(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     /* Use special pointer to trigger error */
-    ebcl_FileSeries_t *fse = (void *)0xbaadda7a;
+    crinitFileSeries_t *fse = (void *)0xbaadda7a;
     const char *path = (void *)0xd3adda7a;
     const DIR *dptr = (void *)0xd3adda7a;
 
@@ -44,5 +44,5 @@ void EBCL_fileSeriesFromDirInitError(void **state) {
 
     expect_any(__wrap_crinitErrPrintFFL, format);
 
-    assert_int_equal(EBCL_fileSeriesFromDir(fse, path, NULL, false), -1);
+    assert_int_equal(crinitFileSeriesFromDir(fse, path, NULL, false), -1);
 }

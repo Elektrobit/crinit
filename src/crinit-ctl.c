@@ -384,11 +384,11 @@ static void EBCL_printUsage(char *prgmPath) {
 }
 
 static void EBCL_printVersion(void) {
-    fprintf(stderr, "crinit-ctl version %s\n", EBCL_getVersionString());
-    const ebcl_Version_t *libVer = EBCL_crinitLibGetVersion();
+    fprintf(stderr, "crinit-ctl version %s\n", crinitGetVersionString());
+    const crinitVersion_t *libVer = EBCL_crinitLibGetVersion();
     fprintf(stderr, "crinit-client library version %u.%u.%u%s%s\n", libVer->major, libVer->minor, libVer->micro,
             (strlen(libVer->git) == 0) ? "" : ".", libVer->git);
-    ebcl_Version_t daemonVer;
+    crinitVersion_t daemonVer;
     if (EBCL_crinitGetVersion(&daemonVer) == -1) {
         crinitErrPrint("Could not get version of Crinit daemon.");
         return;

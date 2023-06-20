@@ -39,11 +39,11 @@
 /** Helper structure defining the arguments to connThread() **/
 typedef struct ebcl_ConnThrArgs_t {
     int sockFd;                ///< The socket to accept connections from.
-    ebcl_ThreadPool_t *tpRef;  ///< Pointer to the ebcl_ThreadPool_t context, needed for
-                               ///< EBCL_threadPoolThreadAvailCallback() and EBCL_threadPoolThreadBusyCallback().
+    crinitThreadPool_t *tpRef;  ///< Pointer to the crinitThreadPool_t context, needed for
+                               ///< crinitThreadPoolThreadAvailCallback() and crinitThreadPoolThreadBusyCallback().
 } ebcl_ConnThrArgs_t;
 
-static ebcl_ThreadPool_t EBCL_workers;  ///< The worker thread pool to run connThread() in.
+static crinitThreadPool_t EBCL_workers;  ///< The worker thread pool to run connThread() in.
 static ebcl_TaskDB_t *EBCL_tdbRef;      ///< Pointer to the ebcl_TaskDB_t to operate on.
 
 /**
@@ -53,7 +53,7 @@ static ebcl_TaskDB_t *EBCL_tdbRef;      ///< Pointer to the ebcl_TaskDB_t to ope
  * informed of client PID, UID, and GID through `SO_PASSCRED`/`SCM_CREDENTIALS`, so that permission handling is
  * possible.
  *
- * Uses EBCL_threadPoolThreadAvailCallback() and EBCL_threadPoolThreadBusyCallback() to signal its status to the thread
+ * Uses crinitThreadPoolThreadAvailCallback() and crinitThreadPoolThreadBusyCallback() to signal its status to the thread
  * pool.
  *
  * The client-side equivalent connection-handling function is crinitXfer() in crinit-client.c. The following image
@@ -199,7 +199,7 @@ int EBCL_startInterfaceServer(ebcl_TaskDB_t *ctx, const char *sockFile) {
     }
     umask(0022);
     ebcl_ConnThrArgs_t a = {sockFd, &EBCL_workers};
-    if (EBCL_threadPoolInit(&EBCL_workers, 0, EBCL_connThread, &a, sizeof(ebcl_ConnThrArgs_t)) == -1) {
+    if (crinitThreadPoolInit(&EBCL_workers, 0, EBCL_connThread, &a, sizeof(ebcl_ConnThrArgs_t)) == -1) {
         crinitErrPrint("Could not fill server thread pool.");
         return -1;
     }
@@ -265,7 +265,7 @@ static void *EBCL_connThread(void *args) {
     while (true) {
         connSockFd = -1;
         connSockFd = accept(servSockFd, NULL, NULL);
-        EBCL_threadPoolThreadBusyCallback(a->tpRef);
+        crinitThreadPoolThreadBusyCallback(a->tpRef);
 
         if (connSockFd == -1) {
             crinitErrnoPrint("(TID %d) Could not accept connection.", threadId);
@@ -338,7 +338,7 @@ static void *EBCL_connThread(void *args) {
 
         free(resStr);
         close(connSockFd);
-        EBCL_threadPoolThreadAvailCallback(a->tpRef);
+        crinitThreadPoolThreadAvailCallback(a->tpRef);
     }
     return NULL;
 }

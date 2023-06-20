@@ -1,6 +1,6 @@
 /**
  * @file utest-init-file-series.c
- * @brief Implementation of the EBCL_initFileSeries() unit test group.
+ * @brief Implementation of the crinitInitFileSeries() unit test group.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -14,13 +14,13 @@
 #include "unit_test.h"
 
 /**
- * Runs the unit test group for EBCL_initFileSeries using the cmocka API.
+ * Runs the unit test group for crinitInitFileSeries using the cmocka API.
  */
 int main(void) {
     const struct CMUnitTest tests[] = {
-        cmocka_unit_test(EBCL_initFileSeriesTestSuccess),
-        cmocka_unit_test(EBCL_initFileSeriesTestNoMemError),
-        cmocka_unit_test(EBCL_initFileSeriesTestFseNullError),
+        cmocka_unit_test(crinitInitFileSeriesTestSuccess),
+        cmocka_unit_test(crinitInitFileSeriesTestNoMemError),
+        cmocka_unit_test(crinitInitFileSeriesTestFseNullError),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);

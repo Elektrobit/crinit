@@ -1,6 +1,6 @@
 /**
  * @file case-null-param-error.c
- * @brief Unit test for EBCL_fileSeriesFromStrArr(), given NULL parameter.
+ * @brief Unit test for crinitFileSeriesFromStrArr(), given NULL parameter.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -15,19 +15,19 @@
 #include "fseries.h"
 #include "unit_test.h"
 
-static void EBCL_testVariant(ebcl_FileSeries_t *fse, const char *baseDir, char **strArr) {
-    print_message("Testing EBCL_fileSeriesFromStrArr with fse = %p, baseDir = %p and strArr = %p.\n", (void *)fse,
+static void EBCL_testVariant(crinitFileSeries_t *fse, const char *baseDir, char **strArr) {
+    print_message("Testing crinitFileSeriesFromStrArr with fse = %p, baseDir = %p and strArr = %p.\n", (void *)fse,
                   (void *)baseDir, (void *)strArr);
 
     expect_any(__wrap_crinitErrPrintFFL, format);
 
-    assert_int_equal(EBCL_fileSeriesFromStrArr(fse, baseDir, strArr), -1);
+    assert_int_equal(crinitFileSeriesFromStrArr(fse, baseDir, strArr), -1);
 }
 
-void EBCL_fileSeriesFromStrArrTestNullParamError(void **state) {
+void crinitFileSeriesFromStrArrTestNullParamError(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
-    struct ebcl_FileSeries_t fse;
+    struct crinitFileSeries_t fse;
     const char *baseDir = (void *)0xdeadda7a;
     char **strArr = (void *)0xbaadda7a;
 
