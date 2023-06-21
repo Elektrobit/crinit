@@ -31,7 +31,7 @@
 #endif
 
 /** Macro wrapper for the gettid syscall in case glibc is not new enough to contain one itself **/
-#define EBCL_gettid() ((pid_t)syscall(SYS_gettid))
+#define crinitGettid() ((pid_t)syscall(SYS_gettid))
 
 /** Maximum number of unserviced connections until the server starts refusing **/
 #define MAX_CONN_BACKLOG 100
@@ -43,8 +43,8 @@ typedef struct ebcl_ConnThrArgs_t {
                                 ///< crinitThreadPoolThreadAvailCallback() and crinitThreadPoolThreadBusyCallback().
 } ebcl_ConnThrArgs_t;
 
-static crinitThreadPool_t EBCL_workers;  ///< The worker thread pool to run connThread() in.
-static crinitTaskDB_t *EBCL_tdbRef;      ///< Pointer to the crinitTaskDB_t to operate on.
+static crinitThreadPool_t crinitWorkers;  ///< The worker thread pool to run connThread() in.
+static crinitTaskDB_t *crinitTdbRef;      ///< Pointer to the crinitTaskDB_t to operate on.
 
 /**
  * The worker thread function for handling a connection to a client.
@@ -65,7 +65,7 @@ static crinitTaskDB_t *EBCL_tdbRef;      ///< Pointer to the crinitTaskDB_t to o
  *
  * @return  Does not return unless its thread is canceled in which case the return value is undefined.
  */
-static void *EBCL_connThread(void *args);
+static void *crinitConnThread(void *args);
 /**
  * Create AF_UNIX socket file, bind() and listen().
  *
@@ -76,7 +76,7 @@ static void *EBCL_connThread(void *args);
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_createSockFile(int *sockFd, const char *path);
+static int crinitCreateSockFile(int *sockFd, const char *path);
 /**
  * Checks if a received struct cmsghdr has expected length and contents.
  *
@@ -86,7 +86,7 @@ static int EBCL_createSockFile(int *sockFd, const char *path);
  *
  * @return   true if everything is as expected, false otherwise
  */
-static inline bool EBCL_cmsgHdrCheck(const struct cmsghdr *cmh);
+static inline bool crinitCmsgHdrCheck(const struct cmsghdr *cmh);
 /**
  * Checks if two struct ucred are equal.
  *
@@ -98,7 +98,7 @@ static inline bool EBCL_cmsgHdrCheck(const struct cmsghdr *cmh);
  *
  * @return  true if \a a and \a b are equal, false if not
  */
-static inline bool EBCL_ucredCheckEqual(const struct ucred *a, const struct ucred *b);
+static inline bool crinitUcredCheckEqual(const struct ucred *a, const struct ucred *b);
 /**
  * Sends a string to a connected client.
  *
@@ -114,7 +114,7 @@ static inline bool EBCL_ucredCheckEqual(const struct ucred *a, const struct ucre
  *
  * @return 0 on success, -1 otherwise
  */
-static inline int EBCL_sendStr(int sockFd, const char *str);
+static inline int crinitSendStr(int sockFd, const char *str);
 /**
  * Receives a string from a connected client.
  *
@@ -137,7 +137,7 @@ static inline int EBCL_sendStr(int sockFd, const char *str);
  *
  * @return 0 on success, -1 otherwise
  */
-static inline int EBCL_recvStr(int sockFd, char **str, struct ucred *passedCreds);
+static inline int crinitRecvStr(int sockFd, char **str, struct ucred *passedCreds);
 /**
  * Checks if given process credentials imply permission to execute remote command.
  *
@@ -147,7 +147,7 @@ static inline int EBCL_recvStr(int sockFd, char **str, struct ucred *passedCreds
  * @return true if \a passedCreds imply the sending process is permitted to execute \a op. Returns false otherwise, also
  * on errors.
  */
-static inline bool EBCL_checkPerm(crinitRtimOp_t op, const struct ucred *passedCreds);
+static inline bool crinitCheckPerm(crinitRtimOp_t op, const struct ucred *passedCreds);
 /**
  * Gets capabilities of process specified by PID.
  *
@@ -157,7 +157,7 @@ static inline bool EBCL_checkPerm(crinitRtimOp_t op, const struct ucred *passedC
  *
  * @return 0 on success, -1 on error
  */
-static inline int EBCL_procCapget(cap_user_data_t out, pid_t pid);
+static inline int crinitProcCapget(cap_user_data_t out, pid_t pid);
 
 /**
  * Recursive mkdir(), equivalent to `mkdir -p`.
@@ -169,7 +169,7 @@ static inline int EBCL_procCapget(cap_user_data_t out, pid_t pid);
  *
  * @return 0 on success, -1 on error
  */
-static inline int EBCL_mkdirp(char *pathname, mode_t mode);
+static inline int crinitMkdirp(char *pathname, mode_t mode);
 
 int crinitStartInterfaceServer(crinitTaskDB_t *ctx, const char *sockFile) {
     if (ctx == NULL || sockFile == NULL) {
@@ -177,7 +177,7 @@ int crinitStartInterfaceServer(crinitTaskDB_t *ctx, const char *sockFile) {
         return -1;
     }
 
-    EBCL_tdbRef = ctx;
+    crinitTdbRef = ctx;
     char *sockFileTmp = strdup(sockFile);
     if (sockFileTmp == NULL) {
         crinitErrnoPrint("Could not duplicate string.");
@@ -185,7 +185,7 @@ int crinitStartInterfaceServer(crinitTaskDB_t *ctx, const char *sockFile) {
     }
 
     char *sockDir = dirname(sockFileTmp);
-    if (EBCL_mkdirp(sockDir, 0777) == -1) {
+    if (crinitMkdirp(sockDir, 0777) == -1) {
         crinitErrnoPrint("Could not create directory \'%s\'.", sockDir);
         free(sockFileTmp);
         return -1;
@@ -193,13 +193,13 @@ int crinitStartInterfaceServer(crinitTaskDB_t *ctx, const char *sockFile) {
     free(sockFileTmp);
     int sockFd = -1;
     umask(0);
-    if (EBCL_createSockFile(&sockFd, sockFile) == -1) {
+    if (crinitCreateSockFile(&sockFd, sockFile) == -1) {
         crinitErrPrint("Could not create socket file at \'%s\'.", sockFile);
         return -1;
     }
     umask(0022);
-    ebcl_ConnThrArgs_t a = {sockFd, &EBCL_workers};
-    if (crinitThreadPoolInit(&EBCL_workers, 0, EBCL_connThread, &a, sizeof(ebcl_ConnThrArgs_t)) == -1) {
+    ebcl_ConnThrArgs_t a = {sockFd, &crinitWorkers};
+    if (crinitThreadPoolInit(&crinitWorkers, 0, crinitConnThread, &a, sizeof(ebcl_ConnThrArgs_t)) == -1) {
         crinitErrPrint("Could not fill server thread pool.");
         return -1;
     }
@@ -207,7 +207,7 @@ int crinitStartInterfaceServer(crinitTaskDB_t *ctx, const char *sockFile) {
     return 0;
 }
 
-static inline int EBCL_mkdirp(char *pathName, mode_t mode) {
+static inline int crinitMkdirp(char *pathName, mode_t mode) {
     if (pathName == NULL) {
         crinitErrPrint("Input path name must not be NULL");
         return -1;
@@ -236,7 +236,7 @@ static inline int EBCL_mkdirp(char *pathName, mode_t mode) {
     return 0;
 }
 
-static inline bool EBCL_cmsgHdrCheck(const struct cmsghdr *cmh) {
+static inline bool crinitCmsgHdrCheck(const struct cmsghdr *cmh) {
     if (cmh == NULL) {
         return false;
     }
@@ -252,8 +252,8 @@ static inline bool EBCL_cmsgHdrCheck(const struct cmsghdr *cmh) {
     return true;
 }
 
-static void *EBCL_connThread(void *args) {
-    pid_t threadId = EBCL_gettid();
+static void *crinitConnThread(void *args) {
+    pid_t threadId = crinitGettid();
     if (args == NULL) {
         crinitErrPrint("(TID %d) Argument to connection worker thread must not be NULL.", threadId);
         return NULL;
@@ -278,14 +278,14 @@ static void *EBCL_connThread(void *args) {
             close(connSockFd);
             continue;
         }
-        if (EBCL_sendStr(connSockFd, "RTR") == -1) {
+        if (crinitSendStr(connSockFd, "RTR") == -1) {
             crinitErrPrint("(TID %d) Could not send RTR-message to client.", threadId);
             close(connSockFd);
             continue;
         }
         struct ucred msgCreds = {0};
         char *clientMsg = NULL;
-        if (EBCL_recvStr(connSockFd, &clientMsg, &msgCreds) == -1) {
+        if (crinitRecvStr(connSockFd, &clientMsg, &msgCreds) == -1) {
             crinitErrPrint("(TID %d) Could not receive string message from client.", threadId);
             close(connSockFd);
             continue;
@@ -303,7 +303,7 @@ static void *EBCL_connThread(void *args) {
             continue;
         }
         free(clientMsg);
-        if (!EBCL_checkPerm(cmd.op, &msgCreds)) {
+        if (!crinitCheckPerm(cmd.op, &msgCreds)) {
             crinitErrPrint("(TID %d) Client does not have permission to issue command.", threadId);
             if (crinitBuildRtimCmd(&res, cmd.op + 1, 2, CRINIT_RTIMCMD_RES_ERR, "Permission denied.") == -1) {
                 crinitErrPrint("Could not generate response to client.");
@@ -312,7 +312,7 @@ static void *EBCL_connThread(void *args) {
                 continue;
             }
         } else {
-            if (crinitExecRtimCmd(EBCL_tdbRef, &res, &cmd) == -1) {
+            if (crinitExecRtimCmd(crinitTdbRef, &res, &cmd) == -1) {
                 crinitErrPrint("(TID %d) Could not execute command from client.", threadId);
                 crinitDestroyRtimCmd(&cmd);
                 close(connSockFd);
@@ -329,7 +329,7 @@ static void *EBCL_connThread(void *args) {
         }
         crinitDestroyRtimCmd(&res);
         crinitDbgInfoPrint("(TID %d) Will send response message \'%s\' to client.", threadId, resStr);
-        if (EBCL_sendStr(connSockFd, resStr) == -1) {
+        if (crinitSendStr(connSockFd, resStr) == -1) {
             crinitErrPrint("(TID %d) Could not send response message to client.", threadId);
             free(resStr);
             close(connSockFd);
@@ -343,7 +343,7 @@ static void *EBCL_connThread(void *args) {
     return NULL;
 }
 
-static int EBCL_createSockFile(int *sockFd, const char *path) {
+static int crinitCreateSockFile(int *sockFd, const char *path) {
     if (sockFd == NULL) {
         crinitErrPrint("Return pointer for socket file descriptor must not be NULL.");
         return -1;
@@ -372,8 +372,8 @@ static int EBCL_createSockFile(int *sockFd, const char *path) {
     return 0;
 }
 
-static inline int EBCL_sendStr(int sockFd, const char *str) {
-    pid_t threadId = EBCL_gettid();
+static inline int crinitSendStr(int sockFd, const char *str) {
+    pid_t threadId = crinitGettid();
     if (str == NULL) {
         crinitErrPrint("(TID %d) String to send must not be NULL.", threadId);
         return -1;
@@ -394,8 +394,8 @@ static inline int EBCL_sendStr(int sockFd, const char *str) {
     return 0;
 }
 
-static inline int EBCL_recvStr(int sockFd, char **str, struct ucred *passedCreds) {
-    pid_t threadId = EBCL_gettid();
+static inline int crinitRecvStr(int sockFd, char **str, struct ucred *passedCreds) {
+    pid_t threadId = crinitGettid();
     if (str == NULL || passedCreds == NULL) {
         crinitErrPrint("(TID %d) Pointer arguments must not be NULL.", threadId);
         return -1;
@@ -434,7 +434,7 @@ static inline int EBCL_recvStr(int sockFd, char **str, struct ucred *passedCreds
     crinitDbgInfoPrint("(TID %d) Received message of %ld Bytes. Content:\n\'%zu\'", threadId, bytesRead, dataLen);
 
     struct cmsghdr *cmHdr = CMSG_FIRSTHDR(&mHdr);
-    if (!EBCL_cmsgHdrCheck(cmHdr)) {
+    if (!crinitCmsgHdrCheck(cmHdr)) {
         crinitErrPrint("(TID %d) Control message header of received ancillary data is invalid.", threadId);
         return -1;
     }
@@ -464,13 +464,13 @@ static inline int EBCL_recvStr(int sockFd, char **str, struct ucred *passedCreds
     crinitDbgInfoPrint("(TID %d) Received message of %ld Bytes. Content:\n\'%s\'", threadId, bytesRead, *str);
 
     cmHdr = CMSG_FIRSTHDR(&mHdr);
-    if (!EBCL_cmsgHdrCheck(cmHdr)) {
+    if (!crinitCmsgHdrCheck(cmHdr)) {
         crinitErrPrint("(TID %d) Control message header of received ancillary data is invalid.", threadId);
         goto fail;
     }
     memcpy(&scmCreds[1], CMSG_DATA(cmHdr), sizeof(struct ucred));
 
-    if (!EBCL_ucredCheckEqual(&scmCreds[0], &scmCreds[1])) {
+    if (!crinitUcredCheckEqual(&scmCreds[0], &scmCreds[1])) {
         crinitErrPrint(
             "(TID %d) Ancillary credential data of the length and data parts of the string message do not match.",
             threadId);
@@ -485,11 +485,11 @@ fail:
     return -1;
 }
 
-static inline bool EBCL_ucredCheckEqual(const struct ucred *a, const struct ucred *b) {
+static inline bool crinitUcredCheckEqual(const struct ucred *a, const struct ucred *b) {
     return (a->pid == b->pid) && (a->uid == b->uid) && (a->gid == b->gid);
 }
 
-static inline bool EBCL_checkPerm(crinitRtimOp_t op, const struct ucred *passedCreds) {
+static inline bool crinitCheckPerm(crinitRtimOp_t op, const struct ucred *passedCreds) {
     if (passedCreds == NULL) {
         crinitErrPrint("Pointer arguments must not be NULL.");
         return false;
@@ -516,7 +516,7 @@ static inline bool EBCL_checkPerm(crinitRtimOp_t op, const struct ucred *passedC
         case CRINIT_RTIMCMD_C_GETVER:
             return true;
         case CRINIT_RTIMCMD_C_SHUTDOWN:
-            if (EBCL_procCapget(capdata, passedCreds->pid) == -1) {
+            if (crinitProcCapget(capdata, passedCreds->pid) == -1) {
                 crinitErrPrint("Could not get process capabilities.");
                 return false;
             }
@@ -541,7 +541,7 @@ static inline bool EBCL_checkPerm(crinitRtimOp_t op, const struct ucred *passedC
     return false;
 }
 
-static inline int EBCL_procCapget(cap_user_data_t out, pid_t pid) {
+static inline int crinitProcCapget(cap_user_data_t out, pid_t pid) {
     struct __user_cap_header_struct caphdr = {_LINUX_CAPABILITY_VERSION_3, pid};
     if (syscall(SYS_capget, &caphdr, out) == -1) {
         crinitErrPrint("Could not get capabilities of process with PID %d.", pid);

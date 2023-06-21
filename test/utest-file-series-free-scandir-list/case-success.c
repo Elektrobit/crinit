@@ -1,6 +1,6 @@
 /**
  * @file case-success.c
- * @brief Unit test for EBCL_freeScandirList(), successful execution.
+ * @brief Unit test for crinitFreeScandirList(), successful execution.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -20,7 +20,7 @@ static void EBCL_testVariant(int size) {
     struct dirent *list[size];
     struct dirent **scanList;
     if (size > 0) {
-        print_message("Testing EBCL_freeScandirList with %d entries.\n", size);
+        print_message("Testing crinitFreeScandirList with %d entries.\n", size);
         scanList = list;
 
         for (int i = 0; i < size; i++) {
@@ -30,20 +30,20 @@ static void EBCL_testVariant(int size) {
         expect_value_count(__wrap_free, ptr, (void *)0xd3adda7a, size);
         expect_value(__wrap_free, ptr, (void *)list);
     } else if (size == 0) {
-        print_message("Testing EBCL_freeScandirList with empty scan list.\n");
+        print_message("Testing crinitFreeScandirList with empty scan list.\n");
         scanList = list;
 
         expect_value(__wrap_free, ptr, list);
     } else {
-        print_message("Testing EBCL_freeScandirList with NULL scan list.\n");
+        print_message("Testing crinitFreeScandirList with NULL scan list.\n");
         scanList = NULL;
         size = 0;
     }
 
-    EBCL_freeScandirList(scanList, size);
+    crinitFreeScandirList(scanList, size);
 }
 
-void EBCL_freeScandirListTestSuccess(void **state) {
+void crinitFreeScandirListTestSuccess(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     EBCL_testVariant(-1);

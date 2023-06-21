@@ -1,6 +1,6 @@
 /**
  * @file utest-init-file-series.h
- * @brief Header declaring the unit tests for EBCL_suffixFilter().
+ * @brief Header declaring the unit tests for crinitSuffixFilter().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -13,11 +13,11 @@
 
 #include <stdbool.h>
 
-bool EBCL_suffixFilter(const char *name, const char *suffix);
+bool crinitSuffixFilter(const char *name, const char *suffix);
 
 /**
- * Unit test for EBCL_suffixFilter(), successful execution.
+ * Unit test for crinitSuffixFilter(), successful execution.
  */
-void EBCL_suffixFilterTestSuccess(void **state);
+void crinitSuffixFilterTestSuccess(void **state);
 
 #endif /* __UTEST_SUFFIX_FILTER_H__ */

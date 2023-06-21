@@ -1,6 +1,6 @@
 /**
  * @file case-success.c
- * @brief Unit test for EBCL_suffixFilter(), successful execution.
+ * @brief Unit test for crinitSuffixFilter(), successful execution.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -18,15 +18,15 @@
 
 static void EBCL_testVariant(const char *path, const char *fileSuffix, bool res) {
     if (fileSuffix && fileSuffix[0] != '\0') {
-        print_message("Testing EBCL_suffixFilter with path '%s' and file suffix '%s'.\n", path, fileSuffix);
+        print_message("Testing crinitSuffixFilter with path '%s' and file suffix '%s'.\n", path, fileSuffix);
     } else {
-        print_message("Testing EBCL_suffixFilter with path '%s' and without file suffix.\n", path);
+        print_message("Testing crinitSuffixFilter with path '%s' and without file suffix.\n", path);
     }
 
-    assert_int_equal(EBCL_suffixFilter(path, fileSuffix), res);
+    assert_int_equal(crinitSuffixFilter(path, fileSuffix), res);
 }
 
-void EBCL_suffixFilterTestSuccess(void **state) {
+void crinitSuffixFilterTestSuccess(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     // clang-format off

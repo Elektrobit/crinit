@@ -1,6 +1,6 @@
 /**
  * @file utest-file-series-suffix-filter.c
- * @brief Implementation of the EBCL_suffixFilter() unit test group.
+ * @brief Implementation of the crinitSuffixFilter() unit test group.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -14,11 +14,11 @@
 #include "unit_test.h"
 
 /**
- * Runs the unit test group for EBCL_suffixFilter using the cmocka API.
+ * Runs the unit test group for crinitSuffixFilter using the cmocka API.
  */
 int main(void) {
     const struct CMUnitTest tests[] = {
-        cmocka_unit_test(EBCL_suffixFilterTestSuccess),
+        cmocka_unit_test(crinitSuffixFilterTestSuccess),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);

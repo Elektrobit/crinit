@@ -1,6 +1,6 @@
 /**
  * @file utest-init-file-series.h
- * @brief Header declaring the unit tests for EBCL_statFilter().
+ * @brief Header declaring the unit tests for crinitStatFilter().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -13,21 +13,21 @@
 
 #include <stdbool.h>
 
-bool EBCL_statFilter(const char *name, int baseDirFd, bool followLinks);
+bool crinitStatFilter(const char *name, int baseDirFd, bool followLinks);
 
 /**
- * Unit test for EBCL_statFilter(), successful execution.
+ * Unit test for crinitStatFilter(), successful execution.
  */
-void EBCL_statFilterTestSuccess(void **state);
+void crinitStatFilterTestSuccess(void **state);
 
 /**
- * Unit test for EBCL_statFilter(), fstatat fail.
+ * Unit test for crinitStatFilter(), fstatat fail.
  */
-void EBCL_statFilterTestFstatatFail(void **state);
+void crinitStatFilterTestFstatatFail(void **state);
 
 /**
- * Unit test for EBCL_statFilter(), S_ISREG fail.
+ * Unit test for crinitStatFilter(), S_ISREG fail.
  */
-void EBCL_statFilterTestSisregFail(void **state);
+void crinitStatFilterTestSisregFail(void **state);
 
 #endif /* __UTEST_STAT_FILTER_H__ */

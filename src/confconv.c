@@ -29,7 +29,7 @@
  *
  * @return  Pointer to end of \a src on success, NULL on failure.
  */
-static char *EBCL_copyEscaped(char *dst, const char *src, const char *end);
+static char *crinitCopyEscaped(char *dst, const char *src, const char *end);
 
 char **crinitConfConvToStrArr(int *numElements, const char *confVal, bool doubleQuoting) {
     crinitNullCheck(NULL, numElements, confVal);
@@ -93,7 +93,7 @@ char **crinitConfConvToStrArr(int *numElements, const char *confVal, bool double
             case CRINIT_TK_UQSTR:
             case CRINIT_TK_DQSTR:
                 outArr[argc++] = runner;
-                runner = EBCL_copyEscaped(runner, mbegin, mend);
+                runner = crinitCopyEscaped(runner, mbegin, mend);
                 if (runner == NULL) {
                     crinitErrPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
                     free(backbuf);
@@ -456,7 +456,7 @@ int crinitConfConvToEnvSetMember(crinitEnvSet_t *es, const char *confVal) {
     return 0;
 }
 
-static char *EBCL_copyEscaped(char *dst, const char *src, const char *end) {
+static char *crinitCopyEscaped(char *dst, const char *src, const char *end) {
     crinitNullCheck(NULL, dst, src, end);
     if (src > end) {
         crinitErrPrint("String start pointer must not point behind the end pointer.");

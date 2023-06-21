@@ -1,6 +1,6 @@
 /**
  * @file utest-init-file-series.h
- * @brief Header declaring the unit tests for EBCL_freeScandirList().
+ * @brief Header declaring the unit tests for crinitFreeScandirList().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -13,11 +13,11 @@
 
 #include <dirent.h>
 
-void EBCL_freeScandirList(struct dirent **scanList, int size);
+void crinitFreeScandirList(struct dirent **scanList, int size);
 
 /**
- * Unit test for EBCL_freeScandirList(), successful execution.
+ * Unit test for crinitFreeScandirList(), successful execution.
  */
-void EBCL_freeScandirListTestSuccess(void **state);
+void crinitFreeScandirListTestSuccess(void **state);
 
 #endif /* __UTEST_FILE_SERIES_FREE_SCANDIR_LIST_H__ */

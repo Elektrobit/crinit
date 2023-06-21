@@ -26,7 +26,7 @@
  *
  * @return  0 on success, -1 otherwise
  */
-static int EBCL_envSetGrow(crinitEnvSet_t *es);
+static int crinitEnvSetGrow(crinitEnvSet_t *es);
 /**
  * Searches for a given environment variable and returns its index in the set if found.
  *
@@ -35,7 +35,7 @@ static int EBCL_envSetGrow(crinitEnvSet_t *es);
  *
  * @return  The index of the variable within crinitEnvSet_t::envp if successful, -1 otherwise
  */
-static ssize_t EBCL_envSetSearch(const crinitEnvSet_t *es, const char *envName);
+static ssize_t crinitEnvSetSearch(const crinitEnvSet_t *es, const char *envName);
 
 int crinitEnvSetInit(crinitEnvSet_t *es, size_t initSize, size_t sizeIncrement) {
     if (es == NULL) {
@@ -99,7 +99,7 @@ const char *crinitEnvSetGet(const crinitEnvSet_t *es, const char *envName) {
     if (envName == NULL || es == NULL || es->envp == NULL || es->allocSz == 0) {
         return NULL;
     }
-    ssize_t idx = EBCL_envSetSearch(es, envName);
+    ssize_t idx = crinitEnvSetSearch(es, envName);
     if (idx == -1 || es->envp[idx] == NULL) {
         return NULL;
     }
@@ -116,12 +116,12 @@ int crinitEnvSetSet(crinitEnvSet_t *es, const char *envName, const char *envVal)
         return -1;
     }
     size_t newSize = strlen(envName) + strlen(envVal) + 2;
-    ssize_t idx = EBCL_envSetSearch(es, envName);
+    ssize_t idx = crinitEnvSetSearch(es, envName);
     if (idx == -1) {
         crinitErrPrint("Could not complete search for environment variable '%s' during variable set.", envName);
     } else if (es->envp[idx] == NULL) {
         if ((size_t)idx >= es->allocSz - 1) {
-            if (EBCL_envSetGrow(es) == -1) {
+            if (crinitEnvSetGrow(es) == -1) {
                 crinitErrPrint("Could not grow environment set of size %zu to size %zu.", es->allocSz,
                               es->allocSz + es->allocInc);
                 return -1;
@@ -168,7 +168,7 @@ int crinitEnvSetCreateFromConfKvList(crinitEnvSet_t *newSet, const crinitEnvSet_
         return -1;
     }
     ssize_t numNewEnvs = crinitConfListKeyGetMaxIdx(c, CRINIT_CONFIG_KEYSTR_ENV_SET) + 1;
-    // If EBCL_conflListKeyGetMaxIdx() returns -1, we assume no ENV_SET config lines present.
+    // If crinitConflListKeyGetMaxIdx() returns -1, we assume no ENV_SET config lines present.
     for (size_t i = 0; i < (size_t)numNewEnvs; i++) {
         char *val = NULL;
         if (crinitConfListGetValWithIdx(&val, CRINIT_CONFIG_KEYSTR_ENV_SET, i, c) == -1) {
@@ -185,7 +185,7 @@ int crinitEnvSetCreateFromConfKvList(crinitEnvSet_t *newSet, const crinitEnvSet_
     return 0;
 }
 
-static ssize_t EBCL_envSetSearch(const crinitEnvSet_t *es, const char *envName) {
+static ssize_t crinitEnvSetSearch(const crinitEnvSet_t *es, const char *envName) {
     if (envName == NULL || es == NULL || es->envp == NULL || es->allocSz == 0) {
         crinitErrPrint("Input parameters must not be NULL and given environment set must be initialized.");
         return -1;
@@ -204,7 +204,7 @@ static ssize_t EBCL_envSetSearch(const crinitEnvSet_t *es, const char *envName) 
     return i;
 }
 
-static int EBCL_envSetGrow(crinitEnvSet_t *es) {
+static int crinitEnvSetGrow(crinitEnvSet_t *es) {
     if (es == NULL) {
         crinitErrPrint("Input parameter must not be NULL.");
         return -1;

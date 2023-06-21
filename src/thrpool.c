@@ -27,7 +27,7 @@
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_threadPoolGrow(crinitThreadPool_t *ctx, size_t newSize);
+static int crinitThreadPoolGrow(crinitThreadPool_t *ctx, size_t newSize);
 /**
  * Thread function to monitor the current load of the thread pool and grow its size if needed.
  *
@@ -39,7 +39,7 @@ static int EBCL_threadPoolGrow(crinitThreadPool_t *ctx, size_t newSize);
  *
  * @param thrpool  The crinitThreadPool_t to monitor.
  */
-static void *EBCL_dryPoolWatchdog(void *thrpool);
+static void *crinitDryPoolWatchdog(void *thrpool);
 
 /**
  * Function macro to calculate threshold value at and below which point the pool is considerd "dry".
@@ -48,7 +48,7 @@ static void *EBCL_dryPoolWatchdog(void *thrpool);
  *
  * @return  The threshold value.
  */
-#define EBCL_dryPoolThreshold(poolSize) ((poolSize) / 10)
+#define crinitDryPoolThreshold(poolSize) ((poolSize) / 10)
 
 int crinitThreadPoolInit(crinitThreadPool_t *ctx, size_t initialSize, void *(*threadFunc)(void *), const void *thrArgs,
                         size_t thrArgsSize) {
@@ -108,7 +108,7 @@ int crinitThreadPoolInit(crinitThreadPool_t *ctx, size_t initialSize, void *(*th
     }
 
     crinitDbgInfoPrint("Initializing thread pool.");
-    if ((errno = pthread_create(&ctx->dryPoolWdRef, &thrAttrs, EBCL_dryPoolWatchdog, ctx)) != 0) {
+    if ((errno = pthread_create(&ctx->dryPoolWdRef, &thrAttrs, crinitDryPoolWatchdog, ctx)) != 0) {
         crinitErrnoPrint("Could not create dry thread pool watchdog thread.");
         pthread_mutex_unlock(&ctx->lock);
         pthread_attr_destroy(&thrAttrs);
@@ -118,7 +118,7 @@ int crinitThreadPoolInit(crinitThreadPool_t *ctx, size_t initialSize, void *(*th
     pthread_mutex_unlock(&ctx->lock);
     pthread_attr_destroy(&thrAttrs);
 
-    if (EBCL_threadPoolGrow(ctx, initialSize) == -1) {
+    if (crinitThreadPoolGrow(ctx, initialSize) == -1) {
         crinitErrPrint("Could not create worker threads.");
         goto fail;
     }
@@ -142,7 +142,7 @@ int crinitThreadPoolThreadBusyCallback(crinitThreadPool_t *ctx) {
         return -1;
     }
     ctx->threadAvail--;
-    if (ctx->threadAvail <= EBCL_dryPoolThreshold(ctx->poolSize)) {
+    if (ctx->threadAvail <= crinitDryPoolThreshold(ctx->poolSize)) {
         pthread_cond_signal(&ctx->threadAvailChanged);
     }
     pthread_mutex_unlock(&ctx->lock);
@@ -164,7 +164,7 @@ int crinitThreadPoolThreadAvailCallback(crinitThreadPool_t *ctx) {
     return 0;
 }
 
-static int EBCL_threadPoolGrow(crinitThreadPool_t *ctx, size_t newSize) {
+static int crinitThreadPoolGrow(crinitThreadPool_t *ctx, size_t newSize) {
     if (ctx == NULL) {
         crinitErrPrint("The given thread pool context must not be NULL.");
         return -1;
@@ -220,7 +220,7 @@ static int EBCL_threadPoolGrow(crinitThreadPool_t *ctx, size_t newSize) {
     return 0;
 }
 
-static void *EBCL_dryPoolWatchdog(void *thrpool) {
+static void *crinitDryPoolWatchdog(void *thrpool) {
     crinitThreadPool_t *ctx = (crinitThreadPool_t *)thrpool;
 
     if (ctx == NULL) {
@@ -234,10 +234,10 @@ static void *EBCL_dryPoolWatchdog(void *thrpool) {
             return NULL;
         }
         pthread_cond_wait(&ctx->threadAvailChanged, &ctx->lock);
-        if (ctx->threadAvail <= EBCL_dryPoolThreshold(ctx->poolSize)) {
+        if (ctx->threadAvail <= crinitDryPoolThreshold(ctx->poolSize)) {
             size_t newSize = ctx->poolSize + ctx->poolSizeIncrement;
             pthread_mutex_unlock(&ctx->lock);
-            if (EBCL_threadPoolGrow(ctx, newSize) == -1) {
+            if (crinitThreadPoolGrow(ctx, newSize) == -1) {
                 crinitErrPrint("Could not grow thread pool.");
             }
         } else {

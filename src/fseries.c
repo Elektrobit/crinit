@@ -40,12 +40,12 @@ static struct {
     int baseDirFd;                ///< File descriptor of the opened base directory for the search.
     pthread_mutex_t dirScanLock;  ///< Mutex to synchronize concurrent accesses to this data, must be held
                                   ///< during scandir().
-} EBCL_scState = {.baseDirFd = -1, .dirScanLock = PTHREAD_MUTEX_INITIALIZER};
+} crinitScState = {.baseDirFd = -1, .dirScanLock = PTHREAD_MUTEX_INITIALIZER};
 
 /**
  * Result filter to be given to scandir() via function pointer.
  *
- * Uses EBCL_scState to setup and run EBCL_suffixFilter() and EBCL_statFilter().
+ * Uses crinitScState to setup and run crinitSuffixFilter() and crinitStatFilter().
  *
  * See also [scandir(3) man page](https://man7.org/linux/man-pages/man3/scandir.3.html).
  *
@@ -53,7 +53,7 @@ static struct {
  *
  * @return  1 if \a dent should be included in the final result list, 0 if not.
  */
-TESTABLE_STATIC int EBCL_scanDirFilter(const struct dirent *dent);
+TESTABLE_STATIC int criitScanDirFilter(const struct dirent *dent);
 /**
  * Filters strings by suffix.
  *
@@ -62,7 +62,7 @@ TESTABLE_STATIC int EBCL_scanDirFilter(const struct dirent *dent);
  *
  * @return  true if \a name ends with \a suffix, false if not.
  */
-TESTABLE_STATIC bool EBCL_suffixFilter(const char *name, const char *suffix);
+TESTABLE_STATIC bool crinitSuffixFilter(const char *name, const char *suffix);
 /**
  * Filters out everything that is not a regular file (or a symlink to it, depending on settings).
  *
@@ -73,14 +73,14 @@ TESTABLE_STATIC bool EBCL_suffixFilter(const char *name, const char *suffix);
  *
  * @return  true if \a name refers to a regular file, false if not.
  */
-TESTABLE_STATIC int EBCL_statFilter(const char *name, int baseDirFd, bool followLinks);
+TESTABLE_STATIC int crinitStatFilter(const char *name, int baseDirFd, bool followLinks);
 /**
  * Free return pointer(s) from scandir().
  *
  * Will free everything, scandir() has allocated according to the
  * [scandir(3) man page](https://man7.org/linux/man-pages/man3/scandir.3.html).
  */
-TESTABLE_STATIC void EBCL_freeScandirList(struct dirent **scanList, int size);
+TESTABLE_STATIC void crinitFreeScandirList(struct dirent **scanList, int size);
 
 TESTABLE void crinitDestroyFileSeries(crinitFileSeries_t *fse) {
     if (fse == NULL) {
@@ -166,24 +166,24 @@ int crinitFileSeriesFromDir(crinitFileSeries_t *fse, const char *path, const cha
     struct dirent **scanList = NULL;
     int scanRes = -1;
 
-    errno = pthread_mutex_lock(&EBCL_scState.dirScanLock);
+    errno = pthread_mutex_lock(&crinitScState.dirScanLock);
     if (errno != 0) {
         crinitErrnoPrint("Could not queue up for mutex lock.");
         closedir(scd);
         return -1;
     }
 
-    EBCL_scState.baseDirFd = scdfd;
-    EBCL_scState.fileSuffix = fileSuffix;
-    EBCL_scState.followLinks = followLinks;
+    crinitScState.baseDirFd = scdfd;
+    crinitScState.fileSuffix = fileSuffix;
+    crinitScState.followLinks = followLinks;
 
-    scanRes = scandir(path, &scanList, EBCL_scanDirFilter, alphasort);
+    scanRes = scandir(path, &scanList, criitScanDirFilter, alphasort);
 
-    EBCL_scState.baseDirFd = -1;
-    EBCL_scState.fileSuffix = NULL;
-    EBCL_scState.followLinks = false;
+    crinitScState.baseDirFd = -1;
+    crinitScState.fileSuffix = NULL;
+    crinitScState.followLinks = false;
 
-    pthread_mutex_unlock(&EBCL_scState.dirScanLock);
+    pthread_mutex_unlock(&crinitScState.dirScanLock);
 
     if (scanRes == -1) {
         crinitErrnoPrint("Could not scan directory '%s'", path);
@@ -215,7 +215,7 @@ int crinitFileSeriesFromDir(crinitFileSeries_t *fse, const char *path, const cha
         fse->fnames[i] = runner;
         runner = stpcpy(runner, scanList[i]->d_name) + 1;
     }
-    EBCL_freeScandirList(scanList, scanRes);
+    crinitFreeScandirList(scanList, scanRes);
     return 0;
 }
 
@@ -241,7 +241,7 @@ int crinitFileSeriesFromStrArr(crinitFileSeries_t *fse, const char *baseDir, cha
     return 0;
 }
 
-bool EBCL_suffixFilter(const char *name, const char *suffix) {
+bool crinitSuffixFilter(const char *name, const char *suffix) {
     if (suffix == NULL || strcmp(suffix, "") == 0) {
         return true;
     }
@@ -250,7 +250,7 @@ bool EBCL_suffixFilter(const char *name, const char *suffix) {
     return (cmpStart >= name) && (strcmp(cmpStart, suffix) == 0);
 }
 
-int EBCL_statFilter(const char *name, int baseDirFd, bool followLinks) {
+int crinitStatFilter(const char *name, int baseDirFd, bool followLinks) {
     int fstFlags = followLinks ? 0 : AT_SYMLINK_NOFOLLOW;
     struct stat stbuf;
 
@@ -262,15 +262,15 @@ int EBCL_statFilter(const char *name, int baseDirFd, bool followLinks) {
     return S_ISREG(stbuf.st_mode);
 }
 
-int EBCL_scanDirFilter(const struct dirent *dent) {
+int criitScanDirFilter(const struct dirent *dent) {
     if (dent == NULL || dent->d_name == NULL) {
         return 0;
     }
-    return EBCL_statFilter(dent->d_name, EBCL_scState.baseDirFd, EBCL_scState.followLinks) &&
-           EBCL_suffixFilter(dent->d_name, EBCL_scState.fileSuffix);
+    return crinitStatFilter(dent->d_name, crinitScState.baseDirFd, crinitScState.followLinks) &&
+           crinitSuffixFilter(dent->d_name, crinitScState.fileSuffix);
 }
 
-void EBCL_freeScandirList(struct dirent **scanList, int size) {
+void crinitFreeScandirList(struct dirent **scanList, int size) {
     if (scanList == NULL) {
         return;
     }

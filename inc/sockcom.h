@@ -17,7 +17,7 @@
  * Perform a request/response transfer with Crinit
  *
  * Will connect to Crinit and send a request/command, then receive the result/response.
- * The server side equivalent is EBCL_connThread() in notiserv.c.
+ * The server side equivalent is crinitConnThread() in notiserv.c.
  *
  * The following image shows the high level communication sequence. For the lower level, refer to
  * the internal functions EBCL_crinitSend() and EBCL_crinitRecv().

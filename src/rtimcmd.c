@@ -200,7 +200,7 @@ static int crinitExecRtimCmdShutdown(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, 
  *
  * @param args  Argument pointer, see ShdnThrArgs.
  */
-static void *EBCL_shdnThread(void *args);
+static void *crinitShdnThread(void *args);
 /**
  * Wait function using nanosleep for the shutdown grace period.
  *
@@ -208,7 +208,7 @@ static void *EBCL_shdnThread(void *args);
  *
  * @return  0 on success, -1 on error
  */
-static inline int EBCL_gracePeriod(unsigned long long micros);
+static inline int crinitGracePeriod(unsigned long long micros);
 /**
  * Prepares mounted filesystems for shutdown.
  *
@@ -217,15 +217,15 @@ static inline int EBCL_gracePeriod(unsigned long long micros);
  *
  * @return  0 on success, -1 on error
  */
-static inline int EBCL_fsPrepareShutdown(void);
+static inline int crinitFsPrepareShutdown(void);
 /**
  * Generates a list of mount points that should be unmounted before shutdown/reboot.
  *
  * The resulting list will include all entries from `/proc/mounts` whose source is not `none` and which are not the root
  * node. The list will be ordered newest mount first. Memory for the list elements will be allocated and needs to be
- * freed using EBCL_freeUnMountList() when no longer in use.
+ * freed using crinitFreeUnMountList() when no longer in use.
  *
- * Additionally, EBCL_genUnMountList() checks if the root mount entry is read-only, setting \a rootfsIsRo to true in
+ * Additionally, crinitGenUnMountList() checks if the root mount entry is read-only, setting \a rootfsIsRo to true in
  * that case.
  *
  * @param um          Return pointer for the UnMountList.
@@ -233,13 +233,13 @@ static inline int EBCL_fsPrepareShutdown(void);
  *
  * @return  0 on success, -1 on error
  */
-static inline int EBCL_genUnMountList(ebcl_UnMountList_t **um, bool *rootfsIsRo);
+static inline int crinitGenUnMountList(ebcl_UnMountList_t **um, bool *rootfsIsRo);
 /**
- * Frees memory allocated for an ebcl_UnMountList_t by EBCL_genUnMountList()
+ * Frees memory allocated for an ebcl_UnMountList_t by crinitGenUnMountList()
  *
  * @param um  The ebcl_UnMountList_t to free.
  */
-static inline void EBCL_freeUnMountList(ebcl_UnMountList_t *um);
+static inline void crinitFreeUnMountList(ebcl_UnMountList_t *um);
 
 int crinitParseRtimCmd(crinitRtimCmd_t *out, const char *cmdStr) {
     if (out == NULL || cmdStr == NULL) {
@@ -1044,7 +1044,7 @@ static int crinitExecRtimCmdShutdown(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, 
     pthread_attr_init(&thrAttrs);
     pthread_attr_setstacksize(&thrAttrs, CRINIT_RTIMCMD_SHDN_THREAD_STACK_SIZE);
     pthread_attr_setdetachstate(&thrAttrs, PTHREAD_CREATE_DETACHED);
-    errno = pthread_create(&shdnThreadRef, &thrAttrs, EBCL_shdnThread, thrArgs);
+    errno = pthread_create(&shdnThreadRef, &thrAttrs, crinitShdnThread, thrArgs);
     pthread_attr_destroy(&thrAttrs);
     if (errno != 0) {
         crinitErrnoPrint("Could not start shutdown thread");
@@ -1056,7 +1056,7 @@ static int crinitExecRtimCmdShutdown(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, 
     return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_SHUTDOWN, 1, CRINIT_RTIMCMD_RES_OK);
 }
 
-static void *EBCL_shdnThread(void *args) {
+static void *crinitShdnThread(void *args) {
     ebcl_ShdnThrArgs_t *a = (ebcl_ShdnThrArgs_t *)args;
     crinitTaskDB_t *ctx = a->ctx;
     int shutdownCmd = a->shutdownCmd;
@@ -1075,12 +1075,12 @@ static void *EBCL_shdnThread(void *args) {
     kill(-1, SIGCONT);
     kill(-1, SIGTERM);
     crinitDbgInfoPrint("Sending SIGTERM to all processes.");
-    if (EBCL_gracePeriod(gpMicros) == -1) {
+    if (crinitGracePeriod(gpMicros) == -1) {
         crinitErrPrint("Could not wait out the shutdown grace period, continuing anyway.");
     }
     kill(-1, SIGKILL);
     crinitDbgInfoPrint("Sending SIGKILL to all processes.");
-    if (EBCL_fsPrepareShutdown() == -1) {
+    if (crinitFsPrepareShutdown() == -1) {
         crinitErrPrint(
             "Could not un- or remount filesystems cleanly, continuing anyway. Some filesystems may be dirty on "
             "next "
@@ -1092,7 +1092,7 @@ static void *EBCL_shdnThread(void *args) {
     return NULL;
 }
 
-static inline int EBCL_gracePeriod(unsigned long long micros) {
+static inline int crinitGracePeriod(unsigned long long micros) {
     struct timespec t;
     if (clock_gettime(CLOCK_MONOTONIC, &t) == -1) {
         crinitErrnoPrint("Could not get current time from monotonic clock.");
@@ -1113,7 +1113,7 @@ static inline int EBCL_gracePeriod(unsigned long long micros) {
     return 0;
 }
 
-static inline int EBCL_genUnMountList(ebcl_UnMountList_t **ml, bool *rootfsIsRo) {
+static inline int crinitGenUnMountList(ebcl_UnMountList_t **ml, bool *rootfsIsRo) {
     if (ml == NULL || rootfsIsRo == NULL) {
         crinitErrPrint("Input parameters must not be NULL.");
         return -1;
@@ -1169,7 +1169,7 @@ static inline int EBCL_genUnMountList(ebcl_UnMountList_t **ml, bool *rootfsIsRo)
             if (new == NULL) {
                 crinitErrnoPrint("Could not allocate memory for list of mount points to be unmounted.");
                 fclose(mountListStream);
-                EBCL_freeUnMountList(pList);
+                crinitFreeUnMountList(pList);
                 return -1;
             }
             new->next = pList;
@@ -1182,7 +1182,7 @@ static inline int EBCL_genUnMountList(ebcl_UnMountList_t **ml, bool *rootfsIsRo)
     return 0;
 }
 
-static inline void EBCL_freeUnMountList(ebcl_UnMountList_t *ml) {
+static inline void crinitFreeUnMountList(ebcl_UnMountList_t *ml) {
     ebcl_UnMountList_t *prev;
     while (ml != NULL) {
         prev = ml;
@@ -1191,12 +1191,12 @@ static inline void EBCL_freeUnMountList(ebcl_UnMountList_t *ml) {
     }
 }
 
-static inline int EBCL_fsPrepareShutdown(void) {
+static inline int crinitFsPrepareShutdown(void) {
     int out = 0;
     ebcl_UnMountList_t *um = NULL;
     bool rootfsIsRo;
 
-    if (EBCL_genUnMountList(&um, &rootfsIsRo) == -1) {
+    if (crinitGenUnMountList(&um, &rootfsIsRo) == -1) {
         crinitErrPrint(
             "Could not generate list of targets to unmount. Will at least try to remount root filesystem as "
             "read-only.");
@@ -1215,7 +1215,7 @@ static inline int EBCL_fsPrepareShutdown(void) {
             }
             runner = runner->next;
         }
-        EBCL_freeUnMountList(um);
+        crinitFreeUnMountList(um);
     }
     // If it is (possibly) an rw rootfs, try remounting it ro.
     if (!rootfsIsRo && mount(NULL, "/", NULL, MS_REMOUNT | MS_RDONLY, NULL) == -1) {

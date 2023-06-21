@@ -31,7 +31,7 @@ void crinitDestroyFileSeries(crinitFileSeries_t *fse) {
     CRINIT_PARAM_UNUSED(fse);
 }
 
-void EBCL_freeScandirList(struct dirent **scanList, int size) {
+void crinitFreeScandirList(struct dirent **scanList, int size) {
     CRINIT_PARAM_UNUSED(scanList);
     CRINIT_PARAM_UNUSED(size);
 }

@@ -1,6 +1,6 @@
 /**
  * @file case-sisreg-fail.c
- * @brief Unit test for EBCL_statFilter(), S_ISREG fail.
+ * @brief Unit test for crinitStatFilter(), S_ISREG fail.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -18,7 +18,7 @@
 #include "unit_test.h"
 #include "utest-file-series-stat-filter.h"
 
-void EBCL_statFilterTestSisregFail(void **state) {
+void crinitStatFilterTestSisregFail(void **state) {
     struct stat buf = {0};
 
     CRINIT_PARAM_UNUSED(state);
@@ -34,9 +34,9 @@ void EBCL_statFilterTestSisregFail(void **state) {
     will_set_parameter(__wrap_fstatat, buf, &buf);
     will_return(__wrap_fstatat, 0);
 
-    assert_int_equal(EBCL_statFilter(path, baseDirFd, false), 0);
+    assert_int_equal(crinitStatFilter(path, baseDirFd, false), 0);
 
     will_set_parameter(__wrap_fstatat, buf, &buf);
     will_return(__wrap_fstatat, 0);
-    assert_int_equal(EBCL_statFilter(path, baseDirFd, true), 0);
+    assert_int_equal(crinitStatFilter(path, baseDirFd, true), 0);
 }
