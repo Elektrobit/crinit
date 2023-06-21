@@ -19,20 +19,20 @@
 
 #include "globopt.h"
 
-#define EBCL_ERROR_WITH_FFL_FMT "(%s:%s:%d) Error: "  ///< Format string error prefix with function, file and line.
-#define EBCL_ERRNO_FMT " Errno: %s"                   ///< Format string errno suffix, to use with strerror().
-#define EBCL_CRINIT_SYSLOG_IDENT "crinit"             ///< Identification string for crinit logging to syslog.
+#define CRINIT_ERROR_WITH_FFL_FMT "(%s:%s:%d) Error: "  ///< Format string error prefix with function, file and line.
+#define CRINIT_ERRNO_FMT " Errno: %s"                   ///< Format string errno suffix, to use with strerror().
+#define CRINIT_SYSLOG_IDENT "crinit"             ///< Identification string for crinit logging to syslog.
 
 /** Holds the Prefix to put in front of every printed line, defaults to #CRINIT_PRINT_PREFIX **/
-static char EBCL_printPrefix[CRINIT_PRINT_PREFIX_MAX_LEN] = CRINIT_PRINT_PREFIX;
+static char crinitPrintPrefix[CRINIT_PRINT_PREFIX_MAX_LEN] = CRINIT_PRINT_PREFIX;
 
-static FILE *EBCL_infoStream = NULL;  ///< holds the stream to use for info messages.
-static FILE *EBCL_errStream = NULL;   ///< holds the stream to use for error messages.
+static FILE *crinitInfoStream = NULL;  ///< holds the stream to use for info messages.
+static FILE *crinitErrStream = NULL;   ///< holds the stream to use for error messages.
 
-static bool EBCL_useSyslog = false;  ///< specifies if we should use syslog calls instead of FILE streams.
+static bool crinitUseSyslog = false;  ///< specifies if we should use syslog calls instead of FILE streams.
 
 /** Mutex synchronizing print output (so that print statements are atomic wrt. to each other). **/
-static pthread_mutex_t EBCL_logLock = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t crinitLogLock = PTHREAD_MUTEX_INITIALIZER;
 
 /**
  * Thread-safe implementation of strerror() using strerror_l().
@@ -43,35 +43,35 @@ static pthread_mutex_t EBCL_logLock = PTHREAD_MUTEX_INITIALIZER;
  *
  * @returns Pointer to a thread-local static memory location with a fitting error message.
  */
-static char *EBCL_threadSafeStrerror(int errnum);
+static char *crinitThreadSafeStrerror(int errnum);
 
 void crinitSetPrintPrefix(const char *prefix) {
-    pthread_mutex_lock(&EBCL_logLock);
-    strncpy(EBCL_printPrefix, (prefix == NULL) ? CRINIT_PRINT_PREFIX : prefix, CRINIT_PRINT_PREFIX_MAX_LEN);
-    pthread_mutex_unlock(&EBCL_logLock);
+    pthread_mutex_lock(&crinitLogLock);
+    strncpy(crinitPrintPrefix, (prefix == NULL) ? CRINIT_PRINT_PREFIX : prefix, CRINIT_PRINT_PREFIX_MAX_LEN);
+    pthread_mutex_unlock(&crinitLogLock);
 }
 
 void crinitSetInfoStream(FILE *stream) {
-    pthread_mutex_lock(&EBCL_logLock);
-    EBCL_infoStream = (stream == NULL) ? stdout : stream;
-    pthread_mutex_unlock(&EBCL_logLock);
+    pthread_mutex_lock(&crinitLogLock);
+    crinitInfoStream = (stream == NULL) ? stdout : stream;
+    pthread_mutex_unlock(&crinitLogLock);
 }
 
 void crinitSetErrStream(FILE *stream) {
-    pthread_mutex_lock(&EBCL_logLock);
-    EBCL_errStream = (stream == NULL) ? stderr : stream;
-    pthread_mutex_unlock(&EBCL_logLock);
+    pthread_mutex_lock(&crinitLogLock);
+    crinitErrStream = (stream == NULL) ? stderr : stream;
+    pthread_mutex_unlock(&crinitLogLock);
 }
 
 void crinitSetUseSyslog(bool sl) {
-    pthread_mutex_lock(&EBCL_logLock);
-    if (sl && !EBCL_useSyslog) {
-        openlog(EBCL_CRINIT_SYSLOG_IDENT, LOG_CONS, LOG_DAEMON);
-    } else if (!sl && EBCL_useSyslog) {
+    pthread_mutex_lock(&crinitLogLock);
+    if (sl && !crinitUseSyslog) {
+        openlog(CRINIT_SYSLOG_IDENT, LOG_CONS, LOG_DAEMON);
+    } else if (!sl && crinitUseSyslog) {
         closelog();
     }
-    EBCL_useSyslog = sl;
-    pthread_mutex_unlock(&EBCL_logLock);
+    crinitUseSyslog = sl;
+    pthread_mutex_unlock(&crinitLogLock);
 }
 
 void crinitDbgInfoPrint(const char *format, ...) {
@@ -84,101 +84,101 @@ void crinitDbgInfoPrint(const char *format, ...) {
         return;
     }
     va_list args;
-    pthread_mutex_lock(&EBCL_logLock);
-    if (EBCL_infoStream == NULL) {
-        EBCL_infoStream = stdout;
+    pthread_mutex_lock(&crinitLogLock);
+    if (crinitInfoStream == NULL) {
+        crinitInfoStream = stdout;
     }
-    if (EBCL_useSyslog) {
+    if (crinitUseSyslog) {
         va_start(args, format);
         vsyslog(LOG_DEBUG | LOG_DAEMON, format, args);
         va_end(args);
     } else {
-        fprintf(EBCL_infoStream, "%s", EBCL_printPrefix);
+        fprintf(crinitInfoStream, "%s", crinitPrintPrefix);
         va_start(args, format);
-        vfprintf(EBCL_infoStream, format, args);
+        vfprintf(crinitInfoStream, format, args);
         va_end(args);
-        fprintf(EBCL_infoStream, "\n");
+        fprintf(crinitInfoStream, "\n");
     }
-    pthread_mutex_unlock(&EBCL_logLock);
+    pthread_mutex_unlock(&crinitLogLock);
 }
 
 void crinitInfoPrint(const char *format, ...) {
     va_list args;
-    pthread_mutex_lock(&EBCL_logLock);
-    if (EBCL_infoStream == NULL) {
-        EBCL_infoStream = stdout;
+    pthread_mutex_lock(&crinitLogLock);
+    if (crinitInfoStream == NULL) {
+        crinitInfoStream = stdout;
     }
-    if (EBCL_useSyslog) {
+    if (crinitUseSyslog) {
         va_start(args, format);
         vsyslog(LOG_INFO | LOG_DAEMON, format, args);
         va_end(args);
     } else {
-        fprintf(EBCL_infoStream, "%s", EBCL_printPrefix);
+        fprintf(crinitInfoStream, "%s", crinitPrintPrefix);
         va_start(args, format);
-        vfprintf(EBCL_infoStream, format, args);
+        vfprintf(crinitInfoStream, format, args);
         va_end(args);
-        fprintf(EBCL_infoStream, "\n");
+        fprintf(crinitInfoStream, "\n");
     }
-    pthread_mutex_unlock(&EBCL_logLock);
+    pthread_mutex_unlock(&crinitLogLock);
 }
 
 void crinitErrPrintFFL(const char *file, const char *func, int line, const char *format, ...) {
     va_list args;
-    pthread_mutex_lock(&EBCL_logLock);
-    if (EBCL_errStream == NULL) {
-        EBCL_errStream = stderr;
+    pthread_mutex_lock(&crinitLogLock);
+    if (crinitErrStream == NULL) {
+        crinitErrStream = stderr;
     }
-    if (EBCL_useSyslog) {
-        size_t n = strlen(EBCL_ERROR_WITH_FFL_FMT) + strlen(format) + 1;
+    if (crinitUseSyslog) {
+        size_t n = strlen(CRINIT_ERROR_WITH_FFL_FMT) + strlen(format) + 1;
         char *syslogFmt = malloc(n);
         if (syslogFmt == NULL) {
             return;
         }
-        snprintf(syslogFmt, n, EBCL_ERROR_WITH_FFL_FMT "%s", file, func, line, format);
+        snprintf(syslogFmt, n, CRINIT_ERROR_WITH_FFL_FMT "%s", file, func, line, format);
         va_start(args, format);
         vsyslog(LOG_ERR | LOG_DAEMON, syslogFmt, args);
         va_end(args);
         free(syslogFmt);
     } else {
-        fprintf(EBCL_errStream, "%s" EBCL_ERROR_WITH_FFL_FMT, EBCL_printPrefix, file, func, line);
+        fprintf(crinitErrStream, "%s" CRINIT_ERROR_WITH_FFL_FMT, crinitPrintPrefix, file, func, line);
         va_start(args, format);
-        vfprintf(EBCL_errStream, format, args);
+        vfprintf(crinitErrStream, format, args);
         va_end(args);
-        fprintf(EBCL_errStream, "\n");
+        fprintf(crinitErrStream, "\n");
     }
-    pthread_mutex_unlock(&EBCL_logLock);
+    pthread_mutex_unlock(&crinitLogLock);
 }
 
 void crinitErrnoPrintFFL(const char *file, const char *func, int line, const char *format, ...) {
     va_list args;
-    pthread_mutex_lock(&EBCL_logLock);
-    if (EBCL_errStream == NULL) {
-        EBCL_errStream = stderr;
+    pthread_mutex_lock(&crinitLogLock);
+    if (crinitErrStream == NULL) {
+        crinitErrStream = stderr;
     }
-    if (EBCL_useSyslog) {
-        size_t n = strlen(EBCL_ERROR_WITH_FFL_FMT) + strlen(format) + strlen(EBCL_ERRNO_FMT) + 1;
+    if (crinitUseSyslog) {
+        size_t n = strlen(CRINIT_ERROR_WITH_FFL_FMT) + strlen(format) + strlen(CRINIT_ERRNO_FMT) + 1;
         char *syslogFmt = malloc(n);
         if (syslogFmt == NULL) {
             return;
         }
-        snprintf(syslogFmt, n, EBCL_ERROR_WITH_FFL_FMT "%s" EBCL_ERRNO_FMT, file, func, line, format,
-                 EBCL_threadSafeStrerror(errno));
+        snprintf(syslogFmt, n, CRINIT_ERROR_WITH_FFL_FMT "%s" CRINIT_ERRNO_FMT, file, func, line, format,
+                 crinitThreadSafeStrerror(errno));
         va_start(args, format);
         vsyslog(LOG_ERR | LOG_DAEMON, syslogFmt, args);
         va_end(args);
         free(syslogFmt);
     } else {
-        fprintf(EBCL_errStream, "%s" EBCL_ERROR_WITH_FFL_FMT, EBCL_printPrefix, file, func, line);
+        fprintf(crinitErrStream, "%s" CRINIT_ERROR_WITH_FFL_FMT, crinitPrintPrefix, file, func, line);
         va_start(args, format);
-        vfprintf(EBCL_errStream, format, args);
+        vfprintf(crinitErrStream, format, args);
         va_end(args);
-        fprintf(EBCL_errStream, EBCL_ERRNO_FMT, EBCL_threadSafeStrerror(errno));
-        fprintf(EBCL_errStream, "\n");
+        fprintf(crinitErrStream, CRINIT_ERRNO_FMT, crinitThreadSafeStrerror(errno));
+        fprintf(crinitErrStream, "\n");
     }
-    pthread_mutex_unlock(&EBCL_logLock);
+    pthread_mutex_unlock(&crinitLogLock);
 }
 
-static char *EBCL_threadSafeStrerror(int errNum) {
+static char *crinitThreadSafeStrerror(int errNum) {
     char *ret = NULL;
     locale_t errLoc = newlocale(LC_ALL_MASK, "POSIX", (locale_t)0);
     if (errLoc == (locale_t)0) {
