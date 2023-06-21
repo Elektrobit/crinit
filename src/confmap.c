@@ -29,15 +29,15 @@ const crinitConfigMapping_t crinitCfgMap[] = {
 const size_t crinitCfgMapSize = crinitNumElements(crinitCfgMap);
 
 /** Comparison function between two crinitConfigMapping_t, for bsearch() **/
-static int EBCL_compareConfigMappings(const void *a, const void *b);
+static int crinitCompareConfigMappings(const void *a, const void *b);
 
 const crinitConfigMapping_t *crinitFindConfigMapping(const char *keyStr) {
     crinitNullCheck(NULL, keyStr);
     crinitConfigMapping_t searchKey = {0, keyStr, 0, 0, NULL};
-    return bsearch(&searchKey, crinitCfgMap, crinitCfgMapSize, sizeof(*crinitCfgMap), EBCL_compareConfigMappings);
+    return bsearch(&searchKey, crinitCfgMap, crinitCfgMapSize, sizeof(*crinitCfgMap), crinitCompareConfigMappings);
 }
 
-static int EBCL_compareConfigMappings(const void *a, const void *b) {
+static int crinitCompareConfigMappings(const void *a, const void *b) {
     const crinitConfigMapping_t *pKey = a, *pElem = b;
     return strcmp(pKey->configKey, pElem->configKey);
 }

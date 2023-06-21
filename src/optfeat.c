@@ -15,15 +15,15 @@
 #include "globopt.h"
 #include "logio.h"
 
-typedef int (*ebcl_FeatActivationFunc_t)(void);
+typedef int (*crinitFeatActivationFunc_t)(void);
 
-typedef struct ebcl_OptFeatMap_t {
+typedef struct crinitOptFeatMap_t {
     const char *name;
-    const ebcl_FeatActivationFunc_t af;
+    const crinitFeatActivationFunc_t af;
     const crinitGlobOptKey_t optkey;
-} ebcl_OptFeatMap_t;
+} crinitOptFeatMap_t;
 
-static int EBCL_activateSyslog(void) {
+static int crinitActivateSyslog(void) {
     crinitSetUseSyslog(true);
     return 0;
 }
@@ -34,8 +34,8 @@ int crinitFeatureHook(const char *sysFeatName) {
         return -1;
     }
 
-    static const ebcl_OptFeatMap_t fmap[] = {
-        {.name = "syslog", .af = EBCL_activateSyslog, .optkey = CRINIT_GLOBOPT_USE_SYSLOG},
+    static const crinitOptFeatMap_t fmap[] = {
+        {.name = "syslog", .af = crinitActivateSyslog, .optkey = CRINIT_GLOBOPT_USE_SYSLOG},
     };
 
     size_t n = sizeof(fmap) / sizeof(fmap[0]);

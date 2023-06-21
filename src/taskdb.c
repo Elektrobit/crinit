@@ -28,7 +28,7 @@
  *
  * @return 0 on success, -1 otherwise
  */
-static int EBCL_findInTaskDB(ssize_t *idx, const char *taskName, const crinitTaskDB_t *in);
+static int crinitFindInTaskDB(ssize_t *idx, const char *taskName, const crinitTaskDB_t *in);
 /**
  * Check if an crinitTask_t is considered ready to be started (startable).
  *
@@ -38,7 +38,7 @@ static int EBCL_findInTaskDB(ssize_t *idx, const char *taskName, const crinitTas
  *
  * @return true if \a t is ready, false otherwise
  */
-static bool EBCL_taskReady(const crinitTask_t *t);
+static bool crinitTaskReady(const crinitTask_t *t);
 
 int crinitTaskDBInitWithSize(crinitTaskDB_t *ctx, int (*spawnFunc)(crinitTaskDB_t *ctx, const crinitTask_t *),
                             size_t initialSize) {
@@ -111,7 +111,7 @@ int crinitTaskDBInsert(crinitTaskDB_t *ctx, const crinitTask_t *t, bool overwrit
     }
 
     ssize_t idx = -1;
-    if (EBCL_findInTaskDB(&idx, t->name, ctx) == 0) {
+    if (crinitFindInTaskDB(&idx, t->name, ctx) == 0) {
         if (overwrite) {
             crinitDestroyTask(&ctx->taskSet[idx]);
         } else {
@@ -172,7 +172,7 @@ int crinitTaskDBSpawnReady(crinitTaskDB_t *ctx) {
 
     for (size_t i = 0; i < ctx->taskSetItems; i++) {
         crinitTask_t *pTask = &ctx->taskSet[i];
-        if (EBCL_taskReady(pTask)) {
+        if (crinitTaskReady(pTask)) {
             crinitDbgInfoPrint("Task \'%s\' ready to spawn.", pTask->name);
             pTask->state = CRINIT_TASK_STATE_STARTING;
 
@@ -485,7 +485,7 @@ int crinitTaskDBProvideFeatureByTaskName(crinitTaskDB_t *ctx, const char *taskNa
         return -1;
     }
     ssize_t taskIdx;
-    if (EBCL_findInTaskDB(&taskIdx, taskName, ctx) == -1) {
+    if (crinitFindInTaskDB(&taskIdx, taskName, ctx) == -1) {
         crinitErrPrint("Could not find task \'%s\' in TaskDB.", taskName);
         return -1;
     }
@@ -540,7 +540,7 @@ success:
     return ret;
 }
 
-static int EBCL_findInTaskDB(ssize_t *idx, const char *taskName, const crinitTaskDB_t *in) {
+static int crinitFindInTaskDB(ssize_t *idx, const char *taskName, const crinitTaskDB_t *in) {
     if (taskName == NULL || in == NULL) {
         return -1;
     }
@@ -559,7 +559,7 @@ static int EBCL_findInTaskDB(ssize_t *idx, const char *taskName, const crinitTas
     return -1;
 }
 
-static bool EBCL_taskReady(const crinitTask_t *t) {
+static bool crinitTaskReady(const crinitTask_t *t) {
     if (t == NULL) {
         return false;
     }

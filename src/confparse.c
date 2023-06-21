@@ -24,7 +24,7 @@
 #include "logio.h"
 
 /**
- * Struct definition for the parser context used by EBCL_iniHandler()
+ * Struct definition for the parser context used by crinitIniHandler()
  */
 typedef struct {
     crinitConfKvList_t *anchor;  ///< Anchor pointer to the beginning of the list.
@@ -33,12 +33,12 @@ typedef struct {
     size_t keyArrayCount;       ///< Counter variable for array-like config options.
     size_t envSetCount;         ///< Counter variable for ENV_SET config directives.
     size_t ioRedirCount;        ///< Counter variable for IO_REDIRECT config directives.
-} ebcl_IniParserCtx_t;
+} crinitIniParserCtx_t;
 
 /**
  * Parser handler for libinih.
  */
-static int EBCL_iniHandler(void *parserCtx, const char *section, const char *name, const char *value);
+static int crinitIniHandler(void *parserCtx, const char *section, const char *name, const char *value);
 
 /* Parses config file and fills confList. confList is dynamically allocated and needs to be freed
  * using crinitFreeConfList() */
@@ -57,8 +57,8 @@ int crinitParseConf(crinitConfKvList_t **confList, const char *filename) {
     (*confList)->next = NULL;
 
     // Parse config ing libinih
-    ebcl_IniParserCtx_t parserCtx = {*confList, *confList, *confList, 0, 0, 0};
-    int parseResult = ini_parse_file(cf, EBCL_iniHandler, &parserCtx);
+    crinitIniParserCtx_t parserCtx = {*confList, *confList, *confList, 0, 0, 0};
+    int parseResult = ini_parse_file(cf, crinitIniHandler, &parserCtx);
 
     // Trim the list's tail
     free(parserCtx.last->next);
@@ -81,10 +81,10 @@ int crinitParseConf(crinitConfKvList_t **confList, const char *filename) {
     return 0;
 }
 
-static int EBCL_iniHandler(void *parserCtx, const char *section, const char *key, const char *value) {
+static int crinitIniHandler(void *parserCtx, const char *section, const char *key, const char *value) {
     CRINIT_PARAM_UNUSED(section);
 
-    ebcl_IniParserCtx_t *ctx = (ebcl_IniParserCtx_t *)parserCtx;
+    crinitIniParserCtx_t *ctx = (crinitIniParserCtx_t *)parserCtx;
     ctx->pList->key = NULL;
     ctx->pList->next = NULL;
     ctx->pList->val = NULL;
