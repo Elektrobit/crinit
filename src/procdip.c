@@ -30,34 +30,34 @@
 #define crinitGettid() ((pid_t)syscall(SYS_gettid))
 
 /** Struct wrapper for arguments to dispatchThreadFunc **/
-typedef struct ebcl_DispThrArgs_t {
+typedef struct crinitDispThrArgs_t {
     crinitTaskDB_t *ctx;    ///< The TaskDB context to update on task state changes.
     const crinitTask_t *t;  ///< The task to run.
-} ebcl_DispThrArgs_t;
+} crinitDispThrArgs_t;
 
-/** Mutex to guard #EBCL_waitInhibit **/
-static pthread_mutex_t EBCL_waitInhibitLock = PTHREAD_MUTEX_INITIALIZER;
-/** Condition variable to signal threads waiting for #EBCL_waitInhibit to become `false`. **/
-static pthread_cond_t EBCL_waitInhibitCond = PTHREAD_COND_INITIALIZER;
-/** If true, all terminated child processes will be kept around as zombies (see EBCL_blockOnWaitInhibit()). **/
-static bool EBCL_waitInhibit = false;
+/** Mutex to guard #crinitWaitInhibit **/
+static pthread_mutex_t crinitWaitInhibitLock = PTHREAD_MUTEX_INITIALIZER;
+/** Condition variable to signal threads waiting for #crinitWaitInhibit to become `false`. **/
+static pthread_cond_t crinitWaitInhibitCond = PTHREAD_COND_INITIALIZER;
+/** If true, all terminated child processes will be kept around as zombies (see crinitBlockOnWaitInhibit()). **/
+static bool crinitWaitInhibit = false;
 
 /**
- * Function to be started as a pthread from EBCL_procDispatchThread().
+ * Function to be started as a pthread from crinitProcDispatchThread().
  *
  * Takes care of process spawning/waiting and crinitTaskDB_t status updates.
  *
- * @param args  See ebcl_DispThrArgs_t.
+ * @param args  See crinitDispThrArgs_t.
  */
-static void *EBCL_dispatchThreadFunc(void *args);
+static void *crinitDispatchThreadFunc(void *args);
 /**
- * Block calling thread until #EBCL_waitInhibit becomes false.
+ * Block calling thread until #crinitWaitInhibit becomes false.
  *
  * Called by dispatcher threads to delay reaping of zombie processes if needed.
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_blockOnWaitInhibit(void);
+static int crinitBlockOnWaitInhibit(void);
 /**
  * Reap a zombie process.
  *
@@ -67,14 +67,14 @@ static int EBCL_blockOnWaitInhibit(void);
  *
  * @return 0 on success, -1 on error
  */
-static int EBCL_reapPid(pid_t pid);
+static int crinitReapPid(pid_t pid);
 
 /**
  * Adds an action to a posix_spawn_file_actions_t instance as defined by an crinitIoRedir_t instance.
  *
  * The file action will either be a call to open() including an IO redirection for an crinitIoRedir_t which contains a
  * non-NULL crinitIoRedir_t::path, or a single redirection via dup2() if crinitIoRedir_t::oldfd is positive. If both cases
- * are true, the crinitIoRedir_t::path takes precedence and ebcl_IoRedir_r::oldfd is ignored.
+ * are true, the crinitIoRedir_t::path takes precedence and crinitIoRedir_r::oldfd is ignored.
  *
  * crinitIoRedir_t::oflags is respected for files and crinitIoRedir_t::mode is respected for files that are overwritten
  * or newly created.
@@ -84,7 +84,7 @@ static int EBCL_reapPid(pid_t pid);
  *
  * @return 0 on success, -1 otherwise.
  */
-static int EBCL_posixSpawnAddIOFileAction(posix_spawn_file_actions_t *fileact, const crinitIoRedir_t *ior);
+static int crinitPosixSpawnAddIOFileAction(posix_spawn_file_actions_t *fileact, const crinitIoRedir_t *ior);
 
 /**
  * Ensures the given path is a FIFO special file (named pipe).
@@ -98,12 +98,12 @@ static int EBCL_posixSpawnAddIOFileAction(posix_spawn_file_actions_t *fileact, c
  *
  * @return  0 on success, -1 otherwise.
  */
-static int EBCL_ensureFifo(const char *path, mode_t mode);
+static int crinitEnsureFifo(const char *path, mode_t mode);
 
 int crinitProcDispatchSpawnFunc(crinitTaskDB_t *ctx, const crinitTask_t *t) {
     pthread_t dispatchThread;
     pthread_attr_t dispatchThreadAttr;
-    ebcl_DispThrArgs_t *threadArgs = malloc(sizeof(ebcl_DispThrArgs_t));
+    crinitDispThrArgs_t *threadArgs = malloc(sizeof(crinitDispThrArgs_t));
     if (threadArgs == NULL) {
         crinitErrnoPrint("Could not allocate memory for thread arguments. Meant to create thread for task \'%s\'.",
                         t->name);
@@ -131,7 +131,7 @@ int crinitProcDispatchSpawnFunc(crinitTaskDB_t *ctx, const crinitTask_t *t) {
     }
 
     crinitDbgInfoPrint("Creating new thread for Task \'%s\'.", t->name);
-    if ((errno = pthread_create(&dispatchThread, &dispatchThreadAttr, EBCL_dispatchThreadFunc, threadArgs)) != 0) {
+    if ((errno = pthread_create(&dispatchThread, &dispatchThreadAttr, crinitDispatchThreadFunc, threadArgs)) != 0) {
         crinitErrnoPrint("Could not create pthread for task \'%s\'.", t->name);
         goto fail;
     }
@@ -144,8 +144,8 @@ fail:
     return -1;
 }
 
-static void *EBCL_dispatchThreadFunc(void *args) {
-    ebcl_DispThrArgs_t *a = (ebcl_DispThrArgs_t *)args;
+static void *crinitDispatchThreadFunc(void *args) {
+    crinitDispThrArgs_t *a = (crinitDispThrArgs_t *)args;
     crinitTaskDB_t *ctx = a->ctx;
     const crinitTask_t *t = a->t;
     crinitTask_t *tCopy = NULL;
@@ -187,7 +187,7 @@ static void *EBCL_dispatchThreadFunc(void *args) {
             // NOTE: We currently have a umask of 0022 which precludes us from creating files with 0666 permissions.
             //       We may want to make that configurable in the future.
 
-            if (tCopy->redirs[j].fifo && EBCL_ensureFifo(tCopy->redirs[j].path, tCopy->redirs[j].mode) == -1) {
+            if (tCopy->redirs[j].fifo && crinitEnsureFifo(tCopy->redirs[j].path, tCopy->redirs[j].mode) == -1) {
                 crinitErrPrint(
                     "(TID: %d) Unexpected result while ensuring '%s' is a FIFO special file for command %zu of Task "
                     "'%s'",
@@ -195,7 +195,7 @@ static void *EBCL_dispatchThreadFunc(void *args) {
                 goto threadExit;
             }
 
-            if (EBCL_posixSpawnAddIOFileAction(&fileact, &(tCopy->redirs[j])) == -1) {
+            if (crinitPosixSpawnAddIOFileAction(&fileact, &(tCopy->redirs[j])) == -1) {
                 crinitErrPrint("(TID: %d) Could not add IO file action to posix_spawn for command %zu of Task '%s'",
                               threadId, i, tCopy->name);
                 goto threadExit;
@@ -267,7 +267,7 @@ static void *EBCL_dispatchThreadFunc(void *args) {
                 goto threadExit;
             }
             // Reap zombie of failed command.
-            if (EBCL_reapPid(pid) == -1) {
+            if (crinitReapPid(pid) == -1) {
                 crinitErrnoPrint("(TID: %d) Could not reap zombie for task \'%s\'.", threadId, tCopy->name);
             }
 
@@ -293,7 +293,7 @@ static void *EBCL_dispatchThreadFunc(void *args) {
             goto threadExit;
         }
         // Reap zombie of successful command.
-        if (EBCL_reapPid(pid) == -1) {
+        if (crinitReapPid(pid) == -1) {
             crinitErrnoPrint("(TID: %d) Could not reap zombie for task \'%s\'.", threadId, tCopy->name);
         }
     }
@@ -324,48 +324,48 @@ threadExit:
 
 int crinitSetInhibitWait(bool inh) {
     int ret = 0;
-    errno = pthread_mutex_lock(&EBCL_waitInhibitLock);
+    errno = pthread_mutex_lock(&crinitWaitInhibitLock);
     if (errno != 0) {
         crinitErrnoPrint("Could not lock on mutex.");
         return -1;
     }
-    EBCL_waitInhibit = inh;
+    crinitWaitInhibit = inh;
     if (!inh) {
-        errno = pthread_cond_broadcast(&EBCL_waitInhibitCond);
+        errno = pthread_cond_broadcast(&crinitWaitInhibitCond);
         if (errno != 0) {
             ret = -1;
             crinitErrnoPrint("Could not broadcast on condition variable.");
         }
     }
-    if (pthread_mutex_unlock(&EBCL_waitInhibitLock)) {
+    if (pthread_mutex_unlock(&crinitWaitInhibitLock)) {
         ret = -1;
         crinitErrnoPrint("Could not unlock mutex.");
     }
     return ret;
 }
 
-static int EBCL_blockOnWaitInhibit(void) {
-    errno = pthread_mutex_lock(&EBCL_waitInhibitLock);
+static int crinitBlockOnWaitInhibit(void) {
+    errno = pthread_mutex_lock(&crinitWaitInhibitLock);
     if (errno != 0) {
         crinitErrnoPrint("Could not lock on mutex.");
         return -1;
     }
-    while (EBCL_waitInhibit) {
-        errno = pthread_cond_wait(&EBCL_waitInhibitCond, &EBCL_waitInhibitLock);
+    while (crinitWaitInhibit) {
+        errno = pthread_cond_wait(&crinitWaitInhibitCond, &crinitWaitInhibitLock);
         if (errno != 0) {
             crinitErrnoPrint("Could not wait on condition variable.");
             return -1;
         }
     }
-    if (pthread_mutex_unlock(&EBCL_waitInhibitLock)) {
+    if (pthread_mutex_unlock(&crinitWaitInhibitLock)) {
         crinitErrnoPrint("Could not unlock mutex.");
         return -1;
     }
     return 0;
 }
 
-static int EBCL_reapPid(pid_t pid) {
-    if (EBCL_blockOnWaitInhibit() == -1) {
+static int crinitReapPid(pid_t pid) {
+    if (crinitBlockOnWaitInhibit() == -1) {
         crinitErrPrint("Could not block on wait inhibition condition.");
         return -1;
     }
@@ -379,7 +379,7 @@ static int EBCL_reapPid(pid_t pid) {
     return 0;
 }
 
-static int EBCL_posixSpawnAddIOFileAction(posix_spawn_file_actions_t *fileact, const crinitIoRedir_t *ior) {
+static int crinitPosixSpawnAddIOFileAction(posix_spawn_file_actions_t *fileact, const crinitIoRedir_t *ior) {
     if (fileact == NULL || ior == NULL) {
         crinitErrPrint("Input parameters must not be NULL.");
         return -1;
@@ -412,7 +412,7 @@ static int EBCL_posixSpawnAddIOFileAction(posix_spawn_file_actions_t *fileact, c
     return 0;
 }
 
-static int EBCL_ensureFifo(const char *path, mode_t mode) {
+static int crinitEnsureFifo(const char *path, mode_t mode) {
     if (path == NULL) {
         crinitErrPrint("Path to the FIFO must not be NULL.");
         return -1;
