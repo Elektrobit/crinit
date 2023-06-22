@@ -66,7 +66,7 @@ static void crinitPrintUsage(const char *basename);
  * @return  0 on success, -1 on a general error, and -2 if everything went well but #KERNEL_CMDLINE_KEY is not found in
  * the Kernel commandline.
  */
-static int EBCL_getMidKernelCmdLine(char *mid, size_t n);
+static int crinitGetMidKernelCmdLine(char *mid, size_t n);
 
 #ifdef __aarch64__ /* It only makes sense to include special code for S32G if we compile for aarch64 */
 
@@ -82,7 +82,7 @@ static int EBCL_getMidKernelCmdLine(char *mid, size_t n);
  *
  * @return  0 on success, -1 otherwise
  */
-static int EBCL_readPhysMem(void *data, off_t phyAddr, size_t len);
+static int crinitReadPhysMem(void *data, off_t phyAddr, size_t len);
 /**
  * Reads the the NXP S32G's 64-Bit unique (per-chip) ID from the OTP shadow registers.
  *
@@ -92,7 +92,7 @@ static int EBCL_readPhysMem(void *data, off_t phyAddr, size_t len);
  *
  * @return  0 on success, -1 otherwise
  */
-static int EBCL_readS32Uid(uint64_t *uid);
+static int crinitReadS32Uid(uint64_t *uid);
 /**
  * Converts S32 64-Bit unique ID to a 128-Bit UUID string format.
  *
@@ -105,7 +105,7 @@ static int EBCL_readS32Uid(uint64_t *uid);
  *
  * @return  The number of characters written on success or a negative number on error.
  */
-static inline int EBCL_s32UidToMid(char *mid, size_t n, uint64_t uid);
+static inline int crinitS32UidToMid(char *mid, size_t n, uint64_t uid);
 /**
  * Checks if we are running on an S32G.
  *
@@ -117,7 +117,7 @@ static inline int EBCL_s32UidToMid(char *mid, size_t n, uint64_t uid);
  *
  * @return  0 on success (meaning the memory address of the register could be read), -1 on error
  */
-static int EBCL_checkS32(bool *onS32);
+static int crinitCheckS32(bool *onS32);
 
 #endif /* __aarch64__ */
 
@@ -130,7 +130,7 @@ int main(int argc, char *argv[]) {
     char machId[MID_STR_LEN + 1] = {'\0'};
 
     printf("Checking Kernel command line for machine ID...");
-    if (EBCL_getMidKernelCmdLine(machId, sizeof(machId)) == 0) {
+    if (crinitGetMidKernelCmdLine(machId, sizeof(machId)) == 0) {
         printf(" Found!\n");
     } else {
         printf(" None found.\n");
@@ -138,7 +138,7 @@ int main(int argc, char *argv[]) {
 #ifdef __aarch64__ /* It only makes sense to include special code for S32G if we compile for aarch64 */
         printf("Will check if we are on S32 hardware... ");
         bool onS32 = false;
-        if (EBCL_checkS32(&onS32) == -1) {
+        if (crinitCheckS32(&onS32) == -1) {
             printf("Could not determine if we are running on an S32G (real hardware).\n");
             return EXIT_FAILURE;
         }
@@ -152,12 +152,12 @@ int main(int argc, char *argv[]) {
 
         uint64_t uid = 0;
 
-        if (EBCL_readS32Uid(&uid) == -1) {
+        if (crinitReadS32Uid(&uid) == -1) {
             printf("Could not read UID from S32G OTP memory.\n");
             return EXIT_FAILURE;
         }
 
-        EBCL_s32UidToMid(machId, sizeof(machId), uid);
+        crinitS32UidToMid(machId, sizeof(machId), uid);
 #else
         return EXIT_FAILURE;
 #endif /* __aarch64__ */
@@ -185,7 +185,7 @@ static void crinitPrintUsage(const char *basename) {
             basename);
 }
 
-static int EBCL_getMidKernelCmdLine(char *mid, size_t n) {
+static int crinitGetMidKernelCmdLine(char *mid, size_t n) {
     char cmdLine[KERNEL_CMDLINE_MAX_LEN] = {'\0'};
 
     FILE *kCmdF = fopen(KERNEL_CMDLINE_PATH, "rb");
@@ -232,9 +232,9 @@ static int EBCL_getMidKernelCmdLine(char *mid, size_t n) {
 
 #ifdef __aarch64__ /* It only makes sense to include special code for S32G if we compile for aarch64 */
 
-static int EBCL_checkS32(bool *onS32) {
+static int crinitCheckS32(bool *onS32) {
     uint32_t mcuIdReg = 0;
-    if (EBCL_readPhysMem(&mcuIdReg, S32G_SIUL21_BASE + S32G_SIUL21_OFFSET_MIDR1, sizeof(uint32_t)) == -1) {
+    if (crinitReadPhysMem(&mcuIdReg, S32G_SIUL21_BASE + S32G_SIUL21_OFFSET_MIDR1, sizeof(uint32_t)) == -1) {
         fprintf(stderr, "Could not read MCU ID register from physical memory address %lu.",
                 S32G_SIUL21_BASE + S32G_SIUL21_OFFSET_MIDR1);
         return -1;
@@ -244,8 +244,8 @@ static int EBCL_checkS32(bool *onS32) {
     return 0;
 }
 
-static int EBCL_readS32Uid(uint64_t *uid) {
-    if (EBCL_readPhysMem(uid, S32G_OCOTP_BASE + S32G_OCOTP_OFFSET_UID, sizeof(uint64_t)) == -1) {
+static int crinitReadS32Uid(uint64_t *uid) {
+    if (crinitReadPhysMem(uid, S32G_OCOTP_BASE + S32G_OCOTP_OFFSET_UID, sizeof(uint64_t)) == -1) {
         fprintf(stderr, "Could not read unique ID OCOTP shadow registers from physical memory address %lu.",
                 S32G_OCOTP_BASE + S32G_OCOTP_OFFSET_UID);
         return -1;
@@ -253,7 +253,7 @@ static int EBCL_readS32Uid(uint64_t *uid) {
     return 0;
 }
 
-static inline int EBCL_s32UidToMid(char *mid, size_t n, uint64_t uid) {
+static inline int crinitS32UidToMid(char *mid, size_t n, uint64_t uid) {
     uint8_t bytes[sizeof(uint64_t)];
     memcpy(bytes, &uid, sizeof(uint64_t));
     return snprintf(mid, n, "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x", bytes[0], bytes[1],
@@ -261,7 +261,7 @@ static inline int EBCL_s32UidToMid(char *mid, size_t n, uint64_t uid) {
                     bytes[4], bytes[5], bytes[6], bytes[7]);
 }
 
-static int EBCL_readPhysMem(void *data, off_t phyAddr, size_t len) {
+static int crinitReadPhysMem(void *data, off_t phyAddr, size_t len) {
     size_t pageSize = sysconf(_SC_PAGE_SIZE);
     off_t pageBase = (phyAddr / pageSize) * pageSize;
     off_t mapLen = (phyAddr - pageBase) + len;

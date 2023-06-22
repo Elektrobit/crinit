@@ -18,7 +18,7 @@
 #define STR_CHECK_INLINE "CHECK_INLINE"
 #define STR_SEMICOLON_LINE "this line should not ; be cut at the semicolon"
 
-static int EBCL_iniHandler(void *userP, const char *section, const char *name, const char *value);
+static int crinitIniHandler(void *userP, const char *section, const char *name, const char *value);
 
 void EBCL_inihConfigurationRegressionTest(void **state) {
     CRINIT_PARAM_UNUSED(state);
@@ -33,10 +33,10 @@ void EBCL_inihConfigurationRegressionTest(void **state) {
         "\n; this comment line starts with a semicolon\n# this comment line starts with a number sign\n";
 
     // This should go through fine.
-    assert_int_equal(ini_parse_string(valid, EBCL_iniHandler, NULL), 0);
+    assert_int_equal(ini_parse_string(valid, crinitIniHandler, NULL), 0);
  }
 
-static int EBCL_iniHandler(void *userP, const char *section, const char *name, const char *value) {
+static int crinitIniHandler(void *userP, const char *section, const char *name, const char *value) {
     CRINIT_PARAM_UNUSED(userP);
     CRINIT_PARAM_UNUSED(section);
 

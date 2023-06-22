@@ -25,7 +25,7 @@
  *
  * @return 0 on success, -1 otherwise
  */
-static int EBCL_crinitConnect(int *sockFd, const char *sockFile);
+static int crinitConnect(int *sockFd, const char *sockFile);
 /**
  * Send a command/request to Crinit.
  *
@@ -40,7 +40,7 @@ static int EBCL_crinitConnect(int *sockFd, const char *sockFile);
  *
  * @return 0 on success, -1 otherwise
  */
-static int EBCL_crinitSend(int sockFd, const crinitRtimCmd_t *cmd);
+static int crinitSend(int sockFd, const crinitRtimCmd_t *cmd);
 /**
  * Receive a response from Crinit.
  *
@@ -58,7 +58,7 @@ static int EBCL_crinitSend(int sockFd, const crinitRtimCmd_t *cmd);
  *
  * @return 0 on success, -1 otherwise
  */
-static int EBCL_crinitRecv(int sockFd, crinitRtimCmd_t *res);
+static int crinitRecv(int sockFd, crinitRtimCmd_t *res);
 /**
  * Wait for a ready-to-receive message from Crinit.
  *
@@ -66,7 +66,7 @@ static int EBCL_crinitRecv(int sockFd, crinitRtimCmd_t *res);
  *
  * @return 0 on success, -1 otherwise
  */
-static int EBCL_waitForRtr(int sockFd);
+static int crinitWaitForRtr(int sockFd);
 
 int crinitXfer(const char *sockFile, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd) {
     if (res == NULL || cmd == NULL) {
@@ -74,16 +74,16 @@ int crinitXfer(const char *sockFile, crinitRtimCmd_t *res, const crinitRtimCmd_t
         return -1;
     }
     int sockFd = -1;
-    if (EBCL_crinitConnect(&sockFd, sockFile) == -1) {
+    if (crinitConnect(&sockFd, sockFile) == -1) {
         crinitErrPrint("Could not connect to Crinit using socket at \'%s\'.", sockFile);
         return -1;
     }
     crinitDbgInfoPrint("Connected to Crinit using %s.", sockFile);
-    if (EBCL_crinitSend(sockFd, cmd) == -1) {
+    if (crinitSend(sockFd, cmd) == -1) {
         crinitErrPrint("Could not send RtimCmd to Crinit.");
         return -1;
     }
-    if (EBCL_crinitRecv(sockFd, res) == -1) {
+    if (crinitRecv(sockFd, res) == -1) {
         crinitErrPrint("Could not receive response from Crinit.");
         return -1;
     }
@@ -91,7 +91,7 @@ int crinitXfer(const char *sockFile, crinitRtimCmd_t *res, const crinitRtimCmd_t
     return 0;
 }
 
-static int EBCL_crinitConnect(int *sockFd, const char *sockFile) {
+static int crinitConnect(int *sockFd, const char *sockFile) {
     crinitDbgInfoPrint("Sending message to server at \'%s\'.", sockFile);
 
     *sockFd = socket(AF_UNIX, SOCK_SEQPACKET, 0);
@@ -116,7 +116,7 @@ static int EBCL_crinitConnect(int *sockFd, const char *sockFile) {
     }
     crinitDbgInfoPrint("Connected to Crinit.");
     crinitDbgInfoPrint("Waiting for RTR.");
-    if (EBCL_waitForRtr(*sockFd) == -1) {
+    if (crinitWaitForRtr(*sockFd) == -1) {
         crinitErrPrint("Could not wait for RTR.");
         close(*sockFd);
         return -1;
@@ -125,7 +125,7 @@ static int EBCL_crinitConnect(int *sockFd, const char *sockFile) {
     return 0;
 }
 
-static int EBCL_crinitSend(int sockFd, const crinitRtimCmd_t *cmd) {
+static int crinitSend(int sockFd, const crinitRtimCmd_t *cmd) {
     if (cmd == NULL) {
         crinitErrPrint("Pointer arguments must not be NULL");
         return -1;
@@ -154,7 +154,7 @@ static int EBCL_crinitSend(int sockFd, const crinitRtimCmd_t *cmd) {
     return 0;
 }
 
-static int EBCL_crinitRecv(int sockFd, crinitRtimCmd_t *res) {
+static int crinitRecv(int sockFd, crinitRtimCmd_t *res) {
     if (res == NULL) {
         crinitErrPrint("Return pointer must not be NULL.");
         return -1;
@@ -202,7 +202,7 @@ static int EBCL_crinitRecv(int sockFd, crinitRtimCmd_t *res) {
     return 0;
 }
 
-static int EBCL_waitForRtr(int sockFd) {
+static int crinitWaitForRtr(int sockFd) {
     char rtrBuf[sizeof("RTR")] = {'\0'};
     size_t recvLen = 0;
     ssize_t bytesRead = recv(sockFd, &recvLen, sizeof(size_t), 0);

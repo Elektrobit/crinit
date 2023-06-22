@@ -27,7 +27,7 @@ const crinitRtimOpMap_t crinitRtimOps[] = {crinitGenOpMap(crinitGenOpStruct)};
  *
  * @return  The length of \a str, not including the delimiting character (or the terminating zero).
  */
-static inline size_t EBCL_delimitedStrlen(const char *str);
+static inline size_t crinitDelimitedStrlen(const char *str);
 
 void crinitRtimOpMapDebugPrintAll(void) {
     crinitDbgInfoPrint("List of available API Operations:");
@@ -41,7 +41,7 @@ int crinitRtimOpGetByOpStr(crinitRtimOp_t *out, const char *opStr) {
         crinitErrPrint("Pointer arguments must not be NULL.");
         return -1;
     }
-    size_t n = EBCL_delimitedStrlen(opStr);
+    size_t n = crinitDelimitedStrlen(opStr);
     for (size_t i = 0; i < CRINIT_RTIMOPMAP_ELEMENTS; i++) {
         if (n == strlen(crinitRtimOps[i].opStr) && strncmp(crinitRtimOps[i].opStr, opStr, n) == 0) {
             *out = crinitRtimOps[i].opCode;
@@ -70,7 +70,7 @@ int crinitOpStrGetByRtimOp(const char **out, crinitRtimOp_t opCode) {
     return -1;
 }
 
-static inline size_t EBCL_delimitedStrlen(const char *str) {
+static inline size_t crinitDelimitedStrlen(const char *str) {
     size_t len = 0;
     while (*str != '\0' && *str != CRINIT_RTIMCMD_ARGDELIM) {
         len++;

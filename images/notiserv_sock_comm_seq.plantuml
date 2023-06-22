@@ -6,7 +6,7 @@ lib -> srv : ""connect()""
 srv -> lib : ""accept()""
 srv -> srv : set ""SO_PASSCRED""
 srv -> lib : send ""RTR""
-group Using ""sendStr()""/""recvStr()""\nor ""EBCL_crinitSend()""/""EBCL_crinitRecv()""
+group Using ""sendStr()""/""recvStr()""\nor ""crinitSend()""/""crinitRecv()""
 lib -> srv : send request
 srv -> lib : send answer
 end

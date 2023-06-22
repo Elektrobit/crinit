@@ -104,7 +104,7 @@ static inline bool crinitUcredCheckEqual(const struct ucred *a, const struct ucr
  *
  * The low level protocol is to first send a size_t informing the client of the length of the following string
  * (including the terminating zero) and then the string itself. The complementary client-side function is
- * EBCL_crinitSend().
+ * crinitSend().
  *
  * The following image illustrates the low level send/receive protocol:
  * \image html sock_comm_str.svg
@@ -120,7 +120,7 @@ static inline int crinitSendStr(int sockFd, const char *str);
  *
  * The low level protocol is to first wait for a size_t informing the server of the length of the following string
  * (including the terminating zero) and then the string itself. The complementary client-side function is
- * EBCL_crinitRecv().
+ * crinitRecv().
  *
  * This function will also extract the message metadata received via `SO_PASSCRED` and return the credentials of the
  * sender via \a passedCreds.
