@@ -164,8 +164,8 @@ int crinitTaskDBSpawnReady(crinitTaskDB_t *ctx) {
         return -1;
     }
 
-    for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        crinitTask_t *pTask = &ctx->taskSet[i];
+    crinitTask_t *pTask;
+    crinitTaskDbForEach(ctx, pTask) {
         if (crinitTaskReady(pTask)) {
             crinitDbgInfoPrint("Task \'%s\' ready to spawn.", pTask->name);
             pTask->state = CRINIT_TASK_STATE_STARTING;
@@ -208,8 +208,9 @@ int crinitTaskDBSetTaskState(crinitTaskDB_t *ctx, crinitTaskState_t s, const cha
         crinitErrnoPrint("Could not queue up for mutex lock.");
         return -1;
     }
-    for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        crinitTask_t *pTask = &ctx->taskSet[i];
+
+    crinitTask_t *pTask;
+    crinitTaskDbForEach(ctx, pTask) {
         if (strcmp(pTask->name, taskName) == 0) {
             pTask->state = s;
             s &= ~CRINIT_TASK_STATE_NOTIFIED;  // Here we don't care if we got the state via notification or directly.
@@ -236,8 +237,9 @@ int crinitTaskDBGetTaskState(crinitTaskDB_t *ctx, crinitTaskState_t *s, const ch
         crinitErrnoPrint("Could not queue up for mutex lock.");
         return -1;
     }
-    for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        crinitTask_t *pTask = &ctx->taskSet[i];
+
+    crinitTask_t *pTask;
+    crinitTaskDbForEach(ctx, pTask) {
         if (strcmp(pTask->name, taskName) == 0) {
             *s = pTask->state;
             pthread_mutex_unlock(&ctx->lock);
@@ -256,8 +258,9 @@ int crinitTaskDBSetTaskPID(crinitTaskDB_t *ctx, pid_t pid, const char *taskName)
         crinitErrnoPrint("Could not queue up for mutex lock.");
         return -1;
     }
-    for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        crinitTask_t *pTask = &ctx->taskSet[i];
+
+    crinitTask_t *pTask;
+    crinitTaskDbForEach(ctx, pTask) {
         if (strcmp(pTask->name, taskName) == 0) {
             pTask->pid = pid;
             pthread_mutex_unlock(&ctx->lock);
@@ -277,8 +280,9 @@ int crinitTaskDBGetTaskPID(crinitTaskDB_t *ctx, pid_t *pid, const char *taskName
         crinitErrnoPrint("Could not queue up for mutex lock.");
         return -1;
     }
-    for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        crinitTask_t *pTask = &ctx->taskSet[i];
+
+    crinitTask_t *pTask;
+    crinitTaskDbForEach(ctx, pTask) {
         if (strcmp(pTask->name, taskName) == 0) {
             *pid = pTask->pid;
             pthread_mutex_unlock(&ctx->lock);
@@ -299,8 +303,9 @@ int crinitTaskDBGetTaskStateAndPID(crinitTaskDB_t *ctx, crinitTaskState_t *s, pi
         crinitErrnoPrint("Could not queue up for mutex lock.");
         return -1;
     }
-    for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        crinitTask_t *pTask = &ctx->taskSet[i];
+
+    crinitTask_t *pTask;
+    crinitTaskDbForEach(ctx, pTask) {
         if (strcmp(pTask->name, taskName) == 0) {
             *s = pTask->state;
             *pid = pTask->pid;
@@ -320,8 +325,9 @@ int crinitTaskDBAddDepToTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep, co
         crinitErrnoPrint("Could not queue up for mutex lock.");
         return -1;
     }
-    for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        crinitTask_t *pTask = &ctx->taskSet[i];
+
+    crinitTask_t *pTask;
+    crinitTaskDbForEach(ctx, pTask) {
         if (strcmp(pTask->name, taskName) == 0) {
             // Return immediately if dependency is already present
             for (size_t j = 0; j < pTask->depsSize; j++) {
@@ -370,8 +376,8 @@ int crinitTaskDBRemoveDepFromTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *de
         return -1;
     }
 
-    for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        crinitTask_t *pTask = &ctx->taskSet[i];
+    crinitTask_t *pTask;
+    crinitTaskDbForEach(ctx, pTask) {
         if (strcmp(pTask->name, taskName) == 0) {
             for (size_t j = 0; j < pTask->depsSize; j++) {
                 if ((strcmp(pTask->deps[j].name, dep->name) == 0) && (strcmp(pTask->deps[j].event, dep->event) == 0)) {
@@ -401,8 +407,8 @@ int crinitTaskDBFulfillDep(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep) {
         return -1;
     }
 
-    for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        crinitTask_t *pTask = &ctx->taskSet[i];
+    crinitTask_t *pTask;
+    crinitTaskDbForEach(ctx, pTask) {
         for (size_t j = 0; j < pTask->depsSize; j++) {
             if ((strcmp(pTask->deps[j].name, dep->name) == 0) && (strcmp(pTask->deps[j].event, dep->event) == 0)) {
                 crinitDbgInfoPrint("Removing fulfilled dependency \'%s:%s\' in \'%s\'.", dep->name, dep->event,
