@@ -49,7 +49,7 @@ typedef struct crinitTaskDep_t {
  * Type to store a single provided feature within a task.
  */
 typedef struct crinitTaskPrv_t {
-    char *name;                 ///< Name of the provided feature.
+    char *name;                  ///< Name of the provided feature.
     crinitTaskState_t stateReq;  ///< The task state required to be reached to provide the feature.
 } crinitTaskPrv_t;
 
@@ -57,23 +57,23 @@ typedef struct crinitTaskPrv_t {
  * Type to store a single task.
  */
 typedef struct crinitTask_t {
-    char *name;              ///< Name of the task, corresponds to NAME in the config file.
+    char *name;               ///< Name of the task, corresponds to NAME in the config file.
     crinitTaskCmd_t *cmds;    ///< Dynamic array of commands, corresponds to COMMAND[N] in the config file.
-    size_t cmdsSize;         ///< Number of commands in cmds array.
+    size_t cmdsSize;          ///< Number of commands in cmds array.
     crinitEnvSet_t taskEnv;   ///< Environment variables valid for each COMMAND in this task.
     crinitTaskDep_t *deps;    ///< Dynamic array of dependencies, corresponds to DEPENDS in the config file.
-    size_t depsSize;         ///< Number of dependencies in deps array.
+    size_t depsSize;          ///< Number of dependencies in deps array.
     crinitTaskPrv_t *prv;     ///< Dynamic array of provided features, corresponds to PROVIDES in the config file.
-    size_t prvSize;          ///< Number of provided features in prv array.
+    size_t prvSize;           ///< Number of provided features in prv array.
     crinitTaskOpts_t opts;    ///< Task options.
     crinitTaskState_t state;  ///< Task state.
-    pid_t pid;               ///< PID of currently running process subordinate to the task, if any.
+    pid_t pid;                ///< PID of currently running process subordinate to the task, if any.
     crinitIoRedir_t *redirs;  ///< IO redirection descriptions.
-    size_t redirsSize;       ///< Number of IO redirections.
-    int maxRetries;          ///< If crinitTask_t::opts includes #CRINIT_TASK_OPT_RESPAWN, this variable specifies a
-                             ///< maximum consecutive number of respawns after failure (default: -1 for infinite).
-    int failCount;           ///< Counts consecutive respawns after failure (see crinitTaskOpts_t::maxRetries). Resets
-                             ///< on a successful completion (i.e. all COMMANDs in the task have returned 0).
+    size_t redirsSize;        ///< Number of IO redirections.
+    int maxRetries;           ///< If crinitTask_t::opts includes #CRINIT_TASK_OPT_RESPAWN, this variable specifies a
+                              ///< maximum consecutive number of respawns after failure (default: -1 for infinite).
+    int failCount;            ///< Counts consecutive respawns after failure (see crinitTaskOpts_t::maxRetries). Resets
+                              ///< on a successful completion (i.e. all COMMANDs in the task have returned 0).
 } crinitTask_t;
 
 /**
@@ -116,7 +116,8 @@ void crinitDestroyTask(crinitTask_t *t);
 /**
  *  Duplicates an crinitTask.
  *
- *  The copy returned via \a out is dynamically allocated and should be freed using crinitFreeTask() if no longer needed.
+ *  The copy returned via \a out is dynamically allocated and should be freed using crinitFreeTask() if no longer
+ * needed.
  *
  *  @param out   Double pointer to return a dynamically allocated copy of \a orig.
  *  @param orig  The original task to copy.
@@ -126,12 +127,22 @@ void crinitDestroyTask(crinitTask_t *t);
 int crinitTaskDup(crinitTask_t **out, const crinitTask_t *orig);
 
 /**
+ *  Copies the conents from one task to another.
+ *
+ *  @param out   Pointer to copy of \a orig.
+ *  @param orig  The original task to copy.
+ *
+ *  @return 0 on success, -1 on error
+ */
+int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig);
+
+/**
  * Merges the options set in a given include file into the target crinitTask_t.
  *
  * Uses the same parser handlers as regular task files but will fail if configuration options are encountered where
- * crinitConfigMapping_t::includeSafe is `false`. Optionally a comma-separated importList can be specified. If given,
- * only the configuration options in the list will be merged. If not given, everything in the include file will be
- * imported.
+ * crinitConfigMapping_t::includeSafe is `false`. Optionally a comma-separated importList can be specified. If
+ * given, only the configuration options in the list will be merged. If not given, everything in the include file
+ * will be imported.
  *
  * @param tgt         The target crinitTask_t which will be modified.
  * @param src         Name of the include file to parse/merge (filename without leading path and ending).

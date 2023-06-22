@@ -129,13 +129,10 @@ int crinitTaskDBInsert(crinitTaskDB_t *ctx, const crinitTask_t *t, bool overwrit
         idx = ctx->taskSetItems++;
     }
 
-    crinitTask_t *tempDuplicate = NULL;
-    if (crinitTaskDup(&tempDuplicate, t) == -1) {
-        crinitErrPrint("Could not duplicate new Task into temporary variable.");
+    if (crinitTaskCopy(&ctx->taskSet[idx], t) == -1) {
+        crinitErrPrint("Could not copy new Task.");
         goto fail;
     }
-    memcpy(&ctx->taskSet[idx], tempDuplicate, sizeof(crinitTask_t));
-    free(tempDuplicate);
 
     pthread_cond_broadcast(&ctx->changed);
     pthread_mutex_unlock(&ctx->lock);
