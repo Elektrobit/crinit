@@ -31,7 +31,7 @@
  *
  * @return  0 on success, -1 on error
  */
-static inline int EBCL_taskSetFromConfKvList(crinitTask_t *tgt, const crinitConfKvList_t *src, crinitTaskType_t type,
+static inline int crinitTaskSetFromConfKvList(crinitTask_t *tgt, const crinitConfKvList_t *src, crinitTaskType_t type,
                                              char *importList);
 
 int crinitTaskCreateFromConfKvList(crinitTask_t **out, const crinitConfKvList_t *in) {
@@ -39,7 +39,7 @@ int crinitTaskCreateFromConfKvList(crinitTask_t **out, const crinitConfKvList_t 
 
     *out = calloc(1, sizeof(**out));
     if (*out == NULL) {
-        crinitErrnoPrint("Could not allocate memory for ebcl_Task.");
+        crinitErrnoPrint("Could not allocate memory for crinitTask.");
         return -1;
     }
     crinitTask_t *pTask = *out;
@@ -51,7 +51,7 @@ int crinitTaskCreateFromConfKvList(crinitTask_t **out, const crinitConfKvList_t 
         goto fail;
     }
 
-    if (EBCL_taskSetFromConfKvList(pTask, in, CRINIT_TASK_TYPE_STANDARD, NULL) == -1) {
+    if (crinitTaskSetFromConfKvList(pTask, in, CRINIT_TASK_TYPE_STANDARD, NULL) == -1) {
         crinitErrPrint("Could not set parameters of new task from configuration list.");
         goto fail;
     }
@@ -285,7 +285,7 @@ int crinitTaskMergeInclude(crinitTask_t *tgt, const char *src, char *importList)
         return -1;
     }
 
-    if (EBCL_taskSetFromConfKvList(tgt, inclConfList, CRINIT_TASK_TYPE_INCLUDE, importList) == -1) {
+    if (crinitTaskSetFromConfKvList(tgt, inclConfList, CRINIT_TASK_TYPE_INCLUDE, importList) == -1) {
         crinitErrPrint("Could not merge include file '%s' into task.", inclPath);
         free(inclPath);
         crinitFreeConfList(inclConfList);
@@ -297,7 +297,7 @@ int crinitTaskMergeInclude(crinitTask_t *tgt, const char *src, char *importList)
     return 0;
 }
 
-static inline int EBCL_taskSetFromConfKvList(crinitTask_t *tgt, const crinitConfKvList_t *src, crinitTaskType_t type,
+static inline int crinitTaskSetFromConfKvList(crinitTask_t *tgt, const crinitConfKvList_t *src, crinitTaskType_t type,
                                              char *importList) {
     crinitNullCheck(-1, tgt, src);
 

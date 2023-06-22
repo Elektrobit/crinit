@@ -20,18 +20,18 @@
 #include "logio.h"
 
 /** Common NULL-pointer input check as all configuration handler functions have the same signature **/
-#define EBCL_cfgHandlerCommonNullCheck() crinitNullCheck(-1, tgt, val)
+#define crinitCfgHandlerCommonNullCheck() crinitNullCheck(-1, tgt, val)
 
 /**
  * Helper function to set a bitmask value in crinitTask_t::opts.
  *
  * @param tgt  Direct pointer to the crinitTaskOpts_t inside an crinitTask_t which shall be modified.
- * @param opt  Bitmask of the task option to be set, one of `EBCL_TASK_OPT_*`
+ * @param opt  Bitmask of the task option to be set, one of `CRINIT_TASK_OPT_*`
  * @param val  The string value indicating if the bit should be set or unset. Uses crinitConfConvToBool().
  *
  * @return  0 on success, -1 on error
  */
-static inline int EBCL_cfgHandlerSetTaskOptFromStr(crinitTaskOpts_t *tgt, crinitTaskOpts_t opt, const char *val);
+static inline int crinitCfgHandlerSetTaskOptFromStr(crinitTaskOpts_t *tgt, crinitTaskOpts_t opt, const char *val);
 /**
  * (Re-)allocate memory for generic arrays.
  *
@@ -45,13 +45,13 @@ static inline int EBCL_cfgHandlerSetTaskOptFromStr(crinitTaskOpts_t *tgt, crinit
  *
  * @return  The new address of the array on success, NULL on failure.
  */
-static inline void *EBCL_cfgHandlerManageArrayMem(void *dynArr, size_t elementSize, size_t curSize, size_t reqSize);
+static inline void *crinitCfgHandlerManageArrayMem(void *dynArr, size_t elementSize, size_t curSize, size_t reqSize);
 
 int crinitTaskCfgCmdHandler(crinitTask_t *tgt, const char *val) {
-    EBCL_cfgHandlerCommonNullCheck();
+    crinitCfgHandlerCommonNullCheck();
 
     size_t newIdx = tgt->cmdsSize;
-    crinitTaskCmd_t *newArr = EBCL_cfgHandlerManageArrayMem(tgt->cmds, sizeof(*tgt->cmds), tgt->cmdsSize, newIdx + 1);
+    crinitTaskCmd_t *newArr = crinitCfgHandlerManageArrayMem(tgt->cmds, sizeof(*tgt->cmds), tgt->cmdsSize, newIdx + 1);
     if (newArr == NULL) {
         crinitErrPrint("Could not perform memory allocation during handler for configuration key '%s'.",
                       CRINIT_CONFIG_KEYSTR_COMMAND);
@@ -69,7 +69,7 @@ int crinitTaskCfgCmdHandler(crinitTask_t *tgt, const char *val) {
 }
 
 int crinitTaskCfgDepHandler(crinitTask_t *tgt, const char *val) {
-    EBCL_cfgHandlerCommonNullCheck();
+    crinitCfgHandlerCommonNullCheck();
 
     int tempDepsSize = 0;
     char **tempDeps = crinitConfConvToStrArr(&tempDepsSize, val, false);
@@ -86,7 +86,7 @@ int crinitTaskCfgDepHandler(crinitTask_t *tgt, const char *val) {
     }
 
     size_t oldSz = tgt->depsSize, newSz = (size_t)(oldSz + tempDepsSize);
-    crinitTaskDep_t *newArr = EBCL_cfgHandlerManageArrayMem(tgt->deps, sizeof(*tgt->deps), oldSz, newSz);
+    crinitTaskDep_t *newArr = crinitCfgHandlerManageArrayMem(tgt->deps, sizeof(*tgt->deps), oldSz, newSz);
     if (newArr == NULL) {
         crinitErrPrint("Could not perform memory allocation during handler for configuration key '%s'.",
                       CRINIT_CONFIG_KEYSTR_DEPENDS);
@@ -120,7 +120,7 @@ int crinitTaskCfgDepHandler(crinitTask_t *tgt, const char *val) {
 }
 
 int crinitTaskCfgPrvHandler(crinitTask_t *tgt, const char *val) {
-    EBCL_cfgHandlerCommonNullCheck();
+    crinitCfgHandlerCommonNullCheck();
 
     int tempPrvsSize = 0;
     char **tempPrvs = crinitConfConvToStrArr(&tempPrvsSize, val, false);
@@ -135,7 +135,7 @@ int crinitTaskCfgPrvHandler(crinitTask_t *tgt, const char *val) {
     }
 
     size_t oldSz = tgt->prvSize, newSz = (size_t)(oldSz + tempPrvsSize);
-    crinitTaskPrv_t *newArr = EBCL_cfgHandlerManageArrayMem(tgt->prv, sizeof(*tgt->prv), oldSz, newSz);
+    crinitTaskPrv_t *newArr = crinitCfgHandlerManageArrayMem(tgt->prv, sizeof(*tgt->prv), oldSz, newSz);
     if (newArr == NULL) {
         crinitErrPrint("Could not perform memory allocation during handler for configuration key '%s'.",
                       CRINIT_CONFIG_KEYSTR_PROVIDES);
@@ -185,7 +185,7 @@ int crinitTaskCfgPrvHandler(crinitTask_t *tgt, const char *val) {
 }
 
 int crinitTaskCfgEnvHandler(crinitTask_t *tgt, const char *val) {
-    EBCL_cfgHandlerCommonNullCheck();
+    crinitCfgHandlerCommonNullCheck();
     if (tgt->taskEnv.envp == NULL &&
         crinitEnvSetInit(&tgt->taskEnv, CRINIT_ENVSET_INITIAL_SIZE, CRINIT_ENVSET_SIZE_INCREMENT) == -1) {
         crinitErrPrint("Could not initialize task environment.");
@@ -199,11 +199,11 @@ int crinitTaskCfgEnvHandler(crinitTask_t *tgt, const char *val) {
 }
 
 int crinitTaskCfgIoRedirHandler(crinitTask_t *tgt, const char *val) {
-    EBCL_cfgHandlerCommonNullCheck();
+    crinitCfgHandlerCommonNullCheck();
 
     size_t newIdx = tgt->redirsSize;
     crinitIoRedir_t *newArr =
-        EBCL_cfgHandlerManageArrayMem(tgt->redirs, sizeof(*tgt->redirs), tgt->redirsSize, tgt->redirsSize + 1);
+        crinitCfgHandlerManageArrayMem(tgt->redirs, sizeof(*tgt->redirs), tgt->redirsSize, tgt->redirsSize + 1);
     if (newArr == NULL) {
         crinitErrPrint("Could not perform memory allocation during handler for configuration key '%s'.",
                       CRINIT_CONFIG_KEYSTR_IOREDIR);
@@ -221,7 +221,7 @@ int crinitTaskCfgIoRedirHandler(crinitTask_t *tgt, const char *val) {
 }
 
 int crinitTaskCfgNameHandler(crinitTask_t *tgt, const char *val) {
-    EBCL_cfgHandlerCommonNullCheck();
+    crinitCfgHandlerCommonNullCheck();
     tgt->name = strdup(val);
     if (tgt->name == NULL) {
         crinitErrnoPrint("Could not allocate memory for name of task '%s'.", val);
@@ -231,8 +231,8 @@ int crinitTaskCfgNameHandler(crinitTask_t *tgt, const char *val) {
 }
 
 int crinitTaskCfgRespHandler(crinitTask_t *tgt, const char *val) {
-    EBCL_cfgHandlerCommonNullCheck();
-    if (EBCL_cfgHandlerSetTaskOptFromStr(&tgt->opts, CRINIT_TASK_OPT_RESPAWN, val) == -1) {
+    crinitCfgHandlerCommonNullCheck();
+    if (crinitCfgHandlerSetTaskOptFromStr(&tgt->opts, CRINIT_TASK_OPT_RESPAWN, val) == -1) {
         crinitErrPrint("Could not parse value of boolean option '%s'.", CRINIT_CONFIG_KEYSTR_RESPAWN);
         return -1;
     }
@@ -240,7 +240,7 @@ int crinitTaskCfgRespHandler(crinitTask_t *tgt, const char *val) {
 }
 
 int crinitTaskCfgRespRetHandler(crinitTask_t *tgt, const char *val) {
-    EBCL_cfgHandlerCommonNullCheck();
+    crinitCfgHandlerCommonNullCheck();
     if (crinitConfConvToInteger(&tgt->maxRetries, val, 10) == -1) {
         crinitErrPrint("Could not parse value of integral numeric option '%s'.", CRINIT_CONFIG_KEYSTR_RESPAWN_RETRIES);
         return -1;
@@ -249,7 +249,7 @@ int crinitTaskCfgRespRetHandler(crinitTask_t *tgt, const char *val) {
 }
 
 int crinitTaskIncludeHandler(crinitTask_t *tgt, const char *val) {
-    EBCL_cfgHandlerCommonNullCheck();
+    crinitCfgHandlerCommonNullCheck();
 
     int inclCfgSz;
     char **inclCfgStrArr = crinitConfConvToStrArr(&inclCfgSz, val, true);
@@ -276,7 +276,7 @@ int crinitTaskIncludeHandler(crinitTask_t *tgt, const char *val) {
     return 0;
 }
 
-static inline int EBCL_cfgHandlerSetTaskOptFromStr(crinitTaskOpts_t *tgt, crinitTaskOpts_t opt, const char *val) {
+static inline int crinitCfgHandlerSetTaskOptFromStr(crinitTaskOpts_t *tgt, crinitTaskOpts_t opt, const char *val) {
     bool b;
     if (crinitConfConvToBool(&b, val) == -1) {
         crinitErrPrint("Could not convert from configuration file value to boolean.");
@@ -290,7 +290,7 @@ static inline int EBCL_cfgHandlerSetTaskOptFromStr(crinitTaskOpts_t *tgt, crinit
     return 0;
 }
 
-static inline void *EBCL_cfgHandlerManageArrayMem(void *dynArr, size_t elementSize, size_t curSize, size_t reqSize) {
+static inline void *crinitCfgHandlerManageArrayMem(void *dynArr, size_t elementSize, size_t curSize, size_t reqSize) {
     if (reqSize < curSize) {
         crinitErrPrint("Configuration value arrays can only be grown in size.");
         return NULL;
