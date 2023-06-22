@@ -19,8 +19,8 @@ create_unit_test(
     ${PROJECT_SOURCE_DIR}/src/rtimopmap.c
     ${PROJECT_SOURCE_DIR}/src/sockcom.c
   DEFINITIONS
-    "-DEBCL_LIB_CONSTRUCTOR=__attribute__((unused))"
-    "-DEBCL_LIB_DESTRUCTOR=__attribute__((unused))"
+    "-DCRINIT_LIB_CONSTRUCTOR=__attribute__((unused))"
+    "-DCRINIT_LIB_DESTRUCTOR=__attribute__((unused))"
   LIBRARIES
     libmockfunctions
   WRAPS
