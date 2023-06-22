@@ -77,6 +77,14 @@ typedef struct crinitTask_t {
 } crinitTask_t;
 
 /**
+ * Given an ebcl_Task_t, iterate over all dependencies of this task.
+ *
+ * @param task  Pointer to the task.
+ * @param dep   Pointer to the current dependency.
+ */
+#define crinitTaskForEachDep(task, dep) for ((dep) = (task)->deps; (dep) != (task)->deps + (task)->depsSize; (dep)++)
+
+/**
  * Given an crinitConfKvList_t created from a task config, build an equivalent crinitTask.
  *
  * The crinitTask returned via \a out is dynamically allocated and should be freed using crinitFreeTask if no longer

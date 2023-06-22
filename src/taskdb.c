@@ -327,11 +327,12 @@ int crinitTaskDBAddDepToTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep, co
     }
 
     crinitTask_t *pTask;
+    crinitTaskDep_t *pDep;
     crinitTaskDbForEach(ctx, pTask) {
         if (strcmp(pTask->name, taskName) == 0) {
             // Return immediately if dependency is already present
-            for (size_t j = 0; j < pTask->depsSize; j++) {
-                if (strcmp(pTask->deps[j].name, dep->name) == 0 && strcmp(pTask->deps[j].event, dep->event) == 0) {
+            crinitTaskForEachDep(pTask, pDep) {
+                if (strcmp(pDep->name, dep->name) == 0 && strcmp(pDep->event, dep->event) == 0) {
                     pthread_mutex_unlock(&ctx->lock);
                     return 0;
                 }
