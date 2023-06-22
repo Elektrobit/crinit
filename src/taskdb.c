@@ -38,7 +38,7 @@ static int crinitFindTask(crinitTask_t **task, const char *taskName, const crini
  *
  * @return true if \a t is ready, false otherwise
  */
-static bool crinitTaskReady(const crinitTask_t *t);
+static bool crinitTaskIsReady(const crinitTask_t *t);
 
 int crinitTaskDBInitWithSize(crinitTaskDB_t *ctx, int (*spawnFunc)(crinitTaskDB_t *ctx, const crinitTask_t *),
                              size_t initialSize) {
@@ -165,7 +165,7 @@ int crinitTaskDBSpawnReady(crinitTaskDB_t *ctx) {
 
     crinitTask_t *pTask;
     crinitTaskDbForEach(ctx, pTask) {
-        if (crinitTaskReady(pTask)) {
+        if (crinitTaskIsReady(pTask)) {
             crinitDbgInfoPrint("Task \'%s\' ready to spawn.", pTask->name);
             pTask->state = CRINIT_TASK_STATE_STARTING;
 
@@ -510,7 +510,7 @@ static int crinitFindTask(crinitTask_t **task, const char *taskName, const crini
     return -1;
 }
 
-static bool crinitTaskReady(const crinitTask_t *t) {
+static bool crinitTaskIsReady(const crinitTask_t *t) {
     crinitNullCheck(false, t);
 
     if (t->depsSize != 0) {
