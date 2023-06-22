@@ -22,13 +22,13 @@
 /**
  * Find index of a task in the crinitTaskDB_t::taskSet of an crinitTaskDB_t by name.
  *
- * @param idx       Pointer to return the index with.
+ * @param task      Pointer pointer to return the task with.
  * @param taskName  The crinitTask_t::name to search for.
  * @param in        The crinitTaskDB_t_t to search in.
  *
  * @return 0 on success, -1 otherwise
  */
-static int crinitFindInTaskDB(ssize_t *idx, const char *taskName, const crinitTaskDB_t *in);
+static int crinitFindTask(crinitTask_t **task, const char *taskName, const crinitTaskDB_t *in);
 /**
  * Check if an crinitTask_t is considered ready to be started (startable).
  *
@@ -106,30 +106,32 @@ int crinitTaskDBInsert(crinitTaskDB_t *ctx, const crinitTask_t *t, bool overwrit
         return -1;
     }
 
-    ssize_t idx = -1;
-    if (crinitFindInTaskDB(&idx, t->name, ctx) == 0) {
+    crinitTask_t *pTask;
+    if (crinitFindTask(&pTask, t->name, ctx) == 0) {
         if (overwrite) {
-            crinitDestroyTask(&ctx->taskSet[idx]);
+            crinitDestroyTask(pTask);
         } else {
             crinitErrPrint("Found task/include with name '%s' already in TaskDB but will not overwrite", t->name);
             goto fail;
         }
     }
-    if (idx == -1 && ctx->taskSetItems == ctx->taskSetSize) {
-        // We need to grow the backing array
-        crinitTask_t *newSet = realloc(ctx->taskSet, ctx->taskSetSize * 2 * sizeof(crinitTask_t));
-        if (newSet == NULL) {
-            crinitErrnoPrint("Could not allocate additional memory for more task/include elements.");
-            goto fail;
+
+    if (pTask == NULL) {
+        if (ctx->taskSetItems == ctx->taskSetSize) {
+            // We need to grow the backing array
+            crinitTask_t *newSet = realloc(ctx->taskSet, ctx->taskSetSize * 2 * sizeof(crinitTask_t));
+            if (newSet == NULL) {
+                crinitErrnoPrint("Could not allocate additional memory for more task/include elements.");
+                goto fail;
+            }
+            ctx->taskSet = newSet;
+            ctx->taskSetSize *= 2;
         }
-        ctx->taskSet = newSet;
-        ctx->taskSetSize *= 2;
-    }
-    if (idx == -1) {
-        idx = ctx->taskSetItems++;
+
+        pTask = &ctx->taskSet[ctx->taskSetItems++];
     }
 
-    if (crinitTaskCopy(&ctx->taskSet[idx], t) == -1) {
+    if (crinitTaskCopy(pTask, t) == -1) {
         crinitErrPrint("Could not copy new Task.");
         goto fail;
     }
@@ -207,20 +209,19 @@ int crinitTaskDBSetTaskState(crinitTaskDB_t *ctx, crinitTaskState_t s, const cha
     }
 
     crinitTask_t *pTask;
-    crinitTaskDbForEach(ctx, pTask) {
-        if (strcmp(pTask->name, taskName) == 0) {
-            pTask->state = s;
-            s &= ~CRINIT_TASK_STATE_NOTIFIED;  // Here we don't care if we got the state via notification or directly.
-            if (s == CRINIT_TASK_STATE_FAILED) {
-                pTask->failCount++;
-            } else if (s == CRINIT_TASK_STATE_DONE) {
-                pTask->failCount = 0;
-            }
-            pthread_cond_broadcast(&ctx->changed);
-            pthread_mutex_unlock(&ctx->lock);
-            return 0;
+    if (crinitFindTask(&pTask, taskName, ctx) == 0) {
+        pTask->state = s;
+        s &= ~CRINIT_TASK_STATE_NOTIFIED;  // Here we don't care if we got the state via notification or directly.
+        if (s == CRINIT_TASK_STATE_FAILED) {
+            pTask->failCount++;
+        } else if (s == CRINIT_TASK_STATE_DONE) {
+            pTask->failCount = 0;
         }
+        pthread_cond_broadcast(&ctx->changed);
+        pthread_mutex_unlock(&ctx->lock);
+        return 0;
     }
+
     pthread_mutex_unlock(&ctx->lock);
     crinitErrPrint("Could not set TaskState for Task \'%s\' as it does not exist in TaskDB.", taskName);
     return -1;
@@ -236,12 +237,10 @@ int crinitTaskDBGetTaskState(crinitTaskDB_t *ctx, crinitTaskState_t *s, const ch
     }
 
     crinitTask_t *pTask;
-    crinitTaskDbForEach(ctx, pTask) {
-        if (strcmp(pTask->name, taskName) == 0) {
-            *s = pTask->state;
-            pthread_mutex_unlock(&ctx->lock);
-            return 0;
-        }
+    if (crinitFindTask(&pTask, taskName, ctx) == 0) {
+        *s = pTask->state;
+        pthread_mutex_unlock(&ctx->lock);
+        return 0;
     }
     pthread_mutex_unlock(&ctx->lock);
     crinitErrPrint("Could not get TaskState of Task \'%s\' as it does not exist in TaskDB.", taskName);
@@ -257,12 +256,10 @@ int crinitTaskDBSetTaskPID(crinitTaskDB_t *ctx, pid_t pid, const char *taskName)
     }
 
     crinitTask_t *pTask;
-    crinitTaskDbForEach(ctx, pTask) {
-        if (strcmp(pTask->name, taskName) == 0) {
-            pTask->pid = pid;
-            pthread_mutex_unlock(&ctx->lock);
-            return 0;
-        }
+    if (crinitFindTask(&pTask, taskName, ctx) == 0) {
+        pTask->pid = pid;
+        pthread_mutex_unlock(&ctx->lock);
+        return 0;
     }
     pthread_mutex_unlock(&ctx->lock);
     crinitErrPrint("Could not set TaskState for Task \'%s\' as it does not exist in TaskDB.", taskName);
@@ -279,12 +276,10 @@ int crinitTaskDBGetTaskPID(crinitTaskDB_t *ctx, pid_t *pid, const char *taskName
     }
 
     crinitTask_t *pTask;
-    crinitTaskDbForEach(ctx, pTask) {
-        if (strcmp(pTask->name, taskName) == 0) {
-            *pid = pTask->pid;
-            pthread_mutex_unlock(&ctx->lock);
-            return 0;
-        }
+    if (crinitFindTask(&pTask, taskName, ctx) == 0) {
+        *pid = pTask->pid;
+        pthread_mutex_unlock(&ctx->lock);
+        return 0;
     }
     pthread_mutex_unlock(&ctx->lock);
     crinitErrPrint("Could not get TaskState of Task \'%s\' as it does not exist in TaskDB.", taskName);
@@ -302,13 +297,11 @@ int crinitTaskDBGetTaskStateAndPID(crinitTaskDB_t *ctx, crinitTaskState_t *s, pi
     }
 
     crinitTask_t *pTask;
-    crinitTaskDbForEach(ctx, pTask) {
-        if (strcmp(pTask->name, taskName) == 0) {
-            *s = pTask->state;
-            *pid = pTask->pid;
-            pthread_mutex_unlock(&ctx->lock);
-            return 0;
-        }
+    if (crinitFindTask(&pTask, taskName, ctx) == 0) {
+        *s = pTask->state;
+        *pid = pTask->pid;
+        pthread_mutex_unlock(&ctx->lock);
+        return 0;
     }
     pthread_mutex_unlock(&ctx->lock);
     crinitErrPrint("Could not get TaskState of Task \'%s\' as it does not exist in TaskDB.", taskName);
@@ -325,41 +318,39 @@ int crinitTaskDBAddDepToTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep, co
 
     crinitTask_t *pTask;
     crinitTaskDep_t *pDep;
-    crinitTaskDbForEach(ctx, pTask) {
-        if (strcmp(pTask->name, taskName) == 0) {
-            // Return immediately if dependency is already present
-            crinitTaskForEachDep(pTask, pDep) {
-                if (strcmp(pDep->name, dep->name) == 0 && strcmp(pDep->event, dep->event) == 0) {
-                    pthread_mutex_unlock(&ctx->lock);
-                    return 0;
-                }
-            }
-            pTask->depsSize++;
-            crinitTaskDep_t *pTempDeps = realloc(pTask->deps, pTask->depsSize * sizeof(crinitTaskDep_t));
-            if (pTempDeps == NULL) {
-                crinitErrnoPrint("Could not reallocate memory of dependency array for task \'%s\'.", taskName);
-                pTask->depsSize--;
+    if (crinitFindTask(&pTask, taskName, ctx) == 0) {
+        // Return immediately if dependency is already present
+        crinitTaskForEachDep(pTask, pDep) {
+            if (strcmp(pDep->name, dep->name) == 0 && strcmp(pDep->event, dep->event) == 0) {
                 pthread_mutex_unlock(&ctx->lock);
-                return -1;
+                return 0;
             }
-            pTask->deps = pTempDeps;
-            size_t lastIdx = pTask->depsSize - 1;
-            size_t nameCopyLen = strlen(dep->name) + 1;
-            size_t eventCopyLen = strlen(dep->event) + 1;
-            pTask->deps[lastIdx].name = malloc(nameCopyLen + eventCopyLen);
-
-            if (pTask->deps[lastIdx].name == NULL) {
-                crinitErrnoPrint("Could not allocate memory for dependency backing string for task \'%s\'.", taskName);
-                pTask->depsSize--;
-                pthread_mutex_unlock(&ctx->lock);
-                return -1;
-            }
-            pTask->deps[lastIdx].event = pTask->deps[lastIdx].name + nameCopyLen;
-            memcpy(pTask->deps[lastIdx].name, dep->name, nameCopyLen);
-            memcpy(pTask->deps[lastIdx].event, dep->event, eventCopyLen);
-            pthread_mutex_unlock(&ctx->lock);
-            return 0;
         }
+        pTask->depsSize++;
+        crinitTaskDep_t *pTempDeps = realloc(pTask->deps, pTask->depsSize * sizeof(crinitTaskDep_t));
+        if (pTempDeps == NULL) {
+            crinitErrnoPrint("Could not reallocate memory of dependency array for task \'%s\'.", taskName);
+            pTask->depsSize--;
+            pthread_mutex_unlock(&ctx->lock);
+            return -1;
+        }
+        pTask->deps = pTempDeps;
+        size_t lastIdx = pTask->depsSize - 1;
+        size_t nameCopyLen = strlen(dep->name) + 1;
+        size_t eventCopyLen = strlen(dep->event) + 1;
+        pTask->deps[lastIdx].name = malloc(nameCopyLen + eventCopyLen);
+
+        if (pTask->deps[lastIdx].name == NULL) {
+            crinitErrnoPrint("Could not allocate memory for dependency backing string for task \'%s\'.", taskName);
+            pTask->depsSize--;
+            pthread_mutex_unlock(&ctx->lock);
+            return -1;
+        }
+        pTask->deps[lastIdx].event = pTask->deps[lastIdx].name + nameCopyLen;
+        memcpy(pTask->deps[lastIdx].name, dep->name, nameCopyLen);
+        memcpy(pTask->deps[lastIdx].event, dep->event, eventCopyLen);
+        pthread_mutex_unlock(&ctx->lock);
+        return 0;
     }
     pthread_mutex_unlock(&ctx->lock);
     crinitErrPrint("Could not find task \'%s\' in TaskDB.", taskName);
@@ -375,22 +366,20 @@ int crinitTaskDBRemoveDepFromTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *de
     }
 
     crinitTask_t *pTask;
-    crinitTaskDbForEach(ctx, pTask) {
-        if (strcmp(pTask->name, taskName) == 0) {
-            for (size_t j = 0; j < pTask->depsSize; j++) {
-                if ((strcmp(pTask->deps[j].name, dep->name) == 0) && (strcmp(pTask->deps[j].event, dep->event) == 0)) {
-                    crinitDbgInfoPrint("Removing dependency \'%s:%s\' in \'%s\'.", dep->name, dep->event, pTask->name);
-                    free(pTask->deps[j].name);
-                    if (j < pTask->depsSize - 1) {
-                        pTask->deps[j] = pTask->deps[pTask->depsSize - 1];
-                    }
-                    pTask->depsSize--;
+    if (crinitFindTask(&pTask, taskName, ctx) == 0) {
+        for (size_t j = 0; j < pTask->depsSize; j++) {
+            if ((strcmp(pTask->deps[j].name, dep->name) == 0) && (strcmp(pTask->deps[j].event, dep->event) == 0)) {
+                crinitDbgInfoPrint("Removing dependency \'%s:%s\' in \'%s\'.", dep->name, dep->event, pTask->name);
+                free(pTask->deps[j].name);
+                if (j < pTask->depsSize - 1) {
+                    pTask->deps[j] = pTask->deps[pTask->depsSize - 1];
                 }
+                pTask->depsSize--;
             }
-            pthread_cond_broadcast(&ctx->changed);
-            pthread_mutex_unlock(&ctx->lock);
-            return 0;
         }
+        pthread_cond_broadcast(&ctx->changed);
+        pthread_mutex_unlock(&ctx->lock);
+        return 0;
     }
     pthread_mutex_unlock(&ctx->lock);
     crinitErrPrint("Could not find task \'%s\' in TaskDB.", taskName);
@@ -448,18 +437,16 @@ int crinitTaskDBProvideFeature(crinitTaskDB_t *ctx, const crinitTask_t *provider
 int crinitTaskDBProvideFeatureByTaskName(crinitTaskDB_t *ctx, const char *taskName, crinitTaskState_t newState) {
     crinitNullCheck(-1, ctx, taskName);
 
-    const crinitTask_t *provider = NULL;
-
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
         crinitErrnoPrint("Could not queue up for mutex lock.");
         return -1;
     }
-    ssize_t taskIdx;
-    if (crinitFindInTaskDB(&taskIdx, taskName, ctx) == -1) {
+
+    crinitTask_t *provider;
+    if (crinitFindTask(&provider, taskName, ctx) == -1) {
         crinitErrPrint("Could not find task \'%s\' in TaskDB.", taskName);
         return -1;
     }
-    provider = &ctx->taskSet[taskIdx];
     pthread_mutex_unlock(&ctx->lock);
 
     return crinitTaskDBProvideFeature(ctx, provider, newState);
@@ -507,20 +494,19 @@ int crinitTaskDBExportTaskNamesToArray(crinitTaskDB_t *ctx, char **tasks[], size
     return ret;
 }
 
-static int crinitFindInTaskDB(ssize_t *idx, const char *taskName, const crinitTaskDB_t *in) {
+static int crinitFindTask(crinitTask_t **task, const char *taskName, const crinitTaskDB_t *in) {
     crinitNullCheck(-1, taskName, in);
 
-    for (size_t i = 0; i < in->taskSetItems; i++) {
-        if (strcmp(taskName, in->taskSet[i].name) == 0) {
-            if (idx != NULL) {
-                *idx = i;
-            }
+    crinitTask_t *pTask;
+    crinitTaskDbForEach(in, pTask) {
+        if (strcmp(taskName, pTask->name) == 0) {
+            *task = pTask;
             return 0;
         }
     }
-    if (idx != NULL) {
-        *idx = -1;
-    }
+
+    *task = NULL;
+
     return -1;
 }
 
