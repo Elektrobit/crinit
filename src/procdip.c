@@ -27,7 +27,7 @@
 #endif
 
 /** Macro wrapper for the gettid syscall in case glibc is not new enough to contain one itself **/
-#define EBCL_gettid() ((pid_t)syscall(SYS_gettid))
+#define crinitGettid() ((pid_t)syscall(SYS_gettid))
 
 /** Struct wrapper for arguments to dispatchThreadFunc **/
 typedef struct ebcl_DispThrArgs_t {
@@ -149,7 +149,7 @@ static void *EBCL_dispatchThreadFunc(void *args) {
     crinitTaskDB_t *ctx = a->ctx;
     const crinitTask_t *t = a->t;
     crinitTask_t *tCopy = NULL;
-    pid_t threadId = EBCL_gettid();
+    pid_t threadId = crinitGettid();
     pid_t pid = -1;
 
     crinitDbgInfoPrint("(TID: %d) New thread started.", threadId);

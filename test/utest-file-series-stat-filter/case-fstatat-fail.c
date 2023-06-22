@@ -1,6 +1,6 @@
 /**
  * @file case-fstatat-fail.c
- * @brief Unit test for EBCL_statFilter(), fstatat fail.
+ * @brief Unit test for crinitStatFilter(), fstatat fail.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -18,7 +18,7 @@
 #include "unit_test.h"
 #include "utest-file-series-stat-filter.h"
 
-void EBCL_statFilterTestFstatatFail(void **state) {
+void crinitStatFilterTestFstatatFail(void **state) {
     CRINIT_PARAM_UNUSED(state);
     struct stat buf = {0};
 
@@ -33,9 +33,9 @@ void EBCL_statFilterTestFstatatFail(void **state) {
     will_set_parameter(__wrap_fstatat, buf, &buf);
     will_return(__wrap_fstatat, 0);
 
-    assert_int_equal(EBCL_statFilter(path, baseDirFd, false), 0);
+    assert_int_equal(crinitStatFilter(path, baseDirFd, false), 0);
 
     will_set_parameter(__wrap_fstatat, buf, &buf);
     will_return(__wrap_fstatat, 0);
-    assert_int_equal(EBCL_statFilter(path, baseDirFd, true), 0);
+    assert_int_equal(crinitStatFilter(path, baseDirFd, true), 0);
 }
