@@ -463,6 +463,7 @@ int crinitTaskDBProvideFeatureByTaskName(crinitTaskDB_t *ctx, const char *taskNa
 
 int crinitTaskDBExportTaskNamesToArray(crinitTaskDB_t *ctx, char **tasks[], size_t *numTasks) {
     int ret = 0;
+    size_t i;
 
     crinitNullCheck(-1, ctx, tasks, numTasks);
 
@@ -472,33 +473,32 @@ int crinitTaskDBExportTaskNamesToArray(crinitTaskDB_t *ctx, char **tasks[], size
     }
 
     *numTasks = 0;
-    *tasks = malloc(ctx->taskSetItems * sizeof(*tasks));
+    *tasks = calloc(ctx->taskSetItems, sizeof(*tasks));
     if (*tasks == NULL) {
         crinitErrnoPrint("Could not allocate memory for task array.");
         pthread_mutex_unlock(&ctx->lock);
         return -1;
     }
 
-    for (size_t i = 0; i < ctx->taskSetItems; i++) {
-        crinitTask_t *pTask = &ctx->taskSet[i];
-        (*tasks)[i] = strdup(pTask->name);
+    for (i = 0; i < ctx->taskSetItems; i++) {
+        (*tasks)[i] = strdup(ctx->taskSet[i].name);
         if ((*tasks)[i] == NULL) {
             crinitErrnoPrint("Could not allocate memory for task name.");
             ret = -1;
-            goto fail;
+            break;
         }
-        (*numTasks)++;
     }
 
-    goto success;
-fail:
-    for (size_t i = 0; i < *numTasks; i++) {
-        free((*tasks)[i]);
+    if (ret == 0) {
+        *numTasks = i;
+    } else {
+        for (size_t j = 0; j < i; j++) {
+            free((*tasks)[i]);
+        }
+        free(*tasks);
+        *tasks = NULL;
     }
-    free(*tasks);
-    *tasks = NULL;
-    *numTasks = 0;
-success:
+
     pthread_mutex_unlock(&ctx->lock);
     return ret;
 }
