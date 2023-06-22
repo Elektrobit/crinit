@@ -41,11 +41,9 @@ static int crinitFindInTaskDB(ssize_t *idx, const char *taskName, const crinitTa
 static bool crinitTaskReady(const crinitTask_t *t);
 
 int crinitTaskDBInitWithSize(crinitTaskDB_t *ctx, int (*spawnFunc)(crinitTaskDB_t *ctx, const crinitTask_t *),
-                            size_t initialSize) {
-    if (ctx == NULL) {
-        crinitErrPrint("Given crinitTaskDB_t to initialize must not be NULL.");
-        return -1;
-    }
+                             size_t initialSize) {
+    crinitNullCheck(-1, ctx);
+
     if (initialSize < 1) {
         crinitErrPrint("Given initial size of task set in TaskDB must be at least 1.");
         return -1;
@@ -81,10 +79,8 @@ fail:
 }
 
 int crinitTaskDBDestroy(crinitTaskDB_t *ctx) {
-    if (ctx == NULL) {
-        crinitErrPrint("Given crinitTaskDB_t to destroy must not be NULL.");
-        return -1;
-    }
+    crinitNullCheck(-1, ctx);
+
     ctx->spawnFunc = NULL;
     ctx->taskSetSize = 0;
     for (size_t i = 0; i < ctx->taskSetItems; i++) {
@@ -150,10 +146,8 @@ fail:
 }
 
 int crinitTaskDBSpawnReady(crinitTaskDB_t *ctx) {
-    if (ctx == NULL) {
-        crinitErrPrint("The TaskDB context must not be NULL.");
-        return -1;
-    }
+    crinitNullCheck(-1, ctx);
+
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
         crinitErrnoPrint("Could not queue up for mutex lock.");
         return -1;
@@ -190,10 +184,8 @@ int crinitTaskDBSpawnReady(crinitTaskDB_t *ctx) {
 }
 
 int crinitTaskDBSetSpawnInhibit(crinitTaskDB_t *ctx, bool inh) {
-    if (ctx == NULL) {
-        crinitErrPrint("The TaskDB context must not be NULL.");
-        return -1;
-    }
+    crinitNullCheck(-1, ctx);
+
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
         crinitErrnoPrint("Could not queue up for mutex lock.");
         return -1;
@@ -210,10 +202,7 @@ int crinitTaskDBSetSpawnInhibit(crinitTaskDB_t *ctx, bool inh) {
 }
 
 int crinitTaskDBSetTaskState(crinitTaskDB_t *ctx, crinitTaskState_t s, const char *taskName) {
-    if (ctx == NULL || taskName == NULL) {
-        crinitErrPrint("The TaskDB context and the taskName must not be NULL.");
-        return -1;
-    }
+    crinitNullCheck(-1, ctx, taskName);
 
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
         crinitErrnoPrint("Could not queue up for mutex lock.");
@@ -240,10 +229,8 @@ int crinitTaskDBSetTaskState(crinitTaskDB_t *ctx, crinitTaskState_t s, const cha
 }
 
 int crinitTaskDBGetTaskState(crinitTaskDB_t *ctx, crinitTaskState_t *s, const char *taskName) {
-    if (ctx == NULL || taskName == NULL || s == NULL) {
-        crinitErrPrint("The TaskDB context, taskName, and result pointer must not be NULL.");
-        return -1;
-    }
+    crinitNullCheck(-1, ctx, taskName, s);
+
     *s = 0;
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
         crinitErrnoPrint("Could not queue up for mutex lock.");
@@ -263,10 +250,7 @@ int crinitTaskDBGetTaskState(crinitTaskDB_t *ctx, crinitTaskState_t *s, const ch
 }
 
 int crinitTaskDBSetTaskPID(crinitTaskDB_t *ctx, pid_t pid, const char *taskName) {
-    if (ctx == NULL || taskName == NULL) {
-        crinitErrPrint("The TaskDB context and the taskName must not be NULL.");
-        return -1;
-    }
+    crinitNullCheck(-1, ctx, taskName);
 
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
         crinitErrnoPrint("Could not queue up for mutex lock.");
@@ -286,10 +270,8 @@ int crinitTaskDBSetTaskPID(crinitTaskDB_t *ctx, pid_t pid, const char *taskName)
 }
 
 int crinitTaskDBGetTaskPID(crinitTaskDB_t *ctx, pid_t *pid, const char *taskName) {
-    if (ctx == NULL || taskName == NULL || pid == NULL) {
-        crinitErrPrint("The TaskDB context, taskName, and result pointer must not be NULL.");
-        return -1;
-    }
+    crinitNullCheck(-1, ctx, taskName, pid);
+
     *pid = -1;
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
         crinitErrnoPrint("Could not queue up for mutex lock.");
@@ -309,10 +291,8 @@ int crinitTaskDBGetTaskPID(crinitTaskDB_t *ctx, pid_t *pid, const char *taskName
 }
 
 int crinitTaskDBGetTaskStateAndPID(crinitTaskDB_t *ctx, crinitTaskState_t *s, pid_t *pid, const char *taskName) {
-    if (ctx == NULL || taskName == NULL || s == NULL || pid == NULL) {
-        crinitErrPrint("The TaskDB context, taskName, and result pointers must not be NULL.");
-        return -1;
-    }
+    crinitNullCheck(-1, ctx, taskName, s, pid);
+
     *s = 0;
     *pid = 0;
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
@@ -334,10 +314,8 @@ int crinitTaskDBGetTaskStateAndPID(crinitTaskDB_t *ctx, crinitTaskState_t *s, pi
 }
 
 int crinitTaskDBAddDepToTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep, const char *taskName) {
-    if (ctx == NULL || dep == NULL || taskName == NULL) {
-        crinitErrPrint("The TaskDB context, the TaskDep to add, and the task name to search for must not be NULL.");
-        return -1;
-    }
+    crinitNullCheck(-1, ctx, dep, taskName);
+
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
         crinitErrnoPrint("Could not queue up for mutex lock.");
         return -1;
@@ -385,10 +363,7 @@ int crinitTaskDBAddDepToTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep, co
 }
 
 int crinitTaskDBRemoveDepFromTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep, const char *taskName) {
-    if (ctx == NULL || dep == NULL || taskName == NULL) {
-        crinitErrPrint("The TaskDB context, the TaskDep to remove, and the task name to search for must not be NULL.");
-        return -1;
-    }
+    crinitNullCheck(-1, ctx, dep, taskName);
 
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
         crinitErrnoPrint("Could not queue up for mutex lock.");
@@ -419,10 +394,7 @@ int crinitTaskDBRemoveDepFromTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *de
 }
 
 int crinitTaskDBFulfillDep(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep) {
-    if (ctx == NULL || dep == NULL) {
-        crinitErrPrint("The TaskDB context and the TaskDep to fulfill must not be NULL.");
-        return -1;
-    }
+    crinitNullCheck(-1, ctx, dep);
 
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
         crinitErrnoPrint("Could not queue up for mutex lock.");
@@ -434,7 +406,7 @@ int crinitTaskDBFulfillDep(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep) {
         for (size_t j = 0; j < pTask->depsSize; j++) {
             if ((strcmp(pTask->deps[j].name, dep->name) == 0) && (strcmp(pTask->deps[j].event, dep->event) == 0)) {
                 crinitDbgInfoPrint("Removing fulfilled dependency \'%s:%s\' in \'%s\'.", dep->name, dep->event,
-                                  pTask->name);
+                                   pTask->name);
                 free(pTask->deps[j].name);
                 if (j < pTask->depsSize - 1) {
                     pTask->deps[j] = pTask->deps[pTask->depsSize - 1];
@@ -449,10 +421,7 @@ int crinitTaskDBFulfillDep(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep) {
 }
 
 int crinitTaskDBProvideFeature(crinitTaskDB_t *ctx, const crinitTask_t *provider, crinitTaskState_t newState) {
-    if (ctx == NULL || provider == NULL) {
-        crinitErrPrint("The TaskDB context and the feature-providing task must not be NULL.");
-        return -1;
-    }
+    crinitNullCheck(-1, ctx, provider);
 
     for (size_t i = 0; i < provider->prvSize; i++) {
         if (provider->prv[i].stateReq == newState) {
@@ -473,10 +442,7 @@ int crinitTaskDBProvideFeature(crinitTaskDB_t *ctx, const crinitTask_t *provider
 }
 
 int crinitTaskDBProvideFeatureByTaskName(crinitTaskDB_t *ctx, const char *taskName, crinitTaskState_t newState) {
-    if (ctx == NULL || taskName == NULL) {
-        crinitErrPrint("The TaskDB context and the name of the feature-providing task must not be NULL.");
-        return -1;
-    }
+    crinitNullCheck(-1, ctx, taskName);
 
     const crinitTask_t *provider = NULL;
 
@@ -498,10 +464,7 @@ int crinitTaskDBProvideFeatureByTaskName(crinitTaskDB_t *ctx, const char *taskNa
 int crinitTaskDBExportTaskNamesToArray(crinitTaskDB_t *ctx, char **tasks[], size_t *numTasks) {
     int ret = 0;
 
-    if (ctx == NULL || tasks == NULL || numTasks == NULL) {
-        crinitErrPrint("The TaskDB context and the output array pointer must not be NULL.");
-        return -1;
-    }
+    crinitNullCheck(-1, ctx, tasks, numTasks);
 
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
         crinitErrnoPrint("Could not queue up for mutex lock.");
@@ -541,9 +504,7 @@ success:
 }
 
 static int crinitFindInTaskDB(ssize_t *idx, const char *taskName, const crinitTaskDB_t *in) {
-    if (taskName == NULL || in == NULL) {
-        return -1;
-    }
+    crinitNullCheck(-1, taskName, in);
 
     for (size_t i = 0; i < in->taskSetItems; i++) {
         if (strcmp(taskName, in->taskSet[i].name) == 0) {
@@ -560,9 +521,8 @@ static int crinitFindInTaskDB(ssize_t *idx, const char *taskName, const crinitTa
 }
 
 static bool crinitTaskReady(const crinitTask_t *t) {
-    if (t == NULL) {
-        return false;
-    }
+    crinitNullCheck(false, t);
+
     if (t->depsSize != 0) {
         return false;
     }
