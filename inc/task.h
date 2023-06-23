@@ -77,7 +77,7 @@ typedef struct crinitTask_t {
 } crinitTask_t;
 
 /**
- * Given an ebcl_Task_t, iterate over all dependencies of this task.
+ * Given a crinitTask_t, iterate over all dependencies of this task.
  *
  * @param task  Pointer to the task.
  * @param dep   Pointer to the current dependency.
