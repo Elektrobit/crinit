@@ -74,50 +74,44 @@ fail:
     return -1;
 }
 
-int crinitTaskDup(crinitTask_t **out, const crinitTask_t *orig) {
-    *out = malloc(sizeof(crinitTask_t));
-    if (*out == NULL) {
-        crinitErrnoPrint("Could not allocate memory for duplicate of Task \'%s\'.", orig->name);
-        return -1;
-    }
-    crinitTask_t *pTask = *out;
-    memcpy(pTask, orig, sizeof(*pTask));
-    pTask->name = NULL;
-    pTask->deps = NULL;
-    pTask->cmds = NULL;
-    pTask->taskEnv.envp = NULL;
-    pTask->prv = NULL;
-    pTask->redirs = NULL;
+int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig) {
+    memcpy(out, orig, sizeof(*out));
+    out->name = NULL;
+    out->deps = NULL;
+    out->cmds = NULL;
+    out->taskEnv.envp = NULL;
+    out->prv = NULL;
+    out->redirs = NULL;
 
-    pTask->name = strdup(orig->name);
-    if (pTask->name == NULL) {
+    out->name = strdup(orig->name);
+    if (out->name == NULL) {
         crinitErrnoPrint("Could not allocate memory for task name during copy of Task \'%s\'.", orig->name);
         goto fail;
     }
 
-    if (pTask->cmdsSize > 0) {
-        pTask->cmds = calloc(pTask->cmdsSize, sizeof(*pTask->cmds));
-        if (pTask->cmds == NULL) {
-            crinitErrnoPrint("Could not allocate memory for %zu COMMANDs during copy of Task \'%s\'.", pTask->cmdsSize,
-                            orig->name);
+    if (out->cmdsSize > 0) {
+        out->cmds = calloc(out->cmdsSize, sizeof(*out->cmds));
+        if (out->cmds == NULL) {
+            crinitErrnoPrint("Could not allocate memory for %zu COMMANDs during copy of Task \'%s\'.", out->cmdsSize,
+                             orig->name);
             goto fail;
         }
 
-        for (size_t i = 0; i < pTask->cmdsSize; i++) {
+        for (size_t i = 0; i < out->cmdsSize; i++) {
             if (orig->cmds[i].argc < 1) {
                 crinitErrPrint("COMMANDs must have at least one argument.");
                 goto fail;
             }
-            pTask->cmds[i].argc = orig->cmds[i].argc;
-            pTask->cmds[i].argv = calloc((pTask->cmds[i].argc + 1), sizeof(*pTask->cmds[i].argv));
-            if (pTask->cmds[i].argv == NULL) {
+            out->cmds[i].argc = orig->cmds[i].argc;
+            out->cmds[i].argv = calloc((out->cmds[i].argc + 1), sizeof(*out->cmds[i].argv));
+            if (out->cmds[i].argv == NULL) {
                 crinitErrnoPrint(
                     "Could not allocate memory for argv-array of size %d during copy of task \'%s\', cmds[%zu].",
-                    pTask->cmds[i].argc + 1, orig->name, i);
+                    out->cmds[i].argc + 1, orig->name, i);
                 goto fail;
             }
 
-            char *origArgvBackbufEnd = strchr(orig->cmds[i].argv[pTask->cmds[i].argc - 1], '\0');
+            char *origArgvBackbufEnd = strchr(orig->cmds[i].argv[out->cmds[i].argc - 1], '\0');
             size_t argvBackbufLen = origArgvBackbufEnd - orig->cmds[i].argv[0] + 1;
 
             char *argvBackbuf = malloc(argvBackbufLen);
@@ -127,89 +121,106 @@ int crinitTaskDup(crinitTask_t **out, const crinitTask_t *orig) {
             }
 
             memcpy(argvBackbuf, orig->cmds[i].argv[0], argvBackbufLen);
-            for (int j = 0; j < pTask->cmds[i].argc; j++) {
-                pTask->cmds[i].argv[j] = argvBackbuf + (orig->cmds[i].argv[j] - orig->cmds[i].argv[0]);
+            for (int j = 0; j < out->cmds[i].argc; j++) {
+                out->cmds[i].argv[j] = argvBackbuf + (orig->cmds[i].argv[j] - orig->cmds[i].argv[0]);
             }
         }
     }
 
-    if (crinitEnvSetDup(&pTask->taskEnv, &orig->taskEnv) == -1) {
+    if (crinitEnvSetDup(&out->taskEnv, &orig->taskEnv) == -1) {
         crinitErrPrint("Could not duplicate task environment during task duplication.");
         goto fail;
     }
 
-    if (pTask->depsSize > 0) {
-        pTask->deps = calloc(pTask->depsSize, sizeof(*pTask->deps));
-        if (pTask->deps == NULL) {
-            crinitErrnoPrint("Could not allocate memory for %zu TaskDeps during copy of Task \'%s\'.", pTask->depsSize,
-                            orig->name);
+    if (out->depsSize > 0) {
+        out->deps = calloc(out->depsSize, sizeof(*out->deps));
+        if (out->deps == NULL) {
+            crinitErrnoPrint("Could not allocate memory for %zu TaskDeps during copy of Task \'%s\'.", out->depsSize,
+                             orig->name);
             goto fail;
         }
 
-        for (size_t i = 0; i < pTask->depsSize; i++) {
+        for (size_t i = 0; i < out->depsSize; i++) {
             size_t depNameLen = strlen(orig->deps[i].name) + 1;
             size_t depEventLen = strlen(orig->deps[i].event) + 1;
-            pTask->deps[i].name = malloc(depNameLen + depEventLen);
-            if (pTask->deps[i].name == NULL) {
-                crinitErrnoPrint("Could not allocate memory for backing string in deps[%zu] during copy of Task \'%s\'.",
-                                i, orig->name);
+            out->deps[i].name = malloc(depNameLen + depEventLen);
+            if (out->deps[i].name == NULL) {
+                crinitErrnoPrint(
+                    "Could not allocate memory for backing string in deps[%zu] during copy of Task \'%s\'.", i,
+                    orig->name);
                 goto fail;
             }
-            memcpy(pTask->deps[i].name, orig->deps[i].name, depNameLen + depEventLen);
-            pTask->deps[i].event = pTask->deps[i].name + depNameLen;
+            memcpy(out->deps[i].name, orig->deps[i].name, depNameLen + depEventLen);
+            out->deps[i].event = out->deps[i].name + depNameLen;
         }
     } else {
-        pTask->deps = NULL;
+        out->deps = NULL;
     }
 
-    if (pTask->prvSize > 0) {
-        pTask->prv = calloc(pTask->prvSize, sizeof(*pTask->prv));
-        if (pTask->prv == NULL) {
-            crinitErrnoPrint("Could not allocate memory for %zu TaskPrvs during copy of Task \'%s\'.", pTask->prvSize,
-                            orig->name);
+    if (out->prvSize > 0) {
+        out->prv = calloc(out->prvSize, sizeof(*out->prv));
+        if (out->prv == NULL) {
+            crinitErrnoPrint("Could not allocate memory for %zu TaskPrvs during copy of Task \'%s\'.", out->prvSize,
+                             orig->name);
             goto fail;
         }
 
-        for (size_t i = 0; i < pTask->prvSize; i++) {
-            pTask->prv[i].name = strdup(orig->prv[i].name);
-            pTask->prv[i].stateReq = orig->prv[i].stateReq;
-            if (pTask->prv[i].name == NULL) {
+        for (size_t i = 0; i < out->prvSize; i++) {
+            out->prv[i].name = strdup(orig->prv[i].name);
+            out->prv[i].stateReq = orig->prv[i].stateReq;
+            if (out->prv[i].name == NULL) {
                 crinitErrnoPrint("Could not allocate memory for TaskPrv at index %zu during copy of Task '%s'.", i,
-                                pTask->name);
+                                 out->name);
                 goto fail;
             }
         }
     } else {
-        pTask->prv = NULL;
+        out->prv = NULL;
     }
 
-    if (pTask->redirsSize > 0) {
-        pTask->redirs = calloc(pTask->redirsSize, sizeof(*pTask->redirs));
-        if (pTask->redirs == NULL) {
+    if (out->redirsSize > 0) {
+        out->redirs = calloc(out->redirsSize, sizeof(*out->redirs));
+        if (out->redirs == NULL) {
             crinitErrnoPrint("Could not allocate memory for %zu IO redirection(s) during copy of task '%s'.",
-                            pTask->redirsSize, orig->name);
+                             out->redirsSize, orig->name);
             goto fail;
         }
-        for (size_t i = 0; i < pTask->redirsSize; i++) {
-            if (crinitIoRedirCpy(&pTask->redirs[i], &orig->redirs[i]) == -1) {
+        for (size_t i = 0; i < out->redirsSize; i++) {
+            if (crinitIoRedirCpy(&out->redirs[i], &orig->redirs[i]) == -1) {
                 crinitErrPrint("Could not copy all IO redirections during copy of task '%s'.", orig->name);
                 goto fail;
             }
         }
     }
 
-    pTask->opts = orig->opts;
-    pTask->state = orig->state;
-    pTask->pid = orig->pid;
-    pTask->maxRetries = orig->maxRetries;
-    pTask->failCount = orig->failCount;
+    out->opts = orig->opts;
+    out->state = orig->state;
+    out->pid = orig->pid;
+    out->maxRetries = orig->maxRetries;
+    out->failCount = orig->failCount;
 
     return 0;
 
 fail:
-    crinitFreeTask(*out);
-    *out = NULL;
+    crinitDestroyTask(out);
     return -1;
+}
+
+int crinitTaskDup(crinitTask_t **out, const crinitTask_t *orig) {
+    *out = malloc(sizeof(crinitTask_t));
+    if (*out == NULL) {
+        crinitErrnoPrint("Could not allocate memory for duplicate of Task \'%s\'.", orig->name);
+        return -1;
+    }
+
+    if (crinitTaskCopy(*out, orig) != 0) {
+        crinitErrPrint("Failed to copy task \'%s\'.", orig->name);
+        crinitFreeTask(*out);
+        *out = NULL;
+        return -1;
+    }
+
+    return 0;
 }
 
 void crinitFreeTask(crinitTask_t *t) {
@@ -330,7 +341,7 @@ static inline int crinitTaskSetFromConfKvList(crinitTask_t *tgt, const crinitCon
             val = pEntry->val;
             if ((!tcm->includeSafe) && type == CRINIT_TASK_TYPE_INCLUDE) {
                 crinitErrPrint("Non include-safe configuration parameter '%s' encountered in include file.",
-                              pEntry->key);
+                               pEntry->key);
                 return -1;
             }
             if ((!tcm->arrayLike) && pEntry->keyArrIndex > 0) {
@@ -339,7 +350,7 @@ static inline int crinitTaskSetFromConfKvList(crinitTask_t *tgt, const crinitCon
             }
             if (importArr[tcm->config] && tcm->cfgHandler(tgt, val) == -1) {
                 crinitErrPrint("Could not parse configuration parameter '%s' with given value '%s'.", pEntry->key,
-                              pEntry->val);
+                               pEntry->val);
                 return -1;
             }
         }
@@ -347,4 +358,3 @@ static inline int crinitTaskSetFromConfKvList(crinitTask_t *tgt, const crinitCon
     }
     return 0;
 }
-

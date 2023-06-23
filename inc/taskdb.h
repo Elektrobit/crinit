@@ -16,27 +16,37 @@
 
 #include "task.h"
 
-#define CRINIT_MONITOR_DEP_NAME "@crinitmon"   ///< Special dependency name to depend on monitor events (not yet impl.).
-#define CRINIT_PROVIDE_DEP_NAME "@provided"  ///< Special dependency name to depend on provided system features.
-#define CRINIT_TASKDB_INITIAL_SIZE 256       ///< Default initial size of taskSet and inclSet within an crinitTaskDB_t.
+#define CRINIT_MONITOR_DEP_NAME "@crinitmon"  ///< Special dependency name to depend on monitor events (not yet impl.).
+#define CRINIT_PROVIDE_DEP_NAME "@provided"   ///< Special dependency name to depend on provided system features.
+#define CRINIT_TASKDB_INITIAL_SIZE 256        ///< Default initial size of taskSet and inclSet within an crinitTaskDB_t.
 
 /**
  * Type to store a task database.
  */
 typedef struct crinitTaskDB_t {
     crinitTask_t *taskSet;  ///< Dynamic array of tasks, corresponds to task configs specified in the series config.
-    size_t taskSetSize;    ///< Current maximum size of the task array.
-    size_t taskSetItems;   ///< Number of elements in the task array.
+    size_t taskSetSize;     ///< Current maximum size of the task array.
+    size_t taskSetItems;    ///< Number of elements in the task array.
 
     /** Pointer specifying a function for spawning ready tasks, used by crinitTaskDBSpawnReady() **/
     int (*spawnFunc)(struct crinitTaskDB_t *ctx, const crinitTask_t *);
 
-    bool spawnInhibit;  ///< Specifies if process spawning is currently inhibited, respected by crinitTaskDBSpawnReady().
+    bool
+        spawnInhibit;  ///< Specifies if process spawning is currently inhibited, respected by crinitTaskDBSpawnReady().
 
     pthread_mutex_t lock;    ///< Mutex to lock the TaskDB, shall be used for any operations on the data structure if
                              ///< multiple threads are involved.
     pthread_cond_t changed;  ///< Condition variable to be signalled if taskSet or spawnInhibit is changed.
 } crinitTaskDB_t;
+
+/**
+ * Iterate over all tasks in a task database
+ *
+ * @param taskDb  Pointer to a task database to traverse.
+ * @param task    Pointer to a single task entry.
+ */
+#define crinitTaskDbForEach(taskDb, task) \
+    for ((task) = (taskDb)->taskSet; (task) != (taskDb)->taskSet + (taskDb)->taskSetItems; (task)++)
 
 /**
  * Insert a task into a task database.
@@ -252,7 +262,7 @@ int crinitTaskDBSetSpawnInhibit(crinitTaskDB_t *ctx, bool inh);
  *  @return 0 on success, -1 otherwise
  */
 int crinitTaskDBInitWithSize(crinitTaskDB_t *ctx, int (*spawnFunc)(crinitTaskDB_t *ctx, const crinitTask_t *),
-                            size_t initialSize);
+                             size_t initialSize);
 /**
  * Initialize the internals of an crinitTaskDB_t with the default initial size of CRINIT_TASKDB_INITIAL_SIZE.
  *
