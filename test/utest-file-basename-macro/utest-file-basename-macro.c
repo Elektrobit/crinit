@@ -17,7 +17,7 @@
  * Runs the unit test group for crinitClientSetVerbose using the cmocka API.
  */
 int main(void) {
-    const struct CMUnitTest tests[] = {cmocka_unit_test(EBCL_fileBasenameMacroRegressionTest)};
+    const struct CMUnitTest tests[] = {cmocka_unit_test(crinitFileBasenameMacroRegressionTest)};
 
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

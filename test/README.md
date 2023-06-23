@@ -17,7 +17,7 @@ test/
 |   |-- mock-glob-opt-set.c                     The mock for crinitGlobOptSet()
 |   |-- mock-glot-opt-set.h                     The corresponding header for the mock
 |   `-- mock-*.[ch]                             Additional mocks for functions used in tests
-|-- utest-crinit-function-name                  Tests for EBCL_crinitFunctionName()
+|-- utest-crinit-function-name                  Tests for crinitFunctionName()
 |   |-- case-glob-opt-error.c                   Testcase for an expected error
 |   |-- case-success.c                          Testcase for successful run
 |   |-- case-*.c                                More testcases as needed

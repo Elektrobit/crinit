@@ -16,7 +16,7 @@
 #include "string.h"
 #include "unit_test.h"
 
-static void EBCL_testVariant(size_t numElements, const char *baseDir) {
+static void crinitTestVariant(size_t numElements, const char *baseDir) {
     char *fnamesBuff[numElements + 1];
     struct crinitFileSeries_t fse = {.baseDir = (char *)baseDir, .size = numElements};
 
@@ -55,8 +55,8 @@ void crinitDestroyFileSeriesTestSuccess(void **state) {
 
     const char *baseDir = "/some/path/to/testdir/";
 
-    EBCL_testVariant(0, NULL);
-    EBCL_testVariant(0, baseDir);
-    EBCL_testVariant(10, NULL);
-    EBCL_testVariant(10, baseDir);
+    crinitTestVariant(0, NULL);
+    crinitTestVariant(0, baseDir);
+    crinitTestVariant(10, NULL);
+    crinitTestVariant(10, baseDir);
 }

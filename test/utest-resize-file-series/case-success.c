@@ -16,7 +16,7 @@
 #include "string.h"
 #include "unit_test.h"
 
-static void EBCL_testVariant(size_t initialSize, size_t numElements) {
+static void crinitTestVariant(size_t initialSize, size_t numElements) {
     char *fnamesBuff[numElements + 1];
     struct crinitFileSeries_t fse = {.size = initialSize};
 
@@ -51,13 +51,13 @@ void crinitResizeFileSeriesTestSuccess(void **state) {
 
     print_message("Testing with %zu max elements.\n", maxElements);
 
-    EBCL_testVariant(0, 0);
-    EBCL_testVariant(0, 100);
-    EBCL_testVariant(0, maxElements);
+    crinitTestVariant(0, 0);
+    crinitTestVariant(0, 100);
+    crinitTestVariant(0, maxElements);
 
-    EBCL_testVariant(100, 100);
-    EBCL_testVariant(100, maxElements);
+    crinitTestVariant(100, 100);
+    crinitTestVariant(100, maxElements);
 
-    EBCL_testVariant(maxElements, 100);
-    EBCL_testVariant(maxElements, maxElements);
+    crinitTestVariant(maxElements, 100);
+    crinitTestVariant(maxElements, maxElements);
 }

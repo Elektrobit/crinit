@@ -17,6 +17,6 @@
  * Checks that the custom compile-time configuration for libinih defined in deps/inih/README.md is actually used and
  * followed.
  */
-void EBCL_inihConfigurationRegressionTest(void **state);
+void crinitInihConfigurationRegressionTest(void **state);
 
 #endif /* __UTEST_INIH_CONFIGURATION__ */

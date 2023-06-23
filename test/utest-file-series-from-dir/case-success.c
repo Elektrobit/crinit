@@ -18,7 +18,7 @@
 #include "string.h"
 #include "unit_test.h"
 
-static void EBCL_testVariant(size_t numElements, const char *path, const char *fileSuffix, bool followLinks) {
+static void crinitTestVariant(size_t numElements, const char *path, const char *fileSuffix, bool followLinks) {
     const DIR *dptr = (void *)0xd3adda7a;
     const int dfp = 0xc0ff;
 
@@ -98,7 +98,7 @@ void crinitFileSeriesFromDirTestSuccess(void **state) {
     for (int i = 0; i < pathSize; i++) {
         for (int j = 0; j < fileSuffixSize; j++) {
             for (int k = 0; k < followLinksSize; k++) {
-                EBCL_testVariant(10, path[i], fileSuffix[j], followLinks[k]);
+                crinitTestVariant(10, path[i], fileSuffix[j], followLinks[k]);
             }
         }
     }

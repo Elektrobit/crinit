@@ -16,7 +16,7 @@
 #include "unit_test.h"
 #include "utest-file-series-free-scandir-list.h"
 
-static void EBCL_testVariant(int size) {
+static void crinitTestVariant(int size) {
     struct dirent *list[size];
     struct dirent **scanList;
     if (size > 0) {
@@ -46,8 +46,8 @@ static void EBCL_testVariant(int size) {
 void crinitFreeScandirListTestSuccess(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
-    EBCL_testVariant(-1);
-    EBCL_testVariant(0);
-    EBCL_testVariant(10);
-    EBCL_testVariant(0x1000);
+    crinitTestVariant(-1);
+    crinitTestVariant(0);
+    crinitTestVariant(10);
+    crinitTestVariant(0x1000);
 }

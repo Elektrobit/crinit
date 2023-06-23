@@ -16,6 +16,6 @@
  *
  * Checks that the macro is present and only shows the file's basename and not its whole path.
  */
-void EBCL_fileBasenameMacroRegressionTest(void **state);
+void crinitFileBasenameMacroRegressionTest(void **state);
 
 #endif /* __UTEST_FILE_BASENAME_MACRO__ */

@@ -15,7 +15,7 @@
 #include "fseries.h"
 #include "unit_test.h"
 
-static void EBCL_testVariant(crinitFileSeries_t *fse, const char *baseDir, char **strArr) {
+static void crinitTestVariant(crinitFileSeries_t *fse, const char *baseDir, char **strArr) {
     print_message("Testing crinitFileSeriesFromStrArr with fse = %p, baseDir = %p and strArr = %p.\n", (void *)fse,
                   (void *)baseDir, (void *)strArr);
 
@@ -31,11 +31,11 @@ void crinitFileSeriesFromStrArrTestNullParamError(void **state) {
     const char *baseDir = (void *)0xdeadda7a;
     char **strArr = (void *)0xbaadda7a;
 
-    EBCL_testVariant(NULL, NULL, NULL);
-    EBCL_testVariant(&fse, NULL, NULL);
-    EBCL_testVariant(&fse, baseDir, NULL);
-    EBCL_testVariant(&fse, NULL, strArr);
-    EBCL_testVariant(NULL, baseDir, NULL);
-    EBCL_testVariant(NULL, baseDir, strArr);
-    EBCL_testVariant(NULL, NULL, strArr);
+    crinitTestVariant(NULL, NULL, NULL);
+    crinitTestVariant(&fse, NULL, NULL);
+    crinitTestVariant(&fse, baseDir, NULL);
+    crinitTestVariant(&fse, NULL, strArr);
+    crinitTestVariant(NULL, baseDir, NULL);
+    crinitTestVariant(NULL, baseDir, strArr);
+    crinitTestVariant(NULL, NULL, strArr);
 }

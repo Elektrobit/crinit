@@ -1,6 +1,6 @@
 /**
  * @file utest-lexers-envset-inner.c
- * @brief Implementation of the EBCL_envsetInnerLex() unit test group.
+ * @brief Implementation of the crinitEnvSetInnerLex() unit test group.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *

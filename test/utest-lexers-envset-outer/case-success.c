@@ -15,14 +15,14 @@
 #include "unit_test.h"
 #include "utest-lexers-envset-outer.h"
 
-#define EBCL_DUMMY_ENVIRONMENT_VALUE "Some quoted value with $VAR\\x2e"
+#define CRINIT_DUMMY_ENVIRONMENT_VALUE "Some quoted value with $VAR\\x2e"
 
 void crinitEnvVarOuterLexTestSuccess(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     const char *mbegin = NULL, *mend = NULL;
     const char *validEnvKey = "SUPER_key9000";
-    const char *validEnvVal = "\"" EBCL_DUMMY_ENVIRONMENT_VALUE "\"";
+    const char *validEnvVal = "\"" CRINIT_DUMMY_ENVIRONMENT_VALUE "\"";
     const char *wSpc = "    ";
     const char *end = "";
 
@@ -42,8 +42,8 @@ void crinitEnvVarOuterLexTestSuccess(void **state) {
     assert_ptr_equal(mbegin, validEnvVal + 1);
     assert_ptr_equal(mend, validEnvVal + strlen(validEnvVal) - 1);
     assert_ptr_equal(mend, s - 1);
-    assert_true(strlen(mbegin) > strlen(EBCL_DUMMY_ENVIRONMENT_VALUE));
-    assert_memory_equal(mbegin, EBCL_DUMMY_ENVIRONMENT_VALUE, strlen(EBCL_DUMMY_ENVIRONMENT_VALUE));
+    assert_true(strlen(mbegin) > strlen(CRINIT_DUMMY_ENVIRONMENT_VALUE));
+    assert_memory_equal(mbegin, CRINIT_DUMMY_ENVIRONMENT_VALUE, strlen(CRINIT_DUMMY_ENVIRONMENT_VALUE));
 
     /* Should consume/match all whitespace */
     s = wSpc;
