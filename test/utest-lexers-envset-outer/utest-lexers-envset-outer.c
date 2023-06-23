@@ -1,6 +1,6 @@
 /**
  * @file utest-lexers-envset-outer.c
- * @brief Implementation of the EBCL_envsetOuterLex() unit test group.
+ * @brief Implementation of the crinitEnvsetOuterLex() unit test group.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *

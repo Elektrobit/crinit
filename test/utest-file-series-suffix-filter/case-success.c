@@ -16,7 +16,7 @@
 #include "unit_test.h"
 #include "utest-file-series-suffix-filter.h"
 
-static void EBCL_testVariant(const char *path, const char *fileSuffix, bool res) {
+static void crinitTestVariant(const char *path, const char *fileSuffix, bool res) {
     if (fileSuffix && fileSuffix[0] != '\0') {
         print_message("Testing crinitSuffixFilter with path '%s' and file suffix '%s'.\n", path, fileSuffix);
     } else {
@@ -71,7 +71,7 @@ void crinitSuffixFilterTestSuccess(void **state) {
     const int fileSuffixSize = ARRAY_SIZE(fileSuffix);
     for (int i = 0; i < pathSize; i++) {
         for (int j = 0; j < fileSuffixSize; j++) {
-            EBCL_testVariant(path[i], fileSuffix[j], res[i * fileSuffixSize + j]);
+            crinitTestVariant(path[i], fileSuffix[j], res[i * fileSuffixSize + j]);
         }
     }
 }

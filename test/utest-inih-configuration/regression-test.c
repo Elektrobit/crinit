@@ -20,7 +20,7 @@
 
 static int crinitIniHandler(void *userP, const char *section, const char *name, const char *value);
 
-void EBCL_inihConfigurationRegressionTest(void **state) {
+void crinitInihConfigurationRegressionTest(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     // Check compile time defines as specified in deps/inih/README.md

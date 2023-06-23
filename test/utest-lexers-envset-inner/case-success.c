@@ -15,7 +15,7 @@
 #include "unit_test.h"
 #include "utest-lexers-envset-inner.h"
 
-#define EBCL_UTEST_DUMMY_ENVVAR_NAME "SOME_VAR"
+#define CRINIT_UTEST_DUMMY_ENVVAR_NAME "SOME_VAR"
 
 void crinitEnvVarInnerLexTestSuccess(void **state) {
     CRINIT_PARAM_UNUSED(state);
@@ -24,7 +24,7 @@ void crinitEnvVarInnerLexTestSuccess(void **state) {
     const char *cpyStr = "COPYTHIS";
     const char *escSeq = "\\n";
     const char *escSeqHex = "\\x7e";
-    const char *var = "${" EBCL_UTEST_DUMMY_ENVVAR_NAME "}";
+    const char *var = "${" CRINIT_UTEST_DUMMY_ENVVAR_NAME "}";
     const char *end = "";
 
     const char *s = NULL;
@@ -54,10 +54,10 @@ void crinitEnvVarInnerLexTestSuccess(void **state) {
     s = var;
     assert_int_equal(crinitEnvVarInnerLex(&s, &mbegin, &mend), CRINIT_TK_VAR);
     assert_ptr_equal(mbegin, var + 2);
-    assert_ptr_equal(mend, var + 2 + strlen(EBCL_UTEST_DUMMY_ENVVAR_NAME));
+    assert_ptr_equal(mend, var + 2 + strlen(CRINIT_UTEST_DUMMY_ENVVAR_NAME));
     assert_ptr_equal(mend, s - 1);
-    assert_true(strlen(mbegin) > strlen(EBCL_UTEST_DUMMY_ENVVAR_NAME));
-    assert_memory_equal(mbegin, EBCL_UTEST_DUMMY_ENVVAR_NAME, strlen(EBCL_UTEST_DUMMY_ENVVAR_NAME));
+    assert_true(strlen(mbegin) > strlen(CRINIT_UTEST_DUMMY_ENVVAR_NAME));
+    assert_memory_equal(mbegin, CRINIT_UTEST_DUMMY_ENVVAR_NAME, strlen(CRINIT_UTEST_DUMMY_ENVVAR_NAME));
 
     /* Should match the end-of-string */
     s = end;

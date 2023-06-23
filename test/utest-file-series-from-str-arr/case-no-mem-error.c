@@ -15,7 +15,7 @@
 #include "fseries.h"
 #include "unit_test.h"
 
-static void EBCL_testVariant(size_t numElements) {
+static void crinitTestVariant(size_t numElements) {
     struct crinitFileSeries_t fse;
 
     char *baseDir = (void *)0xDEADB33F;
@@ -40,7 +40,7 @@ static void EBCL_testVariant(size_t numElements) {
 void crinitFileSeriesFromStrArrTestNoMemError(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
-    EBCL_testVariant(0);
-    EBCL_testVariant(10);
-    EBCL_testVariant(0x1000);
+    crinitTestVariant(0);
+    crinitTestVariant(10);
+    crinitTestVariant(0x1000);
 }

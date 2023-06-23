@@ -16,9 +16,9 @@
 #include "rtimcmd.h"
 
 /**
- * Structure used for \a EBCL_storeRtimCmdContext().
+ * Structure used for \a crinitStoreRtimCmdContext().
  */
-struct EBCL_storeRtimCmdArgs {
+struct crinitStoreRtimCmdArgs {
     crinitRtimCmd_t **ptr;
     crinitRtimCmd_t *value;
 };
@@ -31,13 +31,13 @@ struct EBCL_storeRtimCmdArgs {
  * the parameter, but saves a copy of the pointer.
  *
  * The parameter types of this function match the Cmocka interface, but will be casted internally as if they were:
- *   int EBCL_storeRtimCmd(const crinitRtimCmd_t *value, const crinitRtimCmd_t **context);
+ *   int crinitStoreRtimCmd(const crinitRtimCmd_t *value, const crinitRtimCmd_t **context);
  *
  * Example usage:
- *   crinitRtimCmd_t *EBCL_buildRtimArgCmd;
- *   expect_check(__wrap_crinitBuildRtimCmd, c, EBCL_storeRtimCmd, &EBCL_buildRtimArgCmd);
+ *   crinitRtimCmd_t *crinitBuildRtimArgCmd;
+ *   expect_check(__wrap_crinitBuildRtimCmd, c, crinitStoreRtimCmd, &crinitBuildRtimArgCmd);
  */
-int EBCL_storeRtimCmd(const uintmax_t value, const uintmax_t context);
+int crinitStoreRtimCmd(const uintmax_t value, const uintmax_t context);
 /**
  * Cmocka check function storing the argument value and setting a mocked value.
  *
@@ -46,9 +46,9 @@ int EBCL_storeRtimCmd(const uintmax_t value, const uintmax_t context);
  * actually check the parameter, but saves a copy of the pointer and writes a mocked value to the pointed object.
  *
  * The parameter types of this function match the Cmocka interface, but will be casted internally as if they were:
- *   int EBCL_storeRtimCmd(const crinitRtimCmd_t *value, const EBCL_storeRtimCmdArgs *context);
+ *   int crinitStoreRtimCmd(const crinitRtimCmd_t *value, const crinitStoreRtimCmdArgs *context);
  *
- * The \a context is a casted pointer to a \a EBCL_storeRtimCmdArgs. The argument \a value will be written to the
+ * The \a context is a casted pointer to a \a crinitStoreRtimCmdArgs. The argument \a value will be written to the
  * \a context->ptr member, while the member \a context->value will be placed into the object pointed to by \a value.
  *
  * Example usage:
@@ -61,25 +61,25 @@ int EBCL_storeRtimCmd(const uintmax_t value, const uintmax_t context);
  *       .argc = 1,
  *       .args = crinitXferArgResOKArgs
  *   };
- *   struct EBCL_storeRtimCmdArgs crinitXferArgResContext = {
+ *   struct crinitStoreRtimCmdArgs crinitXferArgResContext = {
  *       &crinitXferArgRes,
  *       &crinitXferArgResOK,
  *   };
- *   expect_check(__wrap_crinitXfer, res, EBCL_storeRtimCmdContext, &crinitXferArgResContext);
+ *   expect_check(__wrap_crinitXfer, res, crinitStoreRtimCmdContext, &crinitXferArgResContext);
  */
-int EBCL_storeRtimCmdContext(const uintmax_t value, const uintmax_t context);
+int crinitStoreRtimCmdContext(const uintmax_t value, const uintmax_t context);
 /**
  * Cmocka check function comparing the argument value with the given context.
  *
  * This function is used to check a pointer value passed to a mock function. It uses the pointer value previously saved
- * by \a EBCL_storeRtimCmd(). This has to be done this way, as the arguments to expect_check() are evaluated at test
+ * by \a crinitStoreRtimCmd(). This has to be done this way, as the arguments to expect_check() are evaluated at test
  * setup before the function under test runs, but the by-reference pointer is only known at runtime.
  *
  * Example usage:
- *   crinitRtimCmd_t *EBCL_buildRtimArgCmd;
- *   expect_check(__wrap_crinitXfer, cmd, EBCL_checkRtimCmd, &EBCL_buildRtimArgCmd);
+ *   crinitRtimCmd_t *crinitBuildRtimArgCmd;
+ *   expect_check(__wrap_crinitXfer, cmd, crinitCheckRtimCmd, &crinitBuildRtimArgCmd);
  */
-int EBCL_checkRtimCmd(const uintmax_t value, const uintmax_t context);
+int crinitCheckRtimCmd(const uintmax_t value, const uintmax_t context);
 
 /**
  * Unit test for crinitClientTaskAdd(), successful execution.

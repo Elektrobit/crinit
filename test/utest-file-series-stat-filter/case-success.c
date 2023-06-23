@@ -18,7 +18,7 @@
 #include "unit_test.h"
 #include "utest-file-series-stat-filter.h"
 
-static void EBCL_testVariant(const char *path, int baseDirFd, bool followLinks) {
+static void crinitTestVariant(const char *path, int baseDirFd, bool followLinks) {
     struct stat buf = {.st_mode = __S_IFREG};
 
     if (followLinks) {
@@ -54,7 +54,7 @@ void crinitStatFilterTestSuccess(void **state) {
     for (int i = 0; i < pathSize; i++) {
         for (int j = 0; j < baseDirFdSize; j++) {
             for (int k = 0; k < followLinksSize; k++) {
-                EBCL_testVariant(path[i], baseDirFd[j], followLinks[k]);
+                crinitTestVariant(path[i], baseDirFd[j], followLinks[k]);
             }
         }
     }

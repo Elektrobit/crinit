@@ -17,12 +17,12 @@
 
 #define TEST_CONFIG_FILE "/test/config/file"
 
-static crinitRtimCmd_t *EBCL_buildRtimArgCmd;
+static crinitRtimCmd_t *crinitBuildRtimArgCmd;
 static crinitRtimCmd_t *crinitXferArgRes;
 static char *crinitXferArgResOKArgs[1] = {CRINIT_RTIMCMD_RES_OK};
 static crinitRtimCmd_t crinitXferArgResOK = {
     .op = CRINIT_RTIMCMD_R_ADDTASK, .argc = 1, .args = crinitXferArgResOKArgs};
-static struct EBCL_storeRtimCmdArgs crinitXferArgResContext = {
+static struct crinitStoreRtimCmdArgs crinitXferArgResContext = {
     &crinitXferArgRes,
     &crinitXferArgResOK,
 };
@@ -30,7 +30,7 @@ static struct EBCL_storeRtimCmdArgs crinitXferArgResContext = {
 void crinitClientTaskAddTestForceDepsEmpty(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
-    expect_check(__wrap_crinitBuildRtimCmd, c, EBCL_storeRtimCmd, &EBCL_buildRtimArgCmd);
+    expect_check(__wrap_crinitBuildRtimCmd, c, crinitStoreRtimCmd, &crinitBuildRtimArgCmd);
     expect_value(__wrap_crinitBuildRtimCmd, op, CRINIT_RTIMCMD_C_ADDTASK);
     expect_value(__wrap_crinitBuildRtimCmd, argc, 3);
     expect_string(__wrap_crinitBuildRtimCmd, vargs[0], TEST_CONFIG_FILE);
@@ -38,12 +38,12 @@ void crinitClientTaskAddTestForceDepsEmpty(void **state) {
     expect_string(__wrap_crinitBuildRtimCmd, vargs[2], "@empty");
     will_return(__wrap_crinitBuildRtimCmd, 0);
     expect_any(__wrap_crinitXfer, sockFile);
-    expect_check(__wrap_crinitXfer, res, EBCL_storeRtimCmdContext, &crinitXferArgResContext);
-    expect_check(__wrap_crinitXfer, cmd, EBCL_checkRtimCmd, &EBCL_buildRtimArgCmd);
+    expect_check(__wrap_crinitXfer, res, crinitStoreRtimCmdContext, &crinitXferArgResContext);
+    expect_check(__wrap_crinitXfer, cmd, crinitCheckRtimCmd, &crinitBuildRtimArgCmd);
     will_return(__wrap_crinitXfer, 0);
-    expect_check(__wrap_crinitDestroyRtimCmd, c, EBCL_checkRtimCmd, &EBCL_buildRtimArgCmd);
+    expect_check(__wrap_crinitDestroyRtimCmd, c, crinitCheckRtimCmd, &crinitBuildRtimArgCmd);
     will_return(__wrap_crinitDestroyRtimCmd, 0);
-    expect_check(__wrap_crinitDestroyRtimCmd, c, EBCL_checkRtimCmd, &crinitXferArgRes);
+    expect_check(__wrap_crinitDestroyRtimCmd, c, crinitCheckRtimCmd, &crinitXferArgRes);
     will_return(__wrap_crinitDestroyRtimCmd, 0);
     assert_int_equal(crinitClientTaskAdd(TEST_CONFIG_FILE, false, ""), 0);
 }
