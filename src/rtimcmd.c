@@ -33,18 +33,18 @@
 /**
  * Argument structure for shdnThread().
  */
-typedef struct ebcl_ShdnThrArgs_t {
+typedef struct crinitShdnThrArgs_t {
     crinitTaskDB_t *ctx;  ///< TaskDB which holds the tasks to be terminated/killed on shutdown.
     int shutdownCmd;     ///< The command for the reboot() syscall, see documentation of RB_* macros in man 7 reboot.
-} ebcl_ShdnThrArgs_t;
+} crinitShdnThrArgs_t;
 
 /**
  * A linked list to organize mount points that need to be handled before shutdown/reboot.
  */
-typedef struct ebcl_UnMountList_t {
-    struct ebcl_UnMountList_t *next;  ///< Pointer to next element.
+typedef struct crinitUnMountList_t {
+    struct crinitUnMountList_t *next;  ///< Pointer to next element.
     char target[PATH_MAX];            ///< A mount point path.
-} ebcl_UnMountList_t;
+} crinitUnMountList_t;
 
 /**
  * Internal implementation of the "addtask" command on an crinitTaskDB_t.
@@ -59,7 +59,7 @@ typedef struct ebcl_UnMountList_t {
  */
 static int crinitExecRtimCmdAddTask(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd);
 /**
- * Internal implementation of the "addseries" command on an ebcl_TaskDB.
+ * Internal implementation of the "addseries" command on an crinitTaskDB.
  *
  * For documentation on the command itself, see crinitClientSeriesAdd().
  *
@@ -185,9 +185,9 @@ static int crinitExecRtimCmdGetVer(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, co
  *
  * For documentation on the command itself, see crinitClientShutdown().
  *
- * @param ctx  The currently running ebcl_TaskDB, needed to inhibit spawning of new processes during shutdown.
+ * @param ctx  The currently running crinitTaskDB, needed to inhibit spawning of new processes during shutdown.
  * @param res  Return pointer for response/result.
- * @param cmd  The ebcl_RtimCmd to execute, used to pass the argument list.
+ * @param cmd  The crinitRtimCmd to execute, used to pass the argument list.
  *
  * @return 0 on success, -1 on error
  */
@@ -233,13 +233,13 @@ static inline int crinitFsPrepareShutdown(void);
  *
  * @return  0 on success, -1 on error
  */
-static inline int crinitGenUnMountList(ebcl_UnMountList_t **um, bool *rootfsIsRo);
+static inline int crinitGenUnMountList(crinitUnMountList_t **um, bool *rootfsIsRo);
 /**
- * Frees memory allocated for an ebcl_UnMountList_t by crinitGenUnMountList()
+ * Frees memory allocated for an crinitUnMountList_t by crinitGenUnMountList()
  *
- * @param um  The ebcl_UnMountList_t to free.
+ * @param um  The crinitUnMountList_t to free.
  */
-static inline void crinitFreeUnMountList(ebcl_UnMountList_t *um);
+static inline void crinitFreeUnMountList(crinitUnMountList_t *um);
 
 int crinitParseRtimCmd(crinitRtimCmd_t *out, const char *cmdStr) {
     if (out == NULL || cmdStr == NULL) {
@@ -1020,7 +1020,7 @@ static int crinitExecRtimCmdShutdown(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, 
         crinitErrPrint("Pointer parameters must not be NULL");
         return -1;
     }
-    ebcl_ShdnThrArgs_t *thrArgs = malloc(sizeof(ebcl_ShdnThrArgs_t));
+    crinitShdnThrArgs_t *thrArgs = malloc(sizeof(crinitShdnThrArgs_t));
     if (thrArgs == NULL) {
         crinitErrnoPrint("Could not allocate memory for shutdown thread arguments.");
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_SHUTDOWN, 2, CRINIT_RTIMCMD_RES_ERR, "Memory allocation error.");
@@ -1057,7 +1057,7 @@ static int crinitExecRtimCmdShutdown(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, 
 }
 
 static void *crinitShdnThread(void *args) {
-    ebcl_ShdnThrArgs_t *a = (ebcl_ShdnThrArgs_t *)args;
+    crinitShdnThrArgs_t *a = (crinitShdnThrArgs_t *)args;
     crinitTaskDB_t *ctx = a->ctx;
     int shutdownCmd = a->shutdownCmd;
     free(args);
@@ -1113,7 +1113,7 @@ static inline int crinitGracePeriod(unsigned long long micros) {
     return 0;
 }
 
-static inline int crinitGenUnMountList(ebcl_UnMountList_t **ml, bool *rootfsIsRo) {
+static inline int crinitGenUnMountList(crinitUnMountList_t **ml, bool *rootfsIsRo) {
     if (ml == NULL || rootfsIsRo == NULL) {
         crinitErrPrint("Input parameters must not be NULL.");
         return -1;
@@ -1124,7 +1124,7 @@ static inline int crinitGenUnMountList(ebcl_UnMountList_t **ml, bool *rootfsIsRo
         crinitErrnoPrint("Could not open \'/proc/mounts\' for reading.");
         return -1;
     }
-    ebcl_UnMountList_t *pList = malloc(sizeof(ebcl_UnMountList_t));
+    crinitUnMountList_t *pList = malloc(sizeof(crinitUnMountList_t));
     if (pList == NULL) {
         crinitErrnoPrint("Could not allocate memory for list of mount points to be unmounted.");
         fclose(mountListStream);
@@ -1165,7 +1165,7 @@ static inline int crinitGenUnMountList(ebcl_UnMountList_t **ml, bool *rootfsIsRo
         } else {
             // Put the mount point into the list in reverse order so we're beginning with the newest entry.
             memmove(pList->target, runner, strlen(runner) + 1);
-            ebcl_UnMountList_t *new = malloc(sizeof(ebcl_UnMountList_t));
+            crinitUnMountList_t *new = malloc(sizeof(crinitUnMountList_t));
             if (new == NULL) {
                 crinitErrnoPrint("Could not allocate memory for list of mount points to be unmounted.");
                 fclose(mountListStream);
@@ -1182,8 +1182,8 @@ static inline int crinitGenUnMountList(ebcl_UnMountList_t **ml, bool *rootfsIsRo
     return 0;
 }
 
-static inline void crinitFreeUnMountList(ebcl_UnMountList_t *ml) {
-    ebcl_UnMountList_t *prev;
+static inline void crinitFreeUnMountList(crinitUnMountList_t *ml) {
+    crinitUnMountList_t *prev;
     while (ml != NULL) {
         prev = ml;
         ml = ml->next;
@@ -1193,7 +1193,7 @@ static inline void crinitFreeUnMountList(ebcl_UnMountList_t *ml) {
 
 static inline int crinitFsPrepareShutdown(void) {
     int out = 0;
-    ebcl_UnMountList_t *um = NULL;
+    crinitUnMountList_t *um = NULL;
     bool rootfsIsRo;
 
     if (crinitGenUnMountList(&um, &rootfsIsRo) == -1) {
@@ -1203,7 +1203,7 @@ static inline int crinitFsPrepareShutdown(void) {
         rootfsIsRo = false;
         out = -1;
     } else {
-        ebcl_UnMountList_t *runner = um;
+        crinitUnMountList_t *runner = um;
         while (runner != NULL) {
             if (runner->target[0] != '\0') {
                 crinitDbgInfoPrint("Will unmount target \'%s\'.", runner->target);

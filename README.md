@@ -22,7 +22,7 @@ signature.
 
 ## Current Implementation
 
-The central Task Data Structure (`ebcl_TaskDB` in `taskdb.h`), Config Parser (`confparse.h/.c`), Process Dispatcher
+The central Task Data Structure (`crinitTaskDB` in `taskdb.h`), Config Parser (`confparse.h/.c`), Process Dispatcher
 (`procdip.h/.c`), Notification/Service interface (`notiserv.h/.c`, `rtimcmd.h/.c`), Client library
 (`crinit-client.h/.c`) have been preliminarily implemented and are functioning. In addition, the implementation contains
 a simple encapsulated storage for global options (`globopt.h/.c`), some minimal PID 1 setup code which cannot be
@@ -152,7 +152,7 @@ IO_REDIRECT = STDERR STDOUT
   advertise the `writable_var` feature in its `PROVIDES` config value.
   _Not yet implemented:_ Once the interface to the
   [Monitor](https://gitlabintern.emlix.com/elektrobit/base-os/corbos-tools) has been implemented, it will be possible to
-  depend on a monitor event by adding `@ebclmon:<event_name>` to `DEPENDS`.
+  depend on a monitor event by adding `@crinitmon:<event_name>` to `DEPENDS`.
 - **PROVIDES** -- As we have seen above, a task may depend on features and also provide them. In this case we advertise
   that after completion of this task (`wait`), the features `ipv4_dhcp` and `resolvconf` are provided. Another task may
   then depend e.g. on `@provided:resolvconf`. While the feature names chosen here reflect the functional intention, they

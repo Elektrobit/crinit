@@ -37,11 +37,11 @@
 #define MAX_CONN_BACKLOG 100
 
 /** Helper structure defining the arguments to connThread() **/
-typedef struct ebcl_ConnThrArgs_t {
+typedef struct crinitConnThrArgs_t {
     int sockFd;                 ///< The socket to accept connections from.
     crinitThreadPool_t *tpRef;  ///< Pointer to the crinitThreadPool_t context, needed for
                                 ///< crinitThreadPoolThreadAvailCallback() and crinitThreadPoolThreadBusyCallback().
-} ebcl_ConnThrArgs_t;
+} crinitConnThrArgs_t;
 
 static crinitThreadPool_t crinitWorkers;  ///< The worker thread pool to run connThread() in.
 static crinitTaskDB_t *crinitTdbRef;      ///< Pointer to the crinitTaskDB_t to operate on.
@@ -61,7 +61,7 @@ static crinitTaskDB_t *crinitTdbRef;      ///< Pointer to the crinitTaskDB_t to 
  *
  * \image html notiserv_sock_comm_seq.svg
  *
- * @param args  Arguments to the function, see ebcl_ConnThrArgs_t.
+ * @param args  Arguments to the function, see crinitConnThrArgs_t.
  *
  * @return  Does not return unless its thread is canceled in which case the return value is undefined.
  */
@@ -198,8 +198,8 @@ int crinitStartInterfaceServer(crinitTaskDB_t *ctx, const char *sockFile) {
         return -1;
     }
     umask(0022);
-    ebcl_ConnThrArgs_t a = {sockFd, &crinitWorkers};
-    if (crinitThreadPoolInit(&crinitWorkers, 0, crinitConnThread, &a, sizeof(ebcl_ConnThrArgs_t)) == -1) {
+    crinitConnThrArgs_t a = {sockFd, &crinitWorkers};
+    if (crinitThreadPoolInit(&crinitWorkers, 0, crinitConnThread, &a, sizeof(crinitConnThrArgs_t)) == -1) {
         crinitErrPrint("Could not fill server thread pool.");
         return -1;
     }
@@ -258,7 +258,7 @@ static void *crinitConnThread(void *args) {
         crinitErrPrint("(TID %d) Argument to connection worker thread must not be NULL.", threadId);
         return NULL;
     }
-    ebcl_ConnThrArgs_t *a = (ebcl_ConnThrArgs_t *)args;
+    crinitConnThrArgs_t *a = (crinitConnThrArgs_t *)args;
     int servSockFd = a->sockFd;
     int connSockFd;
     crinitDbgInfoPrint("(TID %d) Connection worker thread ready.", threadId);

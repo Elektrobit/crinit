@@ -53,7 +53,7 @@ static struct {
  *
  * @return  1 if \a dent should be included in the final result list, 0 if not.
  */
-TESTABLE_STATIC int criitScanDirFilter(const struct dirent *dent);
+TESTABLE_STATIC int crinitScanDirFilter(const struct dirent *dent);
 /**
  * Filters strings by suffix.
  *
@@ -177,7 +177,7 @@ int crinitFileSeriesFromDir(crinitFileSeries_t *fse, const char *path, const cha
     crinitScState.fileSuffix = fileSuffix;
     crinitScState.followLinks = followLinks;
 
-    scanRes = scandir(path, &scanList, criitScanDirFilter, alphasort);
+    scanRes = scandir(path, &scanList, crinitScanDirFilter, alphasort);
 
     crinitScState.baseDirFd = -1;
     crinitScState.fileSuffix = NULL;
@@ -262,7 +262,7 @@ int crinitStatFilter(const char *name, int baseDirFd, bool followLinks) {
     return S_ISREG(stbuf.st_mode);
 }
 
-int criitScanDirFilter(const struct dirent *dent) {
+int crinitScanDirFilter(const struct dirent *dent) {
     if (dent == NULL || dent->d_name == NULL) {
         return 0;
     }
