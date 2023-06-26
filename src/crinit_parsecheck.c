@@ -19,7 +19,7 @@
  *
  * @param t  The task to be printed.
  */
-static void crinirTaskPrint(const crinitTask_t *t) {
+static void crinitTaskPrint(const crinitTask_t *t) {
     crinitInfoPrint("---------------");
     crinitInfoPrint("Data Structure:");
     crinitInfoPrint("---------------");
@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
         crinitFreeConfList(c);
 
         crinitInfoPrint("Task extracted without error.");
-        crinirTaskPrint(t);
+        crinitTaskPrint(t);
 
         crinitInfoPrint("Will now attempt to duplicate the task and print out its (hopefully equal) contents.");
         crinitTask_t *u = NULL;
@@ -103,7 +103,7 @@ int main(int argc, char *argv[]) {
             return EXIT_FAILURE;
         }
         crinitFreeTask(t);
-        crinirTaskPrint(u);
+        crinitTaskPrint(u);
         crinitFreeTask(u);
     }
     crinitInfoPrint("Done.");

@@ -42,7 +42,7 @@ static void crinitPrintUsage(const char *basename);
  *
  * @param t  The task to be printed.
  */
-static void crinirTaskPrint(const crinitTask_t *t);
+static void crinitTaskPrint(const crinitTask_t *t);
 
 /**
  * Main function of crinit.
@@ -146,7 +146,7 @@ int main(int argc, char *argv[]) {
         crinitFreeConfList(c);
 
         crinitDbgInfoPrint("Task extracted without error.");
-        crinirTaskPrint(t);
+        crinitTaskPrint(t);
 
         if (crinitTaskDBInsert(&tdb, t, false) == -1) {
             crinitErrPrint("Could not insert Task '%s' into TaskDB.", t->name);
@@ -194,7 +194,7 @@ static void crinitPrintUsage(const char *basename) {
     fprintf(stderr, "If nothing is specified, the default path \'%s\' is used.\n", CRINIT_DEFAULT_CONFIG_SERIES);
 }
 
-static void crinirTaskPrint(const crinitTask_t *t) {
+static void crinitTaskPrint(const crinitTask_t *t) {
     crinitDbgInfoPrint("---------------");
     crinitDbgInfoPrint("Data Structure:");
     crinitDbgInfoPrint("---------------");

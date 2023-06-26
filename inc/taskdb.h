@@ -118,7 +118,7 @@ int crinitTaskDBProvideFeatureByTaskName(crinitTaskDB_t *ctx, const char *taskNa
  * Will search \a ctx for a task with name \a taskName and add \a dep to its crinitTask_t::deps and adjust
  * crinitTask_t::depsSize.
  *
- * @param ctx       The ebcl_taskDb context to work on.
+ * @param ctx       The crinitTaskDb context to work on.
  * @param dep       The dependency to be added.
  * @param taskName  The name of the relevant task.
  *
@@ -133,7 +133,7 @@ int crinitTaskDBAddDepToTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep, co
  * between two crinitTaskDep_t instances is the same as in crinitTaskDBFulfillDep(), i.e. their contents are
  * lexicographically equal.
  *
- * @param ctx       The ebcl_taskDb context to work on.
+ * @param ctx       The crinitTaskDb context to work on.
  * @param dep       The dependency to be removed.
  * @param taskName  The name of the relevant task.
  *
@@ -228,7 +228,7 @@ int crinitTaskDBGetTaskStateAndPID(crinitTaskDB_t *ctx, crinitTaskState_t *s, pi
  * crinitTask_t::failCount is less than crinitTask_t::maxRetries. The function uses crinitTaskDB_t::lock for
  * synchronization and is thread-safe.
  *
- * If ebcl_TaskDB::spawnInhibit is true, no tasks are considered startable and this function will return successfully
+ * If crinitTaskDB::spawnInhibit is true, no tasks are considered startable and this function will return successfully
  * without starting anything.
  *
  * @param ctx  The TaskDB context from which tasks will be started.
