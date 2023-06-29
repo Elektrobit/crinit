@@ -16,14 +16,10 @@ setup() {
     rm -f "${task}"
     cat << EOF > "${task}"
 # Config to test features of the parser in COMMAND values.
-
 NAME = command_parsing_test
 
-COMMAND[] = /bin/sh "-c"   "echo \\" '''   \\xe2\\x99\\xa5  \\"\\x68ello w\\ spc | tee ${out}"
-
-DEPENDS = ""
-
-RESPAWN = NO
+COMMAND = /bin/sh "-c"   "echo \\" '''   \\xe2\\x99\\xa5  \\"\\x68ello w\\ spc | tee ${out}"
+          /bin/sh "-c"   "echo 2nd line | tee -a ${out}"
 EOF
 }
 

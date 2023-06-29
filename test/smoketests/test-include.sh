@@ -21,17 +21,17 @@ NAME = smoketest_incl
 IO_REDIRECT = STDOUT "${out}" APPEND
 
 INCLUDE = incl_test_first
-INCLUDE = incl_test_second DEPENDS,IO_REDIRECT
+          incl_test_second DEPENDS,IO_REDIRECT
 
-COMMAND[] = /bin/sh -c "export -p"
-COMMAND[] = /bin/sh -c "echo export FAKE_ENV='stderr' 1>&2"
+COMMAND = /bin/sh -c "export -p"
+          /bin/sh -c "echo export FAKE_ENV='stderr' 1>&2"
 
 DEPENDS = ""
 
 RESPAWN = NO
 
 ENV_SET = LOC_VAR "Local EnvVar"
-ENV_SET = OVR_VAR "Hello, local World!"
+          OVR_VAR "Hello, local World!"
 EOF
 }
 
