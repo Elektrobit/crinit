@@ -27,7 +27,8 @@ typedef struct crinitConfigMapping_t {
 } crinitConfigMapping_t;
 
 /**
- * Constant (at compile-time) array of mappings between configuration names and their indices and properties.
+ * Constant (at compile-time) array of mappings between task-specific configuration names and their indices and
+ * properties.
  *
  * Must be lexicographically ordered (by crinitConfigMapping_t::configKey), so that crinitFindConfigMapping() works.
  * This is tested by a unit/regression test.
@@ -39,7 +40,8 @@ extern const crinitConfigMapping_t crinitTaskCfgMap[];
 extern const size_t crinitTaskCfgMapSize;
 
 /**
- * Constant (at compile-time) array of mappings between configuration names and their indices and properties.
+ * Constant (at compile-time) array of mappings between series/global configuration names and their indices and
+ * properties.
  *
  * Must be lexicographically ordered (by crinitConfigMapping_t::configKey), so that crinitFindConfigMapping() works.
  * This is tested by a unit/regression test.
@@ -51,12 +53,13 @@ extern const crinitConfigMapping_t crinitSeriesCfgMap[];
 extern const size_t crinitSeriesCfgMapSize;
 
 /**
- * Searches for an entry in crinitTaskCfgMap by crinitConfigMapping_t::configKey.
+ * Searches for an entry in an array of crinitConfigMapping_t by crinitConfigMapping_t::configKey.
  *
- * Uses bsearch() with the assumption that crinitTaskCfgMap is lexicographically ordered by
- * crinitConfigMapping_t::configKey.
+ * Uses bsearch() with the assumption that the array is lexicographically ordered by crinitConfigMapping_t::configKey.
  *
- * @param keyStr  The name of the mapping to search for.
+ * @param map      The array of crinitConfigMapping_t to search in.
+ * @param mapSize  The number of elements in the array to search.
+ * @param keyStr   The name of the mapping to search for.
  */
 const crinitConfigMapping_t *crinitFindConfigMapping(const crinitConfigMapping_t *map, size_t mapSize,
                                                      const char *keyStr);

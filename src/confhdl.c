@@ -20,6 +20,12 @@
 #include "lexers.h"
 #include "logio.h"
 
+/**
+ * Macro to assert that the given crinitConfigType_t in a crinitConfigHandler_t has a specific value.
+ *
+ * @param t  The target value of the parameter `type`. If unequal to the value given to the encompassing function, the
+ *           function will print an error and return -1.
+ */
 #define crinitCfgHandlerTypeCheck(t)                                                                      \
     do {                                                                                                  \
         if ((t) != type) {                                                                                \
