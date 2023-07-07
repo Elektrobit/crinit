@@ -37,8 +37,7 @@ it is considered trusted.
 A number of public keys are available via the system keyring (in-kernel key management and retention facility, man 7 keyrings). If a crinit config is signed with one of them, it is
 considered trusted.
 
-The method with which to load the keys to the system keyring must be protected by the secure boot chain. The means with
-which to do that are implementation defined, possible examples could be:
+The method to load the keys to the system keyring must be protected by the secure boot chain. The means to do that are implementation defined, possible examples could be:
 
 * compilation into a signed Kernel
 * Kernel support for a hardware security module containing the key
@@ -58,12 +57,7 @@ A master public key is available via the Kernel system keyring. A number of publ
 private key exist in a known directory of the rootfs. If a crinit config is signed with one of them or the master key,
 it is considered trusted.
 
-The method with which to load the master key to the system keyring must be protected by the secure boot chain. The means
-with which to do that are implementation defined, possible examples could be:
-
-* compilation into a signed Kernel
-* Kernel support for a hardware security module containing the key
-* a trusted Kernel module
+The method to load the master key are similar to option 2.
 
 #### Pros
 
