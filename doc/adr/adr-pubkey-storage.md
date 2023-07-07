@@ -34,7 +34,7 @@ it is considered trusted.
 
 ### Option 2 - Keys in system keyring
 
-A number of public keys are available via the system keyring. If a crinit config is signed with one of them, it is
+A number of public keys are available via the system keyring (in-kernel key management and retention facility, man 7 keyrings). If a crinit config is signed with one of them, it is
 considered trusted.
 
 The method with which to load the keys to the system keyring must be protected by the secure boot chain. The means with
