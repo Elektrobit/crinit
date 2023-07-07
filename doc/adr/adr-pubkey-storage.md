@@ -11,7 +11,7 @@ tampering to ensure authenticity of signatures.
 
 ## Assumptions
 
-* Signatures are always used in conjunction with some secure boot scheme, i.e. everything up to the Kernel binary can
+* Signatures are always used in conjunction with some secure boot scheme, i.e. everything up to the Kernel binary, Device-tree (dtb) and initram-disk can
   be considered trusted by crinit.
 
 ## Considered Alternatives
@@ -30,7 +30,7 @@ it is considered trusted.
 
 * only trustworthy if rootfs itself is trusted, i.e. signed as a whole
   - this mostly defeats the purpose of having individually signed files in the first place as even individually unsigned
-    configs could be consideed trustworthy by their presence in the rootfs.
+    configs could be considered trustworthy by their presence in the already completely signed rootfs.
 
 ### Option 2 - Keys in system keyring
 
