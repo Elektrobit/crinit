@@ -31,7 +31,7 @@ typedef struct {
     crinitConfKvList_t *anchor;  ///< Anchor pointer to the beginning of the list.
     crinitConfKvList_t *pList;   ///< Running pointer to the element being currently constructed.
     crinitConfKvList_t *last;    ///< Running pointer to the last element just constructed.
-    size_t keyArrayCount;       ///< Counter variable for array-like config options.
+    size_t keyArrayCount;        ///< Counter variable for array-like config options.
 } crinitIniParserCtx_t;
 
 /**
@@ -195,7 +195,8 @@ int crinitLoadSeriesConf(crinitFileSeries_t *series, const char *filename) {
     const crinitConfKvList_t *pEntry = c;
     const char *val = NULL;
     while (pEntry != NULL) {
-        const crinitConfigMapping_t *scm = crinitFindConfigMapping(crinitSeriesCfgMap, crinitSeriesCfgMapSize, pEntry->key);
+        const crinitConfigMapping_t *scm =
+            crinitFindConfigMapping(crinitSeriesCfgMap, crinitSeriesCfgMapSize, pEntry->key);
         if (scm == NULL) {
             crinitInfoPrint("Warning: Unknown configuration key '%s' encountered.", pEntry->key);
         } else {
@@ -249,16 +250,18 @@ int crinitLoadSeriesConf(crinitFileSeries_t *series, const char *filename) {
         pEntry = pEntry->next;
     }
 
-    if (!duplCheckArr[CRINIT_CONFIG_INCLUDEDIR] && crinitCfgInclDirHandler(NULL, tDir, CRINIT_CONFIG_TYPE_SERIES) == -1) {
+    if (!duplCheckArr[CRINIT_CONFIG_INCLUDEDIR] &&
+        crinitCfgInclDirHandler(NULL, tDir, CRINIT_CONFIG_TYPE_SERIES) == -1) {
         crinitErrPrint("INCLUDEDIR was not given and trying to set it to the current value of TASKDIR ('%s') failed.",
                        tDir);
         return -1;
     }
 
     if (tasks == NULL) {  // No TASKS array given, scan TASKDIR.
-        if (crinitFileSeriesFromDir(series, (tDir != NULL) ? tDir : CRINIT_CONFIG_DEFAULT_TASKDIR,
-                                    (tSuffix != NULL) ? tSuffix : CRINIT_CONFIG_DEFAULT_TASK_FILE_SUFFIX, tDirSl) == -1) {
-            crinitErrPrint("Could not generate list of tasks from task directory '%s'.", tDir);
+        const char *tDirP = (tDir != NULL) ? tDir : CRINIT_CONFIG_DEFAULT_TASKDIR;
+        if (crinitFileSeriesFromDir(series, tDirP, (tSuffix != NULL) ? tSuffix : CRINIT_CONFIG_DEFAULT_TASK_FILE_SUFFIX,
+                                    tDirSl) == -1) {
+            crinitErrPrint("Could not generate list of tasks from task directory '%s'.", tDirP);
             crinitFreeConfList(c);
             return -1;
         }
