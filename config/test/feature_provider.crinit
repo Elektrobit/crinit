@@ -2,7 +2,7 @@
 
 NAME = feature_provider
 
-COMMAND[] = /bin/true
+COMMAND = /bin/true
 
 DEPENDS = "@ctl:enable"
 

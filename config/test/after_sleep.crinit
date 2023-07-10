@@ -2,7 +2,7 @@
 
 NAME = after_sleep
 
-COMMAND[0] = /bin/echo Sleep task is done and echo task has been spawned.
+COMMAND = /bin/echo Sleep task is done and echo task has been spawned.
 
 DEPENDS = sleep_one_sec:wait hello_world:spawn
 

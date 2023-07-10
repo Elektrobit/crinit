@@ -2,8 +2,8 @@
 
 NAME = one_second_respawn
 
-COMMAND[] = /bin/sleep 1
-COMMAND[] = /bin/sh -c "echo 'A second is over. (This task should be finished and respawn every 1s.)' | tee -a /tmp/crinit-one_second_respawn.log"
+COMMAND = /bin/sleep 1
+          /bin/sh -c "echo 'A second is over. (This task should be finished and respawn every 1s.)' | tee -a /tmp/crinit-one_second_respawn.log"
 
 DEPENDS = "after_sleep:spawn @ctl:enable"
 

@@ -1,14 +1,6 @@
-# Performs early mounts that weren't already done as part of crinit initialization, sets hostname and machine-id
-
-NAME = earlysetup
-
-COMMAND[0] = /bin/mount -t tmpfs none /tmp
-COMMAND[1] = /bin/mkdir -p /dev/shm
-COMMAND[2] = /bin/mount -t tmpfs shmfs -o size=1g /dev/shm
-COMMAND[3] = /bin/mkdir -p /var/volatile
-COMMAND[4] = /bin/mount -t tmpfs none /var/volatile
-COMMAND[5] = /bin/hostname eb-arm64
-COMMAND[6] = /usr/bin/machine-id-gen
+COMMAND = /bin/mount -t tmpfs none /var/volatile
+          /bin/hostname eb-arm64
+          /usr/bin/machine-id-gen
 
 DEPENDS = ""
 

@@ -2,8 +2,8 @@
 
 NAME = fail_loop
 
-COMMAND[] = /bin/sh -c "echo 'This task always fails.' | tee -a /tmp/crinit-fail_loop.log"
-COMMAND[] = /bin/false
+COMMAND = /bin/sh -c "echo 'This task always fails.' | tee -a /tmp/crinit-fail_loop.log"
+COMMAND = /bin/false
 
 DEPENDS = "@ctl:enable"
 
