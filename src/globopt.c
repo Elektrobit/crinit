@@ -177,35 +177,22 @@ int crinitGlobOptGetString(crinitGlobOptKey_t key, char **str) {
     return 0;
 }
 
-int crinitGlobOptSetEnvSet(const crinitEnvSet_t *es) {
-    crinitEnvSet_t tgt;
-    if (crinitGlobOptGet(CRINIT_GLOBOPT_ENV, &tgt, sizeof(crinitEnvSet_t)) == -1) {
-        crinitErrPrint("Could not retrieve current global environment set.");
-        return -1;
-    }
-
+crinitEnvSet_t *crinitGlobOptBorrowEnvSet(void) {
     if ((errno = pthread_mutex_lock(&crinitOptLock)) == -1) {
         crinitErrnoPrint("Could not wait for global option array mutex lock.");
-        return -1;
+        return NULL;
     }
-    if (crinitEnvSetDestroy(&tgt) == -1) {
-        crinitErrPrint("Could not free old environment set during update of set.");
-        pthread_mutex_unlock(&crinitOptLock);
-        return -1;
-    }
-    if (crinitEnvSetDup(&tgt, es) == -1) {
-        crinitErrPrint("Could not duplicate new environment set for use as a global option.");
-    }
+    return (crinitEnvSet_t *)crinitGlobOptArr[CRINIT_GLOBOPT_ENV];
+}
 
-    free(crinitGlobOptArr[CRINIT_GLOBOPT_ENV]);
-    crinitGlobOptArr[CRINIT_GLOBOPT_ENV] = malloc(sizeof(crinitEnvSet_t));
-    if (crinitGlobOptArr[CRINIT_GLOBOPT_ENV] == NULL) {
-        crinitErrPrint("Could not allocate memory for global option.");
-        pthread_mutex_unlock(&crinitOptLock);
+int crinitGlobOptRemitEnvSet(void) {
+    // This *could* be called from a thread which does not actually own the mutex, so we need to check if
+    // pthread_mutex_unlock() fails.
+    errno = pthread_mutex_unlock(&crinitOptLock);
+    if (errno != 0) {
+        crinitErrnoPrint("Could not unlock global option mutex.");
         return -1;
     }
-    memcpy(crinitGlobOptArr[CRINIT_GLOBOPT_ENV], &tgt, sizeof(crinitEnvSet_t));
-    pthread_mutex_unlock(&crinitOptLock);
     return 0;
 }
 

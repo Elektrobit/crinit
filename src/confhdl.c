@@ -211,22 +211,20 @@ int crinitCfgEnvHandler(void *tgt, const char *val, crinitConfigType_t type) {
         }
     } else if (type == CRINIT_CONFIG_TYPE_SERIES) {
         crinitNullCheck(-1, val);
-        crinitEnvSet_t globEnv;
-        if (crinitGlobOptGetEnvSet(&globEnv) == -1) {
-            crinitErrPrint("Could not retrieve global task environment set.");
+        crinitEnvSet_t *globEnv = crinitGlobOptBorrowEnvSet();
+        if (globEnv == NULL) {
+            crinitErrPrint("Could not borrow global task environment set from global option storage.");
             return -1;
         }
-        if (crinitConfConvToEnvSetMember(&globEnv, val) == -1) {
+        if (crinitConfConvToEnvSetMember(globEnv, val) == -1) {
             crinitErrPrint("Could not parse task environment directive '%s'.", val);
-            crinitEnvSetDestroy(&globEnv);
+            crinitGlobOptRemitEnvSet();
             return -1;
         }
-        if (crinitGlobOptSetEnvSet(&globEnv) == -1) {
-            crinitErrPrint("Could not store global task environment variables.");
-            crinitEnvSetDestroy(&globEnv);
+        if(crinitGlobOptRemitEnvSet() == -1) {
+            crinitErrPrint("Could not remit global task environment back to global option storage.");
             return -1;
         }
-        crinitEnvSetDestroy(&globEnv);
     } else {
         crinitErrPrint("Unexpected value for configuration file type.");
         return -1;
