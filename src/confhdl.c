@@ -521,7 +521,7 @@ static inline void *crinitCfgHandlerManageArrayMem(void *dynArr, size_t elementS
         return NULL;
     }
 
-    void *out = NULL;
+    uint8_t *out = dynArr;
     if (curSize < reqSize) {
         out = realloc(dynArr, reqSize * elementSize);
         if (out == NULL) {
@@ -530,8 +530,7 @@ static inline void *crinitCfgHandlerManageArrayMem(void *dynArr, size_t elementS
                 curSize, reqSize);
             return NULL;
         }
-        uint8_t *tempPtr = out;
-        memset(&tempPtr[curSize * elementSize], 0, (reqSize - curSize) * elementSize);
+        memset(&out[curSize * elementSize], 0, (reqSize - curSize) * elementSize);
         return out;
     }
     return out;
