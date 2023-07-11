@@ -1,6 +1,6 @@
 /**
  * @file utest-cfgmap-order.h
- * @brief Header declaring the regression test for the order/size of crinitCfgMap.
+ * @brief Header declaring the regression test for the order and completeness of crinit{Task,Series}CfgMap.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
@@ -12,10 +12,10 @@
 #define __UTEST_CFGMAP_ORDER_H__
 
 /**
- * Regression test for the crinitCfgMap constant array.
+ * Regression test for the crinit{Task,Series}CfgMap constant arrays.
  *
- * Checks that the array is alphabetically ordered (by its crinitConfigMapping_t::configKey field) and that it contains
- * CRINIT_CONFIGS_SIZE number of elements.
+ * Checks that the arrays are alphabetically ordered (by its crinitConfigMapping_t::configKey field) and that both
+ * together contain all crinitConfigs_t.
  */
 void crinitCfgMapRegressionTest(void **state);
 

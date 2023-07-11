@@ -25,8 +25,8 @@
 #define CRINIT_CONFIG_KEYSTR_TASKDIR "TASKDIR"     ///< Config file key for TASKDIR global option.
 #define CRINIT_CONFIG_KEYSTR_INCLDIR "INCLUDEDIR"  ///< Config file key for INCLUDEDIR global option.
 #define CRINIT_CONFIG_KEYSTR_SHDGRACEP \
-    "SHUTDOWN_GRACE_PERIOD_US"                           ///< Config file key for SHUTDOWN_GRACE_PERIOD_US global option
-#define CRINIT_CONFIG_KEYSTR_USE_SYSLOG "USE_SYSLOG"       ///< Config file key for USE_SYSLOG global option.
+    "SHUTDOWN_GRACE_PERIOD_US"                        ///< Config file key for SHUTDOWN_GRACE_PERIOD_US global option
+#define CRINIT_CONFIG_KEYSTR_USE_SYSLOG "USE_SYSLOG"  ///< Config file key for USE_SYSLOG global option.
 #define CRINIT_CONFIG_KEYSTR_INCL_SUFFIX "INCLUDE_SUFFIX"  ///< Config file key for INCLUDE_SUFFIX global option.
 #define CRINIT_CONFIG_KEYSTR_TASK_FILE_SUFFIX \
     "TASK_FILE_SUFFIX"  ///< Config key for the task file extension in dynamic configurations.
@@ -48,38 +48,49 @@
 #define CRINIT_CONFIG_DEFAULT_INCL_FILE_SUFFIX ".crincl"  ///< Default filename extension of task include files.
 #define CRINIT_CONFIG_DEFAULT_DEBUG false                 ///< Default value for DEBUG global option.
 #define CRINIT_CONFIG_DEFAULT_TASKDIR "/etc/crinit"       ///< Default value for TASKDIR global option.
-#define CRINIT_CONFIG_DEFAULT_INCLDIR "/etc/crinit"       ///< Default value for INCLUDEDIR global option.
-#define CRINIT_CONFIG_DEFAULT_SHDGRACEP 100000uLL         ///< Default value for SHUTDOWN_GRACE_PERIOD_US global option
-#define CRINIT_CONFIG_DEFAULT_USE_SYSLOG false            ///< Default value for USE_SYSLOG global option.
-#define CRINIT_CONFIG_DEFAULT_INCL_SUFFIX ".crincl"       ///< Default filename extension of include files.
+#define CRINIT_CONFIG_DEFAULT_TASKDIR_SYMLINKS true
+
+#define CRINIT_CONFIG_DEFAULT_INCLDIR "/etc/crinit"  ///< Default value for INCLUDEDIR global option.
+#define CRINIT_CONFIG_DEFAULT_SHDGRACEP 100000uLL    ///< Default value for SHUTDOWN_GRACE_PERIOD_US global option
+#define CRINIT_CONFIG_DEFAULT_USE_SYSLOG false       ///< Default value for USE_SYSLOG global option.
+#define CRINIT_CONFIG_DEFAULT_INCL_SUFFIX ".crincl"  ///< Default filename extension of include files.
 
 #define CRINIT_CONFIG_STDOUT_NAME "STDOUT"  ///< What stdout is called in task configs.
 #define CRINIT_CONFIG_STDERR_NAME "STDERR"  ///< What stderr is called in task configs.
 #define CRINIT_CONFIG_STDIN_NAME "STDIN"    ///< What stdin is called in task configs.
 
-/** Enumeration of all (task) configuration keys. Goes together with crinitCfgMap. **/
+/** Enumeration of all configuration keys. Goes together with crinitTaskCfgMap and crinitSeriesCfgMap. **/
 typedef enum crinitConfigs_t {
     CRINIT_CONFIG_COMMAND = 0,
+    CRINIT_CONFIG_DEBUG,
     CRINIT_CONFIG_DEPENDS,
     CRINIT_CONFIG_ENV_SET,
     CRINIT_CONFIG_INCLUDE,
+    CRINIT_CONFIG_INCLUDE_SUFFIX,
+    CRINIT_CONFIG_INCLUDEDIR,
     CRINIT_CONFIG_IOREDIR,
     CRINIT_CONFIG_NAME,
     CRINIT_CONFIG_PROVIDES,
     CRINIT_CONFIG_RESPAWN,
     CRINIT_CONFIG_RESPAWN_RETRIES,
+    CRINIT_CONFIG_SHDGRACEP,
+    CRINIT_CONFIG_TASK_FILE_SUFFIX,
+    CRINIT_CONFIG_TASKDIR,
+    CRINIT_CONFIG_TASKDIR_FOLLOW_SYMLINKS,
+    CRINIT_CONFIG_TASKS,
+    CRINIT_CONFIG_USE_SYSLOG,
     CRINIT_CONFIGS_SIZE
 } crinitConfigs_t;
+
+typedef enum crinitConfigType_t { CRINIT_CONFIG_TYPE_SERIES, CRINIT_CONFIG_TYPE_TASK } crinitConfigType_t;
 
 /**
  * Linked list to hold key/value pairs read from the config file.
  */
 typedef struct crinitConfKvList_t {
     struct crinitConfKvList_t *next;  ///< Pointer to next element
-    char *key;                       ///< string with "KEY"
-    char *val;                       ///< string with "VALUE"
-    size_t keyArrIndex;              ///< Index if this is a key array (e.g. COMMAND[keyArrIndex]), always 0 for
-                                     ///< singular keys
+    char *key;                        ///< string with "KEY"
+    char *val;                        ///< string with "VALUE"
 } crinitConfKvList_t;
 
 /**
@@ -108,160 +119,12 @@ int crinitParseConf(crinitConfKvList_t **confList, const char *filename);
 void crinitFreeConfList(crinitConfKvList_t *confList);
 
 /**
- * Get value mapped to a key with an index in an crinitConfKvList_t.
+ * Frees a string array with a backing string.
  *
- * Searches for \a key with index \a keyArrIndex in \a confList and writes its value's address to \a *val. If a \a key
- * with that index is not found, \a *val is unchanged and -1 is returned.
- *
- * @param val          String return pointer containing the value after execution if it was found.
- * @param key          The key to search for.
- * @param keyArrIndex  The index of the key to search for. The index of a singular (non-array) key is 0.
- * @param c            Pointer to the crinitConfKvList_t to search in.
- *
- * @return 0 if key is found, -1 otherwise
- *
- */
-int crinitConfListGetValWithIdx(char **val, const char *key, size_t keyArrIndex, const crinitConfKvList_t *c);
-/**
- * Get a value mapped to a key in an crinitConfKvList.
- *
- * Maps to a call of crinitConfListGetValWithIdx() with \a keyArrIndex set to 0. Meant to be used with singular
- * (non-array) keys.
- *
- * See crinitConfListGetValWithIdx() for further documentation.
- */
-#define crinitConfListGetVal(val, key, c) crinitConfListGetValWithIdx(val, key, 0, c)
-
-/**
- * Set value mapped to a key with an index in an crinitConfKvList_t.
- *
- * Searches for \a key with index \a keyArrindex in \a confList and replaces its value with \a val. Memory is
- * de-/allocated as needed. If a key with that index is not found, -1 is returned.
- *
- * @param val          The value to write.
- * @param key          The key to search for.
- * @param keyArrIndex  The index of the key to search for. The index of a singular (non-array) key is 0.
- * @param c            Pointer to the crinitConfKvList_t to search in.
- *
- * @return 0 if key is found, -1 otherwise
- *
- */
-int crinitConfListSetValWithIdx(const char *val, const char *key, size_t keyArrIndex, crinitConfKvList_t *c);
-/**
- * Set value mapped to a key in an crinitConfKvList.
- *
- * Maps to a call of crinitConfListSetValWithIdx() with \a keyArrIndex set to 0. Meant to be used with singular
- * (non-array) keys.
- *
- * See crinitConfListSetValWithIdx() for further documentation.
- */
-#define crinitConfListSetVal(val, key, c) crinitConfListSetValWithIdx(val, key, 0, c)
-
-/**
- * Extract a boolean value from a crinitConfKvList_t.
- *
- * Given a crinitConfKvList_t \a in containing a boolean ("YES"/"NO") key \a key, set \a out to
- * the corresponding truth value ("YES"==true and "NO"==false).
- *
- * @param out        Pointer to a boolean to be set according to the value found.
- * @param key        String with the key to search for in \a in.
- * @param mandatory  If true, this function will return an error if \a key is not found in \a in. If false, a
- *                   non-existent \a key will result in successful return and \a out being left untouched.
- * @param in         Pointer to an crinitConfKvList_t to search in.
- *
- * @return 0 on success, -1 on error.
- */
-int crinitConfListExtractBoolean(bool *out, const char *key, bool mandatory, const crinitConfKvList_t *in);
-
-/**
- * Extract an unsigned long long value from an crinitConfKvList.
- *
- * Given an crinitConfKvList_t \a in containing a key \a key with a value representing an unsigned long long (with base
- * \a base), set \a out to the corresponding value.
- *
- * @param out        Pointer to an unsigned long long to be set according to the value found.
- * @param base       Numerical base of the value, e.g. 10 for a decimal number or 16 for hexadecimal.
- * @param key        String with the key to search for in \a in.
- * @param mandatory  If true, this function will return an error if \a key is not found in \a in. If false, a
- *                   non-existent \a key will result in successful return and \a out being left untouched.
- * @param in         Pointer to an crinitConfKvList to search in..
- *
- * @return 0 on success, -1 on error.
- */
-int crinitConfListExtractUnsignedLL(unsigned long long *out, int base, const char *key, bool mandatory,
-                                   const crinitConfKvList_t *in);
-
-/**
- * Extract a signed integer value from an crinitConfKvList.
- *
- * Given an crinitConfKvList_t \a in containing a key \a key with a value representing an Integer (with base \a base),
- * set \a out to the corresponding value.
- *
- * @param out        Pointer to an int to be set according to the value found.
- * @param base       Numerical base of the value, e.g. 10 for a decimal number or 16 for hexadecimal.
- * @param key        String with the key to search for in \a in.
- * @param mandatory  If true, this function will return an error if \a key is not found in \a in. If false, a
- *                   non-existent \a key will result in successful return and \a out being left untouched.
- * @param in         Pointer to an crinitConfKvList to search in.
- *
- * @return 0 on success, -1 on error.
- */
-int crinitConfListExtractSignedInt(int *out, int base, const char *key, bool mandatory, const crinitConfKvList_t *in);
-
-/**
- * Extract an array of strings from the value mapped to a key in an crinitConfKvList_t.
- *
- * Maps to a call of crinitConfListExtractArgvArrayWithIdx() with \a keyArrIndex set to 0. Meant to be used with singular
- * (non-array) keys.
- *
- * See crinitConfListExtractArgvArrayWithIdx() for further documentation.
- */
-#define crinitConfListExtractArgvArray(outArgc, outArgv, key, mandatory, in, doubleQuoting) \
-    crinitConfListExtractArgvArrayWithIdx(outArgc, outArgv, key, 0, mandatory, in, doubleQuoting)
-/**
- * Extract an array of strings from the value mapped to an indexed key in an crinitConfKvList_t.
- *
- * Will search \a in for \a key with index \a keyArrIndex and split its value along spaces. Will optionally respect
- * quoting using double quotes if \a doubleQuoting is set to true. The dynamically-allocated array-of-strings is
- * written to \a *outArgv. If no longer needed it should be freed using crinitFreeArgvArray(). \a outArgc will contain
- * the number of strings inside \a *outArgv and \a *outArgv will be additionally NULL-terminated, same as argc/argv in
- * main().
- *
- * @param outArgc         Will contain the number of strings in outArgv.
- * @param outArgv         Will contain the value of \a key split along spaces.
- * @param key             The key to search for in \a in.
- * @param keyArrIndex     The index of the key to search for. The index of a singular (non-array) key is 0.
- * @param mandatory       If true, this function will return an error if \a key is not found in \a in. If false, a
- *                        non-existent \a key will result in successful return and \a out being left untouched.
- * @param in              The crinitConfKvList_t to search in.
- * @param doubleQuoting   If true, crinitConfListExtractArgvArray() will respect quoting with double quotes.
- *
- * @return 0 on success, -1 on error
- */
-int crinitConfListExtractArgvArrayWithIdx(int *outArgc, char ***outArgv, const char *key, size_t keyArrIndex,
-                                         bool mandatory, const crinitConfKvList_t *in, bool doubleQuoting);
-
-/**
- * Free an argv array created by crinitConfListExtractArgvArray()/crinitConfListExtractArgvArrayWithIdx().
- *
- * @param inArgv   The argv array to free, must have been constructed by crinitConfListExtractArgvArray() or
- *                 crinitConfListExtractArgvArrayWithIdx(). If it is NULL, the function will return without freeing any
- *                 memory.
+ * @param inArgv   The string array to free, must be a double pointer with 2 allocations, one array of pointers and a
+ *                 single inner array of char.
  */
 void crinitFreeArgvArray(char **inArgv);
-
-/**
- * Get the maximum index of a key in an crinitConfKvList_t.
- *
- * Keys without a specified index in the config file are parsed as having index 0 (i.e. `COMMAND=...` is equivalent to
- * `COMMAND[0]=...`).
- *
- * @param    c The crinitConfKvList_t to search in.
- * @param  key The key to search for in \a c.
- *
- * @return The key's maximum index within \a c or -1 on error.
- */
-ssize_t crinitConfListKeyGetMaxIdx(const crinitConfKvList_t *c, const char *key);
 
 /**
  * Parse a series file.

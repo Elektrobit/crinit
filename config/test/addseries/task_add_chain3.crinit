@@ -2,7 +2,7 @@
 
 NAME = task_add_chain3
 
-COMMAND[] = /bin/echo "Task from added series file 3/3."
+COMMAND = /bin/echo "Task from added series file 3/3."
 
 DEPENDS = task_add_chain2:wait
 

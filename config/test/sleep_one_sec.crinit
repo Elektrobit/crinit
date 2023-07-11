@@ -2,7 +2,7 @@
 
 NAME = sleep_one_sec
 
-COMMAND[0] = /bin/sleep 1
+COMMAND = /bin/sleep 1
 
 DEPENDS = ""
 

@@ -28,30 +28,6 @@ typedef struct crinitIoRedir_t {
 } crinitIoRedir_t;
 
 /**
- * Initializes an instance of crinitIoRedir_t from an IO redirection statement in a task config.
- *
- * Will search the task config for the given key and index. The value must be of the form
- * ```
- * <REDIRECT_FROM> <REDIRECT_TO> [ APPEND | TRUNCATE ] [ OCTAL MODE ]
- * ```
- * Where REDIRECT_FROM is one of STDOUT, STDERR, STDIN and REDIRECT_TO may either also be one of those streams or an
- * absolute path to a file. APPEND or TRUNCATE signify whether an existing file at that location should be appended to
- * or truncated. Default ist TRUNCATE. OCTAL MODE sets the permission bits if the file is newly created. Default is
- * 0644.
- *
- * The function may allocate memory inside the crinitIoRedir_t struct which must be freed using crinitDestroyIoRedir().
- *
- * @param out          The crinitIoRedir_t instance to initialize.
- * @param key          The config key to search for in \a in.
- * @param keyArrIndex  The index of the config key.
- * @param in           The config to search in.
- *
- * @return  0 on success, -1 otherwise
- */
-int crinitInitIoRedirFromConfKvList(crinitIoRedir_t *out, const char *key, size_t keyArrIndex,
-                                   const crinitConfKvList_t *in);
-
-/**
  * Frees memory associated with an initialized instance of crinitIoRedir_t.
  *
  * @param ior  The instance whose associated memory shall be freed.

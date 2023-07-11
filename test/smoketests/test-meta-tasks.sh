@@ -45,7 +45,8 @@ EOF
 # Config to test dependency groups (dependency group meta-task)
 
 NAME = task_grp
-DEPENDS = "task_dep1:wait task_dep2:wait task_dep3:wait"
+DEPENDS = task_dep1:wait task_dep2:wait
+          task_dep3:wait
 PROVIDES = "depgrp:wait"
 RESPAWN = NO
 EOF

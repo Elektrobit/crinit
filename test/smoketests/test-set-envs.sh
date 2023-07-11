@@ -25,7 +25,7 @@ RESPAWN = NO
 
 ENV_SET = LOC_VAR "Local EnvVar"
 ENV_SET = OVR_VAR "Hello, local World!"
-ENV_SET = GLOB_REF "Substituted global var: <\${GLOB_VAR}>"
+          GLOB_REF "Substituted global var: <\${GLOB_VAR}>"
 ENV_SET = ESC_VAR "Escaped variable: \\\${ESC_VAR}"
 EOF
 }

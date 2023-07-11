@@ -22,7 +22,6 @@
 typedef enum {
     CRINIT_GLOBOPT_START,        ///< Marker for beginning of enum, used to calculate number of elements.
     CRINIT_GLOBOPT_DEBUG,        ///< DEBUG global option.
-    CRINIT_GLOBOPT_TASKDIR,      ///< TASKDIR global option.
     CRINIT_GLOBOPT_INCLDIR,      ///< INCLUDEDIR global option.
     CRINIT_GLOBOPT_INCL_SUFFIX,  ///< INCLUDE_SUFFIX global option
     CRINIT_GLOBOPT_SHDGRACEP,    ///< SHUTDOWN_GRACE_PERIOD_US global option
@@ -117,8 +116,8 @@ int crinitGlobOptGet(crinitGlobOptKey_t key, void *val, size_t sz);
 /**
  * Stores a string value for a global option.
  *
- * The length of the string is stored as well for later retrieval using crinitGlobOptGetString(). Uses crinitGlobOptSet()
- * and is therefore thread-safe.
+ * The length of the string is stored as well for later retrieval using crinitGlobOptGetString(). Uses
+ * crinitGlobOptSet() and is therefore thread-safe.
  *
  * @param key  The global option to set.
  * @param str  The string value to store, must be null-terminated.
@@ -143,16 +142,6 @@ int crinitGlobOptSetString(crinitGlobOptKey_t key, const char *str);
 int crinitGlobOptGetString(crinitGlobOptKey_t key, char **str);
 
 /**
- * Stores an crinitEnvSet_t structure.
- *
- * The given instance will be duplicated using crinitEnvSetDup() and stored.
- *
- * @param es  The crinitEnvSet_t instance to store.
- *
- * @return  0 on success, -1 on error
- */
-int crinitGlobOptSetEnvSet(const crinitEnvSet_t *es);
-/**
  * Retrieves an crinitEnvSet_t structure.
  *
  * The instance will be duplicated from the stored one using crinitEnvSetDup(). Memory inside the returned instance will
@@ -163,5 +152,25 @@ int crinitGlobOptSetEnvSet(const crinitEnvSet_t *es);
  * @return  0 on success, -1 on error.
  */
 int crinitGlobOptGetEnvSet(crinitEnvSet_t *es);
+/**
+ * Borrows the global environment set from the global option storage array.
+ *
+ * In this case, borrowing means the caller gets a direct pointer to the crinitEnvSet_t structure in the global option
+ * array. After the function has returned successfully, the calling thread will hold the mutex on the global option
+ * storage and may freely modify the crinitEnvSet_t at the returned address. Afterwards the calling thread needs to
+ * call crinitGlobOptRemitEnvSet() to unlock the option storage mutex or it will cause deadlock.
+ *
+ * @return  Pointer to the global environment set if successful, NULL otherwise.
+ */
+crinitEnvSet_t *crinitGlobOptBorrowEnvSet(void);
+/**
+ * Remits the global environment set to the global option storage.
+ *
+ * This will unlock the mutex locked by crinitGlobOptBorrowEnvSet(). After this call no further interaction with the
+ * global environment set is allowed for the calling thread, unless crinitGlobOptBorrowEnvSet() is called again.
+ *
+ * @return  0 on success, -1 otherwise.
+ */
+int crinitGlobOptRemitEnvSet(void);
 
 #endif /* __GLOBOPT_H__ */

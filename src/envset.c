@@ -123,7 +123,7 @@ int crinitEnvSetSet(crinitEnvSet_t *es, const char *envName, const char *envVal)
         if ((size_t)idx >= es->allocSz - 1) {
             if (crinitEnvSetGrow(es) == -1) {
                 crinitErrPrint("Could not grow environment set of size %zu to size %zu.", es->allocSz,
-                              es->allocSz + es->allocInc);
+                               es->allocSz + es->allocInc);
                 return -1;
             }
         }
@@ -150,38 +150,6 @@ int crinitEnvSetSet(crinitEnvSet_t *es, const char *envName, const char *envVal)
         return -1;
     }
 
-    return 0;
-}
-
-int crinitEnvSetCreateFromConfKvList(crinitEnvSet_t *newSet, const crinitEnvSet_t *baseSet, const crinitConfKvList_t *c) {
-    if (newSet == NULL || c == NULL) {
-        crinitErrPrint("Input config list and output environment set must not be NULL.");
-        return -1;
-    }
-
-    if (baseSet != NULL && crinitEnvSetDup(newSet, baseSet) == -1) {
-        crinitErrPrint("Could not duplicate base environment set in creation of new merged set.");
-        return -1;
-    }
-    if (baseSet == NULL && crinitEnvSetInit(newSet, CRINIT_ENVSET_INITIAL_SIZE, CRINIT_ENVSET_SIZE_INCREMENT) == -1) {
-        crinitErrPrint("Could not initialize new environment set.");
-        return -1;
-    }
-    ssize_t numNewEnvs = crinitConfListKeyGetMaxIdx(c, CRINIT_CONFIG_KEYSTR_ENV_SET) + 1;
-    // If crinitConflListKeyGetMaxIdx() returns -1, we assume no ENV_SET config lines present.
-    for (size_t i = 0; i < (size_t)numNewEnvs; i++) {
-        char *val = NULL;
-        if (crinitConfListGetValWithIdx(&val, CRINIT_CONFIG_KEYSTR_ENV_SET, i, c) == -1) {
-            crinitErrPrint("Could not retrieve config key '%s', index %zu from config.", CRINIT_CONFIG_KEYSTR_ENV_SET, i);
-            crinitEnvSetDestroy(newSet);
-            return -1;
-        }
-        if (crinitConfConvToEnvSetMember(newSet, val) == -1) {
-            crinitErrPrint("Failed to process " CRINIT_CONFIG_KEYSTR_ENV_SET " config item with value '%s'", val);
-            crinitEnvSetDestroy(newSet);
-            return -1;
-        }
-    }
     return 0;
 }
 

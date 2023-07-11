@@ -53,12 +53,26 @@ configurations. Examples for a local demonstration inside the build environment 
 Instructions](#build-instructions) below) are available in `config/test/` and examples for use on the S32G board are
 available in `config/s32g/`.
 
+The general format of crinit configuration files is INI-style `KEY = value` pairs. Some settings may be array-like,
+meaning they can be specified multiple times to append values. Leaving out the `KEY =` part at the start of the line in
+favor of at least one whitespace character is shorthand for appending to the last key, e.g.
+```
+ARRAY_LIKE_KEY = value 1
+ARRAY_LIKE_KEY = value 2
+```
+is equivalent to
+```
+ARRAY_LIKE_KEY = value 1
+                 value 2
+```
+
 ### Example Global Configuration
 An example, as used to boot a minimal environment on the S32G board, may look like this:
 ```
 # BaseOS crinit series file, specifying which files to parse
 
-TASKS = earlysetup.crinit check_qemu.crinit network-dhcp.crinit sshd.crinit getty.crinit
+TASKS = earlysetup.crinit check_qemu.crinit network-dhcp.crinit
+        sshd.crinit getty.crinit
 
 TASKDIR = /etc/crinit
 TASK_FILE_SUFFIX = .crinit
@@ -77,9 +91,9 @@ ENV_SET = GREETING "Good morning!"
 ```
 #### Explanation
 - **TASKS** -- The task configurations to load. This is an optional setting. If unset, **TASKDIR** will be scanned for
-               task configuration files.
+               task configuration files. (*array-like*)
 - **TASKDIR** -- Where to find the task configurations, will be prepended to the filenames in **TASKS**.
-                 This is a mandatory setting.
+                 Default: `/etc/crinit`
 - **TASK_FILE_SUFFIX** -- Filename suffix of task configurations. Only relevant if **TASKS** is not set.
                           Default: `.crinit`
 - **TASKDIR_FOLLOW_SYMLINKS** -- If symbolic links should be followed during scanning of **TASKDIR**. Only relevant if
@@ -92,7 +106,7 @@ ENV_SET = GREETING "Good morning!"
 - **USE_SYSLOG** -- If syslog should be used for output if it is available. If set to `YES`, Crinit will switch to
                     syslog for output as soon as a task file `PROVIDES` the `syslog` feature. Ideally this should be
                     a task file loading a syslog server such as syslogd or elosd. Default: `NO`
-- **ENV_SET** -- See section **Setting Environment Variables** below.
+- **ENV_SET** -- See section **Setting Environment Variables** below. (*array-like*)
 
 ### Example Task Configuration
 The `network-dhcp.crinit` from above looks like this:
@@ -103,13 +117,13 @@ NAME = network-dhcp
 
 INCLUDE = daemon_env_preset
 
-COMMAND[] = /bin/mkdir -p /var/lib/dhcpcd
-COMMAND[] = /bin/mount -t tmpfs none /var/lib/dhcpcd
-COMMAND[] = /bin/touch /var/lib/dhcpcd/resolv.conf
-COMMAND[] = /bin/mount -o bind /var/lib/dhcpcd/resolv.conf /etc/resolv.conf
-COMMAND[] = /sbin/ifconfig lo up
-COMMAND[] = /sbin/ifconfig lo 127.0.0.1
-COMMAND[] = /sbin/dhcpcd -j /var/log/dhcpcd.log eth0
+COMMAND = /bin/mkdir -p /var/lib/dhcpcd
+          /bin/mount -t tmpfs none /var/lib/dhcpcd
+          /bin/touch /var/lib/dhcpcd/resolv.conf
+          /bin/mount -o bind /var/lib/dhcpcd/resolv.conf /etc/resolv.conf
+          /sbin/ifconfig lo up
+          /sbin/ifconfig lo 127.0.0.1
+          /sbin/dhcpcd -j /var/log/dhcpcd.log eth0
 
 
 DEPENDS = check_qemu:fail earlysetup:wait @provided:writable_var
@@ -120,9 +134,9 @@ RESPAWN = NO
 RESPAWN_RETRIES = -1
 
 ENV_SET = FOO_BAR "${FOO} bar"
-ENV_SET = ESCAPED_VAR "Global variable name: \${FOO}"
-ENV_SET = VAR_WITH_ESC_SEQUENCES "hex\t\x68\x65\x78"
-ENV_SET = GREETING "Good evening!"
+          ESCAPED_VAR "Global variable name: \${FOO}"
+          VAR_WITH_ESC_SEQUENCES "hex\t\x68\x65\x78"
+          GREETING "Good evening!"
 
 IO_REDIRECT = STDOUT "/var/log/net-dhcp.log" APPEND 0644
 IO_REDIRECT = STDERR STDOUT
@@ -130,39 +144,30 @@ IO_REDIRECT = STDERR STDOUT
 #### Explanation
 - **NAME** -- The name given to this task configuration. Relevant if other tasks want to depend on this one. This is a
   mandatory setting.
-- **INCLUDE** -- See section **Include files** below.
-- **COMMAND[]** -- The commands to be executed in series. Executable paths must be absolute. Execution will stop if
+- **INCLUDE** -- See section **Include files** below. (*array-like*)
+- **COMMAND** -- The commands to be executed in series. Executable paths must be absolute. Execution will stop if
   one of them fails and the whole task will be considered failed. The whole task is considered finished (i.e.
-  the `network-dhcp:wait` dependency is fulfilled) if the last command has successfully returned. May also be written
-  as a series of **COMMAND[n]** keys. In this case, the indices must form a monotonically increasing (by 1) sequence
-  starting at 0. When using the syntax with empty brackets, all commands must be written as consecutive lines. Mixing
-  both forms (**[]** and **[n]**) is unsupported and may lead to errors during parsing/loading due to duplicate or
-  missing keys. There are a few examples of correct and incorrect usage in the `config/test` directory which are used by
-  `ci/demo.sh` to check the parser. If no **COMMAND[]** is given, the task is treated as a dependency group (or
-  "meta-task", see below.).
+  the `network-dhcp:wait` dependency is fulfilled) if the last command has successfully returned. If no **COMMAND** is
+  given, the task is treated as a dependency group or "meta-task", see below. (*array-like*)
 - **DEPENDS** -- A list of dependencies which need to be fulfilled before this task is considered "ready-to-start".
   Semantics are `<taskname>:{fail,wait,spawn}`, where `spawn` is fulfilled when (the first command of) a task has been
   started, `wait` if it has successfully completed, and `fail` if it has failed somewhere along the way. Here we can see
   this task is only run if and after the `earlysetup` (setup of system directories, etc.) has fully completed and the
   `check_qemu` task has determined we are _not_ running inside the emulator and therefore exited with an error code.
-  This is a mandatory setting but may be left empty using `""` which is interpreted as "no dependencies".
+  This may be left out or ecplicitly set to empty using `""` which is interpreted as "no dependencies".
   There is also the special `@provided:feature` syntax where we can define we want to depend on a specific feature
   another task may implement (see **PROVIDES**). In this case `@provided:writable_var` could mean that another task
   may have mounted a tmpfs or a writable partition there which we need for the first `mkdir`. That task would need to
-  advertise the `writable_var` feature in its `PROVIDES` config value.
-  _Not yet implemented:_ Once the interface to the
-  [Monitor](https://gitlabintern.emlix.com/elektrobit/base-os/corbos-tools) has been implemented, it will be possible to
-  depend on a monitor event by adding `@crinitmon:<event_name>` to `DEPENDS`.
+  advertise the `writable_var` feature in its `PROVIDES` config value. (*array-like*)
 - **PROVIDES** -- As we have seen above, a task may depend on features and also provide them. In this case we advertise
   that after completion of this task (`wait`), the features `ipv4_dhcp` and `resolvconf` are provided. Another task may
   then depend e.g. on `@provided:resolvconf`. While the feature names chosen here reflect the functional intention, they
-  can be chosen arbitrarily.
+  can be chosen arbitrarily. (*array-like*)
 - **RESPAWN** -- If set to `YES`, the task will be restarted on failure or completion. Useful for daemons like `getty`.
-  This is a mandatory setting.
 - **RESPAWN_RETRIES** -- Number of times a respawned task may fail *in a row* before it is not started again. The
   special value `-1` is interpreted as "unlimited". Default: -1
-- **ENV_SET** -- See section **Setting Environment Variables** below.
-- **IO_REDIRECT** -- See section **IO Redirections** below.
+- **ENV_SET** -- See section **Setting Environment Variables** below. (*array-like*)
+- **IO_REDIRECT** -- See section **IO Redirections** below. (*array-like*)
 
 ### Setting Environment Variables
 
@@ -266,7 +271,7 @@ and another as the receiver (using the `logger` utility provided by e.g. busybox
 ```
 NAME = some_task
 
-COMMAND[] = /bin/echo "This output will be redirected to syslog!"
+COMMAND = /bin/echo "This output will be redirected to syslog!"
 RESPAWN = NO
 DEPENDS = ""
 
@@ -278,7 +283,7 @@ IO_REDIRECT = STDOUT "/tmp/some_task_log_pipe" PIPE 0640
 ```
 NAME = some_task_logger
 
-COMMAND[] = /usr/bin/logger -t some_task
+COMMAND = /usr/bin/logger -t some_task
 RESPAWN = YES
 DEPENDS = ""
 
@@ -301,10 +306,10 @@ In a `crinit` task, the following
 ```
 NAME = line_buffered_task
 
-COMMAND[] = /usr/bin/stdbuf -oL -eL <SOME_EXECUTABLE>
+COMMAND = /usr/bin/stdbuf -oL -eL <SOME_EXECUTABLE>
 
 IO_REDIRECT = STDOUT "/some/where.txt"
-IO_REDIRECT = STDERR "/some/where/else.txt"
+              STDERR "/some/where/else.txt"
 ```
 
 will result in line-buffered output to the files which can be monitored easily. For more details, see the `stdbuf` man

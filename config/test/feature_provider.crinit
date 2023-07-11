@@ -2,10 +2,11 @@
 
 NAME = feature_provider
 
-COMMAND[] = /bin/true
+COMMAND = /bin/true
 
 DEPENDS = "@ctl:enable"
 
-PROVIDES = "smoketest_feature1:wait smoketest_feature2:spawn smoketest_feature3:wait"
+PROVIDES = smoketest_feature1:wait
+           "smoketest_feature2:spawn smoketest_feature3:wait"
 
 RESPAWN = NO

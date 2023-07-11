@@ -88,34 +88,6 @@ target_link_libraries(
     Threads::Threads
 )
 
-
-# crinit_parsecheck
-
-add_executable(
-  crinit_parsecheck
-  crinit_parsecheck.c
-  confparse.c
-  confconv.c
-  confhdl.c
-  confmap.c
-  lexers.c
-  envset.c
-  globopt.c
-  task.c
-  taskdb.c
-  logio.c
-  ioredir.c
-)
-target_include_directories(
-  crinit_parsecheck
-  PRIVATE ${PROJECT_SOURCE_DIR}/inc/
-)
-target_link_libraries(
-  crinit_parsecheck
-  PRIVATE Threads::Threads
-  PRIVATE inih-local
-)
-
 # machine-id-gen
 if(MACHINE_ID_EXAMPLE)
  add_executable(
@@ -126,5 +98,5 @@ endif(MACHINE_ID_EXAMPLE)
 
 # install
 
-install(TARGETS crinit crinit-ctl crinit_parsecheck machine-id-gen DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(TARGETS crinit crinit-ctl machine-id-gen DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(TARGETS crinit-client DESTINATION ${CMAKE_INSTALL_LIBDIR})

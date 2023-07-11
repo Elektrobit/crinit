@@ -2,7 +2,7 @@
 
 NAME = check_qemu
 
-COMMAND[0] = /bin/grep -q -E "\bip=[0-9]+" /proc/cmdline
+COMMAND = /bin/grep -q -E "\bip=[0-9]+" /proc/cmdline
 
 DEPENDS = ""
 

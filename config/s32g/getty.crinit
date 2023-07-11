@@ -2,7 +2,7 @@
 
 NAME = getty_console
 
-COMMAND[0] = /sbin/getty 115200 console
+COMMAND = /sbin/getty 115200 console
 
 DEPENDS = earlysetup:wait
 

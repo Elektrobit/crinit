@@ -1,6 +1,8 @@
 # example series file, specifying which files to parse
 
-TASKS = hello_echo.crinit sleep_one_sec.crinit after_sleep.crinit one_second_respawn.crinit fail_loop.crinit feature_provider.crinit feature_dependent.crinit
+TASKS = hello_echo.crinit sleep_one_sec.crinit
+        after_sleep.crinit one_second_respawn.crinit
+        fail_loop.crinit feature_provider.crinit feature_dependent.crinit
 
 TASKDIR = /base/config/test
 DEBUG = NO
@@ -12,5 +14,5 @@ ENV_SET = OVR_VAR "Hello, World!"
 ENV_SET = EMPTY_VAR ""
 ENV_SET = ESCSEQ_VAR "\"\ttabs\t\""
 ENV_SET = GLOB_VAR "This is a global value. 1234"
-ENV_SET = EXP_VAR "${GLOB_VAR}5678"
-ENV_SET = HEX_ESC_VAR "\x68\x65\x78\x20\x68\x65\x78 foo\x20bar"
+          EXP_VAR "${GLOB_VAR}5678"
+          HEX_ESC_VAR "\x68\x65\x78\x20\x68\x65\x78 foo\x20bar"

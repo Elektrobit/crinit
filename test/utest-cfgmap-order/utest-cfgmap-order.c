@@ -1,6 +1,6 @@
 /**
  * @file utest-cfgmap-order.c
- * @brief Implementation of the unit test group for the order/size of crinitCfgMap.
+ * @brief Implementation of the unit test group for the order and completeness of crinit{Task,Series}CfgMap.
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *

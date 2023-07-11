@@ -2,7 +2,7 @@
 # To be used from ci/demo.sh where this task should fail to start.
 
 NAME = crinit_recursive
-COMMAND[0] = ${BINDIR}/crinit ${CONFDIR}/demo.series
+COMMAND = ${BINDIR}/crinit ${CONFDIR}/demo.series
 DEPENDS = ""
 RESPAWN = NO
 EXEC = NO

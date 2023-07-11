@@ -35,7 +35,7 @@
  */
 typedef struct crinitShdnThrArgs_t {
     crinitTaskDB_t *ctx;  ///< TaskDB which holds the tasks to be terminated/killed on shutdown.
-    int shutdownCmd;     ///< The command for the reboot() syscall, see documentation of RB_* macros in man 7 reboot.
+    int shutdownCmd;      ///< The command for the reboot() syscall, see documentation of RB_* macros in man 7 reboot.
 } crinitShdnThrArgs_t;
 
 /**
@@ -43,7 +43,7 @@ typedef struct crinitShdnThrArgs_t {
  */
 typedef struct crinitUnMountList_t {
     struct crinitUnMountList_t *next;  ///< Pointer to next element.
-    char target[PATH_MAX];            ///< A mount point path.
+    char target[PATH_MAX];             ///< A mount point path.
 } crinitUnMountList_t;
 
 /**
@@ -552,26 +552,71 @@ static int crinitExecRtimCmdAddTask(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, c
     }
 
     if (cmd->argc != 3) {
-        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDTASK, 2, CRINIT_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDTASK, 2, CRINIT_RTIMCMD_RES_ERR,
+                                  "Wrong number of arguments.");
     }
 
     crinitConfKvList_t *c;
     if (crinitParseConf(&c, cmd->args[0]) == -1) {
-        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDTASK, 2, CRINIT_RTIMCMD_RES_ERR, "Could not parse given config.");
+        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDTASK, 2, CRINIT_RTIMCMD_RES_ERR,
+                                  "Could not parse given config.");
     }
     crinitDbgInfoPrint("File \'%s\' loaded.", cmd->args[0]);
 
     if (strcmp(cmd->args[2], "@unchanged") != 0) {
+        crinitConfKvList_t *runner = c;
         if (strcmp(cmd->args[2], "@empty") == 0) {
-            if (crinitConfListSetVal("", "DEPENDS", c) == -1) {
-                return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDTASK, 2, CRINIT_RTIMCMD_RES_ERR,
-                                         "Could not set dependencies to empty.");
+            while (runner != NULL) {
+                if (strcmp(runner->key, CRINIT_CONFIG_KEYSTR_DEPENDS) == 0 && runner->val != NULL) {
+                    runner->val[0] = '\0';
+                }
             }
         } else {
-            if (crinitConfListSetVal(cmd->args[2], "DEPENDS", c) == -1) {
-                crinitFreeConfList(c);
-                return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDTASK, 2, CRINIT_RTIMCMD_RES_ERR,
-                                         "Could not set dependencies to given string.");
+            bool firstEncounter = true;
+            while (runner != NULL) {
+                if (strcmp(runner->key, CRINIT_CONFIG_KEYSTR_DEPENDS) == 0 && runner->val != NULL) {
+                    if (firstEncounter) {
+                        free(runner->val);
+                        runner->val = strdup(cmd->args[2]);
+                        if (runner->val == NULL) {
+                            crinitFreeConfList(c);
+                            return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDTASK, 2, CRINIT_RTIMCMD_RES_ERR,
+                                                      "Could not set dependencies to given string.");
+                        }
+                        firstEncounter = false;
+                    } else {
+                        runner->val[0] = '\0';
+                    }
+                }
+                runner = runner->next;
+            }
+            if (firstEncounter) {  // No prior DEPENDS exists in ConfKvList.
+                runner = c;
+                while (runner->next != NULL) {  // Find list end
+                    runner = runner->next;
+                }
+
+                // Add new DEPENDS to list end
+                runner->next = malloc(sizeof(*(runner->next)));
+                if (runner->next == NULL) {
+                    crinitFreeConfList(c);
+                    return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDTASK, 2, CRINIT_RTIMCMD_RES_ERR,
+                                              "Could not set dependencies to given string.");
+                }
+                runner = runner->next;
+                runner->next = NULL;
+                runner->key = strdup(CRINIT_CONFIG_KEYSTR_DEPENDS);
+                if (runner->key == NULL) {
+                    crinitFreeConfList(c);
+                    return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDTASK, 2, CRINIT_RTIMCMD_RES_ERR,
+                                              "Could not set dependencies to given string.");
+                }
+                runner->val = strdup(cmd->args[2]);
+                if (runner->val == NULL) {
+                    crinitFreeConfList(c);
+                    return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDTASK, 2, CRINIT_RTIMCMD_RES_ERR,
+                                              "Could not set dependencies to given string.");
+                }
             }
         }
     }
@@ -580,7 +625,7 @@ static int crinitExecRtimCmdAddTask(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, c
     if (crinitTaskCreateFromConfKvList(&t, c) == -1) {
         crinitFreeConfList(c);
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDTASK, 2, CRINIT_RTIMCMD_RES_ERR,
-                                 "Could not create task from config.");
+                                  "Could not create task from config.");
     }
     crinitFreeConfList(c);
 
@@ -593,7 +638,7 @@ static int crinitExecRtimCmdAddTask(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, c
     if (crinitTaskDBInsert(ctx, t, overwrite) == -1) {
         crinitFreeTask(t);
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDTASK, 2, CRINIT_RTIMCMD_RES_ERR,
-                                 "Could not insert new task into TaskDB.");
+                                  "Could not insert new task into TaskDB.");
     }
     crinitFreeTask(t);
     return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDTASK, 1, CRINIT_RTIMCMD_RES_OK);
@@ -610,22 +655,24 @@ static int crinitExecRtimCmdAddSeries(crinitTaskDB_t *ctx, crinitRtimCmd_t *res,
     }
 
     if (cmd->argc != 2) {
-        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDSERIES, 2, CRINIT_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDSERIES, 2, CRINIT_RTIMCMD_RES_ERR,
+                                  "Wrong number of arguments.");
     }
 
     if (!crinitIsAbsPath(cmd->args[0])) {
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDSERIES, 2, CRINIT_RTIMCMD_RES_ERR,
-                                 "Path to series file must be absolute.");
+                                  "Path to series file must be absolute.");
     }
 
     if (crinitTaskDBSetSpawnInhibit(ctx, true) == -1) {
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDSERIES, 2, CRINIT_RTIMCMD_RES_ERR,
-                                 "Could not inhibit process spawning to load new series file.");
+                                  "Could not inhibit process spawning to load new series file.");
     }
 
     crinitFileSeries_t taskSeries;
     if (crinitLoadSeriesConf(&taskSeries, cmd->args[0]) == -1) {
-        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDSERIES, 2, CRINIT_RTIMCMD_RES_ERR, "Could not load series file.");
+        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDSERIES, 2, CRINIT_RTIMCMD_RES_ERR,
+                                  "Could not load series file.");
     }
 
     bool overwriteTasks = false;
@@ -644,7 +691,7 @@ static int crinitExecRtimCmdAddSeries(crinitTaskDB_t *ctx, crinitRtimCmd_t *res,
                 crinitDestroyFileSeries(&taskSeries);
                 crinitTaskDBSetSpawnInhibit(ctx, false);
                 return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDSERIES, 2, CRINIT_RTIMCMD_RES_ERR,
-                                         "Memory allocation error.");
+                                          "Memory allocation error.");
             }
             memcpy(confFn, taskSeries.baseDir, prefixLen);
             confFn[prefixLen] = '/';
@@ -661,7 +708,7 @@ static int crinitExecRtimCmdAddSeries(crinitTaskDB_t *ctx, crinitRtimCmd_t *res,
             crinitDestroyFileSeries(&taskSeries);
             crinitTaskDBSetSpawnInhibit(ctx, false);
             return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDSERIES, 2, CRINIT_RTIMCMD_RES_ERR,
-                                     "Could not parse config file.");
+                                      "Could not parse config file.");
         }
         crinitInfoPrint("File \'%s\' loaded.", confFn);
         if (confFnAllocated) {
@@ -674,7 +721,7 @@ static int crinitExecRtimCmdAddSeries(crinitTaskDB_t *ctx, crinitRtimCmd_t *res,
             crinitDestroyFileSeries(&taskSeries);
             crinitTaskDBSetSpawnInhibit(ctx, false);
             return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDSERIES, 2, CRINIT_RTIMCMD_RES_ERR,
-                                     "Could not create task from config file.");
+                                      "Could not create task from config file.");
         }
 
         crinitFreeConfList(c);
@@ -682,7 +729,7 @@ static int crinitExecRtimCmdAddSeries(crinitTaskDB_t *ctx, crinitRtimCmd_t *res,
             crinitFreeTask(t);
             crinitDestroyFileSeries(&taskSeries);
             return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDTASK, 2, CRINIT_RTIMCMD_RES_ERR,
-                                     "Could not insert new task into TaskDB.");
+                                      "Could not insert new task into TaskDB.");
         }
 
         crinitFreeTask(t);
@@ -691,7 +738,7 @@ static int crinitExecRtimCmdAddSeries(crinitTaskDB_t *ctx, crinitRtimCmd_t *res,
     crinitDestroyFileSeries(&taskSeries);
     if (crinitTaskDBSetSpawnInhibit(ctx, false) == -1) {
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDSERIES, 2, CRINIT_RTIMCMD_RES_ERR,
-                                 "Could not re-enable spawning of processes.");
+                                  "Could not re-enable spawning of processes.");
     }
     return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDSERIES, 1, CRINIT_RTIMCMD_RES_OK);
 }
@@ -702,7 +749,8 @@ static int crinitExecRtimCmdEnable(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, co
         crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
     if (cmd->argc != 1) {
-        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ENABLE, 2, CRINIT_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ENABLE, 2, CRINIT_RTIMCMD_RES_ERR,
+                                  "Wrong number of arguments.");
     }
     const char depStr[] = "@ctl\0enable";
     crinitTaskDep_t tempDep = {NULL, NULL};
@@ -716,7 +764,7 @@ static int crinitExecRtimCmdEnable(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, co
     if (crinitTaskDBRemoveDepFromTask(ctx, &tempDep, cmd->args[0]) == -1) {
         free(tempDep.name);
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ENABLE, 2, CRINIT_RTIMCMD_RES_ERR,
-                                 "Could not remove \'enable\' dependency from task.");
+                                  "Could not remove \'enable\' dependency from task.");
     }
     free(tempDep.name);
     return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ENABLE, 1, CRINIT_RTIMCMD_RES_OK);
@@ -728,7 +776,8 @@ static int crinitExecRtimCmdDisable(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, c
         crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
     if (cmd->argc != 1) {
-        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_DISABLE, 2, CRINIT_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_DISABLE, 2, CRINIT_RTIMCMD_RES_ERR,
+                                  "Wrong number of arguments.");
     }
     const char newDepStr[] = "@ctl\0enable";
     crinitTaskDep_t tempDep = {NULL, NULL};
@@ -742,7 +791,7 @@ static int crinitExecRtimCmdDisable(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, c
     if (crinitTaskDBAddDepToTask(ctx, &tempDep, cmd->args[0]) == -1) {
         free(tempDep.name);
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_DISABLE, 2, CRINIT_RTIMCMD_RES_ERR,
-                                 "Could not add dependency to task.");
+                                  "Could not add dependency to task.");
     }
     free(tempDep.name);
     return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_DISABLE, 1, CRINIT_RTIMCMD_RES_OK);
@@ -758,7 +807,7 @@ static int crinitExecRtimCmdStop(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, cons
     }
     if (crinitSetInhibitWait(true) == -1) {
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
-                                 "Could not inhibit waiting for processes.");
+                                  "Could not inhibit waiting for processes.");
     }
     pid_t taskPid = 0;
     if (crinitTaskDBGetTaskPID(ctx, &taskPid, cmd->args[0]) == -1) {
@@ -769,11 +818,11 @@ static int crinitExecRtimCmdStop(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, cons
     }
     if (kill(taskPid, SIGTERM) == -1) {
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
-                                 "Could not send SIGTERM to process.");
+                                  "Could not send SIGTERM to process.");
     }
     if (crinitSetInhibitWait(false) == -1) {
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
-                                 "Could not reactivate waiting for processes.");
+                                  "Could not reactivate waiting for processes.");
     }
     return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STOP, 1, CRINIT_RTIMCMD_RES_OK);
 }
@@ -789,7 +838,7 @@ static int crinitExecRtimCmdKill(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, cons
 
     if (crinitSetInhibitWait(true) == -1) {
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
-                                 "Could not inhibit waiting for processes.");
+                                  "Could not inhibit waiting for processes.");
     }
     pid_t taskPid = 0;
     if (crinitTaskDBGetTaskPID(ctx, &taskPid, cmd->args[0]) == -1) {
@@ -800,11 +849,11 @@ static int crinitExecRtimCmdKill(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, cons
     }
     if (kill(taskPid, SIGKILL) == -1) {
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_KILL, 2, CRINIT_RTIMCMD_RES_ERR,
-                                 "Could not send SIGKILL to Process.");
+                                  "Could not send SIGKILL to Process.");
     }
     if (crinitSetInhibitWait(false) == -1) {
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
-                                 "Could not reactivate waiting for processes.");
+                                  "Could not reactivate waiting for processes.");
     }
     return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_KILL, 1, CRINIT_RTIMCMD_RES_OK);
 }
@@ -815,22 +864,24 @@ static int crinitExecRtimCmdRestart(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, c
         crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
     if (cmd->argc != 1) {
-        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_RESTART, 2, CRINIT_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_RESTART, 2, CRINIT_RTIMCMD_RES_ERR,
+                                  "Wrong number of arguments.");
     }
 
     crinitTaskState_t s = 0;
     if (crinitTaskDBGetTaskState(ctx, &s, cmd->args[0]) == -1) {
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_RESTART, 2, CRINIT_RTIMCMD_RES_ERR,
-                                 "Could not get task state from TaskDB.");
+                                  "Could not get task state from TaskDB.");
     }
 
     if (!(s & (CRINIT_TASK_STATE_DONE | CRINIT_TASK_STATE_FAILED))) {
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_RESTART, 2, CRINIT_RTIMCMD_RES_ERR,
-                                 "Task is not either DONE or FAILED.");
+                                  "Task is not either DONE or FAILED.");
     }
 
     if (crinitTaskDBSetTaskState(ctx, 0, cmd->args[0]) == -1) {
-        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_RESTART, 2, CRINIT_RTIMCMD_RES_ERR, "Could not reset task state.");
+        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_RESTART, 2, CRINIT_RTIMCMD_RES_ERR,
+                                  "Could not reset task state.");
     }
     return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_RESTART, 1, CRINIT_RTIMCMD_RES_OK);
 }
@@ -844,7 +895,8 @@ static int crinitExecRtimCmdNotify(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, co
     // Notify library will need to send task name. So process dispatch will need to set it in an environment for
     // execve.
     if (cmd->argc < 2) {
-        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_NOTIFY, 2, CRINIT_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_NOTIFY, 2, CRINIT_RTIMCMD_RES_ERR,
+                                  "Wrong number of arguments.");
     }
 
     pid_t pid = -1;
@@ -874,7 +926,7 @@ static int crinitExecRtimCmdNotify(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, co
     if (pid > 0) {
         if (crinitTaskDBSetTaskPID(ctx, pid, cmd->args[0]) == -1) {
             return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_NOTIFY, 2, CRINIT_RTIMCMD_RES_ERR,
-                                     "Could not set main PID of task.");
+                                      "Could not set main PID of task.");
         }
     }
 
@@ -883,18 +935,18 @@ static int crinitExecRtimCmdNotify(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, co
         char depEvent[] = CRINIT_TASK_EVENT_RUNNING CRINIT_TASK_EVENT_NOTIFY_SUFFIX;
         if (crinitTaskDBSetTaskState(ctx, s, cmd->args[0]) == -1) {
             return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_NOTIFY, 2, CRINIT_RTIMCMD_RES_ERR,
-                                     "Could not set task state to RUNNING.");
+                                      "Could not set task state to RUNNING.");
         }
 
         crinitTaskDep_t dep = {cmd->args[0], depEvent};
         if (crinitTaskDBFulfillDep(ctx, &dep) == -1) {
             return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_NOTIFY, 2, CRINIT_RTIMCMD_RES_ERR,
-                                     "Could not fulfill dependency \'%s:%s\'.", cmd->args[0], depEvent);
+                                      "Could not fulfill dependency \'%s:%s\'.", cmd->args[0], depEvent);
         }
 
         if (crinitTaskDBProvideFeatureByTaskName(ctx, cmd->args[0], s) == -1) {
             return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_NOTIFY, 2, CRINIT_RTIMCMD_RES_ERR,
-                                     "Could not set features of spawned task \'%s\' as provided.", cmd->args[0]);
+                                      "Could not set features of spawned task \'%s\' as provided.", cmd->args[0]);
         }
     }
 
@@ -904,18 +956,18 @@ static int crinitExecRtimCmdNotify(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, co
 
         if (crinitTaskDBSetTaskState(ctx, s, cmd->args[0]) == -1) {
             return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_NOTIFY, 2, CRINIT_RTIMCMD_RES_ERR,
-                                     "Could not set task state to DONE.");
+                                      "Could not set task state to DONE.");
         }
 
         const crinitTaskDep_t dep = {cmd->args[0], depEvent};
         if (crinitTaskDBFulfillDep(ctx, &dep) == -1) {
             return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_NOTIFY, 2, CRINIT_RTIMCMD_RES_ERR,
-                                     "Could not fulfill dependency \'%s:%s\'.", cmd->args[0], depEvent);
+                                      "Could not fulfill dependency \'%s:%s\'.", cmd->args[0], depEvent);
         }
 
         if (crinitTaskDBProvideFeatureByTaskName(ctx, cmd->args[0], s) == -1) {
             return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_NOTIFY, 2, CRINIT_RTIMCMD_RES_ERR,
-                                     "Could not set features of spawned task \'%s\' as provided.", cmd->args[0]);
+                                      "Could not set features of spawned task \'%s\' as provided.", cmd->args[0]);
         }
     }
 
@@ -928,14 +980,15 @@ static int crinitExecRtimCmdStatus(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, co
         crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
     if (cmd->argc != 1) {
-        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STATUS, 2, CRINIT_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STATUS, 2, CRINIT_RTIMCMD_RES_ERR,
+                                  "Wrong number of arguments.");
     }
     crinitTaskState_t s = 0;
     pid_t pid = -1;
 
     if (crinitTaskDBGetTaskStateAndPID(ctx, &s, &pid, cmd->args[0]) == -1) {
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STATUS, 2, CRINIT_RTIMCMD_RES_ERR,
-                                 "Could not get state and PID of task.");
+                                  "Could not get state and PID of task.");
     }
 
     size_t resStrLen = snprintf(NULL, 0, "%lu\n%d", s, pid) + 1;
@@ -961,7 +1014,8 @@ static int crinitExecRtimCmdTaskList(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, 
         crinitDbgInfoPrint("    args[%zu] = %s", i, cmd->args[i]);
     }
     if (cmd->argc != 0) {
-        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_TASKLIST, 2, CRINIT_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_TASKLIST, 2, CRINIT_RTIMCMD_RES_ERR,
+                                  "Wrong number of arguments.");
     }
 
     int ret = 0;
@@ -1003,7 +1057,8 @@ static int crinitExecRtimCmdGetVer(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, co
 
     crinitDbgInfoPrint("Will execute runtime command \'GETVER\'.");
     if (cmd->argc != 0) {
-        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_GETVER, 2, CRINIT_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_GETVER, 2, CRINIT_RTIMCMD_RES_ERR,
+                                  "Wrong number of arguments.");
     }
 
     char major[8] = {'\0'}, minor[8] = {'\0'}, micro[8] = {'\0'};
@@ -1012,7 +1067,7 @@ static int crinitExecRtimCmdGetVer(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, co
     snprintf(micro, sizeof(micro) - 1, "%u", crinitVersion.micro);
 
     return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_GETVER, 5, CRINIT_RTIMCMD_RES_OK, major, minor, micro,
-                             crinitVersion.git);
+                              crinitVersion.git);
 }
 
 static int crinitExecRtimCmdShutdown(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, const crinitRtimCmd_t *cmd) {
@@ -1023,12 +1078,14 @@ static int crinitExecRtimCmdShutdown(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, 
     crinitShdnThrArgs_t *thrArgs = malloc(sizeof(crinitShdnThrArgs_t));
     if (thrArgs == NULL) {
         crinitErrnoPrint("Could not allocate memory for shutdown thread arguments.");
-        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_SHUTDOWN, 2, CRINIT_RTIMCMD_RES_ERR, "Memory allocation error.");
+        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_SHUTDOWN, 2, CRINIT_RTIMCMD_RES_ERR,
+                                  "Memory allocation error.");
     }
 
     if (cmd->argc != 1) {
         free(thrArgs);
-        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_SHUTDOWN, 2, CRINIT_RTIMCMD_RES_ERR, "Wrong number of arguments.");
+        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_SHUTDOWN, 2, CRINIT_RTIMCMD_RES_ERR,
+                                  "Wrong number of arguments.");
     }
 
     thrArgs->ctx = ctx;
@@ -1050,7 +1107,7 @@ static int crinitExecRtimCmdShutdown(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, 
         crinitErrnoPrint("Could not start shutdown thread");
         free(thrArgs);
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_SHUTDOWN, 2, CRINIT_RTIMCMD_RES_ERR,
-                                 "Could not start shutdown thread.");
+                                  "Could not start shutdown thread.");
     }
 
     return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_SHUTDOWN, 1, CRINIT_RTIMCMD_RES_OK);

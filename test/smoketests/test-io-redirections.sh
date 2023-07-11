@@ -43,7 +43,7 @@ NAME = io_redirections_test_stderr
 COMMAND[] = /bin/sh -c "echo \\" '''   \\xe2\\x99\\xa5  \\"\\x68ello w\\ spc 1>&2"
 
 IO_REDIRECT = STDOUT "${out_stderr}" TRUNCATE 0640
-IO_REDIRECT = STDERR STDOUT
+              STDERR STDOUT
 
 DEPENDS = ""
 
