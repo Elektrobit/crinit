@@ -13,6 +13,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 
 #include "common.h"
 #include "confconv.h"
@@ -58,6 +59,16 @@ static inline int crinitCfgHandlerSetTaskOptFromStr(crinitTaskOpts_t *tgt, crini
  * @return  The new address of the array on success, NULL on failure.
  */
 static inline void *crinitCfgHandlerManageArrayMem(void *dynArr, size_t elementSize, size_t curSize, size_t reqSize);
+/**
+ * Check if a path exists, is accessible, and a directory.
+ *
+ * Uses stat() with S_ISDIR().
+ *
+ * @param path  The path to check.
+ *
+ * @return  true if \a path refers to an accessible directory, false otherwise.
+ */
+static bool crinitDirExists(const char *path);
 
 int crinitCfgCmdHandler(void *tgt, const char *val, crinitConfigType_t type) {
     crinitNullCheck(-1, tgt, val);
@@ -362,6 +373,10 @@ int crinitCfgInclDirHandler(void *tgt, const char *val, crinitConfigType_t type)
         crinitErrPrint("The value for '%s' must be an absolute path.", CRINIT_CONFIG_KEYSTR_INCLDIR);
         return -1;
     }
+    if(!crinitDirExists(val)) {
+        crinitErrPrint("The value for '%s' is not a directory or inaccessible.", CRINIT_CONFIG_KEYSTR_INCLDIR);
+        return -1;
+    }
     if (crinitGlobOptSetString(CRINIT_GLOBOPT_INCLDIR, val) == -1) {
         crinitErrPrint("Could not set global option '%s'.", CRINIT_CONFIG_KEYSTR_INCLDIR);
         return -1;
@@ -407,6 +422,10 @@ int crinitCfgTaskDirHandler(void *tgt, const char *val, crinitConfigType_t type)
 
     if (!crinitIsAbsPath(val)) {
         crinitErrPrint("The value for '%s' must be an absolute path.", CRINIT_CONFIG_KEYSTR_TASKDIR);
+        return -1;
+    }
+    if(!crinitDirExists(val)) {
+        crinitErrPrint("The value for '%s' is not a directory or inaccessible.", CRINIT_CONFIG_KEYSTR_INCLDIR);
         return -1;
     }
 
@@ -534,4 +553,18 @@ static inline void *crinitCfgHandlerManageArrayMem(void *dynArr, size_t elementS
         return out;
     }
     return out;
+}
+
+static bool crinitDirExists(const char *path) {
+    crinitNullCheck(false, path);
+    struct stat st;
+    if(stat(path, &st) == -1) {
+        crinitErrnoPrint("Could not stat '%s'.", path);
+        return false;
+    }
+    if(!S_ISDIR(st.st_mode)) {
+        crinitErrPrint("Given path '%s' is not a directory.", path);
+        return false;
+    }
+    return true;
 }
