@@ -251,17 +251,16 @@ void crinitClientFreeTaskList(crinitTaskList_t *tl);
  * Request Crinit to initiate an immediate shutdown or reboot.
  *
  * Calling process must have the CAP_SYS_BOOT capability or Crinit will refuse with "Permission denied."
- * The header sys/reboot.h needs to be included for the constants for parameter \a shutdownCmd. Before issuing the
- * shutdown or reboot syscall, Crinit will send SIGCONT+SIGTERM to all processes, wait a grace period (which can be set
- * in the main series config file as `SHUTDOWN_GRACE_PERIOD_US = <microseconds>`), send SIGKILL to remaining processes,
- * detach or read-only-remount all filesystems, and finally call sync().
+ * Before issuing the shutdown or reboot syscall, Crinit will send SIGCONT+SIGTERM to all processes, wait a grace period
+ * (which can be set in the main series config file as `SHUTDOWN_GRACE_PERIOD_US = <microseconds>`), send SIGKILL to
+ * remaining processes, detach or read-only-remount all filesystems, and finally call sync().
  *
- * @param shutdownCmd  The shutdown command to be performed, either RB_POWER_OFF (for poweroff) or RB_AUTOBOOT (for
- *                     reboot).
+ * @param sCmd  The shutdown command to be performed, either CRINIT_SHD_POWEROFF (for poweroff) or CRINIT_SHD_POWEROFF
+ *              (for reboot).
  *
  * @return 0 on success, -1 on error
  */
-int crinitClientShutdown(int shutdownCmd);
+int crinitClientShutdown(crinitShutdownCmd_t sCmd);
 
 #ifdef __cplusplus
 }
