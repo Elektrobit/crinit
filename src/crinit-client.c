@@ -454,11 +454,11 @@ CRINIT_LIB_EXPORTED void crinitClientFreeTaskList(crinitTaskList_t *tl) {
     free(tl);
 }
 
-CRINIT_LIB_EXPORTED int crinitClientShutdown(int shutdownCmd) {
+CRINIT_LIB_EXPORTED int crinitClientShutdown(crinitShutdownCmd_t sCmd) {
     crinitRtimCmd_t cmd, res;
-    char shdCmdStr[16] = {0};
-    snprintf(shdCmdStr, 16, "0x%x", shutdownCmd);
-    if (crinitBuildRtimCmd(&cmd, CRINIT_RTIMCMD_C_SHUTDOWN, 1, shdCmdStr) == -1) {
+    char sCmdStr[2] = {0};
+    snprintf(sCmdStr, 2, "%d", sCmd);
+    if (crinitBuildRtimCmd(&cmd, CRINIT_RTIMCMD_C_SHUTDOWN, 1, sCmdStr) == -1) {
         crinitErrPrint("Could not build RtimCmd to send to Crinit.");
         return -1;
     }

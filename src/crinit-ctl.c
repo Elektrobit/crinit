@@ -40,7 +40,7 @@
  *            - Will request Crinit to perform a graceful system reboot. crinit-ctl can be symlinked to
  *              reboot as a shortcut which will invoke this command automatically.
  *   poweroff
- *            - Will request Crinit to perform a graceful system reboot. crinit-ctl can be symlinked to
+ *            - Will request Crinit to perform a graceful system shutdown. crinit-ctl can be symlinked to
  *              poweroff as a shortcut which will invoke this command automatically.
  * General Options:
  *       --verbose/-v - Be verbose.
@@ -59,7 +59,6 @@
 #include <libgen.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/reboot.h>
 #include <unistd.h>
 
 #include "common.h"
@@ -300,14 +299,14 @@ int main(int argc, char *argv[]) {
         return EXIT_SUCCESS;
     }
     if (strcmp(basename(getoptArgv[0]), "poweroff") == 0) {
-        if (crinitClientShutdown(RB_POWER_OFF) == -1) {
+        if (crinitClientShutdown(CRINIT_SHD_POWEROFF) == -1) {
             crinitErrPrint("System poweroff request failed.");
             return EXIT_FAILURE;
         }
         return EXIT_SUCCESS;
     }
     if (strcmp(basename(getoptArgv[0]), "reboot") == 0) {
-        if (crinitClientShutdown(RB_AUTOBOOT) == -1) {
+        if (crinitClientShutdown(CRINIT_SHD_REBOOT) == -1) {
             crinitErrPrint("System reboot request failed.");
             return EXIT_FAILURE;
         }
@@ -373,7 +372,7 @@ static void crinitPrintUsage(char *prgmPath) {
         "             - Will request Crinit to perform a graceful system reboot. crinit-ctl can be symlinked to\n"
         "               reboot as a shortcut which will invoke this command automatically.\n"
         "    poweroff\n"
-        "             - Will request Crinit to perform a graceful system reboot. crinit-ctl can be symlinked to\n"
+        "             - Will request Crinit to perform a graceful system shutdown. crinit-ctl can be symlinked to\n"
         "               poweroff as a shortcut which will invoke this command automatically.\n"
         "  General Options:\n"
         "        --verbose/-v - Be verbose.\n"

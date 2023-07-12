@@ -1089,11 +1089,18 @@ static int crinitExecRtimCmdShutdown(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, 
     }
 
     thrArgs->ctx = ctx;
-    errno = 0;
-    thrArgs->shutdownCmd = (int)strtol(cmd->args[0], NULL, 16);
-    if (thrArgs->shutdownCmd != RB_AUTOBOOT && thrArgs->shutdownCmd != RB_POWER_OFF) {
-        free(thrArgs);
-        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_SHUTDOWN, 2, CRINIT_RTIMCMD_RES_ERR, "Invalid argument.");
+    crinitShutdownCmd_t sCmd = (crinitShutdownCmd_t)strtol(cmd->args[0], NULL, 10);
+    switch (sCmd) {
+        case CRINIT_SHD_POWEROFF:
+            thrArgs->shutdownCmd = RB_POWER_OFF;
+            break;
+        case CRINIT_SHD_REBOOT:
+            thrArgs->shutdownCmd = RB_AUTOBOOT;
+            break;
+        case CRINIT_SHD_UNDEF:
+        default:
+            free(thrArgs);
+            return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_SHUTDOWN, 2, CRINIT_RTIMCMD_RES_ERR, "Invalid argument.");
     }
 
     pthread_t shdnThreadRef;
