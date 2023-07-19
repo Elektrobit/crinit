@@ -22,6 +22,11 @@
 
 #define ARRAY_SIZE(array) (sizeof(array) / sizeof(*(array)))
 
+// workaround for cmocka API changes after 1.1.5
+#ifndef cast_to_largest_integral_type
+#define cast_to_largest_integral_type(value) cast_to_uintmax_type(value)
+#endif
+
 /**
  * Determine whether a function parameter is correct.
  *
