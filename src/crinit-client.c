@@ -61,7 +61,7 @@ static inline int crinitResponseCheck(const crinitRtimCmd_t *res, crinitRtimOp_t
 static CRINIT_LIB_CONSTRUCTOR void crinitLibInit(void) {
     bool v = false;
     crinitSetPrintPrefix("");
-    crinitGlobOptSetBoolean(CRINIT_GLOBOPT_DEBUG, &v);
+    crinitGlobOptSet(CRINIT_GLOBOPT_DEBUG, v);
     const char *envNotifyName = getenv(CRINIT_ENV_NOTIFY_NAME);
     if (envNotifyName != NULL) {
         crinitNotifyName = envNotifyName;
@@ -81,7 +81,7 @@ static CRINIT_LIB_DESTRUCTOR void crinitLibDestroy(void) {
 }
 
 CRINIT_LIB_EXPORTED int crinitClientSetVerbose(bool v) {
-    return crinitGlobOptSetBoolean(CRINIT_GLOBOPT_DEBUG, &v);
+    return crinitGlobOptSet(CRINIT_GLOBOPT_DEBUG, v);
 }
 
 CRINIT_LIB_EXPORTED void crinitClientSetErrStream(FILE *errStream) {
@@ -109,8 +109,8 @@ CRINIT_LIB_EXPORTED const crinitVersion_t *crinitClientLibGetVersion(void) {
 }
 
 CRINIT_LIB_EXPORTED int sd_notify(int unset_environment, const char *state) {  // NOLINT(readability-identifier-naming)
-                                                                             // Rationale: Naming determined by
-                                                                             // external API.
+                                                                               // Rationale: Naming determined by
+                                                                               // external API.
     if (state == NULL) {
         crinitErrPrint("State string must not be NULL");
         return -1;
@@ -137,7 +137,7 @@ CRINIT_LIB_EXPORTED int sd_notify(int unset_environment, const char *state) {  /
     return ret;
 }
 
-CRINIT_LIB_EXPORTED int sd_notifyf(                      // NOLINT(readability-identifier-naming)
+CRINIT_LIB_EXPORTED int sd_notifyf(                    // NOLINT(readability-identifier-naming)
     int unset_environment, const char *format, ...) {  // NOLINT(readability-identifier-naming)
                                                        // Rationale (both): Naming determined by external API.
     if (format == NULL) {

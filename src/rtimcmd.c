@@ -1131,7 +1131,7 @@ static void *crinitShdnThread(void *args) {
     }
 
     unsigned long long gpMicros = CRINIT_CONFIG_DEFAULT_SHDGRACEP;
-    if (crinitGlobOptGetUnsignedLL(CRINIT_GLOBOPT_SHDGRACEP, &gpMicros) == -1) {
+    if (crinitGlobOptGet(CRINIT_GLOBOPT_SHDGRACEP, &gpMicros) == -1) {
         gpMicros = CRINIT_CONFIG_DEFAULT_SHDGRACEP;
         crinitErrPrint("Could not read global option for shutdown grace period, using default: %lluus.", gpMicros);
     }
