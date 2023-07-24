@@ -16,12 +16,21 @@
 #include "common.h"
 #include "logio.h"
 
+/** Common error message for crinitGlobOptInitDefault(). **/
 #define crinitGlobOptSetErrPrint(keyStr) crinitErrPrint("Could not set default value for global option '%s'.", (keyStr))
+
+/**
+ * Common boilerplate to acquire a lock on the global option storage.
+ */
 #define crinitGlobOptCommonLock()                                                   \
     if (crinitGlobOptBorrow() == NULL) {                                            \
         crinitErrPrint("Could not get exclusive access to global option storage."); \
         return -1;                                                                  \
     }
+
+/**
+ * Common boilerplate to release a lock on the global option storage.
+ */
 #define crinitGlobOptCommonUnlock()                                                     \
     if (crinitGlobOptRemit() == -1) {                                                   \
         crinitErrPrint("Could not release exclusive access to global option storage."); \

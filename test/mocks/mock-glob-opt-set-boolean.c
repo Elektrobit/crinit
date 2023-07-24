@@ -1,5 +1,5 @@
 /**
- * @file mock-glob-opt-set.c
+ * @file mock-glob-opt-set-boolean.c
  * @brief Implementation of a mock function for crinitGlobOptSetBoolean().
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
