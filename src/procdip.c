@@ -223,8 +223,7 @@ static void *crinitDispatchThreadFunc(void *args) {
                 crinitErrPrint("(TID: %d) Could not set state of Task \'%s\' to running.", threadId, tCopy->name);
                 goto threadExitFail;
             }
-            char depEvent[sizeof(CRINIT_TASK_EVENT_RUNNING)] = CRINIT_TASK_EVENT_RUNNING;
-            crinitTaskDep_t spawnDep = {tCopy->name, depEvent};
+            crinitTaskDep_t spawnDep = {tCopy->name, CRINIT_TASK_EVENT_RUNNING};
             if (crinitTaskDBFulfillDep(ctx, &spawnDep) == -1) {
                 crinitErrPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, spawnDep.name,
                                spawnDep.event);
@@ -275,8 +274,7 @@ static void *crinitDispatchThreadFunc(void *args) {
     if (crinitTaskDBSetTaskState(ctx, CRINIT_TASK_STATE_DONE, tCopy->name) == -1) {
         crinitErrPrint("(TID: %d) Could not set state of Task \'%s\' to done.", threadId, tCopy->name);
     }
-    char depEvent[sizeof(CRINIT_TASK_EVENT_DONE)] = CRINIT_TASK_EVENT_DONE;
-    crinitTaskDep_t doneDep = {tCopy->name, depEvent};
+    crinitTaskDep_t doneDep = {tCopy->name, CRINIT_TASK_EVENT_DONE};
     if (crinitTaskDBFulfillDep(ctx, &doneDep) == -1) {
         crinitErrPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, doneDep.name, doneDep.event);
     }
@@ -304,8 +302,7 @@ threadExitFail:
         crinitErrPrint("(TID: %d) Could not reap zombie for task \'%s\'.", threadId, tCopy->name);
     }
 
-    char depEventFail[sizeof(CRINIT_TASK_EVENT_FAILED)] = CRINIT_TASK_EVENT_FAILED;
-    crinitTaskDep_t failDep = {tCopy->name, depEventFail};
+    crinitTaskDep_t failDep = {tCopy->name, CRINIT_TASK_EVENT_FAILED};
     if (crinitTaskDBFulfillDep(ctx, &failDep) == -1) {
         crinitErrPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, failDep.name, failDep.event);
     } else {
