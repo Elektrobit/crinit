@@ -73,8 +73,8 @@ static int crinitReapPid(pid_t pid);
  * Adds an action to a posix_spawn_file_actions_t instance as defined by an crinitIoRedir_t instance.
  *
  * The file action will either be a call to open() including an IO redirection for an crinitIoRedir_t which contains a
- * non-NULL crinitIoRedir_t::path, or a single redirection via dup2() if crinitIoRedir_t::oldfd is positive. If both cases
- * are true, the crinitIoRedir_t::path takes precedence and crinitIoRedir_r::oldfd is ignored.
+ * non-NULL crinitIoRedir_t::path, or a single redirection via dup2() if crinitIoRedir_t::oldfd is positive. If both
+ * cases are true, the crinitIoRedir_t::path takes precedence and crinitIoRedir_r::oldfd is ignored.
  *
  * crinitIoRedir_t::oflags is respected for files and crinitIoRedir_t::mode is respected for files that are overwritten
  * or newly created.
@@ -106,7 +106,7 @@ int crinitProcDispatchSpawnFunc(crinitTaskDB_t *ctx, const crinitTask_t *t) {
     crinitDispThrArgs_t *threadArgs = malloc(sizeof(crinitDispThrArgs_t));
     if (threadArgs == NULL) {
         crinitErrnoPrint("Could not allocate memory for thread arguments. Meant to create thread for task \'%s\'.",
-                        t->name);
+                         t->name);
         return -1;
     }
     threadArgs->ctx = ctx;
@@ -120,13 +120,13 @@ int crinitProcDispatchSpawnFunc(crinitTaskDB_t *ctx, const crinitTask_t *t) {
 
     if ((errno = pthread_attr_setdetachstate(&dispatchThreadAttr, PTHREAD_CREATE_DETACHED)) != 0) {
         crinitErrnoPrint("Could not set PTHREAD_CREATE_DETACHED attribute. Meant to create thread for task \'%s\'.",
-                        t->name);
+                         t->name);
         goto fail;
     }
 
     if ((errno = pthread_attr_setstacksize(&dispatchThreadAttr, CRINIT_PROC_DISPATCH_THREAD_STACK_SIZE)) != 0) {
         crinitErrnoPrint("Could not set pthread stack size to %d. Meant to create thread for task \'%s\'.",
-                        CRINIT_PROC_DISPATCH_THREAD_STACK_SIZE, t->name);
+                         CRINIT_PROC_DISPATCH_THREAD_STACK_SIZE, t->name);
         goto fail;
     }
 
@@ -169,7 +169,7 @@ static void *crinitDispatchThreadFunc(void *args) {
 
     if (crinitEnvSetSet(&tCopy->taskEnv, CRINIT_ENV_NOTIFY_NAME, tCopy->name) == -1) {
         crinitErrPrint("Could not set notification environment variable for task \'%s\'", tCopy->name);
-        goto threadExit;
+        goto threadExitFail;
     }
 
     crinitDbgInfoPrint("(TID: %d) Will spawn Task \'%s\'.", threadId, tCopy->name);
@@ -179,8 +179,8 @@ static void *crinitDispatchThreadFunc(void *args) {
         errno = posix_spawn_file_actions_init(&fileact);
         if (errno != 0) {
             crinitErrnoPrint("(TID: %d) Could not initialize posix_spawn file actions for command %zu of Task '%s'",
-                            threadId, i, tCopy->name);
-            goto threadExit;
+                             threadId, i, tCopy->name);
+            goto threadExitFail;
         }
 
         for (size_t j = 0; j < tCopy->redirsSize; j++) {
@@ -192,48 +192,48 @@ static void *crinitDispatchThreadFunc(void *args) {
                     "(TID: %d) Unexpected result while ensuring '%s' is a FIFO special file for command %zu of Task "
                     "'%s'",
                     threadId, tCopy->redirs[j].path, i, tCopy->name);
-                goto threadExit;
+                goto threadExitFail;
             }
 
             if (crinitPosixSpawnAddIOFileAction(&fileact, &(tCopy->redirs[j])) == -1) {
                 crinitErrPrint("(TID: %d) Could not add IO file action to posix_spawn for command %zu of Task '%s'",
-                              threadId, i, tCopy->name);
-                goto threadExit;
+                               threadId, i, tCopy->name);
+                goto threadExitFail;
             }
         }
 
         errno = posix_spawn(&pid, tCopy->cmds[i].argv[0], &fileact, NULL, tCopy->cmds[i].argv, tCopy->taskEnv.envp);
         if (errno != 0 || pid == -1) {
             crinitErrnoPrint("(TID: %d) Could not spawn new process for command %zu of Task \'%s\'", threadId, i,
-                            tCopy->name);
+                             tCopy->name);
             posix_spawn_file_actions_destroy(&fileact);
-            goto threadExit;
+            goto threadExitFail;
         }
         posix_spawn_file_actions_destroy(&fileact);
         crinitInfoPrint("(TID: %d) Started new process %d for command %zu of Task \'%s\' (\'%s\').", threadId, pid, i,
-                       tCopy->name, tCopy->cmds[i].argv[0]);
+                        tCopy->name, tCopy->cmds[i].argv[0]);
 
         if (crinitTaskDBSetTaskPID(ctx, pid, tCopy->name) == -1) {
             crinitErrPrint("(TID: %d) Could not set PID of Task \'%s\' to %d.", threadId, tCopy->name, pid);
-            goto threadExit;
+            goto threadExitFail;
         }
 
         if (i == 0) {
             if (crinitTaskDBSetTaskState(ctx, CRINIT_TASK_STATE_RUNNING, tCopy->name) == -1) {
                 crinitErrPrint("(TID: %d) Could not set state of Task \'%s\' to running.", threadId, tCopy->name);
-                goto threadExit;
+                goto threadExitFail;
             }
-            char depEvent[sizeof(CRINIT_TASK_EVENT_RUNNING)] = CRINIT_TASK_EVENT_RUNNING;
-            crinitTaskDep_t spawnDep = {tCopy->name, depEvent};
+            crinitTaskDep_t spawnDep = {tCopy->name, CRINIT_TASK_EVENT_RUNNING};
             if (crinitTaskDBFulfillDep(ctx, &spawnDep) == -1) {
-                crinitErrPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, spawnDep.name, spawnDep.event);
-                goto threadExit;
+                crinitErrPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, spawnDep.name,
+                               spawnDep.event);
+                goto threadExitFail;
             }
             crinitDbgInfoPrint("(TID: %d) Dependency \'%s:%s\' fulfilled.", threadId, spawnDep.name, spawnDep.event);
 
             if (crinitTaskDBProvideFeature(ctx, tCopy, CRINIT_TASK_STATE_RUNNING) == -1) {
                 crinitErrPrint("(TID: %d) Could not fulfill provided features of spawned task \'%s\'.", threadId,
-                              tCopy->name);
+                               tCopy->name);
             }
             crinitDbgInfoPrint("(TID: %d) Features of spawned task \'%s\' fulfilled.", threadId, tCopy->name);
         }
@@ -246,51 +246,22 @@ static void *crinitDispatchThreadFunc(void *args) {
         } while (wret != 0 && errno == EINTR);
 
         if (wret != 0 || status.si_code != CLD_EXITED || status.si_status != 0) {
-            // There was some error, either Crinit-internal or the task returned an error code or the task was
-            // killed
+            // There was some error, either Crinit-internal or the task returned an error code or the task was killed.
             if (errno) {
                 crinitErrnoPrint("(TID: %d) Failed to wait for Task \'%s\' (PID %d).", threadId, tCopy->name, pid);
-                goto threadExit;
+                goto threadExitFail;
             } else if (status.si_code == CLD_EXITED) {
                 crinitInfoPrint("(TID: %d) Task \'%s\' (PID %d) returned error code %d.", threadId, tCopy->name, pid,
-                               status.si_status);
+                                status.si_status);
             } else {
                 crinitInfoPrint("(TID: %d) Task \'%s\' (PID %d) failed.", threadId, tCopy->name, pid);
             }
-
-            if (crinitTaskDBSetTaskState(ctx, CRINIT_TASK_STATE_FAILED, tCopy->name) == -1) {
-                crinitErrPrint("(TID: %d) Could not set state of Task \'%s\' to failed.", threadId, tCopy->name);
-                goto threadExit;
-            }
-            if (crinitTaskDBSetTaskPID(ctx, -1, tCopy->name) == -1) {
-                crinitErrPrint("(TID: %d) Could not reset PID of failed Task \'%s\' to -1.", threadId, tCopy->name);
-                goto threadExit;
-            }
-            // Reap zombie of failed command.
-            if (crinitReapPid(pid) == -1) {
-                crinitErrnoPrint("(TID: %d) Could not reap zombie for task \'%s\'.", threadId, tCopy->name);
-            }
-
-            char depEvent[sizeof(CRINIT_TASK_EVENT_FAILED)] = CRINIT_TASK_EVENT_FAILED;
-            crinitTaskDep_t failDep = {tCopy->name, depEvent};
-            if (crinitTaskDBFulfillDep(ctx, &failDep) == -1) {
-                crinitErrPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, failDep.name, failDep.event);
-            }
-            crinitDbgInfoPrint("(TID: %d) Dependency \'%s:%s\' fulfilled.", threadId, failDep.name, failDep.event);
-
-            if (crinitTaskDBProvideFeature(ctx, tCopy, CRINIT_TASK_STATE_FAILED) == -1) {
-                crinitErrPrint("(TID: %d) Could not fulfill provided features of failed task \'%s\'.", threadId,
-                              tCopy->name);
-            }
-            crinitDbgInfoPrint("(TID: %d) Features of failed task \'%s\' fulfilled.", threadId, tCopy->name);
-
-            goto threadExit;
+            goto threadExitFail;
         }
 
         // command of task has returned successfully
         if (crinitTaskDBSetTaskPID(ctx, -1, tCopy->name) == -1) {
             crinitErrPrint("(TID: %d) Could not reset PID of Task \'%s\' to -1.", threadId, tCopy->name);
-            goto threadExit;
         }
         // Reap zombie of successful command.
         if (crinitReapPid(pid) == -1) {
@@ -302,10 +273,8 @@ static void *crinitDispatchThreadFunc(void *args) {
     crinitInfoPrint("(TID: %d) Task \'%s\' done.", threadId, tCopy->name);
     if (crinitTaskDBSetTaskState(ctx, CRINIT_TASK_STATE_DONE, tCopy->name) == -1) {
         crinitErrPrint("(TID: %d) Could not set state of Task \'%s\' to done.", threadId, tCopy->name);
-        goto threadExit;
     }
-    char depEvent[sizeof(CRINIT_TASK_EVENT_DONE)] = CRINIT_TASK_EVENT_DONE;
-    crinitTaskDep_t doneDep = {tCopy->name, depEvent};
+    crinitTaskDep_t doneDep = {tCopy->name, CRINIT_TASK_EVENT_DONE};
     if (crinitTaskDBFulfillDep(ctx, &doneDep) == -1) {
         crinitErrPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, doneDep.name, doneDep.event);
     }
@@ -317,6 +286,35 @@ static void *crinitDispatchThreadFunc(void *args) {
     crinitDbgInfoPrint("(TID: %d) Features of finished task \'%s\' fulfilled.", threadId, tCopy->name);
 
 threadExit:
+    crinitFreeTask(tCopy);
+    free(args);
+    return NULL;
+
+threadExitFail:
+    if (crinitTaskDBSetTaskState(ctx, CRINIT_TASK_STATE_FAILED, tCopy->name) == -1) {
+        crinitErrPrint("(TID: %d) Could not set state of Task \'%s\' to failed.", threadId, tCopy->name);
+    }
+    if (crinitTaskDBSetTaskPID(ctx, -1, tCopy->name) == -1) {
+        crinitErrPrint("(TID: %d) Could not reset PID of failed Task \'%s\' to -1.", threadId, tCopy->name);
+    }
+    // Reap zombie of failed command.
+    if (crinitReapPid(pid) == -1) {
+        crinitErrPrint("(TID: %d) Could not reap zombie for task \'%s\'.", threadId, tCopy->name);
+    }
+
+    crinitTaskDep_t failDep = {tCopy->name, CRINIT_TASK_EVENT_FAILED};
+    if (crinitTaskDBFulfillDep(ctx, &failDep) == -1) {
+        crinitErrPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, failDep.name, failDep.event);
+    } else {
+        crinitDbgInfoPrint("(TID: %d) Dependency \'%s:%s\' fulfilled.", threadId, failDep.name, failDep.event);
+    }
+
+    if (crinitTaskDBProvideFeature(ctx, tCopy, CRINIT_TASK_STATE_FAILED) == -1) {
+        crinitErrPrint("(TID: %d) Could not fulfill provided features of failed task \'%s\'.", threadId, tCopy->name);
+    } else {
+        crinitDbgInfoPrint("(TID: %d) Features of failed task \'%s\' fulfilled.", threadId, tCopy->name);
+    }
+
     crinitFreeTask(tCopy);
     free(args);
     return NULL;
@@ -372,7 +370,10 @@ static int crinitReapPid(pid_t pid) {
     do {
         waitpid(pid, NULL, 0);
     } while (errno == EINTR);
-    if (errno != 0) {
+    if (errno == ECHILD) {
+        return 0;  // If the PID does not exist it has either already been reaped or never existed. In either case,
+                   // we're fine.
+    } else if (errno != 0) {
         crinitErrnoPrint("Could not reap zombie for PID \'%d\'.", pid);
         return -1;
     }
