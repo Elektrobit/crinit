@@ -171,6 +171,9 @@ int crinitGlobOptSetEnvSet(size_t memberOffset, const crinitEnvSet_t *val);
  * Consider using the type-generic macro crinitGlobOptGet() which can be used with member names instead of offsets. Will
  * lock the global option storage as long as needed and is thread-safe.
  *
+ * Will allocate memory for the returned string. When no longer in use, free() should be called on the returned pointer
+ * to free the memory.
+ *
  * @param memberOffset  The offset of the member of the global option struct to set.
  * @param val           Return pointer for the retrieved string. Memory will be allocated.
  *
