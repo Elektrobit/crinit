@@ -295,11 +295,9 @@ threadExit:
 threadExitFail:
     if (crinitTaskDBSetTaskState(ctx, CRINIT_TASK_STATE_FAILED, tCopy->name) == -1) {
         crinitErrPrint("(TID: %d) Could not set state of Task \'%s\' to failed.", threadId, tCopy->name);
-        goto threadExit;
     }
     if (crinitTaskDBSetTaskPID(ctx, -1, tCopy->name) == -1) {
         crinitErrPrint("(TID: %d) Could not reset PID of failed Task \'%s\' to -1.", threadId, tCopy->name);
-        goto threadExit;
     }
     // Reap zombie of failed command.
     if (crinitReapPid(pid) == -1) {
@@ -310,13 +308,15 @@ threadExitFail:
     crinitTaskDep_t failDep = {tCopy->name, depEventFail};
     if (crinitTaskDBFulfillDep(ctx, &failDep) == -1) {
         crinitErrPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, failDep.name, failDep.event);
+    } else {
+        crinitDbgInfoPrint("(TID: %d) Dependency \'%s:%s\' fulfilled.", threadId, failDep.name, failDep.event);
     }
-    crinitDbgInfoPrint("(TID: %d) Dependency \'%s:%s\' fulfilled.", threadId, failDep.name, failDep.event);
 
     if (crinitTaskDBProvideFeature(ctx, tCopy, CRINIT_TASK_STATE_FAILED) == -1) {
         crinitErrPrint("(TID: %d) Could not fulfill provided features of failed task \'%s\'.", threadId, tCopy->name);
+    } else {
+        crinitDbgInfoPrint("(TID: %d) Features of failed task \'%s\' fulfilled.", threadId, tCopy->name);
     }
-    crinitDbgInfoPrint("(TID: %d) Features of failed task \'%s\' fulfilled.", threadId, tCopy->name);
 
     crinitFreeTask(tCopy);
     free(args);
