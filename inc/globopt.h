@@ -17,18 +17,71 @@
 #include "envset.h"
 
 /**
- * Type to specify a global option (set in the series file)
+ * Structure definition for the global option storage.
  */
-typedef enum {
-    CRINIT_GLOBOPT_START,        ///< Marker for beginning of enum, used to calculate number of elements.
-    CRINIT_GLOBOPT_DEBUG,        ///< DEBUG global option.
-    CRINIT_GLOBOPT_INCLDIR,      ///< INCLUDEDIR global option.
-    CRINIT_GLOBOPT_INCL_SUFFIX,  ///< INCLUDE_SUFFIX global option
-    CRINIT_GLOBOPT_SHDGRACEP,    ///< SHUTDOWN_GRACE_PERIOD_US global option
-    CRINIT_GLOBOPT_USE_SYSLOG,   ///< USE_SYSLOG global option
-    CRINIT_GLOBOPT_ENV,          ///< Global task environment variables.
-    CRINIT_GLOBOPT_END           ///< Marker for end of enum, used to calculate number of elements.
-} crinitGlobOptKey_t;
+typedef struct crinitGlobOptStore_t {
+    bool debug;                    ///< Value for the DEBUG global option.
+    bool useSyslog;                ///< Value for the USE_SYSLOG global option.
+    char *inclDir;                 ///< Value for the INCLUDEDIR global option.
+    char *inclSuffix;              ///< Value for the INCLUDE_SUFFIX global option.
+    unsigned long long shdGraceP;  ///< Value for the SHUTDOWN_GRACE_PERIOD_US global option.
+    crinitEnvSet_t globEnv;        ///< Storage for global task environment variables.
+} crinitGlobOptStore_t;
+
+#define CRINIT_GLOBOPT_DEBUG debug             ///< DEBUG global option
+#define CRINIT_GLOBOPT_USE_SYSLOG useSyslog    ///< USE_SYSLOG global option
+#define CRINIT_GLOBOPT_INCLDIR inclDir         ///< INCLUDEDIR global option
+#define CRINIT_GLOBOPT_INCL_SUFFIX inclSuffix  ///< INCLUDE_SUFFIX global option
+#define CRINIT_GLOBOPT_SHDGRACEP shdGraceP     ///< SHUTDOWN_GRACE_PERIOD_US global option
+#define CRINIT_GLOBOPT_ENV globEnv             ///< Reference to the global task environment
+
+/** Dummy instance for Generic Selection of members to work (see type-generic macros below). **/
+static crinitGlobOptStore_t crinitGenericGlobOptHelper __attribute__((unused));
+
+// clang-format off
+// Rationale: Used version of clang-format does not format _Generic macros correctly. This is a known bug and has been
+// fixed very recently. We may remove this exemption once we are on the new clang version as standard.
+// See: https://github.com/llvm/llvm-project/issues/18080
+
+/**
+ * Type-generic macro to get the value of a given global option.
+ *
+ * Thread-safe as all mapped function are thread-safe.
+ *
+ * @param globOptMember  One of the member names of crinitGlobOptStore_t (or one of the CRINIT_GLOBOPT_* constants).
+ * @param retPtr         Return pointer for value. Type depends on the chosen member of crinitGlobOptStore_t and is
+ *                       always `&(member_type)`. In case of `char **` (for a string) and `crinitEnvSet_t *` memory will
+ *                       be allocated.
+ *
+ * @return  0 on success, -1 otherwise
+ */
+#define crinitGlobOptGet(globOptMember, retPtr) \
+    _Generic((crinitGenericGlobOptHelper.globOptMember), \
+        char * : crinitGlobOptGetString, \
+        bool : crinitGlobOptGetBoolean, \
+        unsigned long long : crinitGlobOptGetUnsignedLL, \
+        crinitEnvSet_t : crinitGlobOptGetEnvSet) \
+        ((offsetof(crinitGlobOptStore_t, globOptMember)), (retPtr))
+/**
+ * Type-generic macro to get the value of a given global option.
+ *
+ * Thread-safe as all mapped function are thread-safe.
+ *
+ * @param globOptMember  One of the member names of crinitGlobOptStore_t (or one of the CRINIT_GLOBOPT_* constants).
+ * @param val            Value to store. Type depends on the chosen member of crinitGlobOptStore_t. See function
+ *                       signatures of crinitGlobOptGet*().
+ *
+ * @return  0 on success, -1 otherwise
+ */
+#define crinitGlobOptSet(globOptMember, val) \
+    _Generic((crinitGenericGlobOptHelper.globOptMember), \
+        char * : crinitGlobOptSetString, \
+        const char * : crinitGlobOptSetString, \
+        bool : crinitGlobOptSetBoolean, \
+        unsigned long long : crinitGlobOptSetUnsignedLL, \
+        crinitEnvSet_t : crinitGlobOptSetEnvSet) \
+        ((offsetof(crinitGlobOptStore_t, globOptMember)), (val))
+// clang-format on
 
 /**
  * Sets global options to their default values.
@@ -47,130 +100,121 @@ int crinitGlobOptInitDefault(void);
 void crinitGlobOptDestroy(void);
 
 /**
- * Stores a global option value.
+ * Provide direct thread-safe access to the central global option storage.
  *
- * The data pointed to by \a val is copied to a dynamically allocated storage location. If the global option \a key has
- * been set before, the memory containing the old value is freed. The function uses mutexes internally and is
- * thread-safe.
+ * Calling thread will hold an exclusive lock on the central instance of crinitGlobOptStore_t. After the calling thread
+ * has finished its operations on the global option storage, it must release the lock using crinitGlobOptRemit().
  *
- * @param key  The global option to set.
- * @param val  Pointer to the data to store for the option.
- * @param sz   Size (in Bytes) of the data to store.
+ * @return  A pointer to the central instance of crinitGlobOptStore_t on success, a NULL pointer if the lock could not
+ *          be acquired.
+ */
+crinitGlobOptStore_t *crinitGlobOptBorrow(void);
+/**
+ * Release the lock on the global option storage acquired via crinitGlobOptBorrow().
  *
- * @return 0 on success, -1 otherwise
+ * @return  0 on success, -1 if the lock could not be released.
  */
-int crinitGlobOptSet(crinitGlobOptKey_t key, const void *val, size_t sz);
-
-/**
- * Retrieves a global option value.
- *
- * If a value for \a key has been stored, it will be written to the location pointed to by \a val. The caller needs to
- * make sure there is enough memory available. The function uses mutexes internally an dis thread-safe. If no value for
- * \a key exists in global option storage, an error will be returned. If a value exists but \a sz is greater than the
- * number of Bytes stored for that value, behavior is undefined.
- *
- * @param key  The global option to get.
- * @param val  Pointer to store the option value.
- * @param sz   The number of Bytes to retrieve.
- *
- * @return 0 on success, -1 otherwise
- */
-int crinitGlobOptGet(crinitGlobOptKey_t key, void *val, size_t sz);
-
-/**
- * Function macro to store a bool type option value using crinitGlobOptSet().
- */
-#define crinitGlobOptSetBoolean(key, pVal) crinitGlobOptSet(key, pVal, sizeof(bool))
-/**
- * Function macro to retrieve a bool type option value using crinitGlobOptGet().
- */
-#define crinitGlobOptGetBoolean(key, pVal) crinitGlobOptGet(key, pVal, sizeof(bool))
-
-/**
- * Function macro to store a long int type option value using crinitGlobOptSet().
- */
-#define crinitGlobOptSetInteger(key, pVal) crinitGlobOptSet(key, pVal, sizeof(long))
-/**
- * Function macro to retrieve a long int type option value crinitGlobOptGet().
- */
-#define crinitGlobOptGetInteger(key, pVal) crinitGlobOptGet(key, pVal, sizeof(long))
-
-/**
- * Function macro to store an unsigned long int type option value using crinitGlobOptSet().
- */
-#define crinitGlobOptSetUnsigned(key, pVal) crinitGlobOptSet(key, pVal, sizeof(unsigned long))
-/**
- * Function macro to retrieve an unsigned long int type option value crinitGlobOptGet().
- */
-#define crinitGlobOptGetUnsigned(key, pVal) crinitGlobOptGet(key, pVal, sizeof(unsigned long))
-
-/**
- * Function macro to store an unsigned long long type option value using crinitGlobOptSet().
- */
-#define crinitGlobOptSetUnsignedLL(key, pVal) crinitGlobOptSet(key, pVal, sizeof(unsigned long long))
-/**
- * Function macro to retrieve an unsigned long long type option value crinitGlobOptGet().
- */
-#define crinitGlobOptGetUnsignedLL(key, pVal) crinitGlobOptGet(key, pVal, sizeof(unsigned long long))
+int crinitGlobOptRemit(void);
 
 /**
  * Stores a string value for a global option.
  *
- * The length of the string is stored as well for later retrieval using crinitGlobOptGetString(). Uses
- * crinitGlobOptSet() and is therefore thread-safe.
+ * Consider using the type-generic macro crinitGlobOptSet() which can be used with member names instead of offsets. Will
+ * lock the global option storage as long as needed and is thread-safe.
  *
- * @param key  The global option to set.
- * @param str  The string value to store, must be null-terminated.
+ * @param memberOffset  The offset of the member of the global option struct to set.
+ * @param val           The string value to store, must be null-terminated.
  *
  * @return 0 on success, -1 on error
  */
-int crinitGlobOptSetString(crinitGlobOptKey_t key, const char *str);
+int crinitGlobOptSetString(size_t memberOffset, const char *val);
+/**
+ * Stores a boolean value for a global option.
+ *
+ * Consider using the type-generic macro crinitGlobOptSet() which can be used with member names instead of offsets. Will
+ * lock the global option storage as long as needed and is thread-safe.
+ *
+ * @param memberOffset  The global option to set.
+ * @param val           The boolean value to store.
+ *
+ * @return 0 on success, -1 on error
+ */
+int crinitGlobOptSetBoolean(size_t memberOffset, bool val);
+/**
+ * Stores an unsigned long long value for a global option.
+ *
+ * Consider using the type-generic macro crinitGlobOptSet() which can be used with member names instead of offsets. Will
+ * lock the global option storage as long as needed and is thread-safe.
+ *
+ * @param memberOffset  The global option to set.
+ * @param val           The unsigned long long integer value to store.
+ *
+ * @return 0 on success, -1 on error
+ */
+int crinitGlobOptSetUnsignedLL(size_t memberOffset, unsigned long long val);
+/**
+ * Stores a crinitEnvSet_t value for a global option.
+ *
+ * Consider using the type-generic macro crinitGlobOptSet() which can be used with member names instead of offsets. Will
+ * lock the global option storage as long as needed and is thread-safe.
+ *
+ * @param memberOffset  The global option to set.
+ * @param val           Pointer to the crinitEnvSet_t which shall be stored.
+ *
+ * @return 0 on success, -1 on error
+ */
+int crinitGlobOptSetEnvSet(size_t memberOffset, const crinitEnvSet_t *val);
 
 /**
- * Retrieves a string value stores for a global option.
+ * Retrieves a string value from a global option.
  *
- * Must be used for a global option value that has been stored using crinitGlobOptSetString(). If this is not the case,
- * behavior is undefined unless the option has not been set, in which case the function will return an error. If
- * successful, the function will write a dynamically allocated string pointer to \a str. The pointer should freed if no
- * longer used. Uses crinitGlobOptGet and is therefore thread-safe.
+ * Consider using the type-generic macro crinitGlobOptGet() which can be used with member names instead of offsets. Will
+ * lock the global option storage as long as needed and is thread-safe.
  *
- * @param key  The global option to get.
- * @param str  Pointer to return a dynamically-allocated copy of the global option value.
+ * Will allocate memory for the returned string. When no longer in use, free() should be called on the returned pointer
+ * to free the memory.
  *
- * @return 0 on success, -1 otherwise
+ * @param memberOffset  The offset of the member of the global option struct to set.
+ * @param val           Return pointer for the retrieved string. Memory will be allocated.
+ *
+ * @return 0 on success, -1 on error
  */
-int crinitGlobOptGetString(crinitGlobOptKey_t key, char **str);
-
+int crinitGlobOptGetString(size_t memberOffset, char **val);
 /**
- * Retrieves an crinitEnvSet_t structure.
+ * Retrieves a boolean value from a global option.
  *
- * The instance will be duplicated from the stored one using crinitEnvSetDup(). Memory inside the returned instance will
- * be allocated and should be freed using crinitEnvSetDestroy() when no longer in use.
+ * Consider using the type-generic macro crinitGlobOptGet() which can be used with member names instead of offsets. Will
+ * lock the global option storage as long as needed and is thread-safe.
  *
- * @param es  Return pointer for the retrieved crinitEnvSet_t.
+ * @param memberOffset  The global option to set.
+ * @param val           Return pointer for the retrieved boolean value.
  *
- * @return  0 on success, -1 on error.
+ * @return 0 on success, -1 on error
  */
-int crinitGlobOptGetEnvSet(crinitEnvSet_t *es);
+int crinitGlobOptGetBoolean(size_t memberOffset, bool *val);
 /**
- * Borrows the global environment set from the global option storage array.
+ * Retrieves an unsigned long long value from a global option.
  *
- * In this case, borrowing means the caller gets a direct pointer to the crinitEnvSet_t structure in the global option
- * array. After the function has returned successfully, the calling thread will hold the mutex on the global option
- * storage and may freely modify the crinitEnvSet_t at the returned address. Afterwards the calling thread needs to
- * call crinitGlobOptRemitEnvSet() to unlock the option storage mutex or it will cause deadlock.
+ * Consider using the type-generic macro crinitGlobOptGet() which can be used with member names instead of offsets. Will
+ * lock the global option storage as long as needed and is thread-safe.
  *
- * @return  Pointer to the global environment set if successful, NULL otherwise.
+ * @param memberOffset  The global option to set.
+ * @param val           Return pointer for the unsigned long long integer value.
+ *
+ * @return 0 on success, -1 on error
  */
-crinitEnvSet_t *crinitGlobOptBorrowEnvSet(void);
+int crinitGlobOptGetUnsignedLL(size_t memberOffset, unsigned long long *val);
 /**
- * Remits the global environment set to the global option storage.
+ * Retrieves a crinitEnvSet_t value from a global option.
  *
- * This will unlock the mutex locked by crinitGlobOptBorrowEnvSet(). After this call no further interaction with the
- * global environment set is allowed for the calling thread, unless crinitGlobOptBorrowEnvSet() is called again.
+ * Consider using the type-generic macro crinitGlobOptGet() which can be used with member names instead of offsets. Will
+ * lock the global option storage as long as needed and is thread-safe.
  *
- * @return  0 on success, -1 otherwise.
+ * @param memberOffset  The global option to set.
+ * @param val           Pointer to the crinitEnvSet_t instance to which the global one will be duplicated.
+ *
+ * @return 0 on success, -1 on error
  */
-int crinitGlobOptRemitEnvSet(void);
+int crinitGlobOptGetEnvSet(size_t memberOffset, crinitEnvSet_t *val);
 
 #endif /* __GLOBOPT_H__ */

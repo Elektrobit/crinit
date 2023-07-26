@@ -222,18 +222,18 @@ int crinitCfgEnvHandler(void *tgt, const char *val, crinitConfigType_t type) {
         }
     } else if (type == CRINIT_CONFIG_TYPE_SERIES) {
         crinitNullCheck(-1, val);
-        crinitEnvSet_t *globEnv = crinitGlobOptBorrowEnvSet();
-        if (globEnv == NULL) {
-            crinitErrPrint("Could not borrow global task environment set from global option storage.");
+        crinitGlobOptStore_t *globOpts = crinitGlobOptBorrow();
+        if (globOpts == NULL) {
+            crinitErrPrint("Could not get exclusive access to global option storage.");
             return -1;
         }
-        if (crinitConfConvToEnvSetMember(globEnv, val) == -1) {
+        if (crinitConfConvToEnvSetMember(&globOpts->globEnv, val) == -1) {
             crinitErrPrint("Could not parse task environment directive '%s'.", val);
-            crinitGlobOptRemitEnvSet();
+            crinitGlobOptRemit();
             return -1;
         }
-        if(crinitGlobOptRemitEnvSet() == -1) {
-            crinitErrPrint("Could not remit global task environment back to global option storage.");
+        if (crinitGlobOptRemit() == -1) {
+            crinitErrPrint("Could not release exclusive access of global option storage.");
             return -1;
         }
     } else {
@@ -341,7 +341,7 @@ int crinitCfgDebugHandler(void *tgt, const char *val, crinitConfigType_t type) {
         return -1;
     }
 
-    if (crinitGlobOptSetBoolean(CRINIT_GLOBOPT_DEBUG, &v) == -1) {
+    if (crinitGlobOptSet(CRINIT_GLOBOPT_DEBUG, v) == -1) {
         crinitErrPrint("Could not set global option '%s'.", CRINIT_CONFIG_KEYSTR_DEBUG);
         return -1;
     }
@@ -357,7 +357,7 @@ int crinitCfgInclSuffixHandler(void *tgt, const char *val, crinitConfigType_t ty
         crinitErrPrint("Include file suffixes must begin with a dot ('.'). Offending value: '%s'", val);
         return -1;
     }
-    if (crinitGlobOptSetString(CRINIT_GLOBOPT_INCL_SUFFIX, val) == -1) {
+    if (crinitGlobOptSet(CRINIT_GLOBOPT_INCL_SUFFIX, val) == -1) {
         crinitErrPrint("Could not set global option '%s'.", CRINIT_CONFIG_KEYSTR_INCL_SUFFIX);
         return -1;
     }
@@ -373,11 +373,11 @@ int crinitCfgInclDirHandler(void *tgt, const char *val, crinitConfigType_t type)
         crinitErrPrint("The value for '%s' must be an absolute path.", CRINIT_CONFIG_KEYSTR_INCLDIR);
         return -1;
     }
-    if(!crinitDirExists(val)) {
+    if (!crinitDirExists(val)) {
         crinitErrPrint("The value for '%s' is not a directory or inaccessible.", CRINIT_CONFIG_KEYSTR_INCLDIR);
         return -1;
     }
-    if (crinitGlobOptSetString(CRINIT_GLOBOPT_INCLDIR, val) == -1) {
+    if (crinitGlobOptSet(CRINIT_GLOBOPT_INCLDIR, val) == -1) {
         crinitErrPrint("Could not set global option '%s'.", CRINIT_CONFIG_KEYSTR_INCLDIR);
         return -1;
     }
@@ -394,7 +394,7 @@ int crinitCfgShdGpHandler(void *tgt, const char *val, crinitConfigType_t type) {
         crinitErrPrint("Could not parse value of integral numeric option '%s'.", CRINIT_CONFIG_KEYSTR_SHDGRACEP);
         return -1;
     }
-    if (crinitGlobOptSetUnsignedLL(CRINIT_GLOBOPT_SHDGRACEP, &gpMicros) == -1) {
+    if (crinitGlobOptSet(CRINIT_GLOBOPT_SHDGRACEP, gpMicros) == -1) {
         crinitErrPrint("Could not set global option '%s'.", CRINIT_CONFIG_KEYSTR_SHDGRACEP);
         return -1;
     }
@@ -424,7 +424,7 @@ int crinitCfgTaskDirHandler(void *tgt, const char *val, crinitConfigType_t type)
         crinitErrPrint("The value for '%s' must be an absolute path.", CRINIT_CONFIG_KEYSTR_TASKDIR);
         return -1;
     }
-    if(!crinitDirExists(val)) {
+    if (!crinitDirExists(val)) {
         crinitErrPrint("The value for '%s' is not a directory or inaccessible.", CRINIT_CONFIG_KEYSTR_INCLDIR);
         return -1;
     }
@@ -513,7 +513,7 @@ int crinitCfgSyslogHandler(void *tgt, const char *val, crinitConfigType_t type) 
         return -1;
     }
 
-    if (crinitGlobOptSetBoolean(CRINIT_GLOBOPT_USE_SYSLOG, &v) == -1) {
+    if (crinitGlobOptSet(CRINIT_GLOBOPT_USE_SYSLOG, v) == -1) {
         crinitErrPrint("Could not set global option '%s'.", CRINIT_CONFIG_KEYSTR_USE_SYSLOG);
         return -1;
     }
@@ -558,11 +558,11 @@ static inline void *crinitCfgHandlerManageArrayMem(void *dynArr, size_t elementS
 static bool crinitDirExists(const char *path) {
     crinitNullCheck(false, path);
     struct stat st;
-    if(stat(path, &st) == -1) {
+    if (stat(path, &st) == -1) {
         crinitErrnoPrint("Could not stat '%s'.", path);
         return false;
     }
-    if(!S_ISDIR(st.st_mode)) {
+    if (!S_ISDIR(st.st_mode)) {
         crinitErrPrint("Given path '%s' is not a directory.", path);
         return false;
     }

@@ -4,14 +4,14 @@
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
- * @copyright 2021-2022 Elektrobit Automotive GmbH
+ * @copyright 2023 Elektrobit Automotive GmbH
  *            All rights exclusively reserved for Elektrobit Automotive GmbH,
  *            unless otherwise expressly agreed
  */
 
 #include "common.h"
 #include "crinit-client.h"
-#include "mock-glob-opt-set.h"
+#include "mock-glob-opt-set-boolean.h"
 #include "unit_test.h"
 #include "utest-crinit-set-verbose.h"
 
@@ -21,16 +21,14 @@ void crinitClientSetVerboseTestGlobOptError(void **state) {
     const bool f = false;
 
     // case for input == true
-    expect_value(__wrap_crinitGlobOptSet, key, CRINIT_GLOBOPT_DEBUG);
-    expect_memory(__wrap_crinitGlobOptSet, val, &t, sizeof(bool));
-    expect_value(__wrap_crinitGlobOptSet, sz, sizeof(bool));
-    will_return(__wrap_crinitGlobOptSet, -1);
+    expect_value(__wrap_crinitGlobOptSetBoolean, memberOffset, offsetof(crinitGlobOptStore_t, CRINIT_GLOBOPT_DEBUG));
+    expect_value(__wrap_crinitGlobOptSetBoolean, val, t);
+    will_return(__wrap_crinitGlobOptSetBoolean, -1);
     assert_int_equal(crinitClientSetVerbose(true), -1);
 
     // case for input == false
-    expect_value(__wrap_crinitGlobOptSet, key, CRINIT_GLOBOPT_DEBUG);
-    expect_memory(__wrap_crinitGlobOptSet, val, &f, sizeof(bool));
-    expect_value(__wrap_crinitGlobOptSet, sz, sizeof(bool));
-    will_return(__wrap_crinitGlobOptSet, -1);
+    expect_value(__wrap_crinitGlobOptSetBoolean, memberOffset, offsetof(crinitGlobOptStore_t, CRINIT_GLOBOPT_DEBUG));
+    expect_value(__wrap_crinitGlobOptSetBoolean, val, f);
+    will_return(__wrap_crinitGlobOptSetBoolean, -1);
     assert_int_equal(crinitClientSetVerbose(false), -1);
 }

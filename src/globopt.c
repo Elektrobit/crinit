@@ -4,7 +4,7 @@
  *
  * @author emlix GmbH, 37083 Göttingen, Germany
  *
- * @copyright 2021 Elektrobit Automotive GmbH
+ * @copyright 2023 Elektrobit Automotive GmbH
  *            All rights exclusively reserved for Elektrobit Automotive GmbH,
  *            unless otherwise expressly agreed
  */
@@ -13,179 +13,204 @@
 #include <pthread.h>
 #include <stdlib.h>
 
+#include "common.h"
 #include "logio.h"
 
+/** Common error message for crinitGlobOptInitDefault(). **/
 #define crinitGlobOptSetErrPrint(keyStr) crinitErrPrint("Could not set default value for global option '%s'.", (keyStr))
 
-/** Array to hold pointers to the global option values, one pointer per global option. **/
-static void *crinitGlobOptArr[CRINIT_GLOBOPT_END - CRINIT_GLOBOPT_START] = {NULL};
+/**
+ * Common boilerplate to acquire a lock on the global option storage.
+ */
+#define crinitGlobOptCommonLock()                                                   \
+    if (crinitGlobOptBorrow() == NULL) {                                            \
+        crinitErrPrint("Could not get exclusive access to global option storage."); \
+        return -1;                                                                  \
+    }
+
+/**
+ * Common boilerplate to release a lock on the global option storage.
+ */
+#define crinitGlobOptCommonUnlock()                                                     \
+    if (crinitGlobOptRemit() == -1) {                                                   \
+        crinitErrPrint("Could not release exclusive access to global option storage."); \
+        return -1;                                                                      \
+    }
+
+/** Central global option storage. **/
+static crinitGlobOptStore_t crinitGlobOpts;
 /** Mutex to synchronize access to globOptArr **/
 static pthread_mutex_t crinitOptLock = PTHREAD_MUTEX_INITIALIZER;
 
 int crinitGlobOptInitDefault(void) {
-    for (crinitGlobOptKey_t i = CRINIT_GLOBOPT_START; i < CRINIT_GLOBOPT_END; i++) {
-        switch (i) {
-            case CRINIT_GLOBOPT_DEBUG: {
-                bool def = CRINIT_CONFIG_DEFAULT_DEBUG;
-                if (crinitGlobOptSetBoolean(i, &def) == -1) {
-                    crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_DEBUG);
-                    return -1;
-                }
-            } break;
-            case CRINIT_GLOBOPT_INCLDIR:
-                if (crinitGlobOptSetString(i, CRINIT_CONFIG_DEFAULT_INCLDIR) == -1) {
-                    crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_INCLDIR);
-                    return -1;
-                }
-                break;
-            case CRINIT_GLOBOPT_INCL_SUFFIX:
-                if (crinitGlobOptSetString(i, CRINIT_CONFIG_DEFAULT_INCL_SUFFIX) == -1) {
-                    crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_INCL_SUFFIX);
-                    return -1;
-                }
-                break;
-            case CRINIT_GLOBOPT_SHDGRACEP: {
-                unsigned long long def = CRINIT_CONFIG_DEFAULT_SHDGRACEP;
-                if (crinitGlobOptSetUnsignedLL(i, &def) == -1) {
-                    crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_SHDGRACEP);
-                    return -1;
-                }
-            } break;
-            case CRINIT_GLOBOPT_USE_SYSLOG: {
-                bool def = CRINIT_CONFIG_DEFAULT_USE_SYSLOG;
-                if (crinitGlobOptSetBoolean(i, &def) == -1) {
-                    crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_USE_SYSLOG);
-                    return -1;
-                }
-            } break;
-            case CRINIT_GLOBOPT_ENV: {
-                crinitEnvSet_t init;
-                if (crinitEnvSetInit(&init, CRINIT_ENVSET_INITIAL_SIZE, CRINIT_ENVSET_SIZE_INCREMENT) == -1) {
-                    crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_ENV_SET);
-                    return -1;
-                }
+    crinitGlobOptCommonLock();
 
-                if (crinitGlobOptSet(i, &init, sizeof(crinitEnvSet_t)) == -1) {
-                    crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_ENV_SET);
-                    crinitEnvSetDestroy(&init);
-                    return -1;
-                }
-            } break;
-            case CRINIT_GLOBOPT_START:
-            default:
-                if (crinitGlobOptSet(i, NULL, 0) == -1) {
-                    crinitErrPrint("Could not set unknown global option to default NULL pointer.");
-                    return -1;
-                }
-            case CRINIT_GLOBOPT_END:
-                break;
-        }
+    memset(&crinitGlobOpts, 0, sizeof(crinitGlobOpts));
+    crinitGlobOpts.debug = CRINIT_CONFIG_DEFAULT_DEBUG;
+    crinitGlobOpts.useSyslog = CRINIT_CONFIG_DEFAULT_USE_SYSLOG;
+    crinitGlobOpts.shdGraceP = CRINIT_CONFIG_DEFAULT_SHDGRACEP;
+
+    crinitGlobOpts.inclDir = strdup(CRINIT_CONFIG_DEFAULT_INCLDIR);
+    if (crinitGlobOpts.inclDir == NULL) {
+        crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_INCLDIR);
+        crinitGlobOptDestroy();
+        crinitGlobOptCommonUnlock();
+        return -1;
+    }
+
+    crinitGlobOpts.inclSuffix = strdup(CRINIT_CONFIG_DEFAULT_INCL_SUFFIX);
+    if (crinitGlobOpts.inclSuffix == NULL) {
+        crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_INCL_SUFFIX);
+        crinitGlobOptDestroy();
+
+        crinitGlobOptCommonUnlock();
+        return -1;
+    }
+
+    if (crinitEnvSetInit(&crinitGlobOpts.globEnv, CRINIT_ENVSET_INITIAL_SIZE, CRINIT_ENVSET_SIZE_INCREMENT) == -1) {
+        crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_ENV_SET);
+        crinitGlobOptDestroy();
+        crinitGlobOptCommonUnlock();
+        return -1;
+    }
+
+    crinitGlobOptCommonUnlock();
+    return 0;
+}
+
+int crinitGlobOptSetString(size_t memberOffset, const char *val) {
+    crinitNullCheck(-1, val);
+    char *goptBase = (char *)&crinitGlobOpts;
+    char **tgt = (char **)(goptBase + memberOffset);
+
+    crinitGlobOptCommonLock();
+
+    free(*tgt);
+    *tgt = strdup(val);
+    if (*tgt == NULL) {
+        crinitErrnoPrint("Could not duplicate string to global option storage.");
+        crinitGlobOptCommonUnlock();
+        return -1;
+    }
+
+    crinitGlobOptCommonUnlock();
+    return 0;
+}
+
+int crinitGlobOptGetString(size_t memberOffset, char **val) {
+    crinitNullCheck(-1, val);
+    char *goptBase = (char *)&crinitGlobOpts;
+    char *src = *(char **)(goptBase + memberOffset);
+
+    if (crinitGlobOptBorrow() == NULL) {
+        crinitErrPrint("Could not geti exclusive access to global option storage.");
+        return -1;
+    }
+    *val = strdup(src);
+    if (*val == NULL) {
+        crinitErrnoPrint("Could not duplicate string to global option storage.");
+        crinitGlobOptRemit();
+        return -1;
+    }
+    if (crinitGlobOptRemit() == -1) {
+        crinitErrPrint("Could not release exclusive access to global option storage.");
+        return -1;
     }
     return 0;
 }
 
-int crinitGlobOptSet(crinitGlobOptKey_t key, const void *val, size_t sz) {
-    if ((errno = pthread_mutex_lock(&crinitOptLock)) == -1) {
-        crinitErrnoPrint("Could not wait for global option array mutex lock.");
-        return -1;
-    }
-    size_t idx = (size_t)key;
-    if (crinitGlobOptArr[idx] != NULL) {
-        free(crinitGlobOptArr[idx]);
-    }
-    if (val == NULL || sz == 0) {
-        crinitGlobOptArr[idx] = NULL;
-    } else {
-        crinitGlobOptArr[idx] = malloc(sz);
-        if (crinitGlobOptArr[idx] == NULL) {
-            crinitErrPrint("Could not allocate memory for global option.");
-            pthread_mutex_unlock(&crinitOptLock);
-            return -1;
-        }
-        memcpy(crinitGlobOptArr[idx], val, sz);
-    }
-    pthread_mutex_unlock(&crinitOptLock);
+int crinitGlobOptSetBoolean(size_t memberOffset, bool val) {
+    char *goptBase = (char *)&crinitGlobOpts;
+    bool *tgt = (bool *)(goptBase + memberOffset);
+
+    crinitGlobOptCommonLock();
+    *tgt = val;
+    crinitGlobOptCommonUnlock();
+
     return 0;
 }
 
-int crinitGlobOptGet(crinitGlobOptKey_t key, void *val, size_t sz) {
-    if (val == NULL || sz == 0) {
-        crinitErrPrint("Return value pointer must not be NULL and at least 1 Byte must be read.");
-        return -1;
-    }
-    if ((errno = pthread_mutex_lock(&crinitOptLock)) == -1) {
-        crinitErrnoPrint("Could not wait for global option array mutex lock.");
-        return -1;
-    }
-    size_t idx = (size_t)key;
-    if (crinitGlobOptArr[idx] == NULL) {
-        crinitErrPrint("Could not read global option as it is uninitialized.");
-        pthread_mutex_unlock(&crinitOptLock);
-        return -1;
-    }
-    memcpy(val, crinitGlobOptArr[idx], sz);
-    pthread_mutex_unlock(&crinitOptLock);
+int crinitGlobOptGetBoolean(size_t memberOffset, bool *val) {
+    crinitNullCheck(-1, val);
+    char *goptBase = (char *)&crinitGlobOpts;
+
+    crinitGlobOptCommonLock();
+    *val = *(bool *)(goptBase + memberOffset);
+    crinitGlobOptCommonUnlock();
+
     return 0;
 }
 
-int crinitGlobOptSetString(crinitGlobOptKey_t key, const char *str) {
-    if (str == NULL) {
-        crinitErrPrint("Input string must not be NULL.");
-        return -1;
-    }
-    size_t len = strlen(str) + 1;
-    char *copyData = malloc(len + sizeof(size_t));
-    if (copyData == NULL) {
-        crinitErrnoPrint("Could not allocate memory for global option string.");
-        return -1;
-    }
-    memcpy(copyData, &len, sizeof(size_t));
-    memcpy(copyData + sizeof(size_t), str, len);
-    if (crinitGlobOptSet(key, copyData, len + sizeof(size_t)) == -1) {
-        crinitErrPrint("Could not store global option string.");
-        free(copyData);
-        return -1;
-    }
-    free(copyData);
+int crinitGlobOptSetUnsignedLL(size_t memberOffset, unsigned long long val) {
+    char *goptBase = (char *)&crinitGlobOpts;
+    unsigned long long *tgt = (unsigned long long *)(goptBase + memberOffset);
+
+    crinitGlobOptCommonLock();
+    *tgt = val;
+    crinitGlobOptCommonUnlock();
+
     return 0;
 }
 
-int crinitGlobOptGetString(crinitGlobOptKey_t key, char **str) {
-    size_t len = 0;
-    if (crinitGlobOptGet(key, &len, sizeof(size_t)) == -1 || len == 0) {
-        crinitErrPrint("Could not get global option string.");
-        return -1;
-    }
-    char *temp = malloc(len + sizeof(size_t));
-    if (temp == NULL) {
-        crinitErrnoPrint("Could not allocate memory for temporary string");
-        return -1;
-    }
-    if (crinitGlobOptGet(key, temp, len + sizeof(size_t)) == -1) {
-        crinitErrPrint("Could not get global option string.");
-        free(temp);
-        return -1;
-    }
-    *str = malloc(len);
-    if (*str == NULL) {
-        crinitErrnoPrint("Could not allocate memory for output.");
-        free(temp);
-        return -1;
-    }
-    memcpy(*str, temp + sizeof(size_t), len);
-    free(temp);
+int crinitGlobOptGetUnsignedLL(size_t memberOffset, unsigned long long *val) {
+    crinitNullCheck(-1, val);
+    char *goptBase = (char *)&crinitGlobOpts;
+
+    crinitGlobOptCommonLock();
+    *val = *(unsigned long long *)(goptBase + memberOffset);
+    crinitGlobOptCommonUnlock();
+
     return 0;
 }
 
-crinitEnvSet_t *crinitGlobOptBorrowEnvSet(void) {
+int crinitGlobOptSetEnvSet(size_t memberOffset, const crinitEnvSet_t *val) {
+    crinitNullCheck(-1, val);
+    char *goptBase = (char *)&crinitGlobOpts;
+    crinitEnvSet_t *tgt = (crinitEnvSet_t *)(goptBase + memberOffset);
+
+    crinitGlobOptCommonLock();
+
+    if (crinitEnvSetDestroy(tgt) == -1) {
+        crinitErrPrint("Could not free memory of global environment prior to overwriting it.");
+        crinitGlobOptCommonUnlock();
+        return -1;
+    }
+    if (crinitEnvSetDup(tgt, val) == -1) {
+        crinitErrPrint("Could not duplicate environment set into global option storage.");
+        crinitGlobOptCommonUnlock();
+        return -1;
+    }
+
+    crinitGlobOptCommonUnlock();
+    return 0;
+}
+
+int crinitGlobOptGetEnvSet(size_t memberOffset, crinitEnvSet_t *val) {
+    crinitNullCheck(-1, val);
+    char *goptBase = (char *)&crinitGlobOpts;
+    crinitEnvSet_t *src = (crinitEnvSet_t *)(goptBase + memberOffset);
+
+    crinitGlobOptCommonLock();
+
+    if (crinitEnvSetDup(val, src) == -1) {
+        crinitErrPrint("Could not duplicate environment set from global option storage.");
+        crinitGlobOptCommonUnlock();
+        return -1;
+    }
+
+    crinitGlobOptCommonUnlock();
+    return 0;
+}
+
+crinitGlobOptStore_t *crinitGlobOptBorrow(void) {
     if ((errno = pthread_mutex_lock(&crinitOptLock)) == -1) {
         crinitErrnoPrint("Could not wait for global option array mutex lock.");
         return NULL;
     }
-    return (crinitEnvSet_t *)crinitGlobOptArr[CRINIT_GLOBOPT_ENV];
+    return &crinitGlobOpts;
 }
 
-int crinitGlobOptRemitEnvSet(void) {
+int crinitGlobOptRemit(void) {
     // This *could* be called from a thread which does not actually own the mutex, so we need to check if
     // pthread_mutex_unlock() fails.
     errno = pthread_mutex_unlock(&crinitOptLock);
@@ -196,38 +221,13 @@ int crinitGlobOptRemitEnvSet(void) {
     return 0;
 }
 
-int crinitGlobOptGetEnvSet(crinitEnvSet_t *es) {
-    crinitEnvSet_t temp;
-    if (crinitGlobOptGet(CRINIT_GLOBOPT_ENV, &temp, sizeof(crinitEnvSet_t)) == -1) {
-        crinitErrPrint("Could not retrieve global environment set.");
-        return -1;
-    }
-    if ((errno = pthread_mutex_lock(&crinitOptLock)) == -1) {
-        crinitErrnoPrint("Could not wait for global option array mutex lock.");
-        return -1;
-    }
-    if (crinitEnvSetDup(es, &temp) == -1) {
-        crinitErrPrint("Could not duplicate environment set during retrieval from global options.");
-        pthread_mutex_unlock(&crinitOptLock);
-        return -1;
-    }
-    pthread_mutex_unlock(&crinitOptLock);
-    return 0;
-}
-
 void crinitGlobOptDestroy(void) {
     if (pthread_mutex_lock(&crinitOptLock) == -1) {
         crinitErrnoPrint("Could not wait for global option array mutex lock during deinitialization.");
         return;
     }
-
-    for (crinitGlobOptKey_t i = CRINIT_GLOBOPT_START; i < CRINIT_GLOBOPT_END; i++) {
-        if (crinitGlobOptArr[i] != NULL) {
-            if (i == CRINIT_GLOBOPT_ENV) {
-                crinitEnvSetDestroy(crinitGlobOptArr[i]);
-            }
-            free(crinitGlobOptArr[i]);
-        }
-    }
+    free(crinitGlobOpts.inclDir);
+    free(crinitGlobOpts.inclSuffix);
+    crinitEnvSetDestroy(&crinitGlobOpts.globEnv);
     pthread_mutex_unlock(&crinitOptLock);
 }

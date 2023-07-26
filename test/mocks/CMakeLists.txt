@@ -24,7 +24,7 @@ create_mock_lib(
   NAME
     libmockfunctions
   SOURCES
-    mock-glob-opt-set.c
+    mock-glob-opt-set-boolean.c
     mock-set-err-stream.c
     mock-set-info-stream.c
     mock-build-rtim-cmd.c
