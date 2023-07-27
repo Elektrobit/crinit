@@ -44,6 +44,7 @@ while :; do
             ;;
         *)
             break
+            ;;
     esac
     shift
 done
