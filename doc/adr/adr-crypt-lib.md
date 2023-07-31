@@ -25,6 +25,9 @@ Minimalistic cryptographic library targeted at embedded systems.
 
 * widely used in embedded devices on different OSes.
 * active development, regular releases
+* good documentation, available in a modern hyoertext format [^7]
+* large amount of tests
+  - also organical part of their github merge process via their CI [^8]
 * permissive license (Apache License 2.0)
 * modular and small in size, making static linking feasible if desired
 
@@ -41,6 +44,8 @@ options.
 
 * very widely used
 * active development, regular releases
+* good documentation available as a huge set of manpages [^6]
+* extensive amount of tests
 * permissive license (Apache License 2.0, since v3.0.0)
 * some versions are FIPS 140 certified (with reduced functionality), currently 3.0.8
 
@@ -61,6 +66,7 @@ support and differently licensed editions of the library.
 * small size
 * active development, regular releases
 * OpenSSL-compatible API wraps exist
+* good documentation [^4]
 * FIPS 140 certified versions exist
   - *But:* The current certificates are older than those of OpenSSL. Also, while the FIPS-module is free, the website
            informing about FIPS-compliance does suggest that this is an area where paid support might be needed. [^3]
@@ -69,6 +75,8 @@ support and differently licensed editions of the library.
 
 * freely-available version released under non-permissive license (GPL-2.0)
 * not as widely used
+* [test suite seems relatively lean](https://github.com/wolfSSL/wolfssl/tree/master/tests)
+  - [at least API tests are all inside a single >2MB source file](https://github.com/wolfSSL/wolfssl/blob/master/tests/api.c)
 
 ### Option 4 - GnuTLS
 
@@ -78,6 +86,8 @@ since been split off from the main GNU project.
 #### Pros
 
 * permissive license (LGPL 2.1)
+* good documentation [^5]
+* extensive test suite
 * has a FIPS 140 mode which aims to be compliant
   - *But:* the actual certification seems to exist as part of Red Hat Enterprise Linux
 
@@ -102,3 +112,8 @@ Option 1 is taken.
 [^1]: [*OpenSSL Issue 16791*](https://github.com/openssl/openssl/issues/16791)
 [^2]: [*OpenSSL Issue 17064*](https://github.com/openssl/openssl/issues/17064)
 [^3]: [*WOLFCRYPT FIPS 140-2 and FIPS 140-3*]https://www.wolfssl.com/license/fips/
+[^4]: [*wolfSSL documentation*](https://www.wolfssl.com/docs/)
+[^5]: [*GnuTLS documentation*](https://gnutls.org/manual/gnutls.html)
+[^6]: [*OpenSSL documentation*](https://www.openssl.org/docs/manpages.html)
+[^7]: [*mbedTLS documentation*](https://mbed-tls.readthedocs.io/en/latest/)
+[^8]: [*mbedTLS CI*](https://github.com/Mbed-TLS/mbedtls-test)
