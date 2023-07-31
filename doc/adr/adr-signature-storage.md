@@ -4,6 +4,17 @@
 
 As Crinit shall support configuration file signatures, we need to decide how to store them.
 
+## Assumption
+
+As described in [Storage scheme for public keys](adr-pubkey-storage.md) the master key to verify is stored in the kernel key ring and further keys (signed/verified by the master key) are stored in the filesystem.
+
+The master key may be identified by a keyID configurable via the Kernel command line. All trusted keys including the master key are used to verify the signatures described here. There is no keyID used to identify the key needed to verify a particular signature.
+
+Reason why this does not consume too many cpu cycles:
+- the hash (SHA256) of the data to be verified is calculated only once
+- all data is in RAM (key in keyring and hash mentioned above)
+- far less than 100 keys are expected to be loaded to the key ring
+
 ## Considered Alternatives
 
 ### Option 1 - Within the configuration file
