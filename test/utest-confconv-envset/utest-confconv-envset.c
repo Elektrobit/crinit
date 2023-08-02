@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file utest-confconv-envset.c
  * @brief Implementation of the crinitConfConvToEnvSetMember() unit test group.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2023 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 
 #include "utest-confconv-envset.h"

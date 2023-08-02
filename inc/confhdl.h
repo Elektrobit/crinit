@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file confhdl.h
  * @brief Header defining type- and target-specific handler functions for configuration parsing.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2023 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #ifndef __CONFHDL_H__
 #define __CONFHDL_H__

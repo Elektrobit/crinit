@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file mock-fstatat.h
  * @brief Header declaring a mock function for fstatat().
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2023 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #ifndef __MOCK_FSTATAT_H__
 #define __MOCK_FSTATAT_H__

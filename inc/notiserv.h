@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file notiserv.h
  * @brief Header related to the notification and service interface.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2021 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #ifndef __NOTISERV_H__
 #define __NOTISERV_H__

@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file ioredir.h
  * @brief Header related to IO redirection types and functions.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2023 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #ifndef __IOREDIR_H__
 #define __IOREDIR_H__

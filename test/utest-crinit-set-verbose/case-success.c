@@ -1,13 +1,8 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file case-success.c
  * @brief Implementation of a unit test for crinitClientSetVerbose(), under the assumption no internal function calls
  *        fail.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2023 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #include "common.h"
 #include "crinit-client.h"

@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file case-success.c
  * @brief Unit test for crinitDestroyFileSeries(), successful execution.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2023 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 
 #include <stdio.h>

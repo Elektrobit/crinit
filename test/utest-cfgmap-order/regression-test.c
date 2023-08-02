@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file regression-test.c
  * @brief Implementation of a regression test for the order and completeness of crinit{Task,Series}CfgMap.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2023 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #include <string.h>
 

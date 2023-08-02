@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file optfeat.c
  * @brief Implementation of optional behavior dependent on available system features.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2022 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #include "optfeat.h"
 

@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file case-opendir-error.c
  * @brief Unit test for crinitFileSeriesFromDir(), given opendir fails.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2023 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 
 #include <stdio.h>

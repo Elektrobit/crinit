@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file sockcom.c
  * @brief Implementation of socket communication functions for the crinit-client library.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2021 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #include "sockcom.h"
 

@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file rtimopmap.h
  * @brief Header defining the runtime commands available through the notification/service interface.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2021 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #ifndef __RTIMOPMAP_H__
 #define __RTIMOPMAP_H__

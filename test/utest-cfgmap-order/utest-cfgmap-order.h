@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file utest-cfgmap-order.h
  * @brief Header declaring the regression test for the order and completeness of crinit{Task,Series}CfgMap.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2023 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #ifndef __UTEST_CFGMAP_ORDER_H__
 #define __UTEST_CFGMAP_ORDER_H__

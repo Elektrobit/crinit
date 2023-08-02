@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file logio.h
  * @brief Header related to debug/log output.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2021 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #ifndef __LOGIO_H__
 #define __LOGIO_H__

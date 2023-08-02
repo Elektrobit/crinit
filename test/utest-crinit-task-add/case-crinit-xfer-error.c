@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file case-success.c
  * @brief Unit test for crinitClientTaskAdd() testing error handling for crinitXfer().
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2021-2022 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 
 #include "common.h"

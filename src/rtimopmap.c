@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file rtimopmap.c
  * @brief Implementation of functions related to the runtime command opcode map.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2021 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #include "rtimopmap.h"
 

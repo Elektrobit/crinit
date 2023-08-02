@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file rtimcmd.c
  * @brief Implementation of runtime commands to be triggered by the notification/service interface.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2021 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #include "rtimcmd.h"
 

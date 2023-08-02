@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file unit_test.h
  * @brief Header for common definitions/includes specifically for cmocka unit tests.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2021-2022 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #ifndef __UNIT_TEST_H__
 #define __UNIT_TEST_H__
