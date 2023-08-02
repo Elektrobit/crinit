@@ -1,4 +1,4 @@
-Summary: EB BaseOS Configurable Rootfs Init
+Summary: The crinit init system 
 Name: crinit
 Group: System/Base
 Version: 0.11.4
@@ -8,17 +8,17 @@ Source0: %{name}.tar.gz
 License: Closed
 %if "%{_vendor}" == "debbuild"
 # Needed to set Maintainer in output debs
-Packager: Rainer Müller <rainer.mueller@emlix.com>
+Packager: Andreas Zdziarstek <andreas.zdziarstek@emlix.com>
 %endif
 BuildRequires: cmake
 BuildRequires: re2c
-BuildRequires:  libcmocka-dev
+BuildRequires: libcmocka-dev
 
 %description
-The EB BaseOS Configurable Rootfs Init Daemon including the client API shared library and the crinit-ctl CLI interface.
+The crinit daemon including the client API shared library and the crinit-ctl CLI interface.
 
 %package shutdown
-Summary: EB BaseOS poweroff/reboot
+Summary: Symlinks to crinit-ctl for poweroff/reboot
 Group: System/Base
 
 %description shutdown
@@ -29,31 +29,21 @@ Summary: Machine-ID generator example application
 Group: System/Base
 
 %description machine-id-gen
-Example application setting /etc/machine-id either from Kernel command line or from S32G OTP memory.
+Example application setting /etc/machine-id either from Kernel command line or from NXP S32G SoC OTP memory.
 
 %package conf-example
-Summary: EB BaseOS example/test configuration files
+Summary: Crinit example/test configuration files
 Group: System/Base
 
 %description conf-example
-Example configuration files for the EB BaseOS Configurable Rootfs Init Daemon.
-
-%ifarch aarch64
-%package conf-s32g
-Summary: EB BaseOS configuration files for NXP S32G
-Group: System/Base
-
-%description conf-s32g
-The configuration files for the EB BaseOS Configurable Rootfs Init Daemon used on S32G.
-
-%endif
+Example and test configuration files for Crinit.
 
 %package devel
-Summary: EB BaseOS Configurable Rootfs Init - Client development files
+Summary: Crinit - Client development files
 Group:  Development/Languages/C and C++
 
 %description devel
-Development files for client programs willing to use the client API of the Configurable Rootfs Init Daemon.
+Development files for client programs willing to use the client API of crinit.
 
 %package tests-reports
 Summary: The unit tests report package
@@ -100,6 +90,10 @@ ln -sf /run/machine-id %{buildroot}/etc/machine-id
 mkdir -p %{buildroot}/%{_sysconfdir}/crinit/test
 install -D -m 0644 config/test/*.crinit %{buildroot}/%{_sysconfdir}/crinit/test
 install -D -m 0644 config/test/*.series %{buildroot}/%{_sysconfdir}/crinit/test
+install -D -m 0644 config/test/*.crincl %{buildroot}/%{_sysconfdir}/crinit/test
+mkdir -p %{buildroot}/%{_sysconfdir}/crinit/example
+install -D -m 0644 config/example/*.crinit %{buildroot}/%{_sysconfdir}/crinit/example
+install -D -m 0644 config/example/*.series %{buildroot}/%{_sysconfdir}/crinit/example
 
 # devel
 mkdir -p %{buildroot}/%{_includedir}
@@ -111,13 +105,6 @@ ln -sf libcrinit-client.so.%{soversion_} %{buildroot}/%{_libdir}/libcrinit-clien
 # tests reports
 mkdir -p %{buildroot}/opt/testing
 install -m 0644 crinit-test-report.xml %{buildroot}/opt/testing
-
-%ifarch aarch64
-# conf-s32g
-mkdir -p %{buildroot}/%{_sysconfdir}/crinit
-install -D -m 0644 config/s32g/*.crinit %{buildroot}/%{_sysconfdir}/crinit
-install -D -m 0644 config/s32g/*.series %{buildroot}/%{_sysconfdir}/crinit
-%endif
 
 %files
 %doc README.md
@@ -137,17 +124,14 @@ install -D -m 0644 config/s32g/*.series %{buildroot}/%{_sysconfdir}/crinit
 %files conf-example
 %{_sysconfdir}/crinit/test/*.crinit
 %{_sysconfdir}/crinit/test/*.series
+%{_sysconfdir}/crinit/test/*.crincl
+%{_sysconfdir}/crinit/example/*.crinit
+%{_sysconfdir}/crinit/example/*.series
 
 %files devel
 %{_includedir}/crinit-client.h
 %{_includedir}/crinit-sdefs.h
 %{_libdir}/libcrinit-client.so
-
-%ifarch aarch64
-%files conf-s32g
-%{_sysconfdir}/crinit/*.crinit
-%{_sysconfdir}/crinit/*.series
-%endif
 
 %files tests-reports
 %defattr (-, root, root)
