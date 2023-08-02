@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 create_unit_test(
   NAME
     utest-envset-get

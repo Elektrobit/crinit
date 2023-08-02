@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 project(
     inih-local
     VERSION 56
