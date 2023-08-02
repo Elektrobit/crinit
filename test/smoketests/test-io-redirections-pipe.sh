@@ -1,4 +1,5 @@
 # shellcheck shell=bash
+# SPDX-License-Identifier: MIT
 #
 # smoketest for testing IO redirection with a named pipe between two tasks.
 #

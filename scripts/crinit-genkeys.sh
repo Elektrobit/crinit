@@ -1,4 +1,5 @@
 #!/bin/sh -e
+# SPDX-License-Identifier: MIT
 
 OUTPUT_FILE="-"
 KEY_FILE=""

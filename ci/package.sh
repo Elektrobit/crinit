@@ -1,4 +1,5 @@
 #!/bin/bash -e
+# SPDX-License-Identifier: MIT
 #
 # project build script
 #
