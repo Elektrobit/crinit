@@ -111,7 +111,7 @@ Option 1 is taken.
 
 [^1]: [*OpenSSL Issue 16791*](https://github.com/openssl/openssl/issues/16791)
 [^2]: [*OpenSSL Issue 17064*](https://github.com/openssl/openssl/issues/17064)
-[^3]: [*WOLFCRYPT FIPS 140-2 and FIPS 140-3*]https://www.wolfssl.com/license/fips/
+[^3]: [*WOLFCRYPT FIPS 140-2 and FIPS 140-3*](https://www.wolfssl.com/license/fips/)
 [^4]: [*wolfSSL documentation*](https://www.wolfssl.com/docs/)
 [^5]: [*GnuTLS documentation*](https://gnutls.org/manual/gnutls.html)
 [^6]: [*OpenSSL documentation*](https://www.openssl.org/docs/manpages.html)
