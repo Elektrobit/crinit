@@ -1,9 +1,7 @@
-# Config for getty
+# Config for a standard getty
 
 NAME = getty_console
 
 COMMAND = /sbin/getty 115200 console
-
 DEPENDS = earlysetup:wait
-
 RESPAWN = YES

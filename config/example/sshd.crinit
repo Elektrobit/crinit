@@ -1,4 +1,4 @@
-# Loads sshd with some specialities in case we are in a read-only rootfs under yocto
+# Loads sshd with some specialities in case we are in a read-only rootfs
 
 NAME = sshd
 
@@ -8,6 +8,4 @@ COMMAND = /bin/mkdir -p /var/run/etc/ssh
           /bin/mkdir -p /var/run/sshd
           /usr/sbin/sshd -f /etc/ssh/sshd_config_readonly
 
-DEPENDS = earlysetup:wait
-
-RESPAWN = NO
+DEPENDS = earlysetup:wait network-dhcp:wait

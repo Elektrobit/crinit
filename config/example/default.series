@@ -1,4 +1,4 @@
-# BaseOS crinit series file, specifying the dirextory in which to look for tasks (dynamic configuration)
+# crinit series file, specifying the dirextory in which to look for tasks (dynamic configuration)
 
 TASKDIR = /etc/crinit.d
 DEBUG = NO
