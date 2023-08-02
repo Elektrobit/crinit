@@ -1,4 +1,5 @@
 #!/bin/sh -e
+# SPDX-License-Identifier: MIT
 
 if [ -n "$SMOKETESTS_DEBUG" ] && [ "$SMOKETESTS_DEBUG" -eq 1 ]; then
     set -x

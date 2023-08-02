@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file case-malloc-error.c
  * @brief Unit test for crinitEnvSetInit() testing error handling of failed allocation.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2022 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 
 #include "common.h"

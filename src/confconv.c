@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file confconv.c
  * @brief Implementations of conversion operations from configuration values to structured data.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2023 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 
 #include "confconv.h"

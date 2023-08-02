@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file envset.h
  * @brief Header defining data types and functions to work with sets of environment variables.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2022 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #ifndef __ENVSET_H__
 #define __ENVSET_H__

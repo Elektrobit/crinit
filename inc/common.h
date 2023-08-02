@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file common.h
  * @brief Header for common definitions not related to other specific features.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2021-2022 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #ifndef __COMMON_H__
 #define __COMMON_H__

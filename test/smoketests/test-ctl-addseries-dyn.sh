@@ -1,4 +1,5 @@
 # shellcheck shell=bash
+# SPDX-License-Identifier: MIT
 #
 # smoketest for crinit-ctl addseries command (dynamic configuration)
 #

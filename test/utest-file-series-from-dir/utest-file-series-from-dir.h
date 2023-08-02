@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file utest-file-series-from-dir.h
  * @brief Header declaring the unit tests for crinitFileSeriesFromDir().
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2021-2022 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #ifndef __UTEST_FILE_SERIES_FROM_DIR_H__
 #define __UTEST_FILE_SERIES_FROM_DIR_H__

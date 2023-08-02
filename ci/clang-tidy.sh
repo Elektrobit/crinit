@@ -1,4 +1,5 @@
 #!/bin/bash -e
+# SPDX-License-Identifier: MIT
 #
 # script to prepare and run clang-tidy on the project
 #

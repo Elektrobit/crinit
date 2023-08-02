@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file fseries.c
  * @brief Implementation file related to the handling of a series of filenames within a directory.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2023 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #include "fseries.h"
 

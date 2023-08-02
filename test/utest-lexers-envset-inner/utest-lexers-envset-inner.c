@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file utest-lexers-envset-inner.c
  * @brief Implementation of the crinitEnvSetInnerLex() unit test group.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2022 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 
 #include "utest-lexers-envset-inner.h"

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 find_package(cmocka 1.1.5 REQUIRED)
 
 function(create_unit_test)

@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file mock-envset-destroy.h
  * @brief Header declaring a mock function for crinitEnvSetDestroy().
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2022 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #ifndef __MOCK_ENVSET_DESTROY_H__
 #define __MOCK_ENVSET_DESTROY_H__

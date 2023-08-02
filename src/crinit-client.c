@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file crinit-client.c
  * @brief Implementation of the crinit-client shared library.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2021 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #include "crinit-client.h"
 

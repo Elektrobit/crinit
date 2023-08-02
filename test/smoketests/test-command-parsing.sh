@@ -1,4 +1,5 @@
 # shellcheck shell=bash
+# SPDX-License-Identifier: MIT
 #
 # smoketest for testing the parser of COMMANDs including quoting and escaping.
 #

@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file version.h
  * @brief Header definitions related to component versioning.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2021-2022 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #ifndef __VERSION_H__
 #define __VERSION_H__

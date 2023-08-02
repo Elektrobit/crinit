@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file mock-strlen.h
  * @brief Header declaring a mock function for strlen().
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2023 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #ifndef __MOCK_STRLEN_H__
 #define __MOCK_STRLEN_H__

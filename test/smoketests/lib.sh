@@ -1,4 +1,5 @@
 # shellcheck shell=sh
+# SPDX-License-Identifier: MIT
 #
 # smoketests library functions
 #

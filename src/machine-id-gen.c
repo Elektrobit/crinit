@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file crinit-ctl.c
  * @brief Example implementation of the machine-id-gen service program.
@@ -14,12 +15,6 @@
  * /etc/machine-id file if it is either run on S32G or the Kernel command line contains a value for systemd.machine_id.
  * The latter will take precedence over the S32G ROM serial number if set.
  * ~~~
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2022 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 
 #include <fcntl.h>

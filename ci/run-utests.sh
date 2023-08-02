@@ -1,4 +1,5 @@
 #!/bin/bash -e
+# SPDX-License-Identifier: MIT
 #
 # script to build and run unit tests
 #

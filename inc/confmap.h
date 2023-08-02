@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file confmap.h
  * @brief Definitions related to mapping configuration options and their string representations.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2023 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #ifndef __CONFMAP_H__
 #define __CONFMAP_H__

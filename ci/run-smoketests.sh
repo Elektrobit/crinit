@@ -1,4 +1,5 @@
 #!/bin/sh -e
+# SPDX-License-Identifier: MIT
 #
 # script to run smoketests for integration
 #

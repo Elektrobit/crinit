@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file lexers.c
  * @brief Implementation lexers built with re2c, used in the config/envset parser.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2022 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #include <string.h>
 

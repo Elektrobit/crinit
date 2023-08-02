@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file mock-realloc.h
  * @brief Header declaring a mock function for realloc().
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2023 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #ifndef __MOCK_REALLOC_H__
 #define __MOCK_REALLOC_H__

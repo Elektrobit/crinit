@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file globopt.h
  * @brief Header related to global option storage.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2021 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #ifndef __GLOBOPT_H__
 #define __GLOBOPT_H__

@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file rtimcmd.h
  * @brief Header related to handling of runtime commands received via the notification/service interface.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2021 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #ifndef __RTIMCMD_H__
 #define __RTIMCMD_H__

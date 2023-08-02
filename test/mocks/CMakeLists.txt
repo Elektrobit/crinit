@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 function(create_mock_lib)
   cmake_parse_arguments(PARSED_ARGS "" "NAME" "SOURCES;INCLUDES;LIBRARIES;DEFINITIONS" ${ARGN})
   message("create ${PARSED_ARGS_NAME} ${PARSED_SOURCES}")

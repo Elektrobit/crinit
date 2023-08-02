@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file crinit-ctl.c
  * @brief Implementation of the crinit-ctl service program using the crinit-client library.
@@ -48,12 +49,6 @@
  *       --version/-V - Print version information about crinit-ctl, the crinit-client library,
  *                      and -- if connection is successful -- the crinit daemon.
  * ~~~
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2021 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #include <getopt.h>
 #include <libgen.h>

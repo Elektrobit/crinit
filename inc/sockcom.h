@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file sockcom.h
  * @brief Header defining Crinit socket communication functions used internally by the crinit-client library.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2021 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #ifndef __SOCKCOM_H__
 #define __SOCKCOM_H__

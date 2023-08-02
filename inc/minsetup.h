@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file minsetup.h
  * @brief Header related to minimal early system setup.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2021 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #ifndef __MINSETUP_H__
 #define __MINSETUP_H__

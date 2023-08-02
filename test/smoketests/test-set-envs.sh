@@ -1,4 +1,5 @@
 # shellcheck shell=bash
+# SPDX-License-Identifier: MIT
 #
 # smoketest for setting of environment variables
 #

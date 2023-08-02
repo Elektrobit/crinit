@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: MIT
 #
 # Ensure that the version numbers in CMakeLists.txt
 # and RPM spec file are the same.

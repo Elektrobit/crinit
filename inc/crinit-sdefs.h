@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file crinit-sdefs.h
  * @brief Definitions shared between crinit's public and internal APIs.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2021 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #ifndef __CRINIT_SDEFS_H__
 #define __CRINIT_SDEFS_H__
