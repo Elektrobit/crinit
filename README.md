@@ -1,4 +1,4 @@
-# Crinit
+# Crinit -- Configurable Rootfs Init
 
 ## In a Nutshell
 
