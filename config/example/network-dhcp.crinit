@@ -10,8 +10,4 @@ COMMAND = /bin/mkdir -p /var/lib/dhcpcd
           /sbin/ifconfig lo 127.0.0.1
           /sbin/dhcpcd -j /var/log/dhcpcd.log eth0
 
-
-# So we only run if we are on the actual S32G board
-DEPENDS = check_qemu:fail earlysetup:wait
-
-RESPAWN = NO
+DEPENDS = earlysetup:wait

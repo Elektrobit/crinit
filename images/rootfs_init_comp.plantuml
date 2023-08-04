@@ -1,5 +1,6 @@
 @startuml
-node "Rootfs Init Daemon" {
+skinparam backgroundColor #FEFEFE
+node "Crinit" {
 	component "Task Data Structure" as task_data
 	component "Notification/Service Interface" as notify_if
 	component "Process Dispatcher" as proc_dispatch
@@ -8,10 +9,10 @@ node "Rootfs Init Daemon" {
 cloud "Tasks" as tasks
 component "Notfication/Service Library" as notify_lib
 cloud "Task Configurations" as task_configs
-node "BaseOS Monitor" as corb_monitor
+node "elos" as elos
 
 notify_if <-down..-> notify_lib : AF_UNIX\nsocket
-notify_if <-..-> corb_monitor
+notify_if <-..-> elos
 task_configs -up-> config_parser
 proc_dispatch -right-> tasks
 tasks -right-> notify_lib
@@ -22,7 +23,7 @@ config_parser <-up-> task_data
 
 note top of notify_if
     Notifies Task Data Structure of events
-    from SD_NOTIFY library and BaseOS Monitor.
+    from SD_NOTIFY library and elos.
     Multi-threaded UNIX domain socket server
     for Notification/Sevice Library.
 end note

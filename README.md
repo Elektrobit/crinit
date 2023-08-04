@@ -1,17 +1,18 @@
-# EB BaseOS Crinit -- Configurable Rootfs Init
+# Crinit -- Configurable Rootfs Init
 
 ## In a Nutshell
-Crinit, the Configurable Rootfs Init, is an init daemon executed after the rootfs has been mounted and switched into by
-[cominit](https://gitlabintern.emlix.com/elektrobit/base-os/eb-baseos-cominit). It reads a global configuration
-("series"-file) either specified on the command line or from `/etc/crinit/default.series`. The series file in turn
-specifies further configuration files, each for a task potentially containing a set of commands and depenencies on other
-tasks (see [Configuration](#configuration) below for examples).
+
+Crinit is an init daemon executed as PID 1 by the Linux Kernel. It reads a global configuration ("series"-file) either
+specified on the command line or from `/etc/crinit/default.series`. The series file in turn may reference further
+configuration files or a whole directory from which all configs shall be loaded. Each one defines a task potentially
+containing a set of commands and dependencies on other tasks.
 
 The specified tasks are then started with as much parallelism as dependencies allow, i.e. tasks without any dependencies
-are spawned asap after Crinit has been started. Once a task is spawned, finished, or has failed its dependent tasks are
+are spawned ASAP after Crinit has been started. Once a task is spawned, finished, or has failed its dependent tasks are
 updated and spawned as necessary.
 
 ## Concept
+
 The below diagram shows the overall concept of the finished Crinit.
 
 ![Rootfs Init Daemon Components](images/rootfs_init_comp.svg)
@@ -36,22 +37,22 @@ library (`libcrinit-client.so`).
 
 Not currently implemented is the SafeSystemStartup-like jailing functionality of the Process Dispatcher, as well as the
 cryptographic features of the Config Parser. Also, the Notification and Service interface does not yet support handling
-of BaseOS monitor events.
+of elos events.
 
 This repository also includes an example application to generate a `/etc/machine-id` file, which is used to uniquely
 identify the system (for example by `elosd`). The `machine-id-gen` tool is supposed to be called on boot, for example
-from `earlysetup.crinit` as in the configuration files contained in this repository. Its implementation either uses the
-value for `systemd.machine_id` given on the Kernel command line or -- on S32G -- the unique ID burned to on-chip OTP
-memory. If the Kernel command line value is set, it always takes precedence and any physical memory OTP reads are
-omitted. This means that while the application has special functionality for S32G, it can work on any target as long as
-the Kernel command line contains the necessary value.
+from `earlysetup.crinit` as in the example configuration files contained in this repository. Its implementation either
+uses the value for `systemd.machine_id` given on the Kernel command line or -- on an NXP S32G-based board -- the unique
+ID burned to on-chip OTP memory. If the Kernel command line value is set, it always takes precedence and any physical
+memory OTP reads are omitted. This means that while the application has special functionality for S32G SoCs, it can work
+on any target as long as the Kernel command line contains the necessary value.
 
 ## Configuration
 
 As described above, Crinit needs a global series-file containing global configuration options as well as a list of task
 configurations. Examples for a local demonstration inside the build environment (see [Build
-Instructions](#build-instructions) below) are available in `config/test/` and examples for use on the S32G board are
-available in `config/s32g/`.
+Instructions](#build-instructions) below) are available in `config/test/` and examples to use as a starting point for a
+minimal system boot are available in `config/example/`.
 
 The general format of crinit configuration files is INI-style `KEY = value` pairs. Some settings may be array-like,
 meaning they can be specified multiple times to append values. Leaving out the `KEY =` part at the start of the line in
@@ -67,9 +68,10 @@ ARRAY_LIKE_KEY = value 1
 ```
 
 ### Example Global Configuration
-An example, as used to boot a minimal environment on the S32G board, may look like this:
+
+An example to boot a minimal environment may look like this:
 ```
-# BaseOS crinit series file, specifying which files to parse
+# Crinit global configuration file
 
 TASKS = earlysetup.crinit check_qemu.crinit network-dhcp.crinit
         sshd.crinit getty.crinit
@@ -109,9 +111,9 @@ ENV_SET = GREETING "Good morning!"
 - **ENV_SET** -- See section **Setting Environment Variables** below. (*array-like*)
 
 ### Example Task Configuration
-The `network-dhcp.crinit` from above looks like this:
+The `network-dhcp.crinit` from above could for example look like this:
 ```
-# DHCP config for S32G board
+# DHCP config for a minimal system
 
 NAME = network-dhcp
 
@@ -124,7 +126,6 @@ COMMAND = /bin/mkdir -p /var/lib/dhcpcd
           /sbin/ifconfig lo up
           /sbin/ifconfig lo 127.0.0.1
           /sbin/dhcpcd -j /var/log/dhcpcd.log eth0
-
 
 DEPENDS = check_qemu:fail earlysetup:wait @provided:writable_var
 
