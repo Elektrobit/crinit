@@ -8,7 +8,7 @@ configuration files or a whole directory from which all configs shall be loaded.
 containing a set of commands and dependencies on other tasks.
 
 The specified tasks are then started with as much parallelism as dependencies allow, i.e. tasks without any dependencies
-are spawned ASAP after Crinit has been started. Once a task is spawned, finished, or has failed its dependent tasks are
+are spawned as soon as possible after Crinit has been started. Once a task is spawned, finished, or has failed its dependent tasks are
 updated and spawned as necessary.
 
 ## Concept
@@ -24,7 +24,7 @@ signature.
 ## Current Implementation
 
 The central Task Data Structure (`crinitTaskDB` in `taskdb.h`), Config Parser (`confparse.h/.c`), Process Dispatcher
-(`procdip.h/.c`), Notification/Service interface (`notiserv.h/.c`, `rtimcmd.h/.c`), Client library
+(`procdip.h/.c`), Notification/Service Interface (`notiserv.h/.c`, `rtimcmd.h/.c`), Client Library
 (`crinit-client.h/.c`) have been preliminarily implemented and are functioning. In addition, the implementation contains
 a simple encapsulated storage for global options (`globopt.h/.c`), some minimal PID 1 setup code which cannot be
 "sourced out" into a task configuration (`minsetup.h/.c`), debug/log output functionality (`logio.h/.c`), a CLI
@@ -36,12 +36,12 @@ The client API is documented in the Doxygen documentation of `crinit-client.h`. 
 library (`libcrinit-client.so`).
 
 Not currently implemented is the SafeSystemStartup-like jailing functionality of the Process Dispatcher, as well as the
-cryptographic features of the Config Parser. Also, the Notification and Service interface does not yet support handling
+cryptographic features of the Config Parser. Also, the Notification/Service Interface does not yet support handling
 of elos events.
 
 This repository also includes an example application to generate a `/etc/machine-id` file, which is used to uniquely
 identify the system (for example by `elosd`). The `machine-id-gen` tool is supposed to be called on boot, for example
-from `earlysetup.crinit` as in the example configuration files contained in this repository. Its implementation either
+from `earlysetup.crinit` as shown in the example configuration files contained in this repository. Its implementation either
 uses the value for `systemd.machine_id` given on the Kernel command line or -- on an NXP S32G-based board -- the unique
 ID burned to on-chip OTP memory. If the Kernel command line value is set, it always takes precedence and any physical
 memory OTP reads are omitted. This means that while the application has special functionality for S32G SoCs, it can work
@@ -56,7 +56,7 @@ minimal system boot are available in `config/example/`.
 
 The general format of crinit configuration files is INI-style `KEY = value` pairs. Some settings may be array-like,
 meaning they can be specified multiple times to append values. Leaving out the `KEY =` part at the start of the line in
-favor of at least one whitespace character is shorthand for appending to the last key, e.g.
+favor of at least one whitespace character is shorthand for appending to the last key, for example:
 ```
 ARRAY_LIKE_KEY = value 1
 ARRAY_LIKE_KEY = value 2
@@ -92,7 +92,7 @@ ENV_SET = FOO_BAZ "${FOO} baz"
 ENV_SET = GREETING "Good morning!"
 ```
 #### Explanation
-- **TASKS** -- The task configurations to load. This is an optional setting. If unset, **TASKDIR** will be scanned for
+- **TASKS** -- The task configurations to load. This is an optional setting. If not set, **TASKDIR** will be scanned for
                task configuration files. (*array-like*)
 - **TASKDIR** -- Where to find the task configurations, will be prepended to the filenames in **TASKS**.
                  Default: `/etc/crinit`
@@ -155,7 +155,7 @@ IO_REDIRECT = STDERR STDOUT
   started, `wait` if it has successfully completed, and `fail` if it has failed somewhere along the way. Here we can see
   this task is only run if and after the `earlysetup` (setup of system directories, etc.) has fully completed and the
   `check_qemu` task has determined we are _not_ running inside the emulator and therefore exited with an error code.
-  This may be left out or ecplicitly set to empty using `""` which is interpreted as "no dependencies".
+  This may be left out or explicitly set to empty using `""` which is interpreted as "no dependencies".
   There is also the special `@provided:feature` syntax where we can define we want to depend on a specific feature
   another task may implement (see **PROVIDES**). In this case `@provided:writable_var` could mean that another task
   may have mounted a tmpfs or a writable partition there which we need for the first `mkdir`. That task would need to
@@ -192,7 +192,7 @@ VAR_WITH_ESC_SEQUENCES=hex  hex            # Support for escape sequences includ
 * `ENV_SET` statements must be of the form `ENV_SET = VARIABLE_NAME "variable content"`. The quotes around the variable
   content are mandatory and will not appear in the environment variable itself.
 * Setting the same variable twice overrides the first instance.
-* Variables can be referenced/expanded using sh-like `${VARIABLE_NAME}` syntax.
+* Variables can be referenced/expanded using shell-like `${VARIABLE_NAME}` syntax.
     + Expansion can be avoided by escaping with a `\`.
 * Variables can reference all other variables set before it, globally and locally.
 * Variables are set/processed in the order they appear in the config file.
@@ -201,7 +201,7 @@ VAR_WITH_ESC_SEQUENCES=hex  hex            # Support for escape sequences includ
 ### Include files
 
 A crinit task configuration may reference multiple include files at any point in the task file. The effect is the same
-as manually copying the contents of the include file at exactly that point in the task config, similar to C incluedes.
+as manually copying the contents of the include file at exactly that point in the task config, similar to C includes.
 Additionally, it is possible to define an import list if not all settings in the include file should be applied.
 
 An INCLUDE statement looks like
@@ -342,7 +342,7 @@ DEPENDS = @provided:server
 # or, with same effect: DEPENDS = dep_grp_server:wait
 ```
 
-Semantically, this would mean `local_http_client` only cares about the server stuff being set up and running. This could
+Semantically, this would mean `local_http_client` only cares about the server, as a singular entity, being set up and running. This could
 also be delivered by a third party with only the interface knowledge "You need to wait for the `server` dependency". How
 to provide this dependency, with which tasks, and in what order is then up to the system integrator who maintains
 `dep_grp_server`.
