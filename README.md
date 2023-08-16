@@ -8,7 +8,7 @@ configuration files or a whole directory from which all configs shall be loaded.
 containing a set of commands and dependencies on other tasks.
 
 The specified tasks are then started with as much parallelism as dependencies allow, i.e. tasks without any dependencies
-are spawned as soon as possible after Crinit has been started. Once a task is spawned, finished, or has failed its 
+are spawned as soon as possible after Crinit has been started. Once a task is spawned, finished, or has failed, its 
 dependent tasks are updated and spawned as necessary.
 
 ## Concept
