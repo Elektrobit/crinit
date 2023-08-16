@@ -27,7 +27,6 @@ Crinit currently has the following features implemented:
 * starting of tasks with parallelism and dependency-resolution
     - tasks may have one or multiple commands, or none to form a dependency group
     - dependencies can be either on specific task state changes or on "features" another (unknown) task will provide
-      (see the example task configuration below)
 * a C client API and a command-line interface using it (`crinit-ctl`) capable of
     - adding new tasks
     - managing (stop, kill, restart, ...) already loaded tasks
@@ -54,6 +53,7 @@ In the future we also plan to support:
 * restriction of processes started/managed by Crinit
     - UID/GID, capabilities, cgroups,...
 
+There are example configurations below which show how to use the currently implemented features.
 For detailed explanations of Crinit's inner workings please refer to the Doxygen documentation generated during build.
 The client API is documented in the Doxygen documentation of `crinit-client.h`. The API is implemented as a shared
 library (`libcrinit-client.so`).
@@ -61,8 +61,8 @@ library (`libcrinit-client.so`).
 This repository also includes an example application to generate a `/etc/machine-id` file, which is used to uniquely
 identify the system (for example by `elosd`). The `machine-id-gen` tool is supposed to be called on boot, for example
 from `earlysetup.crinit` as shown in the example configuration files contained in this repository. Its implementation
-either uses the value for `systemd.machine_id` given on the Kernel command line or -- on an NXP S32G-based board -- th
- unique ID burned to on-chip OTP memory. If the Kernel command line value is set, it always takes precedence and any
+either uses the value for `systemd.machine_id` given on the Kernel command line or -- on an NXP S32G-based board -- the
+unique ID burned to on-chip OTP memory. If the Kernel command line value is set, it always takes precedence and any
 physical memory OTP reads are omitted. This means that while the application has special functionality for S32G SoCs,
 it can work on any target as long as the Kernel command line contains the necessary value.
 
