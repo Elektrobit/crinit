@@ -1,0 +1,10 @@
+# Template for a crinit file that starts crinit from crinit.
+# To be used from ci/demo.sh where this task should fail to start.
+
+NAME = crinit_recursive
+COMMAND = ${BINDIR}/crinit ${CONFDIR}/demo.series
+DEPENDS = ""
+RESPAWN = NO
+EXEC = NO
+QM_JAIL = NO
+SIG = ""

@@ -1,0 +1,11 @@
+# example series file, specifying which files to parse
+
+TASKS = hello_echo.crinit sleep_one_sec.crinit after_sleep.crinit one_second_respawn.crinit
+
+TASKDIR = /etc/crinit/test
+DEBUG = YES
+
+# use a 100ms grace period between SIGTERM and SIGKILL during shutdown
+SHUTDOWN_GRACE_PERIOD_US = 100000
+
+USE_SYSLOG = NO

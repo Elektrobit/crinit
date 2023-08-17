@@ -1,0 +1,9 @@
+# Example hello world config
+
+NAME = sleep_one_sec
+
+COMMAND = /bin/sleep 1
+
+DEPENDS = ""
+
+RESPAWN = NO

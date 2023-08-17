@@ -1,0 +1,4 @@
+# example series file to use with crinit-ctl addseries (dynamic configuration)
+
+TASKDIR = /etc/crinit/test/addseries
+DEBUG = NO

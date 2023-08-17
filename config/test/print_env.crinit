@@ -1,0 +1,14 @@
+# Config to show off environment settings.
+
+NAME = print_env
+
+COMMAND = /usr/bin/env 
+
+DEPENDS = ""
+
+RESPAWN = NO
+
+ENV_SET = LOC_VAR "Local EnvVar"
+          OVR_VAR "Hello, local World!"
+          GLOB_REF "Substituted global var: <${GLOB_VAR}>"
+          ESC_VAR "Escaped variable: \${ESC_VAR}"

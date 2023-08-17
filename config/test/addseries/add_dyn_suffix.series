@@ -1,0 +1,6 @@
+# example series file to use with crinit-ctl addseries (dynamic configuration, non standard task file suffix)
+
+TASK_FILE_SUFFIX = .txt
+
+TASKDIR = /etc/crinit/test/addseries
+DEBUG = NO

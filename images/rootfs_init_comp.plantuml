@@ -1,0 +1,55 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+node "Crinit" {
+	component "Task Data Structure" as task_data
+	component "Notification/Service Interface" as notify_if
+	component "Process Dispatcher" as proc_dispatch
+	component "Config Parser" as config_parser
+}
+cloud "Tasks" as tasks
+component "C API library" as notify_lib
+component "crinit-ctl" as cctl
+cloud "Task Configurations" as task_configs
+node "elos" as elos
+
+notify_if <-down..-> notify_lib : AF_UNIX\nsocket
+notify_if <-..-> elos
+task_configs -up-> config_parser
+proc_dispatch -right-> tasks
+tasks -right-> notify_lib
+tasks -left-> task_configs
+proc_dispatch <-up-> task_data
+notify_if -left-> task_data
+config_parser <-up-> task_data
+notify_lib <-- cctl
+
+note top of notify_if
+    Handles queries and requests from the C client API. Performs
+    runtime actions as necessary and updates the task database
+    accordingly. Implemented as a multi-threaded UNIX domain socket
+    server. Meant to be used through the C client API.
+end note
+
+note top of task_data
+    Data structure implementing a task database. Keeps track of task states
+    and handles state changes. Will prompt process dispatcher upon a state
+    change that implies new tasks are ready to run.
+end note
+
+note right of notify_lib
+    C client API. Relays info/requests between notification/service
+    interface and client programs
+end note
+
+note top of proc_dispatch
+    Multi-threaded process spawner. Spawns
+    and waits for processes according to task
+    configurations. Updates task data struc-
+    ture with task state changes.
+end note
+
+note right of cctl
+    User-space control program using the C API.
+end note
+@enduml
+

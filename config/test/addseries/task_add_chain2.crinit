@@ -1,0 +1,9 @@
+# Task config 2/3 to use with add.series
+
+NAME = task_add_chain2
+
+COMMAND = /bin/echo "Task from added series file 2/3."
+
+DEPENDS = task_add_chain1:wait
+
+RESPAWN = NO

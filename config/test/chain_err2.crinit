@@ -1,0 +1,15 @@
+# Example config for an incorrect COMMAND chain mixing numbers and empty brackets
+
+NAME = chain_err2
+
+COMMAND[0] = /bin/echo 0
+COMMAND[1] = /bin/echo 1
+COMMAND[] = /bin/echo 2
+# comment
+
+COMMAND[] = /bin/echo 3
+COMMAND[] = /bin/echo 4
+
+DEPENDS = ""
+
+RESPAWN = NO

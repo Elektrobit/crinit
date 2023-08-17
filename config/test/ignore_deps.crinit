@@ -1,0 +1,5 @@
+NAME = ignore_deps
+
+COMMAND = /bin/echo "The dependencies of this task were ignored."
+DEPENDS = nonexistent:wait
+          fantasytask:spawn

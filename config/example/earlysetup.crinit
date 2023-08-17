@@ -1,0 +1,7 @@
+NAME = earlysetup
+
+COMMAND = /bin/mount -t tmpfs none /var/volatile
+          /bin/hostname minimal-crinit
+          /usr/bin/machine-id-gen
+
+

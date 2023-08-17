@@ -1,0 +1,13 @@
+# DHCP config for S32G board
+
+NAME = network-dhcp
+
+COMMAND = /bin/mkdir -p /var/lib/dhcpcd
+          /bin/mount -t tmpfs none /var/lib/dhcpcd
+          /bin/touch /var/lib/dhcpcd/resolv.conf
+          /bin/mount -o bind /var/lib/dhcpcd/resolv.conf /etc/resolv.conf
+          /sbin/ifconfig lo up
+          /sbin/ifconfig lo 127.0.0.1
+          /sbin/dhcpcd -j /var/log/dhcpcd.log eth0
+
+DEPENDS = earlysetup:wait

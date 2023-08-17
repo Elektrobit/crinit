@@ -1,0 +1,15 @@
+# Example config for a correct COMMAND chain using empty brackets
+
+NAME = chain_ebrkt
+
+COMMAND[] = /bin/echo 0
+COMMAND[] = /bin/echo 1
+COMMAND[] = /bin/echo 2
+# comment
+
+COMMAND[] = /bin/echo 3
+COMMAND[] = /bin/echo 4
+
+DEPENDS = ""
+
+RESPAWN = NO

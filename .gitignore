@@ -1,0 +1,41 @@
+crinit
+crinit_parsecheck
+crinit-ctl
+poweroff
+reboot
+*.o
+build/
+doc/html/
+lib/
+ci/sshconfig
+result/
+packaging/rpmbuild/SOURCES
+packaging/rpmbuild/BUILD
+packaging/rpmbuild/RPMS
+packaging/rpmbuild/SRPMS
+.ycm*
+*.svg
+compile_commands.json
+
+# Vim temporary files
+# Swap
+[._]*.s[a-v][a-z]
+!*.svg  # comment out if you don't need vector files
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+
+# Session
+Session.vim
+Sessionx.vim
+
+# Temporary
+.netrwhist
+*~
+# Auto-generated tag files
+tags
+# Persistent undo
+[._]*.un
+# Prevent include of IDE files
+.vscode/

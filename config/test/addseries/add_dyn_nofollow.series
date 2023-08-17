@@ -1,0 +1,6 @@
+# example series file to use with crinit-ctl addseries (dynamic configuration, not following symlinks)
+
+TASKDIR = /etc/crinit/test/addseries
+TASKDIR_FOLLOW_SYMLINKS = NO
+
+DEBUG = NO

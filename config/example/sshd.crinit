@@ -1,0 +1,11 @@
+# Loads sshd with some specialities in case we are in a read-only rootfs
+
+NAME = sshd
+
+COMMAND = /bin/mkdir -p /var/run/etc/ssh
+          /usr/bin/ssh-keygen -A -f /var/run
+          /bin/mv /var/run/etc/ssh /var/run/ssh
+          /bin/mkdir -p /var/run/sshd
+          /usr/sbin/sshd -f /etc/ssh/sshd_config_readonly
+
+DEPENDS = earlysetup:wait network-dhcp:wait

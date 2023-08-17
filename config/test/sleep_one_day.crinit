@@ -1,0 +1,10 @@
+# Example hello world config
+
+NAME = sleep_one_day
+
+COMMAND = /bin/echo I feel rather tired...
+          /bin/sleep 86400
+
+DEPENDS = ""
+
+RESPAWN = NO

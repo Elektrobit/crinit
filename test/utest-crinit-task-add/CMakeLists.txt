@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: MIT
+create_unit_test(
+  NAME
+    utest-crinit-task-add
+  SOURCES
+    utest-crinit-task-add.c
+    case-success.c
+    case-confpath-null.c
+    case-forcedeps-null.c
+    case-forcedeps-empty.c
+    case-overwrite-bool-to-string.c
+    case-build-rtim-cmd-error.c
+    case-crinit-xfer-error.c
+    case-crinit-response-code-error.c
+    case-crinit-response-cmd-error.c
+    ${PROJECT_SOURCE_DIR}/src/crinit-client.c
+    ${PROJECT_SOURCE_DIR}/src/globopt.c
+    ${PROJECT_SOURCE_DIR}/src/logio.c
+    ${PROJECT_SOURCE_DIR}/src/rtimcmd.c
+    ${PROJECT_SOURCE_DIR}/src/rtimopmap.c
+    ${PROJECT_SOURCE_DIR}/src/sockcom.c
+  DEFINITIONS
+    "-DCRINIT_LIB_CONSTRUCTOR=__attribute__((unused))"
+    "-DCRINIT_LIB_DESTRUCTOR=__attribute__((unused))"
+  LIBRARIES
+    libmockfunctions
+  WRAPS
+    -Wl,--wrap=crinitBuildRtimCmd
+    -Wl,--wrap=crinitXfer
+    -Wl,--wrap=crinitDestroyRtimCmd
+)
+

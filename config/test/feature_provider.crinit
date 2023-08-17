@@ -1,0 +1,12 @@
+# Example task config providing a feature which can be depended upon
+
+NAME = feature_provider
+
+COMMAND = /bin/true
+
+DEPENDS = "@ctl:enable"
+
+PROVIDES = smoketest_feature1:wait
+           "smoketest_feature2:spawn smoketest_feature3:wait"
+
+RESPAWN = NO
