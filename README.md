@@ -131,8 +131,8 @@ ENV_SET = GREETING "Good morning!"
 - **USE_SYSLOG** -- If syslog should be used for output if it is available. If set to `YES`, Crinit will switch to
                     syslog for output as soon as a task file `PROVIDES` the `syslog` feature. Ideally this should be
                     a task file loading a syslog server such as syslogd or elosd. Default: `NO`
-- **USE_ELOS** -- If Elos should be used for output if it is available. If set to `YES`, Crinit will switch to
-                  Elos for output as soon as a task file `PROVIDES` the `elos` feature. Ideally this should be
+- **USE_ELOS** -- If Elos should be used as event based dependency provider if it is available. If set to `YES`, Crinit will allow Elos event filters as 
+                  task dependency with the `@elos` prefix as soon as a task file `PROVIDES` the `elos` feature. Ideally this should be
                   a task file loading the Elos daemon elosd. Default: `NO`
 - **ELOS_SERVER** -- Ip address of the elos server. Default: `127.0.0.1`
 - **ELOS_PORT** -- Port of the elos server. Default: `54321`
