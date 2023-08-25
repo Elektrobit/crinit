@@ -7,7 +7,8 @@ node "Crinit" {
 	component "Config Parser" as config_parser
 }
 cloud "Tasks" as tasks
-component "Notfication/Service Library" as notify_lib
+component "C API library" as notify_lib
+component "crinit-ctl" as cctl
 cloud "Task Configurations" as task_configs
 node "elos" as elos
 
@@ -20,33 +21,35 @@ tasks -left-> task_configs
 proc_dispatch <-up-> task_data
 notify_if -left-> task_data
 config_parser <-up-> task_data
+notify_lib <-- cctl
 
 note top of notify_if
-    Notifies Task Data Structure of events
-    from SD_NOTIFY library and elos.
-    Multi-threaded UNIX domain socket server
-    for Notification/Sevice Library.
+    Handles queries and requests from the C client API. Performs
+    runtime actions as necessary and updates the task database
+    accordingly. Implemented as a multi-threaded UNIX domain socket
+    server. Meant to be used through the C client API.
 end note
 
 note top of task_data
-    "Intelligent" data structure implementing a task database. Keeps
-    track of waiting, running, finished tasks and handles state changes
-    through events. Will notify process dispatcher upon a state change
-    that implies a new task is ready to run.
+    Data structure implementing a task database. Keeps track of task states
+    and handles state changes. Will prompt process dispatcher upon a state
+    change that implies new tasks are ready to run.
 end note
 
-note bottom of notify_lib
-    C interface compatible with SD_NOTIFY. Feeds
-    notifications to Task Data Structure as events.
+note right of notify_lib
+    C client API. Relays info/requests between notification/service
+    interface and client programs
 end note
 
 note top of proc_dispatch
-    Multi-threaded process spawner. Spawns and waits
-    for processes. Notifies Task Data Structure of
-    "spawn" and "wait" events.  SafeSystemStartup
-    parts will be in here to spawn a jailed task
-    according to config.
+    Multi-threaded process spawner. Spawns
+    and waits for processes according to task
+    configurations. Updates task data struc-
+    ture with task state changes.
 end note
 
+note right of cctl
+    User-space control program using the C API.
+end note
 @enduml
 
