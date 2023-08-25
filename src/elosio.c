@@ -20,7 +20,7 @@
 #include "thrpool.h"
 
 #define CRINIT_ELOS_IDENT "crinit"  ///< Identification string for crinit logging to syslog.
-/* HINT: We are relying on the mayor library version here. */
+/* HINT: We are relying on the major library version here. */
 #define CRINIT_ELOS_LIBRARY "libelos.so.0"
 #define CRINIT_ELOS_DEPENDENCY "@elos"
 

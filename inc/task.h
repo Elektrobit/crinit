@@ -56,7 +56,7 @@ typedef struct crinitTask_t {
     crinitTaskCmd_t *cmds;       ///< Dynamic array of commands, corresponds to COMMAND[N] in the config file.
     size_t cmdsSize;             ///< Number of commands in cmds array.
     crinitEnvSet_t taskEnv;      ///< Environment variables valid for each COMMAND in this task.
-    crinitEnvSet_t elosFilters;  ///< Environment variables valid for each COMMAND in this task.
+    crinitEnvSet_t elosFilters;  ///< Elos filter definitions valid for use in dependencies of this task.
     crinitTaskDep_t *deps;       ///< Dynamic array of dependencies, corresponds to DEPENDS in the config file.
     size_t depsSize;             ///< Number of dependencies in deps array.
     crinitTaskPrv_t *prv;        ///< Dynamic array of provided features, corresponds to PROVIDES in the config file.

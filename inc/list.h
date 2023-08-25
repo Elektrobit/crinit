@@ -205,7 +205,7 @@ static inline int crinitListIsEmpty(const crinitList_t *list) {
 #define crinitListEntryIsHead(entry, list, member) (&(entry)->member == (list))
 
 /**
- * @brief Iterates over all entry in the list.
+ * @brief Iterates over all entries in the list.
  *
  * @param entry   Current container entry.
  * @param list    Pointer to the list head.
@@ -216,7 +216,7 @@ static inline int crinitListIsEmpty(const crinitList_t *list) {
          !crinitListEntryIsHead(entry, list, member); (entry) = crinitListNextEntry(entry, member))
 
 /**
- * @brief Safely iterates over all entry in the list.
+ * @brief Safely iterates over all entries in the list.
  *
  * This macro additionally keeps track of the next entry of the current
  * entry, so the loop won't break if the current entry gets removed from the list.
