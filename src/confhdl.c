@@ -238,7 +238,6 @@ int crinitCfgEnvHandler(void *tgt, const char *val, crinitConfigType_t type) {
     return 0;
 }
 
-/* TODO: It might be necessary to adapt this handler for elos filters */
 int crinitCfgFilterHandler(void *tgt, const char *val, crinitConfigType_t type) {
     if (type == CRINIT_CONFIG_TYPE_TASK) {
         crinitNullCheck(-1, tgt, val);
