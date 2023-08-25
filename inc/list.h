@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file list.h
  * @brief Implementation of a doubly linked intrusive list.
@@ -12,12 +13,6 @@
  * and last (head-prev) entry in the list or to itself, if the list is empty.
  * Thus iterating the list is as simple as starting at head->next and iterating
  * through the entries with cur->next, until cur->next points to head again.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2023 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #ifndef CRINIT_LIST_H
 #define CRINIT_LIST_H

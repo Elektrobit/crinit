@@ -1,12 +1,7 @@
+// SPDX-License-Identifier: MIT
 /**
  * @file elosio.c
  * @brief Implementation of elos connection.
- *
- * @author emlix GmbH, 37083 Göttingen, Germany
- *
- * @copyright 2023 Elektrobit Automotive GmbH
- *            All rights exclusively reserved for Elektrobit Automotive GmbH,
- *            unless otherwise expressly agreed
  */
 #include "elosio.h"
 
