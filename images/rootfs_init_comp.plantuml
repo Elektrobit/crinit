@@ -25,7 +25,7 @@ notify_lib <-- cctl
 
 note top of notify_if
     Handles queries and requests from the C client API. Performs
-    runtime actions as necessary and updates the Task database
+    runtime actions as necessary and updates the task database
     accordingly. Implemented as a multi-threaded UNIX domain socket
     server. Meant to be used through the C client API.
 end note
@@ -44,7 +44,7 @@ end note
 note top of proc_dispatch
     Multi-threaded process spawner. Spawns
     and waits for processes according to task
-    configurations. Updates Task Data Struc-
+    configurations. Updates task data struc-
     ture with task state changes.
 end note
 
