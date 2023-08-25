@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 /**
  * @file list.h
- * @brief Implementation of a doubly linked intrusive list.
+ * Implementation of a doubly linked intrusive list.
  *
  * Intrusive lists use a list structure containing a next pointer
  * pointing to the next list element for singly linked list and a next and prev
@@ -20,7 +20,7 @@
 #include <stdlib.h>
 
 /**
- * @brief Macro to find the container struct to a given struct field.
+ * Macro to find the container struct to a given struct field.
  *
  * @param ptr    Pointer to the field in the structure.
  * @param type   Type of the container wrapping the field.
@@ -29,15 +29,15 @@
 #define container_of(ptr, type, member) ((type *)((char *)(ptr)-offsetof(type, member)))
 
 /**
- * @brief Simple intrusive list struct.
+ * Simple intrusive list struct.
  */
 typedef struct crinitList {
-    struct crinitList *prev;
-    struct crinitList *next;
+    struct crinitList *prev;  ///< Pointer to last entry in list.
+    struct crinitList *next;  ///< Pointer to next entry in list.
 } crinitList_t;
 
 /**
- * @brief Type for a list entry compare function.
+ * Type for a list entry compare function.
  *
  * The comparison function shall return a value > 0,
  * if the container type of e2 is larger than the one of e2,
@@ -66,7 +66,7 @@ static inline void crinitListInit(crinitList_t *list) {
 }
 
 /**
- * @brief Insert a new list entry.
+ * Insert a new list entry.
  *
  * @param entry Entry to be inserted.
  * @param prev Entry to be inserted after.
@@ -80,7 +80,7 @@ static inline void crinitListInsert(crinitList_t *entry, crinitList_t *prev, cri
 }
 
 /**
- * @brief Insert a new entry at the beginning of the list.
+ * Insert a new entry at the beginning of the list.
  *
  * @param list Pointer to the list.
  * @param entry Entry to be appended.
@@ -90,7 +90,7 @@ static inline void crinitListPrepend(crinitList_t *list, crinitList_t *entry) {
 }
 
 /**
- * @brief Appends a new entry at the end of the list.
+ * Appends a new entry at the end of the list.
  *
  * @param list Pointer to the list.
  * @param entry Entry to be appended.
@@ -100,7 +100,7 @@ static inline void crinitListAppend(crinitList_t *list, crinitList_t *entry) {
 }
 
 /**
- * @brief Insert sorted based on a simple comparison callback.
+ * Insert sorted based on a simple comparison callback.
  *
  * @param list List to insert the entry into.
  * @param entry Entry to be inserted.
@@ -122,7 +122,7 @@ static inline void crinitListInsertSorted(crinitList_t *list, crinitList_t *entr
 }
 
 /**
- * @brief Deletes the current entry from the list.
+ * Deletes the current entry from the list.
  *
  * Removes the entry from the list by updating the next pointer of
  * the previous and the prev pointer of the next entry, while
@@ -140,7 +140,7 @@ static inline void crinitListDelete(crinitList_t *entry) {
 }
 
 /**
- * @brief Returns wether the list is empty or not.
+ * Returns wether the list is empty or not.
  *
  * Checks if the list is empty by checking if the next pointer
  * of the list points to the list itself.
@@ -196,7 +196,7 @@ static inline int crinitListIsEmpty(const crinitList_t *list) {
 #define crinitListNextEntry(entry, member) crinitListEntry((entry)->member.next, __typeof(*(entry)), member)
 
 /**
- * @brief Returns wether the current container entry contains the list head.
+ * Returns wether the current container entry contains the list head.
  *
  * @param entry   Current container entry.
  * @param list    Pointer to the list head.
@@ -205,7 +205,7 @@ static inline int crinitListIsEmpty(const crinitList_t *list) {
 #define crinitListEntryIsHead(entry, list, member) (&(entry)->member == (list))
 
 /**
- * @brief Iterates over all entries in the list.
+ * Iterates over all entries in the list.
  *
  * @param entry   Current container entry.
  * @param list    Pointer to the list head.
@@ -216,7 +216,7 @@ static inline int crinitListIsEmpty(const crinitList_t *list) {
          !crinitListEntryIsHead(entry, list, member); (entry) = crinitListNextEntry(entry, member))
 
 /**
- * @brief Safely iterates over all entries in the list.
+ * Safely iterates over all entries in the list.
  *
  * This macro additionally keeps track of the next entry of the current
  * entry, so the loop won't break if the current entry gets removed from the list.
