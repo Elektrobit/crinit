@@ -525,7 +525,26 @@ int crinitElosioTaskAdded(crinitTask_t *task) {
  * @return Returns 0 on success, -1 otherwise.
  */
 static inline int crinitElosioDisconnect(void) {
-    return crinitElosioTryExec(crinitTinfo.disconnect, "Failed to disconnect from elosd.", crinitTinfo.session);
+    int res = SAFU_RESULT_OK;
+
+    if (crinitTinfo.session != NULL) {
+        if ((errno = pthread_mutex_lock(&crinitElosioSessionLock)) != 0) {
+            crinitErrnoPrint("Failed to lock elos session.");
+            return SAFU_RESULT_FAILED;
+        }
+
+        res = crinitTinfo.disconnect(crinitTinfo.session);
+        if (res != SAFU_RESULT_OK) {
+            crinitErrPrint("Failed to disconnect from elosd.");
+        }
+
+        if ((errno = pthread_mutex_unlock(&crinitElosioSessionLock)) != 0) {
+            crinitErrnoPrint("Failed to unlock elos session.");
+            res = SAFU_RESULT_FAILED;
+        }
+    }
+
+    return res;
 }
 
 static void *crinitElosioEventListener(void *arg) {
