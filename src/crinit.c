@@ -169,9 +169,6 @@ int main(int argc, char *argv[]) {
     }
 
     while (true) {
-        /** TODO: Register new filters in crinitTaskDBSpawnReady or an equivalent elosio
-         *        function for every new spawned task.
-         */
         crinitTaskDBSpawnReady(&tdb);
         pthread_mutex_lock(&tdb.lock);
         crinitDbgInfoPrint("Waiting for Task to be ready.");
