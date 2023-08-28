@@ -189,6 +189,9 @@ IO_REDIRECT = STDERR STDOUT
   another task may implement (see **PROVIDES**). In this case `@provided:writable_var` could mean that another task
   may have mounted a tmpfs or a writable partition there which we need for the first `mkdir`. That task would need to
   advertise the `writable_var` feature in its `PROVIDES` config value. (*array-like*)
+  Additionally there is an optional feature that allows tasks to be started based on system events issued by elos.
+  Tasks depending on an elos event can use the `@elos:<filter_name>` syntax to specify a task dependency that is fullfilled
+  as soon as the specified elos filter triggers. The filters themself can be specified using the **FILTER_DEFINE** keyword.
 - **PROVIDES** -- As we have seen above, a task may depend on features and also provide them. In this case we advertise
   that after completion of this task (`wait`), the features `ipv4_dhcp` and `resolvconf` are provided. Another task may
   then depend e.g. on `@provided:resolvconf`. While the feature names chosen here reflect the functional intention, they
@@ -213,6 +216,28 @@ FOO_BAR=foo bar                            # Expansion of global variable in tas
 GREETING=Good evening!                     # Override of global variable.
 ESCAPED_VAR=Global variable name: ${FOO}   # Avoid variable expansion through escaping.
 VAR_WITH_ESC_SEQUENCES=hex  hex            # Support for escape sequences including hexadecimal bytes.
+```
+
+### Defining Elos Filters
+
+Crinit supports an optional feature, which enables a task to depend on specific system events issued by the elos event logger.
+In order to depend on elos events, a task uses the `@elos` dependency prefix in conjunction with a elos filter name. The corresponding
+filter has to be defined within the task itself or within the global environment. The definition follows the syntax of normal
+environment variables, but uses the `FILTER_DEFINE` prefix instead:
+
+```
+FILTER_DEFINE = <filter_name> <filter_rule>
+```
+
+For example:
+
+```
+NAME = elos_ssh_event_task
+COMMAND = /bin/echo "Event task has been run."
+
+FILTER_DEFINE = SSHD_FILTER ".event.source.appName 'sshd' STRCMP"
+
+DEPENDS = @elos:SSHD_FILTER
 ```
 
 #### Ruleset
