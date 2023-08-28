@@ -3,15 +3,12 @@
  * @file list.h
  * Implementation of a doubly linked intrusive list.
  *
- * Intrusive lists use a list structure containing a next pointer
- * pointing to the next list element for singly linked list and a next and prev
- * pointer pointing to the next and previous element for a doubly linked list.
- * This list type gets embedded into the entry type struct which should be listed.
- * With the help of a container_of macro the parent struct can be retrived for a given list entry.
- * To construct a list a list head is generated, which is not embedded into
- * the struct managed in the list. This head points to the first (head->next)
- * and last (head-prev) entry in the list or to itself, if the list is empty.
- * Thus iterating the list is as simple as starting at head->next and iterating
+ * Intrusive lists use a list structure containing a next pointer pointing to the next list element for singly linked
+ * list and a next and prev pointer pointing to the next and previous element for a doubly linked list. This list type
+ * gets embedded into the entry type struct which should be listed. With the help of a container_of macro the parent
+ * struct can be retrived for a given list entry. To construct a list a list head is generated, which is not embedded
+ * into the struct managed in the list. This head points to the first (head->next) and last (head-prev) entry in the
+ * list or to itself, if the list is empty. Thus iterating the list is as simple as starting at head->next and iterating
  * through the entries with cur->next, until cur->next points to head again.
  */
 #ifndef CRINIT_LIST_H
