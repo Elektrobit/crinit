@@ -32,13 +32,11 @@ static int crinitActivateSyslog(void *data) {
 static int crinitElosioActivateCb(void *data) {
     CRINIT_PARAM_UNUSED(data);
 
-    crinitElosioActivate((crinitTaskDB_t *)data, true);
-    return 0;
+    return crinitElosioActivate((crinitTaskDB_t *)data, true);
 }
 
 static int crinitElosioTaskAddedCb(void *data) {
-    crinitElosioTaskAdded((crinitTask_t *)data);
-    return 0;
+    return crinitElosioTaskAdded((crinitTask_t *)data);
 }
 
 int crinitFeatureHook(const char *sysFeatName, crinitHookType_t type, void *data) {

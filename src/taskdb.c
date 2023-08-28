@@ -131,11 +131,10 @@ int crinitTaskDBInsert(crinitTaskDB_t *ctx, const crinitTask_t *t, bool overwrit
         goto fail;
     }
 
-    /* TODO: We must get rid of the feature name here. */
     crinitDbgInfoPrint("Run feature hooks for 'TASK_ADDED'.");
     if (crinitFeatureHook(NULL, TASK_ADDED, pTask) == -1) {
         crinitErrPrint("Could not run activiation hook for feature \'TASK_ADDED\'.");
-        return -1;
+        goto fail;
     }
 
     pthread_cond_broadcast(&ctx->changed);
