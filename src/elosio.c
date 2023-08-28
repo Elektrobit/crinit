@@ -12,6 +12,7 @@
 #include <unistd.h>
 
 #include "common.h"
+#include "confparse.h"
 #include "globopt.h"
 #include "list.h"
 #include "logio.h"
@@ -549,6 +550,8 @@ static inline int crinitElosioDisconnect(void) {
 
 static void *crinitElosioEventListener(void *arg) {
     int err = -1;
+    char *elosServer;
+    int elosPort;
     const char *version;
     crinitElosioFilter_t *filter, *tempFilter;
     crinitElosioFilterTask_t *filterTask;
@@ -559,14 +562,22 @@ static void *crinitElosioEventListener(void *arg) {
     tinfo->elosStarted = true;
 
     crinitDbgInfoPrint("Loading elos connection parameters.");
-    if (crinitGlobOptGet(CRINIT_GLOBOPT_ELOS_SERVER, &tinfo->elosServer) == -1) {
+    if (crinitGlobOptGet(CRINIT_GLOBOPT_ELOS_SERVER, &elosServer) == -1) {
         crinitErrPrint("Could not recall elos server ip from global options.");
         goto err;
+    } else {
+        if (tinfo->elosServer != NULL) {
+            free(tinfo->elosServer);
+        }
+
+        tinfo->elosServer = elosServer;
     }
 
-    if (crinitGlobOptGet(CRINIT_GLOBOPT_ELOS_PORT, &tinfo->elosPort) == -1) {
+    if (crinitGlobOptGet(CRINIT_GLOBOPT_ELOS_PORT, &elosPort) == -1) {
         crinitErrPrint("Could not recall elos server port from global options.");
         goto err_options;
+    } else {
+        tinfo->elosPort = elosPort;
     }
 
     crinitDbgInfoPrint("Got elos connection parameters %s:%d.", tinfo->elosServer, tinfo->elosPort);
@@ -663,6 +674,8 @@ static int crinitElosioInitThreadContext(crinitTaskDB_t *taskDb, struct crinitEl
     void *lp;
 
     tinfo->taskDb = taskDb;
+    tinfo->elosPort = CRINIT_CONFIG_DEFAULT_ELOS_PORT;
+    tinfo->elosServer = strdup(CRINIT_CONFIG_DEFAULT_ELOS_SERVER);
 
     lp = dlopen(CRINIT_ELOS_LIBRARY, RTLD_NOW | RTLD_LOCAL);
     if (!lp) {
