@@ -219,7 +219,7 @@ static void *crinitDispatchThreadFunc(void *args) {
                 goto threadExitFail;
             }
             crinitTaskDep_t spawnDep = {tCopy->name, CRINIT_TASK_EVENT_RUNNING};
-            if (crinitTaskDBFulfillDep(ctx, &spawnDep) == -1) {
+            if (crinitTaskDBFulfillDep(ctx, &spawnDep, NULL) == -1) {
                 crinitErrPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, spawnDep.name,
                                spawnDep.event);
                 goto threadExitFail;
@@ -270,7 +270,7 @@ static void *crinitDispatchThreadFunc(void *args) {
         crinitErrPrint("(TID: %d) Could not set state of Task \'%s\' to done.", threadId, tCopy->name);
     }
     crinitTaskDep_t doneDep = {tCopy->name, CRINIT_TASK_EVENT_DONE};
-    if (crinitTaskDBFulfillDep(ctx, &doneDep) == -1) {
+    if (crinitTaskDBFulfillDep(ctx, &doneDep, NULL) == -1) {
         crinitErrPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, doneDep.name, doneDep.event);
     }
     crinitDbgInfoPrint("(TID: %d) Dependency \'%s:%s\' fulfilled.", threadId, doneDep.name, doneDep.event);
@@ -298,7 +298,7 @@ threadExitFail:
     }
 
     crinitTaskDep_t failDep = {tCopy->name, CRINIT_TASK_EVENT_FAILED};
-    if (crinitTaskDBFulfillDep(ctx, &failDep) == -1) {
+    if (crinitTaskDBFulfillDep(ctx, &failDep, NULL) == -1) {
         crinitErrPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, failDep.name, failDep.event);
     } else {
         crinitDbgInfoPrint("(TID: %d) Dependency \'%s:%s\' fulfilled.", threadId, failDep.name, failDep.event);

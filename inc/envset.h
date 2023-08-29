@@ -71,11 +71,12 @@ int crinitEnvSetDup(crinitEnvSet_t *copy, const crinitEnvSet_t *orig);
  * @param baseSet  The crinitEnvSet_t which serves as a base state, must be initialized or NULL if we "start from
  *                 scratch".
  * @param c        The crinitConfKvList_t which may contain ENV_SET directives to be applied to the new set.
+ * @param key      The configuration key to use for reading the environment set.
  *
  * @return  0 on success, -1 otherwise
  */
-int crinitEnvSetCreateFromConfKvList(crinitEnvSet_t *newSet, const crinitEnvSet_t *baseSet, const crinitConfKvList_t *c);
-
+int crinitEnvSetCreateFromConfKvList(crinitEnvSet_t *newSet, const crinitEnvSet_t *baseSet, const crinitConfKvList_t *c,
+                                     const char *restrict key);
 /**
  * Gets the value for a given variable from an environment set.
  *
@@ -86,6 +87,16 @@ int crinitEnvSetCreateFromConfKvList(crinitEnvSet_t *newSet, const crinitEnvSet_
  *          encountered.
  */
 const char *crinitEnvSetGet(const crinitEnvSet_t *es, const char *envName);
+/**
+ * Gets the value for a given offset in an environment set.
+ *
+ * @param es   The environment set to search in.
+ * @param idx  The offset to return.
+ *
+ * @return  A pointer to the variable's value inside the set or NULL if the variable was not found or an error was
+ *          encountered.
+ */
+const char *crinitEnvSetEntry(const crinitEnvSet_t *es, const size_t idx);
 /**
  * Sets the value for a given variable in an  environment set.
  *

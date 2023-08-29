@@ -88,6 +88,7 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
+    // TODO: Init features (call feature hook init).
     crinitRtimOpMapDebugPrintAll();
 
     crinitTaskDB_t tdb;

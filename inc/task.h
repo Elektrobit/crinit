@@ -52,23 +52,24 @@ typedef struct crinitTaskPrv_t {
  * Type to store a single task.
  */
 typedef struct crinitTask_t {
-    char *name;               ///< Name of the task, corresponds to NAME in the config file.
-    crinitTaskCmd_t *cmds;    ///< Dynamic array of commands, corresponds to COMMAND[N] in the config file.
-    size_t cmdsSize;          ///< Number of commands in cmds array.
-    crinitEnvSet_t taskEnv;   ///< Environment variables valid for each COMMAND in this task.
-    crinitTaskDep_t *deps;    ///< Dynamic array of dependencies, corresponds to DEPENDS in the config file.
-    size_t depsSize;          ///< Number of dependencies in deps array.
-    crinitTaskPrv_t *prv;     ///< Dynamic array of provided features, corresponds to PROVIDES in the config file.
-    size_t prvSize;           ///< Number of provided features in prv array.
-    crinitTaskOpts_t opts;    ///< Task options.
-    crinitTaskState_t state;  ///< Task state.
-    pid_t pid;                ///< PID of currently running process subordinate to the task, if any.
-    crinitIoRedir_t *redirs;  ///< IO redirection descriptions.
-    size_t redirsSize;        ///< Number of IO redirections.
-    int maxRetries;           ///< If crinitTask_t::opts includes #CRINIT_TASK_OPT_RESPAWN, this variable specifies a
-                              ///< maximum consecutive number of respawns after failure (default: -1 for infinite).
-    int failCount;            ///< Counts consecutive respawns after failure (see crinitTaskOpts_t::maxRetries). Resets
-                              ///< on a successful completion (i.e. all COMMANDs in the task have returned 0).
+    char *name;                  ///< Name of the task, corresponds to NAME in the config file.
+    crinitTaskCmd_t *cmds;       ///< Dynamic array of commands, corresponds to COMMAND[N] in the config file.
+    size_t cmdsSize;             ///< Number of commands in cmds array.
+    crinitEnvSet_t taskEnv;      ///< Environment variables valid for each COMMAND in this task.
+    crinitEnvSet_t elosFilters;  ///< Elos filter definitions valid for use in dependencies of this task.
+    crinitTaskDep_t *deps;       ///< Dynamic array of dependencies, corresponds to DEPENDS in the config file.
+    size_t depsSize;             ///< Number of dependencies in deps array.
+    crinitTaskPrv_t *prv;        ///< Dynamic array of provided features, corresponds to PROVIDES in the config file.
+    size_t prvSize;              ///< Number of provided features in prv array.
+    crinitTaskOpts_t opts;       ///< Task options.
+    crinitTaskState_t state;     ///< Task state.
+    pid_t pid;                   ///< PID of currently running process subordinate to the task, if any.
+    crinitIoRedir_t *redirs;     ///< IO redirection descriptions.
+    size_t redirsSize;           ///< Number of IO redirections.
+    int maxRetries;              ///< If crinitTask_t::opts includes #CRINIT_TASK_OPT_RESPAWN, this variable specifies a
+                                 ///< maximum consecutive number of respawns after failure (default: -1 for infinite).
+    int failCount;  ///< Counts consecutive respawns after failure (see crinitTaskOpts_t::maxRetries). Resets
+                    ///< on a successful completion (i.e. all COMMANDs in the task have returned 0).
 } crinitTask_t;
 
 /**

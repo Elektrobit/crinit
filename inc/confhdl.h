@@ -65,10 +65,18 @@ int crinitCfgTaskDirSlHandler(void *tgt, const char *val, crinitConfigType_t typ
 int crinitCfgTasksHandler(void *tgt, const char *val, crinitConfigType_t type);
 /** Handler for `USE_SYSLOG` config directives. See crinitConfigHandler_t. **/
 int crinitCfgSyslogHandler(void *tgt, const char *val, crinitConfigType_t type);
+/** Handler for `USE_ELOS` config directives. See crinitConfigHandler_t. **/
+int crinitCfgElosHandler(void *tgt, const char *val, crinitConfigType_t type);
+/** Handler for `ELOS_SERVER` config directives. See crinitConfigHandler_t. **/
+int crinitCfgElosServerHandler(void *tgt, const char *val, crinitConfigType_t type);
+/** Handler for `ELOS_PORT` config directives. See crinitConfigHandler_t. **/
+int crinitCfgElosPortHandler(void *tgt, const char *val, crinitConfigType_t type);
 
 /* Handlers working in both cases */
 
 /** Handler for `ENV_SET` config directives. See crinitConfigHandler_t. **/
 int crinitCfgEnvHandler(void *tgt, const char *val, crinitConfigType_t type);
+/** Handler for `FILTER_DEFINE` config directives. See crinitConfigHandler_t. **/
+int crinitCfgFilterHandler(void *tgt, const char *val, crinitConfigType_t type);
 
 #endif /* __CONFHDL_H__ */

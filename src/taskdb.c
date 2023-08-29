@@ -131,6 +131,12 @@ int crinitTaskDBInsert(crinitTaskDB_t *ctx, const crinitTask_t *t, bool overwrit
         goto fail;
     }
 
+    crinitDbgInfoPrint("Run feature hooks for 'TASK_ADDED'.");
+    if (crinitFeatureHook(NULL, TASK_ADDED, pTask) == -1) {
+        crinitErrPrint("Could not run activiation hook for feature \'TASK_ADDED\'.");
+        goto fail;
+    }
+
     pthread_cond_broadcast(&ctx->changed);
     pthread_mutex_unlock(&ctx->lock);
     return 0;
@@ -381,7 +387,7 @@ int crinitTaskDBRemoveDepFromTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *de
     return -1;
 }
 
-int crinitTaskDBFulfillDep(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep) {
+int crinitTaskDBFulfillDep(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep, const crinitTask_t *target) {
     crinitNullCheck(-1, ctx, dep);
 
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
@@ -391,6 +397,10 @@ int crinitTaskDBFulfillDep(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep) {
 
     crinitTask_t *pTask;
     crinitTaskDbForEach(ctx, pTask) {
+        if (target != NULL && pTask != target) {
+            continue;
+        }
+
         for (size_t j = 0; j < pTask->depsSize; j++) {
             if ((strcmp(pTask->deps[j].name, dep->name) == 0) && (strcmp(pTask->deps[j].event, dep->event) == 0)) {
                 crinitDbgInfoPrint("Removing fulfilled dependency \'%s:%s\' in \'%s\'.", dep->name, dep->event,
@@ -415,12 +425,12 @@ int crinitTaskDBProvideFeature(crinitTaskDB_t *ctx, const crinitTask_t *provider
         if (provider->prv[i].stateReq == newState) {
             char depName[] = CRINIT_PROVIDE_DEP_NAME;
             const crinitTaskDep_t dep = {depName, provider->prv[i].name};
-            if (crinitTaskDBFulfillDep(ctx, &dep) == -1) {
+            if (crinitTaskDBFulfillDep(ctx, &dep, NULL) == -1) {
                 crinitErrPrint("Could not fulfill dependency \'%s:%s\'.", dep.name, dep.event);
                 return -1;
             }
             crinitDbgInfoPrint("Fulfilled feature dependency \'%s:%s\'.", dep.name, dep.event);
-            if (crinitFeatureHook(dep.event) == -1) {
+            if (crinitFeatureHook(dep.event, START, (void *)ctx) == -1) {
                 crinitErrPrint("Could not run activiation hook for feature \'%s\'.", dep.event);
                 return -1;
             }

@@ -17,18 +17,26 @@
 typedef struct crinitGlobOptStore_t {
     bool debug;                    ///< Value for the DEBUG global option.
     bool useSyslog;                ///< Value for the USE_SYSLOG global option.
+    bool useElos;                  ///< Value for the USE_ELOS global option.
+    int elosPort;                  ///< Value for the ELOS_PORT global option.
+    char *elosServer;              ///< Value for the ELOS_SERVER global option.
     char *inclDir;                 ///< Value for the INCLUDEDIR global option.
     char *inclSuffix;              ///< Value for the INCLUDE_SUFFIX global option.
     unsigned long long shdGraceP;  ///< Value for the SHUTDOWN_GRACE_PERIOD_US global option.
     crinitEnvSet_t globEnv;        ///< Storage for global task environment variables.
+    crinitEnvSet_t globFilters;    ///< Storage for global task filter variables.
 } crinitGlobOptStore_t;
 
 #define CRINIT_GLOBOPT_DEBUG debug             ///< DEBUG global option
 #define CRINIT_GLOBOPT_USE_SYSLOG useSyslog    ///< USE_SYSLOG global option
+#define CRINIT_GLOBOPT_USE_ELOS useElos        ///< USE_ELOS global option
+#define CRINIT_GLOBOPT_ELOS_PORT elosPort      ///< ELOS_PORT global option
+#define CRINIT_GLOBOPT_ELOS_SERVER elosServer  ///< ELOS_SERVER global option
 #define CRINIT_GLOBOPT_INCLDIR inclDir         ///< INCLUDEDIR global option
 #define CRINIT_GLOBOPT_INCL_SUFFIX inclSuffix  ///< INCLUDE_SUFFIX global option
 #define CRINIT_GLOBOPT_SHDGRACEP shdGraceP     ///< SHUTDOWN_GRACE_PERIOD_US global option
 #define CRINIT_GLOBOPT_ENV globEnv             ///< Reference to the global task environment
+#define CRINIT_GLOBOPT_FILTERS globFilters     ///< Reference to the global task filters
 
 /** Dummy instance for Generic Selection of members to work (see type-generic macros below). **/
 static crinitGlobOptStore_t crinitGenericGlobOptHelper __attribute__((unused));
@@ -54,6 +62,7 @@ static crinitGlobOptStore_t crinitGenericGlobOptHelper __attribute__((unused));
     _Generic((crinitGenericGlobOptHelper.globOptMember), \
         char * : crinitGlobOptGetString, \
         bool : crinitGlobOptGetBoolean, \
+        int : crinitGlobOptGetInteger, \
         unsigned long long : crinitGlobOptGetUnsignedLL, \
         crinitEnvSet_t : crinitGlobOptGetEnvSet) \
         ((offsetof(crinitGlobOptStore_t, globOptMember)), (retPtr))
@@ -73,6 +82,7 @@ static crinitGlobOptStore_t crinitGenericGlobOptHelper __attribute__((unused));
         char * : crinitGlobOptSetString, \
         const char * : crinitGlobOptSetString, \
         bool : crinitGlobOptSetBoolean, \
+        int : crinitGlobOptSetInteger, \
         unsigned long long : crinitGlobOptSetUnsignedLL, \
         crinitEnvSet_t : crinitGlobOptSetEnvSet) \
         ((offsetof(crinitGlobOptStore_t, globOptMember)), (val))
@@ -136,6 +146,18 @@ int crinitGlobOptSetString(size_t memberOffset, const char *val);
  */
 int crinitGlobOptSetBoolean(size_t memberOffset, bool val);
 /**
+ * Stores an integer value for a global option.
+ *
+ * Consider using the type-generic macro crinitGlobOptSet() which can be used with member names instead of offsets. Will
+ * lock the global option storage as long as needed and is thread-safe.
+ *
+ * @param memberOffset  The global option to set.
+ * @param val           The boolean value to store.
+ *
+ * @return 0 on success, -1 on error
+ */
+int crinitGlobOptSetInteger(size_t memberOffset, int val);
+/**
  * Stores an unsigned long long value for a global option.
  *
  * Consider using the type-generic macro crinitGlobOptSet() which can be used with member names instead of offsets. Will
@@ -187,6 +209,18 @@ int crinitGlobOptGetString(size_t memberOffset, char **val);
  * @return 0 on success, -1 on error
  */
 int crinitGlobOptGetBoolean(size_t memberOffset, bool *val);
+/**
+ * Retrieves an integer value from a global option.
+ *
+ * Consider using the type-generic macro crinitGlobOptGet() which can be used with member names instead of offsets. Will
+ * lock the global option storage as long as needed and is thread-safe.
+ *
+ * @param memberOffset  The global option to set.
+ * @param val           Return pointer for the retrieved integer value.
+ *
+ * @return 0 on success, -1 on error
+ */
+int crinitGlobOptGetInteger(size_t memberOffset, int *val);
 /**
  * Retrieves an unsigned long long value from a global option.
  *

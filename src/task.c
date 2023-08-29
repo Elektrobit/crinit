@@ -46,6 +46,11 @@ int crinitTaskCreateFromConfKvList(crinitTask_t **out, const crinitConfKvList_t 
         goto fail;
     }
 
+    if (crinitGlobOptGet(CRINIT_GLOBOPT_FILTERS, &pTask->elosFilters) == -1) {
+        crinitErrPrint("Could not retrieve global filters set during Task creation.");
+        goto fail;
+    }
+
     if (crinitTaskSetFromConfKvList(pTask, in, CRINIT_TASK_TYPE_STANDARD, NULL) == -1) {
         crinitErrPrint("Could not set parameters of new task from configuration list.");
         goto fail;
@@ -75,6 +80,7 @@ int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig) {
     out->deps = NULL;
     out->cmds = NULL;
     out->taskEnv.envp = NULL;
+    out->elosFilters.envp = NULL;
     out->prv = NULL;
     out->redirs = NULL;
 
@@ -124,6 +130,11 @@ int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig) {
 
     if (crinitEnvSetDup(&out->taskEnv, &orig->taskEnv) == -1) {
         crinitErrPrint("Could not duplicate task environment during task duplication.");
+        goto fail;
+    }
+
+    if (crinitEnvSetDup(&out->elosFilters, &orig->elosFilters) == -1) {
+        crinitErrPrint("Could not duplicate elos filters during task duplication.");
         goto fail;
     }
 
@@ -254,6 +265,7 @@ void crinitDestroyTask(crinitTask_t *t) {
     }
     free(t->redirs);
     crinitEnvSetDestroy(&t->taskEnv);
+    crinitEnvSetDestroy(&t->elosFilters);
 }
 
 int crinitTaskMergeInclude(crinitTask_t *tgt, const char *src, char *importList) {

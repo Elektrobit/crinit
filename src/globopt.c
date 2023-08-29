@@ -43,6 +43,7 @@ int crinitGlobOptInitDefault(void) {
     memset(&crinitGlobOpts, 0, sizeof(crinitGlobOpts));
     crinitGlobOpts.debug = CRINIT_CONFIG_DEFAULT_DEBUG;
     crinitGlobOpts.useSyslog = CRINIT_CONFIG_DEFAULT_USE_SYSLOG;
+    crinitGlobOpts.useElos = CRINIT_CONFIG_DEFAULT_USE_ELOS;
     crinitGlobOpts.shdGraceP = CRINIT_CONFIG_DEFAULT_SHDGRACEP;
 
     crinitGlobOpts.inclDir = strdup(CRINIT_CONFIG_DEFAULT_INCLDIR);
@@ -64,6 +65,13 @@ int crinitGlobOptInitDefault(void) {
 
     if (crinitEnvSetInit(&crinitGlobOpts.globEnv, CRINIT_ENVSET_INITIAL_SIZE, CRINIT_ENVSET_SIZE_INCREMENT) == -1) {
         crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_ENV_SET);
+        crinitGlobOptDestroy();
+        crinitGlobOptCommonUnlock();
+        return -1;
+    }
+
+    if (crinitEnvSetInit(&crinitGlobOpts.globFilters, CRINIT_ENVSET_INITIAL_SIZE, CRINIT_ENVSET_SIZE_INCREMENT) == -1) {
+        crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_FILTER_DEFINE);
         crinitGlobOptDestroy();
         crinitGlobOptCommonUnlock();
         return -1;
@@ -131,6 +139,28 @@ int crinitGlobOptGetBoolean(size_t memberOffset, bool *val) {
 
     crinitGlobOptCommonLock();
     *val = *(bool *)(goptBase + memberOffset);
+    crinitGlobOptCommonUnlock();
+
+    return 0;
+}
+
+int crinitGlobOptSetInteger(size_t memberOffset, int val) {
+    char *goptBase = (char *)&crinitGlobOpts;
+    int *tgt = (int *)(goptBase + memberOffset);
+
+    crinitGlobOptCommonLock();
+    *tgt = val;
+    crinitGlobOptCommonUnlock();
+
+    return 0;
+}
+
+int crinitGlobOptGetInteger(size_t memberOffset, int *val) {
+    crinitNullCheck(-1, val);
+    char *goptBase = (char *)&crinitGlobOpts;
+
+    crinitGlobOptCommonLock();
+    *val = *(int *)(goptBase + memberOffset);
     crinitGlobOptCommonUnlock();
 
     return 0;
@@ -224,5 +254,6 @@ void crinitGlobOptDestroy(void) {
     free(crinitGlobOpts.inclDir);
     free(crinitGlobOpts.inclSuffix);
     crinitEnvSetDestroy(&crinitGlobOpts.globEnv);
+    crinitEnvSetDestroy(&crinitGlobOpts.globFilters);
     pthread_mutex_unlock(&crinitOptLock);
 }
