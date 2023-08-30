@@ -16,7 +16,7 @@
 
 #define CRINIT_ERROR_WITH_FFL_FMT "(%s:%s:%d) Error: "  ///< Format string error prefix with function, file and line.
 #define CRINIT_ERRNO_FMT " Errno: %s"                   ///< Format string errno suffix, to use with strerror().
-#define CRINIT_SYSLOG_IDENT "crinit"             ///< Identification string for crinit logging to syslog.
+#define CRINIT_SYSLOG_IDENT "crinit"                    ///< Identification string for crinit logging to syslog.
 
 /** Holds the Prefix to put in front of every printed line, defaults to #CRINIT_PRINT_PREFIX **/
 static char crinitPrintPrefix[CRINIT_PRINT_PREFIX_MAX_LEN] = CRINIT_PRINT_PREFIX;
@@ -124,7 +124,7 @@ void crinitErrPrintFFL(const char *file, const char *func, int line, const char 
         crinitErrStream = stderr;
     }
     if (crinitUseSyslog) {
-        size_t n = strlen(CRINIT_ERROR_WITH_FFL_FMT) + strlen(format) + 1;
+        size_t n = snprintf(NULL, 0, CRINIT_ERROR_WITH_FFL_FMT "%s", file, func, line, format) + 1;
         char *syslogFmt = malloc(n);
         if (syslogFmt == NULL) {
             return;
@@ -151,7 +151,9 @@ void crinitErrnoPrintFFL(const char *file, const char *func, int line, const cha
         crinitErrStream = stderr;
     }
     if (crinitUseSyslog) {
-        size_t n = strlen(CRINIT_ERROR_WITH_FFL_FMT) + strlen(format) + strlen(CRINIT_ERRNO_FMT) + 1;
+        size_t n = snprintf(NULL, 0, CRINIT_ERROR_WITH_FFL_FMT "%s" CRINIT_ERRNO_FMT, file, func, line, format,
+                            crinitThreadSafeStrerror(locErrno)) +
+                   1;
         char *syslogFmt = malloc(n);
         if (syslogFmt == NULL) {
             return;
