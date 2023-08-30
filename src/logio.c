@@ -146,6 +146,7 @@ void crinitErrPrintFFL(const char *file, const char *func, int line, const char 
 
 void crinitErrnoPrintFFL(const char *file, const char *func, int line, const char *format, ...) {
     va_list args;
+    int locErrno = errno;
     pthread_mutex_lock(&crinitLogLock);
     if (crinitErrStream == NULL) {
         crinitErrStream = stderr;
@@ -159,7 +160,7 @@ void crinitErrnoPrintFFL(const char *file, const char *func, int line, const cha
             return;
         }
         snprintf(syslogFmt, n, CRINIT_ERROR_WITH_FFL_FMT "%s" CRINIT_ERRNO_FMT, file, func, line, format,
-                 crinitThreadSafeStrerror(errno));
+                 crinitThreadSafeStrerror(locErrno));
         va_start(args, format);
         vsyslog(LOG_ERR | LOG_DAEMON, syslogFmt, args);
         va_end(args);
@@ -169,7 +170,7 @@ void crinitErrnoPrintFFL(const char *file, const char *func, int line, const cha
         va_start(args, format);
         vfprintf(crinitErrStream, format, args);
         va_end(args);
-        fprintf(crinitErrStream, CRINIT_ERRNO_FMT, crinitThreadSafeStrerror(errno));
+        fprintf(crinitErrStream, CRINIT_ERRNO_FMT, crinitThreadSafeStrerror(locErrno));
         fprintf(crinitErrStream, "\n");
     }
     pthread_mutex_unlock(&crinitLogLock);
