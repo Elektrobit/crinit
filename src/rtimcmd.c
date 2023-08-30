@@ -565,6 +565,7 @@ static int crinitExecRtimCmdAddTask(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, c
                 if (strcmp(runner->key, CRINIT_CONFIG_KEYSTR_DEPENDS) == 0 && runner->val != NULL) {
                     runner->val[0] = '\0';
                 }
+                runner = runner->next;
             }
         } else {
             bool firstEncounter = true;
