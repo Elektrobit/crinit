@@ -1,7 +1,7 @@
-Summary: The crinit init system 
+Summary: The crinit init system
 Name: crinit
 Group: System/Base
-Version: 0.12.0
+Version: 0.12.1
 %global soversion_ 0
 Release: 1
 Source0: %{name}.tar.gz
@@ -137,4 +137,3 @@ install -m 0644 crinit-test-report.xml %{buildroot}/opt/testing
 %defattr (-, root, root)
 %dir /opt/testing
 /opt/testing/*
-
