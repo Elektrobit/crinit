@@ -66,6 +66,44 @@ unique ID burned to on-chip OTP memory. If the Kernel command line value is set,
 physical memory OTP reads are omitted. This means that while the application has special functionality for S32G SoCs,
 it can work on any target as long as the Kernel command line contains the necessary value.
 
+
+# License
+
+MIT License
+
+Copyright (c) [2023] [emlix GmbH, Elektrobit Automotive GmbH]
+
+The full text of the license can be found in the [LICENSE](LICENSE) file in the repository root directory.
+
+## Powered by EB
+
+<img src="images/eb-logo.png" width=70 height=70 align="left">
+elos is powered by elektrobit automotive gmbh.
+Elektrobit is an automotive software company and developer of embedded software products for ECU, AUTOSAR, automated driving, connected vehicles and UX.
+elos isan  integrated part of EB corbos Linux – built on Ubuntu is an open-source operating system for high-performance computing, leveraging the rich functionality of Linux while meeting security and industry regulations.
+
+
+## Maintainers
+
+* Andreas Zdziarstek andreas.zdziarstek@emlix.com [@gmcn42](https://github.com/gmcn42)
+* Thomas Brinker thomas.brinker@emlix.com [@ThomasBrinker](https://github.com/ThomasBrinker)
+
+## Credits
+
+* Andreas Schickedanz
+* Andreas Zdziarstek
+* Anja Lehwess-Litzmann
+* Annika Schmitt
+* Anton Hillebrand
+* Daniel Glöckner
+* Rainer Müller
+* Stefan Kral
+* Thomas Brinker
+* Wolfgang Gehrhardt
+
+
+# Details
+
 ## Configuration
 
 As described above, Crinit needs a global series-file containing global configuration options as well as a list of task
