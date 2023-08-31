@@ -77,7 +77,7 @@ The full text of the license can be found in the [LICENSE](LICENSE) file in the 
 
 ## Powered by EB
 
-<img src="images/eb-logo.png" width=70 height=70 align="left">
+<img src="images/eb-logo.png" width=70 height=70 hspace=10 align="left">
 elos is powered by elektrobit automotive gmbh.
 Elektrobit is an automotive software company and developer of embedded software products for ECU, AUTOSAR, automated driving, connected vehicles and UX.
 elos isan  integrated part of EB corbos Linux – built on Ubuntu is an open-source operating system for high-performance computing, leveraging the rich functionality of Linux while meeting security and industry regulations.
