@@ -1,5 +1,8 @@
 # Crinit -- Configurable Rootfs Init
 
+
+<img src="images/crinit-logo.png" width=20% height=20% align="right">
+
 ## In a Nutshell
 
 Crinit is an init daemon executed as PID 1 by the Linux Kernel. It reads a global configuration ("series"-file) either
@@ -104,6 +107,9 @@ EB corbos Linux – built on Ubuntu - is an open-source operating system for hig
 * Thomas Brinker
 * Wolfgang Gehrhardt
 
+## Artwork
+
+The crinit logo is the Swallow (Hirundinidae). A quick and small bird able to fly long distances. Originator is Anja Lehwess-Litzmann (emlix GmbH). Year 2023. It is licensed under Creative Commons No Derivatives (CC-nd). It shall be used in black on white or HKS43 color.
 
 # Details
 
