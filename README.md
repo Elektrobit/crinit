@@ -1,5 +1,8 @@
 # Crinit -- Configurable Rootfs Init
 
+
+<img src="images/crinit-logo.png" width=20% height=20% align="right">
+
 ## In a Nutshell
 
 Crinit is an init daemon executed as PID 1 by the Linux Kernel. It reads a global configuration ("series"-file) either
