@@ -107,6 +107,9 @@ EB corbos Linux – built on Ubuntu - is an open-source operating system for hig
 * Thomas Brinker
 * Wolfgang Gehrhardt
 
+## Artwork
+
+The crinit logo is the Swallow (Hirundinidae). A quick and small bird able to fly long distances. Originator is Anja Lehwess-Litzmann (emlix GmbH). Year 2023. It is licensed under Creative Commons No Derivatives (CC-nd). It shall be used in black on white or HKS43 color.
 
 # Details
 
