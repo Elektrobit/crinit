@@ -5,62 +5,23 @@
  */
 #include "elosdep.h"
 
-#include <dlfcn.h>
 #include <netinet/in.h>
 #include <pthread.h>
 #include <stdlib.h>
-#include <unistd.h>
 
 #include "common.h"
-#include "confparse.h"
-#include "globopt.h"
+#include "elos-common.h"
 #include "list.h"
 #include "logio.h"
 #include "task.h"
 #include "taskdb.h"
-#include "thrpool.h"
 
 #define CRINIT_ELOS_IDENT "crinit"  ///< Identification string for crinit logging to syslog
 /* HINT: We are relying on the major library version here. */
-#define CRINIT_ELOS_LIBRARY "libelos.so.0"  ///< Elos shared library name
-#define CRINIT_ELOS_DEPENDENCY "@elos"      ///< Elos filter dependency prefix
+#define CRINIT_ELOS_DEPENDENCY "@elos"  ///< Elos filter dependency prefix
 
 static bool crinitUseElos =
     CRINIT_CONFIG_DEFAULT_USE_ELOS;  ///< Specifies if we should use syslog calls instead of FILE streams.
-
-#define ELOS_ID_INVALID 0  ///< Invalid elos event queue ID constant.
-
-/**
- * Possible elos return values.
- */
-typedef enum crinitSafuResultE_t {
-    SAFU_RESULT_FAILED = -1,
-    SAFU_RESULT_OK = 0,
-    SAFU_RESULT_NOT_FOUND = 1,
-} crinitSafuResultE_t;
-
-/**
- * Type defition for elos event queue IDs.
- */
-typedef uint32_t crinitElosEventQueueId_t;
-
-/**
- * Elos session type.
- */
-typedef struct crinitElosSession {
-    int fd;          ///< Connection socket file descriptor
-    bool connected;  ///< Connection state
-} crinitElosSession_t;
-
-/**
- * Elos event vector type.
- */
-typedef struct crinitElosEventVector {
-    size_t memorySize;      ///< Size of memory used
-    size_t elementSize;     ///< Size of a single element
-    uint32_t elementCount;  ///< Number of elements in the event vector
-    void *data;             ///< Continous data block holding all elements
-} crinitElosEventVector_t;
 
 /**
  * Task that has unfulfilled filter dependencies.
@@ -87,26 +48,9 @@ typedef struct crinitElosdepFilter {
  */
 static struct crinitElosEventThread {
     pthread_t threadId;            ///< Thread identifier
-    char *elosServer;              ///< Elos server name or ip
-    int elosPort;                  ///< Elos server port
     bool elosStarted;              ///< Wether or not an initial conenction to elos has been established
     crinitTaskDB_t *taskDb;        ///< Pointer to crinit task database
     crinitElosSession_t *session;  ///< Elos session handle
-    crinitSafuResultE_t (*connect)(const char *, uint16_t,
-                                   crinitElosSession_t **);  ///< Function pointer to the elosConnectTcpip function
-    crinitSafuResultE_t (*getVersion)(crinitElosSession_t *,
-                                      const char **);  ///< Function pointer to the elosGetVersion function
-    crinitSafuResultE_t (*eventSubscribe)(
-        crinitElosSession_t *, const char *[], size_t,
-        crinitElosEventQueueId_t *);  ///< Function pointer to the elosEventSubscribe function
-    crinitSafuResultE_t (*eventUnsubscribe)(
-        crinitElosSession_t *, crinitElosEventQueueId_t);  ///< Function pointer to the elosEventUnsubscribe function
-    crinitSafuResultE_t (*eventQueueRead)(
-        crinitElosSession_t *, crinitElosEventQueueId_t,
-        crinitElosEventVector_t **);                            ///< Function pointer to the elosEventQueueRead function
-    void *(*eventVecGetLast)(const crinitElosEventVector_t *);  ///< Function pointer to the safuVecGetLast function
-    void (*eventVectorDelete)(crinitElosEventVector_t *);  ///< Function pointer to the elosEventVectorDelete function
-    crinitSafuResultE_t (*disconnect)(crinitElosSession_t *);  ///< Function pointer to the elosDisconnect function
 } crinitTinfo;
 
 /** List of tasks with elos filter dependencies **/
@@ -117,61 +61,6 @@ static pthread_mutex_t crinitElosdepFilterTaskLock = PTHREAD_MUTEX_INITIALIZER;
 
 /** Mutex synchronizing elos connection **/
 static pthread_mutex_t crinitElosdepSessionLock = PTHREAD_MUTEX_INITIALIZER;
-
-/**
- * Macro to simplify checking for a valid elos session.
- *
- * Will print an error message and return from the calling function with an error code if the
- * session pointer is either null or the conn.
- *
- * HINT: This uses a GNU extension of gcc to define a compound statement enclosed in parentheses.
- *
- * @param func      Elos function to be called.
- * @param err_msg   Error message to be returned on error.
- */
-#define crinitElosdepTryExec(func, err_msg, ...)                                                       \
-    __extension__({                                                                                    \
-        int res = SAFU_RESULT_OK;                                                                      \
-                                                                                                       \
-        if ((errno = pthread_mutex_lock(&crinitElosdepSessionLock)) != 0) {                            \
-            crinitErrnoPrint("Failed to lock elos session.");                                          \
-            res = -1;                                                                                  \
-        } else {                                                                                       \
-            while (crinitTinfo.session == NULL || !crinitTinfo.session->connected) {                   \
-                if (crinitTinfo.elosServer == NULL) {                                                  \
-                    crinitErrPrint("Elos server configuration missing or not loaded yet.");            \
-                    res = -1;                                                                          \
-                    break;                                                                             \
-                } else {                                                                               \
-                    if (crinitTinfo.session != NULL) {                                                 \
-                        crinitTinfo.disconnect(crinitTinfo.session);                                   \
-                    }                                                                                  \
-                                                                                                       \
-                    res = crinitTinfo.connect(crinitTinfo.elosServer, crinitTinfo.elosPort,            \
-                                              (crinitElosSession_t **)&crinitTinfo.session);           \
-                    if (res != SAFU_RESULT_OK) {                                                       \
-                        crinitErrPrint("Failed to connect to elosd on %s:%d.", crinitTinfo.elosServer, \
-                                       crinitTinfo.elosPort);                                          \
-                        usleep(500000);                                                                \
-                    }                                                                                  \
-                }                                                                                      \
-            }                                                                                          \
-                                                                                                       \
-            if (res == SAFU_RESULT_OK) {                                                               \
-                res = func(__VA_ARGS__);                                                               \
-                if (res != SAFU_RESULT_OK) {                                                           \
-                    crinitErrPrint(err_msg);                                                           \
-                }                                                                                      \
-                                                                                                       \
-                if ((errno = pthread_mutex_unlock(&crinitElosdepSessionLock)) != 0) {                  \
-                    crinitErrnoPrint("Failed to unlock elos session.");                                \
-                    res = -1;                                                                          \
-                }                                                                                      \
-            }                                                                                          \
-        }                                                                                              \
-                                                                                                       \
-        res;                                                                                           \
-    })
 
 /**
  * Frees the heap allocated members of the filter.
@@ -368,8 +257,9 @@ static int crinitElosdepFilterFromEnvSet(const crinitTask_t *task, const char *n
  */
 static inline int crinitElosdepFilterSubscribe(crinitElosdepFilter_t *filter) {
     crinitDbgInfoPrint("Try to subscribe with filter %s: %s\n", filter->name, filter->filter);
-    return crinitElosdepTryExec(crinitTinfo.eventSubscribe, "Failed to subscribe with filter.", crinitTinfo.session,
-                                (const char **)&filter->filter, 1, &filter->eventQueueId);
+    return crinitElosTryExec(crinitTinfo.session, &crinitElosdepSessionLock, crinitElosGetVTable()->eventSubscribe,
+                             "Failed to subscribe with filter.", crinitTinfo.session, (const char **)&filter->filter, 1,
+                             &filter->eventQueueId);
 }
 
 /**
@@ -413,8 +303,8 @@ err:
  * @return Returns 0 on success, -1 otherwise.
  */
 static inline int crinitElosdepFilterUnsubscribe(crinitElosdepFilter_t *filter) {
-    return crinitElosdepTryExec(crinitTinfo.eventUnsubscribe, "Failed to unsubscribe filter.", crinitTinfo.session,
-                                filter->eventQueueId);
+    return crinitElosTryExec(crinitTinfo.session, &crinitElosdepSessionLock, crinitElosGetVTable()->eventUnsubscribe,
+                             "Failed to unsubscribe filter.", crinitTinfo.session, filter->eventQueueId);
 }
 
 /**
@@ -520,38 +410,8 @@ int crinitElosdepTaskAdded(crinitTask_t *task) {
     return res;
 }
 
-/**
- * Disconnect from elos daemon.
- *
- * @return Returns 0 on success, -1 otherwise.
- */
-static inline int crinitElosdepDisconnect(void) {
-    int res = SAFU_RESULT_OK;
-
-    if (crinitTinfo.session != NULL) {
-        if ((errno = pthread_mutex_lock(&crinitElosdepSessionLock)) != 0) {
-            crinitErrnoPrint("Failed to lock elos session.");
-            return SAFU_RESULT_FAILED;
-        }
-
-        res = crinitTinfo.disconnect(crinitTinfo.session);
-        if (res != SAFU_RESULT_OK) {
-            crinitErrPrint("Failed to disconnect from elosd.");
-        }
-
-        if ((errno = pthread_mutex_unlock(&crinitElosdepSessionLock)) != 0) {
-            crinitErrnoPrint("Failed to unlock elos session.");
-            res = SAFU_RESULT_FAILED;
-        }
-    }
-
-    return res;
-}
-
 static void *crinitElosdepEventListener(void *arg) {
     int err = -1;
-    char *elosServer;
-    int elosPort;
     const char *version;
     crinitElosdepFilter_t *filter, *tempFilter;
     crinitElosdepFilterTask_t *filterTask;
@@ -561,42 +421,23 @@ static void *crinitElosdepEventListener(void *arg) {
 
     tinfo->elosStarted = true;
 
-    crinitDbgInfoPrint("Loading elos connection parameters.");
-    if (crinitGlobOptGet(CRINIT_GLOBOPT_ELOS_SERVER, &elosServer) == -1) {
-        crinitErrPrint("Could not recall elos server ip from global options.");
-        goto err;
-    } else {
-        if (tinfo->elosServer != NULL) {
-            free(tinfo->elosServer);
-        }
-
-        tinfo->elosServer = elosServer;
-    }
-
-    if (crinitGlobOptGet(CRINIT_GLOBOPT_ELOS_PORT, &elosPort) == -1) {
-        crinitErrPrint("Could not recall elos server port from global options.");
-        goto err_options;
-    } else {
-        tinfo->elosPort = elosPort;
-    }
-
-    crinitDbgInfoPrint("Got elos connection parameters %s:%d.", tinfo->elosServer, tinfo->elosPort);
-
-    err = crinitElosdepTryExec(tinfo->getVersion, "Failed to request elos version.", tinfo->session, &version);
+    err = crinitElosTryExec(crinitTinfo.session, &crinitElosdepSessionLock, crinitElosGetVTable()->getVersion,
+                            "Failed to request elos version.", tinfo->session, &version);
     if (err == SAFU_RESULT_OK) {
         crinitInfoPrint("Connected to elosd running version: %s", version);
     }
 
     if ((err = crinitElosdepFilterListSubscribe()) != 0) {
         crinitErrnoPrint("Failed to subscribe already registered elos filters.");
-        goto err_connection;
+        goto err;
     }
 
     while (1) {
         crinitListForEachEntry(filterTask, &crinitFilterTasks, list) {
             crinitListForEachEntrySafe(filter, tempFilter, &filterTask->filterList, list) {
-                err = crinitElosdepTryExec(tinfo->eventQueueRead, "Failed to read elos event queue.", tinfo->session,
-                                           filter->eventQueueId, &eventVector);
+                err = crinitElosTryExec(crinitTinfo.session, &crinitElosdepSessionLock,
+                                        crinitElosGetVTable()->eventQueueRead, "Failed to read elos event queue.",
+                                        tinfo->session, filter->eventQueueId, &eventVector);
                 if (err == SAFU_RESULT_OK && eventVector && eventVector->elementCount > 0) {
                     const crinitTaskDep_t taskDep = {
                         .name = CRINIT_ELOS_DEPENDENCY,
@@ -628,38 +469,10 @@ err_session:
         crinitErrnoPrint("Failed to clear filter tasks.");
     }
 
-err_connection:
-    crinitElosdepDisconnect();
-
-err_options:
-    free(tinfo->elosServer);
-
 err:
+    crinitElosDisconnect(crinitTinfo.session, &crinitElosdepSessionLock);
+
     return NULL;
-}
-
-/**
- * Fetches a single symbol from the elos client shared library.
- *
- * @param lp Pointer to the elos shared library
- * @param symbolName Name of the symbol to be fetched
- * @param symbol Function pointer to be assigned
- * @return Returns 1 on success, 0 otherwise.
- */
-static inline int crinitElosdepFetchElosSymbol(void *lp, const char *symbolName, void **symbol) {
-    char *err;
-
-    /* Clear any existing error */
-    dlerror();
-
-    *(void **)(symbol) = dlsym(lp, symbolName);
-    if ((err = dlerror()) != NULL) {
-        crinitErrPrint("Failed to load '%s' from %s: %s.", symbolName, CRINIT_ELOS_LIBRARY, err);
-        dlclose(lp);
-        return 0;
-    }
-
-    return 1;
 }
 
 /**
@@ -670,29 +483,11 @@ static inline int crinitElosdepFetchElosSymbol(void *lp, const char *symbolName,
  * @return Returns 0 on success, -1 otherwise.
  */
 static int crinitElosdepInitThreadContext(crinitTaskDB_t *taskDb, struct crinitElosEventThread *tinfo) {
-    int res = 0;
-    void *lp;
-
     tinfo->taskDb = taskDb;
-    tinfo->elosPort = CRINIT_CONFIG_DEFAULT_ELOS_PORT;
-    tinfo->elosServer = strdup(CRINIT_CONFIG_DEFAULT_ELOS_SERVER);
 
-    lp = dlopen(CRINIT_ELOS_LIBRARY, RTLD_NOW | RTLD_LOCAL);
-    if (!lp) {
-        crinitErrPrint("Failed to load dynamic library %s: %s.", CRINIT_ELOS_LIBRARY, dlerror());
-        return -1;
-    }
+    crinitElosInit();
 
-    res = crinitElosdepFetchElosSymbol(lp, "elosConnectTcpip", (void **)&tinfo->connect) &&
-          crinitElosdepFetchElosSymbol(lp, "elosGetVersion", (void **)&tinfo->getVersion) &&
-          crinitElosdepFetchElosSymbol(lp, "elosEventSubscribe", (void **)&tinfo->eventSubscribe) &&
-          crinitElosdepFetchElosSymbol(lp, "elosEventUnsubscribe", (void **)&tinfo->eventUnsubscribe) &&
-          crinitElosdepFetchElosSymbol(lp, "elosEventQueueRead", (void **)&tinfo->eventQueueRead) &&
-          crinitElosdepFetchElosSymbol(lp, "safuVecGetLast", (void **)&tinfo->eventVecGetLast) &&
-          crinitElosdepFetchElosSymbol(lp, "elosEventVectorDelete", (void **)&tinfo->eventVectorDelete) &&
-          crinitElosdepFetchElosSymbol(lp, "elosDisconnect", (void **)&tinfo->disconnect);
-
-    return (res == 0) ? -1 : 0;
+    return 0;
 }
 
 int crinitElosdepActivate(crinitTaskDB_t *taskDb, bool sl) {
