@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 /**
- * @file elosio.c
+ * @file elosdep.c
  * @brief Implementation of elos connection.
  */
-#include "elosio.h"
+#include "elosdep.h"
 
 #include <dlfcn.h>
 #include <netinet/in.h>
@@ -65,25 +65,25 @@ typedef struct crinitElosEventVector {
 /**
  * Task that has unfulfilled filter dependencies.
  */
-typedef struct crinitElosioFilterTask {
+typedef struct crinitElosdepFilterTask {
     crinitTask_t *task;          ///< The monitored task
     crinitList_t filterList;     ///< List unfulfilled filter dependencies
     pthread_mutex_t filterLock;  ///< Lock protecting the list of filters
     crinitList_t list;           ///< List handle for filter task list
-} crinitElosioFilterTask_t;
+} crinitElosdepFilterTask_t;
 
 /**
  * Definition of a single filter related to a task.
  */
-typedef struct crinitElosioFilter {
+typedef struct crinitElosdepFilter {
     char *name;                             ///< Name of the filter
     char *filter;                           ///< The filter rule string
     crinitElosEventQueueId_t eventQueueId;  ///< ID of the elos event queue related to this filter
     crinitList_t list;                      ///< List handle for filter list
-} crinitElosioFilter_t;
+} crinitElosdepFilter_t;
 
 /**
- * Thread conext of the elosio main thread and elos vtable.
+ * Thread conext of the elosdep main thread and elos vtable.
  */
 static struct crinitElosEventThread {
     pthread_t threadId;            ///< Thread identifier
@@ -113,10 +113,10 @@ static struct crinitElosEventThread {
 static crinitList_t crinitFilterTasks = CRINIT_LIST_INIT(crinitFilterTasks);
 
 /** Mutex synchronizing elos filter task registration **/
-static pthread_mutex_t crinitElosioFilterTaskLock = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t crinitElosdepFilterTaskLock = PTHREAD_MUTEX_INITIALIZER;
 
 /** Mutex synchronizing elos connection **/
-static pthread_mutex_t crinitElosioSessionLock = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t crinitElosdepSessionLock = PTHREAD_MUTEX_INITIALIZER;
 
 /**
  * Macro to simplify checking for a valid elos session.
@@ -129,11 +129,11 @@ static pthread_mutex_t crinitElosioSessionLock = PTHREAD_MUTEX_INITIALIZER;
  * @param func      Elos function to be called.
  * @param err_msg   Error message to be returned on error.
  */
-#define crinitElosioTryExec(func, err_msg, ...)                                                        \
+#define crinitElosdepTryExec(func, err_msg, ...)                                                       \
     __extension__({                                                                                    \
         int res = SAFU_RESULT_OK;                                                                      \
                                                                                                        \
-        if ((errno = pthread_mutex_lock(&crinitElosioSessionLock)) != 0) {                             \
+        if ((errno = pthread_mutex_lock(&crinitElosdepSessionLock)) != 0) {                            \
             crinitErrnoPrint("Failed to lock elos session.");                                          \
             res = -1;                                                                                  \
         } else {                                                                                       \
@@ -163,7 +163,7 @@ static pthread_mutex_t crinitElosioSessionLock = PTHREAD_MUTEX_INITIALIZER;
                     crinitErrPrint(err_msg);                                                           \
                 }                                                                                      \
                                                                                                        \
-                if ((errno = pthread_mutex_unlock(&crinitElosioSessionLock)) != 0) {                   \
+                if ((errno = pthread_mutex_unlock(&crinitElosdepSessionLock)) != 0) {                  \
                     crinitErrnoPrint("Failed to unlock elos session.");                                \
                     res = -1;                                                                          \
                 }                                                                                      \
@@ -178,7 +178,7 @@ static pthread_mutex_t crinitElosioSessionLock = PTHREAD_MUTEX_INITIALIZER;
  *
  * @param filter Filter to be destroyed.
  */
-static void crinitElosioFilterDestroy(crinitElosioFilter_t *filter) {
+static void crinitElosdepFilterDestroy(crinitElosdepFilter_t *filter) {
     free(filter->name);
     free(filter->filter);
     free(filter);
@@ -192,7 +192,7 @@ static void crinitElosioFilterDestroy(crinitElosioFilter_t *filter) {
  *
  * @return Returns 0 if the filter has been inserted, -1 otherwise.
  */
-static int crinitElosioFilterRegister(crinitElosioFilterTask_t *filterTask, crinitElosioFilter_t *filter) {
+static int crinitElosdepFilterRegister(crinitElosdepFilterTask_t *filterTask, crinitElosdepFilter_t *filter) {
     if ((errno = pthread_mutex_lock(&filterTask->filterLock)) != 0) {
         crinitErrnoPrint("Failed to lock elos filter list.");
         return -1;
@@ -216,14 +216,14 @@ static int crinitElosioFilterRegister(crinitElosioFilterTask_t *filterTask, crin
  *
  * @return Returns 0 on success, -1 otherwise.
  */
-static int crinitElosioFilterUnregister(crinitElosioFilterTask_t *filterTask, crinitElosioFilter_t *filter) {
+static int crinitElosdepFilterUnregister(crinitElosdepFilterTask_t *filterTask, crinitElosdepFilter_t *filter) {
     if ((errno = pthread_mutex_lock(&filterTask->filterLock)) != 0) {
         crinitErrnoPrint("Failed to lock elos filter list.");
         return -1;
     }
 
     crinitListDelete(&filter->list);
-    crinitElosioFilterDestroy(filter);
+    crinitElosdepFilterDestroy(filter);
 
     if ((errno = pthread_mutex_unlock(&filterTask->filterLock)) != 0) {
         crinitErrnoPrint("Failed to unlock elos filter list.");
@@ -240,8 +240,8 @@ static int crinitElosioFilterUnregister(crinitElosioFilterTask_t *filterTask, cr
  *
  * @return Returns 0 on success, -1 otherwise.
  */
-static int crinitElosioFilterListClear(crinitElosioFilterTask_t *filterTask) {
-    crinitElosioFilter_t *cur, *temp;
+static int crinitElosdepFilterListClear(crinitElosdepFilterTask_t *filterTask) {
+    crinitElosdepFilter_t *cur, *temp;
 
     if ((errno = pthread_mutex_lock(&filterTask->filterLock)) != 0) {
         crinitErrnoPrint("Failed to lock elos filter list.");
@@ -250,7 +250,7 @@ static int crinitElosioFilterListClear(crinitElosioFilterTask_t *filterTask) {
 
     crinitListForEachEntrySafe(cur, temp, &filterTask->filterList, list) {
         crinitListDelete(&cur->list);
-        crinitElosioFilterDestroy(cur);
+        crinitElosdepFilterDestroy(cur);
     }
 
     if ((errno = pthread_mutex_unlock(&filterTask->filterLock)) != 0) {
@@ -268,8 +268,8 @@ static int crinitElosioFilterListClear(crinitElosioFilterTask_t *filterTask) {
  *
  * @return Returns 0 on success, -1 otherwise.
  */
-static int crinitElosioFilterTaskDestroy(crinitElosioFilterTask_t *filterTask) {
-    int res = crinitElosioFilterListClear(filterTask);
+static int crinitElosdepFilterTaskDestroy(crinitElosdepFilterTask_t *filterTask) {
+    int res = crinitElosdepFilterListClear(filterTask);
     if (res == 0) {
         free(filterTask);
     }
@@ -282,26 +282,26 @@ static int crinitElosioFilterTaskDestroy(crinitElosioFilterTask_t *filterTask) {
  *
  * @return Returns 0 on success, -1 otherwise.
  */
-static int crinitElosioFilterTaskListClear() {
+static int crinitElosdepFilterTaskListClear() {
     int res = 0;
-    crinitElosioFilterTask_t *cur, *temp;
+    crinitElosdepFilterTask_t *cur, *temp;
 
     /* Insert into list of filters of filter task */
-    if ((errno = pthread_mutex_lock(&crinitElosioFilterTaskLock)) != 0) {
+    if ((errno = pthread_mutex_lock(&crinitElosdepFilterTaskLock)) != 0) {
         crinitErrnoPrint("Failed to lock elos filter task list.");
         return -1;
     }
 
     crinitListForEachEntrySafe(cur, temp, &crinitFilterTasks, list) {
         crinitListDelete(&cur->list);
-        if ((res = crinitElosioFilterTaskDestroy(cur)) != 0) {
+        if ((res = crinitElosdepFilterTaskDestroy(cur)) != 0) {
             crinitErrnoPrint("Failed to lock elos filter task list.");
             res = -1;
             break;
         }
     }
 
-    if ((errno = pthread_mutex_unlock(&crinitElosioFilterTaskLock)) != 0) {
+    if ((errno = pthread_mutex_unlock(&crinitElosdepFilterTaskLock)) != 0) {
         crinitErrnoPrint("Failed to unlock elos filter task list.");
         return -1;
     }
@@ -318,9 +318,9 @@ static int crinitElosioFilterTaskListClear() {
  *
  * @return Returns 0 on success, -1 otherwise.
  */
-static int crinitElosioFilterFromEnvSet(const crinitTask_t *task, const char *name, crinitElosioFilter_t **filter) {
+static int crinitElosdepFilterFromEnvSet(const crinitTask_t *task, const char *name, crinitElosdepFilter_t **filter) {
     int res = -1;
-    crinitElosioFilter_t *temp;
+    crinitElosdepFilter_t *temp;
     const crinitEnvSet_t *es = &task->elosFilters;
     char *out;
 
@@ -366,30 +366,30 @@ static int crinitElosioFilterFromEnvSet(const crinitTask_t *task, const char *na
  *
  * @return Returns 0 on success, -1 otherwise.
  */
-static inline int crinitElosioFilterSubscribe(crinitElosioFilter_t *filter) {
+static inline int crinitElosdepFilterSubscribe(crinitElosdepFilter_t *filter) {
     crinitDbgInfoPrint("Try to subscribe with filter %s: %s\n", filter->name, filter->filter);
-    return crinitElosioTryExec(crinitTinfo.eventSubscribe, "Failed to subscribe with filter.", crinitTinfo.session,
-                               (const char **)&filter->filter, 1, &filter->eventQueueId);
+    return crinitElosdepTryExec(crinitTinfo.eventSubscribe, "Failed to subscribe with filter.", crinitTinfo.session,
+                                (const char **)&filter->filter, 1, &filter->eventQueueId);
 }
 
 /**
- * Subscribes all filters currently registered with elosio.
+ * Subscribes all filters currently registered with elosdep.
  *
  * @return Returns 0 on success, -1 otherwise.
  */
-static int crinitElosioFilterListSubscribe(void) {
+static int crinitElosdepFilterListSubscribe(void) {
     int res = 0;
-    crinitElosioFilter_t *filter;
-    crinitElosioFilterTask_t *filterTask;
+    crinitElosdepFilter_t *filter;
+    crinitElosdepFilterTask_t *filterTask;
 
-    if ((errno = pthread_mutex_lock(&crinitElosioFilterTaskLock)) != 0) {
+    if ((errno = pthread_mutex_lock(&crinitElosdepFilterTaskLock)) != 0) {
         crinitErrnoPrint("Failed to lock elos filter task list.");
         return -1;
     }
 
     crinitListForEachEntry(filterTask, &crinitFilterTasks, list) {
         crinitListForEachEntry(filter, &filterTask->filterList, list) {
-            if ((res = crinitElosioFilterSubscribe(filter)) != 0) {
+            if ((res = crinitElosdepFilterSubscribe(filter)) != 0) {
                 crinitErrPrint("Failed to subscribe filter.");
                 goto err;
             }
@@ -397,7 +397,7 @@ static int crinitElosioFilterListSubscribe(void) {
     }
 
 err:
-    if ((errno = pthread_mutex_unlock(&crinitElosioFilterTaskLock)) != 0) {
+    if ((errno = pthread_mutex_unlock(&crinitElosdepFilterTaskLock)) != 0) {
         crinitErrnoPrint("Failed to unlock elos filter list.");
         res = -1;
     }
@@ -412,9 +412,9 @@ err:
  *
  * @return Returns 0 on success, -1 otherwise.
  */
-static inline int crinitElosioFilterUnsubscribe(crinitElosioFilter_t *filter) {
-    return crinitElosioTryExec(crinitTinfo.eventUnsubscribe, "Failed to unsubscribe filter.", crinitTinfo.session,
-                               filter->eventQueueId);
+static inline int crinitElosdepFilterUnsubscribe(crinitElosdepFilter_t *filter) {
+    return crinitElosdepTryExec(crinitTinfo.eventUnsubscribe, "Failed to unsubscribe filter.", crinitTinfo.session,
+                                filter->eventQueueId);
 }
 
 /**
@@ -423,19 +423,19 @@ static inline int crinitElosioFilterUnsubscribe(crinitElosioFilter_t *filter) {
  *
  * @return Returns 0 on success, -1 otherwise.
  */
-static int crinitElosioFilterListUnsubscribe(void) {
+static int crinitElosdepFilterListUnsubscribe(void) {
     int res = 0;
-    crinitElosioFilter_t *filter;
-    crinitElosioFilterTask_t *filterTask;
+    crinitElosdepFilter_t *filter;
+    crinitElosdepFilterTask_t *filterTask;
 
-    if ((errno = pthread_mutex_lock(&crinitElosioFilterTaskLock)) != 0) {
+    if ((errno = pthread_mutex_lock(&crinitElosdepFilterTaskLock)) != 0) {
         crinitErrnoPrint("Failed to lock elos filter task list.");
         return -1;
     }
 
     crinitListForEachEntry(filterTask, &crinitFilterTasks, list) {
         crinitListForEachEntry(filter, &filterTask->filterList, list) {
-            if ((res = crinitElosioFilterUnsubscribe(filter)) != 0) {
+            if ((res = crinitElosdepFilterUnsubscribe(filter)) != 0) {
                 crinitErrPrint("Failed to subscribe filter.");
                 goto err;
             }
@@ -443,7 +443,7 @@ static int crinitElosioFilterListUnsubscribe(void) {
     }
 
 err:
-    if ((errno = pthread_mutex_unlock(&crinitElosioFilterTaskLock)) != 0) {
+    if ((errno = pthread_mutex_unlock(&crinitElosdepFilterTaskLock)) != 0) {
         crinitErrnoPrint("Failed to unlock elos filter list.");
         res = -1;
     }
@@ -451,11 +451,11 @@ err:
     return res;
 }
 
-int crinitElosioTaskAdded(crinitTask_t *task) {
+int crinitElosdepTaskAdded(crinitTask_t *task) {
     int res = 0;
     crinitTaskDep_t *dep;
-    crinitElosioFilter_t *filter = NULL;
-    crinitElosioFilterTask_t *filterTask = NULL;
+    crinitElosdepFilter_t *filter = NULL;
+    crinitElosdepFilterTask_t *filterTask = NULL;
 
     crinitNullCheck(-1, task);
 
@@ -483,7 +483,7 @@ int crinitElosioTaskAdded(crinitTask_t *task) {
 
             crinitListInit(&filterTask->filterList);
 
-            if ((errno = pthread_mutex_lock(&crinitElosioFilterTaskLock)) != 0) {
+            if ((errno = pthread_mutex_lock(&crinitElosdepFilterTaskLock)) != 0) {
                 crinitErrnoPrint("Failed to lock elos filter task list.");
                 res = -1;
                 break;
@@ -491,7 +491,7 @@ int crinitElosioTaskAdded(crinitTask_t *task) {
 
             crinitListAppend(&crinitFilterTasks, &filterTask->list);
 
-            if ((errno = pthread_mutex_unlock(&crinitElosioFilterTaskLock)) != 0) {
+            if ((errno = pthread_mutex_unlock(&crinitElosdepFilterTaskLock)) != 0) {
                 crinitErrnoPrint("Failed to unlock elos filter task list.");
                 res = -1;
                 break;
@@ -499,19 +499,19 @@ int crinitElosioTaskAdded(crinitTask_t *task) {
         }
 
         crinitDbgInfoPrint("Searching for filter for dependency %s:%s.", dep->name, dep->event);
-        if ((res = crinitElosioFilterFromEnvSet(task, dep->event, &filter)) != 0) {
+        if ((res = crinitElosdepFilterFromEnvSet(task, dep->event, &filter)) != 0) {
             crinitErrPrint("Failed to find filter for dependency %s:%s.", dep->name, dep->event);
             break;
         }
 
-        if ((res = crinitElosioFilterRegister(filterTask, filter)) != 0) {
+        if ((res = crinitElosdepFilterRegister(filterTask, filter)) != 0) {
             crinitErrPrint("Failed to register filter for dependency %s:%s.", dep->name, dep->event);
-            crinitElosioFilterDestroy(filter);
+            crinitElosdepFilterDestroy(filter);
             break;
         }
 
         /* Subscribing the filter might fail if elos is not started yet */
-        if (crinitTinfo.elosStarted && (res = crinitElosioFilterSubscribe(filter)) != 0) {
+        if (crinitTinfo.elosStarted && (res = crinitElosdepFilterSubscribe(filter)) != 0) {
             crinitErrPrint("Failed to subscribe filter for dependency %s:%s.", dep->name, dep->event);
             break;
         }
@@ -525,11 +525,11 @@ int crinitElosioTaskAdded(crinitTask_t *task) {
  *
  * @return Returns 0 on success, -1 otherwise.
  */
-static inline int crinitElosioDisconnect(void) {
+static inline int crinitElosdepDisconnect(void) {
     int res = SAFU_RESULT_OK;
 
     if (crinitTinfo.session != NULL) {
-        if ((errno = pthread_mutex_lock(&crinitElosioSessionLock)) != 0) {
+        if ((errno = pthread_mutex_lock(&crinitElosdepSessionLock)) != 0) {
             crinitErrnoPrint("Failed to lock elos session.");
             return SAFU_RESULT_FAILED;
         }
@@ -539,7 +539,7 @@ static inline int crinitElosioDisconnect(void) {
             crinitErrPrint("Failed to disconnect from elosd.");
         }
 
-        if ((errno = pthread_mutex_unlock(&crinitElosioSessionLock)) != 0) {
+        if ((errno = pthread_mutex_unlock(&crinitElosdepSessionLock)) != 0) {
             crinitErrnoPrint("Failed to unlock elos session.");
             res = SAFU_RESULT_FAILED;
         }
@@ -548,13 +548,13 @@ static inline int crinitElosioDisconnect(void) {
     return res;
 }
 
-static void *crinitElosioEventListener(void *arg) {
+static void *crinitElosdepEventListener(void *arg) {
     int err = -1;
     char *elosServer;
     int elosPort;
     const char *version;
-    crinitElosioFilter_t *filter, *tempFilter;
-    crinitElosioFilterTask_t *filterTask;
+    crinitElosdepFilter_t *filter, *tempFilter;
+    crinitElosdepFilterTask_t *filterTask;
     crinitElosEventVector_t *eventVector = NULL;
 
     struct crinitElosEventThread *tinfo = arg;
@@ -582,12 +582,12 @@ static void *crinitElosioEventListener(void *arg) {
 
     crinitDbgInfoPrint("Got elos connection parameters %s:%d.", tinfo->elosServer, tinfo->elosPort);
 
-    err = crinitElosioTryExec(tinfo->getVersion, "Failed to request elos version.", tinfo->session, &version);
+    err = crinitElosdepTryExec(tinfo->getVersion, "Failed to request elos version.", tinfo->session, &version);
     if (err == SAFU_RESULT_OK) {
         crinitInfoPrint("Connected to elosd running version: %s", version);
     }
 
-    if ((err = crinitElosioFilterListSubscribe()) != 0) {
+    if ((err = crinitElosdepFilterListSubscribe()) != 0) {
         crinitErrnoPrint("Failed to subscribe already registered elos filters.");
         goto err_connection;
     }
@@ -595,8 +595,8 @@ static void *crinitElosioEventListener(void *arg) {
     while (1) {
         crinitListForEachEntry(filterTask, &crinitFilterTasks, list) {
             crinitListForEachEntrySafe(filter, tempFilter, &filterTask->filterList, list) {
-                err = crinitElosioTryExec(tinfo->eventQueueRead, "Failed to read elos event queue.", tinfo->session,
-                                          filter->eventQueueId, &eventVector);
+                err = crinitElosdepTryExec(tinfo->eventQueueRead, "Failed to read elos event queue.", tinfo->session,
+                                           filter->eventQueueId, &eventVector);
                 if (err == SAFU_RESULT_OK && eventVector && eventVector->elementCount > 0) {
                     const crinitTaskDep_t taskDep = {
                         .name = CRINIT_ELOS_DEPENDENCY,
@@ -608,7 +608,7 @@ static void *crinitElosioEventListener(void *arg) {
                         goto err_session;
                     }
 
-                    if ((err = crinitElosioFilterUnregister(filterTask, filter)) != 0) {
+                    if ((err = crinitElosdepFilterUnregister(filterTask, filter)) != 0) {
                         crinitErrnoPrint("Failed to remove filter from dependency list.");
                         goto err_session;
                     }
@@ -620,16 +620,16 @@ static void *crinitElosioEventListener(void *arg) {
     }
 
 err_session:
-    if ((err = crinitElosioFilterListUnsubscribe()) != 0) {
+    if ((err = crinitElosdepFilterListUnsubscribe()) != 0) {
         crinitErrnoPrint("Failed to unsubscribe elos filters.");
     }
 
-    if ((err = crinitElosioFilterTaskListClear()) != 0) {
+    if ((err = crinitElosdepFilterTaskListClear()) != 0) {
         crinitErrnoPrint("Failed to clear filter tasks.");
     }
 
 err_connection:
-    crinitElosioDisconnect();
+    crinitElosdepDisconnect();
 
 err_options:
     free(tinfo->elosServer);
@@ -646,7 +646,7 @@ err:
  * @param symbol Function pointer to be assigned
  * @return Returns 1 on success, 0 otherwise.
  */
-static inline int crinitElosioFetchElosSymbol(void *lp, const char *symbolName, void **symbol) {
+static inline int crinitElosdepFetchElosSymbol(void *lp, const char *symbolName, void **symbol) {
     char *err;
 
     /* Clear any existing error */
@@ -663,13 +663,13 @@ static inline int crinitElosioFetchElosSymbol(void *lp, const char *symbolName, 
 }
 
 /**
- * Initializes the vtable managed within the elosio thread context.
+ * Initializes the vtable managed within the elosdep thread context.
  *
  * @param taskDb Pointer to the crinit task database
- * @param tinfo Elosio thread context
+ * @param tinfo Elosdep thread context
  * @return Returns 0 on success, -1 otherwise.
  */
-static int crinitElosioInitThreadContext(crinitTaskDB_t *taskDb, struct crinitElosEventThread *tinfo) {
+static int crinitElosdepInitThreadContext(crinitTaskDB_t *taskDb, struct crinitElosEventThread *tinfo) {
     int res = 0;
     void *lp;
 
@@ -683,23 +683,23 @@ static int crinitElosioInitThreadContext(crinitTaskDB_t *taskDb, struct crinitEl
         return -1;
     }
 
-    res = crinitElosioFetchElosSymbol(lp, "elosConnectTcpip", (void **)&tinfo->connect) &&
-          crinitElosioFetchElosSymbol(lp, "elosGetVersion", (void **)&tinfo->getVersion) &&
-          crinitElosioFetchElosSymbol(lp, "elosEventSubscribe", (void **)&tinfo->eventSubscribe) &&
-          crinitElosioFetchElosSymbol(lp, "elosEventUnsubscribe", (void **)&tinfo->eventUnsubscribe) &&
-          crinitElosioFetchElosSymbol(lp, "elosEventQueueRead", (void **)&tinfo->eventQueueRead) &&
-          crinitElosioFetchElosSymbol(lp, "safuVecGetLast", (void **)&tinfo->eventVecGetLast) &&
-          crinitElosioFetchElosSymbol(lp, "elosEventVectorDelete", (void **)&tinfo->eventVectorDelete) &&
-          crinitElosioFetchElosSymbol(lp, "elosDisconnect", (void **)&tinfo->disconnect);
+    res = crinitElosdepFetchElosSymbol(lp, "elosConnectTcpip", (void **)&tinfo->connect) &&
+          crinitElosdepFetchElosSymbol(lp, "elosGetVersion", (void **)&tinfo->getVersion) &&
+          crinitElosdepFetchElosSymbol(lp, "elosEventSubscribe", (void **)&tinfo->eventSubscribe) &&
+          crinitElosdepFetchElosSymbol(lp, "elosEventUnsubscribe", (void **)&tinfo->eventUnsubscribe) &&
+          crinitElosdepFetchElosSymbol(lp, "elosEventQueueRead", (void **)&tinfo->eventQueueRead) &&
+          crinitElosdepFetchElosSymbol(lp, "safuVecGetLast", (void **)&tinfo->eventVecGetLast) &&
+          crinitElosdepFetchElosSymbol(lp, "elosEventVectorDelete", (void **)&tinfo->eventVectorDelete) &&
+          crinitElosdepFetchElosSymbol(lp, "elosDisconnect", (void **)&tinfo->disconnect);
 
     return (res == 0) ? -1 : 0;
 }
 
-int crinitElosioActivate(crinitTaskDB_t *taskDb, bool sl) {
+int crinitElosdepActivate(crinitTaskDB_t *taskDb, bool sl) {
     int res;
 
     if (sl && !crinitUseElos) {
-        if (crinitElosioInitThreadContext(taskDb, &crinitTinfo) != 0) {
+        if (crinitElosdepInitThreadContext(taskDb, &crinitTinfo) != 0) {
             crinitErrPrint("Failed to load elos interface.");
             return -1;
         }
@@ -726,7 +726,7 @@ int crinitElosioActivate(crinitTaskDB_t *taskDb, bool sl) {
         }
 
         crinitDbgInfoPrint("Starting elos event handler thread.");
-        res = pthread_create(&crinitTinfo.threadId, &attrs, crinitElosioEventListener, (void *)&crinitTinfo);
+        res = pthread_create(&crinitTinfo.threadId, &attrs, crinitElosdepEventListener, (void *)&crinitTinfo);
         if (res != 0) {
             crinitErrPrint("Could not create elos event handler thread.");
             pthread_attr_destroy(&attrs);

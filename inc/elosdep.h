@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: MIT
 /**
- * @file elosio.h
+ * @file elosdep.h
  * @brief Header related to elos connection.
- */ 
-#ifndef __ELOSIO_H__
-#define __ELOSIO_H__
+ */
+#ifndef __ELOSDEP_H__
+#define __ELOSDEP_H__
 
 #include <stdbool.h>
 
 struct crinitTask_t;
 struct crinitTaskDB_t;
 
-#define CRINIT_ELOSIO_FEATURE_NAME "elos"
+#define CRINIT_ELOSDEP_FEATURE_NAME "elos"
 
 /**
  * Hook which will be invoked if a new task has been added and
@@ -21,7 +21,7 @@ struct crinitTaskDB_t;
  *
  * @return Returns 0 on success, -1 otherwise.
  */
-int crinitElosioTaskAdded(struct crinitTask_t *task);
+int crinitElosdepTaskAdded(struct crinitTask_t *task);
 
 /**
  * Specify if Elos should be used.
@@ -34,6 +34,6 @@ int crinitElosioTaskAdded(struct crinitTask_t *task);
  *
  * @return Returns 0 on success, -1 otherwise.
  */
-int crinitElosioActivate(struct crinitTaskDB_t *taskDb, bool sl);
+int crinitElosdepActivate(struct crinitTaskDB_t *taskDb, bool sl);
 
-#endif /* __ELOSIO_H__ */
+#endif /* __ELOSDEP_H__ */
