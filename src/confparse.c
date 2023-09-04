@@ -12,7 +12,7 @@
 #include "common.h"
 #include "confconv.h"
 #include "confmap.h"
-#include "elosio.h"
+#include "elosdep.h"
 #include "envset.h"
 #include "globopt.h"
 #include "ini.h"

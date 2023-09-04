@@ -8,7 +8,7 @@
 #include <string.h>
 
 #include "common.h"
-#include "elosio.h"
+#include "elosdep.h"
 #include "globopt.h"
 #include "logio.h"
 #include "taskdb.h"
@@ -29,14 +29,14 @@ static int crinitActivateSyslog(void *data) {
     return 0;
 }
 
-static int crinitElosioActivateCb(void *data) {
+static int crinitElosdepActivateCb(void *data) {
     CRINIT_PARAM_UNUSED(data);
 
-    return crinitElosioActivate((crinitTaskDB_t *)data, true);
+    return crinitElosdepActivate((crinitTaskDB_t *)data, true);
 }
 
-static int crinitElosioTaskAddedCb(void *data) {
-    return crinitElosioTaskAdded((crinitTask_t *)data);
+static int crinitElosdepTaskAddedCb(void *data) {
+    return crinitElosdepTaskAdded((crinitTask_t *)data);
 }
 
 int crinitFeatureHook(const char *sysFeatName, crinitHookType_t type, void *data) {
@@ -45,13 +45,13 @@ int crinitFeatureHook(const char *sysFeatName, crinitHookType_t type, void *data
          .type = START,
          .af = crinitActivateSyslog,
          .globMemberOffset = offsetof(crinitGlobOptStore_t, CRINIT_GLOBOPT_USE_SYSLOG)},
-        {.name = CRINIT_ELOSIO_FEATURE_NAME,
+        {.name = CRINIT_ELOSDEP_FEATURE_NAME,
          .type = START,
-         .af = crinitElosioActivateCb,
+         .af = crinitElosdepActivateCb,
          .globMemberOffset = offsetof(crinitGlobOptStore_t, CRINIT_GLOBOPT_USE_ELOS)},
-        {.name = CRINIT_ELOSIO_FEATURE_NAME,
+        {.name = CRINIT_ELOSDEP_FEATURE_NAME,
          .type = TASK_ADDED,
-         .af = crinitElosioTaskAddedCb,
+         .af = crinitElosdepTaskAddedCb,
          .globMemberOffset = offsetof(crinitGlobOptStore_t, CRINIT_GLOBOPT_USE_ELOS)},
     };
 
