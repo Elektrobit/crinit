@@ -172,40 +172,6 @@ void crinitFreeArgvArray(char **inArgv) {
     }
 }
 
-static int crinitConfSanityCheck(void) {
-    bool useElos = false;
-    char *elosServer;
-    int elosPort;
-
-    if (crinitGlobOptGet(CRINIT_GLOBOPT_USE_ELOS, &useElos) == -1) {
-        crinitErrPrint("Could not recall elos configuration from global options.");
-    }
-
-    if (useElos) {
-        if (crinitGlobOptGet(CRINIT_GLOBOPT_ELOS_SERVER, &elosServer) == -1) {
-            crinitErrPrint("Could not recall elos server ip from global options.");
-        } else {
-            if (elosServer == NULL || elosServer[0] == '\0') {
-                crinitErrPrint("Elos server configuration missing - disabling elos.");
-                crinitGlobOptSetBoolean(CRINIT_GLOBOPT_USE_ELOS, false);
-            }
-
-            free(elosServer);
-        }
-
-        if (crinitGlobOptGet(CRINIT_GLOBOPT_ELOS_PORT, &elosPort) == -1) {
-            crinitErrPrint("Could not recall elos server port from global options.");
-        }
-
-        if (elosPort == 0) {
-            crinitErrPrint("Elos server port configuration missing - disabling elos.");
-            crinitGlobOptSetBoolean(CRINIT_GLOBOPT_USE_ELOS, false);
-        }
-    }
-
-    return 0;
-}
-
 int crinitLoadSeriesConf(crinitFileSeries_t *series, const char *filename) {
     if (series == NULL || filename == NULL || !crinitIsAbsPath(filename)) {
         crinitErrPrint("Parameters must not be NULL and filename must be an absolute path.");
@@ -289,11 +255,6 @@ int crinitLoadSeriesConf(crinitFileSeries_t *series, const char *filename) {
         crinitCfgInclDirHandler(NULL, tDirP, CRINIT_CONFIG_TYPE_SERIES) == -1) {
         crinitErrPrint("INCLUDEDIR was not given and trying to set it to the current value of TASKDIR ('%s') failed.",
                        tDir);
-        return -1;
-    }
-
-    if (crinitConfSanityCheck() != 0) {
-        crinitErrPrint("Sanity check of global crinit configuration %s failed.", filename);
         return -1;
     }
 
