@@ -37,7 +37,7 @@ int crinitForkZombieReaper(void) {
 int crinitSetupSystemFs(void) {
     umask(0);
 
-    if (mkdir("/dev", 0777) == -1) {
+    if (mkdir("/dev", 0755) == -1) {
         if (errno != EEXIST) {
             crinitErrnoPrint("Could not create /dev directory: ");
             return -1;
@@ -51,7 +51,7 @@ int crinitSetupSystemFs(void) {
         crinitInfoPrint("/dev is already mounted. Skipping.");
     }
 
-    if (mkdir("/proc", 0777) == -1) {
+    if (mkdir("/proc", 0555) == -1) {
         if (errno != EEXIST) {
             crinitErrnoPrint("Could not create /proc directory: ");
             return -1;
@@ -65,7 +65,7 @@ int crinitSetupSystemFs(void) {
         crinitInfoPrint("/proc is already mounted. Skipping.");
     }
 
-    if (mkdir("/sys", 0777) == -1) {
+    if (mkdir("/sys", 0555) == -1) {
         if (errno != EEXIST) {
             crinitErrnoPrint("Could not create /sys directory: ");
             return -1;
@@ -93,7 +93,7 @@ int crinitSetupSystemFs(void) {
         crinitInfoPrint("/dev/pts is already mounted. Skipping.");
     }
 
-    if (mkdir("/run", 0777) == -1) {
+    if (mkdir("/run", 0755) == -1) {
         if (errno != EEXIST) {
             crinitErrnoPrint("Could not create /run directory: ");
             return -1;
