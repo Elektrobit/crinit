@@ -451,7 +451,7 @@ int crinitCfgTaskDirHandler(void *tgt, const char *val, crinitConfigType_t type)
         return -1;
     }
     if (!crinitDirExists(val)) {
-        crinitErrPrint("The value for '%s' is not a directory or inaccessible.", CRINIT_CONFIG_KEYSTR_INCLDIR);
+        crinitErrPrint("The value for '%s' is not a directory or inaccessible.", CRINIT_CONFIG_KEYSTR_TASKDIR);
         return -1;
     }
 
