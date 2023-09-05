@@ -10,6 +10,8 @@
 #include <string.h>
 
 #include "common.h"
+#include "elos-common.h"
+#include "eloslog.h"
 #include "globopt.h"
 #include "logio.h"
 #include "optfeat.h"
@@ -130,6 +132,8 @@ int crinitTaskDBInsert(crinitTaskDB_t *ctx, const crinitTask_t *t, bool overwrit
         crinitErrPrint("Could not copy new Task.");
         goto fail;
     }
+
+    crinitElosLog(ELOS_SEVERITY_INFO, 2001, "Added new task %s.", pTask->name);
 
     crinitDbgInfoPrint("Run feature hooks for 'TASK_ADDED'.");
     if (crinitFeatureHook(NULL, TASK_ADDED, pTask) == -1) {

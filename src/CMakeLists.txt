@@ -19,6 +19,7 @@ add_executable(
   lexers.c
   elos-common.c
   elosdep.c
+  eloslog.c
   envset.c
   task.c
   taskdb.c
