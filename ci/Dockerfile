@@ -9,14 +9,6 @@ ARG GID=1000
 #ARG EMLIX_GIT_SOURCES=git@github.com:emlix/
 ARG EMLIX_GIT_SOURCES=git@gitlabintern.emlix.com:elektrobit/base-os
 
-ARG CMOCKA_EXTENSIONS_REPO_NAME=cmocka-extensions.git
-ARG CMOCKA_EXTENSIONS_REPO_PATH=${EMLIX_GIT_SOURCES}/${CMOCKA_EXTENSIONS_REPO_NAME}
-ARG CMOCKA_EXTENSIONS_REPO_REF=integration
-
-ARG CMOCKA_MOCKS_REPO_NAME=cmocka-mocks.git
-ARG CMOCKA_MOCKS_REPO_PATH=${EMLIX_GIT_SOURCES}/${CMOCKA_MOCKS_REPO_NAME}
-ARG CMOCKA_MOCKS_REPO_REF=integration
-
 ARG SAFU_REPO_NAME=safu.git
 ARG SAFU_REPO_PATH=${EMLIX_GIT_SOURCES}/${SAFU_REPO_NAME}
 
@@ -32,37 +24,13 @@ RUN mkdir -p -m 0700 /root/.ssh \
     && ssh-keyscan github.com >> /root/.ssh/known_hosts \
     && ssh-keyscan gitlabintern.emlix.com >> /root/.ssh/known_hosts
 
-# Install cmocka-extensions
-RUN --mount=type=ssh \
- git clone ${CMOCKA_EXTENSIONS_REPO_PATH} \
- && cmake -B ${CMOCKA_EXTENSIONS_REPO_NAME%.*}/build ./${CMOCKA_EXTENSIONS_REPO_NAME%.*} \
- -DUNIT_TESTS=OFF \
- -DCMAKE_BUILD_TYPE=Release \
- -DCMAKE_INSTALL_PREFIX=/usr \
- && make -C ${CMOCKA_EXTENSIONS_REPO_NAME%.*}/build install
-
-# Install cmocka-mocks
-RUN --mount=type=ssh \
- git clone ${CMOCKA_MOCKS_REPO_PATH} \
- && cmake -B ${CMOCKA_MOCKS_REPO_NAME%.*}/build ./${CMOCKA_MOCKS_REPO_NAME%.*} \
- -DUNIT_TESTS=OFF \
- -DCMAKE_BUILD_TYPE=Release \
- -DCMAKE_INSTALL_PREFIX=/usr \
- -DCMOCKA_EXTENSIONS_URI=${CMOCKA_EXTENSIONS_REPO_PATH} \
- -DCMOCKA_EXTENSIONS_REF=${CMOCKA_EXTENSIONS_REPO_REF} \
- && make -C ${CMOCKA_MOCKS_REPO_NAME%.*}/build install
-
 # Install safu
 RUN --mount=type=ssh \
  git clone ${SAFU_REPO_PATH} \
  && cmake -B ${SAFU_REPO_NAME%.*}/build ./${SAFU_REPO_NAME%.*} \
- -DUNIT_TEST=OFF \
+ -DUNIT_TESTS=Off \
  -DCMAKE_BUILD_TYPE=Release \
  -DCMAKE_INSTALL_PREFIX=/usr \
- -DCMOCKA_EXTENSIONS_URI=${CMOCKA_EXTENSIONS_REPO_PATH} \
- -DCMOCKA_EXTENSIONS_REF=${CMOCKA_EXTENSIONS_REPO_REF} \
- -DCMOCKA_MOCKS_URI=${CMOCKA_MOCKS_REPO_PATH} \
- -DCMOCKA_MOCKS_REF=${CMOCKA_MOCKS_REPO_REF} \
  && make -C ${SAFU_REPO_NAME%.*}/build install
 
 # Install debbuild

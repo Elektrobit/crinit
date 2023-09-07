@@ -7,6 +7,7 @@
 #define __ELOS_COMMON_H__
 
 #include <pthread.h>
+#include <safu/common.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -41,15 +42,6 @@
 #define ELOS_CLASSIFICATION_USER_5 0x0000002000000000ULL
 #define ELOS_CLASSIFICATION_USER_6 0x0000004000000000ULL
 #define ELOS_CLASSIFICATION_USER_7 0x0000008000000000ULL
-
-/**
- * Possible elos return values.
- */
-typedef enum crinitSafuResultE_t {
-    SAFU_RESULT_FAILED = -1,
-    SAFU_RESULT_OK = 0,
-    SAFU_RESULT_NOT_FOUND = 1,
-} crinitSafuResultE_t;
 
 /**
  * Type defition for elos event queue IDs.
@@ -120,24 +112,23 @@ typedef struct crinitElosVirtualTable {
     char *elosServer;  ///< Elos server name or ip
     int elosPort;      ///< Elos server port
 
-    crinitSafuResultE_t (*connect)(const char *, uint16_t,
-                                   crinitElosSession_t **);  ///< Function pointer to the elosConnectTcpip function
-    crinitSafuResultE_t (*getVersion)(crinitElosSession_t *,
-                                      const char **);  ///< Function pointer to the elosGetVersion function
-    crinitSafuResultE_t (*eventSubscribe)(
+    safuResultE_t (*connect)(const char *, uint16_t,
+                             crinitElosSession_t **);  ///< Function pointer to the elosConnectTcpip function
+    safuResultE_t (*getVersion)(crinitElosSession_t *,
+                                const char **);  ///< Function pointer to the elosGetVersion function
+    safuResultE_t (*eventSubscribe)(
         crinitElosSession_t *, const char *[], size_t,
         crinitElosEventQueueId_t *);  ///< Function pointer to the elosEventSubscribe function
-    crinitSafuResultE_t (*eventUnsubscribe)(
-        crinitElosSession_t *,
-        crinitElosEventQueueId_t);  ///< Function pointer to the elosEventUnsubscribe function
-    crinitSafuResultE_t (*eventQueueRead)(
+    safuResultE_t (*eventUnsubscribe)(
+        crinitElosSession_t *, crinitElosEventQueueId_t);  ///< Function pointer to the elosEventUnsubscribe function
+    safuResultE_t (*eventQueueRead)(
         crinitElosSession_t *, crinitElosEventQueueId_t,
         crinitElosEventVector_t **);                            ///< Function pointer to the elosEventQueueRead function
     void *(*eventVecGetLast)(const crinitElosEventVector_t *);  ///< Function pointer to the safuVecGetLast function
     void (*eventVectorDelete)(crinitElosEventVector_t *);  ///< Function pointer to the elosEventVectorDelete function
-    crinitSafuResultE_t (*eventPublish)(crinitElosSession_t *,
-                                        const crinitElosEvent_t *);  ///< Function pointer to the elosEventPublish function
-    crinitSafuResultE_t (*disconnect)(crinitElosSession_t *);  ///< Function pointer to the elosDisconnect function
+    safuResultE_t (*eventPublish)(crinitElosSession_t *,
+                                  const crinitElosEvent_t *);  ///< Function pointer to the elosEventPublish function
+    safuResultE_t (*disconnect)(crinitElosSession_t *);  ///< Function pointer to the elosDisconnect function
 } crinitElosVirtualTable_t;
 
 /**
