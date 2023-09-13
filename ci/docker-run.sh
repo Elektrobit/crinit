@@ -2,14 +2,23 @@
 # SPDX-License-Identifier: MIT
 #
 # create and run docker build env
+# Usage: ci/docker-run.sh [ARCH [[UBUNTU_RELEASE] ADDITIONAL_DOCKER_ARGS]
+#        e.g ci/docker-run.sh arm64 lunar
+#          Default is: amd64 jammy
 #
 CMDPATH=$(cd $(dirname $0) && pwd)
 BASEDIR=${CMDPATH%/*}
 PROJECT=eb-baseos-crinit
 ARCH="amd64"
+UBUNTU_RELEASE="jammy"
 
 if [ -n "$1" ]; then
     ARCH="$1"
+    shift
+fi
+
+if [ -n "$1" ]; then
+    UBUNTU_RELEASE="$1"
     shift
 fi
 
@@ -27,6 +36,7 @@ echo "==> create docker image"
 cd $BASEDIR/ci
 docker build \
     --build-arg REPO="$REPO" \
+    --build-arg UBUNTU_RELEASE="$UBUNTU_RELEASE" \
     --build-arg UID=$(id -u) --build-arg GID=$(id -g) \
     --tag "${IMAGE}" .
 
