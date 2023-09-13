@@ -258,7 +258,7 @@ int crinitStatFilter(const char *name, int baseDirFd, bool followLinks) {
 }
 
 int crinitScanDirFilter(const struct dirent *dent) {
-    if (dent == NULL || dent->d_name == NULL) {
+    if (dent == NULL) {
         return 0;
     }
     return crinitStatFilter(dent->d_name, crinitScState.baseDirFd, crinitScState.followLinks) &&
