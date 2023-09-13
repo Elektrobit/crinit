@@ -48,7 +48,7 @@ pipeline {
                         dir 'ci'
                         reuseNode true
                         additionalBuildArgs "--build-arg REPO=${ARCH} --build-arg USER=jenkins \
-                            --build-arg UID=${UID} --build-arg GID=${GID}"
+                            --build-arg UID=${UID} --build-arg GID=${GID} --build-arg UBUNTU_RELEASE=jammy"
                         args "--privileged \
                             -v /home/jenkins/.ssh:/home/jenkins/.ssh \
                             -e HOME=/home/jenkins"
