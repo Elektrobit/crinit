@@ -8,7 +8,7 @@
 #
 CMDPATH=$(cd $(dirname $0) && pwd)
 BASEDIR=${CMDPATH%/*}
-PROJECT=eb-baseos-crinit
+PROJECT=crinit
 ARCH="amd64"
 UBUNTU_RELEASE="jammy"
 
