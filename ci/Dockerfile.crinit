@@ -1,0 +1,164 @@
+ARG REPO
+ARG UBUNTU_RELEASE
+FROM ${REPO}${REPO:+/}ubuntu:${UBUNTU_RELEASE}
+
+ARG USER=ci
+ARG UID=1000
+ARG GID=1000
+
+ARG TARGET_USER_NAME=target
+ARG TARGET_PASSWORD=target123
+
+ARG EMLIX_GIT_SOURCES=git@github.com:emlix/
+
+ARG CMOCKA_EXTENSIONS_REPO_NAME=cmocka-extensions.git
+ARG CMOCKA_EXTENSIONS_REPO_PATH=${EMLIX_GIT_SOURCES}/${CMOCKA_EXTENSIONS_REPO_NAME}
+ARG CMOCKA_EXTENSIONS_REPO_REF=integration
+
+ARG CMOCKA_MOCKS_REPO_NAME=cmocka-mocks.git
+ARG CMOCKA_MOCKS_REPO_PATH=${EMLIX_GIT_SOURCES}/${CMOCKA_MOCKS_REPO_NAME}
+ARG CMOCKA_MOCKS_REPO_REF=integration
+
+ARG SAMCONF_REPO_NAME=samconf.git
+ARG SAMCONF_REPO_PATH=${EMLIX_GIT_SOURCES}/${SAMCONF_REPO_NAME}
+ARG SAMCONF_REPO_REF=integration
+
+ARG SAFU_REPO_NAME=safu.git
+ARG SAFU_REPO_PATH=${EMLIX_GIT_SOURCES}/${SAFU_REPO_NAME}
+ARG SAFU_REPO_REF=integration
+
+ARG ELOS_REPO_NAME=elos.git
+ARG ELOS_REPO_PATH=${EMLIX_GIT_SOURCES}/${ELOS_REPO_NAME}
+ARG ELOS_REPO_REF=integration
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update \
+ && apt-get install -y sudo vim locales uuid-runtime \
+ build-essential binutils-dev pkg-config cmake valgrind strace \
+ git wget curl netcat net-tools ssh libssl-dev openssl re2c libcmocka-dev \
+ libjson-c-dev libmnl-dev libsqlite3-0 libsqlite3-dev libesmtp-dev expat liblog4c-dev \
+ && rm -rf /var/lib/apt/lists/*
+
+RUN locale-gen en_US.UTF-8 \
+ && locale-gen de_DE.UTF-8 \
+ && groupadd -g $GID -o ci \
+ && useradd -m -u $UID -g $GID -o -s /bin/bash $USER \
+ && echo "$USER ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+WORKDIR /home/crinit
+COPY ./ /home/crinit
+
+RUN git clean -dfx /home/crinit
+
+RUN mkdir -p -m 0700 /root/.ssh \
+ && ssh-keyscan github.com >> /root/.ssh/known_hosts \
+ && ssh-keyscan gitlabintern.emlix.com >> /root/.ssh/known_hosts
+
+# Install cmocka-extensions
+RUN --mount=type=ssh \
+ git clone ${CMOCKA_EXTENSIONS_REPO_PATH} \
+ && cmake -B ${CMOCKA_EXTENSIONS_REPO_NAME%.*}/build ./${CMOCKA_EXTENSIONS_REPO_NAME%.*} \
+ -DUNIT_TESTS=OFF \
+ -DCMAKE_BUILD_TYPE=Release \
+ -DCMAKE_INSTALL_PREFIX=/usr \
+ && make -C ${CMOCKA_EXTENSIONS_REPO_NAME%.*}/build install
+
+# Install cmocka-mocks
+RUN --mount=type=ssh \
+ git clone ${CMOCKA_MOCKS_REPO_PATH} \
+ && cmake -B ${CMOCKA_MOCKS_REPO_NAME%.*}/build ./${CMOCKA_MOCKS_REPO_NAME%.*} \
+ -DUNIT_TESTS=OFF \
+ -DCMAKE_BUILD_TYPE=Release \
+ -DCMAKE_INSTALL_PREFIX=/usr \
+ -DCMOCKA_EXTENSIONS_URI=${CMOCKA_EXTENSIONS_REPO_PATH} \
+ -DCMOCKA_EXTENSIONS_REF=${CMOCKA_EXTENSIONS_REPO_REF} \
+ && make -C ${CMOCKA_MOCKS_REPO_NAME%.*}/build install
+
+# Install safu
+RUN --mount=type=ssh \
+ git clone ${SAFU_REPO_PATH} \
+ && cmake -B ${SAFU_REPO_NAME%.*}/build ./${SAFU_REPO_NAME%.*} \
+ -DUNIT_TEST=OFF \
+ -DCMAKE_BUILD_TYPE=Release \
+ -DCMAKE_INSTALL_PREFIX=/usr \
+ -DCMOCKA_EXTENSIONS_URI=${CMOCKA_EXTENSIONS_REPO_PATH} \
+ -DCMOCKA_EXTENSIONS_REF=${CMOCKA_EXTENSIONS_REPO_REF} \
+ -DCMOCKA_MOCKS_URI=${CMOCKA_MOCKS_REPO_PATH} \
+ -DCMOCKA_MOCKS_REF=${CMOCKA_MOCKS_REPO_REF} \
+ && make -C ${SAFU_REPO_NAME%.*}/build install
+
+# Install samconf
+RUN --mount=type=ssh \
+ git clone ${SAMCONF_REPO_PATH} \
+ && cmake -B ${SAMCONF_REPO_NAME%.*}/build ./${SAMCONF_REPO_NAME%.*} \
+ -DUNIT_TEST=OFF \
+ -DCMAKE_BUILD_TYPE=Release \
+ -DCMAKE_INSTALL_PREFIX=/usr \
+ -DCMOCKA_EXTENSIONS_URI=${CMOCKA_EXTENSIONS_REPO_PATH} \
+ -DCMOCKA_EXTENSIONS_REF=${CMOCKA_EXTENSIONS_REPO_REF} \
+ -DCMOCKA_MOCKS_URI=${CMOCKA_MOCKS_REPO_PATH} \
+ -DCMOCKA_MOCKS_REF=${CMOCKA_MOCKS_REPO_REF} \
+ -DSAFU_URI=${SAFU_REPO_PATH} \
+ -DSAFU_REF=${SAFU_REPO_REF} \
+ && make -C ${SAMCONF_REPO_NAME%.*}/build install
+
+# Install elos
+RUN --mount=type=ssh \
+ git clone ${ELOS_REPO_PATH} \
+ && cmake -B ${ELOS_REPO_NAME%.*}/build ./${ELOS_REPO_NAME%.*} \
+ -DUNIT_TEST=OFF \
+ -DCMAKE_BUILD_TYPE=Release \
+ -DCMAKE_INSTALL_PREFIX=/usr \
+ -DCMOCKA_EXTENSIONS_URI=${CMOCKA_EXTENSIONS_REPO_PATH} \
+ -DCMOCKA_EXTENSIONS_REF=${CMOCKA_EXTENSIONS_REPO_REF} \
+ -DCMOCKA_MOCKS_URI=${CMOCKA_MOCKS_REPO_PATH} \
+ -DCMOCKA_MOCKS_REF=${CMOCKA_MOCKS_REPO_REF} \
+ -DSAMCONF_URI=${SAMCONF_REPO_PATH} \
+ -DSAMCONF_REF=${SAMCONF_REPO_REF} \
+ -DSAFU_URI=${SAFU_REPO_PATH} \
+ -DSAFU_REF=${SAFU_REPO_REF} \
+ && make -C ${ELOS_REPO_NAME%.*}/build install
+
+# Install crinit
+RUN cmake -B build . \
+ -DUNIT_TEST=Off \
+ -DCMAKE_BUILD_TYPE=Release \
+ -DCMAKE_INSTALL_PREFIX=/usr \
+ -DCMAKE_VERBOSE_MAKEFILE=On \
+ -DENABLE_ASAN="OFF" \
+ -DENABLE_ANALYZER="OFF" \
+ -DENABLE_WERROR="OFF" \
+ . \
+ && make -C build install
+
+RUN mkdir -p /etc/elos /etc/crinit
+COPY ./test/integration/service/elosd.json /etc/elos
+RUN chmod 644 /etc/elos/elosd.json
+
+COPY ./test/integration/service/default.series /etc/crinit
+# As crinit is not registered as init process this would not have the intended effect.
+COPY ./test/integration/service/earlysetup.crinit /etc/crinit
+COPY ./test/integration/service/elosd.crinit /etc/crinit
+RUN chmod -R 644 /etc/crinit
+RUN uuidgen > /etc/machine-id
+
+RUN sudo ldconfig
+
+RUN sudo mkdir /var/run/sshd \
+ && sudo chmod 0755 /var/run/sshd \
+ && sudo useradd -p $(openssl passwd -1 $TARGET_PASSWORD) --create-home --shell /bin/bash --groups sudo $TARGET_USER_NAME
+
+EXPOSE 22
+EXPOSE 54321
+
+USER $USER
+ENV LC_ALL=en_US.UTF-8
+ENV DOCKERBUILD=1
+
+WORKDIR /home/$USER
+
+RUN echo '\n\
+  sudo service ssh start\n\
+' >> $HOME/.bashrc
+
+ENTRYPOINT /bin/bash
