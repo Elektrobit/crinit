@@ -1,0 +1,10 @@
+# Performs early mounts that weren't already done as part of crinit initialization, sets hostname and machine-id
+
+NAME = earlysetup
+
+COMMAND = /bin/mount -t tmpfs none /tmp
+          /bin/mkdir -p /var/volatile
+          /bin/mount -t tmpfs none /var/volatile
+          /bin/mkdir -p /var/volatile/log
+          /bin/hostname eb-arm64
+          /usr/bin/machine-id-gen
