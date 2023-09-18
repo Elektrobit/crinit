@@ -3,7 +3,7 @@ find_package(cmocka 1.1.5 REQUIRED)
 
 function(create_unit_test)
   cmake_parse_arguments(PARSED_ARGS "" "NAME" "SOURCES;INCLUDES;LIBRARIES;DEFINITIONS;WRAPS" ${ARGN})
-  get_filename_component(UNIT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/.. ABSOLUTE)
+  get_filename_component(UNIT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../.. ABSOLUTE)
   get_filename_component(UNIT_NAME ${UNIT_DIR} NAME)
 
   message(STATUS "Create unit test ${PARSED_ARGS_NAME} for ${UNIT_NAME}")
@@ -25,7 +25,7 @@ function(create_unit_test)
   target_include_directories(
     ${PARSED_ARGS_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${PROJECT_SOURCE_DIR}/test/
+    ${PROJECT_SOURCE_DIR}/test/utest
     ${PROJECT_SOURCE_DIR}/inc/
     ${PARSED_ARGS_INCLUDES}
     ${CMOCKA_INCLUDE_DIR}
@@ -39,7 +39,7 @@ function(create_unit_test)
 
   install(
     TARGETS ${PARSED_ARGS_NAME} DESTINATION
-    ${CMAKE_INSTALL_LIBDIR}/test/${PROJECT_NAME}/${UNIT_NAME}
+    ${CMAKE_INSTALL_LIBDIR}/test/utest/${PROJECT_NAME}/${UNIT_NAME}
   )
 endfunction()
 
