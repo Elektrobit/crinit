@@ -14,7 +14,7 @@ function(create_mock_lib)
   target_include_directories(
     ${PARSED_ARGS_NAME}
     PRIVATE
-    ${PROJECT_SOURCE_DIR}/test
+    ${PROJECT_SOURCE_DIR}/test/utest
     ${PROJECT_SOURCE_DIR}/inc
     INTERFACE
     ${PARSED_ARGS_INCLUDES}
