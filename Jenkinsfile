@@ -1,8 +1,18 @@
+def withDockerNetwork(Closure inner) {
+    try {
+        networkId = UUID.randomUUID().toString()
+        sh "docker network create ${networkId}"
+        inner.call(networkId)
+    } finally {
+        sh "docker network rm ${networkId}"
+    }
+}
+
 properties([gitLabConnection('GitLab')])
 
 pipeline {
     agent {
-        label 'agent'
+        label 'agent01'
     }
     environment {
         UID = sh(script: 'id -u', returnStdout: true).trim()
@@ -21,6 +31,8 @@ pipeline {
             "Test: utests (arm64v8)",
             "Test: smoketests (amd64)",
             "Test: smoketests (arm64v8)",
+            "Test: integration (amd64)",
+            "Test: integration (arm64v8)",
             "Demo (amd64)",
             "Demo (arm64v8)"
         ])
@@ -35,7 +47,7 @@ pipeline {
                 '''
             }
         }
-        stage ('Build') {
+        stage ('Build and Test') {
             matrix {
                 axes {
                     axis {
@@ -47,8 +59,15 @@ pipeline {
                     dockerfile {
                         dir 'ci'
                         reuseNode true
-                        additionalBuildArgs "--build-arg REPO=${ARCH} --build-arg USER=jenkins \
-                            --build-arg UID=${UID} --build-arg GID=${GID} --build-arg UBUNTU_RELEASE=jammy"
+                        additionalBuildArgs " \
+                            --ssh default=/root/.ssh/id_ed25519 \
+                            --progress=plain \
+                            --build-arg REPO=${ARCH} \
+                            --build-arg USER=jenkins \
+                            --build-arg UID=${UID} \
+                            --build-arg GID=${GID} \
+                            --build-arg UBUNTU_RELEASE=jammy \
+                            --build-arg EMLIX_GIT_SOURCES=git@gitlabintern.emlix.com:elektrobit/base-os"
                         args "--privileged \
                             -v /home/jenkins/.ssh:/home/jenkins/.ssh \
                             -e HOME=/home/jenkins"
@@ -112,6 +131,36 @@ pipeline {
                                 sh '''#!/bin/bash -xe
                                 ci/demo.sh 2>&1 | tee result/demo_output.txt
                                 '''
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        stage ('Target tests') {
+            matrix {
+                axes {
+                    axis {
+                        name 'ARCH'
+                        values 'amd64', 'arm64v8'
+                    }
+                }
+                agent {
+                    label "docker"
+                }
+                environment {
+                    DOCKER_BUILDKIT = 1
+                    BUILD_ARG = "--build-arg USER=jenkins"
+                }
+                stages {
+                    stage ('Test: integration') {
+                        steps {
+                            sshagent(credentials: ['jenkins-e2data']) {
+                                gitlabCommitStatus("${STAGE_NAME} (${ARCH})") {
+                                    sh '''#!/bin/bash -xe
+                                        ci/run-integration-tests.sh
+                                    '''
+                                }
                             }
                         }
                     }
