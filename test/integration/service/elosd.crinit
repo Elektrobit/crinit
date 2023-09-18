@@ -1,0 +1,11 @@
+# loads the event logging and management system (elos)
+
+NAME = elosd
+
+COMMAND = /usr/bin/elosd
+
+IO_REDIRECT = STDOUT "/tmp/elosd.log"
+IO_REDIRECT = STDERR STDOUT
+
+DEPENDS = earlysetup:wait
+PROVIDES = elos:spawn syslog:spawn
