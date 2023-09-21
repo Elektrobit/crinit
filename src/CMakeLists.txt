@@ -60,15 +60,22 @@ add_library(
   ${CMAKE_CURRENT_BINARY_DIR}/version.c
 )
 
+set(CRINIT_PUBLIC_HEADERS
+  ../inc/crinit-client.h
+  ../inc/crinit-sdefs.h
+)
+
 target_include_directories(
   crinit-client
   PRIVATE ${PROJECT_SOURCE_DIR}/inc/
 )
 
-set_target_properties(crinit-client PROPERTIES C_VISIBILITY_PRESET hidden)
-set_target_properties(crinit-client PROPERTIES VERSION ${PKG_VERSION})
-set_target_properties(crinit-client PROPERTIES SOVERSION ${CRINIT_VERSION_MAJOR})
-
+set_target_properties(crinit-client PROPERTIES
+  C_VISIBILITY_PRESET hidden
+  VERSION ${PKG_VERSION}
+  SOVERSION ${CRINIT_VERSION_MAJOR}
+  PUBLIC_HEADER "${CRINIT_PUBLIC_HEADERS}"
+)
 
 # crinit-ctl
 
@@ -98,7 +105,14 @@ if(MACHINE_ID_EXAMPLE)
  )
 endif(MACHINE_ID_EXAMPLE)
 
-# install
+# Install crinit
+install(TARGETS crinit DESTINATION ${CMAKE_INSTALL_SBINDIR})
 
-install(TARGETS crinit crinit-ctl machine-id-gen DESTINATION ${CMAKE_INSTALL_BINDIR})
-install(TARGETS crinit-client DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(TARGETS crinit-ctl machine-id-gen DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(CODE "execute_process( COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/crinit-ctl /${CMAKE_INSTALL_SBINDIR}/poweroff )")
+install(CODE "execute_process( COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/crinit-ctl /${CMAKE_INSTALL_SBINDIR}/reboot )")
+
+install(TARGETS crinit-client
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
