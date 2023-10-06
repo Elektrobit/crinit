@@ -57,3 +57,4 @@ docker run --rm -it --cap-add=SYS_ADMIN --security-opt apparmor=unconfined $SSH_
     --name ${CRINIT_DOCKER_NAME} \
     -w / \
     ${CRINIT_IMAGE_NAME} $@
+
