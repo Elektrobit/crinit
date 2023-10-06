@@ -15,21 +15,28 @@ static void crinitTestVariant(size_t numElements) {
     struct crinitFileSeries_t fse;
 
     const char *baseDir = "/some/path/to/testdir/";
+    char *fnamesCopy[numElements + 1];
+
+    print_message("Testing crinitFileSeriesFromStrArr with numElement = %ld and baseDir = %s.\n", numElements, baseDir);
+
+    expect_value(__wrap_calloc, num, numElements + 1);
+    expect_value(__wrap_calloc, size, sizeof(char **));
+    will_return(__wrap_calloc, fnamesCopy);
 
     char *fnamesBuff[numElements + 1];
     for (size_t i = 0; i < numElements; i++) {
         fnamesBuff[i] = (void *)0xd3adda7a;
+        expect_value(__wrap_strdup, s, fnamesBuff[i]);
+        will_return(__wrap_strdup, (void *)0xdeadb33f);
     }
     fnamesBuff[numElements] = NULL;
-
-    print_message("Testing crinitFileSeriesFromStrArr with numElement = %ld and baseDir = %s.\n", numElements, baseDir);
 
     expect_value(__wrap_strdup, s, baseDir);
     will_return(__wrap_strdup, baseDir);
 
     assert_int_equal(crinitFileSeriesFromStrArr(&fse, baseDir, fnamesBuff), 0);
 
-    assert_ptr_equal(fse.fnames, fnamesBuff);
+    assert_ptr_equal(fse.fnames, fnamesCopy);
     assert_int_equal(fse.size, numElements);
     assert_ptr_equal(fse.baseDir, baseDir);
 }

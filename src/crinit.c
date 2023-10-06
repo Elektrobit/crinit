@@ -11,6 +11,7 @@
 #include "logio.h"
 #include "minsetup.h"
 #include "notiserv.h"
+#include "optfeat.h"
 #include "procdip.h"
 #include "rtimcmd.h"
 #include "version.h"
@@ -81,9 +82,23 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    crinitFileSeries_t taskSeries;
-    if (crinitLoadSeriesConf(&taskSeries, seriesFname) == -1) {
+    if (crinitLoadSeriesConf(seriesFname) == -1) {
         crinitErrPrint("Could not load series file \'%s\'.", seriesFname);
+        crinitGlobOptDestroy();
+        return EXIT_FAILURE;
+    }
+
+    // Initialize optional features as soon as possible.
+    crinitInfoPrint("Initialize optional features.");
+    if (crinitFeatureHook(NULL, INIT, NULL) == -1) {
+        crinitErrPrint("Could not run activiation hook for feature \'INIT\'.");
+        crinitGlobOptDestroy();
+        return EXIT_FAILURE;
+    }
+
+    crinitFileSeries_t taskSeries;
+    if (crinitLoadTasks(&taskSeries) == -1) {
+        crinitErrPrint("Could not load crinit task.");
         crinitGlobOptDestroy();
         return EXIT_FAILURE;
     }

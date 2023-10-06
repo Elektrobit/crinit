@@ -14,10 +14,17 @@ static void crinitTestVariant(size_t numElements) {
     struct crinitFileSeries_t fse;
 
     char *baseDir = (void *)0xDEADB33F;
+    char *fnamesCopy[numElements + 1];
+
+    expect_value(__wrap_calloc, num, numElements + 1);
+    expect_value(__wrap_calloc, size, sizeof(char **));
+    will_return(__wrap_calloc, fnamesCopy);
 
     char *strArr[numElements + 1];
     for (size_t i = 0; i < numElements; i++) {
         strArr[i] = (void *)0xd3adda7a;
+        expect_value(__wrap_strdup, s, strArr[i]);
+        will_return(__wrap_strdup, (void *)0xd3adda7a);
     }
     strArr[numElements] = NULL;
 
