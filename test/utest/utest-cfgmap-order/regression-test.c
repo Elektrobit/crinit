@@ -31,6 +31,14 @@ void crinitCfgMapRegressionTest(void **state) {
         checkArr[crinitSeriesCfgMap[i].config] = true;
     }
 
+    checkArr[crinitKCmdlineCfgMap[0].config] = true;
+    // Check order of Kernel cmdline config mappings.
+    for (size_t i = 1; i < crinitKCmdlineCfgMapSize; i++) {
+        // We are correctly ordered if each following configKey is lexicographically larger than the one before.
+        assert_true(strcmp(crinitKCmdlineCfgMap[i].configKey, crinitKCmdlineCfgMap[i - 1].configKey) > 0);
+        checkArr[crinitKCmdlineCfgMap[i].config] = true;
+    }
+
     // Check if all crinitConfig_t have a mapping
     for (size_t i = 0; i < crinitNumElements(checkArr); i++) {
         assert_true(checkArr[i]);

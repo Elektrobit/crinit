@@ -16,9 +16,11 @@
  * Structure definition for the global option storage.
  */
 typedef struct crinitGlobOptStore_t {
-    bool debug;                    ///< Value for the DEBUG global option.
-    bool useSyslog;                ///< Value for the USE_SYSLOG global option.
-    bool useElos;                  ///< Value for the USE_ELOS global option.
+    bool debug;      ///< Value for the DEBUG global option.
+    bool useSyslog;  ///< Value for the USE_SYSLOG global option.
+    bool useElos;    ///< Value for the USE_ELOS global option.
+    bool signatures;
+    char *sigKeyDir;
     int elosPort;                  ///< Value for the ELOS_PORT global option.
     char *elosServer;              ///< Value for the ELOS_SERVER global option.
     char *inclDir;                 ///< Value for the INCLUDEDIR global option.
@@ -46,6 +48,8 @@ typedef struct crinitGlobOptStore_t {
 #define CRINIT_GLOBOPT_SHDGRACEP shdGraceP                      ///< SHUTDOWN_GRACE_PERIOD_US global option
 #define CRINIT_GLOBOPT_ENV globEnv                              ///< Reference to the global task environment
 #define CRINIT_GLOBOPT_FILTERS globFilters                      ///< Reference to the global task filters
+#define CRINIT_GLOBOPT_SIGNATURES signatures
+#define CRINIT_GLOBOPT_SIGKEYDIR sigKeyDir
 
 /** Dummy instance for Generic Selection of members to work (see type-generic macros below). **/
 static crinitGlobOptStore_t crinitGenericGlobOptHelper __attribute__((unused));

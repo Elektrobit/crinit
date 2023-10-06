@@ -43,6 +43,12 @@ const crinitConfigMapping_t crinitSeriesCfgMap[] = {
 };
 const size_t crinitSeriesCfgMapSize = crinitNumElements(crinitSeriesCfgMap);
 
+const crinitConfigMapping_t crinitKCmdlineCfgMap[] = {
+    {CRINIT_CONFIG_SIGKEYDIR, CRINIT_CONFIG_KEYSTR_SIGKEYDIR, false, false, crinitCfgSigKeyDirHandler},
+    {CRINIT_CONFIG_SIGNATURES, CRINIT_CONFIG_KEYSTR_SIGNATURES, false, false, crinitCfgSignaturesHandler},
+};
+const size_t crinitKCmdlineCfgMapSize = crinitNumElements(crinitKCmdlineCfgMap);
+
 /** Comparison function between two crinitConfigMapping_t, for bsearch() **/
 static int crinitCompareConfigMappings(const void *a, const void *b);
 
