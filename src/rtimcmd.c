@@ -665,10 +665,29 @@ static int crinitExecRtimCmdAddSeries(crinitTaskDB_t *ctx, crinitRtimCmd_t *res,
                                   "Could not inhibit process spawning to load new series file.");
     }
 
-    crinitFileSeries_t taskSeries;
-    if (crinitLoadSeriesConf(&taskSeries, cmd->args[0]) == -1) {
+    crinitGlobOptStore_t *globOpts = crinitGlobOptBorrow();
+    if (globOpts == NULL) {
+        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDSERIES, 2, CRINIT_RTIMCMD_RES_ERR,
+                                  "Could not get exclusive access to global option storage.");
+    }
+
+    crinitFreeArgvArray(globOpts->tasks);
+    globOpts->tasks = NULL;
+
+    if (crinitGlobOptRemit() == -1) {
+        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDSERIES, 2, CRINIT_RTIMCMD_RES_ERR,
+                                  "Could not release exclusive access to global option storage.");
+    }
+
+    if (crinitLoadSeriesConf(cmd->args[0]) == -1) {
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDSERIES, 2, CRINIT_RTIMCMD_RES_ERR,
                                   "Could not load series file.");
+    }
+
+    crinitFileSeries_t taskSeries;
+    if (crinitLoadTasks(&taskSeries) == -1) {
+        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_ADDSERIES, 2, CRINIT_RTIMCMD_RES_ERR,
+                                  "Could not load crinit tasks.");
     }
 
     bool overwriteTasks = false;

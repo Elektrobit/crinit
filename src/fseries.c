@@ -13,6 +13,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#include "common.h"
 #include "confparse.h"
 #include "logio.h"
 
@@ -214,19 +215,44 @@ int crinitFileSeriesFromDir(crinitFileSeries_t *fse, const char *path, const cha
     return 0;
 }
 
+static char **crinitStrArrDeepCopy(char **source, size_t *numElements) {
+    crinitNullCheck(NULL, source);
+
+    char **ptr, **target;
+
+    for (ptr = source; *ptr; ptr++);
+    *numElements = ptr - source;
+
+    target = calloc(*numElements + 1, sizeof(target));
+    if (target == NULL) {
+        crinitErrnoPrint("Allocation of target string array failed.");
+        return NULL;
+    }
+
+    for (size_t i = 0; i < *numElements; i++) {
+        target[i] = strdup(source[i]);
+        if (target[i] == NULL) {
+            crinitErrnoPrint("Duplication of target string failed.");
+            crinitFreeArgvArray(target);
+            *numElements = 0;
+            return NULL;
+        }
+    }
+
+    return target;
+}
+
 int crinitFileSeriesFromStrArr(crinitFileSeries_t *fse, const char *baseDir, char **strArr) {
     if (fse == NULL || baseDir == NULL || strArr == NULL) {
         crinitErrPrint("Input parameters must not be NULL.");
         return -1;
     }
 
-    fse->fnames = strArr;
-
-    char **ptr = strArr;
-    while (*ptr != NULL) {
-        ptr++;
+    fse->fnames = crinitStrArrDeepCopy(strArr, &fse->size);
+    if (fse->fnames == NULL) {
+        crinitErrPrint("Failed to deep copy task file names.");
+        return -1;
     }
-    fse->size = ptr - strArr;
 
     fse->baseDir = strdup(baseDir);
     if (fse->baseDir == NULL) {

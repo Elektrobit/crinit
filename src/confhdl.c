@@ -437,13 +437,17 @@ int crinitCfgTaskSuffixHandler(void *tgt, const char *val, crinitConfigType_t ty
         return -1;
     }
 
-    char **out = tgt;
-    *out = strdup(val);
+    if (crinitGlobOptSet(CRINIT_GLOBOPT_TASK_FILE_SUFFIX, val) == -1) {
+        crinitErrPrint("Could not set global option '%s'.", CRINIT_CONFIG_KEYSTR_TASK_FILE_SUFFIX);
+        return -1;
+    }
+
     return 0;
 }
 
 int crinitCfgTaskDirHandler(void *tgt, const char *val, crinitConfigType_t type) {
-    crinitNullCheck(-1, tgt, val);
+    CRINIT_PARAM_UNUSED(tgt);
+    crinitNullCheck(-1, val);
     crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
 
     if (!crinitIsAbsPath(val)) {
@@ -455,28 +459,38 @@ int crinitCfgTaskDirHandler(void *tgt, const char *val, crinitConfigType_t type)
         return -1;
     }
 
-    char **out = tgt;
-    *out = strdup(val);
+    if (crinitGlobOptSet(CRINIT_GLOBOPT_TASKDIR, val) == -1) {
+        crinitErrPrint("Could not set global option '%s'.", CRINIT_CONFIG_KEYSTR_TASKDIR);
+        return -1;
+    }
+
     return 0;
 }
 
 int crinitCfgTaskDirSlHandler(void *tgt, const char *val, crinitConfigType_t type) {
-    crinitNullCheck(-1, tgt, val);
+    CRINIT_PARAM_UNUSED(tgt);
+    crinitNullCheck(-1, val);
     crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
 
-    bool *v = tgt;
-    if (crinitConfConvToBool(v, val) == -1) {
+    bool v;
+    if (crinitConfConvToBool(&v, val) == -1) {
         crinitErrPrint("Could not convert given string '%s' to a boolean value.", val);
         return -1;
     }
+
+    if (crinitGlobOptSet(CRINIT_GLOBOPT_TASKDIR_FOLLOW_SYMLINKS, v) == -1) {
+        crinitErrPrint("Could not set global option '%s'.", CRINIT_CONFIG_KEYSTR_TASKDIR_SYMLINKS);
+        return -1;
+    }
+
     return 0;
 }
 
 int crinitCfgTasksHandler(void *tgt, const char *val, crinitConfigType_t type) {
-    crinitNullCheck(-1, tgt, val);
+    CRINIT_PARAM_UNUSED(tgt);
+    crinitNullCheck(-1, val);
     crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
 
-    char ***out = tgt;
     int confArrLen;
     char **parsedVal = crinitConfConvToStrArr(&confArrLen, val, true);
     if (parsedVal == NULL) {
@@ -484,9 +498,18 @@ int crinitCfgTasksHandler(void *tgt, const char *val, crinitConfigType_t type) {
         return -1;
     }
 
+    crinitGlobOptStore_t *globOpts = crinitGlobOptBorrow();
+    if (globOpts == NULL) {
+        crinitErrPrint("Could not get exclusive access to global option storage.");
+        return -1;
+    }
+
+    char ***out = &globOpts->tasks;
+
     // If the tasks array is not yet initialized, just do the usual.
     if (*out == NULL) {
         *out = parsedVal;
+        crinitGlobOptRemit();
         return 0;
     }
 
@@ -501,6 +524,7 @@ int crinitCfgTasksHandler(void *tgt, const char *val, crinitConfigType_t type) {
         crinitErrPrint("Could not perform memory allocation during handler for configuration key '%s'.",
                        CRINIT_CONFIG_KEYSTR_TASKS);
         crinitFreeArgvArray(parsedVal);
+        crinitGlobOptRemit();
         return -1;
     }
 
@@ -513,6 +537,7 @@ int crinitCfgTasksHandler(void *tgt, const char *val, crinitConfigType_t type) {
                        CRINIT_CONFIG_KEYSTR_TASKS);
         crinitFreeArgvArray(parsedVal);
         crinitFreeArgvArray(newArr);
+        crinitGlobOptRemit();
         return -1;
     }
     memcpy(newBackBuf + oldBackBufLen, parsedVal[0], addBackBufLen);
@@ -524,8 +549,14 @@ int crinitCfgTasksHandler(void *tgt, const char *val, crinitConfigType_t type) {
     }
     newArr[0] = newBackBuf;
 
-    crinitFreeArgvArray(parsedVal);
     *out = newArr;
+
+    if (crinitGlobOptRemit() == -1) {
+        crinitErrPrint("Could not release exclusive access of global option storage.");
+        return -1;
+    }
+
+    crinitFreeArgvArray(parsedVal);
     return 0;
 }
 
