@@ -55,6 +55,10 @@ int crinitFeatureHook(const char *sysFeatName, crinitHookType_t type, void *data
          .globMemberOffset = offsetof(crinitGlobOptStore_t, CRINIT_GLOBOPT_USE_ELOS)},
     };
 
+    crinitDbgInfoPrint("Searching feature hooks for %s (%d) with %p.", sysFeatName, type, data);
+
+    int res = 0;
+
     size_t n = sizeof(fmap) / sizeof(fmap[0]);
     for (size_t i = 0; i < n; i++) {
         if ((!sysFeatName || strcmp(fmap[i].name, sysFeatName) == 0) && fmap[i].type == type) {
@@ -64,9 +68,9 @@ int crinitFeatureHook(const char *sysFeatName, crinitHookType_t type, void *data
                 crinitErrPrint("Could not get global setting for optional feature \'%s\'.", fmap[i].name);
                 return -1;
             }
-            return (armed) ? fmap[i].af(data) : 0;
+            res |= (armed) ? fmap[i].af(data) : 0;
         }
     }
 
-    return 0;
+    return res;
 }
