@@ -29,6 +29,9 @@
 #define CRINIT_CONFIG_KEYSTR_TASK_FILE_SUFFIX \
     "TASK_FILE_SUFFIX"  ///< Config key for the task file extension in dynamic configurations.
 
+#define CRINIT_CONFIG_KEYSTR_SIGKEYDIR "sigkeydir"
+#define CRINIT_CONFIG_KEYSTR_SIGNATURES "signatures"
+
 #define CRINIT_CONFIG_KEYSTR_COMMAND "COMMAND"              ///< Config key to add a command to the task.
 #define CRINIT_CONFIG_KEYSTR_DEPENDS "DEPENDS"              ///< Config key to add dependencies to the task.
 #define CRINIT_CONFIG_KEYSTR_ENV_SET "ENV_SET"              ///< Config key to set an environment variable with.
@@ -79,6 +82,8 @@ typedef enum crinitConfigs_t {
     CRINIT_CONFIG_RESPAWN,
     CRINIT_CONFIG_RESPAWN_RETRIES,
     CRINIT_CONFIG_SHDGRACEP,
+    CRINIT_CONFIG_SIGKEYDIR,
+    CRINIT_CONFIG_SIGNATURES,
     CRINIT_CONFIG_TASK_FILE_SUFFIX,
     CRINIT_CONFIG_TASKDIR,
     CRINIT_CONFIG_TASKDIR_FOLLOW_SYMLINKS,
@@ -88,7 +93,12 @@ typedef enum crinitConfigs_t {
     CRINIT_CONFIGS_SIZE
 } crinitConfigs_t;
 
-typedef enum crinitConfigType_t { CRINIT_CONFIG_TYPE_SERIES, CRINIT_CONFIG_TYPE_TASK } crinitConfigType_t;
+/** Different types of configuration sources **/
+typedef enum crinitConfigType_t {
+    CRINIT_CONFIG_TYPE_SERIES,   ///< Configurations set from the series file.
+    CRINIT_CONFIG_TYPE_TASK,     ///< Configurations set from a task file.
+    CRINIT_CONFIG_TYPE_KCMDLINE  ///< Configurations set from the Kernel command line.
+} crinitConfigType_t;
 
 /**
  * Linked list to hold key/value pairs read from the config file.

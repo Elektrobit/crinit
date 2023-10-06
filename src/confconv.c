@@ -124,22 +124,22 @@ char **crinitConfConvToStrArr(int *numElements, const char *confVal, bool double
 
 /** Function body for type-generic string-to-integer functions, used internally to deduplicate code. **/
 #define crinitConfConvToIntegerFnBody(resType, confVal)                                                   \
-    do {                                                                                                 \
-        if (*(confVal) == '\0') {                                                                        \
+    do {                                                                                                  \
+        if (*(confVal) == '\0') {                                                                         \
             crinitErrPrint("Could not convert string to int. String is empty.");                          \
-            return -1;                                                                                   \
-        }                                                                                                \
-        char *endptr = NULL;                                                                             \
-        errno = 0;                                                                                       \
+            return -1;                                                                                    \
+        }                                                                                                 \
+        char *endptr = NULL;                                                                              \
+        errno = 0;                                                                                        \
         (resType) = crinitStrtoGenericInteger(resType, confVal, &endptr, base);                           \
-        if (errno != 0) {                                                                                \
+        if (errno != 0) {                                                                                 \
             crinitErrnoPrint("Could not convert string to int.");                                         \
-            return -1;                                                                                   \
-        }                                                                                                \
-        if (*endptr != '\0') {                                                                           \
+            return -1;                                                                                    \
+        }                                                                                                 \
+        if (*endptr != '\0') {                                                                            \
             crinitErrPrint("Could not convert string to int. Non-numeric characters present in string."); \
-            return -1;                                                                                   \
-        }                                                                                                \
+            return -1;                                                                                    \
+        }                                                                                                 \
     } while (0)
 
 int crinitConfConvToIntegerI(int *x, const char *confVal, int base) {
@@ -156,11 +156,11 @@ int crinitConfConvToIntegerULL(unsigned long long *x, const char *confVal, int b
 
 int crinitConfConvToBool(bool *b, const char *confVal) {
     crinitNullCheck(-1, b, confVal);
-    if (strcmp(confVal, "YES") == 0) {
+    if (strcasecmp(confVal, "YES") == 0) {
         *b = true;
         return 0;
     }
-    if (strcmp(confVal, "NO") == 0) {
+    if (strcasecmp(confVal, "NO") == 0) {
         *b = false;
         return 0;
     }

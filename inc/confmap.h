@@ -48,6 +48,19 @@ extern const crinitConfigMapping_t crinitSeriesCfgMap[];
 extern const size_t crinitSeriesCfgMapSize;
 
 /**
+ * Constant (at compile-time) array of mappings between Kernel cmdline configuration names and their indices and
+ * properties.
+ *
+ * Must be lexicographically ordered (by crinitConfigMapping_t::configKey), so that crinitFindConfigMapping() works.
+ * This is tested by a unit/regression test.
+ */
+extern const crinitConfigMapping_t crinitKCmdlineCfgMap[];
+/**
+ * Size of crinitKCmdlineCfgMap, known at compile-time.
+ */
+extern const size_t crinitKCmdlineCfgMapSize;
+
+/**
  * Searches for an entry in an array of crinitConfigMapping_t by crinitConfigMapping_t::configKey.
  *
  * Uses bsearch() with the assumption that the array is lexicographically ordered by crinitConfigMapping_t::configKey.
