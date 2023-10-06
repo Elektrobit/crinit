@@ -15,6 +15,7 @@ pipeline {
         label 'agent01'
     }
     environment {
+        DOCKER_BUILDKIT=1
         UID = sh(script: 'id -u', returnStdout: true).trim()
         GID = sh(script: 'id -g', returnStdout: true).trim()
         TMPDIR = '/tmp'
@@ -71,6 +72,7 @@ pipeline {
                         args "--privileged \
                             -v /home/jenkins/.ssh:/home/jenkins/.ssh \
                             -e HOME=/home/jenkins"
+                        reuseNode true
                     }
                 }
                 stages {
