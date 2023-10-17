@@ -11,7 +11,7 @@ configuration files or a whole directory from which all configs shall be loaded.
 containing a set of commands and dependencies on other tasks.
 
 The specified tasks are then started with as much parallelism as dependencies allow, i.e. tasks without any dependencies
-are spawned as soon as possible after Crinit has been started. Once a task is spawned, finished, or has failed, its 
+are spawned as soon as possible after Crinit has been started. Once a task is spawned, finished, or has failed, its
 dependent tasks are updated and spawned as necessary.
 
 ## Concept
@@ -178,7 +178,7 @@ ENV_SET = GREETING "Good morning!"
 - **USE_SYSLOG** -- If syslog should be used for output if it is available. If set to `YES`, Crinit will switch to
                     syslog for output as soon as a task file `PROVIDES` the `syslog` feature. Ideally this should be
                     a task file loading a syslog server such as syslogd or elosd. Default: `NO`
-- **USE_ELOS** -- If Elos should be used as event based dependency provider if it is available. If set to `YES`, Crinit will allow Elos event filters as 
+- **USE_ELOS** -- If Elos should be used as event based dependency provider if it is available. If set to `YES`, Crinit will allow Elos event filters as
                   task dependency with the `@elos` prefix as soon as a task file `PROVIDES` the `elos` feature. Ideally this should be
                   a task file loading the Elos daemon elosd. Default: `NO`
 - **ELOS_SERVER** -- Ip address of the elos server. Default: `127.0.0.1`
@@ -551,6 +551,18 @@ takes an additional `Debug` argument.
 ci/run-utest.sh
 ci/run-smoketests.sh
 ```
+
+In order to run integration tests, you can use `ci/run-integration-tests.sh`. This will set up two docker containers,
+one for the Robot test framework and one that runes Crinit and Elos, and execute all integration tests inside the robot container.
+
+```
+ci/run-integration-tests.sh
+```
+
+You can also manually start both containers with `ci/docker-target-run.sh` and `ci/docker-integration-run.sh`. Adapt the configuration within
+the robot container by changing the ip address of the target container within the robot variables (`test/integration/robot_variables.py`)
+to the current ip of the target container and run the tests by executing `test/integration/scripts/run-integration-tests.sh` inside
+the robot container.
 
 After a successful execution of `ci/build.sh`, it is also possible to create a Debian package using debbuild.
 For the debug configuration, this also takes an additional `Debug` argument.

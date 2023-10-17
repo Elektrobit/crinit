@@ -73,7 +73,7 @@ add_subdirectory(deps/)
 add_subdirectory(src/)
 if(UNIT_TESTS)
   enable_testing()
-  add_subdirectory(test/)
+  add_subdirectory(test/utest)
 endif(UNIT_TESTS)
 
 find_package(Doxygen)
