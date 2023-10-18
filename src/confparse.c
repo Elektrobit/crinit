@@ -43,22 +43,33 @@ int crinitParseConf(crinitConfKvList_t **confList, const char *filename) {
         crinitErrnoPrint("Could not open \'%s\'.", filename);
         return -1;
     }
+
+    // Read entire file to memory (needed if we want to compare against a signature without TOCTOU race condition)
+    char *fileBuf = NULL;
+    size_t fileLen;
+    if (getdelim(&fileBuf, &fileLen, '\0', cf) == -1) {
+        crinitErrnoPrint("Could not read contents of file '%s' to memory.", filename);
+        fclose(cf);
+        return -1;
+    }
+    fclose(cf);
+
     // Alloc first element
     if ((*confList = malloc(sizeof(crinitConfKvList_t))) == NULL) {
         crinitErrnoPrint("Could not allocate memory for a ConfKVList.");
-        fclose(cf);
+        free(fileBuf);
         return -1;
     }
     (*confList)->next = NULL;
 
-    // Parse config ing libinih
+    // Parse config from memory with libinih
     crinitIniParserCtx_t parserCtx = {.anchor = *confList, .pList = *confList, .last = *confList};
-    int parseResult = ini_parse_file(cf, crinitIniHandler, &parserCtx);
+    int parseResult = ini_parse_string(fileBuf, crinitIniHandler, &parserCtx);
 
     // Trim the list's tail
     free(parserCtx.last->next);
     parserCtx.last->next = NULL;
-    fclose(cf);
+    free(fileBuf);
 
     // Check result
     if (parseResult != 0) {
