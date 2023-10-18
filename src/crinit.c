@@ -15,6 +15,7 @@
 #include "optfeat.h"
 #include "procdip.h"
 #include "rtimcmd.h"
+#include "sig.h"
 #include "version.h"
 
 /**
@@ -89,9 +90,24 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
+    bool signatures = CRINIT_CONFIG_DEFAULT_SIGNATURES;
+    if (crinitGlobOptGet(CRINIT_GLOBOPT_SIGNATURES, &signatures) == -1) {
+        crinitErrPrint("Could not retrieve value for global setting if we are to use signatures.");
+        crinitGlobOptDestroy();
+        return EXIT_FAILURE;
+    }
+    if (signatures && crinitSigSubsysInit(CRINIT_SIGNATURE_DEFAULT_ROOT_KEY_DESC) == -1) {
+        crinitErrPrint("Could not initialize signature handling subsystem.");
+        crinitGlobOptDestroy();
+        return EXIT_FAILURE;
+    }
+
     if (crinitLoadSeriesConf(seriesFname) == -1) {
         crinitErrPrint("Could not load series file \'%s\'.", seriesFname);
         crinitGlobOptDestroy();
+        if (signatures) {
+            crinitSigSubsysDestroy();
+        }
         return EXIT_FAILURE;
     }
 
@@ -100,6 +116,9 @@ int main(int argc, char *argv[]) {
     if (crinitFeatureHook(NULL, CRINIT_HOOK_INIT, NULL) == -1) {
         crinitErrPrint("Could not run activiation hook for feature \'INIT\'.");
         crinitGlobOptDestroy();
+        if (signatures) {
+            crinitSigSubsysDestroy();
+        }
         return EXIT_FAILURE;
     }
 
@@ -107,6 +126,9 @@ int main(int argc, char *argv[]) {
     if (crinitLoadTasks(&taskSeries) == -1) {
         crinitErrPrint("Could not load crinit task.");
         crinitGlobOptDestroy();
+        if (signatures) {
+            crinitSigSubsysDestroy();
+        }
         return EXIT_FAILURE;
     }
 
@@ -128,6 +150,9 @@ int main(int argc, char *argv[]) {
                 crinitGlobOptDestroy();
                 crinitDestroyFileSeries(&taskSeries);
                 crinitTaskDBDestroy(&tdb);
+                if (signatures) {
+                    crinitSigSubsysDestroy();
+                }
                 return EXIT_FAILURE;
             }
             memcpy(confFn, taskSeries.baseDir, prefixLen);
@@ -144,6 +169,9 @@ int main(int argc, char *argv[]) {
             }
             crinitDestroyFileSeries(&taskSeries);
             crinitTaskDBDestroy(&tdb);
+            if (signatures) {
+                crinitSigSubsysDestroy();
+            }
             return EXIT_FAILURE;
         }
         crinitInfoPrint("File \'%s\' loaded.", confFn);
@@ -159,6 +187,9 @@ int main(int argc, char *argv[]) {
             crinitGlobOptDestroy();
             crinitDestroyFileSeries(&taskSeries);
             crinitTaskDBDestroy(&tdb);
+            if (signatures) {
+                crinitSigSubsysDestroy();
+            }
             return EXIT_FAILURE;
         }
         crinitFreeConfList(c);
@@ -172,6 +203,9 @@ int main(int argc, char *argv[]) {
             crinitDestroyFileSeries(&taskSeries);
             crinitFreeTask(t);
             crinitTaskDBDestroy(&tdb);
+            if (signatures) {
+                crinitSigSubsysDestroy();
+            }
             return EXIT_FAILURE;
         }
         crinitFreeTask(t);
@@ -187,6 +221,9 @@ int main(int argc, char *argv[]) {
         crinitErrPrint("Could not start notification and service interface.");
         crinitTaskDBDestroy(&tdb);
         crinitGlobOptDestroy();
+        if (signatures) {
+            crinitSigSubsysDestroy();
+        }
         return EXIT_FAILURE;
     }
 
@@ -199,6 +236,9 @@ int main(int argc, char *argv[]) {
     }
     crinitTaskDBDestroy(&tdb);
     crinitGlobOptDestroy();
+    if (signatures) {
+        crinitSigSubsysDestroy();
+    }
     return EXIT_SUCCESS;
 }
 
