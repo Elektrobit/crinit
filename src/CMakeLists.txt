@@ -2,6 +2,7 @@
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 find_package(RE2C REQUIRED)
+find_package(MbedTLS REQUIRED)
 
 configure_file(version.c.in version.c)
 
@@ -35,6 +36,7 @@ add_executable(
   optfeat.c
   fseries.c
   ioredir.c
+  sig.c
   ${CMAKE_CURRENT_BINARY_DIR}/version.c
 )
 
@@ -47,6 +49,7 @@ target_link_libraries(
   PRIVATE Threads::Threads
   PRIVATE inih-local
   PRIVATE safu
+  PRIVATE ${MBEDTLS_CRYPTO_LIBRARY}
 )
 
 
