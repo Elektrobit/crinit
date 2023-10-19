@@ -4,11 +4,22 @@ CMD_PATH=$(cd $(dirname $0) && pwd)
 BASE_DIR=${CMD_PATH%/*}
 
 BUILD_TYPE="${1:-Release}"
-BUILD_DIR="$BASE_DIR/build/$BUILD_TYPE"
 
 # architecture name amd64, arm64, ...
 ARCH=$(dpkg --print-architecture)
 UBUNTU_RELEASE="jammy"
+
+case "$BUILD_TYPE" in
+    Release)
+        BUILD_DIR="$BASE_DIR/build/$ARCH"
+        RESULT_DIR="$BASE_DIR/result/$ARCH"
+        ;;
+    *)
+        BUILD_DIR="$BASE_DIR/build/$ARCH-$BUILD_TYPE"
+        RESULT_DIR="$BASE_DIR/result/$ARCH-$BUILD_TYPE"
+        ;;
+esac
+
 
 clean_tag() {
     if [ -z "${1}" ]; then
@@ -95,5 +106,7 @@ ret=$?
 
 docker stop ${CRINIT_ID}
 docker stop ${RUNNER_ID}
+
+cp -a "${BUILD_DIR}/result/integration" "${RESULT_DIR}/"
 
 exit $?
