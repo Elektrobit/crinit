@@ -582,3 +582,9 @@ The Doxygen documentation alone can be built using
 ```
 make -C build/amd64 doxygen
 ```
+
+## Build Requirements
+
+In order to build crinit, there are some libraries, which have to be installed.
+
+- [safu](https://github.com/elektrobit/safu)
