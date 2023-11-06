@@ -6,11 +6,10 @@ ARG USER=ci
 ARG UID=1000
 ARG GID=1000
 
-#ARG EMLIX_GIT_SOURCES=git@github.com:emlix/
-ARG EMLIX_GIT_SOURCES=git@gitlabintern.emlix.com:elektrobit/base-os
+ARG EB_GIT_SOURCES=https://github.com/Elektrobit/
 
 ARG SAFU_REPO_NAME=safu.git
-ARG SAFU_REPO_PATH=${EMLIX_GIT_SOURCES}/${SAFU_REPO_NAME}
+ARG SAFU_REPO_PATH=${EB_GIT_SOURCES}/${SAFU_REPO_NAME}
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
@@ -19,10 +18,6 @@ RUN apt-get update \
     build-essential python3-minimal rpm wget doxygen graphviz plantuml \
     re2c cmake clang llvm clang-tidy pkg-config valgrind \
  && rm -rf /var/lib/apt/lists/*
-
-RUN mkdir -p -m 0700 /root/.ssh \
-    && ssh-keyscan github.com >> /root/.ssh/known_hosts \
-    && ssh-keyscan gitlabintern.emlix.com >> /root/.ssh/known_hosts
 
 # Install safu
 RUN --mount=type=ssh \

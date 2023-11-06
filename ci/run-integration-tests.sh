@@ -69,7 +69,6 @@ docker build \
     --build-arg REPO="$REPO" \
     --build-arg UBUNTU_RELEASE="$UBUNTU_RELEASE" \
     --build-arg UID=$(id -u) --build-arg GID=$(id -g) \
-    --build-arg EMLIX_GIT_SOURCES=git@gitlabintern.emlix.com:elektrobit/base-os \
     --tag ${CRINIT_IMAGE_NAME} -f $BASE_DIR/ci/Dockerfile.crinit .
 
 docker build \

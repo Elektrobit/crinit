@@ -9,18 +9,18 @@ ARG GID=1000
 ARG TARGET_USER_NAME=target
 ARG TARGET_PASSWORD=target123
 
-ARG EMLIX_GIT_SOURCES=git@github.com:emlix/
+ARG EB_GIT_SOURCES=https://github.com/Elektrobit/
 
 ARG SAMCONF_REPO_NAME=samconf.git
-ARG SAMCONF_REPO_PATH=${EMLIX_GIT_SOURCES}/${SAMCONF_REPO_NAME}
+ARG SAMCONF_REPO_PATH=${EB_GIT_SOURCES}/${SAMCONF_REPO_NAME}
 ARG SAMCONF_REPO_REF=integration
 
 ARG SAFU_REPO_NAME=safu.git
-ARG SAFU_REPO_PATH=${EMLIX_GIT_SOURCES}/${SAFU_REPO_NAME}
+ARG SAFU_REPO_PATH=${EB_GIT_SOURCES}/${SAFU_REPO_NAME}
 ARG SAFU_REPO_REF=integration
 
 ARG ELOS_REPO_NAME=elos.git
-ARG ELOS_REPO_PATH=${EMLIX_GIT_SOURCES}/${ELOS_REPO_NAME}
+ARG ELOS_REPO_PATH=${EB_GIT_SOURCES}/${ELOS_REPO_NAME}
 ARG ELOS_REPO_REF=integration
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -41,10 +41,6 @@ WORKDIR /home/crinit
 COPY ./ /home/crinit
 
 RUN git clean -dfx /home/crinit
-
-RUN mkdir -p -m 0700 /root/.ssh \
- && ssh-keyscan github.com >> /root/.ssh/known_hosts \
- && ssh-keyscan gitlabintern.emlix.com >> /root/.ssh/known_hosts
 
 # Install safu
 RUN --mount=type=ssh \
