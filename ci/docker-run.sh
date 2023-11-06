@@ -41,7 +41,6 @@ docker build \
     --build-arg REPO="$REPO" \
     --build-arg UBUNTU_RELEASE="$UBUNTU_RELEASE" \
     --build-arg UID=$(id -u) --build-arg GID=$(id -g) \
-    --build-arg EMLIX_GIT_SOURCES=git@gitlabintern.emlix.com:elektrobit/base-os \
     --tag "${IMAGE}" .
 
 if ! [ -e "$BASEDIR/ci/sshconfig" ]; then
