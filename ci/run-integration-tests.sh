@@ -11,15 +11,15 @@ UBUNTU_RELEASE="jammy"
 
 case "$BUILD_TYPE" in
     Release)
-        BUILD_DIR="$BASE_DIR/build/$ARCH"
-        RESULT_DIR="$BASE_DIR/result/$ARCH"
+        BUILD_SUBDIR="$ARCH"
         ;;
     *)
-        BUILD_DIR="$BASE_DIR/build/$ARCH-$BUILD_TYPE"
-        RESULT_DIR="$BASE_DIR/result/$ARCH-$BUILD_TYPE"
+        BUILD_SUBDIR="$ARCH-$BUILD_TYPE"
         ;;
 esac
 
+BUILD_DIR="$BASE_DIR/build/$BUILD_SUBDIR"
+RESULT_DIR="$BASE_DIR/result/$BUILD_SUBDIR"
 
 clean_tag() {
     if [ -z "${1}" ]; then
@@ -58,8 +58,8 @@ if [ -n "${CI}" ]; then
     TEST_DOCKER_NAME="$(clean_tag "${TEST_DOCKER_NAME}${ARCH:+-}${ARCH}-${BUILD_ID}-${GIT_COMMIT}")"
 fi
 
-rm -rf $BUILD_DIR/result/integration
-mkdir -p $BUILD_DIR/result/integration
+rm -rf $BUILD_DIR/test/integration
+mkdir -p $BUILD_DIR/test/integration
 
 DOCKER_BUILDKIT=1 \
 docker build \
@@ -96,7 +96,7 @@ RUNNER_ID=$(docker run -d -ti --rm \
     -v $BASE_DIR:/base \
     -w /base \
     --env "PROJECT=${PROJECT}" \
-    --env "TEST_OUTPUT=/base/build/${BUILD_TYPE}/result/integration" \
+    --env "TEST_OUTPUT=/base/build/${BUILD_SUBDIR}/test/integration" \
     ${TEST_IMAGE_NAME})
 
 docker exec ${TEST_DOCKER_NAME} /base/test/integration/scripts/run-integration-tests.sh
@@ -106,6 +106,7 @@ ret=$?
 docker stop ${CRINIT_ID}
 docker stop ${RUNNER_ID}
 
-cp -a "${BUILD_DIR}/result/integration" "${RESULT_DIR}/"
+mkdir -p "${RESULT_DIR}"
+cp -vr "${BUILD_DIR}/test/integration" "${RESULT_DIR}/"
 
 exit $?
