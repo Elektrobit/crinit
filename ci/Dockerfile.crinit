@@ -43,8 +43,7 @@ COPY ./ /home/crinit
 RUN git clean -dfx /home/crinit
 
 # Install safu
-RUN --mount=type=ssh \
- git clone ${SAFU_REPO_PATH} \
+RUN git clone ${SAFU_REPO_PATH} \
  && cmake -B ${SAFU_REPO_NAME%.*}/build ./${SAFU_REPO_NAME%.*} \
  -DUNIT_TESTS=OFF \
  -DCMAKE_BUILD_TYPE=Release \
@@ -53,8 +52,7 @@ RUN --mount=type=ssh \
  && make -C ${SAFU_REPO_NAME%.*}/build install
 
 # Install samconf
-RUN --mount=type=ssh \
- git clone ${SAMCONF_REPO_PATH} \
+RUN git clone ${SAMCONF_REPO_PATH} \
  && cmake -B ${SAMCONF_REPO_NAME%.*}/build ./${SAMCONF_REPO_NAME%.*} \
  -DUNIT_TESTS=OFF \
  -DCMAKE_BUILD_TYPE=Release \
@@ -64,8 +62,7 @@ RUN --mount=type=ssh \
  && make -C ${SAMCONF_REPO_NAME%.*}/build install
 
 # Install elos
-RUN --mount=type=ssh \
- git clone ${ELOS_REPO_PATH} \
+RUN git clone ${ELOS_REPO_PATH} \
  && cmake -B ${ELOS_REPO_NAME%.*}/build ./${ELOS_REPO_NAME%.*} \
  -DUNIT_TESTS=OFF \
  -DCMAKE_BUILD_TYPE=Release \

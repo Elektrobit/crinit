@@ -20,8 +20,7 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/*
 
 # Install safu
-RUN --mount=type=ssh \
- git clone ${SAFU_REPO_PATH} \
+RUN git clone ${SAFU_REPO_PATH} \
  && cmake -B ${SAFU_REPO_NAME%.*}/build ./${SAFU_REPO_NAME%.*} \
  -DUNIT_TESTS=Off \
  -DCMAKE_BUILD_TYPE=Release \
