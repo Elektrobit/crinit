@@ -30,7 +30,6 @@ echo "==> create docker image"
 cd $BASE_DIR
 DOCKER_BUILDKIT=1 \
 docker build \
-    --ssh default \
     --progress=plain \
     --build-arg REPO="$REPO" \
     --build-arg UBUNTU_RELEASE="$UBUNTU_RELEASE" \

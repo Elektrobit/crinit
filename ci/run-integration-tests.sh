@@ -64,7 +64,6 @@ mkdir -p $BUILD_DIR/test/integration
 DOCKER_BUILDKIT=1 \
 docker build \
     $BUILD_ARG \
-    --ssh default \
     --progress=plain \
     --build-arg REPO="$REPO" \
     --build-arg UBUNTU_RELEASE="$UBUNTU_RELEASE" \
