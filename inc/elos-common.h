@@ -128,7 +128,7 @@ typedef struct crinitElosVirtualTable {
     void (*eventVectorDelete)(crinitElosEventVector_t *);  ///< Function pointer to the elosEventVectorDelete function
     safuResultE_t (*eventPublish)(crinitElosSession_t *,
                                   const crinitElosEvent_t *);  ///< Function pointer to the elosEventPublish function
-    safuResultE_t (*disconnect)(crinitElosSession_t *);  ///< Function pointer to the elosDisconnect function
+    safuResultE_t (*disconnect)(crinitElosSession_t *);        ///< Function pointer to the elosDisconnect function
 } crinitElosVirtualTable_t;
 
 /**
@@ -173,16 +173,16 @@ int crinitElosDisconnect(crinitElosSession_t *session, pthread_mutex_t *sessionL
             crinitErrnoPrint("Failed to lock elos session.");                                                     \
             res = -1;                                                                                             \
         } else {                                                                                                  \
-            while ((session) == NULL || !(session)->connected) {                                                  \
+            if ((session) != NULL && !(session)->connected) {                                                     \
+                free(session);                                                                                    \
+                (session) = NULL;                                                                                 \
+            }                                                                                                     \
+            while ((session) == NULL) {                                                                           \
                 if (crinitElosGetVTable()->elosServer == NULL) {                                                  \
                     crinitErrPrint("Elos server configuration missing or not loaded yet.");                       \
                     res = -1;                                                                                     \
                     break;                                                                                        \
                 } else {                                                                                          \
-                    if ((session) != NULL) {                                                                      \
-                        crinitElosGetVTable()->disconnect(session);                                               \
-                    }                                                                                             \
-                                                                                                                  \
                     res = crinitElosGetVTable()->connect(crinitElosGetVTable()->elosServer,                       \
                                                          crinitElosGetVTable()->elosPort,                         \
                                                          (crinitElosSession_t **)&(session));                     \
