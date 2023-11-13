@@ -41,14 +41,6 @@ TEST_IMAGE_NAME="$(clean_tag "${PROJECT}-robot")"
 TEST_DOCKER_NAME="$(clean_tag "${PROJECT}-runner")"
 BUILD_ARG=${BUILD_ARG:-}
 
-# map architecture to Docker per-architecture repositories
-# https://github.com/docker-library/official-images#architectures-other-than-amd64
-REPO="$ARCH"
-if [ "$ARCH" = "arm64" ]; then
-    REPO=arm64v8
-    PLATFORM_OPTS="--platform linux/arm64/v8"
-fi
-
 if [ -n "${CI}" ]; then
     BUILD_ID="${BUILD_ID:-'none'}"
     GIT_COMMIT="${GIT_COMMIT:-'none'}"
