@@ -136,7 +136,7 @@ int crinitTaskDBInsert(crinitTaskDB_t *ctx, const crinitTask_t *t, bool overwrit
     crinitElosLog(ELOS_SEVERITY_INFO, 2001, "Added new task %s.", pTask->name);
 
     crinitDbgInfoPrint("Run feature hooks for 'TASK_ADDED'.");
-    if (crinitFeatureHook(NULL, TASK_ADDED, pTask) == -1) {
+    if (crinitFeatureHook(NULL, CRINIT_HOOK_TASK_ADDED, pTask) == -1) {
         crinitErrPrint("Could not run activiation hook for feature \'TASK_ADDED\'.");
         goto fail;
     }
@@ -434,8 +434,13 @@ int crinitTaskDBProvideFeature(crinitTaskDB_t *ctx, const crinitTask_t *provider
                 return -1;
             }
             crinitDbgInfoPrint("Fulfilled feature dependency \'%s:%s\'.", dep.name, dep.event);
-            if (crinitFeatureHook(dep.event, START, (void *)ctx) == -1) {
-                crinitErrPrint("Could not run activiation hook for feature \'%s\'.", dep.event);
+            if (crinitFeatureHook(dep.event, CRINIT_HOOK_START, (void *)ctx) == -1) {
+                crinitErrPrint("Could not run activation hook for feature \'%s\'.", dep.event);
+                return -1;
+            }
+        } else {
+            if (crinitFeatureHook(provider->prv[i].name, CRINIT_HOOK_STOP, (void *)ctx) == -1) {
+                crinitErrPrint("Could not run deactivation hook for feature \'%s\'.", provider->prv[i].name);
                 return -1;
             }
         }

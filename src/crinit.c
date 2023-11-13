@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
 
     // Initialize optional features as soon as possible.
     crinitInfoPrint("Initialize optional features.");
-    if (crinitFeatureHook(NULL, INIT, NULL) == -1) {
+    if (crinitFeatureHook(NULL, CRINIT_HOOK_INIT, NULL) == -1) {
         crinitErrPrint("Could not run activiation hook for feature \'INIT\'.");
         crinitGlobOptDestroy();
         return EXIT_FAILURE;

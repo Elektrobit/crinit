@@ -20,8 +20,8 @@
 /* HINT: We are relying on the major library version here. */
 #define CRINIT_ELOS_DEPENDENCY "@elos"  ///< Elos filter dependency prefix
 
-static bool crinitUseElos =
-    CRINIT_CONFIG_DEFAULT_USE_ELOS;  ///< Specifies if we should use syslog calls instead of FILE streams.
+static bool crinitElosActivated = false;  ///< Indicates if the elos connection and handler thread has been set up.
+static pthread_mutex_t crinitElosActivatedLock = PTHREAD_MUTEX_INITIALIZER;  ///< Mutex to guard crinitElosActivated.
 
 /**
  * Task that has unfulfilled filter dependencies.
@@ -171,7 +171,7 @@ static int crinitElosdepFilterTaskDestroy(crinitElosdepFilterTask_t *filterTask)
  *
  * @return Returns 0 on success, -1 otherwise.
  */
-static int crinitElosdepFilterTaskListClear() {
+static int crinitElosdepFilterTaskListClear(void) {
     int res = 0;
     crinitElosdepFilterTask_t *cur, *temp;
 
@@ -433,6 +433,21 @@ static void *crinitElosdepEventListener(void *arg) {
     }
 
     while (1) {
+        if ((errno = pthread_mutex_lock(&crinitElosActivatedLock)) != 0) {
+            crinitErrnoPrint("Failed to lock elos connection activation indicator.");
+            goto err_session;
+        }
+        if (!crinitElosActivated) {
+            if ((errno = pthread_mutex_unlock(&crinitElosActivatedLock)) != 0) {
+                crinitErrnoPrint("Failed to unlock elos connection activation indicator.");
+            }
+            goto err_session;
+        }
+        if ((errno = pthread_mutex_unlock(&crinitElosActivatedLock)) != 0) {
+            crinitErrnoPrint("Failed to unlock elos connection activation indicator.");
+            goto err_session;
+        }
+
         crinitListForEachEntry(filterTask, &crinitFilterTasks, list) {
             crinitListForEachEntrySafe(filter, tempFilter, &filterTask->filterList, list) {
                 err = crinitElosTryExec(crinitTinfo.session, &crinitElosdepSessionLock,
@@ -490,10 +505,14 @@ static int crinitElosdepInitThreadContext(crinitTaskDB_t *taskDb, struct crinitE
     return 0;
 }
 
-int crinitElosdepActivate(crinitTaskDB_t *taskDb, bool sl) {
+int crinitElosdepActivate(crinitTaskDB_t *taskDb, bool e) {
     int res;
 
-    if (sl && !crinitUseElos) {
+    if ((errno = pthread_mutex_lock(&crinitElosActivatedLock)) != 0) {
+        crinitErrnoPrint("Failed to lock elos connection activation indicator.");
+        return -1;
+    }
+    if (e && !crinitElosActivated) {
         if (crinitElosdepInitThreadContext(taskDb, &crinitTinfo) != 0) {
             crinitErrPrint("Failed to load elos interface.");
             return -1;
@@ -533,10 +552,13 @@ int crinitElosdepActivate(crinitTaskDB_t *taskDb, bool sl) {
             crinitErrPrint("Failed to free thread attributes.");
             return -1;
         }
-    } else if (!sl && crinitUseElos) {
-        // TODO: Kill thread.
-        crinitUseElos = sl;
     }
 
+    crinitElosActivated = e;
+
+    if ((errno = pthread_mutex_unlock(&crinitElosActivatedLock)) != 0) {
+        crinitErrnoPrint("Failed to unlock elos connection activation indicator.");
+        return -1;
+    }
     return 0;
 }
