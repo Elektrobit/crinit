@@ -244,6 +244,7 @@ IO_REDIRECT = STDERR STDOUT
   then depend e.g. on `@provided:resolvconf`. While the feature names chosen here reflect the functional intention, they
   can be chosen arbitrarily. (*array-like*)
 - **RESPAWN** -- If set to `YES`, the task will be restarted on failure or completion. Useful for daemons like `getty`.
+  Default: `NO`
 - **RESPAWN_RETRIES** -- Number of times a respawned task may fail *in a row* before it is not started again. The
   special value `-1` is interpreted as "unlimited". Default: -1
 - **ENV_SET** -- See section **Setting Environment Variables** below. (*array-like*)
