@@ -23,14 +23,14 @@
 #define CRINIT_MACHINE_ID_LENGTH 32
 #define CRINIT_MACHINE_ID_FORMAT "%" STR(CRINIT_MACHINE_ID_LENGTH) "s"
 
-static bool crinitUseElos = CRINIT_CONFIG_DEFAULT_USE_ELOS;  ///< Specifies if we should send elos events.
+static bool crinitElosActivated = false;  ///< Indicates if the elos connection and handler thread has been set up.
+static pthread_mutex_t crinitElosActivatedLock = PTHREAD_MUTEX_INITIALIZER;  ///< Mutex to guard crinitElosActivated.
 
 /**
  * Thread context of the eloslog main thread.
  */
 static struct crinitElosEventThread {
     pthread_t threadId;            ///< Thread identifier
-    bool elosStarted;              ///< Wether or not an initial conenction to elos has been established
     crinitElosSession_t *session;  ///< Elos session handle
 } crinitTinfo;
 
@@ -39,18 +39,6 @@ static pthread_mutex_t crinitEloslogSessionLock = PTHREAD_MUTEX_INITIALIZER;
 
 /** Ring buffer of elos event messages */
 static safuRingBuffer_t crinitElosEventBuffer;
-
-/*
-static safuResultE_t crinitDeleteEvent(crinitElosEvent_t *event) {
-    safuResultE_t result = SAFU_RESULT_FAILED;
-    if (event != NULL) {
-        free(event->hardwareid);
-        free(event->payload);
-        result = SAFU_RESULT_OK;
-    }
-    return result;
-}
-*/
 
 static inline int crinitFetchHWId(char *hwId) {
     FILE *fp = NULL;
@@ -99,14 +87,12 @@ static inline int crinitPublishEvent(void const *element, void const *data) {
                              "Failed to publish crinit event.", crinitTinfo.session, event);
 }
 
-static void *crinitEloslogEventListener(void *arg) {
+static void *crinitEloslogEventTransmitter(void *arg) {
     CRINIT_PARAM_UNUSED(arg);
 
     int res;
     safuVec_t events = {0};
     const char *version;
-
-    crinitTinfo.elosStarted = true;
 
     res = crinitElosTryExec(crinitTinfo.session, &crinitEloslogSessionLock, crinitElosGetVTable()->getVersion,
                             "Failed to request elos version.", crinitTinfo.session, &version);
@@ -115,6 +101,20 @@ static void *crinitEloslogEventListener(void *arg) {
     }
 
     while (1) {
+        if ((errno = pthread_mutex_lock(&crinitElosActivatedLock)) != 0) {
+            crinitErrnoPrint("Failed to lock elos connection activation indicator.");
+            break;
+        }
+        if (!crinitElosActivated) {
+            if ((errno = pthread_mutex_unlock(&crinitElosActivatedLock)) != 0) {
+                crinitErrnoPrint("Failed to unlock elos connection activation indicator.");
+            }
+            break;
+        }
+        if ((errno = pthread_mutex_unlock(&crinitElosActivatedLock)) != 0) {
+            crinitErrnoPrint("Failed to unlock elos connection activation indicator.");
+            break;
+        }
         res = safuRingBufferRead(&crinitElosEventBuffer, &events, NULL);
         if (res == SAFU_RESULT_OK) {
             safuVecIterate(&events, crinitPublishEvent, NULL);
@@ -134,9 +134,23 @@ int crinitElosLog(crinitElosSeverityE_t severity, int messageCode, const char *f
     safuResultE_t result;
     size_t bytes;
 
+    if ((errno = pthread_mutex_lock(&crinitElosActivatedLock)) != 0) {
+        crinitErrnoPrint("Failed to lock elos connection activation indicator.");
+        return -1;
+    }
+
     /* The plugin has not been activated */
-    if (!crinitUseElos) {
+    if (!crinitElosActivated) {
+        if ((errno = pthread_mutex_unlock(&crinitElosActivatedLock)) != 0) {
+            crinitErrnoPrint("Failed to unlock elos connection activation indicator.");
+            return -1;
+        }
         return 0;
+    }
+
+    if ((errno = pthread_mutex_unlock(&crinitElosActivatedLock)) != 0) {
+        crinitErrnoPrint("Failed to unlock elos connection activation indicator.");
+        return -1;
     }
 
     crinitElosEvent_t *event = calloc(1, sizeof(*event));
@@ -197,10 +211,15 @@ int crinitEloslogInit(void) {
     return 0;
 }
 
-int crinitEloslogActivate(bool sl) {
+int crinitEloslogActivate(bool e) {
     int res;
 
-    if (sl && !crinitUseElos) {
+    if ((errno = pthread_mutex_lock(&crinitElosActivatedLock)) != 0) {
+        crinitErrnoPrint("Failed to lock elos connection activation indicator.");
+        return -1;
+    }
+
+    if (e && !crinitElosActivated) {
         if (crinitElosInit() != 0) {
             crinitErrPrint("Failed to load elos interface.");
             return -1;
@@ -228,7 +247,7 @@ int crinitEloslogActivate(bool sl) {
         }
 
         crinitDbgInfoPrint("Starting elos event handler thread.");
-        res = pthread_create(&crinitTinfo.threadId, &attrs, crinitEloslogEventListener, NULL);
+        res = pthread_create(&crinitTinfo.threadId, &attrs, crinitEloslogEventTransmitter, NULL);
         if (res != 0) {
             crinitErrPrint("Could not create elos event handler thread.");
             pthread_attr_destroy(&attrs);
@@ -240,10 +259,13 @@ int crinitEloslogActivate(bool sl) {
             crinitErrPrint("Failed to free thread attributes.");
             return -1;
         }
-    } else if (!sl && crinitUseElos) {
-        // TODO: Kill thread.
-        crinitUseElos = sl;
     }
 
+    crinitElosActivated = e;
+
+    if ((errno = pthread_mutex_unlock(&crinitElosActivatedLock)) != 0) {
+        crinitErrnoPrint("Failed to unlock elos connection activation indicator.");
+        return -1;
+    }
     return 0;
 }

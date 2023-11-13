@@ -31,9 +31,11 @@ static int crinitActivateSyslog(void *data) {
 }
 
 static int crinitElosdepActivateCb(void *data) {
-    CRINIT_PARAM_UNUSED(data);
-
     return crinitElosdepActivate((crinitTaskDB_t *)data, true);
+}
+
+static int crinitElosdepDeactivateCb(void *data) {
+    return crinitElosdepActivate((crinitTaskDB_t *)data, false);
 }
 
 static int crinitElosdepTaskAddedCb(void *data) {
@@ -52,27 +54,41 @@ static int crinitEloslogActivateCb(void *data) {
     return crinitEloslogActivate(true);
 }
 
+static int crinitEloslogDeactivateCb(void *data) {
+    CRINIT_PARAM_UNUSED(data);
+
+    return crinitEloslogActivate(false);
+}
+
 int crinitFeatureHook(const char *sysFeatName, crinitHookType_t type, void *data) {
     static const crinitOptFeatMap_t fmap[] = {
         {.name = "syslog",
-         .type = START,
+         .type = CRINIT_HOOK_START,
          .af = crinitActivateSyslog,
          .globMemberOffset = offsetof(crinitGlobOptStore_t, CRINIT_GLOBOPT_USE_SYSLOG)},
         {.name = CRINIT_ELOSDEP_FEATURE_NAME,
-         .type = START,
+         .type = CRINIT_HOOK_START,
          .af = crinitElosdepActivateCb,
          .globMemberOffset = offsetof(crinitGlobOptStore_t, CRINIT_GLOBOPT_USE_ELOS)},
         {.name = CRINIT_ELOSDEP_FEATURE_NAME,
-         .type = TASK_ADDED,
+         .type = CRINIT_HOOK_STOP,
+         .af = crinitElosdepDeactivateCb,
+         .globMemberOffset = offsetof(crinitGlobOptStore_t, CRINIT_GLOBOPT_USE_ELOS)},
+        {.name = CRINIT_ELOSDEP_FEATURE_NAME,
+         .type = CRINIT_HOOK_TASK_ADDED,
          .af = crinitElosdepTaskAddedCb,
          .globMemberOffset = offsetof(crinitGlobOptStore_t, CRINIT_GLOBOPT_USE_ELOS)},
         {.name = CRINIT_ELOSLOG_FEATURE_NAME,
-         .type = INIT,
+         .type = CRINIT_HOOK_INIT,
          .af = crinitEloslogInitCb,
          .globMemberOffset = offsetof(crinitGlobOptStore_t, CRINIT_GLOBOPT_USE_ELOS)},
         {.name = CRINIT_ELOSLOG_FEATURE_NAME,
-         .type = START,
+         .type = CRINIT_HOOK_START,
          .af = crinitEloslogActivateCb,
+         .globMemberOffset = offsetof(crinitGlobOptStore_t, CRINIT_GLOBOPT_USE_ELOS)},
+        {.name = CRINIT_ELOSLOG_FEATURE_NAME,
+         .type = CRINIT_HOOK_STOP,
+         .af = crinitEloslogDeactivateCb,
          .globMemberOffset = offsetof(crinitGlobOptStore_t, CRINIT_GLOBOPT_USE_ELOS)},
     };
 

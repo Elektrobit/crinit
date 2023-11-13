@@ -30,10 +30,10 @@ int crinitElosdepTaskAdded(struct crinitTask_t *task);
  * elos daemon.
  *
  * @param taskDb Task database to be informed if event occurs.
- * @param sl     `true` if elos should be used, `false` otherwise.
+ * @param e      `true` if elos should be used, `false` otherwise.
  *
  * @return Returns 0 on success, -1 otherwise.
  */
-int crinitElosdepActivate(struct crinitTaskDB_t *taskDb, bool sl);
+int crinitElosdepActivate(struct crinitTaskDB_t *taskDb, bool e);
 
 #endif /* __ELOSDEP_H__ */

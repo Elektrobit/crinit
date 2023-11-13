@@ -24,11 +24,11 @@ int crinitEloslogInit(void);
  * By default, Crinit will not connect to elos. If this is set to `true`, however, Crinit will connect
  * and send events to the elos daemon.
  *
- * @param sl     `true` if elos should be used, `false` otherwise.
+ * @param e  `true` if elos should be used, `false` otherwise.
  *
  * @return Returns 0 on success, -1 otherwise.
  */
-int crinitEloslogActivate(bool sl);
+int crinitEloslogActivate(bool e);
 
 /**
  * Log a crinit event to elos.
