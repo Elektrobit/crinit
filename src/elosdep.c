@@ -435,17 +435,17 @@ static void *crinitElosdepEventListener(void *arg) {
     while (1) {
         if ((errno = pthread_mutex_lock(&crinitElosActivatedLock)) != 0) {
             crinitErrnoPrint("Failed to lock elos connection activation indicator.");
-            goto err_session;
+            goto err_connection_lost;
         }
         if (!crinitElosActivated) {
             if ((errno = pthread_mutex_unlock(&crinitElosActivatedLock)) != 0) {
                 crinitErrnoPrint("Failed to unlock elos connection activation indicator.");
             }
-            goto err_session;
+            goto err_connection_lost;
         }
         if ((errno = pthread_mutex_unlock(&crinitElosActivatedLock)) != 0) {
             crinitErrnoPrint("Failed to unlock elos connection activation indicator.");
-            goto err_session;
+            goto err_connection_lost;
         }
 
         crinitListForEachEntry(filterTask, &crinitFilterTasks, list) {
@@ -474,6 +474,23 @@ static void *crinitElosdepEventListener(void *arg) {
 
         usleep(500000);
     }
+
+err_connection_lost:
+    if ((err = crinitElosdepFilterTaskListClear()) != 0) {
+        crinitErrnoPrint("Failed to clear filter tasks.");
+    }
+    if ((errno = pthread_mutex_lock(&crinitElosdepSessionLock)) != 0) {
+        crinitErrnoPrint("Failed to lock elos session.");
+        return NULL;
+    }
+    free(crinitTinfo.session);
+    crinitTinfo.session = NULL;
+    crinitTinfo.elosStarted = false;
+    if ((errno = pthread_mutex_unlock(&crinitElosdepSessionLock)) != 0) {
+        crinitErrnoPrint("Failed to unlock elos session.");
+    }
+
+    return NULL;
 
 err_session:
     if ((err = crinitElosdepFilterListUnsubscribe()) != 0) {
