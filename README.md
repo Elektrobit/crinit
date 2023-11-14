@@ -1,7 +1,7 @@
 # Crinit -- Configurable Rootfs Init
 
 
-<img src="images/crinit-logo.png" width=20% height=20% align="right">
+<img src="_static/crinit-logo.png" width=20% height=20% align="right">
 
 ## In a Nutshell
 
@@ -80,7 +80,7 @@ The full text of the license can be found in the [LICENSE](LICENSE) file in the 
 
 ## Powered by EB
 
-<img src="images/eb-logo.png" width=70 height=70 hspace=10 align="left">
+<img src="_static/eb-logo.png" width=70 height=70 hspace=10 align="left">
 Crinit is powered by Elektrobit Automotive GmbH.
 
 Elektrobit is an automotive software company and developer of embedded software products for ECU, AUTOSAR, automated driving, connected vehicles and UX.
@@ -117,7 +117,7 @@ The crinit logo is the Swallow (Hirundinidae). A quick and small bird able to fl
 
 As described above, Crinit needs a global series-file containing global configuration options as well as a list of task
 configurations. Examples for a local demonstration inside the build environment (see [Build
-Instructions](#build-instructions) below) are available in `config/test/` and examples to use as a starting point for a
+Instructions](#Build Instructions) below) are available in `config/test/` and examples to use as a starting point for a
 minimal system boot are available in `config/example/`.
 
 The general format of crinit configuration files is INI-style `KEY = value` pairs. Some settings may be array-like,

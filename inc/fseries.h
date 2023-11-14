@@ -32,6 +32,7 @@ typedef struct crinitFileSeries_t {
  *
  * @param fse          Return pointer for the resulting file series, will contain allocated memory that can be freed
  *                     via crinitDestroyFileSeries().
+ *
  * @param path         Path to the directory to scan.
  * @param fileSuffix   File extension to filter results by.
  * @param followLinks  If symbolic links to regular files matching \a fileSuffix should be included or not.
@@ -48,6 +49,7 @@ int crinitFileSeriesFromDir(crinitFileSeries_t *fse, const char *path, const cha
  *
  *  @param fse      Return pointer for the resulting file series, memory for crinitFileSeries_t::baseDir will be
  *                  allocated.
+ *
  *  @param baseDir  Base directory of the files in the series.
  *  @param strArr   Array of strings to be emplaced as crinitFileSeries_t::fnames.
  *
@@ -66,8 +68,8 @@ void crinitDestroyFileSeries(crinitFileSeries_t *fse);
  * Sets initial state and then uses crinitResizeFileSeries() internally to allocate space for the pointers.
  *
  * @param fse          The crinitFileSeries_t to initialize.
- * @param numElements  The number of pointers in crinitFileSeries_t::fnames to allocate. No memory for the backing string
- *                     is allocated at this point.
+ * @param numElements  The number of pointers in crinitFileSeries_t::fnames to allocate.
+ * No memory for the backing string is allocated at this point.
  * @param baseDir      Base directory of the new file series to be set.
  *
  *  @return  0 on success, -1 otherwise.
@@ -81,7 +83,7 @@ TESTABLE int crinitInitFileSeries(crinitFileSeries_t *fse, size_t numElements, c
  *
  * @param fse          The crinitFileSeries_t to modify.
  * @param numElements  The new number of pointers that fse shall have. Can be lower, higher or the same as the current
- *                     state.
+ * state.
  *
  * @return  0 on success, -1 otherwise.
  */
