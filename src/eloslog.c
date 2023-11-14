@@ -101,6 +101,9 @@ static void *crinitEloslogEventTransmitter(void *arg) {
     }
 
     while (1) {
+        if(res != SAFU_RESULT_OK) {
+            break;
+        }
         if ((errno = pthread_mutex_lock(&crinitElosActivatedLock)) != 0) {
             crinitErrnoPrint("Failed to lock elos connection activation indicator.");
             break;

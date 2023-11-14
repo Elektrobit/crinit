@@ -18,6 +18,9 @@
 
 #define CRINIT_ELOS_LIBRARY "libelos.so.0"  ///< Elos shared library name
 
+#define CRINIT_ELOS_CONNECTION_RETRIES 10uL
+#define CRINIT_ELOS_CONNECTION_RETRY_INTERVAL_US 500000
+
 #define ELOS_ID_INVALID 0  ///< Invalid elos event queue ID constant.
 
 #define ELOS_CLASSIFICATION_ELOS_MASK 0x00000000FFFFFFFFULL
@@ -165,49 +168,56 @@ int crinitElosDisconnect(crinitElosSession_t *session, pthread_mutex_t *sessionL
  * @param func          Elos function to be called.
  * @param err_msg       Error message to be returned on error.
  */
-#define crinitElosTryExec(session, sessionLock, func, err_msg, ...)                                               \
-    __extension__({                                                                                               \
-        int res = SAFU_RESULT_OK;                                                                                 \
-                                                                                                                  \
-        if ((errno = pthread_mutex_lock(sessionLock)) != 0) {                                                     \
-            crinitErrnoPrint("Failed to lock elos session.");                                                     \
-            res = -1;                                                                                             \
-        } else {                                                                                                  \
-            if ((session) != NULL && !(session)->connected) {                                                     \
-                free(session);                                                                                    \
-                (session) = NULL;                                                                                 \
-            }                                                                                                     \
-            while ((session) == NULL) {                                                                           \
-                if (crinitElosGetVTable()->elosServer == NULL) {                                                  \
-                    crinitErrPrint("Elos server configuration missing or not loaded yet.");                       \
-                    res = -1;                                                                                     \
-                    break;                                                                                        \
-                } else {                                                                                          \
-                    res = crinitElosGetVTable()->connect(crinitElosGetVTable()->elosServer,                       \
-                                                         crinitElosGetVTable()->elosPort,                         \
-                                                         (crinitElosSession_t **)&(session));                     \
-                    if (res != SAFU_RESULT_OK) {                                                                  \
-                        crinitErrPrint("Failed to connect to elosd on %s:%d.", crinitElosGetVTable()->elosServer, \
-                                       crinitElosGetVTable()->elosPort);                                          \
-                        usleep(500000);                                                                           \
-                    }                                                                                             \
-                }                                                                                                 \
-            }                                                                                                     \
-                                                                                                                  \
-            if (res == SAFU_RESULT_OK) {                                                                          \
-                res = func(__VA_ARGS__);                                                                          \
-                if (res != SAFU_RESULT_OK) {                                                                      \
-                    crinitErrPrint(err_msg);                                                                      \
-                }                                                                                                 \
-                                                                                                                  \
-                if ((errno = pthread_mutex_unlock(sessionLock)) != 0) {                                           \
-                    crinitErrnoPrint("Failed to unlock elos session.");                                           \
-                    res = -1;                                                                                     \
-                }                                                                                                 \
-            }                                                                                                     \
-        }                                                                                                         \
-                                                                                                                  \
-        res;                                                                                                      \
+#define crinitElosTryExec(session, sessionLock, func, err_msg, ...)                                                   \
+    __extension__({                                                                                                   \
+        int res = SAFU_RESULT_OK;                                                                                     \
+                                                                                                                      \
+        if ((errno = pthread_mutex_lock(sessionLock)) != 0) {                                                         \
+            crinitErrnoPrint("Failed to lock elos session.");                                                         \
+            res = -1;                                                                                                 \
+        } else {                                                                                                      \
+            if ((session) != NULL && !(session)->connected) {                                                         \
+                free(session);                                                                                        \
+                (session) = NULL;                                                                                     \
+            }                                                                                                         \
+            size_t retryCount = 0;                                                                                    \
+            while ((session) == NULL) {                                                                               \
+                if (crinitElosGetVTable()->elosServer == NULL) {                                                      \
+                    crinitErrPrint("Elos server configuration missing or not loaded yet.");                           \
+                    res = -1;                                                                                         \
+                    break;                                                                                            \
+                } else {                                                                                              \
+                    res = crinitElosGetVTable()->connect(crinitElosGetVTable()->elosServer,                           \
+                                                         crinitElosGetVTable()->elosPort,                             \
+                                                         (crinitElosSession_t **)&(session));                         \
+                    if (res != SAFU_RESULT_OK) {                                                                      \
+                        crinitDbgInfoPrint("Failed to connect to elosd on %s:%d.", crinitElosGetVTable()->elosServer, \
+                                           crinitElosGetVTable()->elosPort);                                          \
+                        if (retryCount >= CRINIT_ELOS_CONNECTION_RETRIES) {                                           \
+                            crinitErrPrint("Maximum connection retries with elosd on %s:%d exceeded.",                \
+                                           crinitElosGetVTable()->elosServer, crinitElosGetVTable()->elosPort);       \
+                            break;                                                                                    \
+                        }                                                                                             \
+                        usleep(CRINIT_ELOS_CONNECTION_RETRY_INTERVAL_US);                                                \
+                        retryCount++;                                                                                 \
+                    }                                                                                                 \
+                }                                                                                                     \
+            }                                                                                                         \
+                                                                                                                      \
+            if (res == SAFU_RESULT_OK) {                                                                              \
+                res = func(__VA_ARGS__);                                                                              \
+                if (res != SAFU_RESULT_OK) {                                                                          \
+                    crinitErrPrint(err_msg);                                                                          \
+                }                                                                                                     \
+                                                                                                                      \
+                if ((errno = pthread_mutex_unlock(sessionLock)) != 0) {                                               \
+                    crinitErrnoPrint("Failed to unlock elos session.");                                               \
+                    res = -1;                                                                                         \
+                }                                                                                                     \
+            }                                                                                                         \
+        }                                                                                                             \
+                                                                                                                      \
+        res;                                                                                                          \
     })
 
 #endif /* __ELOS_COMMON_H__ */
