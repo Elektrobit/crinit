@@ -125,7 +125,15 @@ static void *crinitEloslogEventTransmitter(void *arg) {
         }
     }
 
-    crinitElosDisconnect(crinitTinfo.session, &crinitEloslogSessionLock);
+    if ((errno = pthread_mutex_lock(&crinitEloslogSessionLock)) != 0) {
+        crinitErrnoPrint("Failed to lock elos session.");
+        return NULL;
+    }
+    free(crinitTinfo.session);
+    crinitTinfo.session = NULL;
+    if ((errno = pthread_mutex_unlock(&crinitEloslogSessionLock)) != 0) {
+        crinitErrnoPrint("Failed to unlock elos session.");
+    }
 
     return NULL;
 }
