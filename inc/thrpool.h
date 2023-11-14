@@ -42,7 +42,7 @@ typedef struct crinitThreadPool_t {
  * @param initialSize  Initial size (in number of threads) of the pool.
  * @param threadFunc   Worker thread function to use.
  * @param thrArgs      Arguments to the worker thread function. Will be copied and saved in case more threads need to be
- *                     started by dryPoolWatchdog.
+ * started by dryPoolWatchdog.
  * @param thrArgsSize  Size (Bytes) of arguments to the worker thread function.
  *
  * @return 0 on success, -1 otherwise

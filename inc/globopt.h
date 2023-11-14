@@ -3,6 +3,7 @@
  * @file globopt.h
  * @brief Header related to global option storage.
  */
+
 #ifndef __GLOBOPT_H__
 #define __GLOBOPT_H__
 
@@ -53,7 +54,6 @@ static crinitGlobOptStore_t crinitGenericGlobOptHelper __attribute__((unused));
 // Rationale: Used version of clang-format does not format _Generic macros correctly. This is a known bug and has been
 // fixed very recently. We may remove this exemption once we are on the new clang version as standard.
 // See: https://github.com/llvm/llvm-project/issues/18080
-
 /**
  * Type-generic macro to get the value of a given global option.
  *
@@ -61,8 +61,8 @@ static crinitGlobOptStore_t crinitGenericGlobOptHelper __attribute__((unused));
  *
  * @param globOptMember  One of the member names of crinitGlobOptStore_t (or one of the CRINIT_GLOBOPT_* constants).
  * @param retPtr         Return pointer for value. Type depends on the chosen member of crinitGlobOptStore_t and is
- *                       always `&(member_type)`. In case of `char **` (for a string) and `crinitEnvSet_t *` memory will
- *                       be allocated.
+ * always `&(member_type)`. In case of `char **` (for a string) and `crinitEnvSet_t *` memory will
+ * be allocated.
  *
  * @return  0 on success, -1 otherwise
  */
@@ -81,7 +81,7 @@ static crinitGlobOptStore_t crinitGenericGlobOptHelper __attribute__((unused));
  *
  * @param globOptMember  One of the member names of crinitGlobOptStore_t (or one of the CRINIT_GLOBOPT_* constants).
  * @param val            Value to store. Type depends on the chosen member of crinitGlobOptStore_t. See function
- *                       signatures of crinitGlobOptGet*().
+ * signatures of crinitGlobOptGet*().
  *
  * @return  0 on success, -1 otherwise
  */

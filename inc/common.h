@@ -38,7 +38,7 @@
  *
  * @param path  The path to check.
  *
- * @return true if path is absolute, false otherwise
+ * @return true if path i*s absolute, false otherwise
  */
 #define crinitIsAbsPath(path) (((path) != NULL) && ((path)[0] == '/'))
 
@@ -57,7 +57,7 @@
  * to functions which use this macro.
  *
  * @param errcode  The error code to return if \a expr is false. Must be a compatible type to the return type of the
- *                 encompassing function.
+ * encompassing function.
  * @param ...      Variadic list of parameter names to check if they are NULL.
  */
 #define crinitNullCheck(errcode, ...)                                                         \
