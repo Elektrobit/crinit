@@ -425,11 +425,13 @@ static void *crinitElosdepEventListener(void *arg) {
                             "Failed to request elos version.", tinfo->session, &version);
     if (err == SAFU_RESULT_OK) {
         crinitInfoPrint("Connected to elosd running version: %s", version);
+    } else {
+        goto err_connection_lost;
     }
 
     if ((err = crinitElosdepFilterListSubscribe()) != 0) {
         crinitErrnoPrint("Failed to subscribe already registered elos filters.");
-        goto err;
+        goto err_connection_lost;
     }
 
     while (1) {
@@ -501,7 +503,6 @@ err_session:
         crinitErrnoPrint("Failed to clear filter tasks.");
     }
 
-err:
     crinitElosDisconnect(crinitTinfo.session, &crinitElosdepSessionLock);
 
     return NULL;
