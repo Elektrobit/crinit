@@ -3,11 +3,11 @@
 import io
 import os
 import re
-import subprocess
 import traceback
 
 from robot.libraries.BuiltIn import BuiltIn
 from robot.api import logger
+
 
 class CrinitLibrary(object):
     """CrinitLibrary provides a set of keywords for direct interaction
@@ -198,7 +198,7 @@ class CrinitLibrary(object):
     """ for crinit-ctl ls proc ; do PID != -1 -> Kill process; done Finally kill crinit """
     def crinit_kill_all_tasks(self):
         """ Kills all running crinit tasks and stops crinit """
-        (stdout, stderr, ret) = self.__crinit_run("list", "Adding task failed", task=target_path, options="-f")
+        (stdout, stderr, ret) = self.__crinit_run("list", "Adding task failed", options="-f")
 
         if ret != 0:
             logger.error("Failed to list active crinit tasks.")
@@ -215,14 +215,14 @@ class CrinitLibrary(object):
             if fields[1] == -1:
                 continue
 
-            res = self.crinit_disable_task(field[2])
+            res = self.crinit_disable_task(fields[2])
             if res != 0:
-                logger.error(f"Failed to disbale task {field[2]}")
+                logger.error(f"Failed to disbale task {fields[2]}")
                 return res
 
-            res = self.crinit_kill_task(field[2])
+            res = self.crinit_kill_task(fields[2])
             if res != 0:
-                logger.error(f"Failed to kill task {field[2]}")
+                logger.error(f"Failed to kill task {fields[2]}")
                 return res
 
         return 0
