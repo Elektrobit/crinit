@@ -20,6 +20,7 @@ class CrinitLibrary(object):
 
     def __init__(self):
         self.LOCAL_TEST_DIR = BuiltIn().get_variable_value('${LOCAL_TEST_DIR}')
+        self.IS_ROOT = (lambda s: True if s == "True" else False)(BuiltIn().get_variable_value('${USER_IS_ROOT}'))
         self.ssh = BuiltIn().get_library_instance('SSHLibrary')
         self.password = BuiltIn().get_variable_value('${PASSWORD}')
         self.crinit = None
@@ -58,7 +59,7 @@ class CrinitLibrary(object):
                 return_stdout=True,
                 return_stderr=True,
                 return_rc=True,
-                sudo=True,
+                sudo=(not self.IS_ROOT),
                 sudo_password=self.password
             )
         except Exception:
@@ -113,7 +114,7 @@ class CrinitLibrary(object):
         try:
             self.ssh.start_command(
                 f"{self.CRINIT_BIN}",
-                sudo=True,
+                sudo=(not self.IS_ROOT),
                 sudo_password=self.password
             )
         except Exception:
@@ -123,7 +124,7 @@ class CrinitLibrary(object):
         try:
             self.ssh.execute_command(
                 f"until [ -S {self.CRINIT_SOCK} ]; do sleep 0.1; done",
-                sudo=True,
+                sudo=(not self.IS_ROOT),
                 sudo_password=self.password,
                 timeout=self.WAIT_TIMEOUT
             )
@@ -148,7 +149,7 @@ class CrinitLibrary(object):
             stdout, ret = self.ssh.execute_command(
                 f"pkill {self.CRINIT_BIN} && rm -rf {self.CRINIT_SOCK}",
                 return_rc=True,
-                sudo=True,
+                sudo=(not self.IS_ROOT),
                 sudo_password=self.password
             )
         except Exception:
