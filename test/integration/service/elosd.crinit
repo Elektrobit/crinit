@@ -7,5 +7,4 @@ COMMAND = /usr/bin/elosd
 IO_REDIRECT = STDOUT "/tmp/elosd.log"
 IO_REDIRECT = STDERR STDOUT
 
-DEPENDS = earlysetup:wait
 PROVIDES = elos:spawn syslog:spawn
