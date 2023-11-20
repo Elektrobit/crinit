@@ -28,6 +28,7 @@ pipeline {
             "Package (arm64v8)",
             "Analyse: Lint (amd64)",
             "Analyse: Lint (arm64v8)",
+            "Build Doc",
             "Test: utests (amd64)",
             "Test: utests (arm64v8)",
             "Test: smoketests (amd64)",
@@ -46,6 +47,37 @@ pipeline {
                 git clean -xdff
                 '''
             }
+        }
+        stage ('Setup Doc') {
+            agent {
+                dockerfile {
+                    dir 'ci'
+                    reuseNode true
+                    additionalBuildArgs " \
+                        --ssh default=/root/.ssh/id_ed25519 \
+                        --progress=plain \
+                        --build-arg REPO=amd64 \
+                        --build-arg USER=jenkins \
+                        --build-arg UID=${UID} \
+                        --build-arg GID=${GID} \
+                        --build-arg UBUNTU_RELEASE=jammy \
+                        --build-arg EMLIX_GIT_SOURCES=git@gitlabintern.emlix.com:elektrobit/base-os"
+                    args "--privileged \
+                        -v /home/jenkins/.ssh:/home/jenkins/.ssh \
+                        -e HOME=/home/jenkins"
+                }
+            }
+            stages {
+                stage ('Build Doc') {
+		    steps {
+			gitlabCommitStatus("${STAGE_NAME}") {
+			    sh '''#!/bin/bash -xe
+			    ci/build_doc.sh
+			    '''
+			}
+		    }
+	        }
+	    }
         }
         stage ('Build and Test') {
             matrix {
@@ -159,7 +191,7 @@ pipeline {
     }
     post {
         always {
-            archiveArtifacts 'result/**'
+            archiveArtifacts 'result/**, build/**'
         }
     }
 }
