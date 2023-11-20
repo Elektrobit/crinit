@@ -15,7 +15,7 @@ class CrinitLibrary(object):
     """
 
     CRINIT_BIN = "/sbin/crinit"
-    CRINIT_SOCK = "/run/crinit/crinit.sock"
+    CRINIT_SOCK = "/tmp/crinit-itest.sock"
     WAIT_TIMEOUT = 30
 
     def __init__(self):
@@ -55,12 +55,13 @@ class CrinitLibrary(object):
 
         try:
             stdout, stderr, ret = self.ssh.execute_command(
-                f"crinit-ctl {action} {kwargs.get('task') or ''} {kwargs.get('options') or ''}",
+                f"sh -c \"export CRINIT_SOCK={self.CRINIT_SOCK}; \
+                        crinit-ctl {action} {kwargs.get('task') or ''} {kwargs.get('options') or ''}\"",
                 return_stdout=True,
                 return_stderr=True,
                 return_rc=True,
                 sudo=(not self.IS_ROOT),
-                sudo_password=self.password
+                sudo_password=(None if self.IS_ROOT else self.password)
             )
         except Exception:
             self.__print_traceback()
@@ -113,9 +114,9 @@ class CrinitLibrary(object):
 
         try:
             self.ssh.start_command(
-                f"{self.CRINIT_BIN}",
+                f"sh -c \"export CRINIT_SOCK={self.CRINIT_SOCK}; {self.CRINIT_BIN}\"",
                 sudo=(not self.IS_ROOT),
-                sudo_password=self.password
+                sudo_password=(None if self.IS_ROOT else self.password)
             )
         except Exception:
             self.__print_traceback()
@@ -125,7 +126,7 @@ class CrinitLibrary(object):
             self.ssh.execute_command(
                 f"until [ -S {self.CRINIT_SOCK} ]; do sleep 0.1; done",
                 sudo=(not self.IS_ROOT),
-                sudo_password=self.password,
+                sudo_password=(None if self.IS_ROOT else self.password),
                 timeout=self.WAIT_TIMEOUT
             )
         except Exception:
@@ -150,7 +151,7 @@ class CrinitLibrary(object):
                 f"pkill {self.CRINIT_BIN} && rm -rf {self.CRINIT_SOCK}",
                 return_rc=True,
                 sudo=(not self.IS_ROOT),
-                sudo_password=self.password
+                sudo_password=(None if self.IS_ROOT else self.password)
             )
         except Exception:
             self.__print_traceback()
