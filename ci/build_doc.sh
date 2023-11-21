@@ -78,6 +78,12 @@ mkdir -p ${SPHINX_BUILD_DIR} ${SPHINX_GENERATED_SOURCE_DIR}/ADRs ${SPHINX_GENERA
 
 createApiDocu
 
+function resetReadMeImages() {
+    sed -i 's#src="_static/#src="images/#' README.md
+}
+sed -i 's#src="images/#src="_static/#' README.md
+trap resetReadMeImages EXIT
+
 export PATH="${PATH}:${DIST_DIR}/usr/local/bin"
 export LD_LIBRARY_PATH="${LD_LIBRARY_PATH-"./"}:${DIST_DIR}/usr/local/lib"
 sphinx-build -b html ${SPHINX_SOURCE_DIR} ${SPHINX_HTML_OUTPUT_DIR} 2> ${SPHINX_BUILD_DIR}/html_doc_error.log
