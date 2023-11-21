@@ -114,7 +114,7 @@ class CrinitLibrary(object):
 
         try:
             self.ssh.start_command(
-                f"sh -c \"export CRINIT_SOCK={self.CRINIT_SOCK}; {self.CRINIT_BIN}\"",
+                f"sh -c \"export CRINIT_SOCK={self.CRINIT_SOCK}; {self.CRINIT_BIN} {self.CRINIT_SERIES}\"",
                 sudo=(not self.IS_ROOT),
                 sudo_password=(None if self.IS_ROOT else self.password)
             )
@@ -124,7 +124,7 @@ class CrinitLibrary(object):
 
         try:
             self.ssh.execute_command(
-                f"until [ -S {self.CRINIT_SOCK} ]; do sleep 0.1; done",
+                f"sh -c \"until [ -S {self.CRINIT_SOCK} ]; do sleep 0.1; done\"",
                 sudo=(not self.IS_ROOT),
                 sudo_password=(None if self.IS_ROOT else self.password),
                 timeout=self.WAIT_TIMEOUT
