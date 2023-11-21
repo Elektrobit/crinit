@@ -16,6 +16,7 @@ class CrinitLibrary(object):
 
     CRINIT_BIN = "/sbin/crinit"
     CRINIT_SOCK = "/tmp/crinit-itest.sock"
+    CRINIT_SERIES = "/etc/crinit/itest/itest.series"
     WAIT_TIMEOUT = 30
 
     def __init__(self):
