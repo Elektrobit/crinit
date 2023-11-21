@@ -129,9 +129,11 @@ class CrinitLibrary(object):
                 sudo_password=(None if self.IS_ROOT else self.password),
                 timeout=self.WAIT_TIMEOUT
             )
-        except Exception:
-            self.__print_traceback()
-            return -1
+        except Exception as e:
+            out, err = self.ssh.read_command_output(return_stderr=True, timeout=self.WAIT_TIMEOUT)
+            logger.info(out)
+            logger.error(err)
+            raise e
 
         return 0
 
