@@ -13,3 +13,5 @@ ELOS_PORT = 54321
 
 FILTER_DEFINE = GLOB_TEST ".event.payload 'elos_glob_test' STRCMP"
 FILTER_DEFINE = GLOB_TEST_2 ".event.payload 'elos_glob_test_2' STRCMP"
+
+TASKDIR = /etc/crinit/itest

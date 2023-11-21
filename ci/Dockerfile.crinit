@@ -86,14 +86,12 @@ RUN cmake -B build . \
  . \
  && make -C build install
 
-RUN mkdir -p /etc/elos /etc/crinit
+RUN mkdir -p /etc/elos /etc/crinit/itest
 COPY ./test/integration/service/elosd.json /etc/elos
 RUN chmod 644 /etc/elos/elosd.json
 
-COPY ./test/integration/service/default.series /etc/crinit
-# As crinit is not registered as init process this would not have the intended effect.
-COPY ./test/integration/service/earlysetup.crinit /etc/crinit
-COPY ./test/integration/service/elosd.crinit /etc/crinit
+COPY ./test/integration/service/itest.series /etc/crinit/itest
+COPY ./test/integration/service/elosd.crinit /etc/crinit/itest
 RUN chmod -R 644 /etc/crinit
 RUN uuidgen > /etc/machine-id
 
