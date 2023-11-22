@@ -25,8 +25,8 @@ Check If Crinit Client Library Is Installed
 *** Keywords ***
 Is Crinit Client Installed
     ${value}=         Execute And Log    which crinit-ctl    ${RETURN_STDOUT}
-    RETURN    ${value}
+    [return]    ${value}
 
 Is Crinit Client Library Installed
     ${value}=         Execute And Log    find /lib/* /usr/lib/* /usr/local/lib/* -name "libcrinit-client.so*" 2>/dev/null    ${RETURN_STDOUT}
-    RETURN    ${value}
+    [return]    ${value}
