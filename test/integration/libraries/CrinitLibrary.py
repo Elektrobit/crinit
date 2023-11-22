@@ -185,12 +185,12 @@ class CrinitLibrary(object):
 
         | task_name | The task name |
         """
-        return self.__crinit_task_run("kill", "Killing task failed", task=task_name)[2]
+        return self.__crinit_run("kill", "Killing task failed", task=task_name)[2]
 
     """ for crinit-ctl ls proc ; do PID != -1 -> Kill process; done Finally kill crinit """
     def crinit_kill_all_tasks(self):
         """ Kills all running crinit tasks and stops crinit """
-        (stdout, stderr, ret) = self.__crinit_run("list", "Adding task failed", options="-f")
+        (stdout, stderr, ret) = self.__crinit_run("list", "Could not list tasks.")
 
         if ret != 0:
             logger.error("Failed to list active crinit tasks.")
@@ -204,17 +204,17 @@ class CrinitLibrary(object):
             fields = line.split()
 
             # Skip stopped processes
-            if fields[1] == -1:
+            if fields[1] == "-1":
                 continue
 
-            res = self.crinit_disable_task(fields[2])
+            res = self.crinit_disable_task(fields[0])
             if res != 0:
-                logger.error(f"Failed to disbale task {fields[2]}")
+                logger.error(f"Failed to disable task {fields[0]}")
                 return res
 
-            res = self.crinit_kill_task(fields[2])
+            res = self.crinit_kill_task(fields[0])
             if res != 0:
-                logger.error(f"Failed to kill task {fields[2]}")
+                logger.error(f"Failed to kill task {fields[0]}")
                 return res
 
         return 0
