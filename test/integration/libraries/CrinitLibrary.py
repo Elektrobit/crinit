@@ -15,13 +15,13 @@ class CrinitLibrary(object):
     """
 
     CRINIT_BIN = "/sbin/crinit"
-    CRINIT_SOCK = "/tmp/crinit-itest.sock"
     CRINIT_SERIES = "/etc/crinit/itest/itest.series"
     WAIT_TIMEOUT = 30
 
     def __init__(self):
         self.LOCAL_TEST_DIR = BuiltIn().get_variable_value('${LOCAL_TEST_DIR}')
         self.IS_ROOT = (lambda s: True if s == "True" else False)(BuiltIn().get_variable_value('${USER_IS_ROOT}'))
+        self.CRINIT_SOCK = BuiltIn().get_variable_value('${CRINIT_SOCK}')
         self.ssh = BuiltIn().get_library_instance('SSHLibrary')
         self.password = BuiltIn().get_variable_value('${PASSWORD}')
         self.crinit = None
