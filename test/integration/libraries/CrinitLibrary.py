@@ -140,12 +140,19 @@ class CrinitLibrary(object):
 
         ret = -1
 
-        stdout, ret = self.ssh.execute_command(
-            f"pkill {self.CRINIT_BIN} && rm -rf {self.CRINIT_SOCK}",
+        stdout, stderr, ret = self.ssh.execute_command(
+            f"sh -c \"pkill -f {self.CRINIT_BIN}\\ {self.CRINIT_SERIES} && rm -rf {self.CRINIT_SOCK}\"",
+            return_stdout=True,
+            return_stderr=True,
             return_rc=True,
             sudo=(not self.IS_ROOT),
             sudo_password=(None if self.IS_ROOT else self.password)
         )
+
+        if stdout:
+            logger.info(stdout)
+        if ret != 0 and stderr:
+            logger.error(stderr)
 
         return ret == 0
 
