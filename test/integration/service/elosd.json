@@ -2,7 +2,7 @@
     "root": {
         "elos": {
             "UseEnv": true,
-            "Port": 54321,
+            "Port": 54322,
             "Interface": "0.0.0.0",
             "EventBlacklist": ".event.messageCode 2000 EQ",
 	    "authorizedProcesses": [

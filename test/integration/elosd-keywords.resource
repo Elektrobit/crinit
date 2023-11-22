@@ -11,7 +11,7 @@ Elos Publish Event List
 
     @{publish_log}=    Create List
     FOR    ${message}    IN    @{message_list}
-        ${publish_output}=    Execute Command    elosc -p '${message}'
+        ${publish_output}=    Execute Command    elosc -P 54322 -p '${message}'
         Append To List    ${publish_log}    ${publish_output}
     END
 
