@@ -92,11 +92,11 @@ class CrinitLibrary(object):
         return 0
 
     def crinit_is_running(self):
-        """ Checks if crinit is already running. """
+        """ Checks if crinit is already running at the specified socket. """
         ret = -1
 
         stdout, ret = self.ssh.execute_command(
-            f"pgrep {self.CRINIT_BIN}",
+            f"test -S {self.CRINIT_SOCK}",
             return_rc=True
         )
 
