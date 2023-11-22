@@ -4,7 +4,9 @@ NAME = elosd
 
 COMMAND = /usr/bin/elosd
 
-IO_REDIRECT = STDOUT "/tmp/elosd.log"
+IO_REDIRECT = STDOUT "/tmp/elosd-itest.log"
 IO_REDIRECT = STDERR STDOUT
+
+ENV_SET = ELOS_CONFIG_PATH "/etc/crinit/itest/elosd.json"
 
 PROVIDES = elos:spawn syslog:spawn
