@@ -28,8 +28,6 @@ ${ELOS_DEPEND_TASK_CONF}    SEPARATOR=\n
 ...
 ...                         FILTER_DEFINE = TEST_FILTER ".event.source.appName 'popocatepetl' STRCMP"
 ...                         DEPENDS = @elos:TEST_FILTER
-...
-...                         RESPAWN = NO
 @{MESSAGES}                 {"source": {"appName": "popocatepetl"}}
 
 *** Test Cases ***
