@@ -54,18 +54,15 @@ class CrinitLibrary(object):
         stderr = None
         ret = -1
 
-        try:
-            stdout, stderr, ret = self.ssh.execute_command(
-                f"sh -c \"export CRINIT_SOCK={self.CRINIT_SOCK}; \
-                        crinit-ctl {action} {kwargs.get('task') or ''} {kwargs.get('options') or ''}\"",
-                return_stdout=True,
-                return_stderr=True,
-                return_rc=True,
-                sudo=(not self.IS_ROOT),
-                sudo_password=(None if self.IS_ROOT else self.password)
-            )
-        except Exception:
-            self.__print_traceback()
+        stdout, stderr, ret = self.ssh.execute_command(
+            f"sh -c \"export CRINIT_SOCK={self.CRINIT_SOCK}; \
+                    crinit-ctl {action} {kwargs.get('task') or ''} {kwargs.get('options') or ''}\"",
+            return_stdout=True,
+            return_stderr=True,
+            return_rc=True,
+            sudo=(not self.IS_ROOT),
+            sudo_password=(None if self.IS_ROOT else self.password)
+        )
 
         if ret != 0 and stderr:
             logger.error(f"crinit-ctl: {err_msg} ({ret}): {stderr}")
@@ -98,13 +95,10 @@ class CrinitLibrary(object):
         """ Checks if crinit is already running. """
         ret = -1
 
-        try:
-            stdout, ret = self.ssh.execute_command(
-                f"pgrep {self.CRINIT_BIN}",
-                return_rc=True
-            )
-        except Exception:
-            self.__print_traceback()
+        stdout, ret = self.ssh.execute_command(
+            f"pgrep {self.CRINIT_BIN}",
+            return_rc=True
+        )
 
         return ret == 0
 
@@ -113,15 +107,11 @@ class CrinitLibrary(object):
         if self.crinit_is_running():
             return 0
 
-        try:
-            self.ssh.start_command(
-                f"sh -c \"export CRINIT_SOCK={self.CRINIT_SOCK}; {self.CRINIT_BIN} {self.CRINIT_SERIES}\"",
-                sudo=(not self.IS_ROOT),
-                sudo_password=(None if self.IS_ROOT else self.password)
-            )
-        except Exception:
-            self.__print_traceback()
-            return -1
+        self.ssh.start_command(
+            f"sh -c \"export CRINIT_SOCK={self.CRINIT_SOCK}; {self.CRINIT_BIN} {self.CRINIT_SERIES}\"",
+            sudo=(not self.IS_ROOT),
+            sudo_password=(None if self.IS_ROOT else self.password)
+        )
 
         try:
             self.ssh.execute_command(
@@ -149,15 +139,13 @@ class CrinitLibrary(object):
             return res
 
         ret = -1
-        try:
-            stdout, ret = self.ssh.execute_command(
-                f"pkill {self.CRINIT_BIN} && rm -rf {self.CRINIT_SOCK}",
-                return_rc=True,
-                sudo=(not self.IS_ROOT),
-                sudo_password=(None if self.IS_ROOT else self.password)
-            )
-        except Exception:
-            self.__print_traceback()
+
+        stdout, ret = self.ssh.execute_command(
+            f"pkill {self.CRINIT_BIN} && rm -rf {self.CRINIT_SOCK}",
+            return_rc=True,
+            sudo=(not self.IS_ROOT),
+            sudo_password=(None if self.IS_ROOT else self.password)
+        )
 
         return ret == 0
 
