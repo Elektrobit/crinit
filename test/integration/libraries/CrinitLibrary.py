@@ -154,7 +154,7 @@ class CrinitLibrary(object):
         if ret != 0 and stderr:
             logger.error(stderr)
 
-        return ret == 0
+        assert ret == 0
 
     def crinit_add_task(self, task_config):
         """Will add a task defined in the task configuration file
