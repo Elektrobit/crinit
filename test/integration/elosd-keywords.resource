@@ -11,7 +11,7 @@ Elos Publish Event List
 
     @{publish_log}=    Create List
     FOR    ${message}    IN    @{message_list}
-        ${publish_output}=    Execute Command    elosc -p '${message}'
+        ${publish_output}=    Execute Command    elosc -P 54322 -p '${message}'
         Append To List    ${publish_log}    ${publish_output}
     END
 
@@ -26,4 +26,4 @@ Elosd Is Running
     ${status}    ${rc}    Execute And Log Based On User Permissions    ${ELOS_STATUS_COMMAND}    ${RETURN_STDOUT}    ${RETURN_RC}
     ${is_running}=    Run Keyword And Return Status    Should Contain    ${status}    ${running}    ignore_case=True
 
-    RETURN    ${is_running}
+    [return]    ${is_running}

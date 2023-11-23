@@ -133,7 +133,7 @@ run() {
         return 1
     fi
 
-    sleep 1
+    sleep 4
 
     # Now check states
     if ! crinit_task_check_status "task_dependent" "done"; then

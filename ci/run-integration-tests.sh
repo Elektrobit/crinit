@@ -4,11 +4,22 @@ CMD_PATH=$(cd $(dirname $0) && pwd)
 BASE_DIR=${CMD_PATH%/*}
 
 BUILD_TYPE="${1:-Release}"
-BUILD_DIR="$BASE_DIR/build/$BUILD_TYPE"
 
 # architecture name amd64, arm64, ...
 ARCH=$(dpkg --print-architecture)
 UBUNTU_RELEASE="jammy"
+
+case "$BUILD_TYPE" in
+    Release)
+        BUILD_SUBDIR="$ARCH"
+        ;;
+    *)
+        BUILD_SUBDIR="$ARCH-$BUILD_TYPE"
+        ;;
+esac
+
+BUILD_DIR="$BASE_DIR/build/$BUILD_SUBDIR"
+RESULT_DIR="$BASE_DIR/result/$BUILD_SUBDIR"
 
 clean_tag() {
     if [ -z "${1}" ]; then
@@ -30,14 +41,6 @@ TEST_IMAGE_NAME="$(clean_tag "${PROJECT}-robot")"
 TEST_DOCKER_NAME="$(clean_tag "${PROJECT}-runner")"
 BUILD_ARG=${BUILD_ARG:-}
 
-# map architecture to Docker per-architecture repositories
-# https://github.com/docker-library/official-images#architectures-other-than-amd64
-REPO="$ARCH"
-if [ "$ARCH" = "arm64" ]; then
-    REPO=arm64v8
-    PLATFORM_OPTS="--platform linux/arm64/v8"
-fi
-
 if [ -n "${CI}" ]; then
     BUILD_ID="${BUILD_ID:-'none'}"
     GIT_COMMIT="${GIT_COMMIT:-'none'}"
@@ -47,18 +50,16 @@ if [ -n "${CI}" ]; then
     TEST_DOCKER_NAME="$(clean_tag "${TEST_DOCKER_NAME}${ARCH:+-}${ARCH}-${BUILD_ID}-${GIT_COMMIT}")"
 fi
 
-rm -rf $BUILD_DIR/result/integration
-mkdir -p $BUILD_DIR/result/integration
+rm -rf $BUILD_DIR/test/integration
+mkdir -p $BUILD_DIR/test/integration
 
 DOCKER_BUILDKIT=1 \
 docker build \
     $BUILD_ARG \
-    --ssh default \
     --progress=plain \
     --build-arg REPO="$REPO" \
     --build-arg UBUNTU_RELEASE="$UBUNTU_RELEASE" \
     --build-arg UID=$(id -u) --build-arg GID=$(id -g) \
-    --build-arg EMLIX_GIT_SOURCES=git@gitlabintern.emlix.com:elektrobit/base-os \
     --tag ${CRINIT_IMAGE_NAME} -f $BASE_DIR/ci/Dockerfile.crinit .
 
 docker build \
@@ -86,7 +87,7 @@ RUNNER_ID=$(docker run -d -ti --rm \
     -v $BASE_DIR:/base \
     -w /base \
     --env "PROJECT=${PROJECT}" \
-    --env "TEST_OUTPUT=/base/build/${BUILD_TYPE}/result/integration" \
+    --env "TEST_OUTPUT=/base/build/${BUILD_SUBDIR}/test/integration" \
     ${TEST_IMAGE_NAME})
 
 docker exec ${TEST_DOCKER_NAME} /base/test/integration/scripts/run-integration-tests.sh
@@ -95,5 +96,8 @@ ret=$?
 
 docker stop ${CRINIT_ID}
 docker stop ${RUNNER_ID}
+
+mkdir -p "${RESULT_DIR}"
+cp -vr "${BUILD_DIR}/test/integration" "${RESULT_DIR}/"
 
 exit $?

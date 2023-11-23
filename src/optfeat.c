@@ -8,7 +8,8 @@
 #include <string.h>
 
 #include "common.h"
-#include "elosio.h"
+#include "elosdep.h"
+#include "eloslog.h"
 #include "globopt.h"
 #include "logio.h"
 #include "taskdb.h"
@@ -29,31 +30,71 @@ static int crinitActivateSyslog(void *data) {
     return 0;
 }
 
-static int crinitElosioActivateCb(void *data) {
-    CRINIT_PARAM_UNUSED(data);
-
-    return crinitElosioActivate((crinitTaskDB_t *)data, true);
+static int crinitElosdepActivateCb(void *data) {
+    return crinitElosdepActivate((crinitTaskDB_t *)data, true);
 }
 
-static int crinitElosioTaskAddedCb(void *data) {
-    return crinitElosioTaskAdded((crinitTask_t *)data);
+static int crinitElosdepDeactivateCb(void *data) {
+    return crinitElosdepActivate((crinitTaskDB_t *)data, false);
+}
+
+static int crinitElosdepTaskAddedCb(void *data) {
+    return crinitElosdepTaskAdded((crinitTask_t *)data);
+}
+
+static int crinitEloslogInitCb(void *data) {
+    CRINIT_PARAM_UNUSED(data);
+
+    return crinitEloslogInit();
+}
+
+static int crinitEloslogActivateCb(void *data) {
+    CRINIT_PARAM_UNUSED(data);
+
+    return crinitEloslogActivate(true);
+}
+
+static int crinitEloslogDeactivateCb(void *data) {
+    CRINIT_PARAM_UNUSED(data);
+
+    return crinitEloslogActivate(false);
 }
 
 int crinitFeatureHook(const char *sysFeatName, crinitHookType_t type, void *data) {
     static const crinitOptFeatMap_t fmap[] = {
         {.name = "syslog",
-         .type = START,
+         .type = CRINIT_HOOK_START,
          .af = crinitActivateSyslog,
          .globMemberOffset = offsetof(crinitGlobOptStore_t, CRINIT_GLOBOPT_USE_SYSLOG)},
-        {.name = CRINIT_ELOSIO_FEATURE_NAME,
-         .type = START,
-         .af = crinitElosioActivateCb,
+        {.name = CRINIT_ELOSDEP_FEATURE_NAME,
+         .type = CRINIT_HOOK_START,
+         .af = crinitElosdepActivateCb,
          .globMemberOffset = offsetof(crinitGlobOptStore_t, CRINIT_GLOBOPT_USE_ELOS)},
-        {.name = CRINIT_ELOSIO_FEATURE_NAME,
-         .type = TASK_ADDED,
-         .af = crinitElosioTaskAddedCb,
+        {.name = CRINIT_ELOSDEP_FEATURE_NAME,
+         .type = CRINIT_HOOK_STOP,
+         .af = crinitElosdepDeactivateCb,
+         .globMemberOffset = offsetof(crinitGlobOptStore_t, CRINIT_GLOBOPT_USE_ELOS)},
+        {.name = CRINIT_ELOSDEP_FEATURE_NAME,
+         .type = CRINIT_HOOK_TASK_ADDED,
+         .af = crinitElosdepTaskAddedCb,
+         .globMemberOffset = offsetof(crinitGlobOptStore_t, CRINIT_GLOBOPT_USE_ELOS)},
+        {.name = CRINIT_ELOSLOG_FEATURE_NAME,
+         .type = CRINIT_HOOK_INIT,
+         .af = crinitEloslogInitCb,
+         .globMemberOffset = offsetof(crinitGlobOptStore_t, CRINIT_GLOBOPT_USE_ELOS)},
+        {.name = CRINIT_ELOSLOG_FEATURE_NAME,
+         .type = CRINIT_HOOK_START,
+         .af = crinitEloslogActivateCb,
+         .globMemberOffset = offsetof(crinitGlobOptStore_t, CRINIT_GLOBOPT_USE_ELOS)},
+        {.name = CRINIT_ELOSLOG_FEATURE_NAME,
+         .type = CRINIT_HOOK_STOP,
+         .af = crinitEloslogDeactivateCb,
          .globMemberOffset = offsetof(crinitGlobOptStore_t, CRINIT_GLOBOPT_USE_ELOS)},
     };
+
+    crinitDbgInfoPrint("Searching feature hooks for %s (%d) with %p.", sysFeatName, type, data);
+
+    int res = 0;
 
     size_t n = sizeof(fmap) / sizeof(fmap[0]);
     for (size_t i = 0; i < n; i++) {
@@ -64,9 +105,9 @@ int crinitFeatureHook(const char *sysFeatName, crinitHookType_t type, void *data
                 crinitErrPrint("Could not get global setting for optional feature \'%s\'.", fmap[i].name);
                 return -1;
             }
-            return (armed) ? fmap[i].af(data) : 0;
+            res |= (armed) ? fmap[i].af(data) : 0;
         }
     }
 
-    return 0;
+    return res;
 }

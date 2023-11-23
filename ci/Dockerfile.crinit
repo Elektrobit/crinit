@@ -9,26 +9,18 @@ ARG GID=1000
 ARG TARGET_USER_NAME=target
 ARG TARGET_PASSWORD=target123
 
-ARG EMLIX_GIT_SOURCES=git@github.com:emlix/
-
-ARG CMOCKA_EXTENSIONS_REPO_NAME=cmocka-extensions.git
-ARG CMOCKA_EXTENSIONS_REPO_PATH=${EMLIX_GIT_SOURCES}/${CMOCKA_EXTENSIONS_REPO_NAME}
-ARG CMOCKA_EXTENSIONS_REPO_REF=integration
-
-ARG CMOCKA_MOCKS_REPO_NAME=cmocka-mocks.git
-ARG CMOCKA_MOCKS_REPO_PATH=${EMLIX_GIT_SOURCES}/${CMOCKA_MOCKS_REPO_NAME}
-ARG CMOCKA_MOCKS_REPO_REF=integration
+ARG EB_GIT_SOURCES=https://github.com/Elektrobit/
 
 ARG SAMCONF_REPO_NAME=samconf.git
-ARG SAMCONF_REPO_PATH=${EMLIX_GIT_SOURCES}/${SAMCONF_REPO_NAME}
+ARG SAMCONF_REPO_PATH=${EB_GIT_SOURCES}/${SAMCONF_REPO_NAME}
 ARG SAMCONF_REPO_REF=integration
 
 ARG SAFU_REPO_NAME=safu.git
-ARG SAFU_REPO_PATH=${EMLIX_GIT_SOURCES}/${SAFU_REPO_NAME}
+ARG SAFU_REPO_PATH=${EB_GIT_SOURCES}/${SAFU_REPO_NAME}
 ARG SAFU_REPO_REF=integration
 
 ARG ELOS_REPO_NAME=elos.git
-ARG ELOS_REPO_PATH=${EMLIX_GIT_SOURCES}/${ELOS_REPO_NAME}
+ARG ELOS_REPO_PATH=${EB_GIT_SOURCES}/${ELOS_REPO_NAME}
 ARG ELOS_REPO_REF=integration
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -50,69 +42,32 @@ COPY ./ /home/crinit
 
 RUN git clean -dfx /home/crinit
 
-RUN mkdir -p -m 0700 /root/.ssh \
- && ssh-keyscan github.com >> /root/.ssh/known_hosts \
- && ssh-keyscan gitlabintern.emlix.com >> /root/.ssh/known_hosts
-
-# Install cmocka-extensions
-RUN --mount=type=ssh \
- git clone ${CMOCKA_EXTENSIONS_REPO_PATH} \
- && cmake -B ${CMOCKA_EXTENSIONS_REPO_NAME%.*}/build ./${CMOCKA_EXTENSIONS_REPO_NAME%.*} \
- -DUNIT_TESTS=OFF \
- -DCMAKE_BUILD_TYPE=Release \
- -DCMAKE_INSTALL_PREFIX=/usr \
- && make -C ${CMOCKA_EXTENSIONS_REPO_NAME%.*}/build install
-
-# Install cmocka-mocks
-RUN --mount=type=ssh \
- git clone ${CMOCKA_MOCKS_REPO_PATH} \
- && cmake -B ${CMOCKA_MOCKS_REPO_NAME%.*}/build ./${CMOCKA_MOCKS_REPO_NAME%.*} \
- -DUNIT_TESTS=OFF \
- -DCMAKE_BUILD_TYPE=Release \
- -DCMAKE_INSTALL_PREFIX=/usr \
- -DCMOCKA_EXTENSIONS_URI=${CMOCKA_EXTENSIONS_REPO_PATH} \
- -DCMOCKA_EXTENSIONS_REF=${CMOCKA_EXTENSIONS_REPO_REF} \
- && make -C ${CMOCKA_MOCKS_REPO_NAME%.*}/build install
-
 # Install safu
-RUN --mount=type=ssh \
- git clone ${SAFU_REPO_PATH} \
+RUN git clone ${SAFU_REPO_PATH} \
  && cmake -B ${SAFU_REPO_NAME%.*}/build ./${SAFU_REPO_NAME%.*} \
- -DUNIT_TEST=OFF \
+ -DUNIT_TESTS=OFF \
  -DCMAKE_BUILD_TYPE=Release \
+ -DENABLE_ANALYZER=Off \
  -DCMAKE_INSTALL_PREFIX=/usr \
- -DCMOCKA_EXTENSIONS_URI=${CMOCKA_EXTENSIONS_REPO_PATH} \
- -DCMOCKA_EXTENSIONS_REF=${CMOCKA_EXTENSIONS_REPO_REF} \
- -DCMOCKA_MOCKS_URI=${CMOCKA_MOCKS_REPO_PATH} \
- -DCMOCKA_MOCKS_REF=${CMOCKA_MOCKS_REPO_REF} \
  && make -C ${SAFU_REPO_NAME%.*}/build install
 
 # Install samconf
-RUN --mount=type=ssh \
- git clone ${SAMCONF_REPO_PATH} \
+RUN git clone ${SAMCONF_REPO_PATH} \
  && cmake -B ${SAMCONF_REPO_NAME%.*}/build ./${SAMCONF_REPO_NAME%.*} \
- -DUNIT_TEST=OFF \
+ -DUNIT_TESTS=OFF \
  -DCMAKE_BUILD_TYPE=Release \
  -DCMAKE_INSTALL_PREFIX=/usr \
- -DCMOCKA_EXTENSIONS_URI=${CMOCKA_EXTENSIONS_REPO_PATH} \
- -DCMOCKA_EXTENSIONS_REF=${CMOCKA_EXTENSIONS_REPO_REF} \
- -DCMOCKA_MOCKS_URI=${CMOCKA_MOCKS_REPO_PATH} \
- -DCMOCKA_MOCKS_REF=${CMOCKA_MOCKS_REPO_REF} \
  -DSAFU_URI=${SAFU_REPO_PATH} \
  -DSAFU_REF=${SAFU_REPO_REF} \
  && make -C ${SAMCONF_REPO_NAME%.*}/build install
 
 # Install elos
-RUN --mount=type=ssh \
- git clone ${ELOS_REPO_PATH} \
+RUN git clone ${ELOS_REPO_PATH} \
  && cmake -B ${ELOS_REPO_NAME%.*}/build ./${ELOS_REPO_NAME%.*} \
- -DUNIT_TEST=OFF \
+ -DUNIT_TESTS=OFF \
  -DCMAKE_BUILD_TYPE=Release \
+ -DENABLE_ANALYZER=Off \
  -DCMAKE_INSTALL_PREFIX=/usr \
- -DCMOCKA_EXTENSIONS_URI=${CMOCKA_EXTENSIONS_REPO_PATH} \
- -DCMOCKA_EXTENSIONS_REF=${CMOCKA_EXTENSIONS_REPO_REF} \
- -DCMOCKA_MOCKS_URI=${CMOCKA_MOCKS_REPO_PATH} \
- -DCMOCKA_MOCKS_REF=${CMOCKA_MOCKS_REPO_REF} \
  -DSAMCONF_URI=${SAMCONF_REPO_PATH} \
  -DSAMCONF_REF=${SAMCONF_REPO_REF} \
  -DSAFU_URI=${SAFU_REPO_PATH} \
@@ -125,20 +80,14 @@ RUN cmake -B build . \
  -DCMAKE_BUILD_TYPE=Release \
  -DCMAKE_INSTALL_PREFIX=/usr \
  -DCMAKE_VERBOSE_MAKEFILE=On \
- -DENABLE_ASAN="OFF" \
- -DENABLE_ANALYZER="OFF" \
- -DENABLE_WERROR="OFF" \
+ -DENABLE_ASAN=OFF \
+ -DENABLE_ANALYZER=OFF \
+ -DENABLE_WERROR=OFF \
  . \
  && make -C build install
 
-RUN mkdir -p /etc/elos /etc/crinit
-COPY ./test/integration/service/elosd.json /etc/elos
-RUN chmod 644 /etc/elos/elosd.json
-
-COPY ./test/integration/service/default.series /etc/crinit
-# As crinit is not registered as init process this would not have the intended effect.
-COPY ./test/integration/service/earlysetup.crinit /etc/crinit
-COPY ./test/integration/service/elosd.crinit /etc/crinit
+RUN mkdir -p /etc/crinit/itest
+COPY ./test/integration/service/* /etc/crinit/itest
 RUN chmod -R 644 /etc/crinit
 RUN uuidgen > /etc/machine-id
 
@@ -162,3 +111,4 @@ RUN echo '\n\
 ' >> $HOME/.bashrc
 
 ENTRYPOINT /bin/bash
+

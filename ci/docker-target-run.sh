@@ -30,12 +30,10 @@ echo "==> create docker image"
 cd $BASE_DIR
 DOCKER_BUILDKIT=1 \
 docker build \
-    --ssh default \
     --progress=plain \
     --build-arg REPO="$REPO" \
     --build-arg UBUNTU_RELEASE="$UBUNTU_RELEASE" \
     --build-arg UID=$(id -u) --build-arg GID=$(id -g) \
-    --build-arg EMLIX_GIT_SOURCES=git@gitlabintern.emlix.com:elektrobit/base-os \
     --tag ${CRINIT_IMAGE_NAME} -f $BASE_DIR/ci/Dockerfile.crinit .
 
 cd $BASE_DIR/ci
@@ -57,3 +55,4 @@ docker run --rm -it --cap-add=SYS_ADMIN --security-opt apparmor=unconfined $SSH_
     --name ${CRINIT_DOCKER_NAME} \
     -w / \
     ${CRINIT_IMAGE_NAME} $@
+

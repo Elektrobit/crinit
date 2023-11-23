@@ -15,6 +15,7 @@ pipeline {
         label 'agent01'
     }
     environment {
+        DOCKER_BUILDKIT=1
         UID = sh(script: 'id -u', returnStdout: true).trim()
         GID = sh(script: 'id -g', returnStdout: true).trim()
         TMPDIR = '/tmp'
@@ -31,8 +32,7 @@ pipeline {
             "Test: utests (arm64v8)",
             "Test: smoketests (amd64)",
             "Test: smoketests (arm64v8)",
-            "Test: integration (amd64)",
-            "Test: integration (arm64v8)",
+            "Test: integration",
             "Demo (amd64)",
             "Demo (arm64v8)"
         ])
@@ -66,11 +66,11 @@ pipeline {
                             --build-arg USER=jenkins \
                             --build-arg UID=${UID} \
                             --build-arg GID=${GID} \
-                            --build-arg UBUNTU_RELEASE=jammy \
-                            --build-arg EMLIX_GIT_SOURCES=git@gitlabintern.emlix.com:elektrobit/base-os"
+                            --build-arg UBUNTU_RELEASE=jammy"
                         args "--privileged \
                             -v /home/jenkins/.ssh:/home/jenkins/.ssh \
                             -e HOME=/home/jenkins"
+                        reuseNode true
                     }
                 }
                 stages {
@@ -138,29 +138,18 @@ pipeline {
             }
         }
         stage ('Target tests') {
-            matrix {
-                axes {
-                    axis {
-                        name 'ARCH'
-                        values 'amd64', 'arm64v8'
-                    }
-                }
-                agent {
-                    label "docker"
-                }
-                environment {
-                    DOCKER_BUILDKIT = 1
-                    BUILD_ARG = "--build-arg USER=jenkins"
-                }
-                stages {
-                    stage ('Test: integration') {
-                        steps {
-                            sshagent(credentials: ['jenkins-e2data']) {
-                                gitlabCommitStatus("${STAGE_NAME} (${ARCH})") {
-                                    sh '''#!/bin/bash -xe
-                                        ci/run-integration-tests.sh
-                                    '''
-                                }
+            environment {
+                DOCKER_BUILDKIT = 1
+                BUILD_ARG = "--build-arg USER=jenkins"
+            }
+            stages {
+                stage ('Test: integration') {
+                    steps {
+                        sshagent(credentials: ['jenkins-e2data']) {
+                            gitlabCommitStatus("${STAGE_NAME}") {
+                                sh '''#!/bin/bash -xe
+                                    ci/run-integration-tests.sh
+                                '''
                             }
                         }
                     }

@@ -3,11 +3,11 @@
 import io
 import os
 import re
-import subprocess
 import traceback
 
 from robot.libraries.BuiltIn import BuiltIn
 from robot.api import logger
+
 
 class CrinitLibrary(object):
     """CrinitLibrary provides a set of keywords for direct interaction
@@ -15,11 +15,13 @@ class CrinitLibrary(object):
     """
 
     CRINIT_BIN = "/sbin/crinit"
-    CRINIT_SOCK = "/run/crinit/crinit.sock"
+    CRINIT_SERIES = "/etc/crinit/itest/itest.series"
     WAIT_TIMEOUT = 30
 
     def __init__(self):
         self.LOCAL_TEST_DIR = BuiltIn().get_variable_value('${LOCAL_TEST_DIR}')
+        self.IS_ROOT = (lambda s: True if s == "True" else False)(BuiltIn().get_variable_value('${USER_IS_ROOT}'))
+        self.CRINIT_SOCK = BuiltIn().get_variable_value('${CRINIT_SOCK}')
         self.ssh = BuiltIn().get_library_instance('SSHLibrary')
         self.password = BuiltIn().get_variable_value('${PASSWORD}')
         self.crinit = None
@@ -52,17 +54,15 @@ class CrinitLibrary(object):
         stderr = None
         ret = -1
 
-        try:
-            stdout, stderr, ret = self.ssh.execute_command(
-                f"crinit-ctl {action} {kwargs.get('task') or ''} {kwargs.get('options') or ''}",
-                return_stdout=True,
-                return_stderr=True,
-                return_rc=True,
-                sudo=True,
-                sudo_password=self.password
-            )
-        except Exception:
-            self.__print_traceback()
+        stdout, stderr, ret = self.ssh.execute_command(
+            f"sh -c \"export CRINIT_SOCK={self.CRINIT_SOCK}; \
+                    crinit-ctl {action} {kwargs.get('task') or ''} {kwargs.get('options') or ''}\"",
+            return_stdout=True,
+            return_stderr=True,
+            return_rc=True,
+            sudo=(not self.IS_ROOT),
+            sudo_password=(None if self.IS_ROOT else self.password)
+        )
 
         if ret != 0 and stderr:
             logger.error(f"crinit-ctl: {err_msg} ({ret}): {stderr}")
@@ -92,16 +92,13 @@ class CrinitLibrary(object):
         return 0
 
     def crinit_is_running(self):
-        """ Checks if crinit is already running. """
+        """ Checks if crinit is already running at the specified socket. """
         ret = -1
 
-        try:
-            stdout, ret = self.ssh.execute_command(
-                f"pgrep {self.CRINIT_BIN}",
-                return_rc=True
-            )
-        except Exception:
-            self.__print_traceback()
+        stdout, ret = self.ssh.execute_command(
+            f"test -S {self.CRINIT_SOCK}",
+            return_rc=True
+        )
 
         return ret == 0
 
@@ -110,26 +107,24 @@ class CrinitLibrary(object):
         if self.crinit_is_running():
             return 0
 
-        try:
-            self.ssh.start_command(
-                f"{self.CRINIT_BIN}",
-                sudo=True,
-                sudo_password=self.password
-            )
-        except Exception:
-            self.__print_traceback()
-            return -1
+        self.ssh.start_command(
+            f"sh -c \"export CRINIT_SOCK={self.CRINIT_SOCK}; {self.CRINIT_BIN} {self.CRINIT_SERIES}\"",
+            sudo=(not self.IS_ROOT),
+            sudo_password=(None if self.IS_ROOT else self.password)
+        )
 
         try:
             self.ssh.execute_command(
-                f"until [ -S {self.CRINIT_SOCK} ]; do sleep 0.1; done",
-                sudo=True,
-                sudo_password=self.password,
+                f"sh -c \"until [ -S {self.CRINIT_SOCK} ]; do sleep 0.1; done\"",
+                sudo=(not self.IS_ROOT),
+                sudo_password=(None if self.IS_ROOT else self.password),
                 timeout=self.WAIT_TIMEOUT
             )
-        except Exception:
-            self.__print_traceback()
-            return -1
+        except Exception as e:
+            out, err = self.ssh.read_command_output(return_stderr=True, timeout=self.WAIT_TIMEOUT)
+            logger.info(out)
+            logger.error(err)
+            raise e
 
         return 0
 
@@ -144,17 +139,22 @@ class CrinitLibrary(object):
             return res
 
         ret = -1
-        try:
-            stdout, ret = self.ssh.execute_command(
-                f"pkill {self.CRINIT_BIN} && rm -rf {self.CRINIT_SOCK}",
-                return_rc=True,
-                sudo=True,
-                sudo_password=self.password
-            )
-        except Exception:
-            self.__print_traceback()
 
-        return ret == 0
+        stdout, stderr, ret = self.ssh.execute_command(
+            f"sh -c \"pkill -f {self.CRINIT_BIN}\\ {self.CRINIT_SERIES} && rm -rf {self.CRINIT_SOCK}\"",
+            return_stdout=True,
+            return_stderr=True,
+            return_rc=True,
+            sudo=(not self.IS_ROOT),
+            sudo_password=(None if self.IS_ROOT else self.password)
+        )
+
+        if stdout:
+            logger.info(stdout)
+        if ret != 0 and stderr:
+            logger.error(stderr)
+
+        assert ret == 0
 
     def crinit_add_task(self, task_config):
         """Will add a task defined in the task configuration file
@@ -192,12 +192,12 @@ class CrinitLibrary(object):
 
         | task_name | The task name |
         """
-        return self.__crinit_task_run("kill", "Killing task failed", task=task_name)[2]
+        return self.__crinit_run("kill", "Killing task failed", task=task_name)[2]
 
     """ for crinit-ctl ls proc ; do PID != -1 -> Kill process; done Finally kill crinit """
     def crinit_kill_all_tasks(self):
         """ Kills all running crinit tasks and stops crinit """
-        (stdout, stderr, ret) = self.__crinit_run("list", "Adding task failed", task=target_path, options="-f")
+        (stdout, stderr, ret) = self.__crinit_run("list", "Could not list tasks.")
 
         if ret != 0:
             logger.error("Failed to list active crinit tasks.")
@@ -211,17 +211,17 @@ class CrinitLibrary(object):
             fields = line.split()
 
             # Skip stopped processes
-            if fields[1] == -1:
+            if fields[1] == "-1":
                 continue
 
-            res = self.crinit_disable_task(field[2])
+            res = self.crinit_disable_task(fields[0])
             if res != 0:
-                logger.error(f"Failed to disbale task {field[2]}")
+                logger.error(f"Failed to disable task {fields[0]}")
                 return res
 
-            res = self.crinit_kill_task(field[2])
+            res = self.crinit_kill_task(fields[0])
             if res != 0:
-                logger.error(f"Failed to kill task {field[2]}")
+                logger.error(f"Failed to kill task {fields[0]}")
                 return res
 
         return 0

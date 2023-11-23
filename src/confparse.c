@@ -12,7 +12,7 @@
 #include "common.h"
 #include "confconv.h"
 #include "confmap.h"
-#include "elosio.h"
+#include "elosdep.h"
 #include "envset.h"
 #include "globopt.h"
 #include "ini.h"
@@ -172,42 +172,8 @@ void crinitFreeArgvArray(char **inArgv) {
     }
 }
 
-static int crinitConfSanityCheck(void) {
-    bool useElos = false;
-    char *elosServer;
-    int elosPort;
-
-    if (crinitGlobOptGet(CRINIT_GLOBOPT_USE_ELOS, &useElos) == -1) {
-        crinitErrPrint("Could not recall elos configuration from global options.");
-    }
-
-    if (useElos) {
-        if (crinitGlobOptGet(CRINIT_GLOBOPT_ELOS_SERVER, &elosServer) == -1) {
-            crinitErrPrint("Could not recall elos server ip from global options.");
-        } else {
-            if (elosServer == NULL || elosServer[0] == '\0') {
-                crinitErrPrint("Elos server configuration missing - disabling elos.");
-                crinitGlobOptSetBoolean(CRINIT_GLOBOPT_USE_ELOS, false);
-            }
-
-            free(elosServer);
-        }
-
-        if (crinitGlobOptGet(CRINIT_GLOBOPT_ELOS_PORT, &elosPort) == -1) {
-            crinitErrPrint("Could not recall elos server port from global options.");
-        }
-
-        if (elosPort == 0) {
-            crinitErrPrint("Elos server port configuration missing - disabling elos.");
-            crinitGlobOptSetBoolean(CRINIT_GLOBOPT_USE_ELOS, false);
-        }
-    }
-
-    return 0;
-}
-
-int crinitLoadSeriesConf(crinitFileSeries_t *series, const char *filename) {
-    if (series == NULL || filename == NULL || !crinitIsAbsPath(filename)) {
+int crinitLoadSeriesConf(const char *filename) {
+    if (filename == NULL || !crinitIsAbsPath(filename)) {
         crinitErrPrint("Parameters must not be NULL and filename must be an absolute path.");
         return -1;
     }
@@ -216,10 +182,6 @@ int crinitLoadSeriesConf(crinitFileSeries_t *series, const char *filename) {
         crinitErrPrint("Could not parse file \'%s\'.", filename);
         return -1;
     }
-
-    char **tasks = NULL;
-    char *tDir = NULL, *tSuffix = NULL;
-    bool tDirSl = CRINIT_CONFIG_DEFAULT_TASKDIR_SYMLINKS;
 
     bool duplCheckArr[CRINIT_CONFIGS_SIZE] = {false};
     const crinitConfKvList_t *pEntry = c;
@@ -236,46 +198,8 @@ int crinitLoadSeriesConf(crinitFileSeries_t *series, const char *filename) {
                 return -1;
             }
 
-            void *tgt = NULL;
-            switch (scm->config) {
-                case CRINIT_CONFIG_TASK_FILE_SUFFIX:
-                    tgt = &tSuffix;
-                    break;
-                case CRINIT_CONFIG_TASKDIR:
-                    tgt = &tDir;
-                    break;
-                case CRINIT_CONFIG_TASKDIR_FOLLOW_SYMLINKS:
-                    tgt = &tDirSl;
-                    break;
-                case CRINIT_CONFIG_TASKS:
-                    tgt = &tasks;
-                    break;
-                case CRINIT_CONFIG_ELOS_PORT:
-                case CRINIT_CONFIG_ELOS_SERVER:
-                case CRINIT_CONFIG_ENV_SET:
-                case CRINIT_CONFIG_FILTER_DEFINE:
-                case CRINIT_CONFIG_DEBUG:
-                case CRINIT_CONFIG_INCLUDE:
-                case CRINIT_CONFIG_INCLUDE_SUFFIX:
-                case CRINIT_CONFIG_INCLUDEDIR:
-                case CRINIT_CONFIG_SHDGRACEP:
-                case CRINIT_CONFIG_USE_SYSLOG:
-                case CRINIT_CONFIG_USE_ELOS:
-                    break;
-                case CRINIT_CONFIG_COMMAND:
-                case CRINIT_CONFIG_DEPENDS:
-                case CRINIT_CONFIG_IOREDIR:
-                case CRINIT_CONFIG_NAME:
-                case CRINIT_CONFIG_PROVIDES:
-                case CRINIT_CONFIG_RESPAWN:
-                case CRINIT_CONFIG_RESPAWN_RETRIES:
-                case CRINIT_CONFIGS_SIZE:
-                default:
-                    crinitErrPrint("Unexpected configuration key found in series file: '%s'", scm->configKey);
-                    return -1;
-            }
             duplCheckArr[scm->config] = true;
-            if (scm->cfgHandler(tgt, val, CRINIT_CONFIG_TYPE_SERIES) == -1) {
+            if (scm->cfgHandler(NULL, val, CRINIT_CONFIG_TYPE_SERIES) == -1) {
                 crinitErrPrint("Could not parse configuration parameter '%s' with given value '%s'.", pEntry->key,
                                pEntry->val);
                 return -1;
@@ -284,37 +208,78 @@ int crinitLoadSeriesConf(crinitFileSeries_t *series, const char *filename) {
         pEntry = pEntry->next;
     }
 
-    const char *tDirP = (tDir != NULL) ? tDir : CRINIT_CONFIG_DEFAULT_TASKDIR;
+    char *taskDir;
+    if (crinitGlobOptGet(CRINIT_GLOBOPT_TASKDIR, &taskDir) == -1) {
+        crinitErrPrint("Could not retrieve global task directory.");
+        return -1;
+    }
+
     if (!duplCheckArr[CRINIT_CONFIG_INCLUDEDIR] &&
-        crinitCfgInclDirHandler(NULL, tDirP, CRINIT_CONFIG_TYPE_SERIES) == -1) {
+        crinitCfgInclDirHandler(NULL, taskDir, CRINIT_CONFIG_TYPE_SERIES) == -1) {
         crinitErrPrint("INCLUDEDIR was not given and trying to set it to the current value of TASKDIR ('%s') failed.",
-                       tDir);
+                       taskDir);
         return -1;
     }
 
-    if (crinitConfSanityCheck() != 0) {
-        crinitErrPrint("Sanity check of global crinit configuration %s failed.", filename);
-        return -1;
-    }
-
-    if (tasks == NULL) {  // No TASKS array given, scan TASKDIR.
-        if (crinitFileSeriesFromDir(series, tDirP, (tSuffix != NULL) ? tSuffix : CRINIT_CONFIG_DEFAULT_TASK_FILE_SUFFIX,
-                                    tDirSl) == -1) {
-            crinitErrPrint("Could not generate list of tasks from task directory '%s'.", tDirP);
-            crinitFreeConfList(c);
-            return -1;
-        }
-    } else {  // TASKS taken from config
-        if (crinitFileSeriesFromStrArr(series, tDirP, tasks) == -1) {
-            crinitErrPrint("Could not generate list of tasks from '%s' option.", CRINIT_CONFIG_KEYSTR_TASKS);
-            crinitFreeConfList(c);
-            crinitFreeArgvArray(tasks);
-            return -1;
-        }
-    }
-
-    free(tDir);
-    free(tSuffix);
+    free(taskDir);
     crinitFreeConfList(c);
     return 0;
+}
+
+int crinitLoadTasks(crinitFileSeries_t *series) {
+    int res = 0;
+
+    char *taskDir;
+    if (crinitGlobOptGet(CRINIT_GLOBOPT_TASKDIR, &taskDir) == -1) {
+        crinitErrPrint("Could not retrieve global task directory during task creation.");
+        return -1;
+    }
+
+    char *taskFileSuffix;
+    if (crinitGlobOptGet(CRINIT_GLOBOPT_TASK_FILE_SUFFIX, &taskFileSuffix) == -1) {
+        crinitErrPrint("Could not retrieve global task file suffix during task creation.");
+        res = -1;
+        goto err_task_dir;
+    }
+
+    bool taskDirFollowSl;
+    if (crinitGlobOptGet(CRINIT_GLOBOPT_TASKDIR_FOLLOW_SYMLINKS, &taskDirFollowSl) == -1) {
+        crinitErrPrint("Could not retrieve global taskdir symlink handling during task creation.");
+        res = -1;
+        goto err_task_suffix;
+    }
+
+    crinitGlobOptStore_t *globOpts = crinitGlobOptBorrow();
+    if (globOpts == NULL) {
+        crinitErrPrint("Could not get exclusive access to global option storage.");
+        res = -1;
+        goto err_task_suffix;
+    }
+
+    char **tasks = globOpts->tasks;
+    if (tasks == NULL) {  // No TASKS array given, scan TASKDIR.
+        if (crinitFileSeriesFromDir(series, taskDir, taskFileSuffix, taskDirFollowSl) == -1) {
+            crinitErrPrint("Could not generate list of tasks from task directory '%s'.", taskDir);
+            res = -1;
+        }
+    } else {  // TASKS taken from config
+        if (crinitFileSeriesFromStrArr(series, taskDir, tasks) == -1) {
+            crinitErrPrint("Could not generate list of tasks from '%s' option.", CRINIT_CONFIG_KEYSTR_TASKS);
+            crinitFreeArgvArray(tasks);
+            res = -1;
+        }
+    }
+
+    if (crinitGlobOptRemit() == -1) {
+        crinitErrPrint("Could not release exclusive access of global option storage.");
+        res = -1;
+    }
+
+err_task_suffix:
+    free(taskFileSuffix);
+
+err_task_dir:
+    free(taskDir);
+
+    return res;
 }

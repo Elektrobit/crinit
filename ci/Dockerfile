@@ -6,19 +6,28 @@ ARG USER=ci
 ARG UID=1000
 ARG GID=1000
 
+ARG EB_GIT_SOURCES=https://github.com/Elektrobit/
+
+ARG SAFU_REPO_NAME=safu.git
+ARG SAFU_REPO_PATH=${EB_GIT_SOURCES}/${SAFU_REPO_NAME}
+
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
- && apt-get install -y sudo locales vim screen libncurses-dev \
-    build-essential git python3-minimal cmake re2c \
-    valgrind \
-    rpm wget \
-    doxygen graphviz plantuml \
-    clang llvm clang-tidy \
-    libcmocka-dev \
-    bc \
+ && apt-get install -y sudo locales vim screen git bc \
+    libncurses-dev libcmocka-dev libiberty-dev libjson-c-dev libssl-dev libmnl-dev \
+    build-essential python3-minimal rpm wget doxygen graphviz plantuml \
+    re2c cmake clang llvm clang-tidy pkg-config valgrind \
  && rm -rf /var/lib/apt/lists/*
 
-# install debbuild
+# Install safu
+RUN git clone ${SAFU_REPO_PATH} \
+ && cmake -B ${SAFU_REPO_NAME%.*}/build ./${SAFU_REPO_NAME%.*} \
+ -DUNIT_TESTS=Off \
+ -DCMAKE_BUILD_TYPE=Release \
+ -DCMAKE_INSTALL_PREFIX=/usr \
+ && make -C ${SAFU_REPO_NAME%.*}/build install
+
+# Install debbuild
 RUN wget 'https://github.com/debbuild/debbuild/releases/download/22.02.1/debbuild_22.02.1-0ubuntu20.04_all.deb' \
          'https://github.com/debbuild/debbuild-macros/releases/download/0.0.6/debbuild-macros_0.0.6-0ubuntu20.04_all.deb' \
  && apt-get update \
@@ -36,4 +45,3 @@ ENV LC_ALL=en_US.UTF-8
 ENV DOCKERBUILD=1
 
 CMD /bin/bash
-

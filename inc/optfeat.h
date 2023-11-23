@@ -10,10 +10,11 @@
  * Hook types.
  */
 typedef enum crinitHookType_t {
-    INIT,        ///< Initialization of the optional feature (eg. setup database).
-    EXIT,        ///< Cleanup of the optional feature (remove temporary files).
-    START,       ///< The optional feature is triggered by a specific event.
-    TASK_ADDED,  ///< Hook handles the addition of a new task.
+    CRINIT_HOOK_INIT,        ///< Initialization of the optional feature (eg. setup database).
+    CRINIT_HOOK_EXIT,        ///< Cleanup of the optional feature (remove temporary files).
+    CRINIT_HOOK_START,       ///< The optional feature is triggered by a specific event.
+    CRINIT_HOOK_STOP,        ///< The optional feature is removed due to another event happening.
+    CRINIT_HOOK_TASK_ADDED,  ///< Hook handles the addition of a new task.
 } crinitHookType_t;
 
 /**

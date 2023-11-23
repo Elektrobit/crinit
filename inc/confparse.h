@@ -138,12 +138,20 @@ void crinitFreeArgvArray(char **inArgv);
  * Will return the task config and include files to be loaded in \a series. Will also set any global options specified
  * in the series file.
  *
- * @param series      Returns the paths to the task configs specified in the series file (or scanned from TASKDIR, if
- *                    configured).
  * @param filename    The path to the series file to load.
  *
  * @return 0 on success, -1 on failure
  */
-int crinitLoadSeriesConf(crinitFileSeries_t *series, const char *filename);
+int crinitLoadSeriesConf(const char *filename);
+
+/**
+ * Load all tasks related to a series file.
+ *
+ * @param series      Returns the paths to the task configs specified in the series file (or scanned from TASKDIR, if
+ *                    configured).
+ *
+ * @return 0 on success, -1 on failure
+ */
+int crinitLoadTasks(crinitFileSeries_t *series);
 
 #endif /* __CONFPARSE_H__ */

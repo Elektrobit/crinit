@@ -17,7 +17,9 @@ add_executable(
   confhdl.c
   confmap.c
   lexers.c
-  elosio.c
+  elos-common.c
+  elosdep.c
+  eloslog.c
   envset.c
   task.c
   taskdb.c
@@ -43,6 +45,7 @@ target_link_libraries(
   crinit
   PRIVATE Threads::Threads
   PRIVATE inih-local
+  PRIVATE safu
 )
 
 

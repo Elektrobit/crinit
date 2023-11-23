@@ -28,8 +28,6 @@ ${ELOS_DEPEND_TASK_CONF}    SEPARATOR=\n
 ...
 ...                         FILTER_DEFINE = TEST_FILTER ".event.source.appName 'popocatepetl' STRCMP"
 ...                         DEPENDS = @elos:TEST_FILTER
-...
-...                         RESPAWN = NO
 @{MESSAGES}                 {"source": {"appName": "popocatepetl"}}
 
 *** Test Cases ***
@@ -37,18 +35,25 @@ Crinit Tasks With Event Filter Dependencies Get Started
     [Documentation]    Crinit starts a task with an event filter dependency
     ...                if the correct event is published.
 
-    Given Elosd Is Running
-        AND A Crinit Task Depending On An Elos Event Filter Is Started
+    Given Elosd Has Been Started
+        And A Crinit Task Depending On An Elos Event Filter Is Loaded
     When Elos Publishes The Dependency Event
-    Then Crinit Starts The Depending Task
+    Then Wait Until Keyword Succeeds  5s  200ms  Crinit Starts The Depending Task
 
 *** Keywords ***
-A Crinit Task Depending On An Elos Event Filter Is Started
-    Crinit Add Task Config    ${ELOS_DEPEND_TASK_NAME}    ${ELOS_DEPEND_TASK_CONF}
-    Crinit Add Task    ${ELOS_DEPEND_TASK_NAME}.crinit
+A Crinit Task Depending On An Elos Event Filter Is Loaded
+    ${rc} =  Crinit Add Task Config    ${ELOS_DEPEND_TASK_NAME}    ${ELOS_DEPEND_TASK_CONF}
+    Should Be Equal As Numbers  ${rc}  0
+    ${rc} =  Crinit Add Task    ${ELOS_DEPEND_TASK_NAME}.crinit
+    Should Be Equal As Numbers  ${rc}  0
 
 Elos Publishes The Dependency Event
     Elos Publish Event List    @{MESSAGES}
 
 Crinit Starts The Depending Task
-    Crinit Check Task State    ${ELOS_DEPEND_TASK_NAME}    done
+    ${rc} =  Crinit Check Task State    ${ELOS_DEPEND_TASK_NAME}    done
+    Should Be Equal As Numbers  ${rc}  0
+
+Elosd Has Been Started
+    ${running} =  Elosd Is Running
+    Should Be True  ${running}
