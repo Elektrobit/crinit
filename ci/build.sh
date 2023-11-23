@@ -80,7 +80,8 @@ cp "$BUILDDIR"/src/*.so* "$RESULTDIR"/lib/
 
 # build and copy documentation
 make -C "$BUILDDIR" doxygen
-cp -a doc "$BASEDIR"/result
+mkdir -p $BUILDDIR/doc/doxygen
+cp -a doc "$BUILDDIR/doc/doxygen"
 
 # copy client API headers
 cp inc/crinit-client.h "$RESULTDIR"/include
