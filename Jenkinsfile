@@ -12,7 +12,7 @@ properties([gitLabConnection('GitLab')])
 
 pipeline {
     agent {
-        label 'docker'
+        label 'agent01'
     }
     environment {
         DOCKER_BUILDKIT=1
