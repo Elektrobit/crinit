@@ -1,0 +1,11 @@
+<map id="inc/confconv.h" name="inc/confconv.h">
+<area shape="rect" id="node1" title="Definitions related to conversion operations from configuration values to structured data." alt="" coords="471,5,585,32"/>
+<area shape="rect" id="node2" href="$confconv_8c.html" title="Implementations of conversion operations from configuration values to structured data." alt="" coords="5,87,120,114"/>
+<area shape="rect" id="node3" href="$confhdl_8c.html" title="Implementation of type&#45; and target&#45;specific handler functions for configuration parsing." alt="" coords="144,87,248,114"/>
+<area shape="rect" id="node4" href="$confparse_8c.html" title="Implementation of the Config Parser." alt="" coords="272,87,392,114"/>
+<area shape="rect" id="node5" href="$envset_8c.html" title="Implementation file related to working with environment variable sets." alt="" coords="417,87,517,114"/>
+<area shape="rect" id="node6" href="$ioredir_8c.html" title="Implementation of functions related to IO redirection." alt="" coords="541,87,638,114"/>
+<area shape="rect" id="node7" href="$utest-confconv-envset_2case-null-input_8c.html" title="Unit test for crinitConfConvToEnvSetMember() with NULL inputs." alt="" coords="662,80,847,121"/>
+<area shape="rect" id="node8" href="$utest-confconv-envset_2case-success_8c.html" title="Unit test for crinitConfConvToEnvSetMember(), successful execution." alt="" coords="871,80,1057,121"/>
+<area shape="rect" id="node9" href="$case-wrong-input_8c.html" title="Unit test for crinitConfConvToEnvSetMember(), handling of invalid string input." alt="" coords="1081,80,1279,121"/>
+</map>

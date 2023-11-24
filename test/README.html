@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="../_static/favicon_16x16.png" sizes="16x16" rel="icon" type="image/png">
+    <link href="../_static/favicon_32x32.png" sizes="32x32" rel="icon" type="image/png">
+    <title>Unit Tests &#8212; crinit  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=039e1c02" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Architecture Design Records" href="../doc/adr/index.html" />
+    <link rel="prev" title="Crinit-related scripts" href="../scripts/README.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="unit-tests">
+<h1>Unit Tests<a class="headerlink" href="#unit-tests" title="Link to this heading">¶</a></h1>
+<p>This directory contains unit tests that can be built from the top directory by
+passing <code class="docutils literal notranslate"><span class="pre">-DUNIT_TESTS=On</span></code> to cmake. A normal build with <code class="docutils literal notranslate"><span class="pre">./ci/build.sh</span></code> sets
+this option for the aarch64 architecture and will build all unit tests. Each
+test produces a separate binary in the build output directory. To run all test
+binaries, use the script <code class="docutils literal notranslate"><span class="pre">./ci/run-utests.sh</span></code>.</p>
+<section id="file-hierarchy">
+<h2>File Hierarchy<a class="headerlink" href="#file-hierarchy" title="Link to this heading">¶</a></h2>
+<p>Each unit test resides in its own directory. The files related to a unit test
+follow the naming scheme as shown below.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>test/
+|-- mocks
+|   |-- mock-glob-opt-set.c                     The mock for crinitGlobOptSet()
+|   |-- mock-glot-opt-set.h                     The corresponding header for the mock
+|   `-- mock-*.[ch]                             Additional mocks for functions used in tests
+|-- utest-crinit-function-name                  Tests for crinitFunctionName()
+|   |-- case-glob-opt-error.c                   Testcase for an expected error
+|   |-- case-success.c                          Testcase for successful run
+|   |-- case-*.c                                More testcases as needed
+|   |-- utest-crinit-function-name.c            Main C file for the testsuite
+|   `-- utest-crinit-function-name.h            Header with declarations for all testcases
+|-- utest-*                                     More tests for other functions
+`-- unit_test.h                                 Common header file including the cmocka library
+</pre></div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/crinit-logo.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../index.html">crinit</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Crinit – Configurable Rootfs Init</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../README.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../README.html#details">Details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API-Doc.html">Public API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../src/index.html">Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/README.html">Crinit-related scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/README.html#script-usage-information">Script usage information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/README.html#usage-examples">Usage examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/README.html#note-on-the-key-type-used-in-crinit-genkeys-sh">Note on the key type used in <code class="docutils literal notranslate"><span class="pre">crinit-genkeys.sh</span></code></a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tests</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#file-hierarchy">File Hierarchy</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/adr/index.html">ADRS</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../scripts/README.html" title="previous chapter">Crinit-related scripts</a></li>
+      <li>Next: <a href="../doc/adr/index.html" title="next chapter">Architecture Design Records</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, emlix GmbH/Elektrobit Automotive GmbH.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="../_sources/test/README.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

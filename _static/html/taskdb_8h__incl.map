@@ -1,0 +1,13 @@
+<map id="inc/taskdb.h" name="inc/taskdb.h">
+<area shape="rect" id="node1" title="Header defining the central Task Data Structure and related types/functions." alt="" coords="77,5,178,32"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,80,89,107"/>
+<area shape="rect" id="node3" title=" " alt="" coords="145,379,219,405"/>
+<area shape="rect" id="node4" href="$task_8h.html" title="Header defining the data structures belonging to a single task and related functions." alt="" coords="275,80,337,107"/>
+<area shape="rect" id="node5" href="$confparse_8h.html" title="Header related to the Config Parser." alt="" coords="255,229,354,256"/>
+<area shape="rect" id="node9" href="$crinit-sdefs_8h.html" title="Definitions shared between crinit&#39;s public and internal APIs." alt="" coords="378,229,485,256"/>
+<area shape="rect" id="node10" href="$envset_8h.html" title="Header defining data types and functions to work with sets of environment variables." alt="" coords="165,155,244,181"/>
+<area shape="rect" id="node11" href="$ioredir_8h.html" title="Header related to IO redirection types and functions." alt="" coords="269,155,343,181"/>
+<area shape="rect" id="node6" title=" " alt="" coords="269,379,351,405"/>
+<area shape="rect" id="node7" title=" " alt="" coords="381,304,477,331"/>
+<area shape="rect" id="node8" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="220,304,299,331"/>
+</map>

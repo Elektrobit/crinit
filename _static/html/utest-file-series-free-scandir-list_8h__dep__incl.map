@@ -1,0 +1,5 @@
+<map id="test/utest/utest&#45;file&#45;series&#45;free&#45;scandir&#45;list/utest&#45;file&#45;series&#45;free&#45;scandir&#45;list.h" name="test/utest/utest&#45;file&#45;series&#45;free&#45;scandir&#45;list/utest&#45;file&#45;series&#45;free&#45;scandir&#45;list.h">
+<area shape="rect" id="node1" title=" " alt="" coords="91,5,245,76"/>
+<area shape="rect" id="node2" href="$utest-file-series-free-scandir-list_2case-success_8c.html" title="Unit test for crinitFreeScandirList(), successful execution." alt="" coords="5,131,155,187"/>
+<area shape="rect" id="node3" href="$utest-file-series-free-scandir-list_8c.html" title="Implementation of the crinitFreeScandirList() unit test group." alt="" coords="179,124,333,195"/>
+</map>

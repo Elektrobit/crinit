@@ -1,0 +1,33 @@
+<map id="inc/taskdb.h" name="inc/taskdb.h">
+<area shape="rect" id="node1" title="Header defining the central Task Data Structure and related types/functions." alt="" coords="429,5,530,32"/>
+<area shape="rect" id="node2" href="$elosio_8c.html" title="Implementation of elos connection." alt="" coords="121,80,216,107"/>
+<area shape="rect" id="node3" href="$optfeat_8c.html" title="Implementation of optional behavior dependent on available system features." alt="" coords="240,80,343,107"/>
+<area shape="rect" id="node4" href="$taskdb_8c.html" title="Implementation of the central Task Database and related functions." alt="" coords="367,80,467,107"/>
+<area shape="rect" id="node5" href="$notiserv_8h.html" title="Header related to the notification and service interface." alt="" coords="621,80,730,107"/>
+<area shape="rect" id="node8" href="$procdip_8h.html" title="Header related to the Process Dispatcher." alt="" coords="491,80,596,107"/>
+<area shape="rect" id="node11" href="$rtimcmd_8h.html" title="Header related to handling of runtime commands received via the notification/service interface." alt="" coords="1097,80,1209,107"/>
+<area shape="rect" id="node6" href="$crinit_8c.html" title="Implementation of the Crinit main program." alt="" coords="565,169,655,196"/>
+<area shape="rect" id="node7" href="$notiserv_8c.html" title="Implementation of the notification and service interface." alt="" coords="679,169,787,196"/>
+<area shape="rect" id="node9" href="$procdip_8c.html" title="Implementation of the Process Dispatcher." alt="" coords="302,169,406,196"/>
+<area shape="rect" id="node10" href="$rtimcmd_8c.html" title="Implementation of runtime commands to be triggered by the notification/service interface." alt="" coords="431,169,541,196"/>
+<area shape="rect" id="node12" href="$sockcom_8h.html" title="Header defining Crinit socket communication functions used internally by the crinit&#45;client library." alt="" coords="2018,169,2133,196"/>
+<area shape="rect" id="node15" href="$mock-build-rtim-cmd_8h.html" title="Header declaring a mock function for crinitBuildRtimCmd()." alt="" coords="2230,162,2401,203"/>
+<area shape="rect" id="node17" href="$mock-crinit-xfer_8h.html" title="Implementation of a mock function for crinitXfer()." alt="" coords="2461,162,2631,203"/>
+<area shape="rect" id="node19" href="$mock-destroy-rtim-cmd_8h.html" title="Header declaring a mock function for crinitDestroyRtimCmd()." alt="" coords="2674,162,2845,203"/>
+<area shape="rect" id="node21" href="$case-build-rtim-cmd-error_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for crinitBuildRtimCmd()." alt="" coords="189,259,375,315"/>
+<area shape="rect" id="node22" href="$case-crinit-response-cmd-error_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for wrong command in response." alt="" coords="399,259,565,315"/>
+<area shape="rect" id="node23" href="$case-crinit-response-code-error_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for error code response." alt="" coords="589,259,757,315"/>
+<area shape="rect" id="node24" href="$case-crinit-xfer-error_8c.html" title=" " alt="" coords="985,259,1144,315"/>
+<area shape="rect" id="node25" href="$case-forcedeps-empty_8c.html" title="Unit test for crinitClientTaskAdd() with forceDeps as empty string." alt="" coords="1169,259,1355,315"/>
+<area shape="rect" id="node26" href="$case-forcedeps-null_8c.html" title="Unit test for crinitClientTaskAdd() with forceDeps as NULL." alt="" coords="1379,259,1566,315"/>
+<area shape="rect" id="node27" href="$case-overwrite-bool-to-string_8c.html" title="Unit test for crinitClientTaskAdd() testing overwrite is passed on correctly." alt="" coords="1591,259,1776,315"/>
+<area shape="rect" id="node28" href="$utest-crinit-task-add_2case-success_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for crinitXfer()." alt="" coords="1800,266,1985,307"/>
+<area shape="rect" id="node29" href="$utest-crinit-task-add_8c.html" title="Implementation of the crinitClientTaskAdd() unit test group." alt="" coords="5,259,164,315"/>
+<area shape="rect" id="node30" href="$utest-crinit-task-add_8h.html" title="Header declaring the unit tests for crinitClientTaskAdd()." alt="" coords="1015,155,1173,211"/>
+<area shape="rect" id="node13" href="$crinit-client_8c.html" title="Implementation of the crinit&#45;client shared library." alt="" coords="2010,273,2141,300"/>
+<area shape="rect" id="node14" href="$sockcom_8c.html" title="Implementation of socket communication functions for the crinit&#45;client library." alt="" coords="2165,273,2279,300"/>
+<area shape="rect" id="node16" href="$mock-build-rtim-cmd_8c.html" title="Implementation of a mock function for crinitBuildRtimCmd()." alt="" coords="2303,266,2474,307"/>
+<area shape="rect" id="node18" href="$mock-crinit-xfer_8c.html" title="Implementation of a mock function for crinitXfer()." alt="" coords="2498,266,2669,307"/>
+<area shape="rect" id="node20" href="$mock-destroy-rtim-cmd_8c.html" title="Implementation of a mock function for crinitGlobOptSet()." alt="" coords="2693,266,2863,307"/>
+<area shape="rect" id="node31" href="$case-confpath-null_8c.html" title="Unit test for crinitClientTaskAdd() with confFilePath as NULL." alt="" coords="781,259,961,315"/>
+</map>

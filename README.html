@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="_static/favicon_16x16.png" sizes="16x16" rel="icon" type="image/png">
+    <link href="_static/favicon_32x32.png" sizes="32x32" rel="icon" type="image/png">
+    <title>Crinit – Configurable Rootfs Init &#8212; crinit  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=039e1c02" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Documentation" href="API-Doc.html" />
+    <link rel="prev" title="Crinit – Configurable Rootfs Init" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="crinit-configurable-rootfs-init">
+<h1>Crinit – Configurable Rootfs Init<a class="headerlink" href="#crinit-configurable-rootfs-init" title="Link to this heading">¶</a></h1>
+<img src="_static/crinit-logo.png" width=20% height=20% align="right">
+<section id="in-a-nutshell">
+<h2>In a Nutshell<a class="headerlink" href="#in-a-nutshell" title="Link to this heading">¶</a></h2>
+<p>Crinit is an init daemon executed as PID 1 by the Linux Kernel. It reads a global configuration (“series”-file) either
+specified on the command line or from <code class="docutils literal notranslate"><span class="pre">/etc/crinit/default.series</span></code>. The series file in turn may reference further
+configuration files or a whole directory from which all configs shall be loaded. Each one defines a task potentially
+containing a set of commands and dependencies on other tasks.</p>
+<p>The specified tasks are then started with as much parallelism as dependencies allow, i.e. tasks without any dependencies
+are spawned as soon as possible after Crinit has been started. Once a task is spawned, finished, or has failed, its
+dependent tasks are updated and spawned as necessary.</p>
+</section>
+<section id="concept">
+<h2>Concept<a class="headerlink" href="#concept" title="Link to this heading">¶</a></h2>
+<p>The below diagram shows the overall concept of Crinit.</p>
+<p><img alt="Rootfs Init Daemon Components" src="_images/rootfs_init_comp.svg" /></p>
+<p>Not indicated in the diagram are planned cryptographic features of the Config Parser intended to provide optional
+verification/integrity checking of the global and task configurations.</p>
+</section>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Link to this heading">¶</a></h2>
+<p>Crinit currently has the following features implemented:</p>
+<ul class="simple">
+<li><p>starting of tasks with parallelism and dependency-resolution</p>
+<ul>
+<li><p>tasks may have one or multiple commands, or none to form a dependency group</p></li>
+<li><p>dependencies can be either on specific task state changes or on “features” another (unknown) task will provide</p></li>
+</ul>
+</li>
+<li><p>a C client API and a command-line interface using it (<code class="docutils literal notranslate"><span class="pre">crinit-ctl</span></code>) capable of</p>
+<ul>
+<li><p>adding new tasks</p></li>
+<li><p>managing (stop, kill, restart, …) already loaded tasks</p></li>
+<li><p>querying task status</p></li>
+<li><p>handling reboot and poweroff</p></li>
+<li><p>a basic source-compatible implementation of <code class="docutils literal notranslate"><span class="pre">sd_notify()</span></code></p></li>
+</ul>
+</li>
+<li><p>task IO redirection (like shell pipes)</p>
+<ul>
+<li><p>to files, for example for basic logging purposes</p></li>
+<li><p>to named pipes, to pipe output between tasks</p></li>
+</ul>
+</li>
+<li><p>task environment variable management</p>
+<ul>
+<li><p>a global environment can be set</p></li>
+<li><p>task-specific local settings can override and/or extend the global environment</p></li>
+</ul>
+</li>
+<li><p>include files to maintain task configuration presets</p></li>
+<li><p>optional integration with <a class="reference external" href="https://github.com/Elektrobit/elos">elos</a></p>
+<ul>
+<li><p>support for events send by elos as task dependencies</p></li>
+</ul>
+</li>
+</ul>
+<p>In addition the following features are currently work-in-progress:</p>
+<ul class="simple">
+<li><p>ability to report task state changes back to elos</p></li>
+<li><p>optional signature checking of Crinit’s configuration files</p></li>
+</ul>
+<p>In the future we also plan to support:</p>
+<ul class="simple">
+<li><p>restriction of processes started/managed by Crinit</p>
+<ul>
+<li><p>UID/GID, capabilities, cgroups,…</p></li>
+</ul>
+</li>
+</ul>
+<p>There are example configurations below which show how to use the currently implemented features.
+For detailed explanations of Crinit’s inner workings please refer to the Doxygen documentation generated during build.
+The client API is documented in the Doxygen documentation of <code class="docutils literal notranslate"><span class="pre">crinit-client.h</span></code>. The API is implemented as a shared
+library (<code class="docutils literal notranslate"><span class="pre">libcrinit-client.so</span></code>).</p>
+<p>This repository also includes an example application to generate a <code class="docutils literal notranslate"><span class="pre">/etc/machine-id</span></code> file, which is used to uniquely
+identify the system (for example by <code class="docutils literal notranslate"><span class="pre">elosd</span></code>). The <code class="docutils literal notranslate"><span class="pre">machine-id-gen</span></code> tool is supposed to be called on boot, for example
+from <code class="docutils literal notranslate"><span class="pre">earlysetup.crinit</span></code> as shown in the example configuration files contained in this repository. Its implementation
+either uses the value for <code class="docutils literal notranslate"><span class="pre">systemd.machine_id</span></code> given on the Kernel command line or – on an NXP S32G-based board – the
+unique ID burned to on-chip OTP memory. If the Kernel command line value is set, it always takes precedence and any
+physical memory OTP reads are omitted. This means that while the application has special functionality for S32G SoCs,
+it can work on any target as long as the Kernel command line contains the necessary value.</p>
+</section>
+</section>
+<section id="license">
+<h1>License<a class="headerlink" href="#license" title="Link to this heading">¶</a></h1>
+<p>MIT License</p>
+<p>Copyright (c) [2023] [emlix GmbH, Elektrobit Automotive GmbH]</p>
+<p>The full text of the license can be found in the <a class="reference download internal" download="" href="_downloads/9879d6db96fd29134fc802214163b95a/LICENSE"><span class="xref download myst">LICENSE</span></a> file in the repository root directory.</p>
+<section id="powered-by-eb">
+<h2>Powered by EB<a class="headerlink" href="#powered-by-eb" title="Link to this heading">¶</a></h2>
+<img src="_static/eb-logo.png" width=70 height=70 hspace=10 align="left">
+Crinit is powered by Elektrobit Automotive GmbH.
+<p>Elektrobit is an automotive software company and developer of embedded software products for ECU, AUTOSAR, automated driving, connected vehicles and UX.
+Crinit is an integrated part of EB corbos Linux.</p>
+<p>EB corbos Linux – built on Ubuntu - is an open-source operating system for high-performance computing, leveraging the rich functionality of Linux while meeting security and industry regulations.</p>
+</section>
+<section id="maintainers">
+<h2>Maintainers<a class="headerlink" href="#maintainers" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Andreas Zdziarstek andreas.zdziarstek&#64;emlix.com <a class="reference external" href="https://github.com/gmcn42">&#64;gmcn42</a></p></li>
+<li><p>Thomas Brinker thomas.brinker&#64;emlix.com <a class="reference external" href="https://github.com/ThomasBrinker">&#64;ThomasBrinker</a></p></li>
+</ul>
+</section>
+<section id="credits">
+<h2>Credits<a class="headerlink" href="#credits" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Andreas Schickedanz</p></li>
+<li><p>Andreas Zdziarstek</p></li>
+<li><p>Anja Lehwess-Litzmann</p></li>
+<li><p>Annika Schmitt</p></li>
+<li><p>Anton Hillebrand</p></li>
+<li><p>Daniel Glöckner</p></li>
+<li><p>Rainer Müller</p></li>
+<li><p>Stefan Kral</p></li>
+<li><p>Thomas Brinker</p></li>
+<li><p>Wolfgang Gehrhardt</p></li>
+</ul>
+</section>
+<section id="artwork">
+<h2>Artwork<a class="headerlink" href="#artwork" title="Link to this heading">¶</a></h2>
+<p>The crinit logo is the Swallow (Hirundinidae). A quick and small bird able to fly long distances. Originator is Anja Lehwess-Litzmann (emlix GmbH). Year 2023. It is licensed under Creative Commons No Derivatives (CC-nd). It shall be used in black on white or HKS43 color.</p>
+</section>
+</section>
+<section id="details">
+<h1>Details<a class="headerlink" href="#details" title="Link to this heading">¶</a></h1>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">¶</a></h2>
+<p>As described above, Crinit needs a global series-file containing global configuration options as well as a list of task
+configurations. Examples for a local demonstration inside the build environment (see [Build
+Instructions](#Build Instructions) below) are available in <code class="docutils literal notranslate"><span class="pre">config/test/</span></code> and examples to use as a starting point for a
+minimal system boot are available in <code class="docutils literal notranslate"><span class="pre">config/example/</span></code>.</p>
+<p>The general format of crinit configuration files is INI-style <code class="docutils literal notranslate"><span class="pre">KEY</span> <span class="pre">=</span> <span class="pre">value</span></code> pairs. Some settings may be array-like,
+meaning they can be specified multiple times to append values. Leaving out the <code class="docutils literal notranslate"><span class="pre">KEY</span> <span class="pre">=</span></code> part at the start of the line in
+favor of at least one whitespace character is shorthand for appending to the last key, for example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ARRAY_LIKE_KEY</span> <span class="o">=</span> <span class="n">value</span> <span class="mi">1</span>
+<span class="n">ARRAY_LIKE_KEY</span> <span class="o">=</span> <span class="n">value</span> <span class="mi">2</span>
+</pre></div>
+</div>
+<p>is equivalent to</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ARRAY_LIKE_KEY</span> <span class="o">=</span> <span class="n">value</span> <span class="mi">1</span>
+                 <span class="n">value</span> <span class="mi">2</span>
+</pre></div>
+</div>
+<section id="example-global-configuration">
+<h3>Example Global Configuration<a class="headerlink" href="#example-global-configuration" title="Link to this heading">¶</a></h3>
+<p>An example to boot a minimal environment may look like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Crinit global configuration file</span>
+
+<span class="n">TASKS</span> <span class="o">=</span> <span class="n">earlysetup</span><span class="o">.</span><span class="n">crinit</span> <span class="n">check_qemu</span><span class="o">.</span><span class="n">crinit</span> <span class="n">network</span><span class="o">-</span><span class="n">dhcp</span><span class="o">.</span><span class="n">crinit</span>
+        <span class="n">sshd</span><span class="o">.</span><span class="n">crinit</span> <span class="n">getty</span><span class="o">.</span><span class="n">crinit</span>
+
+<span class="n">TASKDIR</span> <span class="o">=</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">crinit</span>
+<span class="n">TASK_FILE_SUFFIX</span> <span class="o">=</span> <span class="o">.</span><span class="n">crinit</span>
+<span class="n">TASKDIR_FOLLOW_SYMLINKS</span> <span class="o">=</span> <span class="n">YES</span>
+<span class="n">INCLUDEDIR</span> <span class="o">=</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">crinit</span>
+<span class="n">INCLUDE_SUFFIX</span> <span class="o">=</span> <span class="o">.</span><span class="n">crincl</span>
+<span class="n">DEBUG</span> <span class="o">=</span> <span class="n">NO</span>
+
+<span class="n">SHUTDOWN_GRACE_PERIOD_US</span> <span class="o">=</span> <span class="mi">100000</span>
+
+<span class="n">USE_SYSLOG</span> <span class="o">=</span> <span class="n">NO</span>
+<span class="n">USE_ELOS</span> <span class="o">=</span> <span class="n">YES</span>
+
+<span class="n">ELOS_SERVER</span> <span class="o">=</span> <span class="mf">192.168.3.43</span>
+<span class="n">ELOS_PORT</span> <span class="o">=</span> <span class="mi">2342</span>
+
+<span class="n">ENV_SET</span> <span class="o">=</span> <span class="n">FOO</span> <span class="s2">&quot;foo&quot;</span>
+<span class="n">ENV_SET</span> <span class="o">=</span> <span class="n">FOO_BAZ</span> <span class="s2">&quot;$</span><span class="si">{FOO}</span><span class="s2"> baz&quot;</span>
+<span class="n">ENV_SET</span> <span class="o">=</span> <span class="n">GREETING</span> <span class="s2">&quot;Good morning!&quot;</span>
+</pre></div>
+</div>
+<section id="explanation">
+<h4>Explanation<a class="headerlink" href="#explanation" title="Link to this heading">¶</a></h4>
+<ul class="simple">
+<li><p><strong>TASKS</strong> – The task configurations to load. This is an optional setting. If not set, <strong>TASKDIR</strong> will be scanned for
+task configuration files. (<em>array-like</em>)</p></li>
+<li><p><strong>TASKDIR</strong> – Where to find the task configurations, will be prepended to the filenames in <strong>TASKS</strong>.
+Default: <code class="docutils literal notranslate"><span class="pre">/etc/crinit</span></code></p></li>
+<li><p><strong>TASK_FILE_SUFFIX</strong> – Filename suffix of task configurations. Only relevant if <strong>TASKS</strong> is not set.
+Default: <code class="docutils literal notranslate"><span class="pre">.crinit</span></code></p></li>
+<li><p><strong>TASKDIR_FOLLOW_SYMLINKS</strong> – If symbolic links should be followed during scanning of <strong>TASKDIR</strong>. Only relevant if
+<strong>TASKS</strong> is not set. Default: YES</p></li>
+<li><p><strong>INCLUDEDIR</strong> – Where to find include files referenced from task configurations. Default: Same as <strong>TASKDIR</strong>.</p></li>
+<li><p><strong>INCLUDE_SUFFIX</strong> – Filename suffix of include files referenced from task configurations. Default: <code class="docutils literal notranslate"><span class="pre">.crincl</span></code></p></li>
+<li><p><strong>DEBUG</strong> – If crinit should be verbose in its output. Either <code class="docutils literal notranslate"><span class="pre">YES</span></code> or <code class="docutils literal notranslate"><span class="pre">NO</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">NO</span></code></p></li>
+<li><p><strong>SHUTDOWN_GRACE_PERIOD_US</strong> – The amount of microseconds to wait between <code class="docutils literal notranslate"><span class="pre">SIGTERM</span></code> and <code class="docutils literal notranslate"><span class="pre">SIGKILL</span></code> on shutdown/reboot.
+Default: 100000</p></li>
+<li><p><strong>USE_SYSLOG</strong> – If syslog should be used for output if it is available. If set to <code class="docutils literal notranslate"><span class="pre">YES</span></code>, Crinit will switch to
+syslog for output as soon as a task file <code class="docutils literal notranslate"><span class="pre">PROVIDES</span></code> the <code class="docutils literal notranslate"><span class="pre">syslog</span></code> feature. Ideally this should be
+a task file loading a syslog server such as syslogd or elosd. Default: <code class="docutils literal notranslate"><span class="pre">NO</span></code></p></li>
+<li><p><strong>USE_ELOS</strong> – If Elos should be used as event based dependency provider if it is available. If set to <code class="docutils literal notranslate"><span class="pre">YES</span></code>, Crinit will allow Elos event filters as
+task dependency with the <code class="docutils literal notranslate"><span class="pre">&#64;elos</span></code> prefix as soon as a task file <code class="docutils literal notranslate"><span class="pre">PROVIDES</span></code> the <code class="docutils literal notranslate"><span class="pre">elos</span></code> feature. Ideally this should be
+a task file loading the Elos daemon elosd. Default: <code class="docutils literal notranslate"><span class="pre">NO</span></code></p></li>
+<li><p><strong>ELOS_SERVER</strong> – Ip address of the elos server. Default: <code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code></p></li>
+<li><p><strong>ELOS_PORT</strong> – Port of the elos server. Default: <code class="docutils literal notranslate"><span class="pre">54321</span></code></p></li>
+<li><p><strong>ENV_SET</strong> – See section <strong>Setting Environment Variables</strong> below. (<em>array-like</em>)</p></li>
+<li><p><strong>FILTER_DEFINE</strong> – See section <strong>Defining Elos Filters</strong> below. (<em>array-like</em>)</p></li>
+</ul>
+</section>
+</section>
+<section id="example-task-configuration">
+<h3>Example Task Configuration<a class="headerlink" href="#example-task-configuration" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">network-dhcp.crinit</span></code> from above could for example look like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># DHCP config for a minimal system</span>
+
+<span class="n">NAME</span> <span class="o">=</span> <span class="n">network</span><span class="o">-</span><span class="n">dhcp</span>
+
+<span class="n">INCLUDE</span> <span class="o">=</span> <span class="n">daemon_env_preset</span>
+
+<span class="n">COMMAND</span> <span class="o">=</span> <span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">dhcpcd</span>
+          <span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">mount</span> <span class="o">-</span><span class="n">t</span> <span class="n">tmpfs</span> <span class="n">none</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">dhcpcd</span>
+          <span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">touch</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">dhcpcd</span><span class="o">/</span><span class="n">resolv</span><span class="o">.</span><span class="n">conf</span>
+          <span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">mount</span> <span class="o">-</span><span class="n">o</span> <span class="n">bind</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">dhcpcd</span><span class="o">/</span><span class="n">resolv</span><span class="o">.</span><span class="n">conf</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">resolv</span><span class="o">.</span><span class="n">conf</span>
+          <span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">ifconfig</span> <span class="n">lo</span> <span class="n">up</span>
+          <span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">ifconfig</span> <span class="n">lo</span> <span class="mf">127.0.0.1</span>
+          <span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">dhcpcd</span> <span class="o">-</span><span class="n">j</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">log</span><span class="o">/</span><span class="n">dhcpcd</span><span class="o">.</span><span class="n">log</span> <span class="n">eth0</span>
+
+<span class="n">DEPENDS</span> <span class="o">=</span> <span class="n">check_qemu</span><span class="p">:</span><span class="n">fail</span> <span class="n">earlysetup</span><span class="p">:</span><span class="n">wait</span> <span class="nd">@provided</span><span class="p">:</span><span class="n">writable_var</span>
+
+<span class="n">PROVIDES</span> <span class="o">=</span> <span class="n">ipv4_dhcp</span><span class="p">:</span><span class="n">wait</span> <span class="n">resolvconf</span><span class="p">:</span><span class="n">wait</span>
+
+<span class="n">RESPAWN</span> <span class="o">=</span> <span class="n">NO</span>
+<span class="n">RESPAWN_RETRIES</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+<span class="n">ENV_SET</span> <span class="o">=</span> <span class="n">FOO_BAR</span> <span class="s2">&quot;$</span><span class="si">{FOO}</span><span class="s2"> bar&quot;</span>
+          <span class="n">ESCAPED_VAR</span> <span class="s2">&quot;Global variable name: \$</span><span class="si">{FOO}</span><span class="s2">&quot;</span>
+          <span class="n">VAR_WITH_ESC_SEQUENCES</span> <span class="s2">&quot;hex</span><span class="se">\t\x68\x65\x78</span><span class="s2">&quot;</span>
+          <span class="n">GREETING</span> <span class="s2">&quot;Good evening!&quot;</span>
+
+<span class="n">IO_REDIRECT</span> <span class="o">=</span> <span class="n">STDOUT</span> <span class="s2">&quot;/var/log/net-dhcp.log&quot;</span> <span class="n">APPEND</span> <span class="mi">0644</span>
+<span class="n">IO_REDIRECT</span> <span class="o">=</span> <span class="n">STDERR</span> <span class="n">STDOUT</span>
+</pre></div>
+</div>
+<section id="id1">
+<h4>Explanation<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h4>
+<ul class="simple">
+<li><p><strong>NAME</strong> – The name given to this task configuration. Relevant if other tasks want to depend on this one. This is a
+mandatory setting.</p></li>
+<li><p><strong>INCLUDE</strong> – See section <strong>Include files</strong> below. (<em>array-like</em>)</p></li>
+<li><p><strong>COMMAND</strong> – The commands to be executed in series. Executable paths must be absolute. Execution will stop if
+one of them fails and the whole task will be considered failed. The whole task is considered finished (i.e.
+the <code class="docutils literal notranslate"><span class="pre">network-dhcp:wait</span></code> dependency is fulfilled) if the last command has successfully returned. If no <strong>COMMAND</strong> is
+given, the task is treated as a dependency group or “meta-task”, see below. (<em>array-like</em>)</p></li>
+<li><p><strong>DEPENDS</strong> – A list of dependencies which need to be fulfilled before this task is considered “ready-to-start”.
+Semantics are <code class="docutils literal notranslate"><span class="pre">&lt;taskname&gt;:{fail,wait,spawn}</span></code>, where <code class="docutils literal notranslate"><span class="pre">spawn</span></code> is fulfilled when (the first command of) a task has been
+started, <code class="docutils literal notranslate"><span class="pre">wait</span></code> if it has successfully completed, and <code class="docutils literal notranslate"><span class="pre">fail</span></code> if it has failed somewhere along the way. Here we can see
+this task is only run if and after the <code class="docutils literal notranslate"><span class="pre">earlysetup</span></code> (setup of system directories, etc.) has fully completed and the
+<code class="docutils literal notranslate"><span class="pre">check_qemu</span></code> task has determined we are <em>not</em> running inside the emulator and therefore exited with an error code.
+This may be left out or explicitly set to empty using <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> which is interpreted as “no dependencies”.
+There is also the special <code class="docutils literal notranslate"><span class="pre">&#64;provided:feature</span></code> syntax where we can define we want to depend on a specific feature
+another task may implement (see <strong>PROVIDES</strong>). In this case <code class="docutils literal notranslate"><span class="pre">&#64;provided:writable_var</span></code> could mean that another task
+may have mounted a tmpfs or a writable partition there which we need for the first <code class="docutils literal notranslate"><span class="pre">mkdir</span></code>. That task would need to
+advertise the <code class="docutils literal notranslate"><span class="pre">writable_var</span></code> feature in its <code class="docutils literal notranslate"><span class="pre">PROVIDES</span></code> config value. (<em>array-like</em>)
+Additionally there is an optional feature that allows tasks to be started based on system events issued by elos.
+Tasks depending on an elos event can use the <code class="docutils literal notranslate"><span class="pre">&#64;elos:&lt;filter_name&gt;</span></code> syntax to specify a task dependency that is fullfilled
+as soon as the specified elos filter triggers. The filters themself can be specified using the <strong>FILTER_DEFINE</strong> keyword.</p></li>
+<li><p><strong>PROVIDES</strong> – As we have seen above, a task may depend on features and also provide them. In this case we advertise
+that after completion of this task (<code class="docutils literal notranslate"><span class="pre">wait</span></code>), the features <code class="docutils literal notranslate"><span class="pre">ipv4_dhcp</span></code> and <code class="docutils literal notranslate"><span class="pre">resolvconf</span></code> are provided. Another task may
+then depend e.g. on <code class="docutils literal notranslate"><span class="pre">&#64;provided:resolvconf</span></code>. While the feature names chosen here reflect the functional intention, they
+can be chosen arbitrarily. (<em>array-like</em>)</p></li>
+<li><p><strong>RESPAWN</strong> – If set to <code class="docutils literal notranslate"><span class="pre">YES</span></code>, the task will be restarted on failure or completion. Useful for daemons like <code class="docutils literal notranslate"><span class="pre">getty</span></code>.</p></li>
+<li><p><strong>RESPAWN_RETRIES</strong> – Number of times a respawned task may fail <em>in a row</em> before it is not started again. The
+special value <code class="docutils literal notranslate"><span class="pre">-1</span></code> is interpreted as “unlimited”. Default: -1</p></li>
+<li><p><strong>ENV_SET</strong> – See section <strong>Setting Environment Variables</strong> below. (<em>array-like</em>)</p></li>
+<li><p><strong>FILTER_DEFINE</strong> – See section <strong>Defining Elos Filters</strong> below. (<em>array-like</em>)</p></li>
+<li><p><strong>IO_REDIRECT</strong> – See section <strong>IO Redirections</strong> below. (<em>array-like</em>)</p></li>
+</ul>
+</section>
+</section>
+<section id="setting-environment-variables">
+<h3>Setting Environment Variables<a class="headerlink" href="#setting-environment-variables" title="Link to this heading">¶</a></h3>
+<p>Crinit supports setting environment variables in the global and task configurations as shown above. The variables in the
+global config are valid for all tasks and may be locally overriden or referenced. The above examples together would
+result in the following list of environment variables for the task <code class="docutils literal notranslate"><span class="pre">network-dhcp</span></code> (with explanatory comments).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>FOO=foo
+FOO_BAZ=foo baz                            # Expansion of variable set before in the same config.
+FOO_BAR=foo bar                            # Expansion of global variable in task-local variable.
+GREETING=Good evening!                     # Override of global variable.
+ESCAPED_VAR=Global variable name: ${FOO}   # Avoid variable expansion through escaping.
+VAR_WITH_ESC_SEQUENCES=hex  hex            # Support for escape sequences including hexadecimal bytes.
+</pre></div>
+</div>
+</section>
+<section id="defining-elos-filters">
+<h3>Defining Elos Filters<a class="headerlink" href="#defining-elos-filters" title="Link to this heading">¶</a></h3>
+<p>Crinit supports an optional feature, which enables a task to depend on specific system events issued by the elos event logger.
+In order to depend on elos events, a task uses the <code class="docutils literal notranslate"><span class="pre">&#64;elos</span></code> dependency prefix in conjunction with a elos filter name. The corresponding
+filter has to be defined within the task itself or within the global environment. The definition follows the syntax of normal
+environment variables, but uses the <code class="docutils literal notranslate"><span class="pre">FILTER_DEFINE</span></code> prefix instead:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FILTER_DEFINE</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">filter_name</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">filter_rule</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NAME</span> <span class="o">=</span> <span class="n">elos_ssh_event_task</span>
+<span class="n">COMMAND</span> <span class="o">=</span> <span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">echo</span> <span class="s2">&quot;Event task has been run.&quot;</span>
+
+<span class="n">FILTER_DEFINE</span> <span class="o">=</span> <span class="n">SSHD_FILTER</span> <span class="s2">&quot;.event.source.appName &#39;sshd&#39; STRCMP&quot;</span>
+
+<span class="n">DEPENDS</span> <span class="o">=</span> <span class="nd">@elos</span><span class="p">:</span><span class="n">SSHD_FILTER</span>
+</pre></div>
+</div>
+<section id="ruleset">
+<h4>Ruleset<a class="headerlink" href="#ruleset" title="Link to this heading">¶</a></h4>
+<ul class="simple">
+<li><p>A configuration file may have an unlimited number of <code class="docutils literal notranslate"><span class="pre">ENV_SET</span></code> statements, each specifying a single environment
+variable.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ENV_SET</span></code> statements must be of the form <code class="docutils literal notranslate"><span class="pre">ENV_SET</span> <span class="pre">=</span> <span class="pre">VARIABLE_NAME</span> <span class="pre">&quot;variable</span> <span class="pre">content&quot;</span></code>. The quotes around the variable
+content are mandatory and will not appear in the environment variable itself.</p></li>
+<li><p>Setting the same variable twice overrides the first instance.</p></li>
+<li><p>Variables can be referenced/expanded using shell-like <code class="docutils literal notranslate"><span class="pre">${VARIABLE_NAME}</span></code> syntax.</p>
+<ul>
+<li><p>Expansion can be avoided by escaping with a <code class="docutils literal notranslate"><span class="pre">\</span></code>.</p></li>
+</ul>
+</li>
+<li><p>Variables can reference all other variables set before it, globally and locally.</p></li>
+<li><p>Variables are set/processed in the order they appear in the config file.</p></li>
+<li><p>Common escape sequences are supported: <code class="docutils literal notranslate"><span class="pre">\a,</span> <span class="pre">\b,</span> <span class="pre">\n,</span> <span class="pre">\t,</span> <span class="pre">\$,</span> <span class="pre">\\,</span> <span class="pre">\x&lt;two</span> <span class="pre">digit</span> <span class="pre">hex</span> <span class="pre">number&gt;</span></code>.</p></li>
+</ul>
+</section>
+</section>
+<section id="include-files">
+<h3>Include files<a class="headerlink" href="#include-files" title="Link to this heading">¶</a></h3>
+<p>A crinit task configuration may reference multiple include files at any point in the task file. The effect is the same
+as manually copying the contents of the include file at exactly that point in the task config, similar to C includes.
+Additionally, it is possible to define an import list if not all settings in the include file should be applied.</p>
+<p>An INCLUDE statement looks like</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">INCLUDE</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">include_name</span><span class="o">&gt;</span> <span class="p">[</span><span class="nb">list</span><span class="p">,</span><span class="n">of</span><span class="p">,</span><span class="n">imported</span><span class="p">,</span><span class="n">settings</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">&lt;include_name&gt;</span></code> is the filename of the include without the ending and without the leading path. The imported
+settings are defined as a comma-separated list of possible configuration options. If omitted, everything in the include
+file is taken.</p>
+<p>Currently only <code class="docutils literal notranslate"><span class="pre">IO_REDIRECT</span></code>, <code class="docutils literal notranslate"><span class="pre">DEPENDS</span></code>, and <code class="docutils literal notranslate"><span class="pre">ENV_SET</span></code> are supported in include files.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">INCLUDE</span> <span class="o">=</span> <span class="n">server_settings</span> <span class="n">ENV_SET</span><span class="p">,</span><span class="n">IO_REDIRECT</span>
+</pre></div>
+</div>
+<p>Imports only the <code class="docutils literal notranslate"><span class="pre">ENV_SET</span></code> and <code class="docutils literal notranslate"><span class="pre">IO_REDIRECT</span></code> settings from (assuming default values for include dir and suffix)
+<code class="docutils literal notranslate"><span class="pre">/etc/crinit/server_settings.crincl</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">server_settings.crincl</span></code> could look like</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ENV_SET</span> <span class="o">=</span> <span class="n">HTTP_PORT</span> <span class="s2">&quot;8080&quot;</span>
+<span class="n">IO_REDIRECT</span> <span class="o">=</span> <span class="n">STDOUT</span> <span class="o">/</span><span class="n">some</span><span class="o">/</span><span class="n">file</span><span class="o">.</span><span class="n">txt</span>
+<span class="n">IO_REDIRECT</span> <span class="o">=</span> <span class="n">STDERR</span> <span class="n">STDOUT</span>
+<span class="n">DEPENDS</span> <span class="o">=</span> <span class="nd">@provided</span><span class="p">:</span><span class="n">network</span>
+</pre></div>
+</div>
+<p>In the above case, the DEPENDS setting would be ignored.</p>
+</section>
+<section id="io-redirections">
+<h3>IO Redirections<a class="headerlink" href="#io-redirections" title="Link to this heading">¶</a></h3>
+<p>Crinit supports per-task IO redirection to/from file and between STDOUT/IN/ERR using <code class="docutils literal notranslate"><span class="pre">IO_REDIRECT</span></code> statements in the
+task configurations. The statements are of the form</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">REDIRECT_FROM</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">REDIRECT_TO</span><span class="o">&gt;</span> <span class="p">[</span> <span class="n">APPEND</span> <span class="o">|</span> <span class="n">TRUNCATE</span> <span class="o">|</span> <span class="n">PIPE</span> <span class="p">]</span> <span class="p">[</span> <span class="n">OCTAL_MODE</span> <span class="p">]</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">REDIRECT_FROM</span></code> is one of <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">STDOUT,</span> <span class="pre">STDERR,</span> <span class="pre">STDIN</span> <span class="pre">}</span></code>, and <code class="docutils literal notranslate"><span class="pre">REDIRECT_TO</span></code> may either also be one of those streams
+or an absolute path to a file. <code class="docutils literal notranslate"><span class="pre">APPEND</span></code> or <code class="docutils literal notranslate"><span class="pre">TRUNCATE</span></code> signify whether an existing file at that location should be
+appended to or truncated. Default is <code class="docutils literal notranslate"><span class="pre">TRUNCATE</span></code>. The special value <code class="docutils literal notranslate"><span class="pre">PIPE</span></code> is discussed below (see <em>Named Pipes</em>).
+<code class="docutils literal notranslate"><span class="pre">OCTAL_MODE</span></code> sets the permission bits if the file is newly created. Default is <code class="docutils literal notranslate"><span class="pre">0644</span></code>.</p>
+<p>Accordingly the statements in the example configuration above will result in <code class="docutils literal notranslate"><span class="pre">stdout</span></code> being redirected to the file
+<code class="docutils literal notranslate"><span class="pre">/var/log/net-dhcp.log</span></code> in append mode. If the file does not yet exist, it will be created with permission bits <code class="docutils literal notranslate"><span class="pre">0644</span></code>.
+The second statement then redirects stderr to stdout, capturing both in the log.</p>
+<p>Other examples could be</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">IO_REDIRECT</span> <span class="o">=</span> <span class="n">STDERR</span> <span class="s2">&quot;/var/log/err.log&quot;</span> <span class="n">APPEND</span>
+<span class="n">IO_REDIRECT</span> <span class="o">=</span> <span class="n">STDOUT</span> <span class="s2">&quot;/dev/null&quot;</span>
+</pre></div>
+</div>
+<p>to silence stdout and log stderr, or</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">IO_REDIRECT</span> <span class="o">=</span> <span class="n">STDIN</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">backup</span><span class="o">.</span><span class="n">tar</span>
+<span class="n">IO_REDIRECT</span> <span class="o">=</span> <span class="n">STDOUT</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">backup</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+</pre></div>
+</div>
+<p>to read stdin from file and capture stdout to another file. Stderr will go to console as normal.</p>
+<section id="named-pipes">
+<h4>Named pipes<a class="headerlink" href="#named-pipes" title="Link to this heading">¶</a></h4>
+<p>As indicated above, <code class="docutils literal notranslate"><span class="pre">crinit</span></code> also accepts the setting <code class="docutils literal notranslate"><span class="pre">PIPE</span></code> instead of <code class="docutils literal notranslate"><span class="pre">APPEND</span></code> or <code class="docutils literal notranslate"><span class="pre">TRUNCATE</span></code>. With this setting,
+<code class="docutils literal notranslate"><span class="pre">crinit</span></code> will ensure that the given path is a named pipe (also called a FIFO special file). This is useful to pipe the
+output of one task to another.</p>
+<p>A common example would be redirection of output to syslog. For that we would create two task files, one as the sender
+and another as the receiver (using the <code class="docutils literal notranslate"><span class="pre">logger</span></code> utility provided by e.g. busybox and others).</p>
+<p><strong>Sending Task</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NAME</span> <span class="o">=</span> <span class="n">some_task</span>
+
+<span class="n">COMMAND</span> <span class="o">=</span> <span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">echo</span> <span class="s2">&quot;This output will be redirected to syslog!&quot;</span>
+<span class="n">RESPAWN</span> <span class="o">=</span> <span class="n">NO</span>
+<span class="n">DEPENDS</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+<span class="n">IO_REDIRECT</span> <span class="o">=</span> <span class="n">STDOUT</span> <span class="s2">&quot;/tmp/some_task_log_pipe&quot;</span> <span class="n">PIPE</span> <span class="mi">0640</span>
+</pre></div>
+</div>
+<p><strong>Receiving Task</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NAME</span> <span class="o">=</span> <span class="n">some_task_logger</span>
+
+<span class="n">COMMAND</span> <span class="o">=</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">logger</span> <span class="o">-</span><span class="n">t</span> <span class="n">some_task</span>
+<span class="n">RESPAWN</span> <span class="o">=</span> <span class="n">YES</span>
+<span class="n">DEPENDS</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+<span class="n">IO_REDIRECT</span> <span class="o">=</span> <span class="n">STDIN</span> <span class="s2">&quot;/tmp/some_task_log_pipe&quot;</span> <span class="n">PIPE</span> <span class="mi">0640</span>
+</pre></div>
+</div>
+<p>This will redirect the output of the <code class="docutils literal notranslate"><span class="pre">echo</span></code> command to the input of the <code class="docutils literal notranslate"><span class="pre">logger</span></code> utility and thereby to syslog. As is
+shown, it is also possible to set permissions for named pipes (default will also be <code class="docutils literal notranslate"><span class="pre">0644</span></code>). It should be kept in mind
+to keep the permissions the same in both tasks. Setting different permissions in the sending and receiving task of a
+pipe creates a race condition where one of the tasks will be able to create the named pipe with its settings. The other
+task will take it as-is, as long as it can access the file.</p>
+</section>
+<section id="a-note-on-buffering">
+<h4>A note on buffering<a class="headerlink" href="#a-note-on-buffering" title="Link to this heading">¶</a></h4>
+<p>By default, glibc will switch from line- to block-buffered mode when redirecting a stream to file. This may make it
+hard to use e.g. <code class="docutils literal notranslate"><span class="pre">tail</span> <span class="pre">-f</span> <span class="pre">...</span></code> to monitor the output in parallel. To get around that problem, one may use the <code class="docutils literal notranslate"><span class="pre">stdbuf</span></code>
+utility (part of GNU coreutils).</p>
+<p>In a <code class="docutils literal notranslate"><span class="pre">crinit</span></code> task, the following</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NAME</span> <span class="o">=</span> <span class="n">line_buffered_task</span>
+
+<span class="n">COMMAND</span> <span class="o">=</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">stdbuf</span> <span class="o">-</span><span class="n">oL</span> <span class="o">-</span><span class="n">eL</span> <span class="o">&lt;</span><span class="n">SOME_EXECUTABLE</span><span class="o">&gt;</span>
+
+<span class="n">IO_REDIRECT</span> <span class="o">=</span> <span class="n">STDOUT</span> <span class="s2">&quot;/some/where.txt&quot;</span>
+              <span class="n">STDERR</span> <span class="s2">&quot;/some/where/else.txt&quot;</span>
+</pre></div>
+</div>
+<p>will result in line-buffered output to the files which can be monitored easily. For more details, see the <code class="docutils literal notranslate"><span class="pre">stdbuf</span></code> man
+page.</p>
+</section>
+</section>
+<section id="dependency-groups-meta-tasks">
+<h3>Dependency groups (meta-tasks)<a class="headerlink" href="#dependency-groups-meta-tasks" title="Link to this heading">¶</a></h3>
+<p>A dependency group or meta-task is a task without any <strong>COMMAND</strong>s. The provided dependencies of the meta-task will be
+fulfilled immediately once its own dependencies are fulfilled. This can be used to semantically combine different
+dependencies into one. Reasons to do that can be semantic readability of the configs or to provide hook dependencies
+for third-party applications having an opaque view of their target system.</p>
+<p>As an example a dependency group and a task using it could look like</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NAME</span> <span class="o">=</span> <span class="n">dep_grp_server</span>
+
+<span class="n">DEPENDS</span> <span class="o">=</span> <span class="nd">@provided</span><span class="p">:</span><span class="n">sql</span><span class="o">-</span><span class="n">db</span> <span class="nd">@provided</span><span class="p">:</span><span class="n">network</span> <span class="nd">@provided</span><span class="p">:</span><span class="n">firewall</span><span class="o">-</span><span class="nb">open</span><span class="o">-</span><span class="n">port</span> <span class="n">httpd</span><span class="p">:</span><span class="n">spawn</span>
+
+<span class="n">PROVIDES</span> <span class="o">=</span> <span class="n">server</span><span class="p">:</span><span class="n">wait</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NAME</span> <span class="o">=</span> <span class="n">local_http_client</span>
+
+<span class="n">COMMAND</span> <span class="o">=</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">some</span><span class="o">-</span><span class="n">http</span><span class="o">-</span><span class="n">request</span> <span class="n">localhost</span>
+
+<span class="n">DEPENDS</span> <span class="o">=</span> <span class="nd">@provided</span><span class="p">:</span><span class="n">server</span>
+<span class="c1"># or, with same effect: DEPENDS = dep_grp_server:wait</span>
+</pre></div>
+</div>
+<p>Semantically, this would mean <code class="docutils literal notranslate"><span class="pre">local_http_client</span></code> only cares about the server, as a singular entity, being set up and running. This could
+also be delivered by a third party with only the interface knowledge “You need to wait for the <code class="docutils literal notranslate"><span class="pre">server</span></code> dependency”. How
+to provide this dependency, with which tasks, and in what order is then up to the system integrator who maintains
+<code class="docutils literal notranslate"><span class="pre">dep_grp_server</span></code>.</p>
+</section>
+</section>
+<section id="crinit-ctl-usage-info">
+<h2>crinit-ctl Usage Info<a class="headerlink" href="#crinit-ctl-usage-info" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">crinit-ctl</span></code> is a CLI control program for <code class="docutils literal notranslate"><span class="pre">crinit</span></code> wrapping the client API functionality.</p>
+<p>Below is its help output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">USAGE</span><span class="p">:</span> <span class="n">crinit</span><span class="o">-</span><span class="n">ctl</span> <span class="o">&lt;</span><span class="n">ACTION</span><span class="o">&gt;</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="o">&lt;</span><span class="n">PARAMETER</span><span class="o">&gt;</span> <span class="p">[</span><span class="n">PARAMETERS</span><span class="o">...</span><span class="p">]</span>
+  <span class="n">where</span> <span class="n">ACTION</span> <span class="n">must</span> <span class="n">be</span> <span class="n">exactly</span> <span class="n">one</span> <span class="n">of</span> <span class="p">(</span><span class="n">including</span> <span class="n">specific</span> <span class="n">options</span><span class="o">/</span><span class="n">parameters</span><span class="p">):</span>
+     <span class="n">addtask</span> <span class="p">[</span><span class="o">-</span><span class="n">f</span><span class="o">/--</span><span class="n">overwrite</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">i</span><span class="o">/--</span><span class="n">ignore</span><span class="o">-</span><span class="n">deps</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">d</span><span class="o">/--</span><span class="n">override</span><span class="o">-</span><span class="n">deps</span> <span class="s2">&quot;depA:eventA depB:eventB [...]&quot;</span><span class="p">]</span> <span class="o">&lt;</span><span class="n">PATH</span><span class="o">&gt;</span>
+             <span class="o">-</span> <span class="n">Will</span> <span class="n">add</span> <span class="n">a</span> <span class="n">task</span> <span class="n">defined</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">task</span> <span class="n">configuration</span> <span class="n">file</span> <span class="n">at</span> <span class="o">&lt;</span><span class="n">PATH</span><span class="o">&gt;</span> <span class="p">(</span><span class="n">absolute</span><span class="p">)</span> <span class="n">to</span> <span class="n">Crinit</span><span class="s1">&#39;s task database.</span>
+               <span class="s1">&#39;-f/--overwrite&#39;</span> <span class="o">-</span> <span class="n">Lets</span> <span class="n">Crinit</span> <span class="n">know</span> <span class="n">it</span> <span class="ow">is</span> <span class="n">fine</span> <span class="n">to</span> <span class="n">overwrite</span> <span class="k">if</span> <span class="n">it</span> <span class="n">has</span> <span class="n">already</span> <span class="n">loaded</span> <span class="n">a</span> <span class="n">task</span>
+                    <span class="k">with</span> <span class="n">the</span> <span class="n">same</span> <span class="n">name</span><span class="o">.</span>
+               <span class="s1">&#39;-d/--override-deps &lt;dependency-list&gt;&#39;</span> <span class="o">-</span> <span class="n">Will</span> <span class="n">override</span> <span class="n">the</span> <span class="n">DEPENDS</span> <span class="n">field</span> <span class="n">of</span> <span class="n">the</span> <span class="n">config</span> <span class="n">file</span>
+                    <span class="k">with</span> <span class="n">what</span> <span class="ow">is</span> <span class="n">given</span> <span class="k">as</span> <span class="n">the</span> <span class="n">parameter</span><span class="o">.</span>
+               <span class="s1">&#39;-i/--ignore-deps&#39;</span> <span class="o">-</span> <span class="n">Shortcut</span> <span class="k">for</span> <span class="s1">&#39;--override-deps &quot;&quot;&#39;</span><span class="o">.</span>
+   <span class="n">addseries</span> <span class="p">[</span><span class="o">-</span><span class="n">f</span><span class="o">/--</span><span class="n">overwrite</span><span class="p">]</span> <span class="o">&lt;</span><span class="n">PATH</span><span class="o">&gt;</span>
+             <span class="o">-</span> <span class="n">Will</span> <span class="n">load</span> <span class="n">a</span> <span class="n">series</span> <span class="n">file</span> <span class="kn">from</span> <span class="o">&lt;</span><span class="n">PATH</span><span class="o">&gt;.</span> <span class="n">Options</span> <span class="nb">set</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">new</span> <span class="n">series</span> <span class="n">file</span> <span class="n">take</span> <span class="n">precedence</span> <span class="n">over</span>
+               <span class="n">current</span> <span class="n">settings</span><span class="o">.</span>
+               <span class="s1">&#39;-f/--overwrite&#39;</span> <span class="o">-</span> <span class="n">Lets</span> <span class="n">Crinit</span> <span class="n">know</span> <span class="n">it</span> <span class="ow">is</span> <span class="n">fine</span> <span class="n">to</span> <span class="n">overwrite</span> <span class="k">if</span> <span class="n">it</span> <span class="n">has</span> <span class="n">already</span> <span class="n">loaded</span> <span class="n">tasks</span>
+                    <span class="k">with</span> <span class="n">the</span> <span class="n">same</span> <span class="n">name</span> <span class="k">as</span> <span class="n">those</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">new</span> <span class="n">series</span> <span class="n">file</span><span class="o">.</span>
+      <span class="n">enable</span> <span class="o">&lt;</span><span class="n">TASK_NAME</span><span class="o">&gt;</span>
+             <span class="o">-</span> <span class="n">Removes</span> <span class="n">dependency</span> <span class="s1">&#39;@ctl:enable&#39;</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">dependency</span> <span class="nb">list</span> <span class="n">of</span> <span class="o">&lt;</span><span class="n">TASK_NAME</span><span class="o">&gt;</span> <span class="k">if</span> <span class="n">it</span> <span class="ow">is</span> <span class="n">present</span><span class="o">.</span>
+     <span class="n">disable</span> <span class="o">&lt;</span><span class="n">TASK_NAME</span><span class="o">&gt;</span>
+             <span class="o">-</span> <span class="n">Adds</span> <span class="n">dependency</span> <span class="s1">&#39;@ctl:enable&#39;</span> <span class="n">to</span> <span class="n">the</span> <span class="n">dependency</span> <span class="nb">list</span> <span class="n">of</span> <span class="o">&lt;</span><span class="n">TASK_NAME</span><span class="o">&gt;.</span>
+        <span class="n">stop</span> <span class="o">&lt;</span><span class="n">TASK_NAME</span><span class="o">&gt;</span>
+             <span class="o">-</span> <span class="n">Sends</span> <span class="n">SIGTERM</span> <span class="n">to</span> <span class="n">the</span> <span class="n">PID</span> <span class="n">of</span> <span class="o">&lt;</span><span class="n">TASK_NAME</span><span class="o">&gt;</span> <span class="k">if</span> <span class="n">the</span> <span class="n">PID</span> <span class="ow">is</span> <span class="n">currently</span> <span class="n">known</span><span class="o">.</span>
+        <span class="n">kill</span> <span class="o">&lt;</span><span class="n">TASK_NAME</span><span class="o">&gt;</span>
+             <span class="o">-</span> <span class="n">Sends</span> <span class="n">SIGKILL</span> <span class="n">to</span> <span class="n">the</span> <span class="n">PID</span> <span class="n">of</span> <span class="o">&lt;</span><span class="n">TASK_NAME</span><span class="o">&gt;</span> <span class="k">if</span> <span class="n">the</span> <span class="n">PID</span> <span class="ow">is</span> <span class="n">currently</span> <span class="n">known</span><span class="o">.</span>
+     <span class="n">restart</span> <span class="o">&lt;</span><span class="n">TASK_NAME</span><span class="o">&gt;</span>
+             <span class="o">-</span> <span class="n">Resets</span> <span class="n">the</span> <span class="n">status</span> <span class="n">bits</span> <span class="n">of</span> <span class="o">&lt;</span><span class="n">TASK_NAME</span><span class="o">&gt;</span> <span class="k">if</span> <span class="n">it</span> <span class="ow">is</span> <span class="n">DONE</span> <span class="ow">or</span> <span class="n">FAILED</span><span class="o">.</span>
+      <span class="n">status</span> <span class="o">&lt;</span><span class="n">TASK_NAME</span><span class="o">&gt;</span>
+             <span class="o">-</span> <span class="n">Queries</span> <span class="n">status</span> <span class="n">bits</span> <span class="ow">and</span> <span class="n">PID</span> <span class="n">of</span> <span class="o">&lt;</span><span class="n">TASK_NAME</span><span class="o">&gt;.</span>
+      <span class="n">notify</span> <span class="o">&lt;</span><span class="n">TASK_NAME</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="s2">&quot;SD_NOTIFY_STRING&quot;</span><span class="o">&gt;</span>
+             <span class="o">-</span> <span class="n">Will</span> <span class="n">send</span> <span class="n">an</span> <span class="n">sd_notify</span><span class="o">-</span><span class="n">style</span> <span class="n">status</span> <span class="n">report</span> <span class="n">to</span> <span class="n">Crinit</span><span class="o">.</span> <span class="n">Only</span> <span class="n">MAINPID</span> <span class="ow">and</span> <span class="n">READY</span> <span class="n">are</span>
+               <span class="n">implemented</span><span class="o">.</span> <span class="n">See</span> <span class="n">the</span> <span class="n">sd_notify</span> <span class="n">documentation</span> <span class="k">for</span> <span class="n">their</span> <span class="n">meaning</span><span class="o">.</span>
+        <span class="nb">list</span>
+             <span class="o">-</span> <span class="n">Print</span> <span class="n">the</span> <span class="nb">list</span> <span class="n">of</span> <span class="n">loaded</span> <span class="n">tasks</span> <span class="ow">and</span> <span class="n">their</span> <span class="n">status</span><span class="o">.</span>
+      <span class="n">reboot</span>
+             <span class="o">-</span> <span class="n">Will</span> <span class="n">request</span> <span class="n">Crinit</span> <span class="n">to</span> <span class="n">perform</span> <span class="n">a</span> <span class="n">graceful</span> <span class="n">system</span> <span class="n">reboot</span><span class="o">.</span> <span class="n">crinit</span><span class="o">-</span><span class="n">ctl</span> <span class="n">can</span> <span class="n">be</span> <span class="n">symlinked</span> <span class="n">to</span>
+               <span class="n">reboot</span> <span class="k">as</span> <span class="n">a</span> <span class="n">shortcut</span> <span class="n">which</span> <span class="n">will</span> <span class="n">invoke</span> <span class="n">this</span> <span class="n">command</span> <span class="n">automatically</span><span class="o">.</span>
+    <span class="n">poweroff</span>
+             <span class="o">-</span> <span class="n">Will</span> <span class="n">request</span> <span class="n">Crinit</span> <span class="n">to</span> <span class="n">perform</span> <span class="n">a</span> <span class="n">graceful</span> <span class="n">system</span> <span class="n">shutdown</span><span class="o">.</span> <span class="n">crinit</span><span class="o">-</span><span class="n">ctl</span> <span class="n">can</span> <span class="n">be</span> <span class="n">symlinked</span> <span class="n">to</span>
+               <span class="n">poweroff</span> <span class="k">as</span> <span class="n">a</span> <span class="n">shortcut</span> <span class="n">which</span> <span class="n">will</span> <span class="n">invoke</span> <span class="n">this</span> <span class="n">command</span> <span class="n">automatically</span><span class="o">.</span>
+  <span class="n">General</span> <span class="n">Options</span><span class="p">:</span>
+        <span class="o">--</span><span class="n">verbose</span><span class="o">/-</span><span class="n">v</span> <span class="o">-</span> <span class="n">Be</span> <span class="n">verbose</span><span class="o">.</span>
+        <span class="o">--</span><span class="n">help</span><span class="o">/-</span><span class="n">h</span>    <span class="o">-</span> <span class="n">Print</span> <span class="n">this</span> <span class="n">help</span><span class="o">.</span>
+        <span class="o">--</span><span class="n">version</span><span class="o">/-</span><span class="n">V</span> <span class="o">-</span> <span class="n">Print</span> <span class="n">version</span> <span class="n">information</span> <span class="n">about</span> <span class="n">crinit</span><span class="o">-</span><span class="n">ctl</span><span class="p">,</span> <span class="n">the</span> <span class="n">crinit</span><span class="o">-</span><span class="n">client</span> <span class="n">library</span><span class="p">,</span>
+                       <span class="ow">and</span> <span class="o">--</span> <span class="k">if</span> <span class="n">connection</span> <span class="ow">is</span> <span class="n">successful</span> <span class="o">--</span> <span class="n">the</span> <span class="n">crinit</span> <span class="n">daemon</span><span class="o">.</span>
+</pre></div>
+</div>
+</section>
+<section id="build-instructions">
+<h2>Build Instructions<a class="headerlink" href="#build-instructions" title="Link to this heading">¶</a></h2>
+<p>Executing</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ci</span><span class="o">/</span><span class="n">docker</span><span class="o">-</span><span class="n">run</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>will start a Docker container for the native host architecture with all necessary programs to build Crinit and its
+Doxygen documentation and to run a short local demonstration.</p>
+<p>It is possible to run the Docker container for a foreign architecture such as arm64 with the help of qemu-user-static
+and binfmt-support. Make sure these packages are installed on your host system if you want to use this functionality.
+All following commands to be run inside the container will be the same regardless of the architecture.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ci</span><span class="o">/</span><span class="n">docker</span><span class="o">-</span><span class="n">run</span><span class="o">.</span><span class="n">sh</span> <span class="n">arm64</span>
+</pre></div>
+</div>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">ci/docker-run.sh</span></code> will use a container based on Ubuntu Jammy. If another version is desired, it can be
+specified as a second parameter. For example, you can run a Lunar-based container using</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ci</span><span class="o">/</span><span class="n">docker</span><span class="o">-</span><span class="n">run</span><span class="o">.</span><span class="n">sh</span> <span class="n">amd64</span> <span class="n">lunar</span>
+</pre></div>
+</div>
+<p>Inside the container, it is sufficient to run</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ci</span><span class="o">/</span><span class="n">build</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>which will compile the release configuration for <code class="docutils literal notranslate"><span class="pre">crinit</span></code>, the client library and crinit-ctl as well as a suite of RPMs.
+The doxygen documentation is built as well. The script will copy relevant build artifacts to <code class="docutils literal notranslate"><span class="pre">result/</span></code>.</p>
+<p>For debugging purposes, the debug configuration can be built with the following command. Optionally it is also possible
+to enable AddressSanitizer (ASAN) for additional runtime checks or static analysis using <code class="docutils literal notranslate"><span class="pre">-fanalyzer</span></code> at compile-time.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ci</span><span class="o">/</span><span class="n">build</span><span class="o">.</span><span class="n">sh</span> <span class="n">Debug</span> <span class="o">--</span><span class="n">asan</span> <span class="o">--</span><span class="n">analyzer</span>
+</pre></div>
+</div>
+<p>Afterwards, it is possible to run (also inside the container)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ci</span><span class="o">/</span><span class="n">demo</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>for a short local demonstration of <code class="docutils literal notranslate"><span class="pre">crinit</span></code>’s client API using <code class="docutils literal notranslate"><span class="pre">crinit-ctl</span></code>.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">clang-tidy</span></code> analysis of the source can be performed using</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ci</span><span class="o">/</span><span class="n">clang</span><span class="o">-</span><span class="n">tidy</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>This will also generate a <code class="docutils literal notranslate"><span class="pre">compile_commands.json</span></code>. The output will be saved to <code class="docutils literal notranslate"><span class="pre">result/clang-tidy</span></code>.</p>
+<p>Unit tests or smoke tests can be run using the respective commands below. For the debug configuration, either of them
+takes an additional <code class="docutils literal notranslate"><span class="pre">Debug</span></code> argument.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ci</span><span class="o">/</span><span class="n">run</span><span class="o">-</span><span class="n">utest</span><span class="o">.</span><span class="n">sh</span>
+<span class="n">ci</span><span class="o">/</span><span class="n">run</span><span class="o">-</span><span class="n">smoketests</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>In order to run integration tests, you can use <code class="docutils literal notranslate"><span class="pre">ci/run-integration-tests.sh</span></code>. This will set up two docker containers,
+one for the Robot test framework and one that runes Crinit and Elos, and execute all integration tests inside the robot container.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ci</span><span class="o">/</span><span class="n">run</span><span class="o">-</span><span class="n">integration</span><span class="o">-</span><span class="n">tests</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>You can also manually start both containers with <code class="docutils literal notranslate"><span class="pre">ci/docker-target-run.sh</span></code> and <code class="docutils literal notranslate"><span class="pre">ci/docker-integration-run.sh</span></code>. Adapt the configuration within
+the robot container by changing the ip address of the target container within the robot variables (<code class="docutils literal notranslate"><span class="pre">test/integration/robot_variables.py</span></code>)
+to the current ip of the target container and run the tests by executing <code class="docutils literal notranslate"><span class="pre">test/integration/scripts/run-integration-tests.sh</span></code> inside
+the robot container.</p>
+<p>After a successful execution of <code class="docutils literal notranslate"><span class="pre">ci/build.sh</span></code>, it is also possible to create a Debian package using debbuild.
+For the debug configuration, this also takes an additional <code class="docutils literal notranslate"><span class="pre">Debug</span></code> argument.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ci</span><span class="o">/</span><span class="n">package</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>If a manual test build is desired, running the following command sequence
+inside the container will setup the build system and build native binaries.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="n">build</span><span class="o">/</span><span class="n">amd64</span>
+<span class="n">cmake</span> <span class="o">-</span><span class="n">B</span> <span class="n">build</span><span class="o">/</span><span class="n">amd64</span> <span class="o">-</span><span class="n">DCMAKE_BUILD_TYPE</span><span class="o">=</span><span class="n">Debug</span> <span class="o">-</span><span class="n">DCMAKE_VERBOSE_MAKEFILE</span><span class="o">=</span><span class="n">On</span> <span class="o">-</span><span class="n">DUNIT_TESTS</span><span class="o">=</span><span class="n">On</span>
+<span class="n">make</span> <span class="o">-</span><span class="n">C</span> <span class="n">build</span><span class="o">/</span><span class="n">amd64</span>
+</pre></div>
+</div>
+<p>The Doxygen documentation alone can be built using</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="o">-</span><span class="n">C</span> <span class="n">build</span><span class="o">/</span><span class="n">amd64</span> <span class="n">doxygen</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/crinit-logo.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="index.html">crinit</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Crinit – Configurable Rootfs Init</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#in-a-nutshell">In a Nutshell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#concept">Concept</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#features">Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#license">License</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#powered-by-eb">Powered by EB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#maintainers">Maintainers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#credits">Credits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#artwork">Artwork</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#details">Details</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#crinit-ctl-usage-info">crinit-ctl Usage Info</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#build-instructions">Build Instructions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="API-Doc.html">Public API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src/index.html">Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts/README.html">Crinit-related scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts/README.html#script-usage-information">Script usage information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts/README.html#usage-examples">Usage examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts/README.html#note-on-the-key-type-used-in-crinit-genkeys-sh">Note on the key type used in <code class="docutils literal notranslate"><span class="pre">crinit-genkeys.sh</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="test/README.html">Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc/adr/index.html">ADRS</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Crinit – Configurable Rootfs Init</a></li>
+      <li>Next: <a href="API-Doc.html" title="next chapter">API Documentation</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, emlix GmbH/Elektrobit Automotive GmbH.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/README.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

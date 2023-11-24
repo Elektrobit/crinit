@@ -1,0 +1,12 @@
+<map id="src/thrpool.c" name="src/thrpool.c">
+<area shape="rect" id="node1" title="Implementations of a generic worker thread pool. Used by the notification/service interface to handle..." alt="" coords="249,5,352,32"/>
+<area shape="rect" id="node2" href="$thrpool_8h.html" title="Header defining a generic worker thread pool. Used by the notification/service interface to handle so..." alt="" coords="102,80,182,107"/>
+<area shape="rect" id="node5" title=" " alt="" coords="209,155,291,181"/>
+<area shape="rect" id="node6" title=" " alt="" coords="429,80,500,107"/>
+<area shape="rect" id="node7" title=" " alt="" coords="316,155,387,181"/>
+<area shape="rect" id="node8" href="$logio_8h.html" title="Header related to debug/log output." alt="" coords="338,80,405,107"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,155,76,181"/>
+<area shape="rect" id="node4" title=" " alt="" coords="100,155,184,181"/>
+<area shape="rect" id="node9" title=" " alt="" coords="411,155,479,181"/>
+<area shape="rect" id="node10" title=" " alt="" coords="503,155,570,181"/>
+</map>

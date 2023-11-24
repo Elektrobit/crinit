@@ -1,0 +1,11 @@
+<map id="test/utest/mocks/mock&#45;glob&#45;opt&#45;set&#45;boolean.h" name="test/utest/mocks/mock&#45;glob&#45;opt&#45;set&#45;boolean.h">
+<area shape="rect" id="node1" title="Header declaring a mock function for crinitGlobOptSetBoolean()." alt="" coords="5,5,180,47"/>
+<area shape="rect" id="node2" href="$globopt_8h.html" title="Header related to global option storage." alt="" coords="51,95,134,121"/>
+<area shape="rect" id="node3" title=" " alt="" coords="149,393,231,420"/>
+<area shape="rect" id="node4" title=" " alt="" coords="57,169,128,196"/>
+<area shape="rect" id="node5" href="$envset_8h.html" title="Header defining data types and functions to work with sets of environment variables." alt="" coords="152,169,231,196"/>
+<area shape="rect" id="node6" title=" " alt="" coords="281,393,355,420"/>
+<area shape="rect" id="node7" href="$confparse_8h.html" title="Header related to the Config Parser." alt="" coords="141,244,239,271"/>
+<area shape="rect" id="node8" title=" " alt="" coords="57,319,153,345"/>
+<area shape="rect" id="node9" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="228,319,307,345"/>
+</map>

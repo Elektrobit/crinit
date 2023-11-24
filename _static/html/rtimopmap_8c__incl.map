@@ -1,0 +1,10 @@
+<map id="src/rtimopmap.c" name="src/rtimopmap.c">
+<area shape="rect" id="node1" title="Implementation of functions related to the runtime command opcode map." alt="" coords="144,5,272,32"/>
+<area shape="rect" id="node2" href="$rtimopmap_8h.html" title="Header defining the runtime commands available through the notification/service interface." alt="" coords="5,80,112,107"/>
+<area shape="rect" id="node3" title=" " alt="" coords="137,80,207,107"/>
+<area shape="rect" id="node4" title=" " alt="" coords="198,155,269,181"/>
+<area shape="rect" id="node5" href="$logio_8h.html" title="Header related to debug/log output." alt="" coords="293,80,360,107"/>
+<area shape="rect" id="node6" title=" " alt="" coords="293,155,361,181"/>
+<area shape="rect" id="node7" title=" " alt="" coords="385,155,468,181"/>
+<area shape="rect" id="node8" title=" " alt="" coords="492,155,559,181"/>
+</map>

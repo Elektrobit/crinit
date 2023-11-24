@@ -1,0 +1,8 @@
+<map id="inc/envset.h" name="inc/envset.h">
+<area shape="rect" id="node1" title="Header defining data types and functions to work with sets of environment variables." alt="" coords="5,5,107,32"/>
+<area shape="rect" id="node2" title=" " alt="" coords="63,229,137,256"/>
+<area shape="rect" id="node3" href="$confparse_8h.html" title="Header related to the Config Parser." alt="" coords="105,80,204,107"/>
+<area shape="rect" id="node4" title=" " alt="" coords="208,229,291,256"/>
+<area shape="rect" id="node5" title=" " alt="" coords="51,155,147,181"/>
+<area shape="rect" id="node6" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="171,155,250,181"/>
+</map>

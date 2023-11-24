@@ -1,0 +1,30 @@
+<map id="src/crinit.c" name="src/crinit.c">
+<area shape="rect" id="node1" title="Implementation of the Crinit main program." alt="" coords="476,5,565,32"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,80,76,107"/>
+<area shape="rect" id="node3" title=" " alt="" coords="101,80,175,107"/>
+<area shape="rect" id="node4" href="$common_8h.html" title="Header for common definitions not related to other specific features." alt="" coords="199,80,290,107"/>
+<area shape="rect" id="node5" href="$globopt_8h.html" title="Header related to global option storage." alt="" coords="618,229,701,256"/>
+<area shape="rect" id="node13" href="$logio_8h.html" title="Header related to debug/log output." alt="" coords="793,229,859,256"/>
+<area shape="rect" id="node16" href="$minsetup_8h.html" title="Header related to minimal early system setup." alt="" coords="748,80,843,107"/>
+<area shape="rect" id="node17" href="$notiserv_8h.html" title="Header related to the notification and service interface." alt="" coords="421,80,508,107"/>
+<area shape="rect" id="node23" href="$procdip_8h.html" title="Header related to the Process Dispatcher." alt="" coords="314,80,397,107"/>
+<area shape="rect" id="node25" href="$rtimcmd_8h.html" title="Header related to handling of runtime commands received via the notification/service interface." alt="" coords="532,80,621,107"/>
+<area shape="rect" id="node27" href="$version_8h.html" title="Header definitions related to component versioning." alt="" coords="867,80,950,107"/>
+<area shape="rect" id="node6" title=" " alt="" coords="593,528,675,555"/>
+<area shape="rect" id="node7" title=" " alt="" coords="697,304,768,331"/>
+<area shape="rect" id="node8" href="$envset_8h.html" title="Header defining data types and functions to work with sets of environment variables." alt="" coords="543,304,621,331"/>
+<area shape="rect" id="node9" title=" " alt="" coords="443,528,518,555"/>
+<area shape="rect" id="node10" href="$confparse_8h.html" title="Header related to the Config Parser." alt="" coords="431,379,530,405"/>
+<area shape="rect" id="node11" title=" " alt="" coords="313,453,409,480"/>
+<area shape="rect" id="node12" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="441,453,520,480"/>
+<area shape="rect" id="node14" title=" " alt="" coords="935,304,1003,331"/>
+<area shape="rect" id="node15" title=" " alt="" coords="793,304,859,331"/>
+<area shape="rect" id="node18" href="$taskdb_8h.html" title="Header defining the central Task Data Structure and related types/functions." alt="" coords="412,155,491,181"/>
+<area shape="rect" id="node19" title=" " alt="" coords="327,229,411,256"/>
+<area shape="rect" id="node20" href="$task_8h.html" title="Header defining the data structures belonging to a single task and related functions." alt="" coords="435,229,497,256"/>
+<area shape="rect" id="node21" href="$crinit-sdefs_8h.html" title="Definitions shared between crinit&#39;s public and internal APIs." alt="" coords="301,379,407,405"/>
+<area shape="rect" id="node22" href="$ioredir_8h.html" title="Header related to IO redirection types and functions." alt="" coords="443,304,518,331"/>
+<area shape="rect" id="node24" title=" " alt="" coords="317,155,388,181"/>
+<area shape="rect" id="node26" href="$rtimopmap_8h.html" title="Header defining the runtime commands available through the notification/service interface." alt="" coords="515,155,622,181"/>
+<area shape="rect" id="node28" title=" " alt="" coords="873,155,944,181"/>
+</map>

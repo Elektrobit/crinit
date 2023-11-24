@@ -1,0 +1,6 @@
+<map id="inc/thrpool.h" name="inc/thrpool.h">
+<area shape="rect" id="node1" title="Header defining a generic worker thread pool. Used by the notification/service interface to handle so..." alt="" coords="127,5,229,32"/>
+<area shape="rect" id="node2" href="$elosio_8c.html" title="Implementation of elos connection." alt="" coords="5,80,100,107"/>
+<area shape="rect" id="node3" href="$notiserv_8c.html" title="Implementation of the notification and service interface." alt="" coords="124,80,232,107"/>
+<area shape="rect" id="node4" href="$thrpool_8c.html" title="Implementations of a generic worker thread pool. Used by the notification/service interface to handle..." alt="" coords="256,80,359,107"/>
+</map>

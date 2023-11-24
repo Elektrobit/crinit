@@ -1,0 +1,34 @@
+<map id="inc/logio.h" name="inc/logio.h">
+<area shape="rect" id="node1" title="Header related to debug/log output." alt="" coords="1702,5,1791,32"/>
+<area shape="rect" id="node2" href="$confconv_8c.html" title="Implementations of conversion operations from configuration values to structured data." alt="" coords="5,95,120,121"/>
+<area shape="rect" id="node3" href="$confhdl_8c.html" title="Implementation of type&#45; and target&#45;specific handler functions for configuration parsing." alt="" coords="144,95,248,121"/>
+<area shape="rect" id="node4" href="$confmap_8c.html" title="Implementation file related to mapping configuration options and their string representations." alt="" coords="273,95,386,121"/>
+<area shape="rect" id="node5" href="$confparse_8c.html" title="Implementation of the Config Parser." alt="" coords="411,95,531,121"/>
+<area shape="rect" id="node6" href="$crinit-client_8c.html" title="Implementation of the crinit&#45;client shared library." alt="" coords="555,95,685,121"/>
+<area shape="rect" id="node7" href="$crinit-ctl_8c.html" title="Implementation of the crinit&#45;ctl service program using the crinit&#45;client library." alt="" coords="710,95,821,121"/>
+<area shape="rect" id="node8" href="$crinit_8c.html" title="Implementation of the Crinit main program." alt="" coords="845,95,934,121"/>
+<area shape="rect" id="node9" href="$elosio_8c.html" title="Implementation of elos connection." alt="" coords="958,95,1053,121"/>
+<area shape="rect" id="node10" href="$envset_8c.html" title="Implementation file related to working with environment variable sets." alt="" coords="1077,95,1177,121"/>
+<area shape="rect" id="node11" href="$fseries_8c.html" title="Implementation file related to the handling of a series of filenames within a directory." alt="" coords="1201,95,1301,121"/>
+<area shape="rect" id="node12" href="$globopt_8c.html" title="Implementation of global option storage." alt="" coords="1325,95,1430,121"/>
+<area shape="rect" id="node13" href="$ioredir_8c.html" title="Implementation of functions related to IO redirection." alt="" coords="1454,95,1551,121"/>
+<area shape="rect" id="node14" href="$logio_8c.html" title="Implementation of debug/log output." alt="" coords="1576,95,1664,121"/>
+<area shape="rect" id="node15" href="$minsetup_8c.html" title="Implementation of minimal early system setup." alt="" coords="1688,95,1805,121"/>
+<area shape="rect" id="node16" href="$notiserv_8c.html" title="Implementation of the notification and service interface." alt="" coords="1830,95,1938,121"/>
+<area shape="rect" id="node17" href="$optfeat_8c.html" title="Implementation of optional behavior dependent on available system features." alt="" coords="1962,95,2065,121"/>
+<area shape="rect" id="node18" href="$procdip_8c.html" title="Implementation of the Process Dispatcher." alt="" coords="2089,95,2193,121"/>
+<area shape="rect" id="node19" href="$rtimcmd_8c.html" title="Implementation of runtime commands to be triggered by the notification/service interface." alt="" coords="2218,95,2329,121"/>
+<area shape="rect" id="node20" href="$rtimopmap_8c.html" title="Implementation of functions related to the runtime command opcode map." alt="" coords="2353,95,2481,121"/>
+<area shape="rect" id="node21" href="$sockcom_8c.html" title="Implementation of socket communication functions for the crinit&#45;client library." alt="" coords="2505,95,2620,121"/>
+<area shape="rect" id="node22" href="$task_8c.html" title="Implementation of functions related to a single task." alt="" coords="2645,95,2729,121"/>
+<area shape="rect" id="node23" href="$taskdb_8c.html" title="Implementation of the central Task Database and related functions." alt="" coords="2753,95,2853,121"/>
+<area shape="rect" id="node24" href="$thrpool_8c.html" title="Implementations of a generic worker thread pool. Used by the notification/service interface to handle..." alt="" coords="2877,95,2979,121"/>
+<area shape="rect" id="node25" href="$mock-set-err-stream_8h.html" title="Header declaring a mock function for crinitSetErrStream()." alt="" coords="3004,87,3175,129"/>
+<area shape="rect" id="node28" href="$mock-set-info-stream_8h.html" title="Header declaring a mock function for crinitSetInfoStream()." alt="" coords="3199,87,3369,129"/>
+<area shape="rect" id="node31" href="$utest-cfgmap-order_2regression-test_8c.html" title="Implementation of a regression test for the order and completeness of crinit{Task,..." alt="" coords="3394,87,3569,129"/>
+<area shape="rect" id="node32" href="$utest-file-basename-macro_2regression-test_8c.html" title="Implementation of a regression test to check the FILE_BASENAME macro." alt="" coords="3593,80,3807,136"/>
+<area shape="rect" id="node26" href="$mock-set-err-stream_8c.html" title="Implementation of a mock function for crinitSetErrStream()." alt="" coords="2793,184,2964,225"/>
+<area shape="rect" id="node27" href="$utest-crinit-set-err-stream_2case-set_8c.html" title="Implementation of a unit test for crinitClientSetErrStream()." alt="" coords="2989,184,3179,225"/>
+<area shape="rect" id="node29" href="$mock-set-info-stream_8c.html" title="Implementation of a mock function for crinitSetInfoStream()." alt="" coords="3204,184,3375,225"/>
+<area shape="rect" id="node30" href="$utest-crinit-set-info-stream_2case-set_8c.html" title="Implementation of a unit test for crinitClientSetInfoStream()." alt="" coords="3399,184,3598,225"/>
+</map>

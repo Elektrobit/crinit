@@ -1,0 +1,15 @@
+<map id="test/utest/utest&#45;file&#45;series&#45;free&#45;scandir&#45;list/case&#45;success.c" name="test/utest/utest&#45;file&#45;series&#45;free&#45;scandir&#45;list/case&#45;success.c">
+<area shape="rect" id="node1" title="Unit test for crinitFreeScandirList(), successful execution." alt="" coords="176,5,325,61"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,117,72,143"/>
+<area shape="rect" id="node3" href="$common_8h.html" title="Header for common definitions not related to other specific features." alt="" coords="96,117,187,143"/>
+<area shape="rect" id="node4" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="211,117,290,143"/>
+<area shape="rect" id="node7" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="361,117,452,143"/>
+<area shape="rect" id="node12" href="$utest-file-series-free-scandir-list_8h.html" title=" " alt="" coords="576,109,731,151"/>
+<area shape="rect" id="node5" title=" " alt="" coords="83,199,165,225"/>
+<area shape="rect" id="node6" title=" " alt="" coords="189,199,264,225"/>
+<area shape="rect" id="node8" title=" " alt="" coords="289,199,367,225"/>
+<area shape="rect" id="node9" title=" " alt="" coords="392,199,467,225"/>
+<area shape="rect" id="node10" title=" " alt="" coords="491,199,562,225"/>
+<area shape="rect" id="node11" title=" " alt="" coords="586,199,670,225"/>
+<area shape="rect" id="node13" title=" " alt="" coords="695,199,767,225"/>
+</map>

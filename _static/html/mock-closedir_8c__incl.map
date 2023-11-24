@@ -1,0 +1,12 @@
+<map id="test/utest/mocks/mock&#45;closedir.c" name="test/utest/mocks/mock&#45;closedir.c">
+<area shape="rect" id="node1" title="Implementation of a mock function for closedir()." alt="" coords="171,5,341,47"/>
+<area shape="rect" id="node2" href="$mock-closedir_8h.html" title="Header declaring a mock function for closedir()." alt="" coords="87,95,212,121"/>
+<area shape="rect" id="node5" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="367,95,457,121"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,169,77,196"/>
+<area shape="rect" id="node4" title=" " alt="" coords="101,169,197,196"/>
+<area shape="rect" id="node6" title=" " alt="" coords="222,169,301,196"/>
+<area shape="rect" id="node7" title=" " alt="" coords="325,169,400,196"/>
+<area shape="rect" id="node8" title=" " alt="" coords="424,169,499,196"/>
+<area shape="rect" id="node9" title=" " alt="" coords="523,169,594,196"/>
+<area shape="rect" id="node10" title=" " alt="" coords="618,169,702,196"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="inc/elosio.h" name="inc/elosio.h">
+<area shape="rect" id="node1" title="Header related to elos connection." alt="" coords="149,5,245,32"/>
+<area shape="rect" id="node2" href="$confparse_8c.html" title="Implementation of the Config Parser." alt="" coords="5,80,125,107"/>
+<area shape="rect" id="node3" href="$elosio_8c.html" title="Implementation of elos connection." alt="" coords="150,80,245,107"/>
+<area shape="rect" id="node4" href="$optfeat_8c.html" title="Implementation of optional behavior dependent on available system features." alt="" coords="269,80,371,107"/>
+</map>

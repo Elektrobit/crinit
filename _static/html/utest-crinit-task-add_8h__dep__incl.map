@@ -1,0 +1,13 @@
+<map id="test/utest/utest&#45;crinit&#45;task&#45;add/utest&#45;crinit&#45;task&#45;add.h" name="test/utest/utest&#45;crinit&#45;task&#45;add/utest&#45;crinit&#45;task&#45;add.h">
+<area shape="rect" id="node1" title="Header declaring the unit tests for crinitClientTaskAdd()." alt="" coords="902,5,1061,61"/>
+<area shape="rect" id="node2" href="$case-build-rtim-cmd-error_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for crinitBuildRtimCmd()." alt="" coords="5,109,192,165"/>
+<area shape="rect" id="node3" href="$case-confpath-null_8c.html" title="Unit test for crinitClientTaskAdd() with confFilePath as NULL." alt="" coords="217,109,397,165"/>
+<area shape="rect" id="node4" href="$case-crinit-response-cmd-error_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for wrong command in response." alt="" coords="421,109,587,165"/>
+<area shape="rect" id="node5" href="$case-crinit-response-code-error_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for error code response." alt="" coords="611,109,779,165"/>
+<area shape="rect" id="node6" href="$case-crinit-xfer-error_8c.html" title=" " alt="" coords="803,109,962,165"/>
+<area shape="rect" id="node7" href="$case-forcedeps-empty_8c.html" title="Unit test for crinitClientTaskAdd() with forceDeps as empty string." alt="" coords="987,109,1173,165"/>
+<area shape="rect" id="node8" href="$case-forcedeps-null_8c.html" title="Unit test for crinitClientTaskAdd() with forceDeps as NULL." alt="" coords="1197,109,1384,165"/>
+<area shape="rect" id="node9" href="$case-overwrite-bool-to-string_8c.html" title="Unit test for crinitClientTaskAdd() testing overwrite is passed on correctly." alt="" coords="1409,109,1594,165"/>
+<area shape="rect" id="node10" href="$utest-crinit-task-add_2case-success_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for crinitXfer()." alt="" coords="1618,117,1803,158"/>
+<area shape="rect" id="node11" href="$utest-crinit-task-add_8c.html" title="Implementation of the crinitClientTaskAdd() unit test group." alt="" coords="1827,109,1986,165"/>
+</map>

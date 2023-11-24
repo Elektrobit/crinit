@@ -1,0 +1,12 @@
+<map id="inc/confhdl.h" name="inc/confhdl.h">
+<area shape="rect" id="node1" title="Header defining type&#45; and target&#45;specific handler functions for configuration parsing." alt="" coords="95,5,201,32"/>
+<area shape="rect" id="node2" href="$task_8h.html" title="Header defining the data structures belonging to a single task and related functions." alt="" coords="117,80,179,107"/>
+<area shape="rect" id="node3" href="$confparse_8h.html" title="Header related to the Config Parser." alt="" coords="136,229,235,256"/>
+<area shape="rect" id="node8" href="$crinit-sdefs_8h.html" title="Definitions shared between crinit&#39;s public and internal APIs." alt="" coords="5,229,112,256"/>
+<area shape="rect" id="node9" href="$envset_8h.html" title="Header defining data types and functions to work with sets of environment variables." alt="" coords="247,155,326,181"/>
+<area shape="rect" id="node10" href="$ioredir_8h.html" title="Header related to IO redirection types and functions." alt="" coords="148,155,223,181"/>
+<area shape="rect" id="node4" title=" " alt="" coords="128,379,211,405"/>
+<area shape="rect" id="node5" title=" " alt="" coords="11,304,107,331"/>
+<area shape="rect" id="node6" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="182,304,261,331"/>
+<area shape="rect" id="node7" title=" " alt="" coords="248,379,323,405"/>
+</map>

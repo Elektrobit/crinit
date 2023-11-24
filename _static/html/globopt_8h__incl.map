@@ -1,0 +1,10 @@
+<map id="inc/globopt.h" name="inc/globopt.h">
+<area shape="rect" id="node1" title="Header related to global option storage." alt="" coords="27,5,134,32"/>
+<area shape="rect" id="node2" title=" " alt="" coords="136,304,219,331"/>
+<area shape="rect" id="node3" title=" " alt="" coords="45,80,116,107"/>
+<area shape="rect" id="node4" href="$envset_8h.html" title="Header defining data types and functions to work with sets of environment variables." alt="" coords="140,80,218,107"/>
+<area shape="rect" id="node5" title=" " alt="" coords="268,304,343,331"/>
+<area shape="rect" id="node6" href="$confparse_8h.html" title="Header related to the Config Parser." alt="" coords="128,155,227,181"/>
+<area shape="rect" id="node7" title=" " alt="" coords="44,229,140,256"/>
+<area shape="rect" id="node8" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="216,229,294,256"/>
+</map>

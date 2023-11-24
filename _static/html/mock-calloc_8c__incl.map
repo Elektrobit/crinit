@@ -1,0 +1,10 @@
+<map id="test/utest/mocks/mock&#45;calloc.c" name="test/utest/mocks/mock&#45;calloc.c">
+<area shape="rect" id="node1" title="Implementation of a mock function for calloc()." alt="" coords="57,5,228,47"/>
+<area shape="rect" id="node2" href="$mock-calloc_8h.html" title="Header declaring a mock function for calloc()." alt="" coords="23,95,137,121"/>
+<area shape="rect" id="node4" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="180,95,271,121"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,169,80,196"/>
+<area shape="rect" id="node5" title=" " alt="" coords="105,169,183,196"/>
+<area shape="rect" id="node6" title=" " alt="" coords="208,169,283,196"/>
+<area shape="rect" id="node7" title=" " alt="" coords="307,169,378,196"/>
+<area shape="rect" id="node8" title=" " alt="" coords="402,169,486,196"/>
+</map>

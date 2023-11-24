@@ -1,0 +1,5 @@
+<map id="inc/optfeat.h" name="inc/optfeat.h">
+<area shape="rect" id="node1" title="Header related to optional behavior dependent on available system features." alt="" coords="67,5,171,32"/>
+<area shape="rect" id="node2" href="$optfeat_8c.html" title="Implementation of optional behavior dependent on available system features." alt="" coords="5,80,108,107"/>
+<area shape="rect" id="node3" href="$taskdb_8c.html" title="Implementation of the central Task Database and related functions." alt="" coords="132,80,232,107"/>
+</map>

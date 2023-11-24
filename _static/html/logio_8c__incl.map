@@ -1,0 +1,19 @@
+<map id="src/logio.c" name="src/logio.c">
+<area shape="rect" id="node1" title="Implementation of debug/log output." alt="" coords="387,5,475,32"/>
+<area shape="rect" id="node2" href="$logio_8h.html" title="Header related to debug/log output." alt="" coords="98,80,165,107"/>
+<area shape="rect" id="node6" title=" " alt="" coords="240,155,311,181"/>
+<area shape="rect" id="node7" title=" " alt="" coords="240,80,313,107"/>
+<area shape="rect" id="node8" title=" " alt="" coords="337,80,421,107"/>
+<area shape="rect" id="node9" title=" " alt="" coords="446,80,521,107"/>
+<area shape="rect" id="node10" title=" " alt="" coords="545,80,616,107"/>
+<area shape="rect" id="node11" title=" " alt="" coords="640,80,716,107"/>
+<area shape="rect" id="node12" href="$globopt_8h.html" title="Header related to global option storage." alt="" coords="741,80,823,107"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,155,73,181"/>
+<area shape="rect" id="node4" title=" " alt="" coords="546,379,629,405"/>
+<area shape="rect" id="node5" title=" " alt="" coords="98,155,165,181"/>
+<area shape="rect" id="node13" href="$envset_8h.html" title="Header defining data types and functions to work with sets of environment variables." alt="" coords="743,155,821,181"/>
+<area shape="rect" id="node14" title=" " alt="" coords="665,379,739,405"/>
+<area shape="rect" id="node15" href="$confparse_8h.html" title="Header related to the Config Parser." alt="" coords="683,229,782,256"/>
+<area shape="rect" id="node16" title=" " alt="" coords="747,304,843,331"/>
+<area shape="rect" id="node17" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="644,304,723,331"/>
+</map>

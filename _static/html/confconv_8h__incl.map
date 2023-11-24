@@ -1,0 +1,10 @@
+<map id="inc/confconv.h" name="inc/confconv.h">
+<area shape="rect" id="node1" title="Definitions related to conversion operations from configuration values to structured data." alt="" coords="161,5,276,32"/>
+<area shape="rect" id="node2" title=" " alt="" coords="129,304,212,331"/>
+<area shape="rect" id="node3" href="$envset_8h.html" title="Header defining data types and functions to work with sets of environment variables." alt="" coords="78,80,157,107"/>
+<area shape="rect" id="node8" href="$ioredir_8h.html" title="Header related to IO redirection types and functions." alt="" coords="181,80,256,107"/>
+<area shape="rect" id="node4" title=" " alt="" coords="5,304,80,331"/>
+<area shape="rect" id="node5" href="$confparse_8h.html" title="Header related to the Config Parser." alt="" coords="121,155,220,181"/>
+<area shape="rect" id="node6" title=" " alt="" coords="208,229,304,256"/>
+<area shape="rect" id="node7" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="54,229,133,256"/>
+</map>

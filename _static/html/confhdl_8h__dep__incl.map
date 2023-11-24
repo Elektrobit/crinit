@@ -1,0 +1,9 @@
+<map id="inc/confhdl.h" name="inc/confhdl.h">
+<area shape="rect" id="node1" title="Header defining type&#45; and target&#45;specific handler functions for configuration parsing." alt="" coords="147,5,252,32"/>
+<area shape="rect" id="node2" href="$confhdl_8c.html" title="Implementation of type&#45; and target&#45;specific handler functions for configuration parsing." alt="" coords="81,80,185,107"/>
+<area shape="rect" id="node3" href="$confmap_8h.html" title="Definitions related to mapping configuration options and their string representations." alt="" coords="209,80,323,107"/>
+<area shape="rect" id="node4" href="$confmap_8c.html" title="Implementation file related to mapping configuration options and their string representations." alt="" coords="5,162,119,189"/>
+<area shape="rect" id="node5" href="$confparse_8c.html" title="Implementation of the Config Parser." alt="" coords="143,162,263,189"/>
+<area shape="rect" id="node6" href="$task_8c.html" title="Implementation of functions related to a single task." alt="" coords="288,162,372,189"/>
+<area shape="rect" id="node7" href="$utest-cfgmap-order_2regression-test_8c.html" title="Implementation of a regression test for the order and completeness of crinit{Task,..." alt="" coords="396,155,571,196"/>
+</map>

@@ -1,0 +1,14 @@
+<map id="test/utest/utest&#45;resize&#45;file&#45;series/case&#45;shrink&#45;zero&#45;error.c" name="test/utest/utest&#45;resize&#45;file&#45;series/case&#45;shrink&#45;zero&#45;error.c">
+<area shape="rect" id="node1" title="Unit test for crinitResizeFileSeries(), successful execution." alt="" coords="165,5,336,61"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,109,72,136"/>
+<area shape="rect" id="node3" href="$common_8h.html" title="Header for common definitions not related to other specific features." alt="" coords="96,109,187,136"/>
+<area shape="rect" id="node4" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="211,109,290,136"/>
+<area shape="rect" id="node7" title=" " alt="" coords="314,109,385,136"/>
+<area shape="rect" id="node8" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="409,109,500,136"/>
+<area shape="rect" id="node5" title=" " alt="" coords="108,184,191,211"/>
+<area shape="rect" id="node6" title=" " alt="" coords="215,184,289,211"/>
+<area shape="rect" id="node9" title=" " alt="" coords="314,184,393,211"/>
+<area shape="rect" id="node10" title=" " alt="" coords="417,184,492,211"/>
+<area shape="rect" id="node11" title=" " alt="" coords="517,184,587,211"/>
+<area shape="rect" id="node12" title=" " alt="" coords="611,184,695,211"/>
+</map>

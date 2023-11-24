@@ -1,0 +1,10 @@
+<map id="crinitElosioFilterTask" name="crinitElosioFilterTask">
+<area shape="rect" id="node1" title=" " alt="" coords="333,216,489,243"/>
+<area shape="rect" id="node2" href="$structcrinitTask__t.html" title=" " alt="" coords="307,111,403,137"/>
+<area shape="rect" id="node3" href="$structcrinitIoRedir__t.html" title=" " alt="" coords="5,5,119,32"/>
+<area shape="rect" id="node4" href="$structcrinitTaskCmd__t.html" title=" " alt="" coords="143,5,269,32"/>
+<area shape="rect" id="node5" href="$structcrinitTaskDep__t.html" title=" " alt="" coords="294,5,417,32"/>
+<area shape="rect" id="node6" href="$structcrinitEnvSet__t.html" title=" " alt="" coords="441,5,553,32"/>
+<area shape="rect" id="node7" href="$structcrinitTaskPrv__t.html" title=" " alt="" coords="577,5,694,32"/>
+<area shape="rect" id="node8" href="$structcrinitList.html" title=" " alt="" coords="428,111,507,137"/>
+</map>

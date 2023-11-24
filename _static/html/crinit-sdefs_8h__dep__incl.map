@@ -1,0 +1,48 @@
+<map id="inc/crinit&#45;sdefs.h" name="inc/crinit&#45;sdefs.h">
+<area shape="rect" id="node1" title="Definitions shared between crinit&#39;s public and internal APIs." alt="" coords="1684,5,1815,32"/>
+<area shape="rect" id="node2" href="$crinit-client_8h.html" title="Public definitions/declarations for using the crinit&#45;client shared library." alt="" coords="1639,319,1769,345"/>
+<area shape="rect" id="node18" href="$task_8h.html" title="Header defining the data structures belonging to a single task and related functions." alt="" coords="1752,80,1837,107"/>
+<area shape="rect" id="node3" href="$crinit-client_8c.html" title="Implementation of the crinit&#45;client shared library." alt="" coords="144,423,275,449"/>
+<area shape="rect" id="node4" href="$crinit-ctl_8c.html" title="Implementation of the crinit&#45;ctl service program using the crinit&#45;client library." alt="" coords="299,423,410,449"/>
+<area shape="rect" id="node5" href="$utest-crinit-set-err-stream_2case-set_8c.html" title="Implementation of a unit test for crinitClientSetErrStream()." alt="" coords="434,415,625,457"/>
+<area shape="rect" id="node6" href="$utest-crinit-set-info-stream_2case-set_8c.html" title="Implementation of a unit test for crinitClientSetInfoStream()." alt="" coords="649,415,847,457"/>
+<area shape="rect" id="node7" href="$case-glob-opt-error_8c.html" title="Implementation of a unit test for crinitClientSetVerbose() with the assumption crinitGlobOptSet() fai..." alt="" coords="1083,408,1253,464"/>
+<area shape="rect" id="node8" href="$utest-crinit-set-verbose_2case-success_8c.html" title="Implementation of a unit test for crinitClientSetVerbose(), under the assumption no internal function..." alt="" coords="1278,415,1482,457"/>
+<area shape="rect" id="node9" href="$case-build-rtim-cmd-error_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for crinitBuildRtimCmd()." alt="" coords="2129,408,2316,464"/>
+<area shape="rect" id="node10" href="$case-confpath-null_8c.html" title="Unit test for crinitClientTaskAdd() with confFilePath as NULL." alt="" coords="1925,408,2105,464"/>
+<area shape="rect" id="node11" href="$case-crinit-response-cmd-error_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for wrong command in response." alt="" coords="2340,408,2505,464"/>
+<area shape="rect" id="node12" href="$case-crinit-response-code-error_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for error code response." alt="" coords="2529,408,2697,464"/>
+<area shape="rect" id="node13" href="$case-crinit-xfer-error_8c.html" title=" " alt="" coords="2722,408,2881,464"/>
+<area shape="rect" id="node14" href="$case-forcedeps-empty_8c.html" title="Unit test for crinitClientTaskAdd() with forceDeps as empty string." alt="" coords="2905,408,3092,464"/>
+<area shape="rect" id="node15" href="$case-forcedeps-null_8c.html" title="Unit test for crinitClientTaskAdd() with forceDeps as NULL." alt="" coords="872,408,1059,464"/>
+<area shape="rect" id="node16" href="$case-overwrite-bool-to-string_8c.html" title="Unit test for crinitClientTaskAdd() testing overwrite is passed on correctly." alt="" coords="1506,408,1691,464"/>
+<area shape="rect" id="node17" href="$utest-crinit-task-add_2case-success_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for crinitXfer()." alt="" coords="1715,415,1901,457"/>
+<area shape="rect" id="node19" href="$elosio_8c.html" title="Implementation of elos connection." alt="" coords="3545,229,3639,256"/>
+<area shape="rect" id="node20" href="$task_8c.html" title="Implementation of functions related to a single task." alt="" coords="861,319,945,345"/>
+<area shape="rect" id="node21" href="$confhdl_8h.html" title="Header defining type&#45; and target&#45;specific handler functions for configuration parsing." alt="" coords="1742,155,1847,181"/>
+<area shape="rect" id="node27" href="$taskdb_8h.html" title="Header defining the central Task Data Structure and related types/functions." alt="" coords="3156,155,3257,181"/>
+<area shape="rect" id="node22" href="$confhdl_8c.html" title="Implementation of type&#45; and target&#45;specific handler functions for configuration parsing." alt="" coords="1743,229,1847,256"/>
+<area shape="rect" id="node23" href="$confmap_8h.html" title="Definitions related to mapping configuration options and their string representations." alt="" coords="1167,229,1281,256"/>
+<area shape="rect" id="node24" href="$confmap_8c.html" title="Implementation file related to mapping configuration options and their string representations." alt="" coords="1167,319,1281,345"/>
+<area shape="rect" id="node25" href="$confparse_8c.html" title="Implementation of the Config Parser." alt="" coords="1305,319,1425,345"/>
+<area shape="rect" id="node26" href="$utest-cfgmap-order_2regression-test_8c.html" title="Implementation of a regression test for the order and completeness of crinit{Task,..." alt="" coords="969,311,1143,353"/>
+<area shape="rect" id="node28" href="$optfeat_8c.html" title="Implementation of optional behavior dependent on available system features." alt="" coords="3030,229,3133,256"/>
+<area shape="rect" id="node29" href="$taskdb_8c.html" title="Implementation of the central Task Database and related functions." alt="" coords="3157,229,3257,256"/>
+<area shape="rect" id="node30" href="$notiserv_8h.html" title="Header related to the notification and service interface." alt="" coords="3281,229,3391,256"/>
+<area shape="rect" id="node33" href="$procdip_8h.html" title="Header related to the Process Dispatcher." alt="" coords="3415,229,3521,256"/>
+<area shape="rect" id="node36" href="$rtimcmd_8h.html" title="Header related to handling of runtime commands received via the notification/service interface." alt="" coords="2528,229,2640,256"/>
+<area shape="rect" id="node31" href="$crinit_8c.html" title="Implementation of the Crinit main program." alt="" coords="3549,319,3638,345"/>
+<area shape="rect" id="node32" href="$notiserv_8c.html" title="Implementation of the notification and service interface." alt="" coords="3282,319,3390,345"/>
+<area shape="rect" id="node34" href="$procdip_8c.html" title="Implementation of the Process Dispatcher." alt="" coords="3663,319,3767,345"/>
+<area shape="rect" id="node35" href="$rtimcmd_8c.html" title="Implementation of runtime commands to be triggered by the notification/service interface." alt="" coords="3414,319,3525,345"/>
+<area shape="rect" id="node37" href="$sockcom_8h.html" title="Header defining Crinit socket communication functions used internally by the crinit&#45;client library." alt="" coords="1449,319,1564,345"/>
+<area shape="rect" id="node39" href="$mock-build-rtim-cmd_8h.html" title="Header declaring a mock function for crinitBuildRtimCmd()." alt="" coords="2697,311,2868,353"/>
+<area shape="rect" id="node41" href="$mock-crinit-xfer_8h.html" title="Implementation of a mock function for crinitXfer()." alt="" coords="2892,311,3063,353"/>
+<area shape="rect" id="node43" href="$mock-destroy-rtim-cmd_8h.html" title="Header declaring a mock function for crinitDestroyRtimCmd()." alt="" coords="3087,311,3257,353"/>
+<area shape="rect" id="node45" href="$utest-crinit-task-add_8c.html" title="Implementation of the crinitClientTaskAdd() unit test group." alt="" coords="3117,408,3275,464"/>
+<area shape="rect" id="node46" href="$utest-crinit-task-add_8h.html" title="Header declaring the unit tests for crinitClientTaskAdd()." alt="" coords="2261,304,2419,360"/>
+<area shape="rect" id="node38" href="$sockcom_8c.html" title="Implementation of socket communication functions for the crinit&#45;client library." alt="" coords="5,423,120,449"/>
+<area shape="rect" id="node40" href="$mock-build-rtim-cmd_8c.html" title="Implementation of a mock function for crinitBuildRtimCmd()." alt="" coords="3300,415,3471,457"/>
+<area shape="rect" id="node42" href="$mock-crinit-xfer_8c.html" title="Implementation of a mock function for crinitXfer()." alt="" coords="3495,415,3665,457"/>
+<area shape="rect" id="node44" href="$mock-destroy-rtim-cmd_8c.html" title="Implementation of a mock function for crinitGlobOptSet()." alt="" coords="3689,415,3860,457"/>
+</map>

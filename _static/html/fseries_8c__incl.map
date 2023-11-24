@@ -1,0 +1,17 @@
+<map id="src/fseries.c" name="src/fseries.c">
+<area shape="rect" id="node1" title="Implementation file related to the handling of a series of filenames within a directory." alt="" coords="354,5,454,32"/>
+<area shape="rect" id="node2" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="342,155,421,181"/>
+<area shape="rect" id="node5" title=" " alt="" coords="23,80,95,107"/>
+<area shape="rect" id="node6" title=" " alt="" coords="120,80,182,107"/>
+<area shape="rect" id="node7" title=" " alt="" coords="206,80,290,107"/>
+<area shape="rect" id="node8" title=" " alt="" coords="314,80,385,107"/>
+<area shape="rect" id="node9" title=" " alt="" coords="661,155,732,181"/>
+<area shape="rect" id="node10" title=" " alt="" coords="532,80,618,107"/>
+<area shape="rect" id="node11" title=" " alt="" coords="528,155,624,181"/>
+<area shape="rect" id="node12" href="$confparse_8h.html" title="Header related to the Config Parser." alt="" coords="410,80,508,107"/>
+<area shape="rect" id="node13" href="$logio_8h.html" title="Header related to debug/log output." alt="" coords="743,80,810,107"/>
+<area shape="rect" id="node3" title=" " alt="" coords="431,229,514,256"/>
+<area shape="rect" id="node4" title=" " alt="" coords="332,229,407,256"/>
+<area shape="rect" id="node14" title=" " alt="" coords="808,155,876,181"/>
+<area shape="rect" id="node15" title=" " alt="" coords="900,155,967,181"/>
+</map>

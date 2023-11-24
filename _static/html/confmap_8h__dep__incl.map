@@ -1,0 +1,7 @@
+<map id="inc/confmap.h" name="inc/confmap.h">
+<area shape="rect" id="node1" title="Definitions related to mapping configuration options and their string representations." alt="" coords="209,5,323,32"/>
+<area shape="rect" id="node2" href="$confmap_8c.html" title="Implementation file related to mapping configuration options and their string representations." alt="" coords="5,87,119,114"/>
+<area shape="rect" id="node3" href="$confparse_8c.html" title="Implementation of the Config Parser." alt="" coords="143,87,263,114"/>
+<area shape="rect" id="node4" href="$task_8c.html" title="Implementation of functions related to a single task." alt="" coords="288,87,372,114"/>
+<area shape="rect" id="node5" href="$utest-cfgmap-order_2regression-test_8c.html" title="Implementation of a regression test for the order and completeness of crinit{Task,..." alt="" coords="396,80,571,121"/>
+</map>

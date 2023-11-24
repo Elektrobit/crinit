@@ -1,0 +1,14 @@
+<map id="test/utest/utest&#45;destroy&#45;file&#45;series/case&#45;success.c" name="test/utest/utest&#45;destroy&#45;file&#45;series/case&#45;success.c">
+<area shape="rect" id="node1" title="Unit test for crinitDestroyFileSeries(), successful execution." alt="" coords="155,5,347,47"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,95,72,121"/>
+<area shape="rect" id="node3" href="$common_8h.html" title="Header for common definitions not related to other specific features." alt="" coords="96,95,187,121"/>
+<area shape="rect" id="node4" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="211,95,290,121"/>
+<area shape="rect" id="node7" title=" " alt="" coords="314,95,385,121"/>
+<area shape="rect" id="node8" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="409,95,500,121"/>
+<area shape="rect" id="node5" title=" " alt="" coords="108,169,191,196"/>
+<area shape="rect" id="node6" title=" " alt="" coords="215,169,289,196"/>
+<area shape="rect" id="node9" title=" " alt="" coords="314,169,393,196"/>
+<area shape="rect" id="node10" title=" " alt="" coords="417,169,492,196"/>
+<area shape="rect" id="node11" title=" " alt="" coords="517,169,587,196"/>
+<area shape="rect" id="node12" title=" " alt="" coords="611,169,695,196"/>
+</map>

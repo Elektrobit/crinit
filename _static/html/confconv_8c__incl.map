@@ -1,0 +1,20 @@
+<map id="src/confconv.c" name="src/confconv.c">
+<area shape="rect" id="node1" title="Implementations of conversion operations from configuration values to structured data." alt="" coords="547,5,661,32"/>
+<area shape="rect" id="node2" href="$confconv_8h.html" title="Definitions related to conversion operations from configuration values to structured data." alt="" coords="243,80,335,107"/>
+<area shape="rect" id="node10" title=" " alt="" coords="573,80,635,107"/>
+<area shape="rect" id="node11" title=" " alt="" coords="659,80,730,107"/>
+<area shape="rect" id="node12" title=" " alt="" coords="755,80,829,107"/>
+<area shape="rect" id="node13" href="$common_8h.html" title="Header for common definitions not related to other specific features." alt="" coords="853,80,944,107"/>
+<area shape="rect" id="node14" href="$lexers_8h.html" title="Header related to lexers built with re2c, used in the config/envset parser." alt="" coords="367,229,441,256"/>
+<area shape="rect" id="node15" href="$logio_8h.html" title="Header related to debug/log output." alt="" coords="481,80,548,107"/>
+<area shape="rect" id="node3" title=" " alt="" coords="288,379,371,405"/>
+<area shape="rect" id="node4" href="$envset_8h.html" title="Header defining data types and functions to work with sets of environment variables." alt="" coords="114,155,193,181"/>
+<area shape="rect" id="node9" href="$ioredir_8h.html" title="Header related to IO redirection types and functions." alt="" coords="217,155,292,181"/>
+<area shape="rect" id="node5" title=" " alt="" coords="5,379,80,405"/>
+<area shape="rect" id="node6" href="$confparse_8h.html" title="Header related to the Config Parser." alt="" coords="109,229,208,256"/>
+<area shape="rect" id="node7" title=" " alt="" coords="196,304,292,331"/>
+<area shape="rect" id="node8" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="42,304,121,331"/>
+<area shape="rect" id="node16" title=" " alt="" coords="517,155,585,181"/>
+<area shape="rect" id="node17" title=" " alt="" coords="609,155,676,181"/>
+<area shape="rect" id="node18" title=" " alt="" coords="701,155,771,181"/>
+</map>

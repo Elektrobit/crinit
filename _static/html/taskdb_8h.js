@@ -1,0 +1,27 @@
+var taskdb_8h =
+[
+    [ "crinitTaskDB_t", "structcrinitTaskDB__t.html", "structcrinitTaskDB__t" ],
+    [ "CRINIT_MONITOR_DEP_NAME", "taskdb_8h.html#a26a36d61fd046e527b39d162a79bb05f", null ],
+    [ "CRINIT_PROVIDE_DEP_NAME", "taskdb_8h.html#aac73ab1178220ecc71c2e895abafd6f7", null ],
+    [ "CRINIT_TASKDB_INITIAL_SIZE", "taskdb_8h.html#af11a36821fb8aee4e48b2cd502888695", null ],
+    [ "crinitTaskDbForEach", "taskdb_8h.html#af41d3f1776411539c549a8d232fe69ac", null ],
+    [ "crinitTaskDBInit", "taskdb_8h.html#a1a3304f4503181f9ce19c0fe28b344c2", null ],
+    [ "crinitTaskDBUpdate", "taskdb_8h.html#a8acdc3022e7d1aad6c0841c8bf75bac6", null ],
+    [ "crinitTaskDB_t", "taskdb_8h.html#a1ef4ba0e54f9b158cfb1113c8ae7c522", null ],
+    [ "crinitTaskDBAddDepToTask", "taskdb_8h.html#a48b9b0c43103c8709df03307db7b980d", null ],
+    [ "crinitTaskDBDestroy", "taskdb_8h.html#a0513aea87118637628ac26c83cd07e00", null ],
+    [ "crinitTaskDBExportTaskNamesToArray", "taskdb_8h.html#a39e62e613d875c26844a0b47b468026b", null ],
+    [ "crinitTaskDBFulfillDep", "taskdb_8h.html#ad4e226b3c756bf1fdb2a45076413927f", null ],
+    [ "crinitTaskDBGetTaskPID", "taskdb_8h.html#a785eeee1d24013e61aadd00ced97cbac", null ],
+    [ "crinitTaskDBGetTaskState", "taskdb_8h.html#a23e15de21b6b9c5a274eb13285d00f00", null ],
+    [ "crinitTaskDBGetTaskStateAndPID", "taskdb_8h.html#a97d880e0b399c6fd9ef7ba90856dde96", null ],
+    [ "crinitTaskDBInitWithSize", "taskdb_8h.html#a201bfdc33630f7b8baf3f90d8ca6d258", null ],
+    [ "crinitTaskDBInsert", "taskdb_8h.html#a01bf0221c85ee5a9cbda759e3ffc0612", null ],
+    [ "crinitTaskDBProvideFeature", "taskdb_8h.html#a7c001c5700abd471f8d7b2144018425d", null ],
+    [ "crinitTaskDBProvideFeatureByTaskName", "taskdb_8h.html#ae5f820ace0d5b55d533d7f846fc1dc15", null ],
+    [ "crinitTaskDBRemoveDepFromTask", "taskdb_8h.html#aa92d56059fed60ab94db38fed8ddf509", null ],
+    [ "crinitTaskDBSetSpawnInhibit", "taskdb_8h.html#a8e24830d7fdb34c95c8662e0452f697a", null ],
+    [ "crinitTaskDBSetTaskPID", "taskdb_8h.html#a3eef35669a9e906da28cf30e3e8e2317", null ],
+    [ "crinitTaskDBSetTaskState", "taskdb_8h.html#a86c7df5aac6ce38969ed52874a887f01", null ],
+    [ "crinitTaskDBSpawnReady", "taskdb_8h.html#a9414e5c37b05ee3e74261f98021736c4", null ]
+];

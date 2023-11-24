@@ -1,0 +1,6 @@
+<map id="test/utest/mocks/mock&#45;glob&#45;opt&#45;set&#45;boolean.h" name="test/utest/mocks/mock&#45;glob&#45;opt&#45;set&#45;boolean.h">
+<area shape="rect" id="node1" title="Header declaring a mock function for crinitGlobOptSetBoolean()." alt="" coords="203,5,377,47"/>
+<area shape="rect" id="node2" href="$mock-glob-opt-set-boolean_8c.html" title="Implementation of a mock function for crinitGlobOptSetBoolean()." alt="" coords="5,102,180,143"/>
+<area shape="rect" id="node3" href="$case-glob-opt-error_8c.html" title="Implementation of a unit test for crinitClientSetVerbose() with the assumption crinitGlobOptSet() fai..." alt="" coords="205,95,375,151"/>
+<area shape="rect" id="node4" href="$utest-crinit-set-verbose_2case-success_8c.html" title="Implementation of a unit test for crinitClientSetVerbose(), under the assumption no internal function..." alt="" coords="400,102,604,143"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="test/utest/mocks/mock&#45;set&#45;err&#45;stream.h" name="test/utest/mocks/mock&#45;set&#45;err&#45;stream.h">
+<area shape="rect" id="node1" title="Header declaring a mock function for crinitSetErrStream()." alt="" coords="108,5,279,47"/>
+<area shape="rect" id="node2" href="$mock-set-err-stream_8c.html" title="Implementation of a mock function for crinitSetErrStream()." alt="" coords="5,95,176,136"/>
+<area shape="rect" id="node3" href="$utest-crinit-set-err-stream_2case-set_8c.html" title="Implementation of a unit test for crinitClientSetErrStream()." alt="" coords="201,95,391,136"/>
+</map>

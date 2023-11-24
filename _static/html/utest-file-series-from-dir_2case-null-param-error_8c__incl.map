@@ -1,0 +1,13 @@
+<map id="test/utest/utest&#45;file&#45;series&#45;from&#45;dir/case&#45;null&#45;param&#45;error.c" name="test/utest/utest&#45;file&#45;series&#45;from&#45;dir/case&#45;null&#45;param&#45;error.c">
+<area shape="rect" id="node1" title="Unit test for crinitFileSeriesFromDir(), given a NULL parameter fse or path." alt="" coords="117,5,275,61"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,109,72,136"/>
+<area shape="rect" id="node3" href="$common_8h.html" title="Header for common definitions not related to other specific features." alt="" coords="96,109,187,136"/>
+<area shape="rect" id="node4" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="211,109,290,136"/>
+<area shape="rect" id="node7" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="361,109,452,136"/>
+<area shape="rect" id="node5" title=" " alt="" coords="107,184,189,211"/>
+<area shape="rect" id="node6" title=" " alt="" coords="213,184,288,211"/>
+<area shape="rect" id="node8" title=" " alt="" coords="313,184,391,211"/>
+<area shape="rect" id="node9" title=" " alt="" coords="416,184,491,211"/>
+<area shape="rect" id="node10" title=" " alt="" coords="515,184,586,211"/>
+<area shape="rect" id="node11" title=" " alt="" coords="610,184,694,211"/>
+</map>
