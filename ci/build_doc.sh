@@ -30,6 +30,9 @@ done
 set -- $PARAM
 
 ARCH=$(dpkg --print-architecture)
+if [ "$ARCH" != "amd64" ]; then
+    exit 0 # only need amd64 documentation, and building it for arm64 produces complicated to fix errors.
+fi
 BUILD_DIR="$BASE_DIR/build/$ARCH"
 DIST_DIR="$BUILD_DIR/dist"
 
