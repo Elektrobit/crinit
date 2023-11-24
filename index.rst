@@ -6,7 +6,7 @@ Crinit -- Configurable Rootfs Init
    :caption: Contents
 
    Users <README>
-   Public API <build/amd64/doc/sphinx/source_generated/api/index>
+   Public API <API-Doc>
    Developers <src/index>
    Helper Scripts <scripts/README>
    Tests <test/README>
