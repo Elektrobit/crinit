@@ -34,13 +34,14 @@ if [ "$ARCH" != "amd64" ]; then
     exit 0 # only need amd64 documentation, and building it for arm64 produces complicated to fix errors.
 fi
 BUILD_DIR="$BASE_DIR/build/$ARCH"
+RESULT_DIR="$BASE_DIR/result/$ARCH"
 DIST_DIR="$BUILD_DIR/dist"
 
 CRINIT_SOURCE_SOURCE_DIR=${BASE_DIR}/src
 CRINIT_SOURCE_HEADER_DIR=${BASE_DIR}/inc
 
 SPHINX_SOURCE_DIR=${BASE_DIR}
-SPHINX_BUILD_DIR=${BUILD_DIR}/doc/sphinx
+SPHINX_BUILD_DIR=${RESULT_DIR}/doc/sphinx
 SPHINX_GENERATED_SOURCE_DIR=${SPHINX_BUILD_DIR}/source_generated
 SPHINX_HTML_OUTPUT_DIR=${SPHINX_BUILD_DIR}/html
 
