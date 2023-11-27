@@ -191,7 +191,7 @@ pipeline {
     }
     post {
         always {
-            archiveArtifacts 'result/**, build/**'
+            archiveArtifacts 'result/**'
         }
     }
 }
