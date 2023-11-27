@@ -117,7 +117,7 @@ The crinit logo is the Swallow (Hirundinidae). A quick and small bird able to fl
 
 As described above, Crinit needs a global series-file containing global configuration options as well as a list of task
 configurations. Examples for a local demonstration inside the build environment (see [Build
-Instructions](#build-instructions) below) are available in `config/test/` and examples to use as a starting point for a
+Instructions](#Build Instructions) below) are available in `config/test/` and examples to use as a starting point for a
 minimal system boot are available in `config/example/`.
 
 The general format of crinit configuration files is INI-style `KEY = value` pairs. Some settings may be array-like,

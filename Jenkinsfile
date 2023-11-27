@@ -26,6 +26,7 @@ pipeline {
             "Build (arm64v8)",
             "Package (amd64)",
             "Package (arm64v8)",
+            "Build Doc (amd64)",
             "Analyse: Lint (amd64)",
             "Analyse: Lint (arm64v8)",
             "Test: utests (amd64)",
@@ -135,6 +136,37 @@ pipeline {
                         }
                     }
                 }
+            }
+        }
+        stage ('Setup Doc') {
+            agent {
+                dockerfile {
+                    dir 'ci'
+                    reuseNode true
+                    additionalBuildArgs " \
+                        --ssh default=/root/.ssh/id_ed25519 \
+                        --progress=plain \
+                        --build-arg REPO=amd64 \
+                        --build-arg USER=jenkins \
+                        --build-arg UID=${UID} \
+                        --build-arg GID=${GID} \
+                        --build-arg UBUNTU_RELEASE=jammy"
+                    args "--privileged \
+                        -v /home/jenkins/.ssh:/home/jenkins/.ssh \
+                        -e HOME=/home/jenkins"
+                    reuseNode true
+                }
+            }
+            stages {
+		stage ('Build Doc') {
+		    steps {
+		        gitlabCommitStatus("${STAGE_NAME} (amd64)") {
+		            sh '''#!/bin/bash -xe
+		            ci/build_doc.sh
+		            '''
+		        }
+		    }
+	        }
             }
         }
         stage ('Target tests') {
