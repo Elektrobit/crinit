@@ -26,7 +26,7 @@ pipeline {
             "Build (arm64v8)",
             "Package (amd64)",
             "Package (arm64v8)",
-            "Build Doc(amd64)",
+            "Build Doc (amd64)",
             "Analyse: Lint (amd64)",
             "Analyse: Lint (arm64v8)",
             "Test: utests (amd64)",
