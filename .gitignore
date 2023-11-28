@@ -39,3 +39,10 @@ tags
 [._]*.un
 # Prevent include of IDE files
 .vscode/
+# vim YCM clangd cache
+.cache/
+
+# Files modified/generated in integration tests
+test_service.crinit
+robot_variables.py
+__pycache__/
