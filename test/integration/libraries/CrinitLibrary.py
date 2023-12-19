@@ -102,13 +102,16 @@ class CrinitLibrary(object):
 
         return ret == 0
 
-    def crinit_start(self):
+    def crinit_start(self, series_file=None):
         """ Starts crinit if it is not running. """
+        if series_file is None:
+            series_file = self.CRINIT_SERIES
+
         if self.crinit_is_running():
             return 0
 
         self.ssh.start_command(
-            f"sh -c \"export CRINIT_SOCK={self.CRINIT_SOCK}; {self.CRINIT_BIN} {self.CRINIT_SERIES}\"",
+            f"sh -c \"export CRINIT_SOCK={self.CRINIT_SOCK}; {self.CRINIT_BIN} {series_file}\"",
             sudo=(not self.IS_ROOT),
             sudo_password=(None if self.IS_ROOT else self.password)
         )
@@ -128,8 +131,11 @@ class CrinitLibrary(object):
 
         return 0
 
-    def crinit_stop(self):
+    def crinit_stop(self, series_file=None):
         """ Stops all remaining crinit tasks and kills crinit. """
+        if series_file is None:
+            series_file = self.CRINIT_SERIES
+
         if not self.crinit_is_running():
             return 0
 
@@ -141,7 +147,7 @@ class CrinitLibrary(object):
         ret = -1
 
         stdout, stderr, ret = self.ssh.execute_command(
-            f"sh -c \"pkill -f {self.CRINIT_BIN}\\ {self.CRINIT_SERIES} && rm -rf {self.CRINIT_SOCK}\"",
+            f"sh -c \"pkill -f {self.CRINIT_BIN}\\ {series_file} && rm -rf {self.CRINIT_SOCK}\"",
             return_stdout=True,
             return_stderr=True,
             return_rc=True,
