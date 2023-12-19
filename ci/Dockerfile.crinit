@@ -25,7 +25,7 @@ ARG ELOS_REPO_REF=integration
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
- && apt-get install -y sudo vim locales uuid-runtime \
+ && apt-get install -y sudo vim locales uuid-runtime keyutils \
  build-essential binutils-dev pkg-config cmake valgrind strace \
  git wget curl netcat net-tools ssh libssl-dev openssl re2c libcmocka-dev \
  libjson-c-dev libmnl-dev libsqlite3-0 libsqlite3-dev libesmtp-dev expat liblog4c-dev \
@@ -86,9 +86,10 @@ RUN cmake -B build . \
  . \
  && make -C build install
 
-RUN mkdir -p /etc/crinit/itest
-COPY ./test/integration/service/* /etc/crinit/itest
-RUN chmod -R 644 /etc/crinit
+RUN mkdir -p /etc/crinit/itest/data
+COPY ./test/integration/service/ /etc/crinit/itest/
+COPY ./test/integration/data/* /etc/crinit/itest/data
+RUN chmod -R +rX /etc/crinit
 RUN uuidgen > /etc/machine-id
 
 RUN sudo ldconfig
@@ -111,4 +112,3 @@ RUN echo '\n\
 ' >> $HOME/.bashrc
 
 ENTRYPOINT /bin/bash
-
