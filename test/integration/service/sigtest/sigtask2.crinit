@@ -1,0 +1,3 @@
+NAME = sigtask2
+
+COMMAND = /bin/echo This is the second signed task.
