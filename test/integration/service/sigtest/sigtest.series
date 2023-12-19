@@ -1,0 +1,12 @@
+# BaseOS crinit series file
+
+# 100ms shutdown grace period
+SHUTDOWN_GRACE_PERIOD_US = 100000
+
+DEBUG = NO
+
+USE_SYSLOG = NO
+USE_ELOS = NO
+
+TASKDIR = /etc/crinit/itest/sigtest
+TASKDIR_FOLLOW_SYMLINKS = YES

@@ -1,0 +1,3 @@
+NAME = sigtask4
+
+COMMAND = /bin/echo This is the fourth signed task.
