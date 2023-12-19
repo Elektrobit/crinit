@@ -137,4 +137,6 @@ crinitTokenType_t crinitEnvVarOuterLex(const char **s, const char **mbegin, cons
  */
 crinitTokenType_t crinitEnvVarInnerLex(const char **s, const char **mbegin, const char **mend);
 
+crinitTokenType_t crinitKernelCmdlineLex(const char **s, const char **keyBegin, const char **keyEnd, const char **valBegin, const char **valEnd);
+
 #endif /* __LEXERS_H__ */

@@ -8,6 +8,7 @@
 
 #include "common.h"
 #include "globopt.h"
+#include "kcmdline.h"
 #include "logio.h"
 #include "minsetup.h"
 #include "notiserv.h"
@@ -79,6 +80,12 @@ int main(int argc, char *argv[]) {
     }
     if (crinitGlobOptInitDefault() == -1) {
         crinitErrPrint("Could not initialize global option array.");
+        return EXIT_FAILURE;
+    }
+
+    if (crinitKernelCmdlineParse(NULL) == -1) {
+        crinitErrPrint("Could not parse Kernel cmdline.");
+        crinitGlobOptDestroy();
         return EXIT_FAILURE;
     }
 

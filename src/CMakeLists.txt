@@ -21,6 +21,7 @@ add_executable(
   elosdep.c
   eloslog.c
   envset.c
+  kcmdline.c
   task.c
   taskdb.c
   procdip.c
