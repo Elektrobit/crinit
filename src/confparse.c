@@ -54,6 +54,20 @@ int crinitParseConf(crinitConfKvList_t **confList, const char *filename) {
     }
     fclose(cf);
 
+    // Check if we must verify the signature of this config file.
+    bool sigRequired = CRINIT_CONFIG_DEFAULT_SIGNATURES;
+    if (crinitGlobOptGet(CRINIT_GLOBOPT_SIGNATURES, &sigRequired) == -1) {
+        crinitErrPrint("Could not retrieve value for global setting if we are to use signatures.");
+        free(fileBuf);
+        return -1;
+    }
+
+    if (sigRequired) {
+        crinitErrPrint(
+            "Signature checking is not yet implemented. Will carry on as normal. Conf file: '%s' Sig file: '%s.sig'",
+            filename, filename);
+    }
+
     // Alloc first element
     if ((*confList = malloc(sizeof(crinitConfKvList_t))) == NULL) {
         crinitErrnoPrint("Could not allocate memory for a ConfKVList.");
