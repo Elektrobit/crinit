@@ -46,6 +46,7 @@ int crinitGlobOptInitDefault(void) {
     crinitGlobOpts.useElos = CRINIT_CONFIG_DEFAULT_USE_ELOS;
     crinitGlobOpts.shdGraceP = CRINIT_CONFIG_DEFAULT_SHDGRACEP;
     crinitGlobOpts.taskDirFollowSl = CRINIT_CONFIG_DEFAULT_TASKDIR_SYMLINKS;
+    crinitGlobOpts.signatures = CRINIT_CONFIG_DEFAULT_SIGNATURES;
 
     crinitGlobOpts.inclDir = strdup(CRINIT_CONFIG_DEFAULT_INCLDIR);
     if (crinitGlobOpts.inclDir == NULL) {
@@ -59,7 +60,6 @@ int crinitGlobOptInitDefault(void) {
     if (crinitGlobOpts.inclSuffix == NULL) {
         crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_INCL_SUFFIX);
         crinitGlobOptDestroy();
-
         crinitGlobOptCommonUnlock();
         return -1;
     }
@@ -77,7 +77,14 @@ int crinitGlobOptInitDefault(void) {
     if (crinitGlobOpts.taskFileSuffix == NULL) {
         crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_TASK_FILE_SUFFIX);
         crinitGlobOptDestroy();
+        crinitGlobOptCommonUnlock();
+        return -1;
+    }
 
+    crinitGlobOpts.sigKeyDir = strdup(CRINIT_CONFIG_DEFAULT_SIGKEYDIR);
+    if (crinitGlobOpts.sigKeyDir == NULL) {
+        crinitGlobOptSetErrPrint(CRINIT_CONFIG_DEFAULT_SIGKEYDIR);
+        crinitGlobOptDestroy();
         crinitGlobOptCommonUnlock();
         return -1;
     }
