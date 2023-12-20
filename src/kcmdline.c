@@ -6,6 +6,9 @@
 
 #include "kcmdline.h"
 
+#include <stdlib.h>
+
+#include "confmap.h"
 #include "lexers.h"
 #include "logio.h"
 
@@ -34,7 +37,7 @@ int crinitKernelCmdlineParse(const char *cmdlinePath) {
     if (cmdlineBuf[cmdlineLen - 1] == '\n') {
         cmdlineBuf[cmdlineLen - 1] = '\0';
     }
- 
+
     crinitTokenType_t tt;
     const char *s = cmdlineBuf, *keyBegin, *keyEnd, *valBegin, *valEnd;
     enum { TOKEN_START, TOKEN_INNER } parseState = TOKEN_START;
@@ -52,9 +55,45 @@ int crinitKernelCmdlineParse(const char *cmdlinePath) {
                 break;
             case CRINIT_TK_VAR:
                 if (parseState == TOKEN_START) {
-                    crinitErrPrint(
-                        "[Unimplemented] Encountered configuration key '%.*s' with value '%.*s' in Kernel cmdline.",
-                        (int)(keyEnd - keyBegin), keyBegin, (int)(valEnd - valBegin), valBegin);
+                    parseState = TOKEN_INNER;
+
+                    char *key, *val;
+                    crinitDbgInfoPrint("Encountered configuration key '%.*s' with value '%.*s' in Kernel cmdline.",
+                                       (int)(keyEnd - keyBegin), keyBegin, (int)(valEnd - valBegin), valBegin);
+
+                    key = strndup(keyBegin, (size_t)(keyEnd - keyBegin));
+                    if (key == NULL) {
+                        crinitErrnoPrint("Could not duplicate name of Kernel command line variable.");
+                        tt = CRINIT_TK_ERR;
+                        break;
+                    }
+                    val = strndup(valBegin, (size_t)(valEnd - valBegin));
+                    if (val == NULL) {
+                        crinitErrnoPrint("Could not duplicate value of Kernel command line variable.");
+                        tt = CRINIT_TK_ERR;
+                        break;
+                    }
+
+                    const crinitConfigMapping_t *kccm =
+                        crinitFindConfigMapping(crinitKCmdlineCfgMap, crinitKCmdlineCfgMapSize, key);
+                    if (kccm == NULL) {
+                        crinitInfoPrint(
+                            "Warning: Unknown configuration setting 'crinit.%s=%s' encountered on Kernel cmdline.", key,
+                            val);
+                        free(key);
+                        free(val);
+                        break;
+                    }
+
+                    if (kccm->cfgHandler(NULL, val, CRINIT_CONFIG_TYPE_KCMDLINE) == -1) {
+                        crinitErrPrint("Could not interpret option '%s' with value '%s' given on Kernel cmdline.", key,
+                                       val);
+                        free(key);
+                        free(val);
+                        return -1;
+                    }
+                    free(key);
+                    free(val);
                 }
                 break;
             default:
@@ -62,7 +101,6 @@ int crinitKernelCmdlineParse(const char *cmdlinePath) {
             case CRINIT_TK_DQSTR:
             case CRINIT_TK_ENVKEY:
             case CRINIT_TK_ENVVAL:
-
             case CRINIT_TK_ESC:
             case CRINIT_TK_ESCX:
             case CRINIT_TK_ERR:
