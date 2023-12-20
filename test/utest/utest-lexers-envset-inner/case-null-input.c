@@ -22,4 +22,6 @@ void crinitEnvVarInnerLexTestNullInput(void **state) {
     assert_int_equal(crinitEnvVarInnerLex(&s, NULL, NULL), CRINIT_TK_ERR);
     assert_int_equal(crinitEnvVarInnerLex(&s, NULL, &mend), CRINIT_TK_ERR);
     assert_int_equal(crinitEnvVarInnerLex(&s, &mbegin, NULL), CRINIT_TK_ERR);
+    /* Also check case where s would point to a NULL pointer */
+    assert_int_equal(crinitEnvVarInnerLex(&mbegin, &mbegin, &mend), CRINIT_TK_ERR);
 }
