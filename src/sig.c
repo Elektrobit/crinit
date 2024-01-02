@@ -12,18 +12,20 @@
 #include <unistd.h>
 
 #include "common.h"
+#include "fseries.h"
 #include "logio.h"
 #include "mbedtls/error.h"
 #include "mbedtls/pk.h"
 #include "mbedtls/sha256.h"
 
 #define CRINIT_SIGNATURE_PK_DATA_MAX_SIZE 4096uL
+#define CRINIT_SIGNATURE_PK_PEM_EXTENSION ".pem"
+#define CRINIT_SIGNATURE_PK_DER_EXTENSION ".der"
 
 static struct {
     mbedtls_pk_context crinitRootKey;
     mbedtls_pk_context *crinitSignedKeys;
     size_t numSignedKeys;
-    size_t allocSignedKeys;
     pthread_mutex_t crinitSigLock;
 } crinitSigCtx;
 
@@ -54,13 +56,11 @@ static struct {
 #define crinitKeyctlSearch(keyringID, keyType, keyDesc) \
     syscall(SYS_keyctl, KEYCTL_SEARCH, keyringID, keyType, keyDesc, 0)
 
+static int crinitLoadAndVerifySignedKeysFromFileSeries(mbedtls_pk_context *tgt, const crinitFileSeries_t *src);
+
 int crinitSigSubsysInit(char *rootKeyDesc) {
     crinitSigCtx.numSignedKeys = 0;
-    crinitSigCtx.crinitSignedKeys = malloc(sizeof(*crinitSigCtx.crinitSignedKeys) * CRINIT_SIGNED_KEYS_INITIAL_SIZE);
-    if (crinitSigCtx.crinitSignedKeys == NULL) {
-        crinitErrnoPrint("Could not allocate memory for signature public key contexts.");
-        return -1;
-    }
+    crinitSigCtx.crinitSignedKeys = NULL;
     pthread_mutex_init(&crinitSigCtx.crinitSigLock, NULL);
 
     long rootKeyId = crinitKeyctlSearch(KEY_SPEC_USER_KEYRING, "user", rootKeyDesc);
@@ -121,10 +121,89 @@ void crinitSigSubsysDestroy(void) {
 
 int crinitLoadAndVerifySignedKeys(char *sigKeyDir) {
     crinitNullCheck(-1, sigKeyDir);
+    crinitFileSeries_t pemKeys, derKeys;
+
+    if (crinitFileSeriesFromDir(&derKeys, sigKeyDir, CRINIT_SIGNATURE_PK_DER_EXTENSION, false) == -1) {
+        crinitErrPrint("Could not search directory '%s' for DER-encoded public keys.", sigKeyDir);
+        return -1;
+    }
+    if (crinitFileSeriesFromDir(&pemKeys, sigKeyDir, CRINIT_SIGNATURE_PK_PEM_EXTENSION, false) == -1) {
+        crinitErrPrint("Could not search directory '%s' for PEM-encoded public keys.", sigKeyDir);
+        crinitDestroyFileSeries(&derKeys);
+        return -1;
+    }
+
+    size_t numSignedKeys = derKeys.size + pemKeys.size;
+    mbedtls_pk_context *signedKeys = malloc(sizeof(*signedKeys) * numSignedKeys);
+    if (signedKeys == NULL) {
+        crinitErrnoPrint("Could not allocate memory for %zu signature public key contexts.", numSignedKeys);
+        crinitDestroyFileSeries(&derKeys);
+        crinitDestroyFileSeries(&pemKeys);
+        return -1;
+    }
+    for (size_t i = 0; i < numSignedKeys; i++) {
+        mbedtls_pk_init(&signedKeys[i]);
+    }
+
+    if (crinitLoadAndVerifySignedKeysFromFileSeries(signedKeys, &derKeys) == -1) {
+        crinitErrPrint("Could not load and verify all DER-encoded keys in '%s'.", sigKeyDir);
+        crinitDestroyFileSeries(&derKeys);
+        crinitDestroyFileSeries(&pemKeys);
+        for (size_t i = 0; i < numSignedKeys; i++) {
+            mbedtls_pk_free(&signedKeys[i]);
+        }
+        free(signedKeys);
+        return -1;
+    }
+
+    if (crinitLoadAndVerifySignedKeysFromFileSeries(signedKeys + derKeys.size, &pemKeys) == -1) {
+        crinitErrPrint("Could not load and verify all PEM-encoded keys in '%s'.", sigKeyDir);
+        crinitDestroyFileSeries(&derKeys);
+        crinitDestroyFileSeries(&pemKeys);
+        for (size_t i = 0; i < numSignedKeys; i++) {
+            mbedtls_pk_free(&signedKeys[i]);
+        }
+        free(signedKeys);
+        return -1;
+    }
+
     return 0;
 }
 
-int crinitVerifySignature(char *str, uint8_t *signature) {
-    crinitNullCheck(-1, str, signature);
+int crinitVerifySignature(uint8_t *data, uint8_t *signature) {
+    crinitNullCheck(-1, data, signature);
+
+    return 0;
+}
+
+static int crinitLoadAndVerifySignedKeysFromFileSeries(mbedtls_pk_context *tgt, const crinitFileSeries_t *src) {
+    uint8_t readbuf[CRINIT_SIGNATURE_PK_DATA_MAX_SIZE];
+    char pathbuf[PATH_MAX];
+    for (size_t i = 0; i < src->size; i++) {
+        int ret = snprintf(pathbuf, sizeof(pathbuf), "%s/%s", src->baseDir, src->fnames[i]);
+        if (ret == -1) {
+            crinitErrnoPrint("Could not format full path of public key '%s/%s'.", src->baseDir, src->fnames[i]);
+            return -1;
+        }
+
+        if (ret >= PATH_MAX) {
+            crinitErrPrint("The path '%s/%s' is too long to process.", src->baseDir, src->fnames[i]);
+            return -1;
+        }
+
+        FILE *pkf = fopen(pathbuf, "rb");
+        if (pkf == NULL) {
+            crinitErrnoPrint("Could not open '%s' for reading.", pathbuf);
+            return -1;
+        }
+        ret = fread(readbuf, sizeof(*readbuf), sizeof(readbuf), pkf);
+        if (ferror(pkf) || !feof(pkf)) {
+            crinitErrPrint("Could not read to the end of file of '%s'.", pathbuf);
+            fclose(pkf);
+            return -1;
+        }
+        fclose(pkf);
+    }
+
     return 0;
 }
