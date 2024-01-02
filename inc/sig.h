@@ -16,6 +16,6 @@
 int crinitSigSubsysInit(char *rootKeyDesc);
 void crinitSigSubsysDestroy(void);
 int crinitLoadAndVerifySignedKeys(char *sigKeyDir);
-int crinitVerifySignature(char *data, uint8_t *signature);
+int crinitVerifySignature(uint8_t *data, uint8_t *signature);
 
 #endif /* __SIG_H__ */
