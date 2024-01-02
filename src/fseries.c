@@ -191,6 +191,7 @@ int crinitFileSeriesFromDir(crinitFileSeries_t *fse, const char *path, const cha
 
     if (crinitInitFileSeries(fse, scanRes, path) == -1) {
         crinitErrPrint("Could not initialize file series struct holding %d elements.", scanRes);
+        crinitFreeScandirList(scanList, scanRes);
         return -1;
     }
 
@@ -202,6 +203,7 @@ int crinitFileSeriesFromDir(crinitFileSeries_t *fse, const char *path, const cha
     fse->fnames[0] = malloc(backingStrAllocLen * sizeof(char));
     if (fse->fnames[0] == NULL) {
         crinitErrnoPrint("Could not allocate memory for file series backing string.");
+        crinitFreeScandirList(scanList, scanRes);
         crinitDestroyFileSeries(fse);
         return -1;
     }
