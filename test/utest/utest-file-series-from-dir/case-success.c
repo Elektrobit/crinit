@@ -55,20 +55,22 @@ static void crinitTestVariant(size_t numElements, const char *path, const char *
     will_set_parameter(__wrap_scandir, namelist, scandirList);
     expect_any(__wrap_scandir, filter);
     expect_any(__wrap_scandir, compar);
-    will_return(__wrap_scandir, dfp);
+    will_return(__wrap_scandir, numElements);
 
     expect_value(__wrap_closedir, dirp, dptr);
 
-    expect_any_count(__wrap_strlen, s, numElements);
-    will_return_count(__wrap_strlen, 0, numElements);
+    // This block shall only happen if we have something to allocate.
+    if (numElements > 0) {
+        expect_any_count(__wrap_strlen, s, numElements);
+        will_return_count(__wrap_strlen, 0, numElements);
 
-    expect_value(__wrap_malloc, size, numElements);
-    will_return(__wrap_malloc, fnamesRoot);
+        expect_value(__wrap_malloc, size, numElements);
+        will_return(__wrap_malloc, fnamesRoot);
 
-    expect_any_count(__wrap_stpcpy, dest, numElements);
-    expect_any_count(__wrap_stpcpy, src, numElements);
-    will_return_count(__wrap_stpcpy, runnerPtr, numElements);
-
+        expect_any_count(__wrap_stpcpy, dest, numElements);
+        expect_any_count(__wrap_stpcpy, src, numElements);
+        will_return_count(__wrap_stpcpy, runnerPtr, numElements);
+    }
     assert_int_equal(crinitFileSeriesFromDir(&fse, path, fileSuffix, followLinks), 0);
 }
 
@@ -94,6 +96,15 @@ void crinitFileSeriesFromDirTestSuccess(void **state) {
         for (int j = 0; j < fileSuffixSize; j++) {
             for (int k = 0; k < followLinksSize; k++) {
                 crinitTestVariant(10, path[i], fileSuffix[j], followLinks[k]);
+            }
+        }
+    }
+
+    // Also check if it will be fine with finding nothing.
+    for (int i = 0; i < pathSize; i++) {
+        for (int j = 0; j < fileSuffixSize; j++) {
+            for (int k = 0; k < followLinksSize; k++) {
+                crinitTestVariant(0, path[i], fileSuffix[j], followLinks[k]);
             }
         }
     }
