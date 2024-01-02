@@ -195,6 +195,12 @@ int crinitFileSeriesFromDir(crinitFileSeries_t *fse, const char *path, const cha
         return -1;
     }
 
+    // If scandir hasn't found anything, we're done here.
+    if(scanRes == 0) {
+        crinitFreeScandirList(scanList, scanRes);
+        return 0;
+    }
+
     size_t backingStrAllocLen = 0;
     for (size_t i = 0; i < fse->size; i++) {
         backingStrAllocLen += strlen(scanList[i]->d_name) + 1;
