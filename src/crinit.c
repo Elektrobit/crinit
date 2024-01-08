@@ -96,10 +96,26 @@ int main(int argc, char *argv[]) {
         crinitGlobOptDestroy();
         return EXIT_FAILURE;
     }
-    if (signatures && crinitSigSubsysInit(CRINIT_SIGNATURE_DEFAULT_ROOT_KEY_DESC) == -1) {
-        crinitErrPrint("Could not initialize signature handling subsystem.");
-        crinitGlobOptDestroy();
-        return EXIT_FAILURE;
+    if (signatures) {
+        if (crinitSigSubsysInit(CRINIT_SIGNATURE_DEFAULT_ROOT_KEY_DESC) == -1) {
+            crinitErrPrint("Could not initialize signature handling subsystem.");
+            crinitGlobOptDestroy();
+            return EXIT_FAILURE;
+        }
+        char *sigKeyDir;
+        if (crinitGlobOptGet(CRINIT_GLOBOPT_SIGKEYDIR, &sigKeyDir) == -1) {
+            crinitErrPrint("Could not retrieve path of signature pubkey directory from global options.");
+            crinitGlobOptDestroy();
+            crinitSigSubsysDestroy();
+            return EXIT_FAILURE;
+        }
+
+        if (crinitLoadAndVerifySignedKeys(sigKeyDir) == -1) {
+            crinitErrPrint("Could not load/verify public keys from '%s'.", sigKeyDir);
+            crinitGlobOptDestroy();
+            crinitSigSubsysDestroy();
+            return EXIT_FAILURE;
+        }
     }
 
     if (crinitLoadSeriesConf(seriesFname) == -1) {

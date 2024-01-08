@@ -13,6 +13,7 @@ RE2C_TARGET(NAME lexers INPUT ${PROJECT_SOURCE_DIR}/src/lexers.re OUTPUT lexers.
 add_executable(
   crinit
   crinit.c
+  common.c
   confparse.c
   confconv.c
   confhdl.c

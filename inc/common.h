@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: MIT
 /**
  * @file common.h
- * @brief Header for common definitions not related to other specific features.
+ * @brief Header for common definitions/functions not related to other specific features.
  */
 #ifndef __COMMON_H__
 #define __COMMON_H__
+
+#include <stddef.h>
+#include <stdint.h>
 
 /**
  * Suppress unused parameter warning for variable as per coding guideline `[OS_C_UNUSED_010]`.
@@ -14,8 +17,8 @@
  * @param par  Unused variable that should not be warned about.
  */
 #define CRINIT_PARAM_UNUSED(par) \
-    do {                       \
-        (void)(par);           \
+    do {                         \
+        (void)(par);             \
     } while (0)
 
 /**
@@ -61,17 +64,17 @@
  * @param ...      Variadic list of parameter names to check if they are NULL.
  */
 #define crinitNullCheck(errcode, ...)                                                         \
-    do {                                                                                     \
-        _Pragma("GCC diagnostic push");                                                      \
-        _Pragma("GCC diagnostic error \"-Wshadow\"");                                        \
-        const void *_macroPtrsToCheck[] = {__VA_ARGS__};                                     \
+    do {                                                                                      \
+        _Pragma("GCC diagnostic push");                                                       \
+        _Pragma("GCC diagnostic error \"-Wshadow\"");                                         \
+        const void *_macroPtrsToCheck[] = {__VA_ARGS__};                                      \
         for (size_t _macroI = 0; _macroI < crinitNumElements(_macroPtrsToCheck); _macroI++) { \
-            if (_macroPtrsToCheck[_macroI] == NULL) {                                        \
+            if (_macroPtrsToCheck[_macroI] == NULL) {                                         \
                 crinitErrPrint("Input parameters must not be NULL.");                         \
-                return (errcode);                                                            \
-            }                                                                                \
-        }                                                                                    \
-        _Pragma("GCC diagnostic pop");                                                       \
+                return (errcode);                                                             \
+            }                                                                                 \
+        }                                                                                     \
+        _Pragma("GCC diagnostic pop");                                                        \
     } while (0)
 
 /**
@@ -101,9 +104,11 @@
  * @param ptr  The pointer to be "nullified".
  */
 #define crinitNullify(ptr) \
-    do {                  \
-        free(ptr);        \
-        (ptr) = NULL;     \
+    do {                   \
+        free(ptr);         \
+        (ptr) = NULL;      \
     } while (0)
+
+int crinitBinReadAll(uint8_t *buf, size_t n, const char *path);
 
 #endif /* __COMMON_H__ */
