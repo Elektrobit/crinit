@@ -19,6 +19,7 @@
 #include "ioredir.h"
 #include "lexers.h"
 #include "logio.h"
+#include "sig.h"
 
 /**
  * Struct definition for the parser context used by crinitIniHandler()
@@ -63,9 +64,28 @@ int crinitParseConf(crinitConfKvList_t **confList, const char *filename) {
     }
 
     if (sigRequired) {
-        crinitErrPrint(
-            "Signature checking is not yet implemented. Will carry on as normal. Conf file: '%s' Sig file: '%s.sig'",
-            filename, filename);
+        size_t sigfnLen = strlen(filename) + sizeof(CRINIT_SIGNATURE_FILE_SUFFIX);
+        char *sigfn = malloc(sigfnLen);
+        if (sigfn == NULL) {
+            crinitErrnoPrint("Could not allocate memory for signature filename of config file '%s'.", filename);
+            free(fileBuf);
+            return -1;
+        }
+        char *runner = stpcpy(sigfn, filename);
+        stpcpy(runner, CRINIT_SIGNATURE_FILE_SUFFIX);
+
+        uint8_t sigBuf[CRINIT_RSASSA_PSS_SIGNATURE_SIZE];
+        if (crinitBinReadAll(sigBuf, sizeof(sigBuf), sigfn) == -1) {
+            crinitErrPrint("Could not read signature file '%s'.", sigfn);
+            free(fileBuf);
+            return -1;
+        }
+
+        if (crinitVerifySignature((uint8_t *)fileBuf, fileLen, sigBuf) == -1) {
+            crinitErrPrint("The config file '%s' and its signature '%s' do not match.", filename, sigfn);
+            free(fileBuf);
+            return -1;
+        }
     }
 
     // Alloc first element
