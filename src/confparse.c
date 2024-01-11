@@ -74,7 +74,7 @@ int crinitParseConf(crinitConfKvList_t **confList, const char *filename) {
         char *runner = stpcpy(sigfn, filename);
         stpcpy(runner, CRINIT_SIGNATURE_FILE_SUFFIX);
 
-        uint8_t sigBuf[CRINIT_RSASSA_PSS_SIGNATURE_SIZE];
+        uint8_t sigBuf[CRINIT_RSASSA_PSS_SIGNATURE_SIZE + 1];
         if (crinitBinReadAll(sigBuf, sizeof(sigBuf), sigfn) == -1) {
             crinitErrPrint("Could not read signature file '%s'.", sigfn);
             free(fileBuf);
