@@ -69,7 +69,8 @@ static struct {
     syscall(SYS_keyctl, KEYCTL_SEARCH, keyringID, keyType, keyDesc, 0)
 
 static int crinitGenerateHash(uint8_t *dataHash, const uint8_t *data, size_t dataSz);
-static int crinitLoadAndVerifySignedKeysFromFileSeries(mbedtls_pk_context *tgt, const crinitFileSeries_t *src);
+static int crinitLoadAndVerifySignedKeysFromFileSeries(mbedtls_pk_context *tgt, const crinitFileSeries_t *src,
+                                                       bool pemFmt);
 
 int crinitSigSubsysInit(char *rootKeyDesc) {
     crinitSigCtx.numSignedKeys = 0;
@@ -158,7 +159,7 @@ int crinitLoadAndVerifySignedKeys(char *sigKeyDir) {
         mbedtls_pk_init(&signedKeys[i]);
     }
 
-    if (crinitLoadAndVerifySignedKeysFromFileSeries(signedKeys, &derKeys) == -1) {
+    if (crinitLoadAndVerifySignedKeysFromFileSeries(signedKeys, &derKeys, false) == -1) {
         crinitErrPrint("Could not load and verify all DER-encoded keys in '%s'.", sigKeyDir);
         crinitDestroyFileSeries(&derKeys);
         crinitDestroyFileSeries(&pemKeys);
@@ -169,7 +170,7 @@ int crinitLoadAndVerifySignedKeys(char *sigKeyDir) {
         return -1;
     }
 
-    if (crinitLoadAndVerifySignedKeysFromFileSeries(signedKeys + derKeys.size, &pemKeys) == -1) {
+    if (crinitLoadAndVerifySignedKeysFromFileSeries(signedKeys + derKeys.size, &pemKeys, true) == -1) {
         crinitErrPrint("Could not load and verify all PEM-encoded keys in '%s'.", sigKeyDir);
         crinitDestroyFileSeries(&derKeys);
         crinitDestroyFileSeries(&pemKeys);
@@ -255,9 +256,10 @@ static int crinitGenerateHash(uint8_t *dataHash, const uint8_t *data, size_t dat
     return 0;
 }
 
-static int crinitLoadAndVerifySignedKeysFromFileSeries(mbedtls_pk_context *tgt, const crinitFileSeries_t *src) {
+static int crinitLoadAndVerifySignedKeysFromFileSeries(mbedtls_pk_context *tgt, const crinitFileSeries_t *src,
+                                                       bool pemFmt) {
     crinitNullCheck(-1, tgt, src);
-    uint8_t readbufKey[CRINIT_SIGNATURE_PK_DATA_MAX_SIZE], readbufSig[CRINIT_RSASSA_PSS_SIGNATURE_SIZE];
+    uint8_t readbufKey[CRINIT_SIGNATURE_PK_DATA_MAX_SIZE], readbufSig[CRINIT_RSASSA_PSS_SIGNATURE_SIZE + 1];
     char pathbuf[PATH_MAX];
     for (size_t i = 0; i < src->size; i++) {
         // Read public key.
@@ -276,13 +278,17 @@ static int crinitLoadAndVerifySignedKeysFromFileSeries(mbedtls_pk_context *tgt, 
             return -1;
         }
 
-        // Read signature.
-        ret = snprintf(pathbuf, sizeof(pathbuf), "%s%s", pathbuf, CRINIT_SIGNATURE_FILE_SUFFIX);
-        if (ret == -1) {
-            crinitErrnoPrint("Could not format full path of public key signature file '%s%s'.", pathbuf,
-                             CRINIT_SIGNATURE_FILE_SUFFIX);
-            return -1;
+        // For a PEM key we need to append a null-terminator for mbedtls.
+        if (pemFmt) {
+            if (keySz == CRINIT_SIGNATURE_PK_DATA_MAX_SIZE) {
+                crinitErrPrint("The key file '%s' is too large.", pathbuf);
+                return -1;
+            }
+            readbufKey[keySz] = '\0';
         }
+
+        // Read signature.
+        strcpy(strchr(pathbuf, '\0'), CRINIT_SIGNATURE_FILE_SUFFIX);
         if (crinitBinReadAll(readbufSig, crinitNumElements(readbufSig), pathbuf) == -1) {
             crinitErrPrint("Could not read whole file '%s' to memory.", pathbuf);
             return -1;
@@ -298,7 +304,14 @@ static int crinitLoadAndVerifySignedKeysFromFileSeries(mbedtls_pk_context *tgt, 
         }
 
         // Build key context and prepare for RSA-PSS.
-        mbedtls_pk_parse_public_key(&tgt[i], readbufKey, (size_t)keySz);
+        if (pemFmt) {
+            keySz++;  // In case of PEM include terminating null we have appended for mbedtls.
+        }
+        int perr = mbedtls_pk_parse_public_key(&tgt[i], readbufKey, (size_t)keySz);
+        crinitErrPrint("perr: %d", perr);
+        char errstring[128];
+        mbedtls_strerror(perr, errstring, 128);
+        crinitErrPrint("%s", errstring);
         mbedtls_pk_type_t keyType = mbedtls_pk_get_type(&tgt[i]);
         if (keyType == MBEDTLS_PK_NONE) {
             crinitErrPrint("Could not get type of public key \'%s\'.", pathbuf);
