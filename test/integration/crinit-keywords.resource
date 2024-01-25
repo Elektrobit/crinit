@@ -8,9 +8,9 @@ Library          libraries/CrinitLibrary.py
 
 *** Variables ***
 @{TASK_DIRECTORY}            ./service/crinit/
-${PUBKEY_PATH}               /etc/crinit/itest/data/crinit-root-test-pub.der
+${PUBKEY_PATH}               /etc/crinit/itest/data/pubkeys/crinit-root-test-pub.der
 ${FAKE_CMDLINE_PATH}         /tmp/fake_cmdline
-${FAKE_CMDLINE_PREPEND}      crinit.signatures=yes
+${FAKE_CMDLINE_PREPEND}      crinit.signatures=yes crinit.sigkeydir=/etc/crinit/itest/data/pubkeys
 
 *** Keywords ***
 Crinit Load Test Tasks
@@ -23,8 +23,17 @@ Crinit Load Test Tasks
 
 Enroll Crinit Root Key
     ${key_id}    Execute And Log Based On User Permissions
-    ...          sh -c "cat ${PUBKEY_PATH} | keyctl padd user crinit-root @u"    ${RETURN_STDOUT}
-    Should Not Be Empty    ${key_id} 
+    ...          sh -c "cat ${PUBKEY_PATH} | keyctl padd user crinit-root @s"    ${RETURN_STDOUT}
+    Should Not Be Empty    ${key_id}
+    ${rc}        Execute And Log Based On User Permissions
+    ...          keyctl setperm ${key_id} 0x3f3f0000   ${RETURN_RC}
+    Should Be Equal As Numbers  ${rc}  0
+    ${rc}        Execute And Log Based On User Permissions
+    ...          keyctl link ${key_id} @u   ${RETURN_RC}
+    Should Be Equal As Numbers  ${rc}  0
+    ${rc}        Execute And Log Based On User Permissions
+    ...          keyctl unlink ${key_id} @s   ${RETURN_RC}
+    Should Be Equal As Numbers  ${rc}  0
     Set Suite Variable    $CRINIT_ROOT_PK_ID    ${key_id}
 
 Unlink Crinit Root Key
@@ -36,7 +45,8 @@ Mount Fake Kernel Cmdline To Enable Crinit Signatures
     Should Be Equal As Numbers  ${rc}  0
     ${rc}    Execute And Log    cat /proc/cmdline >> ${FAKE_CMDLINE_PATH}    ${RETURN_RC}
     Should Be Equal As Numbers  ${rc}  0
-    ${rc}    Execute And Log Based On User Permissions    mount --bind ${FAKE_CMDLINE_PATH} /proc/cmdline    ${RETURN_RC}
+    ${rc}    Execute And Log Based On User Permissions
+    ...      mount --bind ${FAKE_CMDLINE_PATH} /proc/cmdline    ${RETURN_RC}
     Should Be Equal As Numbers  ${rc}  0
     ${rc}    Execute And Log    cat /proc/cmdline    ${RETURN_RC}
     Should Be Equal As Numbers  ${rc}  0
