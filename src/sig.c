@@ -29,7 +29,7 @@ static struct {
     mbedtls_pk_context rootKey;
     mbedtls_pk_context *signedKeys;
     size_t numSignedKeys;
-    pthread_mutex_t sigCtxLock;
+    pthread_mutex_t lock;
 } crinitSigCtx;
 
 // Macro definition to support both MbedTLS 2 and 3 interfaces.
@@ -75,13 +75,13 @@ static int crinitLoadAndVerifySignedKeysFromFileSeries(mbedtls_pk_context *tgt, 
 int crinitSigSubsysInit(char *rootKeyDesc) {
     crinitSigCtx.numSignedKeys = 0;
     crinitSigCtx.signedKeys = NULL;
-    pthread_mutex_init(&crinitSigCtx.sigCtxLock, NULL);
+    pthread_mutex_init(&crinitSigCtx.lock, NULL);
 
     long rootKeyId = crinitKeyctlSearch(KEY_SPEC_USER_KEYRING, "user", rootKeyDesc);
     if (rootKeyId == -1) {
         crinitErrnoPrint("Could not find crinit root key named '%s' in user keyring.", rootKeyDesc);
         free(crinitSigCtx.signedKeys);
-        pthread_mutex_destroy(&crinitSigCtx.sigCtxLock);
+        pthread_mutex_destroy(&crinitSigCtx.lock);
         return -1;
     }
 
@@ -90,7 +90,7 @@ int crinitSigSubsysInit(char *rootKeyDesc) {
     if (rootKeyLen == -1) {
         crinitErrnoPrint("Could not read crinit root key named '%s' from user keyring.", rootKeyDesc);
         free(crinitSigCtx.signedKeys);
-        pthread_mutex_destroy(&crinitSigCtx.sigCtxLock);
+        pthread_mutex_destroy(&crinitSigCtx.lock);
         return -1;
     }
     if ((size_t)rootKeyLen > sizeof(rootKeyData)) {
@@ -98,7 +98,12 @@ int crinitSigSubsysInit(char *rootKeyDesc) {
             "Crinit root key named '%s' in user keyring is larger (%zu Bytes) than the allowed maximum of %zu Bytes.",
             rootKeyDesc, (size_t)rootKeyLen, sizeof(rootKeyData));
         free(crinitSigCtx.signedKeys);
-        pthread_mutex_destroy(&crinitSigCtx.sigCtxLock);
+        pthread_mutex_destroy(&crinitSigCtx.lock);
+        return -1;
+    }
+
+    if ((errno = pthread_mutex_lock(&crinitSigCtx.lock)) != 0) {
+        crinitErrnoPrint("Could not queue up for mutex lock.");
         return -1;
     }
 
@@ -109,7 +114,8 @@ int crinitSigSubsysInit(char *rootKeyDesc) {
         crinitErrPrint("Could not get type of user keyring public key \'%s\'.", rootKeyDesc);
         mbedtls_pk_free(&crinitSigCtx.rootKey);
         free(crinitSigCtx.signedKeys);
-        pthread_mutex_destroy(&crinitSigCtx.sigCtxLock);
+        pthread_mutex_unlock(&crinitSigCtx.lock);
+        pthread_mutex_destroy(&crinitSigCtx.lock);
         return -1;
     }
     crinitInfoPrint("Key \'%s\' successfully loaded.", rootKeyDesc);
@@ -118,9 +124,11 @@ int crinitSigSubsysInit(char *rootKeyDesc) {
                        rootKeyDesc);
         mbedtls_pk_free(&crinitSigCtx.rootKey);
         free(crinitSigCtx.signedKeys);
-        pthread_mutex_destroy(&crinitSigCtx.sigCtxLock);
+        pthread_mutex_unlock(&crinitSigCtx.lock);
+        pthread_mutex_destroy(&crinitSigCtx.lock);
         return -1;
     }
+    pthread_mutex_unlock(&crinitSigCtx.lock);
     return 0;
 }
 
@@ -130,7 +138,7 @@ void crinitSigSubsysDestroy(void) {
         mbedtls_pk_free(&crinitSigCtx.signedKeys[i]);
     }
     free(crinitSigCtx.signedKeys);
-    pthread_mutex_destroy(&crinitSigCtx.sigCtxLock);
+    pthread_mutex_destroy(&crinitSigCtx.lock);
 }
 
 int crinitLoadAndVerifySignedKeys(char *sigKeyDir) {
@@ -181,6 +189,21 @@ int crinitLoadAndVerifySignedKeys(char *sigKeyDir) {
         return -1;
     }
 
+    if ((errno = pthread_mutex_lock(&crinitSigCtx.lock)) != 0) {
+        crinitErrnoPrint("Could not queue up for mutex lock.");
+        crinitDestroyFileSeries(&derKeys);
+        crinitDestroyFileSeries(&pemKeys);
+        for (size_t i = 0; i < numSignedKeys; i++) {
+            mbedtls_pk_free(&signedKeys[i]);
+        }
+        free(signedKeys);
+        return -1;
+    }
+
+    crinitSigCtx.signedKeys = signedKeys;
+    crinitSigCtx.numSignedKeys = numSignedKeys;
+
+    pthread_mutex_unlock(&crinitSigCtx.lock);
     return 0;
 }
 
@@ -194,9 +217,15 @@ int crinitVerifySignature(const uint8_t *data, size_t dataSz, const uint8_t *sig
         return -1;
     }
 
+    if ((errno = pthread_mutex_lock(&crinitSigCtx.lock)) != 0) {
+        crinitErrnoPrint("Could not queue up for mutex lock.");
+        return -1;
+    }
+
     // Try to verify with root key.
     if (crinitMbedtlsVerify(mbedtls_pk_rsa(crinitSigCtx.rootKey), MBEDTLS_MD_SHA256, CRINIT_RSASSA_PSS_HASH_SIZE,
                             dataHash, signature) == 0) {
+        pthread_mutex_unlock(&crinitSigCtx.lock);
         return 0;
     }
 
@@ -204,9 +233,11 @@ int crinitVerifySignature(const uint8_t *data, size_t dataSz, const uint8_t *sig
     for (size_t i = 0; i < crinitSigCtx.numSignedKeys; i++) {
         if (crinitMbedtlsVerify(mbedtls_pk_rsa(crinitSigCtx.signedKeys[i]), MBEDTLS_MD_SHA256,
                                 CRINIT_RSASSA_PSS_HASH_SIZE, dataHash, signature) == 0) {
+            pthread_mutex_unlock(&crinitSigCtx.lock);
             return 0;
         }
     }
+    pthread_mutex_unlock(&crinitSigCtx.lock);
 
     // Fall through here if no context has led to a match between hash and signature.
     crinitErrPrint("RSA-PSS signature verification failed.");
@@ -307,11 +338,12 @@ static int crinitLoadAndVerifySignedKeysFromFileSeries(mbedtls_pk_context *tgt, 
         if (pemFmt) {
             keySz++;  // In case of PEM include terminating null we have appended for mbedtls.
         }
-        int perr = mbedtls_pk_parse_public_key(&tgt[i], readbufKey, (size_t)keySz);
-        crinitErrPrint("perr: %d", perr);
-        char errstring[128];
-        mbedtls_strerror(perr, errstring, 128);
-        crinitErrPrint("%s", errstring);
+        int err = mbedtls_pk_parse_public_key(&tgt[i], readbufKey, (size_t)keySz);
+        if (err != 0) {
+            char errBuf[CRINIT_MBEDTLS_ERR_MAX_LEN];
+            mbedtls_strerror(err, errBuf, sizeof(errBuf));
+            crinitErrPrint("Could not parse public key '%s'. %s", pathbuf, errBuf);
+        }
         mbedtls_pk_type_t keyType = mbedtls_pk_get_type(&tgt[i]);
         if (keyType == MBEDTLS_PK_NONE) {
             crinitErrPrint("Could not get type of public key \'%s\'.", pathbuf);
