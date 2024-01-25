@@ -81,7 +81,7 @@ int crinitParseConf(crinitConfKvList_t **confList, const char *filename) {
             return -1;
         }
 
-        if (crinitVerifySignature((uint8_t *)fileBuf, fileLen, sigBuf) == -1) {
+        if (crinitVerifySignature((uint8_t *)fileBuf, strnlen(fileBuf, fileLen), sigBuf) == -1) {
             crinitErrPrint("The config file '%s' and its signature '%s' do not match.", filename, sigfn);
             free(fileBuf);
             return -1;

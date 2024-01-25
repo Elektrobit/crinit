@@ -19,7 +19,6 @@ int crinitBinReadAll(uint8_t *buf, size_t n, const char *path) {
         return -1;
     }
     int ret = fread(buf, sizeof(*buf), n, inf);
-    crinitErrPrint("%d %d %d", ret, ferror(inf), feof(inf));
     if (ferror(inf) || !feof(inf) || ret < 0) {
         crinitErrPrint("Could not read to the end of file of '%s'.", path);
         fclose(inf);
