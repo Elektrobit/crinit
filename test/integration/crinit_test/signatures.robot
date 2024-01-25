@@ -16,8 +16,8 @@ Test Setup        Crinit Start    series_file=${SIG_TASK_DIR}/sigtest.series
 Test Teardown     Crinit Stop    series_file=${SIG_TASK_DIR}/sigtest.series
 
 *** Variables ***
-${LOCAL_TEST_DIR}           /tmp
 ${SIG_TASK_DIR}             /etc/crinit/itest/sigtest
+${LOCAL_TEST_DIR}           ${SIG_TASK_DIR}
 
 *** Test Cases ***
 Crinit Tasks With Valid Signatures Get Loaded
@@ -28,11 +28,19 @@ Crinit Tasks With Valid Signatures Get Loaded
 
 Crinit Tasks With Invalid Signatures Cannot Be Loaded
     [Documentation]    Crinit will not load tasks through a series file or crinit-ctl if their signatures are not valid.
-    [Setup]    Set Up A Test Case With A Corrupted Task Config
+    [Setup]    Set Up A Test Case With Valid Task Configs
     Wait Until Keyword Succeeds  5s  200ms
-    ...  Check If Tasks Have State    sigtask1  sigtask2  sigtask3    State=done
-    Wait Until Keyword Succeeds  2s  200ms
-    ...  Check If Tasks Have State    sigtask4    State=failed
+    ...  Check If Tasks Have State    sigtask1  sigtask2  sigtask3  sigtask4    State=done
+    ${rc}    Crinit Add Task    sigtask4.crinit
+    Should Be Equal As Numbers    ${rc}    0
+
+    Given Sigtask4 Is Set As Corrupted
+    ${rc}    Then Crinit Add Task    sigtask4.crinit
+    Should Not Be Equal As Numbers    ${rc}    0
+
+    Given Sigtask4 Is Set As Valid
+    ${rc}    Then Crinit Add Task    sigtask4.crinit
+    Should Be Equal As Numbers    ${rc}    0
 
 *** Keywords ***
 A Symbolic Link Has Been Created With
@@ -52,15 +60,17 @@ Clean Up Target System
     Unlink Crinit Root Key
     Close All Connections
 
-Set Up A Test Case With A Corrupted Task Config
-    Given A Symbolic Link Has Been Created With
-        ...       Name=${SIG_TASK_DIR}/sigtask4.crinit  PointingTo=${SIG_TASK_DIR}/sigtask4.crinit.modified
+Set Up A Test Case With Valid Task Configs
+    Given Sigtask4 Is Set As Valid
     Then Crinit Start    series_file=${SIG_TASK_DIR}/sigtest.series
 
-Set Up A Test Case With Valid Task Configs
-    Given A Symbolic Link Has Been Created With
+Sigtask4 Is Set As Valid
+    A Symbolic Link Has Been Created With
         ...       Name=${SIG_TASK_DIR}/sigtask4.crinit  PointingTo=${SIG_TASK_DIR}/sigtask4.crinit.valid
-    Then Crinit Start    series_file=${SIG_TASK_DIR}/sigtest.series
+
+Sigtask4 Is Set As Corrupted
+    A Symbolic Link Has Been Created With
+        ...       Name=${SIG_TASK_DIR}/sigtask4.crinit  PointingTo=${SIG_TASK_DIR}/sigtask4.crinit.modified
 
 Check If Tasks Have State
     [Arguments]    @{TASKS}    ${State}=
