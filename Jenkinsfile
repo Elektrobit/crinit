@@ -61,7 +61,6 @@ pipeline {
                         dir 'ci'
                         reuseNode true
                         additionalBuildArgs " \
-                            --ssh default=/root/.ssh/id_ed25519 \
                             --progress=plain \
                             --build-arg REPO=${ARCH} \
                             --build-arg USER=jenkins \
@@ -144,7 +143,6 @@ pipeline {
                     dir 'ci'
                     reuseNode true
                     additionalBuildArgs " \
-                        --ssh default=/root/.ssh/id_ed25519 \
                         --progress=plain \
                         --build-arg REPO=amd64 \
                         --build-arg USER=jenkins \
