@@ -56,4 +56,7 @@ void crinitFileSeriesFromDirNoMemError(void **state) {
     expect_any(__wrap_crinitErrnoPrintFFL, format);
 
     assert_int_equal(crinitFileSeriesFromDir(&fse, path, NULL, false), -1);
+
+    free(scanList[0]);
+    free(scanList);
 }
