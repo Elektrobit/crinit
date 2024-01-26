@@ -71,6 +71,7 @@ int crinitKernelCmdlineParse(const char *cmdlinePath) {
                     if (val == NULL) {
                         crinitErrnoPrint("Could not duplicate value of Kernel command line variable.");
                         tt = CRINIT_TK_ERR;
+                        free(key);
                         break;
                     }
 

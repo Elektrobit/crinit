@@ -78,14 +78,17 @@ int crinitParseConf(crinitConfKvList_t **confList, const char *filename) {
         if (crinitBinReadAll(sigBuf, sizeof(sigBuf), sigfn) == -1) {
             crinitErrPrint("Could not read signature file '%s'.", sigfn);
             free(fileBuf);
+            free(sigfn);
             return -1;
         }
 
         if (crinitVerifySignature((uint8_t *)fileBuf, strnlen(fileBuf, fileLen), sigBuf) == -1) {
             crinitErrPrint("The config file '%s' and its signature '%s' do not match.", filename, sigfn);
             free(fileBuf);
+            free(sigfn);
             return -1;
         }
+        free(sigfn);
     }
 
     // Alloc first element
