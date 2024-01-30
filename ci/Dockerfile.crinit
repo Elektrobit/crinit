@@ -87,10 +87,9 @@ RUN cmake -B build . \
  . \
  && make -C build install
 
-RUN mkdir -p /etc/crinit/itest/data/pubkeys
+RUN mkdir -p /etc/crinit/itest/data
 COPY ./test/integration/service/ /etc/crinit/itest/
-COPY ./test/integration/data/* /etc/crinit/itest/data
-COPY ./test/integration/data/pubkeys/* /etc/crinit/itest/data/pubkeys
+COPY ./test/integration/data/ /etc/crinit/itest/data/
 RUN mkdir -p /usr/local/bin
 COPY ./test/integration/scripts/enroll-itest-root-key.sh /usr/local/bin/
 RUN chmod -R +rX /etc/crinit
