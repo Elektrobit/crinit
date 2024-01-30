@@ -23,17 +23,8 @@ Crinit Load Test Tasks
 
 Enroll Crinit Root Key
     ${key_id}    Execute And Log Based On User Permissions
-    ...          sh -c "cat ${PUBKEY_PATH} | keyctl padd user crinit-root @s"    ${RETURN_STDOUT}
+    ...          keyctl session - enroll-itest-root-key.sh ${PUBKEY_PATH}    ${RETURN_STDOUT}
     Should Not Be Empty    ${key_id}
-    ${rc}        Execute And Log Based On User Permissions
-    ...          keyctl setperm ${key_id} 0x3f3f0000   ${RETURN_RC}
-    Should Be Equal As Numbers  ${rc}  0
-    ${rc}        Execute And Log Based On User Permissions
-    ...          keyctl link ${key_id} @u   ${RETURN_RC}
-    Should Be Equal As Numbers  ${rc}  0
-    ${rc}        Execute And Log Based On User Permissions
-    ...          keyctl unlink ${key_id} @s   ${RETURN_RC}
-    Should Be Equal As Numbers  ${rc}  0
     Set Suite Variable    $CRINIT_ROOT_PK_ID    ${key_id}
 
 Unlink Crinit Root Key
