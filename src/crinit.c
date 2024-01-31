@@ -15,8 +15,11 @@
 #include "optfeat.h"
 #include "procdip.h"
 #include "rtimcmd.h"
-#include "sig.h"
 #include "version.h"
+
+#ifdef SIGNATURE_SUPPORT
+#include "sig.h"
+#endif
 
 /**
  * The default series file. Used if nothing is specified on command line.
@@ -97,6 +100,7 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
     if (signatures) {
+#ifdef SIGNATURE_SUPPORT
         if (crinitSigSubsysInit(CRINIT_SIGNATURE_DEFAULT_ROOT_KEY_DESC) == -1) {
             crinitErrPrint("Could not initialize signature handling subsystem.");
             crinitGlobOptDestroy();
@@ -116,14 +120,22 @@ int main(int argc, char *argv[]) {
             crinitSigSubsysDestroy();
             return EXIT_FAILURE;
         }
+#else
+        crinitErrPrint(
+            "Config signature option is set but signature support was not compiled in. You will need to recompile "
+            "Crinit with mbedtls.");
+        return EXIT_FAILURE;
+#endif
     }
 
     if (crinitLoadSeriesConf(seriesFname) == -1) {
         crinitErrPrint("Could not load series file \'%s\'.", seriesFname);
         crinitGlobOptDestroy();
+#ifdef SIGNATURE_SUPPORT
         if (signatures) {
             crinitSigSubsysDestroy();
         }
+#endif
         return EXIT_FAILURE;
     }
 
@@ -132,9 +144,11 @@ int main(int argc, char *argv[]) {
     if (crinitFeatureHook(NULL, CRINIT_HOOK_INIT, NULL) == -1) {
         crinitErrPrint("Could not run activiation hook for feature \'INIT\'.");
         crinitGlobOptDestroy();
+#ifdef SIGNATURE_SUPPORT
         if (signatures) {
             crinitSigSubsysDestroy();
         }
+#endif
         return EXIT_FAILURE;
     }
 
@@ -142,9 +156,11 @@ int main(int argc, char *argv[]) {
     if (crinitLoadTasks(&taskSeries) == -1) {
         crinitErrPrint("Could not load crinit task.");
         crinitGlobOptDestroy();
+#ifdef SIGNATURE_SUPPORT
         if (signatures) {
             crinitSigSubsysDestroy();
         }
+#endif
         return EXIT_FAILURE;
     }
 
@@ -166,9 +182,11 @@ int main(int argc, char *argv[]) {
                 crinitGlobOptDestroy();
                 crinitDestroyFileSeries(&taskSeries);
                 crinitTaskDBDestroy(&tdb);
+#ifdef SIGNATURE_SUPPORT
                 if (signatures) {
                     crinitSigSubsysDestroy();
                 }
+#endif
                 return EXIT_FAILURE;
             }
             memcpy(confFn, taskSeries.baseDir, prefixLen);
@@ -185,9 +203,11 @@ int main(int argc, char *argv[]) {
             }
             crinitDestroyFileSeries(&taskSeries);
             crinitTaskDBDestroy(&tdb);
+#ifdef SIGNATURE_SUPPORT
             if (signatures) {
                 crinitSigSubsysDestroy();
             }
+#endif
             return EXIT_FAILURE;
         }
         crinitInfoPrint("File \'%s\' loaded.", confFn);
@@ -203,9 +223,11 @@ int main(int argc, char *argv[]) {
             crinitGlobOptDestroy();
             crinitDestroyFileSeries(&taskSeries);
             crinitTaskDBDestroy(&tdb);
+#ifdef SIGNATURE_SUPPORT
             if (signatures) {
                 crinitSigSubsysDestroy();
             }
+#endif
             return EXIT_FAILURE;
         }
         crinitFreeConfList(c);
@@ -219,9 +241,11 @@ int main(int argc, char *argv[]) {
             crinitDestroyFileSeries(&taskSeries);
             crinitFreeTask(t);
             crinitTaskDBDestroy(&tdb);
+#ifdef SIGNATURE_SUPPORT
             if (signatures) {
                 crinitSigSubsysDestroy();
             }
+#endif
             return EXIT_FAILURE;
         }
         crinitFreeTask(t);
@@ -237,9 +261,11 @@ int main(int argc, char *argv[]) {
         crinitErrPrint("Could not start notification and service interface.");
         crinitTaskDBDestroy(&tdb);
         crinitGlobOptDestroy();
+#ifdef SIGNATURE_SUPPORT
         if (signatures) {
             crinitSigSubsysDestroy();
         }
+#endif
         return EXIT_FAILURE;
     }
 
@@ -252,9 +278,11 @@ int main(int argc, char *argv[]) {
     }
     crinitTaskDBDestroy(&tdb);
     crinitGlobOptDestroy();
+#ifdef SIGNATURE_SUPPORT
     if (signatures) {
         crinitSigSubsysDestroy();
     }
+#endif
     return EXIT_SUCCESS;
 }
 

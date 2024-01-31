@@ -2,11 +2,18 @@
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 find_package(RE2C REQUIRED)
-find_package(MbedTLS REQUIRED)
 
 configure_file(version.c.in version.c)
 
 RE2C_TARGET(NAME lexers INPUT ${PROJECT_SOURCE_DIR}/src/lexers.re OUTPUT lexers.c OPTIONS -ibsc -W DEPENDS ${PROJECT_SOURCE_DIR}/inc/lexers.h)
+
+# optional compile-time features
+
+if(ENABLE_SIGNATURE_SUPPORT)
+    add_compile_definitions(SIGNATURE_SUPPORT)
+    set(SIG_SOURCES sig.c)
+    find_package(MbedTLS REQUIRED)
+endif()
 
 # crinit
 
@@ -37,7 +44,7 @@ add_executable(
   optfeat.c
   fseries.c
   ioredir.c
-  sig.c
+  ${SIG_SOURCES}
   ${CMAKE_CURRENT_BINARY_DIR}/version.c
 )
 
