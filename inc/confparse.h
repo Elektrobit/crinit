@@ -29,8 +29,10 @@
 #define CRINIT_CONFIG_KEYSTR_TASK_FILE_SUFFIX \
     "TASK_FILE_SUFFIX"  ///< Config key for the task file extension in dynamic configurations.
 
-#define CRINIT_CONFIG_KEYSTR_SIGKEYDIR "sigkeydir"
-#define CRINIT_CONFIG_KEYSTR_SIGNATURES "signatures"
+#define CRINIT_CONFIG_KEYSTR_SIGKEYDIR \
+    "sigkeydir"  ///< Name of the option to set the public key dir from Kernel command line.
+#define CRINIT_CONFIG_KEYSTR_SIGNATURES \
+    "signatures"  ///< Name of the option to activate signature checking on the Kernel command line.
 
 #define CRINIT_CONFIG_KEYSTR_COMMAND "COMMAND"              ///< Config key to add a command to the task.
 #define CRINIT_CONFIG_KEYSTR_DEPENDS "DEPENDS"              ///< Config key to add dependencies to the task.
@@ -115,12 +117,14 @@ typedef struct crinitConfKvList_t {
 /**
  * Parse a config file into a crinitConfKvList_t.
  *
- * Parses a config file and fills \a confList. Items of \a confList are dynamically allocated
- * (grown) and need to be freed using free_confList(). The format of the config file is expected
- * to be KEY1=VALUE1<newline>KEY2=VALUE2<newline>... Lines beginning with '#' are considered
- * comments.
+ * Parses a config file and fills \a confList. Items of \a confList are dynamically allocated (grown) and need to be
+ * freed using free_confList(). The format of the config file is expected to be
+ * `KEY1=VALUE1<newline>KEY2=VALUE2<newline>...` Lines beginning with `#` are considered comments.
  *
- * @param confList  will return a pointer to dynamically allocated memory of a ConfKvList filled with the
+ * If the Kernel command line option `crinit.signatures` is set to `yes`, this function will also check the
+ * configuration file's signature. A non-matching signature is handled as a parser error.
+ *
+ * @param confList  will return a pointer to dynamically allocated memory of a ConfKvList filled with the 
  *                  key/value-pairs from the config file.
  * @param filename  Path to the configuration file.
  *
@@ -132,8 +136,8 @@ int crinitParseConf(crinitConfKvList_t **confList, const char *filename);
 /**
  * Frees memory allocated for an crinitConfKvList_t by crinitParseConf().
  *
- * @param confList Pointer to crinitConfKvList_t allocated by crinitParseConf() and not freed before. If
- *                 confList is NULL, crinitFreeConfList() will return without freeing any memory.
+ * @param confList  Pointer to crinitConfKvList_t allocated by crinitParseConf() and not freed before. If confList is
+ *                  NULL, crinitFreeConfList() will return without freeing any memory.
  */
 void crinitFreeConfList(crinitConfKvList_t *confList);
 

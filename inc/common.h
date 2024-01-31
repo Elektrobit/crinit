@@ -88,13 +88,13 @@
 // fixed very recently. We may remove this exemption once we are on the new clang version as standard.
 // See: https://github.com/llvm/llvm-project/issues/18080
 #define crinitStrtoGenericInteger(resType, str, endptr, base) \
-    _Generic((resType),                                      \
-             int : strtol,                                   \
-             long : strtol,                                  \
-             long long : strtoll,                            \
-             unsigned int : strtoul,                         \
-             unsigned long : strtoul,                        \
-             unsigned long long : strtoull)                  \
+    _Generic((resType),                                       \
+             int : strtol,                                    \
+             long : strtol,                                   \
+             long long : strtoll,                             \
+             unsigned int : strtoul,                          \
+             unsigned long : strtoul,                         \
+             unsigned long long : strtoull)                   \
              ((str), (endptr), (base))
 // clang-format on
 
@@ -109,6 +109,17 @@
         (ptr) = NULL;      \
     } while (0)
 
+/**
+ * Reads a whole binary file to memory.
+ *
+ * Will return an error if the given buffer is too small to read all of the file's contents.
+ *
+ * @param buf   The buffer where the data will be stored. Should be of sufficient size to hold the file to be read.
+ * @param n     The size of the given memory buffer.
+ * @param path  Path to the file to be read.
+ *
+ * @return  0 on success, -1 otherwise.
+ */
 int crinitBinReadAll(uint8_t *buf, size_t n, const char *path);
 
 #endif /* __COMMON_H__ */
