@@ -26,4 +26,4 @@ Elosd Is Running
     ${status}    ${rc}    Execute And Log Based On User Permissions    ${ELOS_STATUS_COMMAND}    ${RETURN_STDOUT}    ${RETURN_RC}
     ${is_running}=    Run Keyword And Return Status    Should Contain    ${status}    ${running}    ignore_case=True
 
-    [return]    ${is_running}
+    RETURN    ${is_running}
