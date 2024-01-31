@@ -67,7 +67,7 @@ crinitTokenType_t crinitArgvLex(const char **s, const char **mbegin, const char 
  *         two-character escape sequence (like `\n` for example), CRINIT_TK_ESCSEQX for a hexadecimal escape sequence
  *         (like `\x4f` for `O`), CRINIT_TK_END for end-of-string, and CRINIT_TK_ERR if the lexer encountered an error.
  */
-crinitTokenType_t crinitEscLex(const char **s, const char **mbegin, const char **mend); 
+crinitTokenType_t crinitEscLex(const char **s, const char **mbegin, const char **mend);
 
 /**
  * Matches a fully quoted config value and removes quotes from match.
@@ -137,6 +137,21 @@ crinitTokenType_t crinitEnvVarOuterLex(const char **s, const char **mbegin, cons
  */
 crinitTokenType_t crinitEnvVarInnerLex(const char **s, const char **mbegin, const char **mend);
 
-crinitTokenType_t crinitKernelCmdlineLex(const char **s, const char **keyBegin, const char **keyEnd, const char **valBegin, const char **valEnd);
+/**
+ * Lexer/tokenizer for parsing the Kernel command line.
+ *
+ * Matches all variables of the form `crinit.<key>=<val>`. The value can be double-quoted.
+ *
+ * @param s  The string to tokenize, will be advanced over one toke per call.
+ * @param keyBegin  Begin of the `<key>` part within a token match as explained above.
+ * @param keyEnd    End of the `<key>` part within a token match as explained above.
+ * @param valBegin  Begin of the `<val>` part within a token match as explained above.
+ * @param valEnd    End of the `<val>` part within a token match as explained above.
+ *
+ * @return CRINIT_TK_ERR on any error, CRINIT_TK_END on the end of the string, CRINIT_TK_VAR on a variable match as
+ *         shown above, CRINIT_TK_WSPC on a whitespace (block) match, CRINIT_TK_CPY on other unrelated characters.
+ */
+crinitTokenType_t crinitKernelCmdlineLex(const char **s, const char **keyBegin, const char **keyEnd,
+                                         const char **valBegin, const char **valEnd);
 
 #endif /* __LEXERS_H__ */
