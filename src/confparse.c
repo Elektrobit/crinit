@@ -19,7 +19,10 @@
 #include "ioredir.h"
 #include "lexers.h"
 #include "logio.h"
+
+#ifdef SIGNATURE_SUPPORT
 #include "sig.h"
+#endif
 
 /**
  * Struct definition for the parser context used by crinitIniHandler()
@@ -64,6 +67,7 @@ int crinitParseConf(crinitConfKvList_t **confList, const char *filename) {
     }
 
     if (sigRequired) {
+#ifdef SIGNATURE_SUPPORT
         size_t sigfnLen = strlen(filename) + sizeof(CRINIT_SIGNATURE_FILE_SUFFIX);
         char *sigfn = malloc(sigfnLen);
         if (sigfn == NULL) {
@@ -89,6 +93,12 @@ int crinitParseConf(crinitConfKvList_t **confList, const char *filename) {
             return -1;
         }
         free(sigfn);
+#else
+        crinitErrPrint(
+            "Config signature option is set but signature support was not compiled in. You will need to recompile "
+            "Crinit with mbedtls.");
+        return -1;
+#endif
     }
 
     // Alloc first element

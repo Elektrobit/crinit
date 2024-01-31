@@ -12,6 +12,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 cmake_policy(SET CMP0065 NEW)
 include(GNUInstallDirs)
 
+option(ENABLE_SIGNATURE_SUPPORT "Enable signature support using MbedTLS" ON)
 option(UNIT_TESTS "Build unit tests" ON)
 option(ENABLE_ASAN "Build with -fsanitize=address" OFF)
 option(ENABLE_ANALYZER "Build with -fanalyzer (disables -Werror)" OFF)
