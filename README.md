@@ -45,9 +45,6 @@ Crinit currently has the following features implemented:
 * include files to maintain task configuration presets
 * optional integration with [elos](https://github.com/Elektrobit/elos)
     - support for events send by elos as task dependencies
-
-In addition the following features are currently work-in-progress:
-
 * ability to report task state changes back to elos
 * optional signature checking of Crinit's configuration files
 
@@ -445,10 +442,73 @@ DEPENDS = @provided:server
 # or, with same effect: DEPENDS = dep_grp_server:wait
 ```
 
-Semantically, this would mean `local_http_client` only cares about the server, as a singular entity, being set up and running. This could
-also be delivered by a third party with only the interface knowledge "You need to wait for the `server` dependency". How
-to provide this dependency, with which tasks, and in what order is then up to the system integrator who maintains
-`dep_grp_server`.
+Semantically, this would mean `local_http_client` only cares about the server, as a singular entity, being set up and
+running. This could also be delivered by a third party with only the interface knowledge "You need to wait for the
+`server` dependency". How to provide this dependency, with which tasks, and in what order is then up to the system
+integrator who maintains `dep_grp_server`.
+
+### Configuration Signatures
+
+If compiled in (see Build Instructions), Crinit supports checking signatures of its task and global configuration files.
+The algorithm used is RSA-PSS using 4096 Bit keys and SHA256 hashing.
+
+Crinit will use a root public key (named `crinit-root` as the searchable key description`) stored in the Kernel user
+keyring and optionally downstream signed publlic keys stored in the rootfs. The downstream keys need to be signed using
+the root key. Configuration files must then be signed either by the root key or by one of the downstream keys.
+
+The root public key must be enrolled to the user keyring before Crinit starts. A common solution is to do this from a
+signed initramfs, thereby leveraging a secure boot chain to establish trust in the key.
+
+Signature checking is configured via the Kernel command line (also part of the trusted/secure boot chain) using these
+two settings:
+
+* `crinit.signatures={yes, no}` - Activates signature checking if set to `yes`. Default is `no`.
+* `crinit.sigkeydir=<path_to_downstream_keys>` - Sets the path where Crinit searches for signed public keys in the
+       rootfs. Default is `/etc/crinit/pk`.
+
+For downstream keys and configuration files, Crinit expects a corresponding signature file with the `.sig` suffix to be
+present in the same directory. As an example, the task file `very_valid.task` would need a signature file
+`very_valid.task.sig` next to it. Key files may be in DER and PEM format with the appropriate filename extensions.
+The `crinit-root` public key stored in the user keyring should be in DER binary format.
+
+To prepare a system for using signatures and correctly signing files, the `scripts` directory contains
+
+* **crinit-genkeys.sh** to generate private signing keys and their public key counterparts.
+```
+Usage: ./crinit-genkeys.sh [-h/--help] [-k/--key-file <KEY_FILE>] [-o/--output <OUTPUT_FILE>]
+  If no other arguments are given, will generate an RSA-4096 private key. Alternatively using '-k', you can obtain
+  the public key for the given private key.
+    -h/--help
+        - Show this help.
+    -f/--format
+        - Choose the format of the output file. Must be either 'pem' or 'der'. Default: 'pem'
+    -k/--key-file <KEY_FILE>
+        - Generate a public key from the given private key. Use '-' for Standard Input. Default: Generate a private key.
+    -o/--output <OUTPUT_FILE>
+        - The filename of the output key. Default: write to Standard Output
+```
+
+* **crinit-sign.sh** to sign files with a given private key.
+```
+Usage: ./crinit-sign.sh [-h/--help] [-k/--key-file <KEY_FILE>] [-o/--output <OUTPUT_FILE>] [<INPUT_FILE>]
+  Will sign given input data with an RSA-PSS signature from an RSA-4096 private key using a SHA-256 hash.
+    -h/--help
+        - Show this help.
+    -k/--key-file <KEY_FILE>
+        - Use the given private key to sign. Must have been created using crinit-genkeys.sh. (Mandatory)
+    -o/--output <OUTPUT_FILE>
+        - Write signature to OUTPUT_FILE. Default: Standard Output
+    <INPUT_FILE>
+        - Positional argument. The input data to sign. Default: Standard Input
+```
+Step by step instruction for a system with a root key and one downstream key would be:
+
+1. `$ crinit-genkeys.sh -o crinit-root-priv.pem         # generate private root key`
+2. `$ crinit-genkeys.sh -f der -k crinit-root-pub.der   # calculate public root key from it (destined for user keyring)`
+3. `$ crinit-genkeys.sh -o crinit-dwstr-priv.pem        # generate downstream key`
+4. `$ crinit-genkeys.sh -k crinit-root-pub.pem          # calculate public key from it (destined for rootfs)`
+5. `$ crinit-sign.sh -k crinit-root-priv.pem -o crinit-dwstr-pub.pem.sig crinit-dwstr-pub.pem  # sign downstream key with root key`
+6. Do step 5 for all configuration files crinit is expected to parse using either the root or the downstream key.
 
 ## crinit-ctl Usage Info
 
@@ -584,8 +644,13 @@ The Doxygen documentation alone can be built using
 make -C build/amd64 doxygen
 ```
 
+The cmake setup also supports compiling-out/in of optional features. Currently, this is
+* Signature support using `-DENABLE_SIGNATURE_SUPPORT={On, Off}`. If set to on, crinit will have a dependency to
+  [libmbedtls](https://github.com/Mbed-TLS/mbedtls). Default is `On`.
+
 ## Build Requirements
 
 In order to build crinit, there are some libraries, which have to be installed.
 
 - [safu](https://github.com/elektrobit/safu)
+- optional, for signature support: [MbedTLS](https://github.com/Mbed-TLS/mbedtls)
