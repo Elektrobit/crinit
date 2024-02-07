@@ -12,14 +12,14 @@
 #define CRINIT_SIGNATURE_DEFAULT_ROOT_KEY_DESC \
     "crinit-root"                               ///< The key description of the root public key within the user keyring
 #define CRINIT_SIGNATURE_FILE_SUFFIX ".sig"     ///< The filename suffix identifying signature files
-#define CRINIT_RSASSA_PSS_SIGNATURE_SIZE 512uL  ///< The size in Bytes of a signature as used by crinit.
+#define CRINIT_RSASSA_PSS_SIGNATURE_SIZE 512uL  ///< The size in bytes of a signature as used by crinit.
 
 /**
  * Initializes the Crinit signature subsystem.
  *
  * Will read the root key from Kernel user keyring.
  *
- * This function musst be called once before any other function from this header file is used.
+ * This function must be called once before any other function from this header file is used.
  *
  * @param rootKeyDesc  The key description value to search for the root key in the user keyring.
  *
@@ -29,7 +29,7 @@ int crinitSigSubsysInit(char *rootKeyDesc);
 /**
  * Frees memory allocated by crinitSigSubsysInit().
  *
- * After calling this function no other fucntions from this header file may be used.
+ * After calling this function no other functions from this header file may be used.
  */
 void crinitSigSubsysDestroy(void);
 /**
