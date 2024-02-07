@@ -453,7 +453,7 @@ If compiled in (see Build Instructions), Crinit supports checking signatures of 
 The algorithm used is RSA-PSS using 4096 Bit keys and SHA256 hashing.
 
 Crinit will use a root public key (named `crinit-root` as the searchable key description`) stored in the Kernel user
-keyring and optionally downstream signed publlic keys stored in the rootfs. The downstream keys need to be signed using
+keyring and optionally downstream signed public keys stored in the rootfs. The downstream keys need to be signed using
 the root key. Configuration files must then be signed either by the root key or by one of the downstream keys.
 
 The root public key must be enrolled to the user keyring before Crinit starts. A common solution is to do this from a
