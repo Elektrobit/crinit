@@ -201,35 +201,17 @@ int crinitLoadAndVerifySignedKeys(char *sigKeyDir) {
 
     if (crinitLoadAndVerifySignedKeysFromFileSeries(signedKeys, &derKeys, false) == -1) {
         crinitErrPrint("Could not load and verify all DER-encoded keys in '%s'.", sigKeyDir);
-        crinitDestroyFileSeries(&derKeys);
-        crinitDestroyFileSeries(&pemKeys);
-        for (size_t i = 0; i < numSignedKeys; i++) {
-            mbedtls_pk_free(&signedKeys[i]);
-        }
-        free(signedKeys);
-        return -1;
+        goto failCleanup;
     }
 
     if (crinitLoadAndVerifySignedKeysFromFileSeries(signedKeys + derKeys.size, &pemKeys, true) == -1) {
         crinitErrPrint("Could not load and verify all PEM-encoded keys in '%s'.", sigKeyDir);
-        crinitDestroyFileSeries(&derKeys);
-        crinitDestroyFileSeries(&pemKeys);
-        for (size_t i = 0; i < numSignedKeys; i++) {
-            mbedtls_pk_free(&signedKeys[i]);
-        }
-        free(signedKeys);
-        return -1;
+        goto failCleanup;
     }
 
     if ((errno = pthread_mutex_lock(&crinitSigCtx.lock)) != 0) {
         crinitErrnoPrint("Could not queue up for mutex lock.");
-        crinitDestroyFileSeries(&derKeys);
-        crinitDestroyFileSeries(&pemKeys);
-        for (size_t i = 0; i < numSignedKeys; i++) {
-            mbedtls_pk_free(&signedKeys[i]);
-        }
-        free(signedKeys);
-        return -1;
+        goto failCleanup;
     }
 
     crinitSigCtx.signedKeys = signedKeys;
@@ -237,6 +219,15 @@ int crinitLoadAndVerifySignedKeys(char *sigKeyDir) {
 
     pthread_mutex_unlock(&crinitSigCtx.lock);
     return 0;
+
+failCleanup:
+    crinitDestroyFileSeries(&derKeys);
+    crinitDestroyFileSeries(&pemKeys);
+    for (size_t i = 0; i < numSignedKeys; i++) {
+        mbedtls_pk_free(&signedKeys[i]);
+    }
+    free(signedKeys);
+    return -1;
 }
 
 int crinitVerifySignature(const uint8_t *data, size_t dataSz, const uint8_t *signature) {
