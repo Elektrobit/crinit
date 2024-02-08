@@ -108,7 +108,6 @@ int crinitSigSubsysInit(char *rootKeyDesc) {
     long rootKeyId = crinitKeyctlSearch(KEY_SPEC_USER_KEYRING, "user", rootKeyDesc);
     if (rootKeyId == -1) {
         crinitErrnoPrint("Could not find crinit root key named '%s' in user keyring.", rootKeyDesc);
-        free(crinitSigCtx.signedKeys);
         pthread_mutex_destroy(&crinitSigCtx.lock);
         return -1;
     }
@@ -117,7 +116,6 @@ int crinitSigSubsysInit(char *rootKeyDesc) {
     long rootKeyLen = crinitKeyctlRead(rootKeyId, rootKeyData, sizeof(rootKeyData));
     if (rootKeyLen == -1) {
         crinitErrnoPrint("Could not read crinit root key named '%s' from user keyring.", rootKeyDesc);
-        free(crinitSigCtx.signedKeys);
         pthread_mutex_destroy(&crinitSigCtx.lock);
         return -1;
     }
@@ -125,7 +123,6 @@ int crinitSigSubsysInit(char *rootKeyDesc) {
         crinitErrPrint(
             "Crinit root key named '%s' in user keyring is larger (%zu Bytes) than the allowed maximum of %zu Bytes.",
             rootKeyDesc, (size_t)rootKeyLen, sizeof(rootKeyData));
-        free(crinitSigCtx.signedKeys);
         pthread_mutex_destroy(&crinitSigCtx.lock);
         return -1;
     }
@@ -150,7 +147,6 @@ int crinitSigSubsysInit(char *rootKeyDesc) {
     if (keyType == MBEDTLS_PK_NONE) {
         crinitErrPrint("Could not get type of user keyring public key \'%s\'.", rootKeyDesc);
         mbedtls_pk_free(&crinitSigCtx.rootKey);
-        free(crinitSigCtx.signedKeys);
         pthread_mutex_unlock(&crinitSigCtx.lock);
         pthread_mutex_destroy(&crinitSigCtx.lock);
         return -1;
@@ -160,7 +156,6 @@ int crinitSigSubsysInit(char *rootKeyDesc) {
         crinitErrPrint("The key data from \'%s\' out of the user keyring did not contain a valid RSA public key.",
                        rootKeyDesc);
         mbedtls_pk_free(&crinitSigCtx.rootKey);
-        free(crinitSigCtx.signedKeys);
         pthread_mutex_unlock(&crinitSigCtx.lock);
         pthread_mutex_destroy(&crinitSigCtx.lock);
         return -1;
