@@ -19,6 +19,10 @@ int crinitKernelCmdlineParse(const char *cmdlinePath) {
 
     char cmdlineBuf[CRINIT_KCMDLINE_MAX_LEN] = {0};
     FILE *cmdlineHdl = fopen(cmdlinePath, "r");
+    if (cmdlineHdl == NULL) {
+        crinitErrnoPrint("Could not open '%s' for reading.", cmdlinePath);
+        return -1;
+    }
 
     if (fgets(cmdlineBuf, sizeof(cmdlineBuf), cmdlineHdl) == NULL) {
         crinitErrnoPrint("Could not read Kernel cmdline from '%s'.", cmdlinePath);
@@ -29,6 +33,7 @@ int crinitKernelCmdlineParse(const char *cmdlinePath) {
     if (cmdlineLen >= sizeof(cmdlineBuf) - 1) {
         crinitErrPrint("Your Kernel cmdline seems to be at least %zu Bytes long. This is too long and not supported.",
                        sizeof(cmdlineBuf) - 1);
+        fclose(cmdlineHdl);
         return -1;
     }
     fclose(cmdlineHdl);
