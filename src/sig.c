@@ -100,7 +100,10 @@ static int crinitLoadAndVerifySignedKeysFromFileSeries(mbedtls_pk_context *tgt, 
 int crinitSigSubsysInit(char *rootKeyDesc) {
     crinitSigCtx.numSignedKeys = 0;
     crinitSigCtx.signedKeys = NULL;
-    pthread_mutex_init(&crinitSigCtx.lock, NULL);
+    if ((errno = pthread_mutex_init(&crinitSigCtx.lock, NULL)) != 0) {
+        crinitErrnoPrint("Could not initialize signature verification context mutex.");
+        return -1;
+    }
 
     long rootKeyId = crinitKeyctlSearch(KEY_SPEC_USER_KEYRING, "user", rootKeyDesc);
     if (rootKeyId == -1) {
@@ -133,7 +136,16 @@ int crinitSigSubsysInit(char *rootKeyDesc) {
     }
 
     mbedtls_pk_init(&crinitSigCtx.rootKey);
-    mbedtls_pk_parse_public_key(&crinitSigCtx.rootKey, rootKeyData, rootKeyLen);
+    int err = mbedtls_pk_parse_public_key(&crinitSigCtx.rootKey, rootKeyData, rootKeyLen);
+    if (err != 0) {
+        char errBuf[CRINIT_MBEDTLS_ERR_MAX_LEN];
+        mbedtls_strerror(err, errBuf, sizeof(errBuf));
+        crinitErrPrint("Could not parse crinit root key data imported from user keyring. %s", errBuf);
+        pthread_mutex_unlock(&crinitSigCtx.lock);
+        pthread_mutex_destroy(&crinitSigCtx.lock);
+        return -1;
+    }
+
     mbedtls_pk_type_t keyType = mbedtls_pk_get_type(&crinitSigCtx.rootKey);
     if (keyType == MBEDTLS_PK_NONE) {
         crinitErrPrint("Could not get type of user keyring public key \'%s\'.", rootKeyDesc);
