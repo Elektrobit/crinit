@@ -40,9 +40,11 @@ static struct {
 #if MBEDTLS_VERSION_MAJOR == 2
 #define crinitMbedtlsVerify(ctx, mdAlg, hashlen, hash, sig) \
     mbedtls_rsa_rsassa_pss_verify((ctx), NULL, NULL, MBEDTLS_RSA_PUBLIC, (mdAlg), (hashlen), (hash), (sig))
-#else
+#elif MBEDTLS_VERSION_MAJOR == 3
 #define crinitMbedtlsVerify(ctx, mdAlg, hashlen, hash, sig) \
     mbedtls_rsa_rsassa_pss_verify((ctx), (mdAlg), (hashlen), (hash), (sig))
+#else
+#error "Only MbedTLS versions 2 and 3 are supported."
 #endif
 
 /**
@@ -275,8 +277,10 @@ static int crinitGenerateHash(uint8_t *dataHash, const uint8_t *data, size_t dat
     mbedtls_sha256_init(&ctx);
 #if MBEDTLS_VERSION_MAJOR == 2
     int err = mbedtls_sha256_starts_ret(&ctx, 0);
-#else
+#elif MBEDTLS_VERSION_MAJOR == 3
     int err = mbedtls_sha256_starts(&ctx, 0);
+#else
+#error "Only MbedTLS versions 2 and 3 are supported."
 #endif
     if (err != 0) {
         mbedtls_strerror(err, errBuf, sizeof(errBuf));
@@ -286,8 +290,10 @@ static int crinitGenerateHash(uint8_t *dataHash, const uint8_t *data, size_t dat
     }
 #if MBEDTLS_VERSION_MAJOR == 2
     err = mbedtls_sha256_update_ret(&ctx, data, dataSz);
-#else
+#elif MBEDTLS_VERSION_MAJOR == 3
     err = mbedtls_sha256_update(&ctx, data, dataSz);
+#else
+#error "Only MbedTLS versions 2 and 3 are supported."
 #endif
     if (err != 0) {
         mbedtls_strerror(err, errBuf, sizeof(errBuf));
@@ -297,8 +303,10 @@ static int crinitGenerateHash(uint8_t *dataHash, const uint8_t *data, size_t dat
     }
 #if MBEDTLS_VERSION_MAJOR == 2
     err = mbedtls_sha256_finish_ret(&ctx, dataHash);
-#else
+#elif MBEDTLS_VERSION_MAJOR == 3
     err = mbedtls_sha256_finish(&ctx, dataHash);
+#else
+#error "Only MbedTLS versions 2 and 3 are supported."
 #endif
     if (err != 0) {
         mbedtls_strerror(err, errBuf, sizeof(errBuf));
