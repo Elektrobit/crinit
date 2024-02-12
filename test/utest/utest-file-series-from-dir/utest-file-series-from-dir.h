@@ -40,5 +40,17 @@ void crinitFileSeriesFromDirInitError(void **state);
  * Unit test for crinitFileSeriesFromDir(), malloc error.
  */
 void crinitFileSeriesFromDirNoMemError(void **state);
+/**
+ * Separate setup function for crinitFileSeriesFromDirNoMemError().
+ *
+ * @return  0 on success, -1 otherwise
+ */
+int  crinitFileSeriesFromDirNoMemErrorSetup(void **state);
+/**
+ * Separate teardown function for crinitFileSeriesFromDirNoMemError().
+ *
+ * @return  0 on success, -1 otherwise
+ */
+int  crinitFileSeriesFromDirNoMemErrorTeardown(void **state);
 
 #endif /* __UTEST_FILE_SERIES_FROM_DIR_H__ */
