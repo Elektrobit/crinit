@@ -18,6 +18,9 @@ Test Teardown     Crinit Stop    series_file=${SIG_TASK_DIR}/sigtest.series
 *** Variables ***
 ${SIG_TASK_DIR}             /etc/crinit/itest/sigtest
 ${LOCAL_TEST_DIR}           /tmp/crinit-sigtest
+${PUBKEY_PATH}              /etc/crinit/itest/data/pubkeys/crinit-root-test-pub.der
+${FAKE_CMDLINE_PATH}        /tmp/fake_cmdline
+${FAKE_CMDLINE_PREPEND}     crinit.signatures=yes crinit.sigkeydir=/etc/crinit/itest/data/pubkeys
 
 *** Test Cases ***
 Crinit Tasks With Valid Signatures Get Loaded
@@ -75,14 +78,34 @@ Sigtask4 Is Set As Corrupted
     A Symbolic Link Has Been Created With
         ...       Name=${LOCAL_TEST_DIR}/sigtask4.crinit  PointingTo=${LOCAL_TEST_DIR}/sigtask4.crinit.modified
 
-Check If Tasks Have State
-    [Arguments]    @{TASKS}    ${State}=
-    FOR    ${Task}    IN    @{TASKS}
-        ${rc} =  Crinit Check Task State    ${Task}    ${State}
-        Should Be Equal As Numbers  ${rc}  0
-    END
-
 Prepare Temporary Test Directory
     ${rc}  Execute And Log Based On User Permissions
     ...  sh -c "mkdir -p ${LOCAL_TEST_DIR} && cp ${SIG_TASK_DIR}/sigtask4* ${LOCAL_TEST_DIR}"    ${RETURN_RC}
     Should Be Equal As Numbers    ${rc}    0
+
+Enroll Crinit Root Key
+    ${key_id}    Execute And Log Based On User Permissions
+    ...          keyctl session - enroll-itest-root-key.sh ${PUBKEY_PATH}    ${RETURN_STDOUT}
+    Should Not Be Empty    ${key_id}
+    Set Suite Variable    $CRINIT_ROOT_PK_ID    ${key_id}
+
+Unlink Crinit Root Key
+    ${rc}    Execute And Log Based On User Permissions    keyctl unlink ${CRINIT_ROOT_PK_ID}    ${RETURN_RC}
+    Should Be Equal As Numbers  ${rc}  0
+
+Mount Fake Kernel Cmdline To Enable Crinit Signatures
+    ${rc}    Execute And Log    echo -n "${FAKE_CMDLINE_PREPEND} " > ${FAKE_CMDLINE_PATH}    ${RETURN_RC}
+    Should Be Equal As Numbers  ${rc}  0
+    ${rc}    Execute And Log    cat /proc/cmdline >> ${FAKE_CMDLINE_PATH}    ${RETURN_RC}
+    Should Be Equal As Numbers  ${rc}  0
+    ${rc}    Execute And Log Based On User Permissions
+    ...      mount --bind ${FAKE_CMDLINE_PATH} /proc/cmdline    ${RETURN_RC}
+    Should Be Equal As Numbers  ${rc}  0
+    ${rc}    Execute And Log    cat /proc/cmdline    ${RETURN_RC}
+    Should Be Equal As Numbers  ${rc}  0
+
+Unmount Fake Kernel Cmdline
+    ${rc}    Execute And Log Based On User Permissions   umount /proc/cmdline    ${RETURN_RC}
+    Should Be Equal As Numbers  ${rc}  0
+    ${rc}    Execute And Log    cat /proc/cmdline    ${RETURN_RC}
+    Should Be Equal As Numbers  ${rc}  0
