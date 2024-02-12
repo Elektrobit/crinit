@@ -1,5 +1,6 @@
 #!/bin/bash
-
+# SPDX-License-Identifier: MIT
+#
 CMD_PATH=$(cd $(dirname $0) && pwd)
 BASE_DIR=${CMD_PATH%/*}
 
