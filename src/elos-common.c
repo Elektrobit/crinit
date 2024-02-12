@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: MIT
+/**
+ * @file elos-common.h
+ * @brief Implementation file related to elos connection.
+ */
 #include "elos-common.h"
 
 #include <dlfcn.h>
