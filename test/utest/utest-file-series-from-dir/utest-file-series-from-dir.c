@@ -44,7 +44,11 @@ int main(void) {
         cmocka_unit_test(crinitFileSeriesFromDirDirfdError),
         cmocka_unit_test(crinitFileSeriesFromDirScandirError),
         cmocka_unit_test(crinitFileSeriesFromDirInitError),
-        cmocka_unit_test(crinitFileSeriesFromDirNoMemError),
+        cmocka_unit_test_setup_teardown(
+                crinitFileSeriesFromDirNoMemError,
+                crinitFileSeriesFromDirNoMemErrorSetup,
+                crinitFileSeriesFromDirNoMemErrorTeardown
+        )
         // clang-format on
     };
 
