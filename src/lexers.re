@@ -7,6 +7,7 @@
 
 #include "lexers.h"
 #include "logio.h"
+#include "common.h"
 
 /*!conditions:re2c*/
 
@@ -149,5 +150,33 @@ crinitTokenType_t crinitEnvVarInnerLex(const char **s, const char **mbegin, cons
         escseqx    { *s = YYCURSOR; *mbegin = t1; *mend = t2; return CRINIT_TK_ESCX; }
         end        { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return CRINIT_TK_END; }
         var        { *s = YYCURSOR; *mbegin = t1; *mend = t2; return CRINIT_TK_VAR; }
+    */
+}
+
+crinitTokenType_t crinitKernelCmdlineLex(const char **s, const char **keyBegin, const char **keyEnd, const char **valBegin, const char **valEnd) {
+    crinitNullCheck(CRINIT_TK_ERR, s, keyBegin, keyEnd, valBegin, valEnd);
+    crinitNullCheck(CRINIT_TK_ERR, *s);
+
+    const char *YYCURSOR = *s, *YYMARKER = *s, *anchor = *s;
+    const char *t1, *t2, *t3, *t4, *yyt1, *yyt2;
+
+    /*!re2c
+        re2c:define:YYCTYPE = char;
+        re2c:yyfill:enable = 0;
+        re2c:tags = 1;
+
+        varprefix  = "crinit\.";
+        vardelim   = [=];
+        uqcontent  = @t1 ([^ "\\\n\x00\t] | [\\][^\x00])+ @t2;
+        dqcontent  = ["] @t1 ([^"\\\n\x00] | [\\][^\x00])* @t2 ["];
+        uqvar      = varprefix @t3 varname @t4 vardelim uqcontent;
+        dqvar      = varprefix @t3 varname @t4 vardelim dqcontent;
+
+        *          { *s = YYCURSOR; *keyBegin = anchor; *keyEnd = *s; return CRINIT_TK_ERR; }
+        end        { *s = YYCURSOR; *keyBegin = anchor; *keyEnd = *s; return CRINIT_TK_END; }
+        whitespace { *s = YYCURSOR; *keyBegin = anchor; *keyEnd = *s; return CRINIT_TK_WSPC; }
+        uqvar      { *s = YYCURSOR; *keyBegin = t3; *keyEnd = t4; *valBegin = t1; *valEnd = t2; return CRINIT_TK_VAR; }
+        dqvar      { *s = YYCURSOR; *keyBegin = t3; *keyEnd = t4; *valBegin = t1; *valEnd = t2; return CRINIT_TK_VAR; }
+        any        { *s = YYCURSOR; *keyBegin = anchor; *keyEnd = *s; return CRINIT_TK_CPY; }
     */
 }

@@ -29,6 +29,11 @@
 #define CRINIT_CONFIG_KEYSTR_TASK_FILE_SUFFIX \
     "TASK_FILE_SUFFIX"  ///< Config key for the task file extension in dynamic configurations.
 
+#define CRINIT_CONFIG_KEYSTR_SIGKEYDIR \
+    "sigkeydir"  ///< Name of the option to set the public key dir from Kernel command line.
+#define CRINIT_CONFIG_KEYSTR_SIGNATURES \
+    "signatures"  ///< Name of the option to activate signature checking on the Kernel command line.
+
 #define CRINIT_CONFIG_KEYSTR_COMMAND "COMMAND"              ///< Config key to add a command to the task.
 #define CRINIT_CONFIG_KEYSTR_DEPENDS "DEPENDS"              ///< Config key to add dependencies to the task.
 #define CRINIT_CONFIG_KEYSTR_ENV_SET "ENV_SET"              ///< Config key to set an environment variable with.
@@ -57,6 +62,9 @@
 #define CRINIT_CONFIG_DEFAULT_ELOS_PORT 54321          ///< Default value for ELOS_SERVER global option.
 #define CRINIT_CONFIG_DEFAULT_INCL_SUFFIX ".crincl"    ///< Default filename extension of include files.
 
+#define CRINIT_CONFIG_DEFAULT_SIGKEYDIR "/etc/crinit/pk"
+#define CRINIT_CONFIG_DEFAULT_SIGNATURES false
+
 #define CRINIT_CONFIG_STDOUT_NAME "STDOUT"  ///< What stdout is called in task configs.
 #define CRINIT_CONFIG_STDERR_NAME "STDERR"  ///< What stderr is called in task configs.
 #define CRINIT_CONFIG_STDIN_NAME "STDIN"    ///< What stdin is called in task configs.
@@ -79,6 +87,8 @@ typedef enum crinitConfigs_t {
     CRINIT_CONFIG_RESPAWN,
     CRINIT_CONFIG_RESPAWN_RETRIES,
     CRINIT_CONFIG_SHDGRACEP,
+    CRINIT_CONFIG_SIGKEYDIR,
+    CRINIT_CONFIG_SIGNATURES,
     CRINIT_CONFIG_TASK_FILE_SUFFIX,
     CRINIT_CONFIG_TASKDIR,
     CRINIT_CONFIG_TASKDIR_FOLLOW_SYMLINKS,
@@ -88,7 +98,12 @@ typedef enum crinitConfigs_t {
     CRINIT_CONFIGS_SIZE
 } crinitConfigs_t;
 
-typedef enum crinitConfigType_t { CRINIT_CONFIG_TYPE_SERIES, CRINIT_CONFIG_TYPE_TASK } crinitConfigType_t;
+/** Different types of configuration sources **/
+typedef enum crinitConfigType_t {
+    CRINIT_CONFIG_TYPE_SERIES,   ///< Configurations set from the series file.
+    CRINIT_CONFIG_TYPE_TASK,     ///< Configurations set from a task file.
+    CRINIT_CONFIG_TYPE_KCMDLINE  ///< Configurations set from the Kernel command line.
+} crinitConfigType_t;
 
 /**
  * Linked list to hold key/value pairs read from the config file.
@@ -102,12 +117,14 @@ typedef struct crinitConfKvList_t {
 /**
  * Parse a config file into a crinitConfKvList_t.
  *
- * Parses a config file and fills \a confList. Items of \a confList are dynamically allocated
- * (grown) and need to be freed using free_confList(). The format of the config file is expected
- * to be KEY1=VALUE1<newline>KEY2=VALUE2<newline>... Lines beginning with '#' are considered
- * comments.
+ * Parses a config file and fills \a confList. Items of \a confList are dynamically allocated (grown) and need to be
+ * freed using free_confList(). The format of the config file is expected to be
+ * `KEY1=VALUE1<newline>KEY2=VALUE2<newline>...` Lines beginning with `#` are considered comments.
  *
- * @param confList  will return a pointer to dynamically allocated memory of a ConfKvList filled with the
+ * If the Kernel command line option `crinit.signatures` is set to `yes`, this function will also check the
+ * configuration file's signature. A non-matching signature is handled as a parser error.
+ *
+ * @param confList  will return a pointer to dynamically allocated memory of a ConfKvList filled with the 
  *                  key/value-pairs from the config file.
  * @param filename  Path to the configuration file.
  *
@@ -119,8 +136,8 @@ int crinitParseConf(crinitConfKvList_t **confList, const char *filename);
 /**
  * Frees memory allocated for an crinitConfKvList_t by crinitParseConf().
  *
- * @param confList Pointer to crinitConfKvList_t allocated by crinitParseConf() and not freed before. If
- *                 confList is NULL, crinitFreeConfList() will return without freeing any memory.
+ * @param confList  Pointer to crinitConfKvList_t allocated by crinitParseConf() and not freed before. If confList is
+ *                  NULL, crinitFreeConfList() will return without freeing any memory.
  */
 void crinitFreeConfList(crinitConfKvList_t *confList);
 

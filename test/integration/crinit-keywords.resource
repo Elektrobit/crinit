@@ -17,3 +17,10 @@ Crinit Load Test Tasks
     FOR    ${file}    IN    @{files}
         Crinit Add Task    ${file}
     END
+
+Check If Tasks Have State
+    [Arguments]    @{TASKS}    ${State}=
+    FOR    ${Task}    IN    @{TASKS}
+        ${rc} =  Crinit Check Task State    ${Task}    ${State}
+        Should Be Equal As Numbers  ${rc}  0
+    END

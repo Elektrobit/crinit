@@ -20,6 +20,10 @@
 #include "lexers.h"
 #include "logio.h"
 
+#ifdef SIGNATURE_SUPPORT
+#include "sig.h"
+#endif
+
 /**
  * Struct definition for the parser context used by crinitIniHandler()
  */
@@ -43,22 +47,76 @@ int crinitParseConf(crinitConfKvList_t **confList, const char *filename) {
         crinitErrnoPrint("Could not open \'%s\'.", filename);
         return -1;
     }
+
+    // Read entire file to memory (needed if we want to compare against a signature without TOCTOU race condition)
+    char *fileBuf = NULL;
+    size_t fileLen;
+    if (getdelim(&fileBuf, &fileLen, '\0', cf) == -1) {
+        crinitErrnoPrint("Could not read contents of file '%s' to memory.", filename);
+        fclose(cf);
+        return -1;
+    }
+    fclose(cf);
+
+    // Check if we must verify the signature of this config file.
+    bool sigRequired = CRINIT_CONFIG_DEFAULT_SIGNATURES;
+    if (crinitGlobOptGet(CRINIT_GLOBOPT_SIGNATURES, &sigRequired) == -1) {
+        crinitErrPrint("Could not retrieve value for global setting if we are to use signatures.");
+        free(fileBuf);
+        return -1;
+    }
+
+    if (sigRequired) {
+#ifdef SIGNATURE_SUPPORT
+        size_t sigfnLen = strlen(filename) + sizeof(CRINIT_SIGNATURE_FILE_SUFFIX);
+        char *sigfn = malloc(sigfnLen);
+        if (sigfn == NULL) {
+            crinitErrnoPrint("Could not allocate memory for signature filename of config file '%s'.", filename);
+            free(fileBuf);
+            return -1;
+        }
+        char *runner = stpcpy(sigfn, filename);
+        stpcpy(runner, CRINIT_SIGNATURE_FILE_SUFFIX);
+
+        uint8_t sigBuf[CRINIT_RSASSA_PSS_SIGNATURE_SIZE + 1];
+        if (crinitBinReadAll(sigBuf, sizeof(sigBuf), sigfn) == -1) {
+            crinitErrPrint("Could not read signature file '%s'.", sigfn);
+            free(fileBuf);
+            free(sigfn);
+            return -1;
+        }
+
+        if (crinitVerifySignature((uint8_t *)fileBuf, strnlen(fileBuf, fileLen), sigBuf) == -1) {
+            crinitErrPrint("The config file '%s' and its signature '%s' do not match.", filename, sigfn);
+            free(fileBuf);
+            free(sigfn);
+            return -1;
+        }
+        free(sigfn);
+#else
+        crinitErrPrint(
+            "Config signature option is set but signature support was not compiled in. You will need to recompile "
+            "Crinit with mbedtls.");
+        return -1;
+#endif
+    }
+
     // Alloc first element
     if ((*confList = malloc(sizeof(crinitConfKvList_t))) == NULL) {
         crinitErrnoPrint("Could not allocate memory for a ConfKVList.");
-        fclose(cf);
+        free(fileBuf);
         return -1;
     }
     (*confList)->next = NULL;
 
-    // Parse config ing libinih
+    // Parse config from memory with libinih
     crinitIniParserCtx_t parserCtx = {.anchor = *confList, .pList = *confList, .last = *confList};
-    int parseResult = ini_parse_file(cf, crinitIniHandler, &parserCtx);
+    int parseResult = ini_parse_string(fileBuf, crinitIniHandler, &parserCtx);
 
     // Trim the list's tail
     free(parserCtx.last->next);
     parserCtx.last->next = NULL;
-    fclose(cf);
+    free(fileBuf);
 
     // Check result
     if (parseResult != 0) {

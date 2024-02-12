@@ -7,11 +7,20 @@ configure_file(version.c.in version.c)
 
 RE2C_TARGET(NAME lexers INPUT ${PROJECT_SOURCE_DIR}/src/lexers.re OUTPUT lexers.c OPTIONS -ibsc -W DEPENDS ${PROJECT_SOURCE_DIR}/inc/lexers.h)
 
+# optional compile-time features
+
+if(ENABLE_SIGNATURE_SUPPORT)
+    add_compile_definitions(SIGNATURE_SUPPORT)
+    set(SIG_SOURCES sig.c)
+    find_package(MbedTLS REQUIRED)
+endif()
+
 # crinit
 
 add_executable(
   crinit
   crinit.c
+  common.c
   confparse.c
   confconv.c
   confhdl.c
@@ -21,6 +30,7 @@ add_executable(
   elosdep.c
   eloslog.c
   envset.c
+  kcmdline.c
   task.c
   taskdb.c
   procdip.c
@@ -34,6 +44,7 @@ add_executable(
   optfeat.c
   fseries.c
   ioredir.c
+  ${SIG_SOURCES}
   ${CMAKE_CURRENT_BINARY_DIR}/version.c
 )
 
@@ -46,6 +57,7 @@ target_link_libraries(
   PRIVATE Threads::Threads
   PRIVATE inih-local
   PRIVATE safu
+  PRIVATE ${MBEDTLS_CRYPTO_LIBRARY}
 )
 
 

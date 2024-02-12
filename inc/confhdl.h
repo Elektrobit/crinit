@@ -79,4 +79,11 @@ int crinitCfgEnvHandler(void *tgt, const char *val, crinitConfigType_t type);
 /** Handler for `FILTER_DEFINE` config directives. See crinitConfigHandler_t. **/
 int crinitCfgFilterHandler(void *tgt, const char *val, crinitConfigType_t type);
 
+/* Handlers for parsing the Kernel command line */
+
+/** Handler for `crinit.sigkeydir` Kernel command line setting. See crinitConfigHandler_t. **/
+int crinitCfgSigKeyDirHandler(void *tgt, const char *val, crinitConfigType_t type);
+/** Handler for `crinit.signatures` Kernel command line setting. See crinitConfigHandler_t. **/
+int crinitCfgSignaturesHandler(void *tgt, const char *val, crinitConfigType_t type);
+
 #endif /* __CONFHDL_H__ */

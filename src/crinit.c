@@ -8,6 +8,7 @@
 
 #include "common.h"
 #include "globopt.h"
+#include "kcmdline.h"
 #include "logio.h"
 #include "minsetup.h"
 #include "notiserv.h"
@@ -15,6 +16,10 @@
 #include "procdip.h"
 #include "rtimcmd.h"
 #include "version.h"
+
+#ifdef SIGNATURE_SUPPORT
+#include "sig.h"
+#endif
 
 /**
  * The default series file. Used if nothing is specified on command line.
@@ -82,25 +87,56 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
+    if (crinitKernelCmdlineParse(NULL) == -1) {
+        crinitErrPrint("Could not parse Kernel cmdline.");
+        goto failFreeGlobOpts;
+    }
+
+    bool signatures = CRINIT_CONFIG_DEFAULT_SIGNATURES;
+    if (crinitGlobOptGet(CRINIT_GLOBOPT_SIGNATURES, &signatures) == -1) {
+        crinitErrPrint("Could not retrieve value for global setting if we are to use signatures.");
+        goto failFreeGlobOpts;
+    }
+    if (signatures) {
+#ifdef SIGNATURE_SUPPORT
+        if (crinitSigSubsysInit(CRINIT_SIGNATURE_DEFAULT_ROOT_KEY_DESC) == -1) {
+            crinitErrPrint("Could not initialize signature handling subsystem.");
+            goto failFreeGlobOpts;
+        }
+        char *sigKeyDir;
+        if (crinitGlobOptGet(CRINIT_GLOBOPT_SIGKEYDIR, &sigKeyDir) == -1) {
+            crinitErrPrint("Could not retrieve path of signature pubkey directory from global options.");
+            goto failFreeSigs;
+        }
+
+        if (crinitLoadAndVerifySignedKeys(sigKeyDir) == -1) {
+            crinitErrPrint("Could not load/verify public keys from '%s'.", sigKeyDir);
+            goto failFreeSigs;
+        }
+#else
+        crinitErrPrint(
+            "Config signature option is set but signature support was not compiled in. You will need to recompile "
+            "Crinit with mbedtls.");
+        goto failFreeGlobOpts;
+#endif
+    }
+
     if (crinitLoadSeriesConf(seriesFname) == -1) {
         crinitErrPrint("Could not load series file \'%s\'.", seriesFname);
-        crinitGlobOptDestroy();
-        return EXIT_FAILURE;
+        goto failFreeSigs;
     }
 
     // Initialize optional features as soon as possible.
     crinitInfoPrint("Initialize optional features.");
     if (crinitFeatureHook(NULL, CRINIT_HOOK_INIT, NULL) == -1) {
         crinitErrPrint("Could not run activiation hook for feature \'INIT\'.");
-        crinitGlobOptDestroy();
-        return EXIT_FAILURE;
+        goto failFreeSigs;
     }
 
     crinitFileSeries_t taskSeries;
     if (crinitLoadTasks(&taskSeries) == -1) {
         crinitErrPrint("Could not load crinit task.");
-        crinitGlobOptDestroy();
-        return EXIT_FAILURE;
+        goto failFreeSigs;
     }
 
     // TODO: Init features (call feature hook init).
@@ -118,10 +154,8 @@ int main(int argc, char *argv[]) {
             confFn = malloc(prefixLen + suffixLen + 2);
             if (confFn == NULL) {
                 crinitErrnoPrint("Could not allocate string with full path for \'%s\'.", taskSeries.fnames[n]);
-                crinitGlobOptDestroy();
                 crinitDestroyFileSeries(&taskSeries);
-                crinitTaskDBDestroy(&tdb);
-                return EXIT_FAILURE;
+                goto failFreeTaskDB;
             }
             memcpy(confFn, taskSeries.baseDir, prefixLen);
             confFn[prefixLen] = '/';
@@ -131,13 +165,11 @@ int main(int argc, char *argv[]) {
         crinitConfKvList_t *c;
         if (crinitParseConf(&c, confFn) == -1) {
             crinitErrPrint("Could not parse file \'%s\'.", confFn);
-            crinitGlobOptDestroy();
             if (confFnAllocated) {
                 free(confFn);
             }
             crinitDestroyFileSeries(&taskSeries);
-            crinitTaskDBDestroy(&tdb);
-            return EXIT_FAILURE;
+            goto failFreeTaskDB;
         }
         crinitInfoPrint("File \'%s\' loaded.", confFn);
         if (confFnAllocated) {
@@ -149,10 +181,8 @@ int main(int argc, char *argv[]) {
         if (crinitTaskCreateFromConfKvList(&t, c) == -1) {
             crinitErrPrint("Could not extract task from ConfKvList.");
             crinitFreeConfList(c);
-            crinitGlobOptDestroy();
             crinitDestroyFileSeries(&taskSeries);
-            crinitTaskDBDestroy(&tdb);
-            return EXIT_FAILURE;
+            goto failFreeTaskDB;
         }
         crinitFreeConfList(c);
 
@@ -161,11 +191,9 @@ int main(int argc, char *argv[]) {
 
         if (crinitTaskDBInsert(&tdb, t, false) == -1) {
             crinitErrPrint("Could not insert Task '%s' into TaskDB.", t->name);
-            crinitGlobOptDestroy();
             crinitDestroyFileSeries(&taskSeries);
             crinitFreeTask(t);
-            crinitTaskDBDestroy(&tdb);
-            return EXIT_FAILURE;
+            goto failFreeTaskDB;
         }
         crinitFreeTask(t);
     }
@@ -178,9 +206,7 @@ int main(int argc, char *argv[]) {
     }
     if (crinitStartInterfaceServer(&tdb, sockFile) == -1) {
         crinitErrPrint("Could not start notification and service interface.");
-        crinitTaskDBDestroy(&tdb);
-        crinitGlobOptDestroy();
-        return EXIT_FAILURE;
+        goto failFreeTaskDB;
     }
 
     while (true) {
@@ -192,7 +218,24 @@ int main(int argc, char *argv[]) {
     }
     crinitTaskDBDestroy(&tdb);
     crinitGlobOptDestroy();
+#ifdef SIGNATURE_SUPPORT
+    if (signatures) {
+        crinitSigSubsysDestroy();
+    }
+#endif
     return EXIT_SUCCESS;
+
+failFreeTaskDB:
+    crinitTaskDBDestroy(&tdb);
+failFreeSigs:
+#ifdef SIGNATURE_SUPPORT
+    if (signatures) {
+        crinitSigSubsysDestroy();
+    }
+#endif
+failFreeGlobOpts:
+    crinitGlobOptDestroy();
+    return EXIT_FAILURE;
 }
 
 static void crinitPrintVersion(void) {

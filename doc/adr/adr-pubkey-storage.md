@@ -34,14 +34,11 @@ it is considered trusted.
 
 ### Option 2 - Keys in system keyring
 
-A number of public keys are available via the system keyring (in-kernel key management and retention facility, man 7 keyrings). If a crinit config is signed with one of them, it is
-considered trusted.
+A number of public keys are available via the user keyring (in-kernel key management and retention facility, man 7
+keyrings). If a crinit config is signed with one of them, it is considered trusted.
 
-The method to load the keys to the system keyring must be protected by the secure boot chain. The means to do that are implementation defined, possible examples could be:
-
-* compilation into a signed Kernel
-* Kernel support for a hardware security module containing the key
-* a trusted Kernel module
+The method to load the keys to the user keyring must be protected by the secure boot chain. The means to do that are
+implementation defined, an example would be to enroll them from a signed initramfs.
 
 #### Pros
 
@@ -49,15 +46,15 @@ The method to load the keys to the system keyring must be protected by the secur
 
 #### Cons
 
-* hard to add new keys by third party
+* hard to add new keys by third party, as e.g. initramfs may need to be altered
 
 ### Option 3 - Master key in system keyring, signed keys in rootfs key directory
 
-A master public key is available via the Kernel system keyring. A number of public keys which are signed with the master
-private key exist in a known directory of the rootfs. If a crinit config is signed with one of them or the master key,
+A root public key is available via the Kernel user keyring. A number of public keys which are signed with the root
+private key exist in a known directory of the rootfs. If a crinit config is signed with one of them or the root key,
 it is considered trusted.
 
-The method to load the master key are similar to option 2.
+The method to load the root public key could be from a signed initramfs, as in Option 2.
 
 #### Pros
 
@@ -66,7 +63,7 @@ The method to load the master key are similar to option 2.
 
 #### Cons
 
-* a change of master key needs not only a new Kernel but also an update to rootfs
+* a change of the root key needs not only a new initramfs but also an update to rootfs
 
 ## Decision
 

@@ -1,4 +1,5 @@
 #!/usr/bin/sh -e
+# SPDX-License-Identifier: MIT
 #
 # Run Robot tests using this script.
 #

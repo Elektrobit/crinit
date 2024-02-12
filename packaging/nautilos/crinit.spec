@@ -1,7 +1,7 @@
 Summary: The crinit init system
 Name: crinit
 Group: System/Base
-Version: 0.13.0
+Version: 0.14.0
 %global soversion_ 0
 Release: 1
 Source0: %{name}.tar.gz
@@ -10,9 +10,11 @@ License: Closed
 # Needed to set Maintainer in output debs
 Packager: Andreas Zdziarstek <andreas.zdziarstek@emlix.com>
 %endif
+Requires: libmbedtls14
 BuildRequires: cmake
 BuildRequires: re2c
 BuildRequires: libcmocka-dev
+BuildRequires: libmbedtls-dev
 
 %description
 The crinit daemon including the client API shared library and the crinit-ctl CLI interface.

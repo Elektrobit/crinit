@@ -17,7 +17,10 @@ create_unit_test(
     ${PROJECT_SOURCE_DIR}/src/confparse.c
     ${PROJECT_SOURCE_DIR}/src/globopt.c
     ${PROJECT_SOURCE_DIR}/src/envset.c
+    ${PROJECT_SOURCE_DIR}/src/sig.c
+    ${PROJECT_SOURCE_DIR}/src/common.c
 LIBRARIES
     libmockfunctions
     inih-local
+    ${MBEDTLS_CRYPTO_LIBRARY} 
 )

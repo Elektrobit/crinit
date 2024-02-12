@@ -1,4 +1,5 @@
 #!/bin/sh -e
+# SPDX-License-Identifier: MIT
 #
 # Create and run docker build env
 #
