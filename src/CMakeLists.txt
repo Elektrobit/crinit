@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
-find_package(RE2C REQUIRED)
+find_package(RE2C 3 REQUIRED)
 
 configure_file(version.c.in version.c)
 
