@@ -58,6 +58,7 @@ target_link_libraries(
   PRIVATE inih-local
   PRIVATE safu
   PRIVATE ${MBEDTLS_CRYPTO_LIBRARY}
+  PRIVATE ${CMAKE_DL_LIBS}
 )
 
 
