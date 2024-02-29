@@ -1,7 +1,7 @@
 Summary: The crinit init system
 Name: crinit
 Group: System/Base
-Version: 0.14.2
+Version: 0.14.3
 %global soversion_ 0
 Release: 1
 Source0: %{name}.tar.gz
