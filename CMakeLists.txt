@@ -113,16 +113,3 @@ if(API_DOC)
   )
   install(DIRECTORY doc/html/ DESTINATION "${CMAKE_INSTALL_DOCDIR}/html")
 endif(API_DOC)
-
-add_custom_target(
-  debbuild
-  COMMAND
-    mkdir -p ${PROJECT_BINARY_DIR}/debbuild/BUILD ${PROJECT_BINARY_DIR}/debbuild/BUILDROOT ${PROJECT_BINARY_DIR}/debbuild/SPECS ${PROJECT_BINARY_DIR}/debbuild/SOURCES ${PROJECT_BINARY_DIR}/debbuild/SDEBS ${PROJECT_BINARY_DIR}/debbuild/DEBS &&
-    cp ${PROJECT_SOURCE_DIR}/packaging/nautilos/crinit.spec ${PROJECT_BINARY_DIR}/debbuild/SPECS/ &&
-    tar -czf ${PROJECT_BINARY_DIR}/debbuild/SOURCES/crinit.tar.gz --transform "s,^,crinit/," src/ inc/ test/ config/ deps/ images/ CMakeModules/ CMakeLists.txt Doxyfile README.md &&
-    cd ${PROJECT_BINARY_DIR}/debbuild &&
-    debbuild
-      --define "_topdir ${PROJECT_BINARY_DIR}/debbuild"
-      -vv -ba SPECS/crinit.spec
-  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-)
