@@ -491,7 +491,7 @@ CRINIT_LIB_EXPORTED int crinitClientGetVersion(crinitVersion_t *v) {
 
     int ret = crinitResponseCheck(&res, CRINIT_RTIMCMD_R_GETVER);
     if (ret == 0) {
-        if (res.argc != 5) {
+        if (res.argc != 5 && res.argc != 4) {
             crinitErrPrint("Got unexpected response length from Crinit.");
             crinitDestroyRtimCmd(&res);
             return -1;
@@ -520,8 +520,13 @@ CRINIT_LIB_EXPORTED int crinitClientGetVersion(crinitVersion_t *v) {
             return -1;
         }
 
-        strncpy(v->git, res.args[4], sizeof(v->git) - 1);
-        v->git[sizeof(v->git) - 1] = '\0';
+        if (res.argc < 5) {
+            // We do not have a git hash in the version string.
+            v->git[0] = '\0';
+        } else {
+            strncpy(v->git, res.args[4], sizeof(v->git) - 1);
+            v->git[sizeof(v->git) - 1] = '\0';
+        }
     }
 
     crinitDestroyRtimCmd(&res);

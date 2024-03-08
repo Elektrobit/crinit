@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.21)
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE AND DEFINED ENV{CMAKE_TOOLCHAIN_FILE})
   set(CMAKE_TOOLCHAIN_FILE $ENV{CMAKE_TOOLCHAIN_FILE})
 endif()
-project(crinit VERSION 0.14.2)
+project(crinit VERSION 0.14.3)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -27,29 +27,36 @@ if(ENABLE_ANALYZER)
   set(ENABLE_WERROR OFF)
 endif()
 
-find_package(Git REQUIRED)
+
 set(CRINIT_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
 set(CRINIT_VERSION_MINOR ${PROJECT_VERSION_MINOR})
 set(CRINIT_VERSION_MICRO ${PROJECT_VERSION_PATCH})
 set(PKG_VERSION ${CRINIT_VERSION_MAJOR}.${CRINIT_VERSION_MINOR}.${CRINIT_VERSION_MICRO})
 
-macro(FetchGitRevision)
-  execute_process(
-    COMMAND
-    "${GIT_EXECUTABLE}" rev-parse --short HEAD
-    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
-    RESULT_VARIABLE exit_code
-    OUTPUT_VARIABLE output
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-  )
-  if(NOT exit_code EQUAL 0)
-    message("failed to retrieve git short commit hash")
-  else()
-    set(CRINIT_VERSION_GIT ${output})
-    message("version ${PKG_VERSION}.${CRINIT_VERSION_GIT}")
-  endif()
-endmacro()
-FetchGitRevision()
+find_package(Git)
+
+if(GIT_FOUND)
+    macro(FetchGitRevision)
+    execute_process(
+        COMMAND
+        "${GIT_EXECUTABLE}" rev-parse --short HEAD
+        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+        RESULT_VARIABLE exit_code
+        OUTPUT_VARIABLE output
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    if(NOT exit_code EQUAL 0)
+        message("failed to retrieve git short commit hash")
+    else()
+        set(CRINIT_VERSION_GIT ${output})
+        message("version ${PKG_VERSION}.${CRINIT_VERSION_GIT}")
+    endif()
+    endmacro()
+    FetchGitRevision()
+else()
+    set(CRINIT_VERSION_GIT "")
+    message("version ${PKG_VERSION}")
+endif()
 
 set(CMAKE_C_FLAGS_RELEASE "-O2 -DNODEBUG")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--gc-sections")
