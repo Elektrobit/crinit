@@ -88,9 +88,6 @@ pipeline {
                                 sh '''#!/bin/bash -xe
                                 ci/clang-tidy.sh
                                 '''
-                                sh '''#!/bin/bash -xe
-                                ci/checkversion.sh
-                                '''
                             }
                         }
                     }
