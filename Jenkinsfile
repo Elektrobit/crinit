@@ -24,8 +24,6 @@ pipeline {
         gitlabBuilds(builds: [
             "Build (amd64)",
             "Build (arm64v8)",
-            "Package (amd64)",
-            "Package (arm64v8)",
             "Build Doc (amd64)",
             "Analyse: Lint (amd64)",
             "Analyse: Lint (arm64v8)",
@@ -80,15 +78,6 @@ pipeline {
                                 sh '''#!/bin/bash -xe
                                 ci/build.sh
                                 ci/build.sh Debug --asan
-                                '''
-                            }
-                        }
-                    }
-                    stage ('Package') {
-                        steps {
-                            gitlabCommitStatus("${STAGE_NAME} (${ARCH})") {
-                                sh '''#!/bin/bash -xe
-                                ci/package.sh
                                 '''
                             }
                         }
