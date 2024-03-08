@@ -14,6 +14,7 @@ include(GNUInstallDirs)
 
 option(ENABLE_SIGNATURE_SUPPORT "Enable signature support using MbedTLS" ON)
 option(UNIT_TESTS "Build unit tests" ON)
+option(API_DOC "Build API documentation" ON)
 option(ENABLE_ASAN "Build with -fsanitize=address" OFF)
 option(ENABLE_ANALYZER "Build with -fanalyzer (disables -Werror)" OFF)
 option(ENABLE_WERROR "Build with -Werror" ON)
@@ -84,9 +85,10 @@ if(UNIT_TESTS)
   add_subdirectory(test/utest)
 endif(UNIT_TESTS)
 
-find_package(Doxygen)
-file(GLOB images "images/*.plantuml")
-foreach(img ${images})
+if(API_DOC)
+  find_package(Doxygen REQUIRED)
+  file(GLOB images "images/*.plantuml")
+  foreach(img ${images})
     get_filename_component(output ${img} NAME_WLE)
     add_custom_command(
       OUTPUT
@@ -99,13 +101,16 @@ foreach(img ${images})
        "Running plantuml to generate: ${output}"
     )
     list(APPEND doxygen_images ${CMAKE_SOURCE_DIR}/doc/html/images/${output}.svg)
-endforeach()
-add_custom_target(
-  doxygen
-  COMMAND doxygen
-  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-  DEPENDS ${doxygen_images}
-)
+  endforeach()
+
+  add_custom_target(
+    api-doc
+    COMMAND doxygen
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    DEPENDS ${doxygen_images}
+  )
+  install(DIRECTORY doc/html/ DESTINATION "${CMAKE_INSTALL_DOCDIR}/html")
+endif(API_DOC)
 
 add_custom_target(
   debbuild
