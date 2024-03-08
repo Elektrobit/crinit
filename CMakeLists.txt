@@ -46,7 +46,7 @@ if(GIT_FOUND)
         OUTPUT_STRIP_TRAILING_WHITESPACE
     )
     if(NOT exit_code EQUAL 0)
-    message("failed to retrieve git short commit hash")
+        message("failed to retrieve git short commit hash")
     else()
         set(CRINIT_VERSION_GIT ${output})
         message("version ${PKG_VERSION}.${CRINIT_VERSION_GIT}")
