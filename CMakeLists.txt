@@ -21,12 +21,22 @@ option(ENABLE_WERROR "Build with -Werror" ON)
 option(MACHINE_ID_EXAMPLE "Build machine-id-gen example application" OFF)
 option(INSTALL_EXAMPLE_CONFIGS "Install example configs." OFF)
 set(EXAMPLE_TASKDIR "crinit/example" CACHE STRING
-    "Task directory to be used in example config, relative to the CMake sysconfdir (usually /etc).")
+  "Task directory to be used in example config, relative to the CMake sysconfdir (usually /etc).")
 option(INSTALL_SMOKE_TESTS "Install smoke tests, including necessary configs." OFF)
 set(SMOKE_TEST_SCRIPT_DIR "${CMAKE_INSTALL_LIBDIR}/test/crinit/smoketest" CACHE PATH
-    "Directory where the smoke test scripts will be installed.")
+  "Directory where the smoke test scripts will be installed.")
 set(SMOKE_TEST_CONF_DIR "${CMAKE_INSTALL_LIBDIR}/test/crinit/smoketest/config" CACHE PATH
-    "Directory where the smoke test config files will be installed.")
+  "Directory where the smoke test config files will be installed.")
+option(
+  INSTALL_ROBOT_TEST_RESOURCES
+  "Install target resources (configs, data, target scripts) for robot integration tests to run."
+  OFF
+)
+set(
+  ROBOT_TEST_RESOURCE_DIR
+  "etc/crinit/itest"
+  CACHE PATH
+  "Directory for the robot test target resources to be installed. Note: The robot test scripts assume /etc/crinit/itest")
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Debug")
@@ -148,3 +158,22 @@ if(INSTALL_SMOKE_TESTS)
       WORLD_EXECUTE WORLD_READ
   )
 endif(INSTALL_SMOKE_TESTS)
+
+if(INSTALL_ROBOT_TEST_RESOURCES)
+  install(
+    PROGRAMS
+    "${CMAKE_SOURCE_DIR}/test/integration/scripts/enroll-itest-root-key.sh"
+    DESTINATION
+    "${CMAKE_INSTALL_BINDIR}"
+  )
+  install(
+    DIRECTORY "${CMAKE_SOURCE_DIR}/test/integration/service/"
+    DESTINATION "${ROBOT_TEST_RESOURCE_DIR}"
+    USE_SOURCE_PERMISSIONS
+  )
+  install(
+    DIRECTORY "${CMAKE_SOURCE_DIR}/test/integration/data"
+    DESTINATION "${ROBOT_TEST_RESOURCE_DIR}"
+    USE_SOURCE_PERMISSIONS
+  )
+endif(INSTALL_ROBOT_TEST_RESOURCES)
