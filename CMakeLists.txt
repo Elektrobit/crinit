@@ -22,7 +22,11 @@ option(MACHINE_ID_EXAMPLE "Build machine-id-gen example application" OFF)
 option(INSTALL_EXAMPLE_CONFIGS "Install example configs." OFF)
 set(EXAMPLE_TASKDIR "crinit/example" CACHE STRING
     "Task directory to be used in example config, relative to the CMake sysconfdir (usually /etc).")
-option(INSTALL_SMOKE_TESTS "Install smoke tests, including configs." ON)
+option(INSTALL_SMOKE_TESTS "Install smoke tests, including necessary configs." OFF)
+set(SMOKE_TEST_SCRIPT_DIR "${CMAKE_INSTALL_LIBDIR}/test/crinit/smoketest" CACHE PATH
+    "Directory where the smoke test scripts will be installed.")
+set(SMOKE_TEST_CONF_DIR "${CMAKE_INSTALL_LIBDIR}/test/crinit/smoketest/config" CACHE PATH
+    "Directory where the smoke test config files will be installed.")
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Debug")
@@ -121,10 +125,26 @@ if(INSTALL_EXAMPLE_CONFIGS)
   install(
     DIRECTORY "${CMAKE_SOURCE_DIR}/config/example/"
     DESTINATION "${CMAKE_INSTALL_SYSCONFDIR}/${EXAMPLE_TASKDIR}"
-    FILES_MATCHING PATTERN "*.crinit" 
+    FILES_MATCHING PATTERN "*.crinit"
   )
   install(
     FILES "${CMAKE_CURRENT_BINARY_DIR}/config/example/default.series"
     DESTINATION "${CMAKE_INSTALL_SYSCONFDIR}/${EXAMPLE_TASKDIR}"
   )
 endif(INSTALL_EXAMPLE_CONFIGS)
+
+if(INSTALL_SMOKE_TESTS)
+  install(
+    DIRECTORY "${CMAKE_SOURCE_DIR}/config/test/"
+    DESTINATION "${SMOKE_TEST_CONF_DIR}"
+    USE_SOURCE_PERMISSIONS
+  )
+  install(
+    DIRECTORY "${CMAKE_SOURCE_DIR}/test/smoketests/"
+    DESTINATION "${SMOKE_TEST_SCRIPT_DIR}"
+    PATTERN "*.sh" PERMISSIONS
+      OWNER_EXECUTE OWNER_WRITE OWNER_READ
+      GROUP_EXECUTE GROUP_READ
+      WORLD_EXECUTE WORLD_READ
+  )
+endif(INSTALL_SMOKE_TESTS)

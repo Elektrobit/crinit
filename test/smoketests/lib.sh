@@ -14,7 +14,7 @@ if [ -z "$SBINDIR" ]; then
     SBINDIR=/sbin
 fi
 if [ -z "$CONFDIR" ]; then
-    CONFDIR="$CMDPATH"/config/test
+    CONFDIR="$CMDPATH"/config
 fi
 if [ -z "$SMOKETESTS_CONFDIR" ]; then
     SMOKETESTS_CONFDIR=/tmp/crinit-smoketests-config
