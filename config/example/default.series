@@ -1,7 +1,0 @@
-# crinit series file, specifying the dirextory in which to look for tasks (dynamic configuration)
-
-TASKDIR = /etc/crinit.d
-DEBUG = NO
-
-# use a 100ms grace period between SIGTERM and SIGKILL during shutdown
-SHUTDOWN_GRACE_PERIOD_US = 100000

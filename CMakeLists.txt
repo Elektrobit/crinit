@@ -20,6 +20,8 @@ option(ENABLE_ANALYZER "Build with -fanalyzer (disables -Werror)" OFF)
 option(ENABLE_WERROR "Build with -Werror" ON)
 option(MACHINE_ID_EXAMPLE "Build machine-id-gen example application" OFF)
 option(INSTALL_EXAMPLE_CONFIGS "Install example configs." OFF)
+set(EXAMPLE_TASKDIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_SYSCONFDIR}/crinit/example" CACHE STRING
+  "Task directory to be used in example config, absolute path.")
 option(INSTALL_SMOKE_TESTS "Install smoke tests, including configs." ON)
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -111,5 +113,15 @@ if(API_DOC)
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     DEPENDS ${doxygen_images}
   )
-  install(DIRECTORY doc/html/ DESTINATION "${CMAKE_INSTALL_DOCDIR}/html")
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/doc/html DESTINATION "${CMAKE_INSTALL_DOCDIR}")
 endif(API_DOC)
+
+if(INSTALL_EXAMPLE_CONFIGS)
+  configure_file(config/example/default.series.in config/example/default.series @ONLY)
+  install(
+    DIRECTORY "${CMAKE_SOURCE_DIR}/config/example/"
+    DESTINATION "${EXAMPLE_TASKDIR}"
+    FILES_MATCHING PATTERN "*.crinit" 
+  )
+  install(FILES "${CMAKE_CURRENT_BINARY_DIR}/config/example/default.series" DESTINATION "${EXAMPLE_TASKDIR}")
+endif(INSTALL_EXAMPLE_CONFIGS)
