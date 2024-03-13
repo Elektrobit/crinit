@@ -79,9 +79,9 @@ cp "$BUILDDIR"/src/crinit-ctl "$RESULTDIR"/bin/
 cp "$BUILDDIR"/src/*.so* "$RESULTDIR"/lib/
 
 # build and copy documentation
-make -C "$BUILDDIR" doxygen
-mkdir -p $RESULTDIR/doc/doxygen
-cp -a doc "$RESULTDIR/doc/doxygen"
+make -C "$BUILDDIR" api-doc
+mkdir -p $RESULTDIR/doc/api
+cp -a doc "$RESULTDIR/doc/api"
 
 # copy client API headers
 cp inc/crinit-client.h "$RESULTDIR"/include
