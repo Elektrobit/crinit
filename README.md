@@ -614,22 +614,17 @@ ci/run-smoketests.sh
 ```
 
 In order to run integration tests, you can use `ci/run-integration-tests.sh`. This will set up two docker containers,
-one for the Robot test framework and one that runes Crinit and Elos, and execute all integration tests inside the robot container.
+one for the Robot test framework and one that runes Crinit and Elos, and execute all integration tests inside the robot
+container.
 
 ```
 ci/run-integration-tests.sh
 ```
 
-You can also manually start both containers with `ci/docker-target-run.sh` and `ci/docker-integration-run.sh`. Adapt the configuration within
-the robot container by changing the ip address of the target container within the robot variables (`test/integration/robot_variables.py`)
-to the current ip of the target container and run the tests by executing `test/integration/scripts/run-integration-tests.sh` inside
-the robot container.
-
-After a successful execution of `ci/build.sh`, it is also possible to create a Debian package using debbuild.
-For the debug configuration, this also takes an additional `Debug` argument.
-```
-ci/package.sh
-```
+You can also manually start both containers with `ci/docker-target-run.sh` and `ci/docker-integration-run.sh`.
+Adapt the configuration within the robot container by changing the ip address of the target container within the robot
+variables (`test/integration/robot_variables.py`) to the current ip of the target container and run the tests by
+executing `test/integration/scripts/run-integration-tests.sh` inside the robot container.
 
 If a manual test build is desired, running the following command sequence
 inside the container will setup the build system and build native binaries.
@@ -639,18 +634,32 @@ cmake -B build/amd64 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=On -DUNIT
 make -C build/amd64
 ```
 
-The Doxygen documentation alone can be built using
-```
-make -C build/amd64 doxygen
-```
-
-The cmake setup also supports compiling-out/in of optional features. Currently, this is
-* Signature support using `-DENABLE_SIGNATURE_SUPPORT={On, Off}`. If set to on, crinit will have a dependency to
+The cmake setup supports some optional features:
+* Crinit signature support using `-DENABLE_SIGNATURE_SUPPORT={On, Off}`. If set to on, crinit will have a dependency to
   [libmbedtls](https://github.com/Mbed-TLS/mbedtls). Default is `On`.
+* Unit tests using `-DUNIT_TESTS={On, Off}`. If set to on, Crinit's unit tests will be built and installed to
+  `UNIT_TEST_INSTALL_DIR`. This will cause a dependency to cmocka 1.1.5 or greater. Default is `On` with installation
+  path `${CMAKE_INSTALL_LIBDIR}/test/crinit/utest`.
+* Build and install API documentation in doxygen HTML format using `-DAPI_DOC={On, Off}`. Needs doxygen. Default is
+  `On`.
+* Build and install an example generator for the machine id file (see above) using `-DMACHINE_ID_EXAMPLE={On, Off}`.
+  Default is `Off`.
+* Install the example configurations from `config/example` to `/etc/${EXAMPLE_TASKDIR}`. Default is `Off`, default
+  installation path is `/etc/crinit/example`.
+* Install the smoke test scripts and configurations, using `-DINSTALL_SMOKE_TESTS={On, Off}`, to the
+  `SMOKE_TEST_SCRIPT_DIR` and `SMOKE_TEST_CONF_DIR`, respectively. Default is `Off` and default installation paths are
+  `${CMAKE_INSTALL_LIBDIR}/test/crinit/smoketest` and `${CMAKE_INSTALL_LIBDIR}/test/crinit/smoketest/config`.
+* Install the necessary resources for a robot test target system using `-DINSTALL_ROBOT_TEST_RESOURCES={On, Off}` to
+  `ROBOT_TEST_RESOURCE_DIR`. Default is `Off` and default install path is `${CMAKE_INSTALL_SYSCONFDIR}/crinit/itest`.
 
 ## Build Requirements
 
-In order to build crinit, there are some libraries, which have to be installed.
+In order to build crinit, som prerequisites have to be installed.
 
-- [safu](https://github.com/elektrobit/safu)
-- optional, for signature support: [MbedTLS](https://github.com/Mbed-TLS/mbedtls)
+- a modern GCC toolchain with C17 support
+- cmake >= 3.21
+- re2c >= 3.0
+- [safu](https://github.com/elektrobit/safu) >= 0.49.3
+- optional, for signature support: [MbedTLS](https://github.com/Mbed-TLS/mbedtls) 2.28.x or 3.x
+- optional, for unit tests: cmocka >= 1.1.5
+- optional, for HTML API documentation: Doxygen
