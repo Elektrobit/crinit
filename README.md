@@ -651,6 +651,8 @@ The cmake setup supports some optional features:
   `${CMAKE_INSTALL_LIBDIR}/test/crinit/smoketest` and `${CMAKE_INSTALL_LIBDIR}/test/crinit/smoketest/config`.
 * Install the necessary resources for a robot test target system using `-DINSTALL_ROBOT_TEST_RESOURCES={On, Off}` to
   `ROBOT_TEST_RESOURCE_DIR`. Default is `Off` and default install path is `${CMAKE_INSTALL_SYSCONFDIR}/crinit/itest`.
+* Set the installation path for the symbolic links for `reboot` and `poweroff` using `PWR_SYMLINKS_PATH`. Default is
+  `${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_SBINDIR}`
 
 ## Build Requirements
 

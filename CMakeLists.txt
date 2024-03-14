@@ -40,6 +40,12 @@ set(
   CACHE PATH
   "Directory for the robot test target resources to be installed. Note: The robot test scripts assume /etc/crinit/itest"
 )
+set(
+  PWR_SYMLINKS_PATH
+  "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_SBINDIR}"
+  CACHE PATH
+  "Directory where to install symlinks to crinit-ctl for reboot and poweroff. Default: ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_SBINDIR}"
+)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Debug")
