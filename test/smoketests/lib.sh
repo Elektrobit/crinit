@@ -40,7 +40,7 @@ crinit_config_setup() {
 }
 
 crinit_daemon_start() {
-    set -- "${SBINDIR}"/crinit "$@"
+    set -- "${BINDIR}"/crinit "$@"
 
     if [ -n "$SMOKETESTS_VALGRIND" ] && [ "$SMOKETESTS_VALGRIND" -eq 1 ]; then
         set -- valgrind --leak-check=full --log-file="${SMOKETESTS_RESULTDIR}/${SMOKETESTS_NAME}-valgrind.log" "$@"
