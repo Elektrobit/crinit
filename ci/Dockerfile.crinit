@@ -13,21 +13,21 @@ ARG EB_GIT_SOURCES=https://github.com/Elektrobit/
 
 ARG SAMCONF_REPO_NAME=samconf.git
 ARG SAMCONF_REPO_PATH=${EB_GIT_SOURCES}/${SAMCONF_REPO_NAME}
-ARG SAMCONF_REPO_REF=integration
+ARG SAMCONF_REPO_REF=main
 
 ARG SAFU_REPO_NAME=safu.git
 ARG SAFU_REPO_PATH=${EB_GIT_SOURCES}/${SAFU_REPO_NAME}
-ARG SAFU_REPO_REF=integration
+ARG SAFU_REPO_REF=main
 
 ARG ELOS_REPO_NAME=elos.git
 ARG ELOS_REPO_PATH=${EB_GIT_SOURCES}/${ELOS_REPO_NAME}
-ARG ELOS_REPO_REF=integration
+ARG ELOS_REPO_REF=main
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
  && apt-get install -y sudo vim locales uuid-runtime keyutils \
  build-essential binutils-dev pkg-config cmake valgrind strace \
- git wget curl netcat net-tools ssh libssl-dev openssl re2c libcmocka-dev \
+ git wget curl netcat net-tools ssh libssl-dev openssl re2c \
  libjson-c-dev libmnl-dev libsqlite3-0 libsqlite3-dev libesmtp-dev expat liblog4c-dev \
  libmbedtls-dev \
  && rm -rf /var/lib/apt/lists/*
@@ -77,22 +77,19 @@ RUN git clone ${ELOS_REPO_PATH} \
 
 # Install crinit
 RUN cmake -B build . \
- -DUNIT_TEST=Off \
+ -DUNIT_TESTS=Off \
+ -DAPI_DOC=Off \
  -DCMAKE_BUILD_TYPE=Release \
  -DCMAKE_INSTALL_PREFIX=/usr \
+ -DCMAKE_INSTALL_SYSCONFDIR=/etc \
  -DCMAKE_VERBOSE_MAKEFILE=On \
+ -DINSTALL_ROBOT_TEST_RESOURCES=On \
  -DENABLE_ASAN=OFF \
  -DENABLE_ANALYZER=OFF \
  -DENABLE_WERROR=OFF \
  . \
  && make -C build install
 
-RUN mkdir -p /etc/crinit/itest/data
-COPY ./test/integration/service/ /etc/crinit/itest/
-COPY ./test/integration/data/ /etc/crinit/itest/data/
-RUN mkdir -p /usr/local/bin
-COPY ./test/integration/scripts/enroll-itest-root-key.sh /usr/local/bin/
-RUN chmod -R +rX /etc/crinit
 RUN uuidgen > /etc/machine-id
 
 RUN sudo ldconfig
