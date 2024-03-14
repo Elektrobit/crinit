@@ -126,6 +126,7 @@ if(API_DOC)
 
   add_custom_target(
     api-doc
+    ALL
     COMMAND doxygen
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     DEPENDS ${doxygen_images}
