@@ -36,7 +36,7 @@ option(
 )
 set(
   ROBOT_TEST_RESOURCE_DIR
-  "etc/crinit/itest"
+  "${CMAKE_INSTALL_SYSCONFDIR}/crinit/itest"
   CACHE PATH
   "Directory for the robot test target resources to be installed. Note: The robot test scripts assume /etc/crinit/itest"
 )
