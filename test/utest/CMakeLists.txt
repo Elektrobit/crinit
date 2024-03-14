@@ -4,9 +4,8 @@ find_package(cmocka 1.1.5 REQUIRED)
 function(create_unit_test)
   cmake_parse_arguments(PARSED_ARGS "" "NAME" "SOURCES;INCLUDES;LIBRARIES;DEFINITIONS;WRAPS" ${ARGN})
   get_filename_component(UNIT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../.. ABSOLUTE)
-  get_filename_component(UNIT_NAME ${UNIT_DIR} NAME)
 
-  message(STATUS "Create unit test ${PARSED_ARGS_NAME} for ${UNIT_NAME}")
+  message(STATUS "Create unit test ${PARSED_ARGS_NAME}")
   add_executable(${PARSED_ARGS_NAME} ${PARSED_ARGS_SOURCES})
 
   target_link_libraries(
@@ -37,10 +36,7 @@ function(create_unit_test)
 
   add_test(NAME ${PARSED_ARGS_NAME} COMMAND ${UNIT_TEST_INTERPRETER} ${PARSED_ARGS_NAME})
 
-  install(
-    TARGETS ${PARSED_ARGS_NAME} DESTINATION
-    ${CMAKE_INSTALL_LIBDIR}/test/utest/${PROJECT_NAME}/${UNIT_NAME}
-  )
+  install(TARGETS ${PARSED_ARGS_NAME} DESTINATION ${UNIT_TEST_INSTALL_DIR})
 endfunction()
 
 add_subdirectory(mocks)

@@ -14,6 +14,8 @@ include(GNUInstallDirs)
 
 option(ENABLE_SIGNATURE_SUPPORT "Enable signature support using MbedTLS" ON)
 option(UNIT_TESTS "Build unit tests" ON)
+set(UNIT_TEST_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/test/${PROJECT_NAME}/utest" CACHE PATH
+  "Directory where the built unit tests will be installed.")
 option(API_DOC "Build API documentation" ON)
 option(ENABLE_ASAN "Build with -fsanitize=address" OFF)
 option(ENABLE_ANALYZER "Build with -fanalyzer (disables -Werror)" OFF)
@@ -36,7 +38,8 @@ set(
   ROBOT_TEST_RESOURCE_DIR
   "etc/crinit/itest"
   CACHE PATH
-  "Directory for the robot test target resources to be installed. Note: The robot test scripts assume /etc/crinit/itest")
+  "Directory for the robot test target resources to be installed. Note: The robot test scripts assume /etc/crinit/itest"
+)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Debug")
