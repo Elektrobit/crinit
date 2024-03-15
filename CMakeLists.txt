@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.21)
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE AND DEFINED ENV{CMAKE_TOOLCHAIN_FILE})
   set(CMAKE_TOOLCHAIN_FILE $ENV{CMAKE_TOOLCHAIN_FILE})
 endif()
-project(crinit VERSION 0.14.3)
+project(crinit VERSION 0.14.4)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -14,10 +14,38 @@ include(GNUInstallDirs)
 
 option(ENABLE_SIGNATURE_SUPPORT "Enable signature support using MbedTLS" ON)
 option(UNIT_TESTS "Build unit tests" ON)
+set(UNIT_TEST_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/test/${PROJECT_NAME}/utest" CACHE PATH
+  "Directory where the built unit tests will be installed.")
+option(API_DOC "Build API documentation" ON)
 option(ENABLE_ASAN "Build with -fsanitize=address" OFF)
 option(ENABLE_ANALYZER "Build with -fanalyzer (disables -Werror)" OFF)
 option(ENABLE_WERROR "Build with -Werror" ON)
-option(MACHINE_ID_EXAMPLE "Build machine-id-gen example application" ON)
+option(MACHINE_ID_EXAMPLE "Build machine-id-gen example application" OFF)
+option(INSTALL_EXAMPLE_CONFIGS "Install example configs." OFF)
+set(EXAMPLE_TASKDIR "crinit/example" CACHE STRING
+  "Task directory to be used in example config, relative to the CMake sysconfdir (usually /etc).")
+option(INSTALL_SMOKE_TESTS "Install smoke tests, including necessary configs." OFF)
+set(SMOKE_TEST_SCRIPT_DIR "${CMAKE_INSTALL_LIBDIR}/test/crinit/smoketest" CACHE PATH
+  "Directory where the smoke test scripts will be installed.")
+set(SMOKE_TEST_CONF_DIR "${CMAKE_INSTALL_LIBDIR}/test/crinit/smoketest/config" CACHE PATH
+  "Directory where the smoke test config files will be installed.")
+option(
+  INSTALL_ROBOT_TEST_RESOURCES
+  "Install target resources (configs, data, target scripts) for robot integration tests to run."
+  OFF
+)
+set(
+  ROBOT_TEST_RESOURCE_DIR
+  "${CMAKE_INSTALL_SYSCONFDIR}/crinit/itest"
+  CACHE PATH
+  "Directory for the robot test target resources to be installed. Note: The robot test scripts assume /etc/crinit/itest"
+)
+set(
+  PWR_SYMLINKS_PATH
+  "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_SBINDIR}"
+  CACHE PATH
+  "Directory where to install symlinks to crinit-ctl for reboot and poweroff. Default: ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_SBINDIR}"
+)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Debug")
@@ -84,9 +112,10 @@ if(UNIT_TESTS)
   add_subdirectory(test/utest)
 endif(UNIT_TESTS)
 
-find_package(Doxygen)
-file(GLOB images "images/*.plantuml")
-foreach(img ${images})
+if(API_DOC)
+  find_package(Doxygen REQUIRED)
+  file(GLOB images "images/*.plantuml")
+  foreach(img ${images})
     get_filename_component(output ${img} NAME_WLE)
     add_custom_command(
       OUTPUT
@@ -99,23 +128,62 @@ foreach(img ${images})
        "Running plantuml to generate: ${output}"
     )
     list(APPEND doxygen_images ${CMAKE_SOURCE_DIR}/doc/html/images/${output}.svg)
-endforeach()
-add_custom_target(
-  doxygen
-  COMMAND doxygen
-  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-  DEPENDS ${doxygen_images}
-)
+  endforeach()
 
-add_custom_target(
-  debbuild
-  COMMAND
-    mkdir -p ${PROJECT_BINARY_DIR}/debbuild/BUILD ${PROJECT_BINARY_DIR}/debbuild/BUILDROOT ${PROJECT_BINARY_DIR}/debbuild/SPECS ${PROJECT_BINARY_DIR}/debbuild/SOURCES ${PROJECT_BINARY_DIR}/debbuild/SDEBS ${PROJECT_BINARY_DIR}/debbuild/DEBS &&
-    cp ${PROJECT_SOURCE_DIR}/packaging/nautilos/crinit.spec ${PROJECT_BINARY_DIR}/debbuild/SPECS/ &&
-    tar -czf ${PROJECT_BINARY_DIR}/debbuild/SOURCES/crinit.tar.gz --transform "s,^,crinit/," src/ inc/ test/ config/ deps/ images/ CMakeModules/ CMakeLists.txt Doxyfile README.md &&
-    cd ${PROJECT_BINARY_DIR}/debbuild &&
-    debbuild
-      --define "_topdir ${PROJECT_BINARY_DIR}/debbuild"
-      -vv -ba SPECS/crinit.spec
-  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-)
+  add_custom_target(
+    api-doc
+    ALL
+    COMMAND doxygen
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    DEPENDS ${doxygen_images}
+  )
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/doc/html DESTINATION "${CMAKE_INSTALL_DOCDIR}")
+endif(API_DOC)
+
+if(INSTALL_EXAMPLE_CONFIGS)
+  configure_file(config/example/default.series.in config/example/default.series @ONLY)
+  install(
+    DIRECTORY "${CMAKE_SOURCE_DIR}/config/example/"
+    DESTINATION "${CMAKE_INSTALL_SYSCONFDIR}/${EXAMPLE_TASKDIR}"
+    FILES_MATCHING PATTERN "*.crinit"
+  )
+  install(
+    FILES "${CMAKE_CURRENT_BINARY_DIR}/config/example/default.series"
+    DESTINATION "${CMAKE_INSTALL_SYSCONFDIR}/${EXAMPLE_TASKDIR}"
+  )
+endif(INSTALL_EXAMPLE_CONFIGS)
+
+if(INSTALL_SMOKE_TESTS)
+  install(
+    DIRECTORY "${CMAKE_SOURCE_DIR}/config/test/"
+    DESTINATION "${SMOKE_TEST_CONF_DIR}"
+    USE_SOURCE_PERMISSIONS
+  )
+  install(
+    DIRECTORY "${CMAKE_SOURCE_DIR}/test/smoketests/"
+    DESTINATION "${SMOKE_TEST_SCRIPT_DIR}"
+    PATTERN "*.sh" PERMISSIONS
+      OWNER_EXECUTE OWNER_WRITE OWNER_READ
+      GROUP_EXECUTE GROUP_READ
+      WORLD_EXECUTE WORLD_READ
+  )
+endif(INSTALL_SMOKE_TESTS)
+
+if(INSTALL_ROBOT_TEST_RESOURCES)
+  install(
+    PROGRAMS
+    "${CMAKE_SOURCE_DIR}/test/integration/scripts/enroll-itest-root-key.sh"
+    DESTINATION
+    "${CMAKE_INSTALL_BINDIR}"
+  )
+  install(
+    DIRECTORY "${CMAKE_SOURCE_DIR}/test/integration/service/"
+    DESTINATION "${ROBOT_TEST_RESOURCE_DIR}"
+    USE_SOURCE_PERMISSIONS
+  )
+  install(
+    DIRECTORY "${CMAKE_SOURCE_DIR}/test/integration/data"
+    DESTINATION "${ROBOT_TEST_RESOURCE_DIR}"
+    USE_SOURCE_PERMISSIONS
+  )
+endif(INSTALL_ROBOT_TEST_RESOURCES)

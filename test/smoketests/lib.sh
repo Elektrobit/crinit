@@ -14,7 +14,7 @@ if [ -z "$SBINDIR" ]; then
     SBINDIR=/sbin
 fi
 if [ -z "$CONFDIR" ]; then
-    CONFDIR="$CMDPATH"/config/test
+    CONFDIR="$CMDPATH"/config
 fi
 if [ -z "$SMOKETESTS_CONFDIR" ]; then
     SMOKETESTS_CONFDIR=/tmp/crinit-smoketests-config
@@ -40,7 +40,7 @@ crinit_config_setup() {
 }
 
 crinit_daemon_start() {
-    set -- "${SBINDIR}"/crinit "$@"
+    set -- "${BINDIR}"/crinit "$@"
 
     if [ -n "$SMOKETESTS_VALGRIND" ] && [ "$SMOKETESTS_VALGRIND" -eq 1 ]; then
         set -- valgrind --leak-check=full --log-file="${SMOKETESTS_RESULTDIR}/${SMOKETESTS_NAME}-valgrind.log" "$@"

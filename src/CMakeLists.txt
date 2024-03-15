@@ -115,18 +115,23 @@ target_link_libraries(
 
 # machine-id-gen
 if(MACHINE_ID_EXAMPLE)
- add_executable(
+  add_executable(
     machine-id-gen
     machine-id-gen.c
- )
+  )
 endif(MACHINE_ID_EXAMPLE)
 
-# Install crinit
-install(TARGETS crinit DESTINATION ${CMAKE_INSTALL_SBINDIR})
+# Installation
+install(TARGETS crinit DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(TARGETS crinit-ctl DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-install(TARGETS crinit-ctl machine-id-gen DESTINATION ${CMAKE_INSTALL_BINDIR})
-install(CODE "execute_process( COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/crinit-ctl /${CMAKE_INSTALL_SBINDIR}/poweroff )")
-install(CODE "execute_process( COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/crinit-ctl /${CMAKE_INSTALL_SBINDIR}/reboot )")
+if(MACHINE_ID_EXAMPLE)
+  install(TARGETS machine-id-gen DESTINATION ${CMAKE_INSTALL_BINDIR})
+endif(MACHINE_ID_EXAMPLE)
+
+install(CODE "execute_process( COMMAND ${CMAKE_COMMAND} -E make_directory ${PWR_SYMLINKS_PATH} )")
+install(CODE "execute_process( COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/crinit-ctl ${PWR_SYMLINKS_PATH}/poweroff )")
+install(CODE "execute_process( COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/crinit-ctl ${PWR_SYMLINKS_PATH}/reboot )")
 
 install(TARGETS crinit-client
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}

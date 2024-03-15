@@ -67,6 +67,7 @@ cmake -B "$BUILDDIR" \
     -DCMAKE_BUILD_TYPE="$BUILD_TYPE" \
     -DCMAKE_VERBOSE_MAKEFILE=On \
     -DUNIT_TESTS=On \
+    -DMACHINE_ID_EXAMPLE=On \
     -DENABLE_ASAN="$ENABLE_ASAN" \
     -DENABLE_ANALYZER="$ENABLE_ANALYZER" \
     -DENABLE_WERROR="$ENABLE_WERROR" \
@@ -79,9 +80,9 @@ cp "$BUILDDIR"/src/crinit-ctl "$RESULTDIR"/bin/
 cp "$BUILDDIR"/src/*.so* "$RESULTDIR"/lib/
 
 # build and copy documentation
-make -C "$BUILDDIR" doxygen
-mkdir -p $RESULTDIR/doc/doxygen
-cp -a doc "$RESULTDIR/doc/doxygen"
+make -C "$BUILDDIR" api-doc
+mkdir -p $RESULTDIR/doc/api
+cp -a doc "$RESULTDIR/doc/api"
 
 # copy client API headers
 cp inc/crinit-client.h "$RESULTDIR"/include

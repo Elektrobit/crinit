@@ -14,7 +14,7 @@ class CrinitLibrary(object):
     with target crinit-ctl.
     """
 
-    CRINIT_BIN = "/sbin/crinit"
+    CRINIT_BIN = "/usr/bin/crinit"
     CRINIT_SERIES = "/etc/crinit/itest/itest.series"
     WAIT_TIMEOUT = 30
 

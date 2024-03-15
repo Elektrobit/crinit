@@ -149,7 +149,8 @@ crinitElosVirtualTable_t *crinitElosGetVTable(void);
 /**
  * Disconnect from elos daemon.
  *
- * @param session Session to disconnect.
+ * @param session      Session to disconnect.
+ * @param sessionLock  The session lock.
  *
  * @return Returns 0 on success, -1 otherwise.
  */
