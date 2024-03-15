@@ -614,7 +614,7 @@ ci/run-smoketests.sh
 ```
 
 In order to run integration tests, you can use `ci/run-integration-tests.sh`. This will set up two docker containers,
-one for the Robot test framework and one that runes Crinit and Elos, and execute all integration tests inside the robot
+one for the Robot test framework and one that runs Crinit and Elos, and executes all integration tests inside the robot
 container.
 
 ```
@@ -656,7 +656,7 @@ The cmake setup supports some optional features:
 
 ## Build Requirements
 
-In order to build crinit, som prerequisites have to be installed.
+In order to build crinit, some prerequisites have to be installed.
 
 - a modern GCC toolchain with C17 support
 - cmake >= 3.21
