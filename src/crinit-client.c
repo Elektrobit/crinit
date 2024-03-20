@@ -337,12 +337,8 @@ CRINIT_LIB_EXPORTED int crinitClientTaskRestart(const char *taskName) {
     return ret;
 }
 
-CRINIT_LIB_EXPORTED int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *pid, const char *taskName) {
-    if (taskName == NULL || s == NULL) {
-        crinitErrPrint("Pointer arguments must not be NULL");
-        return -1;
-    }
-
+CRINIT_LIB_EXPORTED int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *pid, struct timespec *ct,
+                                                  struct timespec *st, struct timespec *et, const char *taskName) {
     crinitRtimCmd_t cmd, res;
     if (crinitBuildRtimCmd(&cmd, CRINIT_RTIMCMD_C_STATUS, 1, taskName) == -1) {
         crinitErrPrint("Could not build RtimCmd to send to Crinit.");
@@ -356,9 +352,25 @@ CRINIT_LIB_EXPORTED int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *p
     }
     crinitDestroyRtimCmd(&cmd);
 
-    if (crinitResponseCheck(&res, CRINIT_RTIMCMD_R_STATUS) == 0 && res.argc == 3) {
-        *s = strtoul(res.args[1], NULL, 10);
-        *pid = strtol(res.args[2], NULL, 10);
+    if (crinitResponseCheck(&res, CRINIT_RTIMCMD_R_STATUS) == 0 && res.argc == 6) {
+        if (s != NULL) {
+            *s = strtoul(res.args[1], NULL, 10);
+        }
+        if (pid != NULL) {
+            *pid = strtol(res.args[2], NULL, 10);
+        }
+        if (ct != NULL) {
+            ct->tv_sec = strtoll(res.args[3], NULL, 10);
+            ct->tv_nsec = strtol(strchr(res.args[3], '.') + 1, NULL, 10);
+        }
+        if (st != NULL) {
+            st->tv_sec = strtoll(res.args[4], NULL, 10);
+            st->tv_nsec = strtol(strchr(res.args[4], '.') + 1, NULL, 10);
+        }
+        if (et != NULL) {
+            et->tv_sec = strtoll(res.args[5], NULL, 10);
+            et->tv_nsec = strtol(strchr(res.args[5], '.') + 1, NULL, 10);
+        }
         crinitDestroyRtimCmd(&res);
         return 0;
     }
@@ -410,9 +422,10 @@ CRINIT_LIB_EXPORTED int crinitClientGetTaskList(crinitTaskList_t **tlptr) {
     for (size_t i = 0; i < res.argc - 1; i++) {
         const char *name = res.args[i + 1];
         pid_t pid = -1;
+        struct timespec ct = {0, 0}, st = {0, 0}, et = {0, 0};
         crinitTaskState_t state = 0;
 
-        if (crinitClientTaskGetStatus(&state, &pid, name) == -1) {
+        if (crinitClientTaskGetStatus(&state, &pid, &ct, &st, &et, name) == -1) {
             crinitErrPrint("Querying status of task \'%s\' failed.", name);
             ret = -1;
             goto fail_status;
@@ -426,6 +439,9 @@ CRINIT_LIB_EXPORTED int crinitClientGetTaskList(crinitTaskList_t **tlptr) {
         }
         tl->tasks[i].pid = pid;
         tl->tasks[i].state = state;
+        tl->tasks[i].createTime = ct;
+        tl->tasks[i].startTime = st;
+        tl->tasks[i].endTime = et;
         tl->numTasks++;
     }
 

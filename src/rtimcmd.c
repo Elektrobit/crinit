@@ -998,24 +998,52 @@ static int crinitExecRtimCmdStatus(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, co
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STATUS, 2, CRINIT_RTIMCMD_RES_ERR,
                                   "Wrong number of arguments.");
     }
-    crinitTaskState_t s = 0;
-    pid_t pid = -1;
+    crinitTaskState_t s;
+    pid_t pid;
+    struct timespec creation, start, end;
 
-    if (crinitTaskDBGetTaskStateAndPID(ctx, &s, &pid, cmd->args[0]) == -1) {
+    crinitTask_t *pTask = crinitTaskDBBorrowTask(ctx, cmd->args[0]);
+    if (pTask == NULL) {
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STATUS, 2, CRINIT_RTIMCMD_RES_ERR,
-                                  "Could not get state and PID of task.");
+                                  "Could not get access to requested task in TaskDB.");
     }
 
-    size_t resStrLen = snprintf(NULL, 0, "%lu\n%d", s, pid) + 1;
+    s = pTask->state;
+    pid = pTask->pid;
+    creation = pTask->createTime;
+    start = pTask->startTime;
+    end = pTask->endTime;
+
+    if (crinitTaskDBRemit(ctx) == -1) {
+        crinitErrPrint(
+            "Could not release mutex on TaskDB. This should not happen. Will try to continue but Crinit may lock up.");
+    }
+
+    const char *resFmt = "%lu\n%d\n%lld.%.9ld\n%lld.%.9ld\n%lld.%.9ld";
+    size_t resStrLen = 1 + snprintf(NULL, 0, resFmt, s, pid, creation.tv_sec, creation.tv_nsec, start.tv_sec,
+                                    start.tv_nsec, end.tv_sec, end.tv_nsec);
     char *resStr = malloc(resStrLen);
     if (resStr == NULL) {
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STATUS, 2, CRINIT_RTIMCMD_RES_ERR, "Memory allocation error.");
     }
-    snprintf(resStr, resStrLen, "%lu\n%d", s, pid);
+    snprintf(resStr, resStrLen, resFmt, s, pid, creation.tv_sec, creation.tv_nsec, start.tv_sec, start.tv_nsec,
+             end.tv_sec, end.tv_nsec);
+
     char *pidStr = strchr(resStr, '\n');
     *pidStr = '\0';
     pidStr++;
-    if (crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STATUS, 3, CRINIT_RTIMCMD_RES_OK, resStr, pidStr) == -1) {
+    char *ctStr = strchr(pidStr, '\n');
+    *ctStr = '\0';
+    ctStr++;
+    char *stStr = strchr(ctStr, '\n');
+    *stStr = '\0';
+    stStr++;
+    char *etStr = strchr(stStr, '\n');
+    *etStr = '\0';
+    etStr++;
+
+    if (crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STATUS, 6, CRINIT_RTIMCMD_RES_OK, resStr, pidStr, ctStr, stStr,
+                           etStr) == -1) {
         free(resStr);
         return -1;
     }

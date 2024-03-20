@@ -216,6 +216,34 @@ int crinitTaskDBGetTaskPID(crinitTaskDB_t *ctx, pid_t *pid, const char *taskName
 int crinitTaskDBGetTaskStateAndPID(crinitTaskDB_t *ctx, crinitTaskState_t *s, pid_t *pid, const char *taskName);
 
 /**
+ * Provide direct thread-safe access to a task within a task database
+ *
+ * If a task with the given name is found within the task database context, the calling thread will hold an exclusive
+ * lock on the context and get a reference to the task in question via return value. After the calling thread has
+ * finished its operations on the global option storage, it must release the lock using crinitTaskDBRemit().
+ *
+ * If the function returns an error (`NULL`), no database lock is acquired.
+ *
+ * As the lock is held on the whole task database, operations in the critical section between crinitTaskDBBorrowTask
+ * and crinitTaskDBRemit() must be kept short to avoid performance issues.
+ *
+ * @param ctx       The TaskDB containing the task to borrow.
+ * @param taskName  The name of the task to borrow.
+ *
+ * @return  A pointer to the task with \a taskName within the task database context on success, NULL on any error.
+ */
+crinitTask_t *crinitTaskDBBorrowTask(crinitTaskDB_t *ctx, const char *taskName);
+/**
+ * Release the lock on the task database acquired via crinitTaskDBBorrowTask(). The borrowed task reference may not be
+ * used anymore.
+ *
+ * @param ctx  The TaskDB to release the lock from.
+ *
+ * @return  0 on success, -1 if the lock could not be released.
+ */
+int crinitTaskDBRemit(crinitTaskDB_t *ctx);
+
+/**
  * Run crinitTaskDB_t::spawnFunc for each startable task in a task database.
  *
  * A task is startable if and only if it has no remaining crinitTask_t::deps and it has either not been started before

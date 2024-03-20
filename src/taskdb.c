@@ -208,6 +208,15 @@ int crinitTaskDBSetSpawnInhibit(crinitTaskDB_t *ctx, bool inh) {
 int crinitTaskDBSetTaskState(crinitTaskDB_t *ctx, crinitTaskState_t s, const char *taskName) {
     crinitNullCheck(-1, ctx, taskName);
 
+    struct timespec timestamp = {0, 0};
+    // Check if we need to timestamp this state change.
+    if (s & (CRINIT_TASK_STATE_RUNNING | CRINIT_TASK_STATE_DONE | CRINIT_TASK_STATE_FAILED)) {
+        if (clock_gettime(CLOCK_MONOTONIC, &timestamp) == -1) {
+            crinitErrnoPrint("Could not measure timestamp for task '%s'. Will set to 0 (undefined) and carry on.",
+                             taskName);
+        }
+    }
+
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
         crinitErrnoPrint("Could not queue up for mutex lock.");
         return -1;
@@ -219,8 +228,12 @@ int crinitTaskDBSetTaskState(crinitTaskDB_t *ctx, crinitTaskState_t s, const cha
         s &= ~CRINIT_TASK_STATE_NOTIFIED;  // Here we don't care if we got the state via notification or directly.
         if (s == CRINIT_TASK_STATE_FAILED) {
             pTask->failCount++;
+            memcpy(&pTask->endTime, &timestamp, sizeof(pTask->endTime));
         } else if (s == CRINIT_TASK_STATE_DONE) {
             pTask->failCount = 0;
+            memcpy(&pTask->endTime, &timestamp, sizeof(pTask->endTime));
+        } else if (s == CRINIT_TASK_STATE_RUNNING) {
+            memcpy(&pTask->startTime, &timestamp, sizeof(pTask->startTime));
         }
         pthread_cond_broadcast(&ctx->changed);
         pthread_mutex_unlock(&ctx->lock);
@@ -311,6 +324,36 @@ int crinitTaskDBGetTaskStateAndPID(crinitTaskDB_t *ctx, crinitTaskState_t *s, pi
     pthread_mutex_unlock(&ctx->lock);
     crinitErrPrint("Could not get TaskState of Task \'%s\' as it does not exist in TaskDB.", taskName);
     return -1;
+}
+
+crinitTask_t *crinitTaskDBBorrowTask(crinitTaskDB_t *ctx, const char *taskName) {
+    crinitNullCheck(NULL, ctx, taskName);
+
+    if ((errno = pthread_mutex_lock(&ctx->lock)) == -1) {
+        crinitErrnoPrint("Could not queue up for mutex lock.");
+        return NULL;
+    }
+
+    crinitTask_t *pTask;
+    if (crinitFindTask(&pTask, taskName, ctx) == -1) {
+        crinitErrPrint("Could not find task '%s' in TaskDB.", taskName);
+        pthread_mutex_unlock(&ctx->lock);
+        return NULL;
+    }
+    return pTask;
+}
+
+int crinitTaskDBRemit(crinitTaskDB_t *ctx) {
+    crinitNullCheck(-1, ctx);
+
+    // This *could* be called from a thread which does not actually own the mutex, so we need to check if
+    // pthread_mutex_unlock() fails.
+    errno = pthread_mutex_unlock(&ctx->lock);
+    if (errno != 0) {
+        crinitErrnoPrint("Could not unlock task database mutex.");
+        return -1;
+    }
+    return 0;
 }
 
 int crinitTaskDBAddDepToTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep, const char *taskName) {

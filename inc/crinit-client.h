@@ -44,7 +44,8 @@ void crinitClientSetInfoStream(FILE *infoStream);
  *
  * See also crinitVersion_t. Depending on the build environment, crinitVersion_t::git may be an empty string.
  *
- * @param v  Return pointer to an crinitVersion_t in which the crinit daemon's version will be written if the query is successful.
+ * @param v  Return pointer to an crinitVersion_t in which the crinit daemon's version will be written if the query is
+ * successful.
  *
  * @return 0 on success, -1 otherwise
  */
@@ -120,7 +121,8 @@ int sd_notifyf(int unset_environment, const char *format, ...);  // NOLINT(reada
  *
  * Using \a forceDeps, it is possible to specify a DEPENDS value which overrides the one in the configuration file. An
  * empty string will cause the task to be started immediately. Specifying `@ctl:enable` will let the task wait for
- * crinitClientTaskEnable(). If the dependencies from the task config file should be used, \a forceDeps must be `NULL` or
+ * crinitClientTaskEnable(). If the dependencies from the task config file should be used, \a forceDeps must be `NULL`
+ * or
  * `"@unchanged"`.
  *
  * Note, that Crinit does not keep track of already fulfilled dependencies, i.e. in order to not be blocked forever a
@@ -142,7 +144,7 @@ int crinitClientTaskAdd(const char *configFilePath, bool overwrite, const char *
  * If successful, the task configurations and options in the series file will be loaded same as if the series file was
  * specified on startup. Already loaded tasks from a prior series file or loaded via crinit-ctl with the same names will
  * be overwritten if and only if \a overwriteTasks is set to `true`. Otherwise, task name collisions are an error.
- * 
+ *
  * Config options from the newly loaded file generally take precedence over the existing values.
  *
  * Crinit will spawn no new processes during loading of a series file in order to preserve ordering through
@@ -217,15 +219,21 @@ int crinitClientTaskKill(const char *taskName);
  */
 int crinitClientTaskRestart(const char *taskName);
 /**
- * Request Crinit to report the current state and PID of a task from its TaskDB.
+ * Request Crinit to report the current state, PID, and timestamps of a task from its TaskDB.
+ *
+ * Timestamps of events that have not yet happened are always `{0,0}`.
  *
  * @param s         Return pointer for the task's state.
  * @param pid       Return pointer for the task's PID.
+ * @param ct        The time when the task was created (loaded/parsed).
+ * @param st        The time when the task was last started (i.e. became running).
+ * @param et        The time when the task last ended (i.e. failed or was done).
  * @param taskName  The name of the task.
  *
  * @return 0 on success, -1 on error
  */
-int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *pid, const char *taskName);
+int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *pid, struct timespec *ct, struct timespec *st,
+                              struct timespec *et, const char *taskName);
 /**
  * Request Crinit to report the list of task names from its TaskDB.
  *
