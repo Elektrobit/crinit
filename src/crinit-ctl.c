@@ -31,7 +31,10 @@
  *    restart <TASK_NAME>
  *            - Resets the status bits of <TASK_NAME> if it is DONE or FAILED.
  *     status <TASK_NAME>
- *            - Queries status bits and PID of <TASK_NAME>.
+ *            - Queries status bits, PID, and timestamps of <TASK_NAME>. The CTime, STime, and ETime fields
+ *              represent the times the task was Created (loaded/parsed), last Started (became running), and
+ *              last Ended (failed or is done). If the event has not occurred yet, the timestamp's value will
+ *              be 'n/a'.
  *     notify <TASK_NAME> <"SD_NOTIFY_STRING">
  *            - Will send an sd_notify-style status report to Crinit. Only MAINPID and READY are
  *              implemented. See the sd_notify documentation for their meaning.
@@ -51,6 +54,7 @@
  * ~~~
  */
 #include <getopt.h>
+#include <inttypes.h>
 #include <libgen.h>
 #include <stdlib.h>
 #include <string.h>
@@ -60,6 +64,9 @@
 #include "crinit-client.h"
 #include "logio.h"
 #include "version.h"
+
+#define TIME_REPR_MAX_LEN 64                          ///< Maximum length of task time represented as a string.
+#define TIME_REPR_PRINTF_FORMAT "%" PRId64 ".%.9lds"  ///< Format string to represent a task timespec.
 
 /**
  * Print usage information.
@@ -246,13 +253,21 @@ int main(int argc, char *argv[]) {
         }
         crinitTaskState_t s = 0;
         pid_t pid = -1;
+        struct timespec ct = {0, 0}, st = {0, 0}, et = {0, 0};
+        char ctStr[TIME_REPR_MAX_LEN], stStr[TIME_REPR_MAX_LEN], etStr[TIME_REPR_MAX_LEN];
         const char *state;
-        if (crinitClientTaskGetStatus(&s, &pid, getoptArgv[optind]) == -1) {
+        if (crinitClientTaskGetStatus(&s, &pid, &ct, &st, &et, getoptArgv[optind]) == -1) {
             crinitErrPrint("Querying status of task \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
         }
         state = crinitTaskStateToStr(s);
-        crinitInfoPrint("Status: %s, PID: %d", state, pid);
+        snprintf(ctStr, sizeof(ctStr), (ct.tv_sec == 0 && ct.tv_nsec == 0) ? "n/a" : TIME_REPR_PRINTF_FORMAT, ct.tv_sec,
+                 ct.tv_nsec);
+        snprintf(stStr, sizeof(stStr), (st.tv_sec == 0 && st.tv_nsec == 0) ? "n/a" : TIME_REPR_PRINTF_FORMAT, st.tv_sec,
+                 st.tv_nsec);
+        snprintf(etStr, sizeof(etStr), (et.tv_sec == 0 && et.tv_nsec == 0) ? "n/a" : TIME_REPR_PRINTF_FORMAT, et.tv_sec,
+                 et.tv_nsec);
+        crinitInfoPrint("Status: %s, PID: %d CTime: %s STime: %s ETime: %s", state, pid, ctStr, stStr, etStr);
         return EXIT_SUCCESS;
     }
     if (strcmp(getoptArgv[0], "notify") == 0) {
@@ -263,7 +278,7 @@ int main(int argc, char *argv[]) {
         crinitClientSetNotifyTaskName(getoptArgv[optind]);
         if (sd_notify(0, getoptArgv[optind + 1]) == -1) {
             crinitErrPrint("sd_notify() for task \'%s\' with notify-string \'%s\' failed.", getoptArgv[optind],
-                          getoptArgv[optind + 1]);
+                           getoptArgv[optind + 1]);
             return EXIT_FAILURE;
         }
         return EXIT_SUCCESS;
@@ -357,7 +372,10 @@ static void crinitPrintUsage(char *prgmPath) {
         "     restart <TASK_NAME>\n"
         "             - Resets the status bits of <TASK_NAME> if it is DONE or FAILED.\n"
         "      status <TASK_NAME>\n"
-        "             - Queries status bits and PID of <TASK_NAME>.\n"
+        "             - Queries status bits, PID, and timestamps of <TASK_NAME>. The CTime, STime, and ETime fields\n"
+        "               represent the times the task was Created (loaded/parsed), last Started (became running), and\n"
+        "               last Ended (failed or is done). If the event has not occurred yet, the timestamp's value will\n"
+        "               be 'n/a'.\n"
         "      notify <TASK_NAME> <\"SD_NOTIFY_STRING\">\n"
         "             - Will send an sd_notify-style status report to Crinit. Only MAINPID and READY are\n"
         "               implemented. See the sd_notify documentation for their meaning.\n"

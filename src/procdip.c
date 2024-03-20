@@ -205,6 +205,7 @@ static void *crinitDispatchThreadFunc(void *args) {
             goto threadExitFail;
         }
         posix_spawn_file_actions_destroy(&fileact);
+
         crinitInfoPrint("(TID: %d) Started new process %d for command %zu of Task \'%s\' (\'%s\').", threadId, pid, i,
                         tCopy->name, tCopy->cmds[i].argv[0]);
 

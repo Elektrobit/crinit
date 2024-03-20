@@ -67,7 +67,17 @@ int crinitTaskCreateFromConfKvList(crinitTask_t **out, const crinitConfKvList_t 
         goto fail;
     }
 
+    // Initialize timestamps and set creation time.
+    if (clock_gettime(CLOCK_MONOTONIC, &pTask->createTime) == -1) {
+        crinitErrnoPrint("Could not measure creation time of task '%s'. Will set to 0 (undefined) and continue.",
+                         pTask->name);
+        memset(&pTask->createTime, 0, sizeof(pTask->startTime));
+    }
+    memset(&pTask->startTime, 0, sizeof(pTask->startTime));
+    memset(&pTask->endTime, 0, sizeof(pTask->startTime));
+
     return 0;
+
 fail:
     crinitFreeTask(*out);
     *out = NULL;
