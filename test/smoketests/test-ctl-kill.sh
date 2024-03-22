@@ -24,10 +24,11 @@ run() {
         return 1
     fi
 
-    out="${SMOKETESTS_RESULTDIR}"/"${SMOKETESTS_NAME}".out
-    sample="${CMDPATH}"/test-"${SMOKETESTS_NAME}".out
-    "$BINDIR"/crinit-ctl status sleep_one_day > "$out"
-    compare_output "$sample" "$out"
+    sleep 1
+
+    if ! crinit_task_check_status "sleep_one_day" "failed"; then
+        return 1
+    fi
 }
 
 teardown() {

@@ -88,3 +88,32 @@ compare_output() {
         return 1
     fi
 }
+
+crinit_add_task() {
+    if ! "${BINDIR}"/crinit-ctl addtask "$1"; then
+        echo "crinit-ctl addtask $1 failed unexpectedly."
+        return 1
+    fi
+
+    if ! "${BINDIR}"/crinit-ctl list | grep -q "$2"; then
+        echo "crinit-ctl addtask successful, but task '$2' not in list."
+        return 1
+    fi
+    return 0
+}
+
+crinit_task_check_status() {
+    if ! "${BINDIR}"/crinit-ctl status "$1" | grep -E -q "\bStatus: $2"; then
+        echo "crinit-ctl status $1 failed or returned an unexpected status."
+        return 1
+    fi
+    return 0
+}
+
+crinit_enable_task() {
+    if ! "${BINDIR}"/crinit-ctl enable "$1"; then
+        echo "crinit-ctl enable $1 failed unexpectedly."
+        return 1
+    fi
+    return 0
+}

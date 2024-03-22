@@ -22,25 +22,22 @@ setup() {
 # Config to test dependency groups (dep group member 1)
 
 NAME = task_dep1
-COMMAND[] = /bin/true
+COMMAND = /bin/true
 DEPENDS = "@ctl:enable"
-RESPAWN = NO
 EOF
     cat << EOF > "${task_dep2}"
 # Config to test dependency groups (dep group member 2)
 
 NAME = task_dep2
-COMMAND[] = /bin/true
+COMMAND = /bin/true
 DEPENDS = "@ctl:enable"
-RESPAWN = NO
 EOF
     cat << EOF > "${task_dep3}"
 # Config to test dependency groups (dep group member 3)
 
 NAME = task_dep3
-COMMAND[] = /bin/true
+COMMAND = /bin/true
 DEPENDS = "@ctl:enable"
-RESPAWN = NO
 EOF
     cat << EOF > "${task_grp}"
 # Config to test dependency groups (dependency group meta-task)
@@ -49,45 +46,14 @@ NAME = task_grp
 DEPENDS = task_dep1:wait task_dep2:wait
           task_dep3:wait
 PROVIDES = "depgrp:wait"
-RESPAWN = NO
 EOF
     cat << EOF > "${task_final}"
 # Config to test dependency groups (dep group member 3)
 
 NAME = task_final
-COMMAND[] = /bin/echo Dependency group has been fulfilled.
+COMMAND = /bin/echo Dependency group has been fulfilled.
 DEPENDS = "@provided:depgrp"
-RESPAWN = NO
 EOF
-}
-
-crinit_add_task() {
-    if ! "${BINDIR}"/crinit-ctl addtask "$1"; then
-        echo "crinit-ctl addtask $1 failed unexpectedly."
-        return 1
-    fi
-
-    if ! "${BINDIR}"/crinit-ctl list | grep -q "$2"; then
-        echo "crinit-ctl addtask successful, but task '$2' not in list."
-        return 1
-    fi
-    return 0
-}
-
-crinit_task_check_status() {
-    if ! "${BINDIR}"/crinit-ctl status "$1" | grep -E -q "\bStatus: $2"; then
-        echo "crinit-ctl status $1 failed or returned an unexpected status."
-        return 1
-    fi
-    return 0
-}
-
-crinit_enable_task() {
-    if ! "${BINDIR}"/crinit-ctl enable "$1"; then
-        echo "crinit-ctl enable $1 failed unexpectedly."
-        return 1
-    fi
-    return 0
 }
 
 run() {

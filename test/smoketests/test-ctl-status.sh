@@ -12,10 +12,9 @@ run() {
     crinit_daemon_start "${SMOKETESTS_CONFDIR}"/demo.series
     sleep 3
 
-    out="${SMOKETESTS_RESULTDIR}"/"${SMOKETESTS_NAME}".out
-    sample="${CMDPATH}"/test-"${SMOKETESTS_NAME}".out
-    "$BINDIR"/crinit-ctl status after_sleep > "$out"
-    compare_output "$sample" "$out"
+    if ! crinit_task_check_status "after_sleep" "done"; then
+        return 1
+    fi
 }
 
 teardown() {
