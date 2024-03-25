@@ -30,10 +30,11 @@ Crinit currently has the following features implemented:
 * starting of tasks with parallelism and dependency-resolution
     - tasks may have one or multiple commands, or none to form a dependency group
     - dependencies can be either on specific task state changes or on "features" another (unknown) task will provide
+    - timestamping of creation, start, and end times of a task
 * a C client API and a command-line interface using it (`crinit-ctl`) capable of
     - adding new tasks
     - managing (stop, kill, restart, ...) already loaded tasks
-    - querying task status
+    - querying task status and timestamps
     - handling reboot and poweroff
     - a basic source-compatible implementation of `sd_notify()`
 * task IO redirection (like shell pipes)
@@ -541,7 +542,10 @@ USAGE: crinit-ctl <ACTION> [OPTIONS] <PARAMETER> [PARAMETERS...]
      restart <TASK_NAME>
              - Resets the status bits of <TASK_NAME> if it is DONE or FAILED.
       status <TASK_NAME>
-             - Queries status bits and PID of <TASK_NAME>.
+             - Queries status bits, PID, and timestamps of <TASK_NAME>. The CTime, STime, and ETime fields
+               represent the times the task was Created (loaded/parsed), last Started (became running), and
+               last Ended (failed or is done). If the event has not occurred yet, the timestamp's value will
+               be 'n/a'.
       notify <TASK_NAME> <"SD_NOTIFY_STRING">
              - Will send an sd_notify-style status report to Crinit. Only MAINPID and READY are
                implemented. See the sd_notify documentation for their meaning.
