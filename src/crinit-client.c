@@ -9,6 +9,7 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "common.h"
 #include "globopt.h"
 #include "logio.h"
 #include "sockcom.h"
@@ -339,6 +340,8 @@ CRINIT_LIB_EXPORTED int crinitClientTaskRestart(const char *taskName) {
 
 CRINIT_LIB_EXPORTED int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *pid, struct timespec *ct,
                                                   struct timespec *st, struct timespec *et, const char *taskName) {
+    crinitNullCheck(-1, taskName);
+
     crinitRtimCmd_t cmd, res;
     if (crinitBuildRtimCmd(&cmd, CRINIT_RTIMCMD_C_STATUS, 1, taskName) == -1) {
         crinitErrPrint("Could not build RtimCmd to send to Crinit.");
