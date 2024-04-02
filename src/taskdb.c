@@ -226,14 +226,21 @@ int crinitTaskDBSetTaskState(crinitTaskDB_t *ctx, crinitTaskState_t s, const cha
     if (crinitFindTask(&pTask, taskName, ctx) == 0) {
         pTask->state = s;
         s &= ~CRINIT_TASK_STATE_NOTIFIED;  // Here we don't care if we got the state via notification or directly.
-        if (s == CRINIT_TASK_STATE_FAILED) {
-            pTask->failCount++;
-            memcpy(&pTask->endTime, &timestamp, sizeof(pTask->endTime));
-        } else if (s == CRINIT_TASK_STATE_DONE) {
-            pTask->failCount = 0;
-            memcpy(&pTask->endTime, &timestamp, sizeof(pTask->endTime));
-        } else if (s == CRINIT_TASK_STATE_RUNNING) {
-            memcpy(&pTask->startTime, &timestamp, sizeof(pTask->startTime));
+        switch (s) {
+            case CRINIT_TASK_STATE_FAILED:
+                pTask->failCount++;
+                memcpy(&pTask->endTime, &timestamp, sizeof(pTask->endTime));
+                break;
+            case CRINIT_TASK_STATE_DONE:
+                pTask->failCount = 0;
+                memcpy(&pTask->endTime, &timestamp, sizeof(pTask->endTime));
+                break;
+            case CRINIT_TASK_STATE_RUNNING:
+                memcpy(&pTask->startTime, &timestamp, sizeof(pTask->startTime));
+                break;
+            default:
+                // do nothing
+                break;
         }
         pthread_cond_broadcast(&ctx->changed);
         pthread_mutex_unlock(&ctx->lock);
