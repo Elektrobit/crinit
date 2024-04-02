@@ -356,27 +356,64 @@ CRINIT_LIB_EXPORTED int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *p
     crinitDestroyRtimCmd(&cmd);
 
     if (crinitResponseCheck(&res, CRINIT_RTIMCMD_R_STATUS) == 0 && res.argc == 6) {
+        char *endPtr;
         if (s != NULL) {
-            *s = strtoul(res.args[1], NULL, 10);
+            *s = strtoul(res.args[1], &endPtr, 10);
+            if (endPtr == res.args[1] || errno != 0) {
+                crinitErrPrint("Could not parse numerical value from '%s'.", res.args[1]);
+                goto responseFail;
+            }
         }
         if (pid != NULL) {
-            *pid = strtol(res.args[2], NULL, 10);
+            *pid = strtol(res.args[2], &endPtr, 10);
+            if (endPtr == res.args[2] || errno != 0) {
+                crinitErrPrint("Could not parse numerical value from '%s'.", res.args[2]);
+                goto responseFail;
+            }
         }
         if (ct != NULL) {
-            ct->tv_sec = strtoll(res.args[3], NULL, 10);
-            ct->tv_nsec = strtol(strchr(res.args[3], '.') + 1, NULL, 10);
+            ct->tv_sec = strtoll(res.args[3], &endPtr, 10);
+            if (endPtr == res.args[3] || errno != 0) {
+                crinitErrPrint("Could not parse numerical value from '%s'.", res.args[3]);
+                goto responseFail;
+            }
+            char *decPlPtr = strchr(res.args[3], '.') + 1;
+            ct->tv_nsec = strtol(decPlPtr, &endPtr, 10);
+            if (endPtr == decPlPtr || errno != 0) {
+                crinitErrPrint("Could not parse numerical value from '%s'.", res.args[3]);
+                goto responseFail;
+            }
         }
         if (st != NULL) {
-            st->tv_sec = strtoll(res.args[4], NULL, 10);
-            st->tv_nsec = strtol(strchr(res.args[4], '.') + 1, NULL, 10);
+            st->tv_sec = strtoll(res.args[4], &endPtr, 10);
+            if (endPtr == res.args[4] || errno != 0) {
+                crinitErrPrint("Could not parse numerical value from '%s'.", res.args[4]);
+                goto responseFail;
+            }
+            char *decPlPtr = strchr(res.args[4], '.') + 1;
+            st->tv_nsec = strtol(decPlPtr, &endPtr, 10);
+            if (endPtr == decPlPtr || errno != 0) {
+                crinitErrPrint("Could not parse numerical value from '%s'.", res.args[4]);
+                goto responseFail;
+            }
         }
         if (et != NULL) {
-            et->tv_sec = strtoll(res.args[5], NULL, 10);
-            et->tv_nsec = strtol(strchr(res.args[5], '.') + 1, NULL, 10);
+            et->tv_sec = strtoll(res.args[5], &endPtr, 10);
+            if (endPtr == res.args[5] || errno != 0) {
+                crinitErrPrint("Could not parse numerical value from '%s'.", res.args[5]);
+                goto responseFail;
+            }
+            char *decPlPtr = strchr(res.args[5], '.') + 1;
+            et->tv_nsec = strtol(decPlPtr, &endPtr, 10);
+            if (endPtr == decPlPtr || errno != 0) {
+                crinitErrPrint("Could not parse numerical value from '%s'.", res.args[5]);
+                goto responseFail;
+            }
         }
         crinitDestroyRtimCmd(&res);
         return 0;
     }
+responseFail:
     crinitDestroyRtimCmd(&res);
     return -1;
 }
