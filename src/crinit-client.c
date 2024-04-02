@@ -422,7 +422,7 @@ CRINIT_LIB_EXPORTED int crinitClientGetTaskList(crinitTaskList_t **tlptr) {
     for (size_t i = 0; i < res.argc - 1; i++) {
         const char *name = res.args[i + 1];
         pid_t pid = -1;
-        struct timespec ct = {0, 0}, st = {0, 0}, et = {0, 0};
+        struct timespec ct = {0}, st = {0}, et = {0};
         crinitTaskState_t state = 0;
 
         if (crinitClientTaskGetStatus(&state, &pid, &ct, &st, &et, name) == -1) {

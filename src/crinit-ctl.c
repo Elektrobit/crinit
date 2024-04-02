@@ -253,7 +253,7 @@ int main(int argc, char *argv[]) {
         }
         crinitTaskState_t s = 0;
         pid_t pid = -1;
-        struct timespec ct = {0, 0}, st = {0, 0}, et = {0, 0};
+        struct timespec ct = {0}, st = {0}, et = {0};
         char ctStr[TIME_REPR_MAX_LEN], stStr[TIME_REPR_MAX_LEN], etStr[TIME_REPR_MAX_LEN];
         const char *state;
         if (crinitClientTaskGetStatus(&s, &pid, &ct, &st, &et, getoptArgv[optind]) == -1) {

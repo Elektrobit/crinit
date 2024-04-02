@@ -208,7 +208,7 @@ int crinitTaskDBSetSpawnInhibit(crinitTaskDB_t *ctx, bool inh) {
 int crinitTaskDBSetTaskState(crinitTaskDB_t *ctx, crinitTaskState_t s, const char *taskName) {
     crinitNullCheck(-1, ctx, taskName);
 
-    struct timespec timestamp = {0, 0};
+    struct timespec timestamp = {0};
     // Check if we need to timestamp this state change.
     if (s & (CRINIT_TASK_STATE_RUNNING | CRINIT_TASK_STATE_DONE | CRINIT_TASK_STATE_FAILED)) {
         if (clock_gettime(CLOCK_MONOTONIC, &timestamp) == -1) {
