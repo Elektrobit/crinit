@@ -122,8 +122,7 @@ int sd_notifyf(int unset_environment, const char *format, ...);  // NOLINT(reada
  * Using \a forceDeps, it is possible to specify a DEPENDS value which overrides the one in the configuration file. An
  * empty string will cause the task to be started immediately. Specifying `@ctl:enable` will let the task wait for
  * crinitClientTaskEnable(). If the dependencies from the task config file should be used, \a forceDeps must be `NULL`
- * or
- * `"@unchanged"`.
+ * or `"@unchanged"`.
  *
  * Note, that Crinit does not keep track of already fulfilled dependencies, i.e. in order to not be blocked forever a
  * task configuration must only contain dependencies which will be fulfilled **in the future**.
