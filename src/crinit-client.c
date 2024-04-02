@@ -359,53 +359,65 @@ CRINIT_LIB_EXPORTED int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *p
         char *endPtr;
         if (s != NULL) {
             *s = strtoul(res.args[1], &endPtr, 10);
-            if (endPtr == res.args[1] || errno != 0) {
+            if (endPtr == res.args[1] || errno == ERANGE) {
                 crinitErrPrint("Could not parse numerical value from '%s'.", res.args[1]);
                 goto responseFail;
             }
         }
         if (pid != NULL) {
             *pid = strtol(res.args[2], &endPtr, 10);
-            if (endPtr == res.args[2] || errno != 0) {
+            if (endPtr == res.args[2] || errno == ERANGE) {
                 crinitErrPrint("Could not parse numerical value from '%s'.", res.args[2]);
                 goto responseFail;
             }
         }
         if (ct != NULL) {
             ct->tv_sec = strtoll(res.args[3], &endPtr, 10);
-            if (endPtr == res.args[3] || errno != 0) {
+            if (endPtr == res.args[3] || errno == ERANGE) {
                 crinitErrPrint("Could not parse numerical value from '%s'.", res.args[3]);
                 goto responseFail;
             }
             char *decPlPtr = strchr(res.args[3], '.') + 1;
+            if (decPlPtr == NULL) {
+                crinitErrPrint("Could not parse numerical value from '%s'. Missing decimal point.", res.args[3]);
+                goto responseFail;
+            }
             ct->tv_nsec = strtol(decPlPtr, &endPtr, 10);
-            if (endPtr == decPlPtr || errno != 0) {
+            if (endPtr == decPlPtr || errno == ERANGE) {
                 crinitErrPrint("Could not parse numerical value from '%s'.", res.args[3]);
                 goto responseFail;
             }
         }
         if (st != NULL) {
             st->tv_sec = strtoll(res.args[4], &endPtr, 10);
-            if (endPtr == res.args[4] || errno != 0) {
+            if (endPtr == res.args[4] || errno == ERANGE) {
                 crinitErrPrint("Could not parse numerical value from '%s'.", res.args[4]);
                 goto responseFail;
             }
             char *decPlPtr = strchr(res.args[4], '.') + 1;
+            if (decPlPtr == NULL) {
+                crinitErrPrint("Could not parse numerical value from '%s'. Missing decimal point.", res.args[4]);
+                goto responseFail;
+            }
             st->tv_nsec = strtol(decPlPtr, &endPtr, 10);
-            if (endPtr == decPlPtr || errno != 0) {
+            if (endPtr == decPlPtr || errno == ERANGE) {
                 crinitErrPrint("Could not parse numerical value from '%s'.", res.args[4]);
                 goto responseFail;
             }
         }
         if (et != NULL) {
             et->tv_sec = strtoll(res.args[5], &endPtr, 10);
-            if (endPtr == res.args[5] || errno != 0) {
+            if (endPtr == res.args[5] || errno == ERANGE) {
                 crinitErrPrint("Could not parse numerical value from '%s'.", res.args[5]);
                 goto responseFail;
             }
             char *decPlPtr = strchr(res.args[5], '.') + 1;
+            if (decPlPtr == NULL) {
+                crinitErrPrint("Could not parse numerical value from '%s'. Missing decimal point.", res.args[5]);
+                goto responseFail;
+            }
             et->tv_nsec = strtol(decPlPtr, &endPtr, 10);
-            if (endPtr == decPlPtr || errno != 0) {
+            if (endPtr == decPlPtr || errno == ERANGE) {
                 crinitErrPrint("Could not parse numerical value from '%s'.", res.args[5]);
                 goto responseFail;
             }
