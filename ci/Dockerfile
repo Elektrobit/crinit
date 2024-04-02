@@ -23,6 +23,7 @@ RUN apt-get update \
 RUN git clone ${SAFU_REPO_PATH} \
  && cmake -B ${SAFU_REPO_NAME%.*}/build ./${SAFU_REPO_NAME%.*} \
  -DUNIT_TESTS=Off \
+ -DSAFU_MOCK_LIBRARY=Off \
  -DCMAKE_BUILD_TYPE=Release \
  -DCMAKE_INSTALL_PREFIX=/usr \
  && make -C ${SAFU_REPO_NAME%.*}/build install
