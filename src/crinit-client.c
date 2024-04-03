@@ -9,6 +9,7 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "common.h"
 #include "globopt.h"
 #include "logio.h"
 #include "sockcom.h"
@@ -337,11 +338,9 @@ CRINIT_LIB_EXPORTED int crinitClientTaskRestart(const char *taskName) {
     return ret;
 }
 
-CRINIT_LIB_EXPORTED int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *pid, const char *taskName) {
-    if (taskName == NULL || s == NULL) {
-        crinitErrPrint("Pointer arguments must not be NULL");
-        return -1;
-    }
+CRINIT_LIB_EXPORTED int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *pid, struct timespec *ct,
+                                                  struct timespec *st, struct timespec *et, const char *taskName) {
+    crinitNullCheck(-1, taskName);
 
     crinitRtimCmd_t cmd, res;
     if (crinitBuildRtimCmd(&cmd, CRINIT_RTIMCMD_C_STATUS, 1, taskName) == -1) {
@@ -356,12 +355,77 @@ CRINIT_LIB_EXPORTED int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *p
     }
     crinitDestroyRtimCmd(&cmd);
 
-    if (crinitResponseCheck(&res, CRINIT_RTIMCMD_R_STATUS) == 0 && res.argc == 3) {
-        *s = strtoul(res.args[1], NULL, 10);
-        *pid = strtol(res.args[2], NULL, 10);
+    if (crinitResponseCheck(&res, CRINIT_RTIMCMD_R_STATUS) == 0 && res.argc == 6) {
+        char *endPtr;
+        if (s != NULL) {
+            *s = strtoul(res.args[1], &endPtr, 10);
+            if (endPtr == res.args[1] || errno == ERANGE) {
+                crinitErrPrint("Could not parse numerical value from '%s'.", res.args[1]);
+                goto responseFail;
+            }
+        }
+        if (pid != NULL) {
+            *pid = strtol(res.args[2], &endPtr, 10);
+            if (endPtr == res.args[2] || errno == ERANGE) {
+                crinitErrPrint("Could not parse numerical value from '%s'.", res.args[2]);
+                goto responseFail;
+            }
+        }
+        if (ct != NULL) {
+            ct->tv_sec = strtoll(res.args[3], &endPtr, 10);
+            if (endPtr == res.args[3] || errno == ERANGE) {
+                crinitErrPrint("Could not parse numerical value from '%s'.", res.args[3]);
+                goto responseFail;
+            }
+            char *decPlPtr = strchr(res.args[3], '.') + 1;
+            if (decPlPtr == NULL) {
+                crinitErrPrint("Could not parse numerical value from '%s'. Missing decimal point.", res.args[3]);
+                goto responseFail;
+            }
+            ct->tv_nsec = strtol(decPlPtr, &endPtr, 10);
+            if (endPtr == decPlPtr || errno == ERANGE) {
+                crinitErrPrint("Could not parse numerical value from '%s'.", res.args[3]);
+                goto responseFail;
+            }
+        }
+        if (st != NULL) {
+            st->tv_sec = strtoll(res.args[4], &endPtr, 10);
+            if (endPtr == res.args[4] || errno == ERANGE) {
+                crinitErrPrint("Could not parse numerical value from '%s'.", res.args[4]);
+                goto responseFail;
+            }
+            char *decPlPtr = strchr(res.args[4], '.') + 1;
+            if (decPlPtr == NULL) {
+                crinitErrPrint("Could not parse numerical value from '%s'. Missing decimal point.", res.args[4]);
+                goto responseFail;
+            }
+            st->tv_nsec = strtol(decPlPtr, &endPtr, 10);
+            if (endPtr == decPlPtr || errno == ERANGE) {
+                crinitErrPrint("Could not parse numerical value from '%s'.", res.args[4]);
+                goto responseFail;
+            }
+        }
+        if (et != NULL) {
+            et->tv_sec = strtoll(res.args[5], &endPtr, 10);
+            if (endPtr == res.args[5] || errno == ERANGE) {
+                crinitErrPrint("Could not parse numerical value from '%s'.", res.args[5]);
+                goto responseFail;
+            }
+            char *decPlPtr = strchr(res.args[5], '.') + 1;
+            if (decPlPtr == NULL) {
+                crinitErrPrint("Could not parse numerical value from '%s'. Missing decimal point.", res.args[5]);
+                goto responseFail;
+            }
+            et->tv_nsec = strtol(decPlPtr, &endPtr, 10);
+            if (endPtr == decPlPtr || errno == ERANGE) {
+                crinitErrPrint("Could not parse numerical value from '%s'.", res.args[5]);
+                goto responseFail;
+            }
+        }
         crinitDestroyRtimCmd(&res);
         return 0;
     }
+responseFail:
     crinitDestroyRtimCmd(&res);
     return -1;
 }
@@ -410,9 +474,10 @@ CRINIT_LIB_EXPORTED int crinitClientGetTaskList(crinitTaskList_t **tlptr) {
     for (size_t i = 0; i < res.argc - 1; i++) {
         const char *name = res.args[i + 1];
         pid_t pid = -1;
+        struct timespec ct = {0}, st = {0}, et = {0};
         crinitTaskState_t state = 0;
 
-        if (crinitClientTaskGetStatus(&state, &pid, name) == -1) {
+        if (crinitClientTaskGetStatus(&state, &pid, &ct, &st, &et, name) == -1) {
             crinitErrPrint("Querying status of task \'%s\' failed.", name);
             ret = -1;
             goto fail_status;
@@ -426,6 +491,9 @@ CRINIT_LIB_EXPORTED int crinitClientGetTaskList(crinitTaskList_t **tlptr) {
         }
         tl->tasks[i].pid = pid;
         tl->tasks[i].state = state;
+        tl->tasks[i].createTime = ct;
+        tl->tasks[i].startTime = st;
+        tl->tasks[i].endTime = et;
         tl->numTasks++;
     }
 

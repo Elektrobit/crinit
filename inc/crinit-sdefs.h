@@ -24,9 +24,12 @@ typedef unsigned long crinitTaskState_t;     ///< Type to store Task state bitma
 
 /** Type to represent an entry in a task list. **/
 typedef struct crinitTaskListEntry_t {
-    char *name;               ///< Task name.
-    pid_t pid;                ///< PID of currently running process subordinate to the task, if any.
-    crinitTaskState_t state;  ///< Task state.
+    char *name;                  ///< Task name.
+    pid_t pid;                   ///< PID of currently running process subordinate to the task, if any.
+    crinitTaskState_t state;     ///< Task state.
+    struct timespec createTime;  ///< The time the task was created (loaded/parsed).
+    struct timespec startTime;   ///< The time the task was last started (i.e. first command was spawned).
+    struct timespec endTime;     ///< The time the task last ended (i.e. either failed or the last command is done).
 } crinitTaskListEntry_t;
 
 /** Type to represent a list of tasks. **/

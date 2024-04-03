@@ -47,6 +47,7 @@ RUN git clean -dfx /home/crinit
 RUN git clone ${SAFU_REPO_PATH} \
  && cmake -B ${SAFU_REPO_NAME%.*}/build ./${SAFU_REPO_NAME%.*} \
  -DUNIT_TESTS=OFF \
+ -DSAFU_MOCK_LIBRARY=Off \
  -DCMAKE_BUILD_TYPE=Release \
  -DENABLE_ANALYZER=Off \
  -DCMAKE_INSTALL_PREFIX=/usr \
@@ -56,6 +57,7 @@ RUN git clone ${SAFU_REPO_PATH} \
 RUN git clone ${SAMCONF_REPO_PATH} \
  && cmake -B ${SAMCONF_REPO_NAME%.*}/build ./${SAMCONF_REPO_NAME%.*} \
  -DUNIT_TESTS=OFF \
+ -DSAMCONF_MOCK_LIBRARY=Off \
  -DCMAKE_BUILD_TYPE=Release \
  -DCMAKE_INSTALL_PREFIX=/usr \
  -DSAFU_URI=${SAFU_REPO_PATH} \
