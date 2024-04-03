@@ -40,6 +40,11 @@ static pthread_mutex_t crinitEloslogSessionLock = PTHREAD_MUTEX_INITIALIZER;
 /** Ring buffer of elos event messages */
 static safuRingBuffer_t crinitElosEventBuffer;
 
+/** Mutex synchronizing access to the transmitter condition variable **/
+static pthread_mutex_t crinitEloslogTrCondLock = PTHREAD_MUTEX_INITIALIZER;
+/** Condition variable to block the transmitter thread until there are events to send **/
+static pthread_cond_t crinitEloslogTransmitCondition = PTHREAD_COND_INITIALIZER;
+
 static inline int crinitFetchHWId(char *hwId) {
     FILE *fp = NULL;
 
@@ -101,7 +106,7 @@ static void *crinitEloslogEventTransmitter(void *arg) {
     }
 
     while (1) {
-        if(res != SAFU_RESULT_OK) {
+        if (res != SAFU_RESULT_OK) {
             break;
         }
         if ((errno = pthread_mutex_lock(&crinitElosActivatedLock)) != 0) {
@@ -124,6 +129,19 @@ static void *crinitEloslogEventTransmitter(void *arg) {
             safuVecFree(&events);
         } else {
             crinitErrPrint("Initializing elos event buffer failed.");
+            break;
+        }
+        if ((errno = pthread_mutex_lock(&crinitEloslogTrCondLock)) != 0) {
+            crinitErrnoPrint("Could not queue up for mutex lock on condition variable.");
+            break;
+        }
+        if ((errno = pthread_cond_wait(&crinitEloslogTransmitCondition, &crinitEloslogTrCondLock)) != 0) {
+            crinitErrnoPrint("Could not wait for event transmit condition variable.");
+            pthread_mutex_unlock(&crinitEloslogTrCondLock);
+            break;
+        }
+        if ((errno = pthread_mutex_unlock(&crinitEloslogTrCondLock)) != 0) {
+            crinitErrnoPrint("Failed to unlock condition variable mutex.");
             break;
         }
     }
@@ -197,6 +215,21 @@ int crinitElosLog(crinitElosSeverityE_t severity, int messageCode, const char *f
     if (result != SAFU_RESULT_OK) {
         crinitErrPrint("Writing to elos event buffer failed.");
         free(event);
+        return result;
+    }
+
+    if ((errno = pthread_mutex_lock(&crinitEloslogTrCondLock)) != 0) {
+        crinitErrnoPrint("Could not queue up for mutex lock on condition variable.");
+        return SAFU_RESULT_FAILED;
+    }
+    if ((errno = pthread_cond_signal(&crinitEloslogTransmitCondition)) != 0) {
+        crinitErrnoPrint("Could not signal event transmit condition variable.");
+        pthread_mutex_unlock(&crinitEloslogTrCondLock);
+        return SAFU_RESULT_FAILED;
+    }
+    if ((errno = pthread_mutex_unlock(&crinitEloslogTrCondLock)) != 0) {
+        crinitErrnoPrint("Failed to unlock condition variable mutex.");
+        return SAFU_RESULT_FAILED;
     }
 
     return result;
