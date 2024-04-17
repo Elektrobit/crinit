@@ -47,18 +47,21 @@ _crinit-ctl() {
 
     case "${action}" in
         addtask)
-            local opts="--ignore-deps --override-deps --overwrite"
+            local opts="--ignore-deps --override-deps --overwrite --verbose"
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
             _add_fname_completions_filtered "!*.crinit"
             ;;
         addseries)
-            local opts="--overwrite"
+            local opts="--overwrite --verbose"
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
             _add_fname_completions_filtered "!*.series"
             ;;
         enable|disable|stop|kill|restart|status|notify)
-            local tasks=$(crinit-ctl list | tail -n +2 | cut -f1 -d ' ')
-            COMPREPLY=( $(compgen -W "${tasks}" -- "${cur}") )
+            local opts="--verbose $(crinit-ctl list | tail -n +2 | cut -f1 -d ' ')"
+            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            ;;
+        *)
+            COMPREPLY=( "--verbose" )
     esac
     [[ ${COMP_CWORD} -ne ${actindex} ]] && [[ "${COMPREPLY}" != "-*" ]] && compopt -o filenames
 }
