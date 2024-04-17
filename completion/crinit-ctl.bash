@@ -1,6 +1,15 @@
 # SPDX-License-Identifier: MIT
 #
 # crinit-ctl bash completion script
+
+_add_fname_completions_filtered() {
+    paths=$(compgen -o plusdirs -f -X "$1" -- "${cur}")
+    # line-by-line parsing necessary to handle whitespace filenames correctly
+    while IFS= read -r entry || [[ -n ${entry} ]]; do
+        COMPREPLY+=("${entry}")
+    done < <(printf '%s' "${paths}")
+}
+
 _crinit-ctl() {
     local cur action opts
     compopt +o default
@@ -31,20 +40,12 @@ _crinit-ctl() {
         addtask)
             local opts="--ignore-deps --override-deps --overwrite"
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
-            paths=$(compgen -o plusdirs -f -X "!*.crinit" -- "${cur}")
-            # line-by-line parsing necessary to handle whitespace filenames correctly
-            while IFS= read -r entry || [[ -n ${entry} ]]; do
-                COMPREPLY+=("${entry}")
-            done < <(printf '%s' "${paths}")
+            _add_fname_completions_filtered "!*.crinit"
             ;;
         addseries)
             local opts="--overwrite"
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
-            paths=$(compgen -o plusdirs -f -X "!*.series" -- "${cur}")
-            # line-by-line parsing necessary to handle whitespace filenames correctly
-            while IFS= read -r entry || [[ -n ${entry} ]]; do
-                COMPREPLY+=("${entry}")
-            done < <(printf '%s' "${paths}")
+            _add_fname_completions_filtered "!*.series"
             ;;
         enable|disable|stop|kill|restart|status|notify)
             local tasks=$(crinit-ctl list | awk 'NR>1 { print $1 }' ORS=' ')
