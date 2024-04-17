@@ -57,7 +57,7 @@ _crinit-ctl() {
             _add_fname_completions_filtered "!*.series"
             ;;
         enable|disable|stop|kill|restart|status|notify)
-            local tasks=$(crinit-ctl list | awk 'NR>1 { print $1 }' ORS=' ')
+            local tasks=$(crinit-ctl list | tail -n +2 | cut -f1 -d ' ')
             COMPREPLY=( $(compgen -W "${tasks}" -- "${cur}") )
     esac
     [[ ${COMP_CWORD} -ne ${actindex} ]] && [[ "${COMPREPLY}" != "-*" ]] && compopt -o filenames
