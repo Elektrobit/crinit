@@ -31,12 +31,20 @@ _crinit-ctl() {
         addtask)
             local opts="--ignore-deps --override-deps --overwrite"
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
-            COMPREPLY+=( $(compgen -o plusdirs -f -X "!*.crinit" -- "${cur}") )
+            paths=$(compgen -o plusdirs -f -X "!*.crinit" -- "${cur}")
+            # line-by-line parsing necessary to handle whitespace filenames correctly
+            while IFS= read -r entry || [[ -n ${entry} ]]; do
+                COMPREPLY+=("${entry}")
+            done < <(printf '%s' "${paths}")
             ;;
         addseries)
             local opts="--overwrite"
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
-            COMPREPLY+=( $(compgen -o plusdirs -f -X "!*.series" -- "${cur}") )
+            paths=$(compgen -o plusdirs -f -X "!*.series" -- "${cur}")
+            # line-by-line parsing necessary to handle whitespace filenames correctly
+            while IFS= read -r entry || [[ -n ${entry} ]]; do
+                COMPREPLY+=("${entry}")
+            done < <(printf '%s' "${paths}")
             ;;
         enable|disable|stop|kill|restart|status|notify)
             local tasks=$(crinit-ctl list | awk 'NR>1 { print $1 }' ORS=' ')
