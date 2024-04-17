@@ -10,12 +10,21 @@ _add_fname_completions_filtered() {
     done < <(printf '%s' "${paths}")
 }
 
+_find_base_comp_words_index() {
+    for i in "${!COMP_WORDS[@]}"; do
+        if [[ "${COMP_WORDS[$i]}" == "$1" ]]; then
+            echo "$i"
+        fi
+    done
+}
+
 _crinit-ctl() {
-    local cur action opts
+    local cur base action opts
     compopt +o default
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
-    action="${COMP_WORDS[1]}"
+    actindex=$(($(_find_base_comp_words_index $1)+1))
+    action="${COMP_WORDS[${actindex}]}"
     verbs="--help
         --version
         addtask
@@ -31,7 +40,7 @@ _crinit-ctl() {
         reboot
         poweroff"
 
-    if [[ ${COMP_CWORD} -eq 1 ]]; then
+    if [[ ${COMP_CWORD} -eq ${actindex} ]]; then
         COMPREPLY=( $(compgen -W "${verbs}" -- "${cur}") )
         return 0
     fi
@@ -51,7 +60,7 @@ _crinit-ctl() {
             local tasks=$(crinit-ctl list | awk 'NR>1 { print $1 }' ORS=' ')
             COMPREPLY=( $(compgen -W "${tasks}" -- "${cur}") )
     esac
-    [[ ${COMP_CWORD} -ne 1 ]] && [[ "${COMPREPLY}" != "-*" ]] && compopt -o filenames
+    [[ ${COMP_CWORD} -ne ${actindex} ]] && [[ "${COMPREPLY}" != "-*" ]] && compopt -o filenames
 }
 
 complete -F _crinit-ctl crinit-ctl
