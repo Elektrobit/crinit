@@ -46,6 +46,9 @@ set(
   CACHE PATH
   "Directory where to install symlinks to crinit-ctl for reboot and poweroff. Default: ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_SBINDIR}"
 )
+option(INSTALL_BASH_COMPLETION "Install the bash completion script for crinit-ctl." ON)
+set(BASH_COMPLETION_DIR "${CMAKE_INSTALL_DATADIR}/bash-completion/completions" CACHE PATH
+    "Directory where bash completion scripts should be installed.")
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Debug")
@@ -187,3 +190,11 @@ if(INSTALL_ROBOT_TEST_RESOURCES)
     USE_SOURCE_PERMISSIONS
   )
 endif(INSTALL_ROBOT_TEST_RESOURCES)
+
+if(INSTALL_BASH_COMPLETION)
+  install(
+    FILES "${CMAKE_SOURCE_DIR}/completion/crinit-ctl.bash"
+    DESTINATION "${BASH_COMPLETION_DIR}"
+    RENAME "crinit-ctl"
+  )
+endif(INSTALL_BASH_COMPLETION)
