@@ -1,17 +1,28 @@
 # SPDX-License-Identifier: MIT
 #
 # crinit-ctl bash completion script
+#
+# Must be installed as `crinit-ctl` to a system directory where bash looks for completion
+# scripts. It is likely to be `/usr/share/bash-completion/completions/crinit-ctl` on most
+# modern distributions.
+#
 
+# Add entries to the completion reply array from compgen while avoiding splits
+# on spaces and globbing. Necessary for e.g. filenames including whitespace.
 _compreply_add() {
     while IFS='' read -r line || [[ -n ${line} ]];
         do COMPREPLY+=("${line}");
     done < <(eval "$1")
 }
 
+# Add a static multiline string to the completion dictionary, one entry per line.
 _add_static_options() {
     _compreply_add "compgen -W '$1' -- '${cur}'"
 }
 
+# Add files/directories to the completion dictionary. Will use the directory position
+# from the current completion input. Files will be filtered according to the given
+# filter rule (see compgen manual).
 _add_fname_completions_filtered() {
     _compreply_add "compgen -o plusdirs -f -X '$1' -- '${cur}'"
 }
@@ -24,7 +35,7 @@ _find_base_comp_words_index() {
     done
 }
 
-
+# Main completion script, called on <TAB> on a crinit-ctl command line.
 _crinit-ctl() {
     local cur action
     compopt +o default
