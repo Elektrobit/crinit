@@ -73,7 +73,7 @@ _crinit-ctl() {
             _add_fname_completions_filtered "!*.series"
             ;;
         enable|disable|stop|kill|restart|status|notify)
-            _add_static_options "--verbose $(crinit-ctl list | tail -n +2 | cut -f1 -d ' ')"
+            _add_static_options "--verbose $(crinit-ctl list 2>/dev/null | tail -n +2 | cut -f1 -d ' ')"
             ;;
         *)
             _add_static_options "--verbose"
