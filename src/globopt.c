@@ -44,9 +44,13 @@ int crinitGlobOptInitDefault(void) {
     crinitGlobOpts.debug = CRINIT_CONFIG_DEFAULT_DEBUG;
     crinitGlobOpts.useSyslog = CRINIT_CONFIG_DEFAULT_USE_SYSLOG;
     crinitGlobOpts.useElos = CRINIT_CONFIG_DEFAULT_USE_ELOS;
+    crinitGlobOpts.elosPort = CRINIT_CONFIG_DEFAULT_ELOS_PORT;
     crinitGlobOpts.shdGraceP = CRINIT_CONFIG_DEFAULT_SHDGRACEP;
     crinitGlobOpts.taskDirFollowSl = CRINIT_CONFIG_DEFAULT_TASKDIR_SYMLINKS;
     crinitGlobOpts.signatures = CRINIT_CONFIG_DEFAULT_SIGNATURES;
+
+    crinitGlobOpts.tasks = NULL;  // This is actually a no-op after memset but needed for the regression test for
+                                  // initialized default values to pass. Will be optimized by compiler.
 
     crinitGlobOpts.inclDir = strdup(CRINIT_CONFIG_DEFAULT_INCLDIR);
     if (crinitGlobOpts.inclDir == NULL) {
@@ -84,6 +88,14 @@ int crinitGlobOptInitDefault(void) {
     crinitGlobOpts.sigKeyDir = strdup(CRINIT_CONFIG_DEFAULT_SIGKEYDIR);
     if (crinitGlobOpts.sigKeyDir == NULL) {
         crinitGlobOptSetErrPrint(CRINIT_CONFIG_DEFAULT_SIGKEYDIR);
+        crinitGlobOptDestroy();
+        crinitGlobOptCommonUnlock();
+        return -1;
+    }
+
+    crinitGlobOpts.elosServer = strdup(CRINIT_CONFIG_DEFAULT_ELOS_SERVER);
+    if (crinitGlobOpts.elosServer == NULL) {
+        crinitGlobOptSetErrPrint(CRINIT_CONFIG_DEFAULT_ELOS_SERVER);
         crinitGlobOptDestroy();
         crinitGlobOptCommonUnlock();
         return -1;
