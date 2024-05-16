@@ -1,0 +1,2 @@
+version=4
+https://github.com/Elektrobit/crinit/tags .*/v(\d+).(\d+).(\d+).tar.gz

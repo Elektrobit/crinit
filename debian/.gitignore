@@ -1,0 +1,12 @@
+/*.substvars
+/files
+/debhelper-build-stamp
+/crinit/
+/crinit-doc/
+/crinit-tests/
+/crinit-sysv/
+/libcrinit-client0/
+/libcrinit-client-dev/
+/.debhelper/
+/tmp/
+/*.debhelper.log

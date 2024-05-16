@@ -1,0 +1,3 @@
+usr/include/crinit-client.h
+usr/include/crinit-sdefs.h
+usr/lib/*/libcrinit-client.so

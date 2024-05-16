@@ -1,0 +1,167 @@
+Source: crinit
+Section: admin
+Priority: optional
+Maintainer: Isaac True <isaac.true@emlix.com>
+Build-Depends:
+ debhelper-compat (= 13),
+ cmake,
+ re2c,
+ libmbedtls-dev,
+ doxygen,
+ libcmocka-dev,
+ plantuml,
+Rules-Requires-Root: no
+Standards-Version: 4.6.0.1
+Homepage: https://github.com/Elektrobit/crinit
+Vcs-Browser: https://github.com/Elektrobit/crinit
+Vcs-Git: https://github.com/Elektrobit/crinit
+
+Package: crinit
+Architecture: any
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+Recommends:
+ crinit-ctl (= ${binary:Version}),
+Suggests:
+ crinit-sysv (= ${binary:Version}),
+Description: Configurable Rootfs Init
+ Crinit is an init daemon executed as PID 1 by the Linux Kernel. It reads a
+ global configuration ("series"-file) either specified on the command line or
+ from /etc/crinit/default.series. The series file in turn may reference further
+ configuration files or a whole directory from which all configs shall be
+ loaded. Each one defines a task potentially containing a set of commands and
+ dependencies on other tasks.
+ .
+ The specified tasks are then started with as much parallelism as dependencies
+ allow, i.e. tasks without any dependencies are spawned as soon as possible
+ after Crinit has been started. Once a task is spawned, finished, or has
+ failed, its dependent tasks are updated and spawned as necessary.
+
+Package: crinit-sysv
+Architecture: any
+Depends:
+ ${misc:Depends},
+ crinit (= ${binary:Version}),
+Conflicts:
+ systemd-sysv,
+ runit-init,
+ sysvinit-core,
+Replaces:
+ systemd-sysv,
+ sysvinit-core,
+ runit-init,
+Description: Use Configurable Rootfs Init as init system
+ Crinit is an init daemon executed as PID 1 by the Linux Kernel. It reads a
+ global configuration ("series"-file) either specified on the command line or
+ from /etc/crinit/default.series. The series file in turn may reference further
+ configuration files or a whole directory from which all configs shall be
+ loaded. Each one defines a task potentially containing a set of commands and
+ dependencies on other tasks.
+ .
+ The specified tasks are then started with as much parallelism as dependencies
+ allow, i.e. tasks without any dependencies are spawned as soon as possible
+ after Crinit has been started. Once a task is spawned, finished, or has
+ failed, its dependent tasks are updated and spawned as necessary.
+ .
+ Init system override package.
+
+Package: crinit-ctl
+Architecture: any
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+ crinit (= ${binary:Version}),
+Description: Configurable Rootfs Init control utility package
+ Crinit is an init daemon executed as PID 1 by the Linux Kernel. It reads a
+ global configuration ("series"-file) either specified on the command line or
+ from /etc/crinit/default.series. The series file in turn may reference further
+ configuration files or a whole directory from which all configs shall be
+ loaded. Each one defines a task potentially containing a set of commands and
+ dependencies on other tasks.
+ .
+ The specified tasks are then started with as much parallelism as dependencies
+ allow, i.e. tasks without any dependencies are spawned as soon as possible
+ after Crinit has been started. Once a task is spawned, finished, or has
+ failed, its dependent tasks are updated and spawned as necessary.
+ .
+ Control utility package.
+
+Package: libcrinit-client0
+Architecture: any
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+Description: Configurable Rootfs Init client library
+ Crinit is an init daemon executed as PID 1 by the Linux Kernel. It reads a
+ global configuration ("series"-file) either specified on the command line or
+ from /etc/crinit/default.series. The series file in turn may reference further
+ configuration files or a whole directory from which all configs shall be
+ loaded. Each one defines a task potentially containing a set of commands and
+ dependencies on other tasks.
+ .
+ The specified tasks are then started with as much parallelism as dependencies
+ allow, i.e. tasks without any dependencies are spawned as soon as possible
+ after Crinit has been started. Once a task is spawned, finished, or has
+ failed, its dependent tasks are updated and spawned as necessary.
+ .
+ Client library package.
+
+Package: libcrinit-client-dev
+Architecture: any
+Depends:
+ ${misc:Depends},
+ libcrinit-client0 (= ${binary:Version}),
+Description: Configurable Rootfs Init client library development package
+ Crinit is an init daemon executed as PID 1 by the Linux Kernel. It reads a
+ global configuration ("series"-file) either specified on the command line or
+ from /etc/crinit/default.series. The series file in turn may reference further
+ configuration files or a whole directory from which all configs shall be
+ loaded. Each one defines a task potentially containing a set of commands and
+ dependencies on other tasks.
+ .
+ The specified tasks are then started with as much parallelism as dependencies
+ allow, i.e. tasks without any dependencies are spawned as soon as possible
+ after Crinit has been started. Once a task is spawned, finished, or has
+ failed, its dependent tasks are updated and spawned as necessary.
+ .
+ Client library development package.
+
+Package: crinit-tests
+Architecture: any
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+Description: Configurable Rootfs Init tests
+ Crinit is an init daemon executed as PID 1 by the Linux Kernel. It reads a
+ global configuration ("series"-file) either specified on the command line or
+ from /etc/crinit/default.series. The series file in turn may reference further
+ configuration files or a whole directory from which all configs shall be
+ loaded. Each one defines a task potentially containing a set of commands and
+ dependencies on other tasks.
+ .
+ The specified tasks are then started with as much parallelism as dependencies
+ allow, i.e. tasks without any dependencies are spawned as soon as possible
+ after Crinit has been started. Once a task is spawned, finished, or has
+ failed, its dependent tasks are updated and spawned as necessary.
+ .
+ Test utility package.
+
+Package: crinit-doc
+Architecture: all
+Depends:
+ ${misc:Depends},
+Description: Documentation for Configurable Rootfs Init
+ Crinit is an init daemon executed as PID 1 by the Linux Kernel. It reads a
+ global configuration ("series"-file) either specified on the command line or
+ from /etc/crinit/default.series. The series file in turn may reference further
+ configuration files or a whole directory from which all configs shall be
+ loaded. Each one defines a task potentially containing a set of commands and
+ dependencies on other tasks.
+ .
+ The specified tasks are then started with as much parallelism as dependencies
+ allow, i.e. tasks without any dependencies are spawned as soon as possible
+ after Crinit has been started. Once a task is spawned, finished, or has
+ failed, its dependent tasks are updated and spawned as necessary.
+ .
+ Documentation package.
