@@ -1,6 +1,8 @@
 crinit (0.14.6-2) unstable; urgency=medium
 
-  * Add graphviz build dependency.
+  * Add build dependencies:
+    - libsafu-dev
+    - graphviz
 
  -- Isaac True <isaac.true@emlix.com>  Fri, 17 May 2024 09:15:32 +0200
 
