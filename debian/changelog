@@ -3,6 +3,7 @@ crinit (0.14.6-2) unstable; urgency=medium
   * Add build dependencies:
     - libsafu-dev
     - graphviz
+  * Disable LTO.
 
  -- Isaac True <isaac.true@emlix.com>  Fri, 17 May 2024 09:15:32 +0200
 
