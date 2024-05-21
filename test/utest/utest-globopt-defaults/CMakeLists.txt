@@ -14,13 +14,8 @@ create_unit_test(
     libmockfunctions
   WRAPS
     -Wl,--wrap=calloc
-    -Wl,--wrap=memset
     -Wl,--wrap=strdup
 )
-# This helps by packing structs and making memset a mock-able function call instead of an inline loop. _FORTIFY_SOURCE
-# is unfortunately incompatible with -O0. This has only an effect on the test code as CMake recompiles all test sources
-# in a different folder.
-target_compile_options(utest-globopt-defaults PRIVATE -fno-builtin -fpack-struct -O0)
-get_target_property(defs utest-globopt-defaults COMPILE_OPTIONS)
-list(FILTER defs EXCLUDE REGEX [[_FORTIFY_SOURCE]])
-set_property(TARGET utest-globopt-defaults PROPERTY COMPILE_OPTIONS ${defs})
+# It is necessary to enable struct packing for this test to work, so that we can pre-init the whole struct with a known
+# value to track uninitialized fields.
+target_compile_options(utest-globopt-defaults PRIVATE -fpack-struct)
