@@ -40,7 +40,6 @@ static pthread_mutex_t crinitOptLock = PTHREAD_MUTEX_INITIALIZER;
 int crinitGlobOptInitDefault(void) {
     crinitGlobOptCommonLock();
 
-    memset(&crinitGlobOpts, 0, sizeof(crinitGlobOpts));
     crinitGlobOpts.debug = CRINIT_CONFIG_DEFAULT_DEBUG;
     crinitGlobOpts.useSyslog = CRINIT_CONFIG_DEFAULT_USE_SYSLOG;
     crinitGlobOpts.useElos = CRINIT_CONFIG_DEFAULT_USE_ELOS;
@@ -48,9 +47,7 @@ int crinitGlobOptInitDefault(void) {
     crinitGlobOpts.shdGraceP = CRINIT_CONFIG_DEFAULT_SHDGRACEP;
     crinitGlobOpts.taskDirFollowSl = CRINIT_CONFIG_DEFAULT_TASKDIR_SYMLINKS;
     crinitGlobOpts.signatures = CRINIT_CONFIG_DEFAULT_SIGNATURES;
-
-    crinitGlobOpts.tasks = NULL;  // This is actually a no-op after memset but needed for the regression test for
-                                  // initialized default values to pass. Will be optimized by compiler.
+    crinitGlobOpts.tasks = NULL;
 
     crinitGlobOpts.inclDir = strdup(CRINIT_CONFIG_DEFAULT_INCLDIR);
     if (crinitGlobOpts.inclDir == NULL) {

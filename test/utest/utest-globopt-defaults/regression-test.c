@@ -24,12 +24,6 @@
 void crinitGlobDefRegressionTest(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
-    // Make memset a no-op in global option intialization function
-    expect_any_always(__wrap_memset, str);
-    expect_any_always(__wrap_memset, c);
-    expect_any_always(__wrap_memset, n);
-    will_return(__wrap_memset, CRINIT_FAKE_POINTER);
-
     // calloc and strdup shall always successfully return the same known value inside the global option initialization
     // function.
     expect_any_always(__wrap_calloc, num);
