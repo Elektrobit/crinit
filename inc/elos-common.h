@@ -81,7 +81,17 @@ typedef enum crinitElosSeverityE_t {
     ELOS_SEVERITY_VERBOSE,
 } crinitElosSeverityE_t;
 
-typedef int crinitElosEventMessageCodeE_t;
+/**
+ * Relevant elos message codes for crinit.
+ */
+typedef enum crinitElosEventMessageCodeE_t {
+    ELOS_MSG_CODE_INFO_LOG = 1102,            ///< General events, not related to other codes.
+    ELOS_MSG_CODE_PROCESS_CREATED = 2001,     ///< When a task is started.
+    ELOS_MSG_CODE_PROCESS_EXITED = 2002,      ///< When a task was successfully completed.
+    ELOS_MSG_CODE_FILE_OPENED = 2003,         ///< When a task has been added
+    ELOS_MSG_CODE_IPC_NOT_AUTHORIZED = 4001,  ///< When a client asked crinit for something without proper privileges.
+    ELOS_MSG_CODE_EXIT_FAILURE = 5006,        ///< When a task has failed.
+} crinitElosEventMessageCodeE_t;
 
 /**
  * Event send to elos.
@@ -199,7 +209,7 @@ int crinitElosDisconnect(crinitElosSession_t *session, pthread_mutex_t *sessionL
                                            crinitElosGetVTable()->elosServer, crinitElosGetVTable()->elosPort);       \
                             break;                                                                                    \
                         }                                                                                             \
-                        usleep(CRINIT_ELOS_CONNECTION_RETRY_INTERVAL_US);                                                \
+                        usleep(CRINIT_ELOS_CONNECTION_RETRY_INTERVAL_US);                                             \
                         retryCount++;                                                                                 \
                     }                                                                                                 \
                 }                                                                                                     \
