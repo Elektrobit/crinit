@@ -133,7 +133,11 @@ int crinitTaskDBInsert(crinitTaskDB_t *ctx, const crinitTask_t *t, bool overwrit
         goto fail;
     }
 
-    crinitElosLog(ELOS_SEVERITY_INFO, ELOS_MSG_CODE_FILE_OPENED, "Added new task %s.", pTask->name);
+    if (crinitElosLog(ELOS_SEVERITY_INFO, ELOS_MSG_CODE_FILE_OPENED, pTask->name) == -1) {
+        crinitErrPrint(
+            "Could not enqueue elos task creation event for '%s'. Will continue but logging may be impaired.",
+            pTask->name);
+    }
 
     crinitDbgInfoPrint("Run feature hooks for 'TASK_ADDED'.");
     if (crinitFeatureHook(NULL, CRINIT_HOOK_TASK_ADDED, pTask) == -1) {
