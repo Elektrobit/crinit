@@ -139,7 +139,6 @@ int main(int argc, char *argv[]) {
         goto failFreeSigs;
     }
 
-    // TODO: Init features (call feature hook init).
     crinitRtimOpMapDebugPrintAll();
 
     crinitTaskDB_t tdb;
