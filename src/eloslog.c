@@ -12,6 +12,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "common.h"
 #include "confparse.h"
@@ -199,8 +200,12 @@ int crinitElosLog(crinitElosSeverityE_t severity, int messageCode, const char *f
     vsnprintf(event->payload, bytes, format, argp2);
     va_end(argp2);
 
-    event->date.tv_sec = time(NULL);
-    event->date.tv_nsec = 0;
+    if (clock_gettime(CLOCK_REALTIME, &event->date) == -1) {
+        crinitErrnoPrint("Could not get wallclock time for event to transmit.");
+        free(event->payload);
+        free(event);
+        return SAFU_RESULT_FAILED;
+    }
     event->severity = severity;
     event->messageCode = messageCode;
 
