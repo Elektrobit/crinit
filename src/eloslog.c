@@ -161,7 +161,8 @@ static void *crinitEloslogEventTransmitter(void *arg) {
     return NULL;
 }
 
-int crinitElosLog(crinitElosSeverityE_t severity, int messageCode, const char *format, ...) {
+int crinitElosLog(crinitElosSeverityE_t severity, crinitElosEventMessageCodeE_t messageCode, uint64_t classification,
+                  const char *format, ...) {
     safuResultE_t result;
     size_t bytes;
     bool sendEvents;
@@ -207,6 +208,7 @@ int crinitElosLog(crinitElosSeverityE_t severity, int messageCode, const char *f
         return SAFU_RESULT_FAILED;
     }
     event->severity = severity;
+    event->classification = classification;
     event->messageCode = messageCode;
 
     crinitDbgInfoPrint("Enqueuing elos event: '%s'", event->payload);
