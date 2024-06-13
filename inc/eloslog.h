@@ -7,6 +7,7 @@
 #define __ELOSLOG_H__
 
 #include <stdbool.h>
+#include <stdint.h>
 
 #include "elos-common.h"
 
@@ -33,12 +34,14 @@ int crinitEloslogActivate(bool e);
 /**
  * Log a crinit event to elos.
  *
- * @param severity    The event severity.
- * @param messageCode The event message code.
- * @param format      Format string to format remaining arguments.
+ * @param severity        The event severity.
+ * @param messageCode     The event message code.
+ * @param classification  The event classification bitmask.
+ * @param format          Format string to format remaining arguments.
  *
  * @return Returns 0 on success, -1 otherwise.
  */
-int crinitElosLog(crinitElosSeverityE_t severity, int messageCode, const char *format, ...);
+int crinitElosLog(crinitElosSeverityE_t severity, crinitElosEventMessageCodeE_t messageCode, uint64_t classification,
+                  const char *format, ...);
 
 #endif /* __ELOSLOG_H__ */
