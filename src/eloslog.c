@@ -214,6 +214,7 @@ int crinitElosLog(crinitElosSeverityE_t severity, int messageCode, const char *f
     result = safuRingBufferWrite(&crinitElosEventBuffer, event);
     if (result != SAFU_RESULT_OK) {
         crinitErrPrint("Writing to elos event buffer failed.");
+        free(event->payload);
         free(event);
         return result;
     }
