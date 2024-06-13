@@ -21,7 +21,7 @@
  *
  * @param task      Pointer pointer to return the task with.
  * @param taskName  The crinitTask_t::name to search for.
- * @param in        The crinitTaskDB_t_t to search in.
+ * @param in        The crinitTaskDB_t to search in.
  *
  * @return 0 on success, -1 otherwise
  */
