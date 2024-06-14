@@ -45,8 +45,9 @@ Crinit currently has the following features implemented:
     - task-specific local settings can override and/or extend the global environment
 * include files to maintain task configuration presets
 * optional integration with [elos](https://github.com/Elektrobit/elos)
-    - support for events send by elos as task dependencies
+    - support for events sent by elos as task dependencies
 * ability to report task state changes back to elos
+    - emits appropriate events when a task is created, starts, exits, or fails
 * optional signature checking of Crinit's configuration files
 
 In the future we also plan to support:
