@@ -23,28 +23,28 @@
 
 #define ELOS_ID_INVALID 0  ///< Invalid elos event queue ID constant.
 
-#define ELOS_CLASSIFICATION_ELOS_MASK 0x00000000FFFFFFFFULL
-#define ELOS_CLASSIFICATION_USER_MASK 0x000000FF00000000ULL
-#define ELOS_CLASSIFICATION_RESERVED_MASK 0xFFFFFF0000000000ULL
-#define ELOS_CLASSIFICATION_UNDEFINED 0x0000000000000000ULL
-#define ELOS_CLASSIFICATION_KERNEL 0x0000000000000001ULL
-#define ELOS_CLASSIFICATION_NETWORK 0x0000000000000002ULL
-#define ELOS_CLASSIFICATION_SECURITY 0x0000000000000004ULL
-#define ELOS_CLASSIFICATION_POWER 0x0000000000000008ULL
-#define ELOS_CLASSIFICATION_STORAGE 0x0000000000000010ULL
-#define ELOS_CLASSIFICATION_PROCESS 0x0000000000000020ULL
-#define ELOS_CLASSIFICATION_IPC 0x0000000000000040ULL
-#define ELOS_CLASSIFICATION_HARDWARE 0x0000000000000080ULL
-#define ELOS_CLASSIFICATION_ELOS 0x0000000000000100ULL
-#define ELOS_CLASSIFICATION_PROCESS_ERRORS 0x0000000000000200ULL
-#define ELOS_CLASSIFICATION_USER_0 0x0000000100000000ULL
-#define ELOS_CLASSIFICATION_USER_1 0x0000000200000000ULL
-#define ELOS_CLASSIFICATION_USER_2 0x0000000400000000ULL
-#define ELOS_CLASSIFICATION_USER_3 0x0000000800000000ULL
-#define ELOS_CLASSIFICATION_USER_4 0x0000001000000000ULL
-#define ELOS_CLASSIFICATION_USER_5 0x0000002000000000ULL
-#define ELOS_CLASSIFICATION_USER_6 0x0000004000000000ULL
-#define ELOS_CLASSIFICATION_USER_7 0x0000008000000000ULL
+#define ELOS_CLASSIFICATION_ELOS_MASK 0x00000000FFFFFFFFuLL
+#define ELOS_CLASSIFICATION_USER_MASK 0x000000FF00000000uLL
+#define ELOS_CLASSIFICATION_RESERVED_MASK 0xFFFFFF0000000000uLL
+#define ELOS_CLASSIFICATION_UNDEFINED 0x0000000000000000uLL
+#define ELOS_CLASSIFICATION_KERNEL 0x0000000000000001uLL
+#define ELOS_CLASSIFICATION_NETWORK 0x0000000000000002uLL
+#define ELOS_CLASSIFICATION_SECURITY 0x0000000000000004uLL
+#define ELOS_CLASSIFICATION_POWER 0x0000000000000008uLL
+#define ELOS_CLASSIFICATION_STORAGE 0x0000000000000010uLL
+#define ELOS_CLASSIFICATION_PROCESS 0x0000000000000020uLL
+#define ELOS_CLASSIFICATION_IPC 0x0000000000000040uLL
+#define ELOS_CLASSIFICATION_HARDWARE 0x0000000000000080uLL
+#define ELOS_CLASSIFICATION_ELOS 0x0000000000000100uLL
+#define ELOS_CLASSIFICATION_PROCESS_ERRORS 0x0000000000000200uLL
+#define ELOS_CLASSIFICATION_USER_0 0x0000000100000000uLL
+#define ELOS_CLASSIFICATION_USER_1 0x0000000200000000uLL
+#define ELOS_CLASSIFICATION_USER_2 0x0000000400000000uLL
+#define ELOS_CLASSIFICATION_USER_3 0x0000000800000000uLL
+#define ELOS_CLASSIFICATION_USER_4 0x0000001000000000uLL
+#define ELOS_CLASSIFICATION_USER_5 0x0000002000000000uLL
+#define ELOS_CLASSIFICATION_USER_6 0x0000004000000000uLL
+#define ELOS_CLASSIFICATION_USER_7 0x0000008000000000uLL
 
 /**
  * Type defition for elos event queue IDs.
@@ -81,7 +81,17 @@ typedef enum crinitElosSeverityE_t {
     ELOS_SEVERITY_VERBOSE,
 } crinitElosSeverityE_t;
 
-typedef int crinitElosEventMessageCodeE_t;
+/**
+ * Relevant elos message codes for crinit.
+ */
+typedef enum crinitElosEventMessageCodeE_t {
+    ELOS_MSG_CODE_INFO_LOG = 1102,            ///< General events, not related to other codes.
+    ELOS_MSG_CODE_PROCESS_CREATED = 2001,     ///< When a task is started.
+    ELOS_MSG_CODE_PROCESS_EXITED = 2002,      ///< When a task was successfully completed.
+    ELOS_MSG_CODE_FILE_OPENED = 2003,         ///< When a task has been added
+    ELOS_MSG_CODE_IPC_NOT_AUTHORIZED = 4001,  ///< When a client asked crinit for something without proper privileges.
+    ELOS_MSG_CODE_EXIT_FAILURE = 5006,        ///< When a task has failed.
+} crinitElosEventMessageCodeE_t;
 
 /**
  * Event send to elos.
@@ -199,7 +209,7 @@ int crinitElosDisconnect(crinitElosSession_t *session, pthread_mutex_t *sessionL
                                            crinitElosGetVTable()->elosServer, crinitElosGetVTable()->elosPort);       \
                             break;                                                                                    \
                         }                                                                                             \
-                        usleep(CRINIT_ELOS_CONNECTION_RETRY_INTERVAL_US);                                                \
+                        usleep(CRINIT_ELOS_CONNECTION_RETRY_INTERVAL_US);                                             \
                         retryCount++;                                                                                 \
                     }                                                                                                 \
                 }                                                                                                     \

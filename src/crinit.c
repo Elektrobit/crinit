@@ -129,7 +129,7 @@ int main(int argc, char *argv[]) {
     // Initialize optional features as soon as possible.
     crinitInfoPrint("Initialize optional features.");
     if (crinitFeatureHook(NULL, CRINIT_HOOK_INIT, NULL) == -1) {
-        crinitErrPrint("Could not run activiation hook for feature \'INIT\'.");
+        crinitErrPrint("Could not run activation hook for feature \'INIT\'.");
         goto failFreeSigs;
     }
 
@@ -139,7 +139,6 @@ int main(int argc, char *argv[]) {
         goto failFreeSigs;
     }
 
-    // TODO: Init features (call feature hook init).
     crinitRtimOpMapDebugPrintAll();
 
     crinitTaskDB_t tdb;
