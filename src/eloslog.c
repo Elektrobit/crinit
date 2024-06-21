@@ -12,9 +12,11 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "common.h"
 #include "confparse.h"
+#include "globopt.h"
 
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
@@ -159,29 +161,24 @@ static void *crinitEloslogEventTransmitter(void *arg) {
     return NULL;
 }
 
-int crinitElosLog(crinitElosSeverityE_t severity, int messageCode, const char *format, ...) {
+int crinitElosLog(crinitElosSeverityE_t severity, crinitElosEventMessageCodeE_t messageCode, uint64_t classification,
+                  const char *format, ...) {
     safuResultE_t result;
     size_t bytes;
+    bool sendEvents;
 
-    if ((errno = pthread_mutex_lock(&crinitElosActivatedLock)) != 0) {
-        crinitErrnoPrint("Failed to lock elos connection activation indicator.");
+    if (crinitGlobOptGet(useElos, &sendEvents) == -1) {
+        crinitErrPrint("Could not retrieve value of USE_ELOS global option");
         return -1;
     }
 
-    /* The plugin has not been activated */
-    if (!crinitElosActivated) {
-        if ((errno = pthread_mutex_unlock(&crinitElosActivatedLock)) != 0) {
-            crinitErrnoPrint("Failed to unlock elos connection activation indicator.");
-            return -1;
-        }
+    // If USE_ELOS is not set we return without doing anything.
+    if (!sendEvents) {
         return 0;
     }
 
-    if ((errno = pthread_mutex_unlock(&crinitElosActivatedLock)) != 0) {
-        crinitErrnoPrint("Failed to unlock elos connection activation indicator.");
-        return -1;
-    }
-
+    // Else we can enqueue the event even if elos connection is not yet set up as long as the ring buffer is allocated
+    // which crinit will do early on. (Otherwise safuRingBufferWrite() will fail.)
     crinitElosEvent_t *event = calloc(1, sizeof(*event));
     if (event == NULL) {
         crinitErrnoPrint("Failed to allocate memory for the elos event.");
@@ -204,9 +201,14 @@ int crinitElosLog(crinitElosSeverityE_t severity, int messageCode, const char *f
     vsnprintf(event->payload, bytes, format, argp2);
     va_end(argp2);
 
-    event->date.tv_sec = time(NULL);
-    event->date.tv_nsec = 0;
+    if (clock_gettime(CLOCK_REALTIME, &event->date) == -1) {
+        crinitErrnoPrint("Could not get wallclock time for event to transmit.");
+        free(event->payload);
+        free(event);
+        return SAFU_RESULT_FAILED;
+    }
     event->severity = severity;
+    event->classification = classification;
     event->messageCode = messageCode;
 
     crinitDbgInfoPrint("Enqueuing elos event: '%s'", event->payload);
@@ -214,6 +216,7 @@ int crinitElosLog(crinitElosSeverityE_t severity, int messageCode, const char *f
     result = safuRingBufferWrite(&crinitElosEventBuffer, event);
     if (result != SAFU_RESULT_OK) {
         crinitErrPrint("Writing to elos event buffer failed.");
+        free(event->payload);
         free(event);
         return result;
     }
