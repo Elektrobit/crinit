@@ -21,7 +21,7 @@
  *
  * @param task      Pointer pointer to return the task with.
  * @param taskName  The crinitTask_t::name to search for.
- * @param in        The crinitTaskDB_t_t to search in.
+ * @param in        The crinitTaskDB_t to search in.
  *
  * @return 0 on success, -1 otherwise
  */
@@ -133,7 +133,11 @@ int crinitTaskDBInsert(crinitTaskDB_t *ctx, const crinitTask_t *t, bool overwrit
         goto fail;
     }
 
-    crinitElosLog(ELOS_SEVERITY_INFO, 2001, "Added new task %s.", pTask->name);
+    if (crinitElosLog(ELOS_SEVERITY_INFO, ELOS_MSG_CODE_FILE_OPENED, ELOS_CLASSIFICATION_PROCESS, pTask->name) == -1) {
+        crinitErrPrint(
+            "Could not enqueue elos task creation event for '%s'. Will continue but logging may be impaired.",
+            pTask->name);
+    }
 
     crinitDbgInfoPrint("Run feature hooks for 'TASK_ADDED'.");
     if (crinitFeatureHook(NULL, CRINIT_HOOK_TASK_ADDED, pTask) == -1) {
@@ -224,19 +228,29 @@ int crinitTaskDBSetTaskState(crinitTaskDB_t *ctx, crinitTaskState_t s, const cha
 
     crinitTask_t *pTask;
     if (crinitFindTask(&pTask, taskName, ctx) == 0) {
+        crinitElosSeverityE_t elosSeverity = ELOS_SEVERITY_INFO;
+        crinitElosEventMessageCodeE_t elosMsgCode = ELOS_MSG_CODE_INFO_LOG;
+        uint64_t classification = ELOS_CLASSIFICATION_UNDEFINED;
         pTask->state = s;
         s &= ~CRINIT_TASK_STATE_NOTIFIED;  // Here we don't care if we got the state via notification or directly.
         switch (s) {
             case CRINIT_TASK_STATE_FAILED:
                 pTask->failCount++;
                 memcpy(&pTask->endTime, &timestamp, sizeof(pTask->endTime));
+                elosSeverity = ELOS_SEVERITY_ERROR;
+                elosMsgCode = ELOS_MSG_CODE_EXIT_FAILURE;
+                classification = ELOS_CLASSIFICATION_PROCESS | ELOS_CLASSIFICATION_PROCESS_ERRORS;
                 break;
             case CRINIT_TASK_STATE_DONE:
                 pTask->failCount = 0;
                 memcpy(&pTask->endTime, &timestamp, sizeof(pTask->endTime));
+                elosMsgCode = ELOS_MSG_CODE_PROCESS_EXITED;
+                classification = ELOS_CLASSIFICATION_PROCESS;
                 break;
             case CRINIT_TASK_STATE_RUNNING:
                 memcpy(&pTask->startTime, &timestamp, sizeof(pTask->startTime));
+                elosMsgCode = ELOS_MSG_CODE_PROCESS_CREATED;
+                classification = ELOS_CLASSIFICATION_PROCESS;
                 break;
             default:
                 // do nothing
@@ -244,6 +258,9 @@ int crinitTaskDBSetTaskState(crinitTaskDB_t *ctx, crinitTaskState_t s, const cha
         }
         pthread_cond_broadcast(&ctx->changed);
         pthread_mutex_unlock(&ctx->lock);
+        if (crinitElosLog(elosSeverity, elosMsgCode, classification, taskName) == -1) {
+            crinitErrPrint("Could not send task event to elos. Will continue but logging may be impaired.");
+        }
         return 0;
     }
 

@@ -35,6 +35,7 @@ create_mock_lib(
     mock-calloc.c
     mock-realloc.c
     mock-free.c
+    mock-memset.c
     mock-strdup.c
     mock-strlen.c
     mock-strcmp.c

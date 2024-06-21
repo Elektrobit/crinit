@@ -27,3 +27,12 @@ Elosd Is Running
     ${is_running}=    Run Keyword And Return Status    Should Contain    ${status}    ${running}    ignore_case=True
 
     RETURN    ${is_running}
+
+Check That An Elos Event From Crinit Was Logged With
+    [Arguments]        ${severity}=    ${classification}=    ${msgcode}=    ${payload}=
+    [Documentation]    Check if at least one event from Crinit, filtered by severity, classification, message code, and
+    ...                payload was logged.
+
+    ${elosc_out}=    Execute Command
+    ...    elosc -P 54322 -f \".event.source.appName \'crinit\' STRCMP .event.severity ${severity} EQ AND .event.payload \'${payload}\' STRCMP AND .event.messageCode ${msgcode} EQ AND .event.classification ${classification} EQ AND\"
+    Should Match Regexp    ${elosc_out}    \{.+\}

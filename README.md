@@ -45,8 +45,9 @@ Crinit currently has the following features implemented:
     - task-specific local settings can override and/or extend the global environment
 * include files to maintain task configuration presets
 * optional integration with [elos](https://github.com/Elektrobit/elos)
-    - support for events send by elos as task dependencies
+    - support for events sent by elos as task dependencies
 * ability to report task state changes back to elos
+    - emits appropriate events when a task is created, starts, exits, or fails
 * optional signature checking of Crinit's configuration files
 
 In the future we also plan to support:
@@ -564,6 +565,21 @@ USAGE: crinit-ctl <ACTION> [OPTIONS] <PARAMETER> [PARAMETERS...]
                        and -- if connection is successful -- the crinit daemon.
 ```
 
+## Smart bash completion for crinit-ctl
+
+There is a script to support smart bash completions for the crinit-ctl executable located at
+`completion/crinit-ctl.bash`. On modern distributions, this file will need to be copied and renamed to
+`/usr/share/bash-completion/completions/crinit-ctl` to be picked up automatically. The `cmake` installer can do this
+(see below). Note that a fully bash-compatible shell (`bash`,`dash`) is required to take advantage of this.
+
+For testing purposes, it is sufficient to run `source completion/crinit-ctl.bash` to activate the smart completion for
+the current session. The script can also be sourced from `.bashrc` if a system-wide installation is not desired.
+
+Once installed and loaded, `crinit-ctl <TAB><TAB>` will show/complete available command verbs like `addtask`, `enable`,
+`disable`, etc. For `crinit-ctl addtask <TAB><TAB>`, paths to `\*.crinit` files and specific options will be completed,
+similar for `addseries`. Verbs taking a task name as input will have completion of available tasks loaded by crinit.
+The script calls `crinit-ctl list` and parses its output in the background to achieve this.
+
 ## Build Instructions
 Executing
 ```
@@ -657,6 +673,9 @@ The cmake setup supports some optional features:
   `ROBOT_TEST_RESOURCE_DIR`. Default is `Off` and default install path is `${CMAKE_INSTALL_SYSCONFDIR}/crinit/itest`.
 * Set the installation path for the symbolic links for `reboot` and `poweroff` using `PWR_SYMLINKS_PATH`. Default is
   `${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_SBINDIR}`
+* Install the bash completion script for crinit-ctl, using `-DINSTALL_BASH_COMPLETION={On, Off}`, to the
+  `BASH_COMPLETION_DIR`. Default is `On` and default isntall path is
+   `${CMAKE_INSTALL_DATADIR/bash-completion/completions`.
 
 ## Build Requirements
 

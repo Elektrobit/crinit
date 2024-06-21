@@ -13,7 +13,7 @@ ARG SAFU_REPO_PATH=${EB_GIT_SOURCES}/${SAFU_REPO_NAME}
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
- && apt-get install -y sudo locales vim screen git bc keyutils \
+ && apt-get install -y sudo locales vim screen git bc keyutils bash-completion \
     libncurses-dev libcmocka-dev libiberty-dev libjson-c-dev libssl-dev libmnl-dev libmbedtls-dev \
     build-essential python-is-python3 python3-venv python3-pip rpm wget doxygen \
     graphviz plantuml re2c cmake clang llvm clang-tidy pkg-config valgrind \

@@ -40,71 +40,68 @@ static pthread_mutex_t crinitOptLock = PTHREAD_MUTEX_INITIALIZER;
 int crinitGlobOptInitDefault(void) {
     crinitGlobOptCommonLock();
 
-    memset(&crinitGlobOpts, 0, sizeof(crinitGlobOpts));
     crinitGlobOpts.debug = CRINIT_CONFIG_DEFAULT_DEBUG;
     crinitGlobOpts.useSyslog = CRINIT_CONFIG_DEFAULT_USE_SYSLOG;
     crinitGlobOpts.useElos = CRINIT_CONFIG_DEFAULT_USE_ELOS;
+    crinitGlobOpts.elosPort = CRINIT_CONFIG_DEFAULT_ELOS_PORT;
     crinitGlobOpts.shdGraceP = CRINIT_CONFIG_DEFAULT_SHDGRACEP;
     crinitGlobOpts.taskDirFollowSl = CRINIT_CONFIG_DEFAULT_TASKDIR_SYMLINKS;
     crinitGlobOpts.signatures = CRINIT_CONFIG_DEFAULT_SIGNATURES;
+    crinitGlobOpts.tasks = NULL;
 
     crinitGlobOpts.inclDir = strdup(CRINIT_CONFIG_DEFAULT_INCLDIR);
     if (crinitGlobOpts.inclDir == NULL) {
         crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_INCLDIR);
-        crinitGlobOptDestroy();
-        crinitGlobOptCommonUnlock();
-        return -1;
+        goto fail;
     }
 
     crinitGlobOpts.inclSuffix = strdup(CRINIT_CONFIG_DEFAULT_INCL_SUFFIX);
     if (crinitGlobOpts.inclSuffix == NULL) {
         crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_INCL_SUFFIX);
-        crinitGlobOptDestroy();
-        crinitGlobOptCommonUnlock();
-        return -1;
+        goto fail;
     }
 
     crinitGlobOpts.taskDir = strdup(CRINIT_CONFIG_DEFAULT_TASKDIR);
     if (crinitGlobOpts.taskDir == NULL) {
         crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_TASKDIR);
-        crinitGlobOptDestroy();
-
-        crinitGlobOptCommonUnlock();
-        return -1;
+        goto fail;
     }
 
     crinitGlobOpts.taskFileSuffix = strdup(CRINIT_CONFIG_DEFAULT_TASK_FILE_SUFFIX);
     if (crinitGlobOpts.taskFileSuffix == NULL) {
         crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_TASK_FILE_SUFFIX);
-        crinitGlobOptDestroy();
-        crinitGlobOptCommonUnlock();
-        return -1;
+        goto fail;
     }
 
     crinitGlobOpts.sigKeyDir = strdup(CRINIT_CONFIG_DEFAULT_SIGKEYDIR);
     if (crinitGlobOpts.sigKeyDir == NULL) {
         crinitGlobOptSetErrPrint(CRINIT_CONFIG_DEFAULT_SIGKEYDIR);
-        crinitGlobOptDestroy();
-        crinitGlobOptCommonUnlock();
-        return -1;
+        goto fail;
+    }
+
+    crinitGlobOpts.elosServer = strdup(CRINIT_CONFIG_DEFAULT_ELOS_SERVER);
+    if (crinitGlobOpts.elosServer == NULL) {
+        crinitGlobOptSetErrPrint(CRINIT_CONFIG_DEFAULT_ELOS_SERVER);
+        goto fail;
     }
 
     if (crinitEnvSetInit(&crinitGlobOpts.globEnv, CRINIT_ENVSET_INITIAL_SIZE, CRINIT_ENVSET_SIZE_INCREMENT) == -1) {
         crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_ENV_SET);
-        crinitGlobOptDestroy();
-        crinitGlobOptCommonUnlock();
-        return -1;
+        goto fail;
     }
 
     if (crinitEnvSetInit(&crinitGlobOpts.globFilters, CRINIT_ENVSET_INITIAL_SIZE, CRINIT_ENVSET_SIZE_INCREMENT) == -1) {
         crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_FILTER_DEFINE);
-        crinitGlobOptDestroy();
-        crinitGlobOptCommonUnlock();
-        return -1;
+        goto fail;
     }
 
     crinitGlobOptCommonUnlock();
     return 0;
+
+fail:
+    crinitGlobOptDestroy();
+    crinitGlobOptCommonUnlock();
+    return -1;
 }
 
 int crinitGlobOptSetString(size_t memberOffset, const char *val) {
