@@ -2,6 +2,7 @@
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 find_package(RE2C 3 REQUIRED)
+find_package(safu 0.58.2 REQUIRED)
 
 configure_file(version.c.in version.c)
 
