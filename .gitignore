@@ -46,3 +46,5 @@ tags
 test_service.crinit
 robot_variables.py
 __pycache__/
+test/integration/libraries/fail_service.crinit
+test/integration/libraries/success_service.crinit
