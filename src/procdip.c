@@ -293,8 +293,8 @@ threadExitFail:
     if (crinitTaskDBSetTaskPID(ctx, -1, tCopy->name) == -1) {
         crinitErrPrint("(TID: %d) Could not reset PID of failed Task \'%s\' to -1.", threadId, tCopy->name);
     }
-    // Reap zombie of failed command.
-    if (crinitReapPid(pid) == -1) {
+    // Reap zombie of failed command (if it was actually spawned).
+    if (pid > 0 && crinitReapPid(pid) == -1) {
         crinitErrPrint("(TID: %d) Could not reap zombie for task \'%s\'.", threadId, tCopy->name);
     }
 

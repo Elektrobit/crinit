@@ -684,7 +684,7 @@ In order to build crinit, some prerequisites have to be installed.
 - a modern GCC toolchain with C17 support
 - cmake >= 3.21
 - re2c >= 3.0
-- [safu](https://github.com/elektrobit/safu) >= 0.49.3
+- [safu](https://github.com/elektrobit/safu) >= 0.58.2
 - optional, for signature support: [MbedTLS](https://github.com/Mbed-TLS/mbedtls) 2.28.x or 3.x
 - optional, for unit tests: cmocka >= 1.1.5
 - optional, for HTML API documentation: Doxygen
