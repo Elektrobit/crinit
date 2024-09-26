@@ -424,7 +424,7 @@ static void *crinitElosdepEventListener(void *arg) {
     err = crinitElosTryExec(crinitTinfo.session, &crinitElosdepSessionLock, crinitElosGetVTable()->getVersion,
                             "Failed to request elos version.", tinfo->session, &version);
     if (err == SAFU_RESULT_OK) {
-        crinitInfoPrint("Connected to elosd running version: %s", version);
+        crinitInfoPrint("Connected to elosd version %s for event reception.", version);
     } else {
         goto err_connection_lost;
     }
