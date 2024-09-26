@@ -104,7 +104,7 @@ static void *crinitEloslogEventTransmitter(void *arg) {
     res = crinitElosTryExec(crinitTinfo.session, &crinitEloslogSessionLock, crinitElosGetVTable()->getVersion,
                             "Failed to request elos version.", crinitTinfo.session, &version);
     if (res == SAFU_RESULT_OK) {
-        crinitInfoPrint("Connected to elosd running version: %s", version);
+        crinitInfoPrint("Connected to elosd version %s for event transmission.", version);
     }
 
     while (1) {
