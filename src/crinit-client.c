@@ -149,6 +149,7 @@ CRINIT_LIB_EXPORTED int sd_notifyf(                    // NOLINT(readability-ide
     char *stateStr = malloc(n);
     if (stateStr == NULL) {
         crinitErrPrint("Could not allocate memory for SD_NOTIFY command string.");
+        va_end(vargsCopy);
         return -1;
     }
     vsnprintf(stateStr, n, format, vargsCopy);
