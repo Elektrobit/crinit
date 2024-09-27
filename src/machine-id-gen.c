@@ -165,9 +165,11 @@ int main(int argc, char *argv[]) {
     }
     if (fprintf(machIdF, "%s\n", machId) < 0) {
         fprintf(stderr, "Could not write to \'" MACHINE_ID_PATH "\'.\n");
+        fclose(machIdF);
         return EXIT_FAILURE;
     }
     printf("Done.\nMachine ID: %s\n", machId);
+    fclose(machIdF);
     return EXIT_SUCCESS;
 }
 
