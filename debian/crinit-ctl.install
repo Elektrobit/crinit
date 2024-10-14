@@ -1,1 +1,2 @@
 usr/bin/crinit-ctl
+usr/share/bash-completion/completions/crinit-ctl
