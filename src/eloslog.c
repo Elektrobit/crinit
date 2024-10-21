@@ -31,7 +31,7 @@ static pthread_mutex_t crinitElosActivatedLock = PTHREAD_MUTEX_INITIALIZER;  ///
 /**
  * Thread context of the eloslog main thread.
  */
-static struct crinitElosEventThread {
+static struct crinitElosEventThread_t {
     pthread_t threadId;            ///< Thread identifier
     crinitElosSession_t *session;  ///< Elos session handle
 } crinitTinfo;
@@ -46,6 +46,8 @@ static safuRingBuffer_t crinitElosEventBuffer;
 static pthread_mutex_t crinitEloslogTrCondLock = PTHREAD_MUTEX_INITIALIZER;
 /** Condition variable to block the transmitter thread until there are events to send **/
 static pthread_cond_t crinitEloslogTransmitCondition = PTHREAD_COND_INITIALIZER;
+/** Counter to account for condition variable signalling while it is not being waited on **/
+static int crinitEloslogTransmitCounter = 0;
 
 static inline int crinitFetchHWId(char *hwId) {
     FILE *fp = NULL;
@@ -104,7 +106,7 @@ static void *crinitEloslogEventTransmitter(void *arg) {
     res = crinitElosTryExec(crinitTinfo.session, &crinitEloslogSessionLock, crinitElosGetVTable()->getVersion,
                             "Failed to request elos version.", crinitTinfo.session, &version);
     if (res == SAFU_RESULT_OK) {
-        crinitInfoPrint("Connected to elosd running version: %s", version);
+        crinitInfoPrint("Connected to elosd version %s for event transmission.", version);
     }
 
     while (1) {
@@ -137,6 +139,22 @@ static void *crinitEloslogEventTransmitter(void *arg) {
             crinitErrnoPrint("Could not queue up for mutex lock on condition variable.");
             break;
         }
+
+        /*
+         * In case the TransmitCounter was incremented after the safuRingBufferRead(), we do another loop so we don't
+         * delay any events more than necessary. As the ringbuffer will return at least all events that have been
+         * enqueued up to here (or more), we can set the TransmitCounter to zero. As the transmit counter (as a
+         * condition predicate) is synched by the same mutex as the condition variable, we never miss anything (but we
+         * *may* do a single unnecessary additional loop with a ringbuffer check sometimes).
+         */
+        if (crinitEloslogTransmitCounter > 0) {
+            crinitEloslogTransmitCounter = 0;
+            if ((errno = pthread_mutex_unlock(&crinitEloslogTrCondLock)) != 0) {
+                crinitErrnoPrint("Failed to unlock condition variable mutex.");
+            }
+            continue;
+        }
+
         if ((errno = pthread_cond_wait(&crinitEloslogTransmitCondition, &crinitEloslogTrCondLock)) != 0) {
             crinitErrnoPrint("Could not wait for event transmit condition variable.");
             pthread_mutex_unlock(&crinitEloslogTrCondLock);
@@ -225,6 +243,7 @@ int crinitElosLog(crinitElosSeverityE_t severity, crinitElosEventMessageCodeE_t 
         crinitErrnoPrint("Could not queue up for mutex lock on condition variable.");
         return SAFU_RESULT_FAILED;
     }
+    crinitEloslogTransmitCounter++;
     if ((errno = pthread_cond_signal(&crinitEloslogTransmitCondition)) != 0) {
         crinitErrnoPrint("Could not signal event transmit condition variable.");
         pthread_mutex_unlock(&crinitEloslogTrCondLock);
