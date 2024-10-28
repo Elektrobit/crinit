@@ -60,12 +60,14 @@ pipeline {
                         reuseNode true
                         additionalBuildArgs " \
                             --progress=plain \
+                            ${ARCH == 'arm64v8' ? '--platform linux/arm64/v8' : ''} \
                             --build-arg REPO=${ARCH} \
                             --build-arg USER=jenkins \
                             --build-arg UID=${UID} \
                             --build-arg GID=${GID} \
                             --build-arg UBUNTU_RELEASE=jammy"
                         args "--privileged \
+                            ${ARCH == 'arm64v8' ? '--platform linux/arm64/v8' : ''} \
                             -v /home/jenkins/.ssh:/home/jenkins/.ssh \
                             -e HOME=/home/jenkins"
                         reuseNode true

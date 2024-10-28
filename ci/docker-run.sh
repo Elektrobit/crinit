@@ -37,6 +37,7 @@ cd $BASEDIR/ci
 DOCKER_BUILDKIT=1 \
 docker build \
     --progress=plain \
+    ${PLATFORM_OPTS} \
     --build-arg REPO="$REPO" \
     --build-arg UBUNTU_RELEASE="$UBUNTU_RELEASE" \
     --build-arg UID=$(id -u) --build-arg GID=$(id -g) \
