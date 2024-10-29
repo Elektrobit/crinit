@@ -2,50 +2,48 @@
     "root": {
         "elos": {
             "UseEnv": true,
-            "Port": 54322,
-            "Interface": "0.0.0.0",
-            "EventBlacklist": ".event.messageCode 2000 EQ",
-	    "authorizedProcesses": [
-		    ".process.uid 0 EQ .process.gid 0 EQ .process.exec '/usr/bin/elosc' STRCMP AND",
-		    ".process.gid 200 EQ .process.exec '/usr/bin/elosc' STRCMP AND",
-		    ".process.pid 1 EQ"
-	    ],
-            "EventLogging": {
-                "PluginSearchPath": "/usr/lib/x86_64-linux-gnu/elos/backend",
+            "LogFilter": "",
+            "LogLevel": "DEBUG",
+            "ClientInputs": {
                 "Plugins": {
-                    "Dummy": {
-                        "File": "backend_dummy.so",
+                    "LocalTcpClient": {
+                        "File": "client_tcp.so",
                         "Run": "always",
-                        "Filter": [
-                            "1 1 EQ"
-                        ]
-                    },
-                    "SecondDummy": {
-                        "File": "backend_dummy.so",
-                        "Run": "always"
-                    },
-                    "SkippedDummy": {
-                        "File": "backend_dummy.so",
-                        "Run": "never"
-                    },
+                        "Config": {
+                            "ConnectionLimit": 200,
+                            "Port": 54322,
+                            "Interface": "127.0.0.1",
+                            "EventBlacklist": ".event.messageCode 1000 LE",
+                            "authorizedProcesses": [
+                                "1 1 EQ"
+                            ]
+                        }
+                    }
+                }
+            },
+            "EventLogging": {
+                "Plugins": {
                     "JsonBackend": {
                         "File": "backend_json.so",
                         "Run": "always",
                         "Filter": [
                             "1 1 EQ"
-                        ]
+                        ],
+                        "Config": {
+                            "StoragePath": "/tmp/elosd_%host%_%date%_%count%.log",
+                            "MaxSize": 60000,
+                            "Flags": [
+                                "O_SYNC"
+                            ]
+                        }
                     }
                 }
             },
             "Scanner": {
-                "SyslogScanner": {
-                    "Syslog": "/dev/log",
-                    "MappingRules": {
-                        "MessageCodes": {
-                            "4000": ".event.source.appName 'ssh' STRCMP",
-                            "2000": ".event.source.appName 'crinit' STRCMP",
-                            "1000": ".event.source.appName 'login' STRCMP"
-                        }
+                "Plugins": {
+                    "ScannerDummy": {
+                        "File": "scanner_dummy.so",
+                        "Run": "always"
                     }
                 }
             }
