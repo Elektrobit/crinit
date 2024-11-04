@@ -11,7 +11,7 @@
                         "Run": "always",
                         "Config": {
                             "ConnectionLimit": 200,
-                            "Port": 54322,
+                            "Port": 54326,
                             "Interface": "127.0.0.1",
                             "EventBlacklist": ".event.messageCode 1000 LE",
                             "authorizedProcesses": [
