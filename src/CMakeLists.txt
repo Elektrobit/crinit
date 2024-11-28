@@ -57,7 +57,7 @@ target_link_libraries(
   crinit
   PRIVATE Threads::Threads
   PRIVATE inih-local
-  PRIVATE safu
+  PRIVATE safu::safu
   PRIVATE ${MBEDTLS_CRYPTO_LIBRARY}
   PRIVATE ${CMAKE_DL_LIBS}
 )
