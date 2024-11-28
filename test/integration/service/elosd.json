@@ -11,7 +11,7 @@
                         "Run": "always",
                         "Config": {
                             "ConnectionLimit": 200,
-                            "Port": 54322,
+                            "Port": 54326,
                             "Interface": "127.0.0.1",
                             "EventBlacklist": ".event.messageCode 1000 LE",
                             "authorizedProcesses": [
@@ -23,6 +23,16 @@
             },
             "EventLogging": {
                 "Plugins": {
+                    "fetchapi": {
+                        "File": "backend_fetchapi.so",
+                        "Run": "always",
+                        "Filter": [
+                            "1 1 EQ"
+                        ],
+                        "Config": {
+                            "BufferSize": 100
+                        }
+                    },
                     "JsonBackend": {
                         "File": "backend_json.so",
                         "Run": "always",
