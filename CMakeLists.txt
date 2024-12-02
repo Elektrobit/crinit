@@ -20,6 +20,8 @@ option(API_DOC "Build API documentation" ON)
 option(ENABLE_ASAN "Build with -fsanitize=address" OFF)
 option(ENABLE_ANALYZER "Build with -fanalyzer (disables -Werror)" OFF)
 option(ENABLE_WERROR "Build with -Werror" ON)
+set(LIBELOS_SO_FILENAME "" CACHE STRING
+    "Name of the libelos shared object crinit will look for at run-time.")
 option(MACHINE_ID_EXAMPLE "Build machine-id-gen example application" OFF)
 option(INSTALL_EXAMPLE_CONFIGS "Install example configs." OFF)
 set(EXAMPLE_TASKDIR "crinit/example" CACHE STRING

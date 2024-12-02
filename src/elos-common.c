@@ -36,7 +36,7 @@ static inline int crinitElosdepFetchElosSymbol(void *lp, const char *symbolName,
 
     *(void **)(symbol) = dlsym(lp, symbolName);
     if ((err = dlerror()) != NULL) {
-        crinitErrPrint("Failed to load '%s' from %s: %s.", symbolName, CRINIT_ELOS_LIBRARY, err);
+        crinitErrPrint("Failed to load '%s' from %s: %s.", symbolName, LIBELOS_SO_FILENAME, err);
         dlclose(lp);
         return 0;
     }
@@ -77,9 +77,9 @@ int crinitElosInit(void) {
     crinitDbgInfoPrint("Using elos connection parameters %s:%d.", crinitElosVTable.elosServer,
                        crinitElosVTable.elosPort);
 
-    lp = dlopen(CRINIT_ELOS_LIBRARY, RTLD_NOW | RTLD_LOCAL);
+    lp = dlopen(LIBELOS_SO_FILENAME, RTLD_NOW | RTLD_LOCAL);
     if (!lp) {
-        crinitErrPrint("Failed to load dynamic library %s: %s.", CRINIT_ELOS_LIBRARY, dlerror());
+        crinitErrPrint("Failed to load dynamic library %s: %s.", LIBELOS_SO_FILENAME, dlerror());
         goto err_options;
     }
 

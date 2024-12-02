@@ -6,6 +6,22 @@ find_package(safu 0.58.2 REQUIRED)
 
 configure_file(version.c.in version.c)
 
+# if LIBELOS_SO_FILENAME is unset we do our best to autodetect. If we can't
+# we don't set it and let the code use the default value.
+if("${LIBELOS_SO_FILENAME}x" STREQUAL "x")
+    find_package(libelos QUIET)
+    if(libelos_FOUND)
+        message("LIBELOS_SO_FILENAME autodetected.")
+        add_compile_definitions(LIBELOS_SO_FILENAME="$<TARGET_SONAME_FILE_NAME:elos::libelos>")
+    else()
+        message("LIBELOS_SO_FILENAME is unset and libelos was not found. Default will be used.")
+        add_compile_definitions(LIBELOS_SO_FILENAME="${LIBELOS_SO_FILENAME_DEFAULT}")
+    endif()
+else()
+    message("LIBELOS_SO_FILENAME set to ${LIBELOS_SO_FILENAME} via command-line.")
+    add_compile_definitions(LIBELOS_SO_FILENAME="${LIBELOS_SO_FILENAME}")
+endif()
+
 RE2C_TARGET(NAME lexers INPUT ${PROJECT_SOURCE_DIR}/src/lexers.re OUTPUT lexers.c OPTIONS -ibsc -W DEPENDS ${PROJECT_SOURCE_DIR}/inc/lexers.h)
 
 # optional compile-time features
