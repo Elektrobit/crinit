@@ -676,6 +676,8 @@ The cmake setup supports some optional features:
 * Install the bash completion script for crinit-ctl, using `-DINSTALL_BASH_COMPLETION={On, Off}`, to the
   `BASH_COMPLETION_DIR`. Default is `On` and default isntall path is
    `${CMAKE_INSTALL_DATADIR/bash-completion/completions`.
+* Set the `SONAME` of libelos crinit will try to open at run-time. Default is auto-detection if elos is present in the
+  build environment or `libelos.so.0` if it is not.
 
 ## Build Requirements
 
