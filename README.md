@@ -677,7 +677,7 @@ The cmake setup supports some optional features:
   `BASH_COMPLETION_DIR`. Default is `On` and default isntall path is
    `${CMAKE_INSTALL_DATADIR/bash-completion/completions`.
 * Set the `SONAME` of libelos crinit will try to open at run-time. Default is auto-detection if elos is present in the
-  build environment or `libelos.so.0` if it is not.
+  build environment or `libelos.so.1` if it is not.
 
 ## Build Requirements
 

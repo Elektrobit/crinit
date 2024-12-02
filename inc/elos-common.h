@@ -17,7 +17,7 @@
 #include "thrpool.h"
 
 #ifndef LIBELOS_SO_FILENAME
-#define LIBELOS_SO_FILENAME "libelos.so.0"  ///< Elos shared library filename for dlopen()
+#define LIBELOS_SO_FILENAME "libelos.so.1"  ///< Elos shared library filename for dlopen()
 #endif
 
 #define CRINIT_ELOS_CONNECTION_RETRIES 10uL
