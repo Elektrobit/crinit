@@ -16,7 +16,9 @@
 #include "logio.h"
 #include "thrpool.h"
 
-#define CRINIT_ELOS_LIBRARY "libelos.so.0"  ///< Elos shared library name
+#ifndef LIBELOS_SO_FILENAME
+#define LIBELOS_SO_FILENAME "libelos.so.1"  ///< Elos shared library filename for dlopen()
+#endif
 
 #define CRINIT_ELOS_CONNECTION_RETRIES 10uL
 #define CRINIT_ELOS_CONNECTION_RETRY_INTERVAL_US 500000
