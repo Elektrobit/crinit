@@ -378,6 +378,56 @@ int crinitTaskIncludeHandler(void *tgt, const char *val, crinitConfigType_t type
     return 0;
 }
 
+int crinitCfgUserHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    crinitNullCheck(-1, tgt, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
+    crinitTask_t *t = tgt;
+
+    // Make sure input is not a negative number
+    long long temp = 0;
+    if(crinitConfConvToInteger(&temp, val, 10) == -1) {
+        crinitErrPrint("Invalid value for UID found");
+        return -1;
+    }
+    else if(temp < 0)
+    {
+        crinitErrPrint("Invalid (negative) value for UID found");
+        return -1;
+    }
+
+    if (crinitConfConvToInteger(&t->user, val, 10) == -1) {
+        crinitErrPrint("Currently only numeric UIDs are supported");
+        return -1;
+        //TODO: No numeric UID found, try to parse string.
+    }
+    return 0;
+}
+
+int crinitCfgGroupHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    crinitNullCheck(-1, tgt, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
+    crinitTask_t *t = tgt;
+
+    // Make sure input is not a negative number
+    long long temp = 0;
+    if(crinitConfConvToInteger(&temp, val, 10) == -1) {
+        crinitErrPrint("Invalid value for UID found");
+        return -1;
+    }
+    else if(temp < 0)
+    {
+        crinitErrPrint("Invalid (negative) value for UID found");
+        return -1;
+    }
+
+    if (crinitConfConvToInteger(&t->group, val, 10) == -1) {
+        crinitErrPrint("Currently only numeric GIDs are supported");
+        return -1;
+        //TODO: No numeric GID found, try to parse string.
+    }
+    return 0;
+}
+
 int crinitCfgDebugHandler(void *tgt, const char *val, crinitConfigType_t type) {
     CRINIT_PARAM_UNUSED(tgt);
     crinitNullCheck(-1, val);

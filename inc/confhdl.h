@@ -46,6 +46,10 @@ int crinitCfgRespHandler(void *tgt, const char *val, crinitConfigType_t type);
 int crinitCfgRespRetHandler(void *tgt, const char *val, crinitConfigType_t type);
 /** Handler for `INCLUDE` config directives. See crinitConfigHandler_t. **/
 int crinitTaskIncludeHandler(void *tgt, const char *val, crinitConfigType_t type);
+/** Handler for `USER` config directives. See crinitConfigHandler_t **/
+int crinitCfgUserHandler(void *tgt, const char *val, crinitConfigType_t type);
+/** Handler for `GROUP` config directives. See crinitConfigHandler_t **/
+int crinitCfgGroupHandler(void *tgt, const char *val, crinitConfigType_t type);
 
 /* Handlers for global options */
 

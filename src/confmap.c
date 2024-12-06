@@ -15,6 +15,7 @@ const crinitConfigMapping_t crinitTaskCfgMap[] = {
     {CRINIT_CONFIG_DEPENDS, CRINIT_CONFIG_KEYSTR_DEPENDS, true, true, crinitCfgDepHandler},
     {CRINIT_CONFIG_ENV_SET, CRINIT_CONFIG_KEYSTR_ENV_SET, true, true, crinitCfgEnvHandler},
     {CRINIT_CONFIG_FILTER_DEFINE, CRINIT_CONFIG_KEYSTR_FILTER_DEFINE, true, true, crinitCfgFilterHandler},
+    {CRINIT_CONFIG_GROUP, CRINIT_CONFIG_KEYSTR_GROUP, false, false, crinitCfgGroupHandler},
     {CRINIT_CONFIG_INCLUDE, CRINIT_CONFIG_KEYSTR_INCLUDE, true, false, crinitTaskIncludeHandler},
     {CRINIT_CONFIG_IOREDIR, CRINIT_CONFIG_KEYSTR_IOREDIR, true, true, crinitCfgIoRedirHandler},
     {CRINIT_CONFIG_NAME, CRINIT_CONFIG_KEYSTR_NAME, false, false, crinitCfgNameHandler},
@@ -22,6 +23,7 @@ const crinitConfigMapping_t crinitTaskCfgMap[] = {
     {CRINIT_CONFIG_RESPAWN, CRINIT_CONFIG_KEYSTR_RESPAWN, false, false, crinitCfgRespHandler},
     {CRINIT_CONFIG_RESPAWN_RETRIES, CRINIT_CONFIG_KEYSTR_RESPAWN_RETRIES, false, false, crinitCfgRespRetHandler},
     {CRINIT_CONFIG_STOP_COMMAND, CRINIT_CONFIG_KEYSTR_STOP_COMMAND, true, false, crinitCfgStopCmdHandler},
+    {CRINIT_CONFIG_USER, CRINIT_CONFIG_KEYSTR_USER, false, false, crinitCfgUserHandler}
 };
 const size_t crinitTaskCfgMapSize = crinitNumElements(crinitTaskCfgMap);
 

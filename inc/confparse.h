@@ -46,6 +46,8 @@
 #define CRINIT_CONFIG_KEYSTR_RESPAWN_RETRIES \
     "RESPAWN_RETRIES"  ///< Config key to set how often a task is allowed to respawn on failure.
 #define CRINIT_CONFIG_KEYSTR_STOP_COMMAND "STOP_COMMAND"    ///< Config key to add a stop command to the task.
+#define CRINIT_CONFIG_KEYSTR_USER "USER"                    ///< Config key to set a specific user to run task's commands.
+#define CRINIT_CONFIG_KEYSTR_GROUP "GROUP"                  ///< Config key to set a specific group to run task's commands.
 
 #define CRINIT_CONFIG_DEFAULT_TASK_FILE_SUFFIX ".crinit"  ///< Default filename extension of task files.
 #define CRINIT_CONFIG_KEYSTR_INCL_FILE_SUFFIX \
@@ -79,6 +81,7 @@ typedef enum crinitConfigs_t {
     CRINIT_CONFIG_ELOS_SERVER,
     CRINIT_CONFIG_ENV_SET,
     CRINIT_CONFIG_FILTER_DEFINE,
+    CRINIT_CONFIG_GROUP,
     CRINIT_CONFIG_INCLUDE,
     CRINIT_CONFIG_INCLUDE_SUFFIX,
     CRINIT_CONFIG_INCLUDEDIR,
@@ -90,13 +93,14 @@ typedef enum crinitConfigs_t {
     CRINIT_CONFIG_SHDGRACEP,
     CRINIT_CONFIG_SIGKEYDIR,
     CRINIT_CONFIG_SIGNATURES,
+    CRINIT_CONFIG_STOP_COMMAND,
     CRINIT_CONFIG_TASK_FILE_SUFFIX,
     CRINIT_CONFIG_TASKDIR,
     CRINIT_CONFIG_TASKDIR_FOLLOW_SYMLINKS,
     CRINIT_CONFIG_TASKS,
     CRINIT_CONFIG_USE_SYSLOG,
     CRINIT_CONFIG_USE_ELOS,
-    CRINIT_CONFIG_STOP_COMMAND,
+    CRINIT_CONFIG_USER,
     CRINIT_CONFIGS_SIZE
 } crinitConfigs_t;
 
