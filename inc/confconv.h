@@ -61,6 +61,10 @@ int crinitConfConvToEnvSetMember(crinitEnvSet_t *es, const char *confVal);
 int crinitConfConvToIntegerI(int *x, const char *confVal, int base);
 /** Converts a string to an unsigned long long, see crinitConfConvToInteger() **/
 int crinitConfConvToIntegerULL(unsigned long long *x, const char *confVal, int base);
+/** Converts a string to an unsigned long, see crinitConfConvToInteger() **/
+int crinitConfConvToIntegerUI(unsigned int *x, const char *confVal, int base);
+/** Converts a string to a long long, see crinitConfConvToInteger() **/
+int crinitConfConvToIntegerLL(long long *x, const char *confVal, int base);
 /**
  * Type-generic macro for string to integer conversion.
  *
@@ -79,6 +83,8 @@ int crinitConfConvToIntegerULL(unsigned long long *x, const char *confVal, int b
 #define crinitConfConvToInteger(out, confVal, base)           \
     _Generic((*(out)),                                       \
              int : crinitConfConvToIntegerI,                  \
+             unsigned int : crinitConfConvToIntegerUI,        \
+             long long : crinitConfConvToIntegerLL,           \
              unsigned long long : crinitConfConvToIntegerULL) \
              (out, confVal, base)
 // clang-format on
