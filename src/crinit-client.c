@@ -340,7 +340,7 @@ CRINIT_LIB_EXPORTED int crinitClientTaskRestart(const char *taskName) {
 }
 
 CRINIT_LIB_EXPORTED int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *pid, struct timespec *ct,
-                                                  struct timespec *st, struct timespec *et, const char *taskName) {
+                                                  struct timespec *st, struct timespec *et, gid_t *gid, uid_t *uid, const char *taskName) {
     crinitNullCheck(-1, taskName);
 
     crinitRtimCmd_t cmd, res;
@@ -356,7 +356,7 @@ CRINIT_LIB_EXPORTED int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *p
     }
     crinitDestroyRtimCmd(&cmd);
 
-    if (crinitResponseCheck(&res, CRINIT_RTIMCMD_R_STATUS) == 0 && res.argc == 6) {
+    if (crinitResponseCheck(&res, CRINIT_RTIMCMD_R_STATUS) == 0 && res.argc == 8) {
         char *endPtr;
         if (s != NULL) {
             *s = strtoul(res.args[1], &endPtr, 10);
@@ -423,6 +423,20 @@ CRINIT_LIB_EXPORTED int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *p
                 goto responseFail;
             }
         }
+        if (uid != NULL) {
+            *uid = strtoul(res.args[6], &endPtr, 10);
+            if (endPtr == res.args[6] || errno == ERANGE) {
+                crinitErrPrint("Could not parse numerical value from '%s'.", res.args[6]);
+                goto responseFail;
+            }
+        }
+        if (gid != NULL) {
+            *gid = strtoul(res.args[7], &endPtr, 10);
+            if (endPtr == res.args[7] || errno == ERANGE) {
+                crinitErrPrint("Could not parse numerical value from '%s'.", res.args[7]);
+                goto responseFail;
+            }
+        }
         crinitDestroyRtimCmd(&res);
         return 0;
     }
@@ -476,9 +490,11 @@ CRINIT_LIB_EXPORTED int crinitClientGetTaskList(crinitTaskList_t **tlptr) {
         const char *name = res.args[i + 1];
         pid_t pid = -1;
         struct timespec ct = {0}, st = {0}, et = {0};
+        gid_t gid = 0;
+        uid_t uid = 0;
         crinitTaskState_t state = 0;
 
-        if (crinitClientTaskGetStatus(&state, &pid, &ct, &st, &et, name) == -1) {
+        if (crinitClientTaskGetStatus(&state, &pid, &ct, &st, &et, &gid, &uid, name) == -1) {
             crinitErrPrint("Querying status of task \'%s\' failed.", name);
             ret = -1;
             goto fail_status;
@@ -495,6 +511,8 @@ CRINIT_LIB_EXPORTED int crinitClientGetTaskList(crinitTaskList_t **tlptr) {
         tl->tasks[i].createTime = ct;
         tl->tasks[i].startTime = st;
         tl->tasks[i].endTime = et;
+        tl->tasks[i].uid = uid;
+        tl->tasks[i].gid = gid;
         tl->numTasks++;
     }
 

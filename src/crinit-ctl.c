@@ -255,9 +255,11 @@ int main(int argc, char *argv[]) {
         crinitTaskState_t s = 0;
         pid_t pid = -1;
         struct timespec ct = {0}, st = {0}, et = {0};
+        gid_t gid = 0;
+        uid_t uid = 0;
         char ctStr[TIME_REPR_MAX_LEN], stStr[TIME_REPR_MAX_LEN], etStr[TIME_REPR_MAX_LEN];
         const char *state;
-        if (crinitClientTaskGetStatus(&s, &pid, &ct, &st, &et, getoptArgv[optind]) == -1) {
+        if (crinitClientTaskGetStatus(&s, &pid, &ct, &st, &et, &gid, &uid, getoptArgv[optind]) == -1) {
             crinitErrPrint("Querying status of task \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
         }
@@ -268,7 +270,7 @@ int main(int argc, char *argv[]) {
                  st.tv_nsec);
         snprintf(etStr, sizeof(etStr), (et.tv_sec == 0 && et.tv_nsec == 0) ? "n/a" : TIME_REPR_PRINTF_FORMAT, et.tv_sec,
                  et.tv_nsec);
-        crinitInfoPrint("Status: %s, PID: %d CTime: %s STime: %s ETime: %s", state, pid, ctStr, stStr, etStr);
+        crinitInfoPrint("Status: %s, PID: %d CTime: %s STime: %s ETime: %s UID: %d GID: %d", state, pid, ctStr, stStr, etStr, uid, gid);
         return EXIT_SUCCESS;
     }
     if (strcmp(getoptArgv[0], "notify") == 0) {
