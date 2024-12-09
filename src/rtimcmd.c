@@ -1020,6 +1020,8 @@ static int crinitExecRtimCmdStatus(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, co
     crinitTaskState_t s;
     pid_t pid;
     struct timespec creation, start, end;
+    gid_t group;
+    uid_t user;
 
     crinitTask_t *pTask = crinitTaskDBBorrowTask(ctx, cmd->args[0]);
     if (pTask == NULL) {
@@ -1032,21 +1034,23 @@ static int crinitExecRtimCmdStatus(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, co
     creation = pTask->createTime;
     start = pTask->startTime;
     end = pTask->endTime;
+    group = pTask->group;
+    user = pTask->user;
 
     if (crinitTaskDBRemit(ctx) == -1) {
         crinitErrPrint(
             "Could not release mutex on TaskDB. This should not happen. Will try to continue but Crinit may lock up.");
     }
 
-    const char *resFmt = "%lu\n%d\n%lld.%.9ld\n%lld.%.9ld\n%lld.%.9ld";
+    const char *resFmt = "%lu\n%d\n%lld.%.9ld\n%lld.%.9ld\n%lld.%.9ld\n%d\n%d";
     size_t resStrLen = 1 + snprintf(NULL, 0, resFmt, s, pid, creation.tv_sec, creation.tv_nsec, start.tv_sec,
-                                    start.tv_nsec, end.tv_sec, end.tv_nsec);
+                                    start.tv_nsec, end.tv_sec, end.tv_nsec, user, group);
     char *resStr = malloc(resStrLen);
     if (resStr == NULL) {
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STATUS, 2, CRINIT_RTIMCMD_RES_ERR, "Memory allocation error.");
     }
     snprintf(resStr, resStrLen, resFmt, s, pid, creation.tv_sec, creation.tv_nsec, start.tv_sec, start.tv_nsec,
-             end.tv_sec, end.tv_nsec);
+             end.tv_sec, end.tv_nsec, user, group);
 
     char *pidStr = strchr(resStr, '\n');
     *pidStr = '\0';
@@ -1060,9 +1064,13 @@ static int crinitExecRtimCmdStatus(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, co
     char *etStr = strchr(stStr, '\n');
     *etStr = '\0';
     etStr++;
+    char *userStr = strchr(etStr, '\n');
+    userStr++;
+    char *groupStr = strchr(userStr, '\n');
+    groupStr++;
 
     if (crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STATUS, 6, CRINIT_RTIMCMD_RES_OK, resStr, pidStr, ctStr, stStr,
-                           etStr) == -1) {
+                           etStr, userStr, groupStr) == -1) {
         free(resStr);
         return -1;
     }
