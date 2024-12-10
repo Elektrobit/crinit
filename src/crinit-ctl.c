@@ -303,10 +303,10 @@ int main(int argc, char *argv[]) {
                 maxNameLen = len;
             }
         }
-        crinitInfoPrint("%-*s  %4s  %s", maxNameLen, "NAME", "PID", "STATUS");
+        crinitInfoPrint("%-*s  %4s  %5s %5s %s", maxNameLen, "NAME", "PID", "UID", "GID", "STATUS");
         for (size_t i = 0; i < tl->numTasks; i++) {
             const char *state = crinitTaskStateToStr(tl->tasks[i].state);
-            crinitInfoPrint("%-*s  %4d  %s", maxNameLen, tl->tasks[i].name, tl->tasks[i].pid, state);
+            crinitInfoPrint("%-*s  %4d  %5d %5d %s", maxNameLen, tl->tasks[i].name, tl->tasks[i].pid, tl->tasks[i].uid, tl->tasks[i].gid, state);
         }
         crinitClientFreeTaskList(tl);
         return EXIT_SUCCESS;
