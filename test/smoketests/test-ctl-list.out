@@ -1,11 +1,11 @@
-NAME                     PID  STATUS
-hello_world               -1  done
-sleep_one_sec             -1  done
-after_sleep               -1  done
-one_second_respawn        -1  loaded
-fail_loop                 -1  loaded
-feature_provider          -1  loaded
-feature_dependent         -1  loaded
-stop_command              -1  done
-stop_command_two_lines    -1  done
-stop_command_var_exp      -1  done
+NAME                     PID    UID   GID STATUS
+hello_world               -1      0     0 done
+sleep_one_sec             -1      0     0 done
+after_sleep               -1      0     0 done
+one_second_respawn        -1      0     0 loaded
+fail_loop                 -1      0     0 loaded
+feature_provider          -1      0     0 loaded
+feature_dependent         -1      0     0 loaded
+stop_command              -1      0     0 done
+stop_command_two_lines    -1      0     0 done
+stop_command_var_exp      -1      0     0 done
