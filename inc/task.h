@@ -95,6 +95,8 @@ typedef struct crinitTask_t {
     struct timespec endTime;     ///< The time the task last became 'done' or 'failed.
     uid_t user;                  ///< The user id to run the task's commands with.
     gid_t group;                 ///< The group id to run the task's commands with.
+    char *username;              ///< The username to run the task's commands with.
+    char *groupname;             ///< The groupname to run the task's commands with.
 } crinitTask_t;
 
 /**
