@@ -5,10 +5,15 @@
  */
 #include "confhdl.h"
 
+#include <ctype.h>
+#include <grp.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <pwd.h>
+#include <unistd.h>
 
 #include "common.h"
 #include "confconv.h"
@@ -64,6 +69,44 @@ static inline void *crinitCfgHandlerManageArrayMem(void *dynArr, size_t elementS
  * @return  true if \a path refers to an accessible directory, false otherwise.
  */
 static bool crinitDirExists(const char *path);
+
+/**
+ * Check if given username exists and convert into numeric ID.
+ *
+ * @param name Username
+ * @param uid Pointer to uid_t object
+ *
+ * @return true if username could be resolved, false otherwise.
+ */
+static bool crinitUsernameToUid(const char *name, uid_t* uid);
+
+/**
+ * Check if given UID exists and convert to username.
+ *
+ * @param uid UID to query
+ * @param name Pointer to result. Caller must free the pointer allocated by the function.
+ * @return true if UID could be resolved and converted, false otherwise.
+ */
+static bool crinitUidToUsername(uid_t uid, char **name);
+
+/**
+ * Check if given groupname exists and convert into numeric ID.
+ *
+ * @param name groupname
+ * @param gid Pointer to gid_t object
+ *
+ * @return true if groupname could be resolved, false otherwise.
+ */
+static bool crinitGroupnameToGid(const char *name, gid_t* gid);
+
+/**
+ * Check if given GID exists and convert to groupname.
+ *
+ * @param gid GID to query
+ * @param name Pointer to result. Caller must free the pointer allocated by the function.
+ * @return true if GID could be resolved and converted, false otherwise.
+ */
+static bool crinitGidToGroupname(gid_t gid, char **name);
 
 int crinitCfgCmdHandler(void *tgt, const char *val, crinitConfigType_t type) {
     crinitNullCheck(-1, tgt, val);
@@ -383,13 +426,26 @@ int crinitCfgUserHandler(void *tgt, const char *val, crinitConfigType_t type) {
     crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
     crinitTask_t *t = tgt;
 
+    uid_t uid;
+    if (isalpha(*val)) {
+        if (crinitUsernameToUid(val, &uid)) {
+            t->user = uid;
+            t->username = strdup(val);
+            if (t->username == NULL) {
+                crinitErrPrint("Failed to allocate memory for username %s.", val);
+                return -1;
+            }
+            return 0;
+        }
+    }
+
     // Make sure input is not a negative number
     long long temp = 0;
-    if(crinitConfConvToInteger(&temp, val, 10) == -1) {
+    if (crinitConfConvToInteger(&temp, val, 10) == -1) {
         crinitErrPrint("Invalid value for UID found");
         return -1;
     }
-    else if(temp < 0)
+    else if (temp < 0)
     {
         crinitErrPrint("Invalid (negative) value for UID found");
         return -1;
@@ -398,7 +454,10 @@ int crinitCfgUserHandler(void *tgt, const char *val, crinitConfigType_t type) {
     if (crinitConfConvToInteger(&t->user, val, 10) == -1) {
         crinitErrPrint("Currently only numeric UIDs are supported");
         return -1;
-        //TODO: No numeric UID found, try to parse string.
+    }
+    if (crinitUidToUsername(t->user, &t->username) != true) {
+        crinitErrPrint("Failed to map UID %d to an username.", t->user);
+        return -1;
     }
     return 0;
 }
@@ -407,6 +466,19 @@ int crinitCfgGroupHandler(void *tgt, const char *val, crinitConfigType_t type) {
     crinitNullCheck(-1, tgt, val);
     crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
     crinitTask_t *t = tgt;
+
+    gid_t gid;
+    if (isalpha(*val)) {
+        if (crinitGroupnameToGid(val, &gid)) {
+            t->group = gid;
+            t->groupname = strdup(val);
+            if (t->groupname == NULL) {
+                crinitErrPrint("Failed to allocate memory for groupname %s.", val);
+                return -1;
+            }
+            return 0;
+        }
+    }
 
     // Make sure input is not a negative number
     long long temp = 0;
@@ -423,7 +495,10 @@ int crinitCfgGroupHandler(void *tgt, const char *val, crinitConfigType_t type) {
     if (crinitConfConvToInteger(&t->group, val, 10) == -1) {
         crinitErrPrint("Currently only numeric GIDs are supported");
         return -1;
-        //TODO: No numeric GID found, try to parse string.
+    }
+    if (crinitGidToGroupname(t->group, &t->groupname) != true) {
+        crinitErrPrint("Failed to map GID %d to a groupname.", t->group);
+        return -1;
     }
     return 0;
 }
@@ -772,4 +847,253 @@ static bool crinitDirExists(const char *path) {
         return false;
     }
     return true;
+}
+
+static bool crinitUsernameToUid(const char *name, uid_t* uid) {
+    crinitNullCheck(false, name, uid);
+    struct passwd pwd;
+    struct passwd *resPwd = NULL;
+    char *buf;
+    long bufsize;
+
+    memset(&pwd, 0x00, sizeof(pwd));
+
+    bufsize = sysconf(_SC_GETPW_R_SIZE_MAX);
+    if (bufsize == -1) {         /* Value was indeterminate */
+        bufsize = 16384;        /* Should be more than enough */
+    }
+
+    buf = malloc(bufsize);
+    if (buf == NULL) {
+        crinitErrPrint("Failed to alloc memory for buffer.");
+        return false;
+    }
+
+    bool result = false;
+
+    const int rc = getpwnam_r(name, &pwd, buf, bufsize, &resPwd);
+    if (resPwd == NULL) {
+        switch (rc) {
+            case 0:
+            case ENOENT:
+            case ESRCH:
+            case EBADF:
+            case EPERM:
+                crinitErrPrint("Username %s couldn't be found.", name);
+                result = false;
+                goto cleanup;
+                break;
+            case EINTR:
+            case EIO:
+            case EMFILE:
+            case ENFILE:
+            case ENOMEM:
+            case ERANGE:
+                crinitErrPrint("System error while trying to resolve username.");
+                result = false;
+                goto cleanup;
+                break;
+            default:
+                crinitErrPrint("Unknown failure %d while trying to resolve username.", rc);
+                result = false;
+                goto cleanup;
+                break;
+        }
+    }
+    *uid = resPwd->pw_uid;
+    result = true;
+
+cleanup:
+    free(buf);
+    return result;
+}
+
+static bool crinitUidToUsername(uid_t uid, char **name) {
+    crinitNullCheck(false, name);
+    struct passwd pwd;
+    struct passwd *resPwd = NULL;
+    char *buf;
+    long bufsize;
+
+    memset(&pwd, 0x00, sizeof(pwd));
+
+    bufsize = sysconf(_SC_GETPW_R_SIZE_MAX);
+    if (bufsize == -1) {        /* Value was indeterminate */
+        bufsize = 16384;        /* Should be more than enough */
+    }
+
+    buf = malloc(bufsize);
+    if (buf == NULL) {
+        crinitErrPrint("Failed to alloc memory for buffer.");
+        return false;
+    }
+
+    bool result = false;
+
+    const int rc = getpwuid_r(uid, &pwd, buf, bufsize, &resPwd);
+    if (resPwd == NULL) {
+        switch (rc) {
+            case 0:
+            case ENOENT:
+            case ESRCH:
+            case EBADF:
+            case EPERM:
+                crinitErrPrint("Username %s couldn't be found.", *name);
+                result = false;
+                goto cleanup;
+                break;
+            case EINTR:
+            case EIO:
+            case EMFILE:
+            case ENFILE:
+            case ENOMEM:
+            case ERANGE:
+                crinitErrPrint("System error while trying to resolve username.");
+                result = false;
+                goto cleanup;
+                break;
+            default:
+                crinitErrPrint("Unknown failure %d while trying to resolve username.", rc);
+                result = false;
+                goto cleanup;
+                break;
+        }
+    }
+
+    *name = calloc(strlen(resPwd->pw_name) + 1, sizeof(char));
+    if (*name == NULL) {
+        crinitErrPrint("Failed to alloc memory for username.");
+        result = false;
+        goto cleanup;
+    }
+    strncpy(*name, resPwd->pw_name, strlen(resPwd->pw_name) + 1);
+    result = true;
+
+cleanup:
+    free(buf);
+    return result;
+}
+
+static bool crinitGroupnameToGid(const char *name, gid_t* gid) {
+    crinitNullCheck(false, name, gid);
+    struct group grp;
+    struct group *resGrp = NULL;
+    char *buf;
+    long bufsize;
+
+    memset(&grp, 0x00, sizeof(grp));
+
+    bufsize = sysconf(_SC_GETGR_R_SIZE_MAX);
+    if (bufsize == -1) {        /* Value was indeterminate */
+        bufsize = 16384;        /* Should be more than enough */
+    }
+
+    buf = malloc(bufsize);
+    if (buf == NULL) {
+        crinitErrPrint("Failed to alloc memory for buffer.");
+        return false;
+    }
+
+    bool result = false;
+
+    const int rc = getgrnam_r(name, &grp, buf, bufsize, &resGrp);
+    if (resGrp == NULL) {
+        switch (rc) {
+            case 0:
+            case ENOENT:
+            case ESRCH:
+            case EBADF:
+            case EPERM:
+                crinitErrPrint("Groupname %s couldn't be found.", name);
+                result = false;
+                goto cleanup;
+                break;
+            case EINTR:
+            case EIO:
+            case EMFILE:
+            case ENFILE:
+            case ENOMEM:
+            case ERANGE:
+                crinitErrPrint("System error while trying to resolve goupname.");
+                result = false;
+                goto cleanup;
+                break;
+            default:
+                crinitErrPrint("Unknown failure %d while trying to resolve groupname.", rc);
+                result = false;
+                goto cleanup;
+                break;
+        }
+    }
+    *gid = resGrp->gr_gid;
+    result = true;
+
+cleanup:
+    free(buf);
+    return result;
+}
+
+static bool crinitGidToGroupname(gid_t gid, char **name) {
+    crinitNullCheck(false, name);
+    struct group grp;
+    struct group *resGrp = NULL;
+    char *buf;
+    long bufsize;
+
+    memset(&grp, 0x00, sizeof(grp));
+
+    bufsize = sysconf(_SC_GETGR_R_SIZE_MAX);
+    if (bufsize == -1) {        /* Value was indeterminate */
+        bufsize = 16384;        /* Should be more than enough */
+    }
+
+    buf = malloc(bufsize);
+    if (buf == NULL) {
+        crinitErrPrint("Failed to alloc memory for buffer.");
+        return false;
+    }
+
+    bool result = false;
+
+    const int rc = getgrgid_r(gid, &grp, buf, bufsize, &resGrp);
+    if (resGrp == NULL) {
+        switch (rc) {
+            case 0:
+            case ENOENT:
+            case ESRCH:
+            case EBADF:
+            case EPERM:
+                crinitErrPrint("Groupname %s couldn't be found.", *name);
+                result = false;
+                goto cleanup;
+                break;
+            case EINTR:
+            case EIO:
+            case EMFILE:
+            case ENFILE:
+            case ENOMEM:
+            case ERANGE:
+                crinitErrPrint("System error while trying to resolve goupname.");
+                result = false;
+                goto cleanup;
+                break;
+            default:
+                crinitErrPrint("Unknown failure %d while trying to resolve groupname.", rc);
+                result = false;
+                goto cleanup;
+                break;
+        }
+    }
+    *name = calloc(strlen(resGrp->gr_name) + 1, sizeof(char));
+    if (*name == NULL) {
+        crinitErrPrint("Failed to alloc memory for groupname.");
+        result = false;
+        goto cleanup;
+    }
+    strncpy(*name, resGrp->gr_name, strlen(resGrp->gr_name));
+    result = true;
+
+cleanup:
+    free(buf);
+    return result;
 }
