@@ -7,7 +7,6 @@ create_unit_test(
     utest-crinit-cfg-group-handler
   SOURCES
     utest-crinit-cfg-group-handler.c
-    case-alpha-input.c
     case-empty-input.c
     case-negative-input.c
     case-null-input.c
@@ -19,4 +18,6 @@ create_unit_test(
   LIBRARIES
     libmockfunctions
   WRAPS
+    -Wl,--wrap=getgrnam_r
+    -Wl,--wrap=getgrgid_r
 )

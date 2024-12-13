@@ -11,9 +11,9 @@
  */
 void crinitCfgGroupHandlerTestNumericSuccess(void **state);
 /**
- * Tests unsuccessful parsing of a alphabetical group name (e.g. "disk") instead of an ID.
+ * Tests successful parsing of a alphabetical group name (e.g. "disk") instead of an ID.
  */
-void crinitCfgGroupHandlerTestAlphaInput(void **state);
+void crinitCfgGroupHandlerTestAlphaInputSuccess(void **state);
 /**
  * Tests unsuccessful parsing of a negative numeric group ID.
  */

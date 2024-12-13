@@ -7,12 +7,12 @@
 #define __UTEST_TASK_CREATE_FROM_CONF_KVLIST_H__
 
 /**
- * Tests successful parsing key "GROUP".
+ * Tests successful parsing key "GROUP" with numeric value.
  */
-void crinitTaskCreateFromConfKvListTestGroupSuccess(void **state);
+void crinitTaskCreateFromConfKvListTestGroupNumericSuccess(void **state);
 /**
- * Tests successful parsing key "USER".
+ * Tests successful parsing key "USER" with numeric value.
  */
-void crinitTaskCreateFromConfKvListTestUserSuccess(void **state);
+void crinitTaskCreateFromConfKvListTestUserNumericSuccess(void **state);
 
 #endif /* __UTEST_TASK_CREATE_FROM_CONF_KVLIST_H__ */
