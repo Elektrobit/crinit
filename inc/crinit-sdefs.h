@@ -32,6 +32,8 @@ typedef struct crinitTaskListEntry_t {
     struct timespec endTime;     ///< The time the task last ended (i.e. either failed or the last command is done).
     gid_t gid;                   ///< GID of currently running process subordinate to the task.
     uid_t uid;                   ///< UID of currently running process subordinate to the task.
+    char *username;              ///< Username of currently running process subordinate to the task.
+    char *groupname;             ///< Groupname of currently running process subordinate to the task.
 } crinitTaskListEntry_t;
 
 /** Type to represent a list of tasks. **/

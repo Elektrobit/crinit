@@ -229,12 +229,14 @@ int crinitClientTaskRestart(const char *taskName);
  * @param et        The time when the task last ended (i.e. failed or was done).
  * @param gid       Return pointer for the task's GID.
  * @param uid       Return pointer for the task's UID.
+ * @param groupname Return pointer for the task's groupname.
+ * @param username  Return pointer for the task's username.
  * @param taskName  The name of the task.
  *
  * @return 0 on success, -1 on error
  */
 int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *pid, struct timespec *ct, struct timespec *st,
-                              struct timespec *et, gid_t *gid, uid_t *uid, const char *taskName);
+                              struct timespec *et, gid_t *gid, uid_t *uid, char **username, char **groupname, const char *taskName);
 /**
  * Request Crinit to report the list of task names from its TaskDB.
  *
