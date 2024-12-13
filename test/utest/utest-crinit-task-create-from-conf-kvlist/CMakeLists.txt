@@ -22,4 +22,6 @@ create_unit_test(
     libmockfunctions
     inih-local
   WRAPS
+    -Wl,--wrap=getpwuid_r
+    -Wl,--wrap=getgrgid_r
 )

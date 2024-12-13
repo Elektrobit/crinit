@@ -7,7 +7,6 @@ create_unit_test(
     utest-crinit-cfg-user-handler
   SOURCES
     utest-crinit-cfg-user-handler.c
-    case-alpha-input.c
     case-empty-input.c
     case-negative-input.c
     case-null-input.c
@@ -19,4 +18,6 @@ create_unit_test(
   LIBRARIES
     libmockfunctions
   WRAPS
+    -Wl,--wrap=getpwnam_r
+    -Wl,--wrap=getpwuid_r
 )

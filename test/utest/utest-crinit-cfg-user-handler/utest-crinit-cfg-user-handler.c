@@ -14,7 +14,7 @@
 int main(void) {
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(crinitCfgUserHandlerTestNumericSuccess),
-        cmocka_unit_test(crinitCfgUserHandlerTestAlphaInput),
+        cmocka_unit_test(crinitCfgUserHandlerTestAlphaInputSuccess),
         cmocka_unit_test(crinitCfgUserHandlerTestNegativeInput),
         cmocka_unit_test(crinitCfgUserHandlerTestNullInput),
         cmocka_unit_test(crinitCfgUserHandlerTestEmptyInput),

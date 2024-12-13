@@ -11,9 +11,9 @@
  */
 void crinitCfgUserHandlerTestNumericSuccess(void **state);
 /**
- * Tests unsuccessful parsing of a alphabetical user name (e.g. "www-run") instead of an ID.
+ * Tests successful parsing of a alphabetical user name (e.g. "www-run") instead of an ID.
  */
-void crinitCfgUserHandlerTestAlphaInput(void **state);
+void crinitCfgUserHandlerTestAlphaInputSuccess(void **state);
 /**
  * Tests unsuccessful parsing of a negative numeric user ID.
  */

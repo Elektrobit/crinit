@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void crinitTaskCreateFromConfKvListTestGroupSuccess(void **state) {
+void crinitTaskCreateFromConfKvListTestGroupNumericSuccess(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     crinitTask_t *tgt = NULL;
@@ -32,14 +32,19 @@ void crinitTaskCreateFromConfKvListTestGroupSuccess(void **state) {
     group.key = "GROUP";
     group.val = "42";
 
+    will_return(__wrap_getgrgid_r, 0);
+
     assert_int_equal(crinitGlobOptInitDefault(), 0);
     assert_int_equal(crinitTaskCreateFromConfKvList(&tgt, &name), 0);
     assert_true(tgt);
     assert_int_equal(tgt->group, 42);
+    assert_string_equal(tgt->groupname, "disk");
+    free(tgt->username);
+    free(tgt->groupname);
     free(tgt);
 }
 
-void crinitTaskCreateFromConfKvListTestUserSuccess(void **state) {
+void crinitTaskCreateFromConfKvListTestUserNumericSuccess(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
     crinitTask_t *tgt = NULL;
@@ -58,9 +63,14 @@ void crinitTaskCreateFromConfKvListTestUserSuccess(void **state) {
     user.key = "USER";
     user.val = "42";
 
+    will_return(__wrap_getpwuid_r, 0);
+
     assert_int_equal(crinitGlobOptInitDefault(), 0);
     assert_int_equal(crinitTaskCreateFromConfKvList(&tgt, &name), 0);
     assert_true(tgt);
     assert_int_equal(tgt->user, 42);
+    assert_string_equal(tgt->username, "www-run");
+    free(tgt->username);
+    free(tgt->groupname);
     free(tgt);
 }

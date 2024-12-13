@@ -13,8 +13,8 @@
  */
 int main(void) {
     const struct CMUnitTest tests[] = {
-        cmocka_unit_test(crinitTaskCreateFromConfKvListTestGroupSuccess),
-        cmocka_unit_test(crinitTaskCreateFromConfKvListTestUserSuccess),
+        cmocka_unit_test(crinitTaskCreateFromConfKvListTestGroupNumericSuccess),
+        cmocka_unit_test(crinitTaskCreateFromConfKvListTestUserNumericSuccess),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);
