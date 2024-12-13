@@ -54,6 +54,10 @@ create_mock_lib(
     mock-envset-init.c
     mock-envset-destroy.c
     mock-umount2.c
+    mock-getpwnam_r.c
+    mock-getpwuid_r.c
+    mock-getgrnam_r.c
+    mock-getgrgid_r.c
   INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
