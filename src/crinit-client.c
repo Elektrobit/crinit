@@ -340,7 +340,8 @@ CRINIT_LIB_EXPORTED int crinitClientTaskRestart(const char *taskName) {
 }
 
 CRINIT_LIB_EXPORTED int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *pid, struct timespec *ct,
-                                                  struct timespec *st, struct timespec *et, gid_t *gid, uid_t *uid, const char *taskName) {
+                                                  struct timespec *st, struct timespec *et, gid_t *gid, uid_t *uid,
+                                                  char **username, char **groupname, const char *taskName) {
     crinitNullCheck(-1, taskName);
 
     crinitRtimCmd_t cmd, res;
@@ -356,7 +357,14 @@ CRINIT_LIB_EXPORTED int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *p
     }
     crinitDestroyRtimCmd(&cmd);
 
-    if (crinitResponseCheck(&res, CRINIT_RTIMCMD_R_STATUS) == 0 && res.argc == 8) {
+    if (username) {
+        *username = NULL;
+    }
+    if (groupname) {
+        *groupname = NULL;
+    }
+
+    if (crinitResponseCheck(&res, CRINIT_RTIMCMD_R_STATUS) == 0 && res.argc == 10) {
         char *endPtr;
         if (s != NULL) {
             *s = strtoul(res.args[1], &endPtr, 10);
@@ -437,11 +445,31 @@ CRINIT_LIB_EXPORTED int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *p
                 goto responseFail;
             }
         }
+        if (username != NULL) {
+            *username = strdup(res.args[8]);
+            if (*username == NULL) {
+                crinitErrPrint("Could not copy task's username '%s'.", res.args[8]);
+                goto responseFail;
+            }
+        }
+        if (groupname != NULL) {
+            *groupname = strdup(res.args[9]);
+            if (*groupname == NULL) {
+                crinitErrPrint("Could not copy task's groupname '%s'.", res.args[9]);
+                goto responseFail;
+            }
+        }
         crinitDestroyRtimCmd(&res);
         return 0;
     }
 responseFail:
     crinitDestroyRtimCmd(&res);
+    if (username && *username) {
+        free(*username);
+    }
+    if (groupname && *groupname) {
+        free(*groupname);
+    }
     return -1;
 }
 
@@ -493,8 +521,10 @@ CRINIT_LIB_EXPORTED int crinitClientGetTaskList(crinitTaskList_t **tlptr) {
         gid_t gid = 0;
         uid_t uid = 0;
         crinitTaskState_t state = 0;
+        char *username = NULL;
+        char *groupname = NULL;
 
-        if (crinitClientTaskGetStatus(&state, &pid, &ct, &st, &et, &gid, &uid, name) == -1) {
+        if (crinitClientTaskGetStatus(&state, &pid, &ct, &st, &et, &gid, &uid, &username, &groupname, name) == -1) {
             crinitErrPrint("Querying status of task \'%s\' failed.", name);
             ret = -1;
             goto fail_status;
@@ -513,6 +543,8 @@ CRINIT_LIB_EXPORTED int crinitClientGetTaskList(crinitTaskList_t **tlptr) {
         tl->tasks[i].endTime = et;
         tl->tasks[i].uid = uid;
         tl->tasks[i].gid = gid;
+        tl->tasks[i].username = username;
+        tl->tasks[i].groupname = groupname;
         tl->numTasks++;
     }
 
@@ -531,6 +563,8 @@ CRINIT_LIB_EXPORTED void crinitClientFreeTaskList(crinitTaskList_t *tl) {
     }
     for (size_t i = 0; i < tl->numTasks; i++) {
         free(tl->tasks[i].name);
+        free(tl->tasks[i].groupname);
+        free(tl->tasks[i].username);
     }
     free(tl->tasks);
     free(tl);
