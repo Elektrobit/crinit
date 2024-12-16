@@ -466,9 +466,11 @@ responseFail:
     crinitDestroyRtimCmd(&res);
     if (username && *username) {
         free(*username);
+        *username = NULL;
     }
     if (groupname && *groupname) {
         free(*groupname);
+        *groupname = NULL;
     }
     return -1;
 }
@@ -514,6 +516,8 @@ CRINIT_LIB_EXPORTED int crinitClientGetTaskList(crinitTaskList_t **tlptr) {
         goto fail_status;
     }
 
+    char *username = NULL;
+    char *groupname = NULL;
     for (size_t i = 0; i < res.argc - 1; i++) {
         const char *name = res.args[i + 1];
         pid_t pid = -1;
@@ -521,8 +525,6 @@ CRINIT_LIB_EXPORTED int crinitClientGetTaskList(crinitTaskList_t **tlptr) {
         gid_t gid = 0;
         uid_t uid = 0;
         crinitTaskState_t state = 0;
-        char *username = NULL;
-        char *groupname = NULL;
 
         if (crinitClientTaskGetStatus(&state, &pid, &ct, &st, &et, &gid, &uid, &username, &groupname, name) == -1) {
             crinitErrPrint("Querying status of task \'%s\' failed.", name);
@@ -546,6 +548,8 @@ CRINIT_LIB_EXPORTED int crinitClientGetTaskList(crinitTaskList_t **tlptr) {
         tl->tasks[i].username = username;
         tl->tasks[i].groupname = groupname;
         tl->numTasks++;
+        username = NULL;
+        groupname = NULL;
     }
 
     crinitDestroyRtimCmd(&res);
@@ -554,6 +558,8 @@ CRINIT_LIB_EXPORTED int crinitClientGetTaskList(crinitTaskList_t **tlptr) {
 fail_status:
     crinitClientFreeTaskList(tl);
     crinitDestroyRtimCmd(&res);
+    free(username);
+    free(groupname);
     return ret;
 }
 
