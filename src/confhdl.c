@@ -960,13 +960,12 @@ static bool crinitUidToUsername(uid_t uid, char **name) {
         }
     }
 
-    *name = calloc(strlen(resPwd->pw_name) + 1, sizeof(char));
+    *name = strndup(resPwd->pw_name, bufsize);
     if (*name == NULL) {
         crinitErrPrint("Failed to alloc memory for username.");
         result = false;
         goto cleanup;
     }
-    strncpy(*name, resPwd->pw_name, strlen(resPwd->pw_name) + 1);
     result = true;
 
 cleanup:
@@ -1084,13 +1083,12 @@ static bool crinitGidToGroupname(gid_t gid, char **name) {
                 break;
         }
     }
-    *name = calloc(strlen(resGrp->gr_name) + 1, sizeof(char));
+    *name = strndup(resGrp->gr_name, bufsize);
     if (*name == NULL) {
         crinitErrPrint("Failed to alloc memory for groupname.");
         result = false;
         goto cleanup;
     }
-    strncpy(*name, resGrp->gr_name, strlen(resGrp->gr_name));
     result = true;
 
 cleanup:
