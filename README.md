@@ -204,6 +204,9 @@ COMMAND = /bin/mkdir -p /var/lib/dhcpcd
 
 STOP_COMMAND = /sbin/ifconfig eth0 down
 
+USER = root
+GROUP = root
+
 DEPENDS = check_qemu:fail earlysetup:wait @provided:writable_var
 
 PROVIDES = ipv4_dhcp:wait resolvconf:wait
@@ -228,6 +231,8 @@ IO_REDIRECT = STDERR STDOUT
   the `network-dhcp:wait` dependency is fulfilled) if the last command has successfully returned. If no **COMMAND** is
   given, the task is treated as a dependency group or "meta-task", see below. (*array-like*)
 - **STOP_COMMAND** -- Optional. Given commands are executed on `crinit-ctl stop <TASKNAME>`, `crinit-ctl poweroff` or `crinit-ctl reboot` instead of sending the regular `SIGTERM`. Same rules as for **COMMAND** apply. Additionally the variable "TASK_PID" can be used and will be expanded with the stored PID of the task. Example: `STOP_COMMAND = /usr/bin/kill ${TASK_PID}`. Please note that TASK_PID will expand to "-1" if the task is no longer running or has forked itself without notifying Crinit. **ATTENTION:** Currently STOP_COMMAND does not support IO_REDIRECT! Its output will not be redirected!
+- **USER** -- Name of the user used to run the commands specified in **COMMAND**. Either the username or the numeric user ID can be used. If **USER** is not set, "root" is assumed.
+- **GROUP** -- Name of the group used to run the commands specified in **COMMAND**. Either the group name or the numeric group ID can be used. If **GROUP** is not set, "root" is assumed.
 - **DEPENDS** -- A list of dependencies which need to be fulfilled before this task is considered "ready-to-start".
   Semantics are `<taskname>:{fail,wait,spawn}`, where `spawn` is fulfilled when (the first command of) a task has been
   started, `wait` if it has successfully completed, and `fail` if it has failed somewhere along the way. Here we can see
