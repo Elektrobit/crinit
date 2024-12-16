@@ -18,8 +18,8 @@
  */
 // NOLINTNEXTLINE(readability-identifier-naming) Rationale: Naming scheme fixed due to linker wrapping.
 int __wrap_getpwuid_r(uid_t uid,
-                      struct passwd *__restrict __resultbuf,
-                      char *__restrict __buffer, size_t __buflen,
-                      struct passwd **__restrict __result);
+                      struct passwd *__restrict resultbuf,
+                      char *__restrict buffer, size_t buflen,
+                      struct passwd **__restrict result);
 
 #endif /* __MOCK_GETPWUID_R_H__ */
