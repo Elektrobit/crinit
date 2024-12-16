@@ -938,7 +938,7 @@ static bool crinitUidToUsername(uid_t uid, char **name) {
             case ESRCH:
             case EBADF:
             case EPERM:
-                crinitErrPrint("Username %s couldn't be found.", *name);
+                crinitErrPrint("User ID %d couldn't be found.", uid);
                 result = false;
                 goto cleanup;
                 break;
@@ -1063,7 +1063,7 @@ static bool crinitGidToGroupname(gid_t gid, char **name) {
             case ESRCH:
             case EBADF:
             case EPERM:
-                crinitErrPrint("Groupname %s couldn't be found.", *name);
+                crinitErrPrint("Group ID %d couldn't be found.", gid);
                 result = false;
                 goto cleanup;
                 break;
