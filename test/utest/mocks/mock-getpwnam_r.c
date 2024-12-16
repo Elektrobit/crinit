@@ -15,24 +15,24 @@
 
 // Rationale: Naming scheme fixed due to linker wrapping.
 // NOLINTNEXTLINE(readability-identifier-naming)
-int __wrap_getpwnam_r(const char *__restrict __name,
-               struct passwd *__restrict __resultbuf,
-               char *__restrict __buffer, size_t __buflen,
-               struct passwd **__restrict __result) {
-    assert_non_null(__name);
-    assert_non_null(__resultbuf);
-    assert_non_null(__buffer);
-    CRINIT_PARAM_UNUSED(__buflen);
-    assert_non_null(__result);
+int __wrap_getpwnam_r(const char *__restrict name,
+               struct passwd *__restrict resultbuf,
+               char *__restrict buffer, size_t buflen,
+               struct passwd **__restrict result) {
+    assert_non_null(name);
+    assert_non_null(resultbuf);
+    assert_non_null(buffer);
+    CRINIT_PARAM_UNUSED(buflen);
+    assert_non_null(result);
 
-    if (strcmp(__name, "www-run") == 0) {
-        __resultbuf->pw_uid = 42;
-        strncpy(__buffer, __name, __buflen);
-        __resultbuf->pw_name = __buffer;
-        *__result = __resultbuf;
+    if (strcmp(name, "www-run") == 0) {
+        resultbuf->pw_uid = 42;
+        strncpy(buffer, name, buflen);
+        resultbuf->pw_name = buffer;
+        *result = resultbuf;
     }
     else {
-        *__result = NULL;
+        *result = NULL;
     }
 
     return mock_type(int);

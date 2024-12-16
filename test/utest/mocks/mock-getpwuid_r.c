@@ -16,22 +16,22 @@
 // Rationale: Naming scheme fixed due to linker wrapping.
 // NOLINTNEXTLINE(readability-identifier-naming)
 int __wrap_getpwuid_r(uid_t uid,
-                      struct passwd *__restrict __resultbuf,
-                      char *__restrict __buffer, size_t __buflen,
-                      struct passwd **__restrict __result) {
-    assert_non_null(__resultbuf);
-    assert_non_null(__buffer);
-    CRINIT_PARAM_UNUSED(__buflen);
-    assert_non_null(__result);
+                      struct passwd *__restrict resultbuf,
+                      char *__restrict buffer, size_t buflen,
+                      struct passwd **__restrict result) {
+    assert_non_null(resultbuf);
+    assert_non_null(buffer);
+    CRINIT_PARAM_UNUSED(buflen);
+    assert_non_null(result);
 
     if (uid == 42) {
-        __resultbuf->pw_uid = 42;
-        strncpy(__buffer, "www-run", __buflen);
-        __resultbuf->pw_name = __buffer;
-        *__result = __resultbuf;
+        resultbuf->pw_uid = 42;
+        strncpy(buffer, "www-run", buflen);
+        resultbuf->pw_name = buffer;
+        *result = resultbuf;
     }
     else {
-        *__result = NULL;
+        *result = NULL;
     }
 
     return mock_type(int);

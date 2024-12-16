@@ -15,24 +15,24 @@
 
 // Rationale: Naming scheme fixed due to linker wrapping.
 // NOLINTNEXTLINE(readability-identifier-naming)
-int __wrap_getgrnam_r(const char *__restrict __name,
-                      struct group *__restrict __resultbuf,
-                      char *__restrict __buffer, size_t __buflen,
-                      struct group **__restrict __result) {
-    assert_non_null(__name);
-    assert_non_null(__resultbuf);
-    assert_non_null(__buffer);
-    CRINIT_PARAM_UNUSED(__buflen);
-    assert_non_null(__result);
+int __wrap_getgrnam_r(const char *__restrict name,
+                      struct group *__restrict resultbuf,
+                      char *__restrict buffer, size_t buflen,
+                      struct group **__restrict result) {
+    assert_non_null(name);
+    assert_non_null(resultbuf);
+    assert_non_null(buffer);
+    CRINIT_PARAM_UNUSED(buflen);
+    assert_non_null(result);
 
-    if (strcmp(__name, "disk") == 0) {
-        __resultbuf->gr_gid = 42;
-        strncpy(__buffer, __name, __buflen);
-        __resultbuf->gr_name = __buffer;
-        *__result = __resultbuf;
+    if (strcmp(name, "disk") == 0) {
+        resultbuf->gr_gid = 42;
+        strncpy(buffer, name, buflen);
+        resultbuf->gr_name = buffer;
+        *result = resultbuf;
     }
     else {
-        *__result = NULL;
+        *result = NULL;
     }
 
     return mock_type(int);
