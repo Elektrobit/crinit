@@ -39,8 +39,7 @@ void crinitTaskCreateFromConfKvListTestGroupNumericSuccess(void **state) {
     assert_true(tgt);
     assert_int_equal(tgt->group, 42);
     assert_string_equal(tgt->groupname, "disk");
-    free(tgt->username);
-    free(tgt->groupname);
+    crinitDestroyTask(tgt);
     free(tgt);
     crinitGlobOptDestroy();
 }
@@ -71,8 +70,7 @@ void crinitTaskCreateFromConfKvListTestUserNumericSuccess(void **state) {
     assert_true(tgt);
     assert_int_equal(tgt->user, 42);
     assert_string_equal(tgt->username, "www-run");
-    free(tgt->username);
-    free(tgt->groupname);
+    crinitDestroyTask(tgt);
     free(tgt);
     crinitGlobOptDestroy();
 }
