@@ -291,6 +291,8 @@ int main(int argc, char *argv[]) {
         return EXIT_SUCCESS;
     }
     if (strcmp(getoptArgv[0], "list") == 0) {
+        const char *TABLE_HEADER_GROUP = "GROUP";
+        const char *TABLE_HEADER_USER  = "USER";
         if (getoptArgv[optind] != NULL) {
             crinitPrintUsage(argv[0]);
             return EXIT_FAILURE;
@@ -307,7 +309,7 @@ int main(int argc, char *argv[]) {
                 maxNameLen = len;
             }
         }
-        int maxUserLen = 4;     // Length of the string "USER"
+        int maxUserLen = strlen(TABLE_HEADER_USER);
         for (size_t i = 0; i < tl->numTasks; i++) {
             if (tl->tasks[i].username) {
                 const int len = strlen(tl->tasks[i].username);
@@ -316,7 +318,7 @@ int main(int argc, char *argv[]) {
                 }
             }
         }
-        int maxGroupLen = 5;    // Length of the string "GROUP"
+        int maxGroupLen = strlen(TABLE_HEADER_GROUP);
         for (size_t i = 0; i < tl->numTasks; i++) {
             if (tl->tasks[i].groupname) {
                 const int len = strlen(tl->tasks[i].groupname);
@@ -325,7 +327,7 @@ int main(int argc, char *argv[]) {
                 }
             }
         }
-        crinitInfoPrint("%-*s  %4s  %-*s %-*s %s", maxNameLen, "NAME", "PID", maxUserLen, "USER",  maxGroupLen, "GROUP", "STATUS");
+        crinitInfoPrint("%-*s  %4s  %-*s %-*s %s", maxNameLen, "NAME", "PID", maxUserLen, TABLE_HEADER_USER,  maxGroupLen, TABLE_HEADER_GROUP, "STATUS");
         for (size_t i = 0; i < tl->numTasks; i++) {
             const char *state = crinitTaskStateToStr(tl->tasks[i].state);
             crinitInfoPrint("%-*s  %4d  %-*s %-*s %s", maxNameLen, tl->tasks[i].name, tl->tasks[i].pid, maxUserLen, tl->tasks[i].username, maxGroupLen, tl->tasks[i].groupname, state);
