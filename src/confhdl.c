@@ -452,7 +452,7 @@ int crinitCfgUserHandler(void *tgt, const char *val, crinitConfigType_t type) {
     }
 
     if (crinitConfConvToInteger(&t->user, val, 10) == -1) {
-        crinitErrPrint("Currently only numeric UIDs are supported");
+        crinitErrPrint("Invalid UID / username found");
         return -1;
     }
     if (crinitUidToUsername(t->user, &t->username) != true) {
@@ -493,7 +493,7 @@ int crinitCfgGroupHandler(void *tgt, const char *val, crinitConfigType_t type) {
     }
 
     if (crinitConfConvToInteger(&t->group, val, 10) == -1) {
-        crinitErrPrint("Currently only numeric GIDs are supported");
+        crinitErrPrint("Invalid GID / group name found");
         return -1;
     }
     if (crinitGidToGroupname(t->group, &t->groupname) != true) {
