@@ -256,6 +256,12 @@ void crinitDestroyTask(crinitTask_t *t) {
         }
     }
     free(t->cmds);
+    if (t->stopCmds != NULL) {
+        for (size_t i = 0; i < t->stopCmdsSize; i++) {
+            crinitFreeArgvArray(t->stopCmds[i].argv);
+        }
+    }
+    free(t->stopCmds);
     if (t->deps != NULL) {
         for (size_t i = 0; i < t->depsSize; i++) {
             free(t->deps[i].name);

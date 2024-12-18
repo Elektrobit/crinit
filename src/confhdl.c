@@ -87,6 +87,28 @@ int crinitCfgCmdHandler(void *tgt, const char *val, crinitConfigType_t type) {
     return 0;
 }
 
+int crinitCfgStopCmdHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    crinitNullCheck(-1, tgt, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
+    crinitTask_t *t = tgt;
+    size_t newIdx = t->stopCmdsSize;
+    crinitTaskCmd_t *newArr = crinitCfgHandlerManageArrayMem(t->stopCmds, sizeof(*t->stopCmds), t->stopCmdsSize, newIdx + 1);
+    if (newArr == NULL) {
+        crinitErrPrint("Could not perform memory allocation during handler for configuration key '%s'.",
+                       CRINIT_CONFIG_KEYSTR_STOP_COMMAND);
+        return -1;
+    }
+    t->stopCmds = newArr;
+    t->stopCmdsSize++;
+
+    t->stopCmds[newIdx].argv = crinitConfConvToStrArr(&t->stopCmds[newIdx].argc, val, true);
+    if (t->stopCmds[newIdx].argv == NULL) {
+        crinitErrPrint("Could not extract argv/argc from '%s' index %zu.", CRINIT_CONFIG_KEYSTR_STOP_COMMAND, newIdx);
+        return -1;
+    }
+    return 0;
+}
+
 int crinitCfgDepHandler(void *tgt, const char *val, crinitConfigType_t type) {
     crinitNullCheck(-1, tgt, val);
     crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
