@@ -61,7 +61,7 @@ int crinitConfConvToEnvSetMember(crinitEnvSet_t *es, const char *confVal);
 int crinitConfConvToIntegerI(int *x, const char *confVal, int base);
 /** Converts a string to an unsigned long long, see crinitConfConvToInteger() **/
 int crinitConfConvToIntegerULL(unsigned long long *x, const char *confVal, int base);
-/** Converts a string to an unsigned long, see crinitConfConvToInteger() **/
+/** Converts a string to an unsigned int, see crinitConfConvToInteger() **/
 int crinitConfConvToIntegerUI(unsigned int *x, const char *confVal, int base);
 /** Converts a string to a long long, see crinitConfConvToInteger() **/
 int crinitConfConvToIntegerLL(long long *x, const char *confVal, int base);
