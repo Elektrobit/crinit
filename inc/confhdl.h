@@ -30,6 +30,8 @@ typedef int (*crinitConfigHandler_t)(void *tgt, const char *val, crinitConfigTyp
 
 /** Handler for `COMMAND` config directives. See crinitConfigHandler_t. **/
 int crinitCfgCmdHandler(void *tgt, const char *val, crinitConfigType_t type);
+/** Handler for `STOP_COMMAND` config directives. See crinitConfigHandler_t. **/
+int crinitCfgStopCmdHandler(void *tgt, const char *val, crinitConfigType_t type);
 /** Handler for `DEPENDS` config directives. See crinitConfigHandler_t. **/
 int crinitCfgDepHandler(void *tgt, const char *val, crinitConfigType_t type);
 /** Handler for `IO_REDIRECT` config directives. See crinitConfigHandler_t. **/
