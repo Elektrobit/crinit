@@ -110,6 +110,14 @@ add_link_options(
   $<IF:$<BOOL:${ENABLE_ASAN}>,-fsanitize=address,>
 )
 
+find_package(RE2C 3 REQUIRED)
+if(RE2C_VERSION VERSION_GREATER_EQUAL "4.0.0")
+    message("re2c version >=4.0 found, activating bit-vector optimization incompatibility workaround.")
+    set(RE2C_OPTIONS "-isc" STRING)
+else()
+    set(RE2C_OPTIONS "-ibsc" STRING)
+endif()
+
 add_subdirectory(deps/)
 add_subdirectory(src/)
 if(UNIT_TESTS)
