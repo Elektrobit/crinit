@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: MIT
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
-find_package(RE2C 3 REQUIRED)
 find_package(safu 0.58.2 REQUIRED)
 
 configure_file(version.c.in version.c)
@@ -21,7 +20,7 @@ else()
     add_compile_definitions(LIBELOS_SO_FILENAME="${LIBELOS_SO_FILENAME}")
 endif()
 
-RE2C_TARGET(NAME lexers INPUT ${PROJECT_SOURCE_DIR}/src/lexers.re OUTPUT lexers.c OPTIONS -ibsc -W DEPENDS ${PROJECT_SOURCE_DIR}/inc/lexers.h)
+RE2C_TARGET(NAME lexers INPUT ${PROJECT_SOURCE_DIR}/src/lexers.re OUTPUT lexers.c OPTIONS ${RE2C_OPTIONS} -W DEPENDS ${PROJECT_SOURCE_DIR}/inc/lexers.h)
 
 # optional compile-time features
 

@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: MIT
-find_package(RE2C 3 REQUIRED)
-RE2C_TARGET(NAME lexers_ut_parse_set INPUT ${PROJECT_SOURCE_DIR}/src/lexers.re OUTPUT lexers.c OPTIONS -ibsc -W DEPENDS ${PROJECT_SOURCE_DIR}/inc/lexers.h)
+RE2C_TARGET(NAME lexers_ut_parse_set INPUT ${PROJECT_SOURCE_DIR}/src/lexers.re OUTPUT lexers.c OPTIONS ${RE2C_OPTIONS} -W DEPENDS ${PROJECT_SOURCE_DIR}/inc/lexers.h)
 
 create_unit_test(
   NAME
