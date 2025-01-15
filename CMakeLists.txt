@@ -111,8 +111,8 @@ add_link_options(
 )
 
 find_package(RE2C 3 REQUIRED)
-if(RE2C_VERSION VERSION_GREATER_EQUAL "4.0.0")
-    message("re2c version >=4.0 found, activating bit-vector optimization incompatibility workaround.")
+if(RE2C_VERSION VERSION_GREATER_EQUAL "4.0.0" AND RE2C_VERSION VERSION_LESS_EQUAL "4.0.2")
+    message("re2c version 4.0.0>=4.0.2 detected, activating bit-vector optimization incompatibility workaround.")
     set(RE2C_OPTIONS "-isc" STRING)
 else()
     set(RE2C_OPTIONS "-ibsc" STRING)
