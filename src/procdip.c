@@ -28,6 +28,7 @@
 typedef struct crinitDispThrArgs_t {
     crinitTaskDB_t *ctx;    ///< The TaskDB context to update on task state changes.
     const crinitTask_t *t;  ///< The task to run.
+    crinitDispatchThreadMode_t mode;    ///< Select between start and stop commands
 } crinitDispThrArgs_t;
 
 /** Mutex to guard #crinitWaitInhibit **/
@@ -95,7 +96,7 @@ static int crinitPosixSpawnAddIOFileAction(posix_spawn_file_actions_t *fileact, 
  */
 static int crinitEnsureFifo(const char *path, mode_t mode);
 
-int crinitProcDispatchSpawnFunc(crinitTaskDB_t *ctx, const crinitTask_t *t) {
+int crinitProcDispatchSpawnFunc(crinitTaskDB_t *ctx, const crinitTask_t *t, crinitDispatchThreadMode_t mode) {
     pthread_t dispatchThread;
     pthread_attr_t dispatchThreadAttr;
     crinitDispThrArgs_t *threadArgs = malloc(sizeof(crinitDispThrArgs_t));
@@ -106,6 +107,7 @@ int crinitProcDispatchSpawnFunc(crinitTaskDB_t *ctx, const crinitTask_t *t) {
     }
     threadArgs->ctx = ctx;
     threadArgs->t = t;
+    threadArgs->mode = mode;
 
     if ((errno = pthread_attr_init(&dispatchThreadAttr)) != 0) {
         crinitErrnoPrint("Could not initialize pthread attributes. Meant to create thread for task \'%s\'.", t->name);
@@ -289,8 +291,19 @@ static void *crinitDispatchThreadFunc(void *args) {
 
     crinitTaskCmd_t *cmds = NULL;
     size_t cmdsSize = 0;
-    cmds = tCopy->cmds;
-    cmdsSize = tCopy->cmdsSize;
+    switch (a->mode) {
+        case CRINIT_DISPATCH_THREAD_MODE_START:
+            cmds = tCopy->cmds;
+            cmdsSize = tCopy->cmdsSize;
+            break;
+        case CRINIT_DISPATCH_THREAD_MODE_STOP:
+            cmds = tCopy->stopCmds;
+            cmdsSize = tCopy->stopCmdsSize;
+            break;
+        default:
+            crinitErrPrint("Invalid mode for dispatch thread work mode received");
+            goto threadExitFail;
+    }
 
     if (crinitHandleCommands(ctx, threadId, tCopy->name, cmds, cmdsSize, tCopy, &pid) != 0) {
         goto threadExitFail;

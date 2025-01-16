@@ -16,6 +16,14 @@
 #define CRINIT_TASKDB_INITIAL_SIZE 256        ///< Default initial size of taskSet and inclSet within an crinitTaskDB_t.
 
 /**
+ * Type to describe wheter the spawn thread launches start or stop commands
+ */
+typedef enum crinitDispatchThreadMode_t {
+    CRINIT_DISPATCH_THREAD_MODE_START,
+    CRINIT_DISPATCH_THREAD_MODE_STOP
+} crinitDispatchThreadMode_t;
+
+/**
  * Type to store a task database.
  */
 typedef struct crinitTaskDB_t {
@@ -24,7 +32,7 @@ typedef struct crinitTaskDB_t {
     size_t taskSetItems;    ///< Number of elements in the task array.
 
     /** Pointer specifying a function for spawning ready tasks, used by crinitTaskDBSpawnReady() **/
-    int (*spawnFunc)(struct crinitTaskDB_t *ctx, const crinitTask_t *);
+    int (*spawnFunc)(struct crinitTaskDB_t *ctx, const crinitTask_t *, crinitDispatchThreadMode_t mode);
 
     bool
         spawnInhibit;  ///< Specifies if process spawning is currently inhibited, respected by crinitTaskDBSpawnReady().
@@ -256,10 +264,11 @@ int crinitTaskDBRemit(crinitTaskDB_t *ctx);
  * without starting anything.
  *
  * @param ctx  The TaskDB context from which tasks will be started.
+ * @param mode Distinguishes between start and stop commands
  *
  * @return 0 on success, -1 otherwise
  */
-int crinitTaskDBSpawnReady(crinitTaskDB_t *ctx);
+int crinitTaskDBSpawnReady(crinitTaskDB_t *ctx, crinitDispatchThreadMode_t mode);
 /**
  * Inhibit or un-inhibit spawning of processes by setting crinitTaskDB_t::spawnInhibit.
  *
@@ -285,7 +294,7 @@ int crinitTaskDBSetSpawnInhibit(crinitTaskDB_t *ctx, bool inh);
  *
  *  @return 0 on success, -1 otherwise
  */
-int crinitTaskDBInitWithSize(crinitTaskDB_t *ctx, int (*spawnFunc)(crinitTaskDB_t *ctx, const crinitTask_t *),
+int crinitTaskDBInitWithSize(crinitTaskDB_t *ctx, int (*spawnFunc)(crinitTaskDB_t *ctx, const crinitTask_t *, crinitDispatchThreadMode_t mode),
                              size_t initialSize);
 /**
  * Initialize the internals of an crinitTaskDB_t with the default initial size of CRINIT_TASKDB_INITIAL_SIZE.

@@ -37,7 +37,7 @@ static int crinitFindTask(crinitTask_t **task, const char *taskName, const crini
  */
 static bool crinitTaskIsReady(const crinitTask_t *t);
 
-int crinitTaskDBInitWithSize(crinitTaskDB_t *ctx, int (*spawnFunc)(crinitTaskDB_t *ctx, const crinitTask_t *),
+int crinitTaskDBInitWithSize(crinitTaskDB_t *ctx, int (*spawnFunc)(crinitTaskDB_t *ctx, const crinitTask_t *, crinitDispatchThreadMode_t mode),
                              size_t initialSize) {
     crinitNullCheck(-1, ctx);
 
@@ -153,7 +153,7 @@ fail:
     return -1;
 }
 
-int crinitTaskDBSpawnReady(crinitTaskDB_t *ctx) {
+int crinitTaskDBSpawnReady(crinitTaskDB_t *ctx, crinitDispatchThreadMode_t mode) {
     crinitNullCheck(-1, ctx);
 
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
@@ -178,7 +178,7 @@ int crinitTaskDBSpawnReady(crinitTaskDB_t *ctx) {
             crinitDbgInfoPrint("Task \'%s\' ready to spawn.", pTask->name);
             pTask->state = CRINIT_TASK_STATE_STARTING;
 
-            if (ctx->spawnFunc(ctx, pTask) == -1) {
+            if (ctx->spawnFunc(ctx, pTask, mode) == -1) {
                 crinitErrPrint("Could not spawn new thread for execution of task \'%s\'.", pTask->name);
                 pTask->state &= ~CRINIT_TASK_STATE_STARTING;
                 pthread_mutex_unlock(&ctx->lock);
