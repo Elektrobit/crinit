@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.21)
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE AND DEFINED ENV{CMAKE_TOOLCHAIN_FILE})
   set(CMAKE_TOOLCHAIN_FILE $ENV{CMAKE_TOOLCHAIN_FILE})
 endif()
-project(crinit VERSION 0.14.17)
+project(crinit VERSION 0.14.18)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -109,6 +109,14 @@ add_compile_options(
 add_link_options(
   $<IF:$<BOOL:${ENABLE_ASAN}>,-fsanitize=address,>
 )
+
+find_package(RE2C 3 REQUIRED)
+if(RE2C_VERSION VERSION_GREATER_EQUAL "4.0.0" AND RE2C_VERSION VERSION_LESS_EQUAL "4.0.2")
+    message("re2c version 4.0.0>=4.0.2 detected, activating bit-vector optimization incompatibility workaround.")
+    set(RE2C_OPTIONS "-isc" STRING)
+else()
+    set(RE2C_OPTIONS "-ibsc" STRING)
+endif()
 
 add_subdirectory(deps/)
 add_subdirectory(src/)
