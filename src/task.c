@@ -29,6 +29,17 @@
 static inline int crinitTaskSetFromConfKvList(crinitTask_t *tgt, const crinitConfKvList_t *src, crinitTaskType_t type,
                                               char *importList);
 
+/** Helper function to copy command blocks.
+ *
+ *  @param name Name of task (for error messages, etc.)
+ *  @param cmdsSize Number of elements in command block
+ *  @param origCmds Source command block
+ *  @param outCmds Destination command block
+ *
+ *  @return  0 on success, -1 on error
+ */
+static int crinitCopyCommandBlock(char *name, size_t cmdsSize, crinitTaskCmd_t *origCmds, crinitTaskCmd_t **outCmds);
+
 int crinitTaskCreateFromConfKvList(crinitTask_t **out, const crinitConfKvList_t *in) {
     crinitNullCheck(-1, out, in);
 
@@ -100,42 +111,12 @@ int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig) {
         goto fail;
     }
 
-    if (out->cmdsSize > 0) {
-        out->cmds = calloc(out->cmdsSize, sizeof(*out->cmds));
-        if (out->cmds == NULL) {
-            crinitErrnoPrint("Could not allocate memory for %zu COMMANDs during copy of Task \'%s\'.", out->cmdsSize,
-                             orig->name);
-            goto fail;
-        }
+    if (crinitCopyCommandBlock(orig->name, out->cmdsSize, orig->cmds, &(out->cmds)) != 0) {
+        goto fail;
+    }
 
-        for (size_t i = 0; i < out->cmdsSize; i++) {
-            if (orig->cmds[i].argc < 1) {
-                crinitErrPrint("COMMANDs must have at least one argument.");
-                goto fail;
-            }
-            out->cmds[i].argc = orig->cmds[i].argc;
-            out->cmds[i].argv = calloc((out->cmds[i].argc + 1), sizeof(*out->cmds[i].argv));
-            if (out->cmds[i].argv == NULL) {
-                crinitErrnoPrint(
-                    "Could not allocate memory for argv-array of size %d during copy of task \'%s\', cmds[%zu].",
-                    out->cmds[i].argc + 1, orig->name, i);
-                goto fail;
-            }
-
-            char *origArgvBackbufEnd = strchr(orig->cmds[i].argv[out->cmds[i].argc - 1], '\0');
-            size_t argvBackbufLen = origArgvBackbufEnd - orig->cmds[i].argv[0] + 1;
-
-            char *argvBackbuf = malloc(argvBackbufLen);
-            if (argvBackbuf == NULL) {
-                crinitErrnoPrint("Could not allocate memory for cmds[%zu].argv of task \'%s\'.", i, orig->name);
-                goto fail;
-            }
-
-            memcpy(argvBackbuf, orig->cmds[i].argv[0], argvBackbufLen);
-            for (int j = 0; j < out->cmds[i].argc; j++) {
-                out->cmds[i].argv[j] = argvBackbuf + (orig->cmds[i].argv[j] - orig->cmds[i].argv[0]);
-            }
-        }
+    if (crinitCopyCommandBlock(orig->name, out->stopCmdsSize, orig->stopCmds, &(out->stopCmds)) != 0) {
+        goto fail;
     }
 
     if (crinitEnvSetDup(&out->taskEnv, &orig->taskEnv) == -1) {
@@ -381,5 +362,49 @@ static inline int crinitTaskSetFromConfKvList(crinitTask_t *tgt, const crinitCon
         }
         pEntry = pEntry->next;
     }
+    return 0;
+}
+
+static int crinitCopyCommandBlock(char *name, size_t cmdsSize, crinitTaskCmd_t *origCmds, crinitTaskCmd_t **outCmds) {
+    if (cmdsSize > 0) {
+        size_t size = sizeof(**outCmds);
+        crinitDbgInfoPrint("Sizeof(crinitTaskCmd_t: %lu", size);
+        *outCmds = calloc(cmdsSize, sizeof(**outCmds));
+        if (*outCmds == NULL) {
+            crinitErrnoPrint("Could not allocate memory for %zu COMMANDs during copy of Task \'%s\'.", cmdsSize,
+                             name);
+            return -1;
+        }
+
+        for (size_t i = 0; i < cmdsSize; i++) {
+            if (origCmds[i].argc < 1) {
+                crinitErrPrint("COMMANDs must have at least one argument.");
+                return -1;
+            }
+            (*outCmds)[i].argc = origCmds[i].argc;
+            (*outCmds)[i].argv = calloc((*outCmds)[i].argc + 1, sizeof((*outCmds)[i].argv));
+            if ((*outCmds)[i].argv == NULL) {
+                crinitErrnoPrint(
+                    "Could not allocate memory for argv-array of size %d during copy of task \'%s\', cmds[%zu].",
+                    (*outCmds)[i].argc + 1, name, i);
+                return -1;
+            }
+
+            char *origArgvBackbufEnd = strchr(origCmds[i].argv[(*outCmds)[i].argc - 1], '\0');
+            size_t argvBackbufLen = origArgvBackbufEnd - origCmds[i].argv[0] + 1;
+
+            char *argvBackbuf = malloc(argvBackbufLen);
+            if (argvBackbuf == NULL) {
+                crinitErrnoPrint("Could not allocate memory for cmds[%zu].argv of task \'%s\'.", i, name);
+                return -1;
+            }
+
+            memcpy(argvBackbuf, origCmds[i].argv[0], argvBackbufLen);
+            for (int j = 0; j < (*outCmds)[i].argc; j++) {
+                (*outCmds)[i].argv[j] = argvBackbuf + (origCmds[i].argv[j] - origCmds[i].argv[0]);
+            }
+        }
+    }
+
     return 0;
 }
