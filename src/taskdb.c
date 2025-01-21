@@ -209,6 +209,29 @@ int crinitTaskDBSetSpawnInhibit(crinitTaskDB_t *ctx, bool inh) {
     return 0;
 }
 
+int crinitTaskDBGetTaskByName(crinitTaskDB_t *ctx, crinitTask_t **task, const char *taskName) {
+    crinitNullCheck(-1, ctx, taskName);
+
+    if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
+        crinitErrnoPrint("Could not queue up for mutex lock.");
+        return -1;
+    }
+
+    crinitTask_t *pTask;
+    if (crinitFindTask(&pTask, taskName, ctx) == 0) {
+        if (crinitTaskDup(task, pTask) != 0) {
+            goto failFindTaskByName;
+        }
+        pthread_mutex_unlock(&ctx->lock);
+        return 0;
+    }
+    crinitErrPrint("Could not get task structure of Task \'%s\' as it does not exist in TaskDB.", taskName);
+
+failFindTaskByName:
+    pthread_mutex_unlock(&ctx->lock);
+    return -1;
+}
+
 int crinitTaskDBSetTaskState(crinitTaskDB_t *ctx, crinitTaskState_t s, const char *taskName) {
     crinitNullCheck(-1, ctx, taskName);
 
