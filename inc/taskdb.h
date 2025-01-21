@@ -146,6 +146,18 @@ int crinitTaskDBAddDepToTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep, co
 int crinitTaskDBRemoveDepFromTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep, const char *taskName);
 
 /**
+ * Find the task with the given name.
+ *
+ * @param ctx       The crinitTaskDb context to work on.
+ * @param task      Pointer to hold the task.
+ * @param taskName  The name of the relevant task.
+ *
+ * @return 0 on success, -1 otherweise
+ *
+ */
+int crinitTaskDBGetTaskByName(crinitTaskDB_t *ctx, crinitTask_t **task, const char *taskName);
+
+/**
  * Set the crinitTaskState_t of a task in a task database
  *
  * Will search \a ctx for an crinitTask_t with crinitTask_t::name lexicographically equal to \a taskName and set its
