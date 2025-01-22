@@ -1,0 +1,5 @@
+NAME = stop_command
+
+COMMAND = "/bin/true"
+
+STOP_COMMAND = /bin/sh -c "echo 'Hello, world from STOP_COMMAND.' | tee -a /tmp/test-stop_command.out"

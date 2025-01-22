@@ -6,3 +6,4 @@ one_second_respawn    -1  loaded
 fail_loop             -1  loaded
 feature_provider      -1  loaded
 feature_dependent     -1  loaded
+stop_command          -1  done

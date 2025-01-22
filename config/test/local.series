@@ -3,6 +3,7 @@
 TASKS = hello_echo.crinit sleep_one_sec.crinit
         after_sleep.crinit one_second_respawn.crinit
         fail_loop.crinit feature_provider.crinit feature_dependent.crinit
+        stop_command.crinit
 
 TASKDIR = /base/config/test
 DEBUG = NO
