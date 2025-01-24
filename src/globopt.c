@@ -276,6 +276,10 @@ void crinitGlobOptDestroy(void) {
     }
     free(crinitGlobOpts.inclDir);
     free(crinitGlobOpts.inclSuffix);
+    free(crinitGlobOpts.taskDir);
+    free(crinitGlobOpts.taskFileSuffix);
+    free(crinitGlobOpts.sigKeyDir);
+    free(crinitGlobOpts.elosServer);
     crinitEnvSetDestroy(&crinitGlobOpts.globEnv);
     crinitEnvSetDestroy(&crinitGlobOpts.globFilters);
     pthread_mutex_unlock(&crinitOptLock);
