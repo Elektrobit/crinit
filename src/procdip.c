@@ -278,6 +278,7 @@ int crinitExpandPIDVariablesInSingleCommand(char *input, const pid_t pid, char *
     snprintf(substVal, substValLen + 1, "%d", pid);
     if (*result != NULL) {
         crinitErrnoPrint("Expecting result pointer to be NULL.\n");
+        free(substVal);
         return -1;
     }
 
@@ -306,7 +307,7 @@ int crinitExpandPIDVariablesInSingleCommand(char *input, const pid_t pid, char *
                     sprintf(tmp, "%.*s%s", (int) (mbegin - 2 - src), src, substVal);        // Substitute 2 to get rid of '${' directly before the variable name.
                     if (*result) {
                         char *tmp2 = NULL;
-                        tmp2 = (char *) calloc(strlen(*result) + strlen(tmp) + 1, sizeof(char));
+                        tmp2 = (char *) calloc(sizeof(char), strlen(*result) + strlen(tmp) + 1);
                         if (!tmp2) {
                             crinitErrPrint("Error allocating memory for result string.\n");
                             tt = CRINIT_TK_ERR;
@@ -315,6 +316,7 @@ int crinitExpandPIDVariablesInSingleCommand(char *input, const pid_t pid, char *
                         strcat(tmp2, *result);
                         strcat(tmp2, tmp);
                         free(*result);
+                        free(tmp);
                         *result = tmp2;
                     }
                     else {
@@ -344,6 +346,8 @@ int crinitExpandPIDVariablesInSingleCommand(char *input, const pid_t pid, char *
                 break;
         }
     } while (tt != CRINIT_TK_END && tt != CRINIT_TK_ERR);
+
+    free(substVal);
 
     if (tt == CRINIT_TK_END && *result) {
         char *tmp = NULL;
@@ -483,9 +487,6 @@ static void *crinitDispatchThreadFunc(void *args) {
             crinitErrPrint("Invalid mode for dispatch thread work mode received");
             goto threadExitFail;
     }
-
-    //TODO: Hier Variablenersetzung vornehmen. Eventuell nur im CRINIT_DISPATCH_THREAD_MODE_STOP Mode?
-    // TASK_PID macht ja nur beim STOP sinn.
 
     if (crinitHandleCommands(ctx, threadId, tCopy->name, cmds, cmdsSize, tCopy, &pid) != 0) {
         goto threadExitFail;
