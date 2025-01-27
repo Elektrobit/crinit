@@ -80,6 +80,11 @@ void crinitExecRtimCmdTestShutdownWithStopCommand(void **state) {
 
     crinitTask_t *task1 = crinitCreateTaskWithStopCommand("task1");
 
+    crinitTask_t *taskTmp = calloc(sizeof(crinitTask_t), 1);
+    assert_int_equal(crinitTaskCopy(taskTmp, task1), 0);
+    crinitDestroyTask(taskTmp);
+    free(taskTmp);
+
     crinitTaskDBInit(&ctx, crinitSpawnMockFunc);
 
     assert_int_equal(crinitTaskDBInsert(&ctx, task1, true), 0);
