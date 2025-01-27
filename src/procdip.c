@@ -15,6 +15,7 @@
 #include <unistd.h>
 
 #include "envset.h"
+#include "lexers.h"
 #include "logio.h"
 
 #ifndef SYS_gettid
@@ -259,6 +260,183 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char* name, crinit
     return 0;
 }
 
+int crinitExpandPIDVariablesInSingleCommand(char *input, const pid_t pid, char **result) {
+    crinitTokenType_t tt;
+    char *substKey = NULL;
+    char *substVal = NULL;
+    const char *src = input;
+    const char *s = input;
+    const char *mbegin = NULL;
+    const char *mend = NULL;
+
+    const int substValLen = snprintf(NULL, 0, "%d", pid);
+    substVal = (char *) calloc(substValLen + 1, sizeof(char));
+    if (!substVal) {
+        crinitErrnoPrint("Couldn't write PID into temporary string.\n");
+        return -1;
+    }
+    snprintf(substVal, substValLen + 1, "%d", pid);
+    if (*result != NULL) {
+        crinitErrnoPrint("Expecting result pointer to be NULL.\n");
+        return -1;
+    }
+
+    do {
+        tt = crinitEnvVarInnerLex(&s, &mbegin, &mend);
+        switch (tt) {
+            case CRINIT_TK_ERR:
+                crinitErrPrint("Error while parsing string at '%.*s'\n", (int)(mend - mbegin), mbegin);
+                break;
+            case CRINIT_TK_VAR:
+                substKey = strndup(mbegin, (size_t)(mend - mbegin));
+                if (substKey == NULL) {
+                    crinitErrnoPrint("Could not duplicate key of environment variable to expand.");
+                    tt = CRINIT_TK_ERR;
+                    break;
+                }
+                if (strcmp(substKey, "TASK_PID") == 0) {
+                    free(substKey);
+                    char *tmp = NULL;
+                    tmp = calloc((int) (mend - src) + substValLen + 1, sizeof(char));
+                    if (!tmp) {
+                        crinitErrPrint("Error allocating memory for result string.\n");
+                        tt = CRINIT_TK_ERR;
+                        break;
+                    }
+                    sprintf(tmp, "%.*s%s", (int) (mbegin - 2 - src), src, substVal);        // Substitute 2 to get rid of '${' directly before the variable name.
+                    if (*result) {
+                        char *tmp2 = NULL;
+                        tmp2 = (char *) calloc(strlen(*result) + strlen(tmp) + 1, sizeof(char));
+                        if (!tmp2) {
+                            crinitErrPrint("Error allocating memory for result string.\n");
+                            tt = CRINIT_TK_ERR;
+                            break;
+                        }
+                        strcat(tmp2, *result);
+                        strcat(tmp2, tmp);
+                        free(*result);
+                        *result = tmp2;
+                    }
+                    else {
+                        free(*result);
+                        *result = tmp;
+                    }
+                    src = mend + 1;
+                }
+                else {
+                    free(substKey);
+                }
+                break;
+            case CRINIT_TK_END:
+            case CRINIT_TK_CPY:
+                // Intentionally do nothing.
+                break;
+            case CRINIT_TK_ESC:
+            case CRINIT_TK_ESCX:
+            case CRINIT_TK_WSPC:
+            case CRINIT_TK_ENVKEY:
+            case CRINIT_TK_ENVVAL:
+            case CRINIT_TK_UQSTR:
+            case CRINIT_TK_DQSTR:
+            default:
+                crinitErrPrint("Parser error at '%.*s'\n", (int)(mend - mbegin), mbegin);
+                tt = CRINIT_TK_ERR;
+                break;
+        }
+    } while (tt != CRINIT_TK_END && tt != CRINIT_TK_ERR);
+
+    if (tt == CRINIT_TK_END && *result) {
+        char *tmp = NULL;
+        tmp = (char *) calloc(strlen(*result) + strlen(src) + 1, sizeof(char));
+        if (!tmp) {
+            crinitErrPrint("Error allocating memory for result string.\n");
+            tt = CRINIT_TK_ERR;
+            return -1;
+        }
+        strcat(tmp, *result);
+        strcat(tmp, src);
+        free(*result);
+        *result = tmp;
+        return 1;
+    }
+    else if (tt == CRINIT_TK_ERR) {
+        free(*result);
+        return -1;
+    }
+
+    return 0;
+}
+
+/**
+ * @brief Expands variable ${TASK_PID} in a command with the task's PID.
+ *
+ * Please note that this makes only sense for a STOP_COMMAND.
+ * Currently this is the only variable that can be expanded here.
+ *
+ * @param commands Pointer to task command structure
+ * @param cmdsSize Number of elements in commands
+ * @param pid PID of task
+ */
+void crinitExpandPIDVariablesInCommands(crinitTaskCmd_t *commands, size_t cmdsSize, const pid_t pid) {
+    for (size_t i = 0; i < cmdsSize; i++) {
+        if (commands[i].argc > 0) {
+            char *origArgvBackbufEnd = strchr(commands[i].argv[commands[i].argc - 1], '\0');
+            size_t argvBackbufLen = origArgvBackbufEnd - commands[i].argv[0] + 1;
+            argvBackbufLen *= 2;
+            size_t bytesUsed = 0;
+
+            char *argvBackbuf = malloc(argvBackbufLen);
+            if (argvBackbuf == NULL) {
+                crinitErrnoPrint("Could not allocate memory for argv STOP_COMMAND variable expansion.\n");
+                return;
+            }
+
+            char *oldArgvBuf = commands[i].argv[0];
+            size_t *offsets = calloc(sizeof(size_t), commands[i].argc);
+            for (int j = 0; j < commands[i].argc; j++) {
+                char *result = NULL;
+                if (crinitExpandPIDVariablesInSingleCommand(commands[i].argv[j], pid, &result) == -1) {
+                    crinitErrnoPrint("Could not allocate memory for argv STOP_COMMAND variable expansion.\n");
+                    free(argvBackbuf);
+                    free(offsets);
+                    return;
+                }
+                else {
+                    char *tmpResult = commands[i].argv[j];
+                    if (result) {
+                        tmpResult = result;
+                    }
+                    const size_t resultLen = strlen(tmpResult) + 1;
+                    if (bytesUsed + resultLen > argvBackbufLen) {
+                        char *tmp = realloc(argvBackbuf, bytesUsed + resultLen);
+                        if (tmp == NULL) {
+                            free(result);
+                            free(argvBackbuf);
+                            free(offsets);
+                            return;
+                        }
+                        argvBackbuf = tmp;
+                        argvBackbufLen = bytesUsed + resultLen;
+                    }
+                    memcpy(argvBackbuf + bytesUsed, tmpResult, resultLen);
+                    offsets[j] = bytesUsed;
+                    bytesUsed += resultLen;
+                    free(result);
+                }
+            }
+
+            if (argvBackbufLen > bytesUsed) {
+                argvBackbuf = realloc(argvBackbuf, bytesUsed);
+            }
+            free(oldArgvBuf);
+            for (int j = 0; j < commands[i].argc; j++) {
+                commands[i].argv[j] = argvBackbuf + offsets[j];
+            }
+            free(offsets);
+        }
+    }
+}
+
 static void *crinitDispatchThreadFunc(void *args) {
     crinitDispThrArgs_t *a = (crinitDispThrArgs_t *)args;
     crinitTaskDB_t *ctx = a->ctx;
@@ -299,11 +477,15 @@ static void *crinitDispatchThreadFunc(void *args) {
         case CRINIT_DISPATCH_THREAD_MODE_STOP:
             cmds = tCopy->stopCmds;
             cmdsSize = tCopy->stopCmdsSize;
+            crinitExpandPIDVariablesInCommands(cmds, cmdsSize, tCopy->pid);
             break;
         default:
             crinitErrPrint("Invalid mode for dispatch thread work mode received");
             goto threadExitFail;
     }
+
+    //TODO: Hier Variablenersetzung vornehmen. Eventuell nur im CRINIT_DISPATCH_THREAD_MODE_STOP Mode?
+    // TASK_PID macht ja nur beim STOP sinn.
 
     if (crinitHandleCommands(ctx, threadId, tCopy->name, cmds, cmdsSize, tCopy, &pid) != 0) {
         goto threadExitFail;
