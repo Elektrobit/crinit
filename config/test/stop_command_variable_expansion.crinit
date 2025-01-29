@@ -1,0 +1,5 @@
+NAME = stop_command_var_exp
+
+COMMAND = "/bin/true"
+
+STOP_COMMAND = /bin/sh -c "echo 'Hello, world from STOP_COMMAND. TASK_PID=${TASK_PID}' | tee -a /tmp/test-stop_command_variable_expansion.out"
