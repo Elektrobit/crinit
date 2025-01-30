@@ -540,7 +540,7 @@ USAGE: crinit-ctl <ACTION> [OPTIONS] <PARAMETER> [PARAMETERS...]
      disable <TASK_NAME>
              - Adds dependency '@ctl:enable' to the dependency list of <TASK_NAME>.
         stop <TASK_NAME>
-             - Sends SIGTERM to the PID of <TASK_NAME> if the PID is currently known.
+             - If the task has a STOP_COMMAND, it will be executed. Otherwise, Crinit sends SIGTERM to the PID of <TASK_NAME> if the PID is currently known.
         kill <TASK_NAME>
              - Sends SIGKILL to the PID of <TASK_NAME> if the PID is currently known.
      restart <TASK_NAME>
