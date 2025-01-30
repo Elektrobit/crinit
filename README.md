@@ -172,7 +172,7 @@ ENV_SET = GREETING "Good morning!"
 - **INCLUDEDIR** -- Where to find include files referenced from task configurations. Default: Same as **TASKDIR**.
 - **INCLUDE_SUFFIX** -- Filename suffix of include files referenced from task configurations. Default: `.crincl`
 - **DEBUG** -- If crinit should be verbose in its output. Either `YES` or `NO`. Default: `NO`
-- **SHUTDOWN_GRACE_PERIOD_US** -- The amount of microseconds to wait between `SIGTERM` and `SIGKILL` on shutdown/reboot.
+- **SHUTDOWN_GRACE_PERIOD_US** -- The amount of microseconds to wait both between `STOP_COMMAND` and `SIGTERM` as well as between`SIGTERM` and `SIGKILL` on shutdown/reboot.
                                   Default: 100000
 - **USE_SYSLOG** -- If syslog should be used for output if it is available. If set to `YES`, Crinit will switch to
                     syslog for output as soon as a task file `PROVIDES` the `syslog` feature. Ideally this should be
