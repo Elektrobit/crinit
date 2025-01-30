@@ -175,7 +175,7 @@ int crinitPrepareIoRedirectionsForSpawn(size_t cmdIdx, crinitIoRedir_t * redirs,
     return 0;
 }
 
-int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char* name, crinitTaskCmd_t *cmds, size_t cmdsSize, crinitTask_t *tCopy, pid_t *pid)
+int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char* name, crinitTaskCmd_t *cmds, size_t cmdsSize, crinitTask_t *tCopy, pid_t *pid, bool deactivateFileactions)
 {
     for (size_t i = 0; i < cmdsSize; i++) {
         posix_spawn_file_actions_t fileact;
@@ -192,7 +192,7 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char* name, crinit
             return -1;
         }
 
-        if (crinitSpawnSingleCommand(cmds[i].argv[0], cmds[i].argv, tCopy->taskEnv.envp, &fileact, name, i, threadId, pid) == -1) {
+        if (crinitSpawnSingleCommand(cmds[i].argv[0], cmds[i].argv, tCopy->taskEnv.envp, deactivateFileactions == true ? NULL : &fileact, name, i, threadId, pid) == -1) {
             posix_spawn_file_actions_destroy(&fileact);
             return -1;
         }
@@ -488,7 +488,8 @@ static void *crinitDispatchThreadFunc(void *args) {
             goto threadExitFail;
     }
 
-    if (crinitHandleCommands(ctx, threadId, tCopy->name, cmds, cmdsSize, tCopy, &pid) != 0) {
+    // Do not execute IO redirections for STOP_COMMANDS for now.
+    if (crinitHandleCommands(ctx, threadId, tCopy->name, cmds, cmdsSize, tCopy, &pid, a->mode == CRINIT_DISPATCH_THREAD_MODE_STOP ? true : false) != 0) {
         goto threadExitFail;
     }
 
