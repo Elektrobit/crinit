@@ -21,6 +21,7 @@ const crinitConfigMapping_t crinitTaskCfgMap[] = {
     {CRINIT_CONFIG_PROVIDES, CRINIT_CONFIG_KEYSTR_PROVIDES, true, false, crinitCfgPrvHandler},
     {CRINIT_CONFIG_RESPAWN, CRINIT_CONFIG_KEYSTR_RESPAWN, false, false, crinitCfgRespHandler},
     {CRINIT_CONFIG_RESPAWN_RETRIES, CRINIT_CONFIG_KEYSTR_RESPAWN_RETRIES, false, false, crinitCfgRespRetHandler},
+    {CRINIT_CONFIG_STOP_COMMAND, CRINIT_CONFIG_KEYSTR_STOP_COMMAND, true, false, crinitCfgStopCmdHandler},
 };
 const size_t crinitTaskCfgMapSize = crinitNumElements(crinitTaskCfgMap);
 

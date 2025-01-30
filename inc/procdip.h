@@ -22,9 +22,13 @@
  * return successfully if the thread has been created without error. The thread is created in a detached state so no
  * further management action is necessary.
  *
+ * @param ctx Pointer to context
+ * @param t Pointer to task that needs spawning
+ * @param mode Distinguishes between start and stop commands
+ *
  * @return 0 on success, -1 otherwise
  */
-int crinitProcDispatchSpawnFunc(crinitTaskDB_t *ctx, const crinitTask_t *t);
+int crinitProcDispatchSpawnFunc(crinitTaskDB_t *ctx, const crinitTask_t *t, crinitDispatchThreadMode_t mode);
 
 /**
  * Turn waiting for child processes on or off.
