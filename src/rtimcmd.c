@@ -820,20 +820,39 @@ static int crinitExecRtimCmdStop(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, cons
     if (cmd->argc != 1) {
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR, "Wrong number of arguments.");
     }
+
+    // Not sure if we need inhibit wait only for the kill branch.
     if (crinitSetInhibitWait(true) == -1) {
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
                                   "Could not inhibit waiting for processes.");
     }
-    pid_t taskPid = 0;
-    if (crinitTaskDBGetTaskPID(ctx, &taskPid, cmd->args[0]) == -1) {
+
+    crinitTask_t *pTask;
+    if (crinitTaskDBGetTaskByName(ctx, &pTask, cmd->args[0]) != 0) {
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR, "Could not access task.");
     }
-    if (taskPid <= 0) {
-        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR, "No PID registered for task.");
+    if (pTask->stopCmdsSize > 0) {
+        if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
+            return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
+                                      "Could not prepare to spawn STOP_COMMAND(s).");
+        }
+        if (ctx->spawnFunc(ctx, pTask, CRINIT_DISPATCH_THREAD_MODE_STOP) == -1) {
+            crinitErrPrint("Could not spawn new thread for execution STOP_COMMAND of task \'%s\'.", pTask->name);
+            pthread_mutex_unlock(&ctx->lock);
+            return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
+                                      "Could not spawn STOP_COMMAND(s).");
+        }
+        pthread_mutex_unlock(&ctx->lock);
     }
-    if (kill(taskPid, SIGTERM) == -1) {
-        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
-                                  "Could not send SIGTERM to process.");
+    else {
+        pid_t taskPid = pTask->pid;
+        if (taskPid <= 0) {
+            return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR, "No PID registered for task.");
+        }
+        if (kill(taskPid, SIGTERM) == -1) {
+            return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
+                                      "Could not send SIGTERM to process.");
+        }
     }
     if (crinitSetInhibitWait(false) == -1) {
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
@@ -1169,14 +1188,32 @@ static void *crinitShdnThread(void *args) {
     int shutdownCmd = a->shutdownCmd;
     free(args);
 
-    if (crinitTaskDBSetSpawnInhibit(ctx, true) == -1) {
-        crinitErrPrint("Could not inhibit spawning of new tasks. Continuing anyway.");
+    bool haveStopCommands = false;
+    if ((errno = pthread_mutex_lock(&ctx->lock)) == 0) {
+        crinitTask_t *pTask;
+        crinitTaskDbForEach(ctx, pTask) {
+            if (pTask->stopCmdsSize > 0) {
+                haveStopCommands = true;
+                if (ctx->spawnFunc(ctx, pTask, CRINIT_DISPATCH_THREAD_MODE_STOP) == -1) {
+                    crinitErrPrint("Could not spawn new thread for execution STOP_COMMAND of task \'%s\'.", pTask->name);
+                }
+            }
+        }
+        pthread_mutex_unlock(&ctx->lock);
     }
 
     unsigned long long gpMicros = CRINIT_CONFIG_DEFAULT_SHDGRACEP;
     if (crinitGlobOptGet(CRINIT_GLOBOPT_SHDGRACEP, &gpMicros) == -1) {
         gpMicros = CRINIT_CONFIG_DEFAULT_SHDGRACEP;
         crinitErrPrint("Could not read global option for shutdown grace period, using default: %lluus.", gpMicros);
+    }
+
+    if (haveStopCommands && crinitGracePeriod(gpMicros) == -1) {
+        crinitErrPrint("Could not wait out the shutdown grace period, continuing anyway.");
+    }
+
+    if (crinitTaskDBSetSpawnInhibit(ctx, true) == -1) {
+        crinitErrPrint("Could not inhibit spawning of new tasks. Continuing anyway.");
     }
 
     kill(-1, SIGCONT);

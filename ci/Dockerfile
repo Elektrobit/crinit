@@ -10,6 +10,10 @@ ARG EB_GIT_SOURCES=https://github.com/Elektrobit/
 
 ARG SAFU_REPO_NAME=safu.git
 ARG SAFU_REPO_PATH=${EB_GIT_SOURCES}/${SAFU_REPO_NAME}
+ARG SAMCONF_REPO_NAME=samconf.git
+ARG SAMCONF_REPO_PATH=${EB_GIT_SOURCES}/${SAMCONF_REPO_NAME}
+ARG ELOS_REPO_NAME=elos.git
+ARG ELOS_REPO_PATH=${EB_GIT_SOURCES}/${ELOS_REPO_NAME}
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
@@ -27,6 +31,28 @@ RUN git clone ${SAFU_REPO_PATH} \
  -DCMAKE_BUILD_TYPE=Release \
  -DCMAKE_INSTALL_PREFIX=/usr \
  && make -C ${SAFU_REPO_NAME%.*}/build install
+
+# Install samconf
+RUN git clone ${SAMCONF_REPO_PATH} \
+ && cmake -B ${SAMCONF_REPO_NAME%.*}/build ./${SAMCONF_REPO_NAME%.*} \
+ -DUNIT_TESTS=Off \
+ -DSAMCONF_MOCK_LIBRARY=Off \
+ -DCMAKE_BUILD_TYPE=Release \
+ -DCMAKE_INSTALL_PREFIX=/usr \
+ && make -C ${SAMCONF_REPO_NAME%.*}/build install
+
+# Install elos
+RUN git clone ${ELOS_REPO_PATH} \
+ && cmake -B ${ELOS_REPO_NAME%.*}/build ./${ELOS_REPO_NAME%.*} \
+ -DUNIT_TESTS=Off \
+ -DCMAKE_BUILD_TYPE=Release \
+ -DENABLE_ANALYZER=Off \
+ -DCMAKE_INSTALL_PREFIX=/usr \
+ -DELOS_BUILD_DEFAULTS=Off \
+ -DELOS_COMMON=On \
+ -DELOS_LIBRARY=On \
+ -DELOS_PLUGIN_LIBRARY=On \
+ && make -C ${ELOS_REPO_NAME%.*}/build install
 
 # set up sphinx
 RUN python -m venv /home/$USER/.venv \

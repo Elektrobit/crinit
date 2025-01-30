@@ -142,7 +142,7 @@ crinitTokenType_t crinitEnvVarInnerLex(const char **s, const char **mbegin, cons
         re2c:tags = 1;
 
         varname    = [a-zA-Z_][a-zA-Z0-9_]*;
-        var        = "\$\{" @t1 varname @t2 "\}";
+        var        = "${" @t1 varname @t2 "}";
 
         *          { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return CRINIT_TK_ERR; }
         any        { *s = YYCURSOR; *mbegin = anchor; *mend = *s; return CRINIT_TK_CPY; }
@@ -165,7 +165,7 @@ crinitTokenType_t crinitKernelCmdlineLex(const char **s, const char **keyBegin, 
         re2c:yyfill:enable = 0;
         re2c:tags = 1;
 
-        varprefix  = "crinit\.";
+        varprefix  = "crinit.";
         vardelim   = [=];
         uqcontent  = @t1 ([^ "\\\n\x00\t] | [\\][^\x00])+ @t2;
         dqcontent  = ["] @t1 ([^"\\\n\x00] | [\\][^\x00])* @t2 ["];

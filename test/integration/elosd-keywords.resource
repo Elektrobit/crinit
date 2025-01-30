@@ -11,7 +11,7 @@ Elos Publish Event List
 
     @{publish_log}=    Create List
     FOR    ${message}    IN    @{message_list}
-        ${publish_output}=    Execute Command    elosc -P 54322 -p '${message}'
+        ${publish_output}=    Execute Command    elosc -P 54326 -p '${message}'
         Append To List    ${publish_log}    ${publish_output}
     END
 
@@ -34,5 +34,5 @@ Check That An Elos Event From Crinit Was Logged With
     ...                payload was logged.
 
     ${elosc_out}=    Execute Command
-    ...    elosc -P 54322 -f \".event.source.appName \'crinit\' STRCMP .event.severity ${severity} EQ AND .event.payload \'${payload}\' STRCMP AND .event.messageCode ${msgcode} EQ AND .event.classification ${classification} EQ AND\"
+    ...    elosc -P 54326 -f \".event.source.appName \'crinit\' STRCMP .event.severity ${severity} EQ AND .event.payload \'${payload}\' STRCMP AND .event.messageCode ${msgcode} EQ AND .event.classification ${classification} EQ AND\"
     Should Match Regexp    ${elosc_out}    \{.+\}

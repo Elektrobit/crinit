@@ -172,7 +172,7 @@ ENV_SET = GREETING "Good morning!"
 - **INCLUDEDIR** -- Where to find include files referenced from task configurations. Default: Same as **TASKDIR**.
 - **INCLUDE_SUFFIX** -- Filename suffix of include files referenced from task configurations. Default: `.crincl`
 - **DEBUG** -- If crinit should be verbose in its output. Either `YES` or `NO`. Default: `NO`
-- **SHUTDOWN_GRACE_PERIOD_US** -- The amount of microseconds to wait between `SIGTERM` and `SIGKILL` on shutdown/reboot.
+- **SHUTDOWN_GRACE_PERIOD_US** -- The amount of microseconds to wait both between `STOP_COMMAND` and `SIGTERM` as well as between`SIGTERM` and `SIGKILL` on shutdown/reboot.
                                   Default: 100000
 - **USE_SYSLOG** -- If syslog should be used for output if it is available. If set to `YES`, Crinit will switch to
                     syslog for output as soon as a task file `PROVIDES` the `syslog` feature. Ideally this should be
@@ -202,6 +202,8 @@ COMMAND = /bin/mkdir -p /var/lib/dhcpcd
           /sbin/ifconfig lo 127.0.0.1
           /sbin/dhcpcd -j /var/log/dhcpcd.log eth0
 
+STOP_COMMAND = /sbin/ifconfig eth0 down
+
 DEPENDS = check_qemu:fail earlysetup:wait @provided:writable_var
 
 PROVIDES = ipv4_dhcp:wait resolvconf:wait
@@ -225,6 +227,7 @@ IO_REDIRECT = STDERR STDOUT
   one of them fails and the whole task will be considered failed. The whole task is considered finished (i.e.
   the `network-dhcp:wait` dependency is fulfilled) if the last command has successfully returned. If no **COMMAND** is
   given, the task is treated as a dependency group or "meta-task", see below. (*array-like*)
+- **STOP_COMMAND** -- Optional. Given commands are executed on `crinit-ctl stop <TASKNAME>`, `crinit-ctl poweroff` or `crinit-ctl reboot` instead of sending the regular `SIGTERM`. Same rules as for **COMMAND** apply. Additionally the variable "TASK_PID" can be used and will be expanded with the stored PID of the task. Example: `STOP_COMMAND = /usr/bin/kill ${TASK_PID}`. Please note that TASK_PID will expand to "-1" if the task is no longer running or has forked itself without notifying Crinit. **ATTENTION:** Currently STOP_COMMAND does not support IO_REDIRECT! Its output will not be redirected!
 - **DEPENDS** -- A list of dependencies which need to be fulfilled before this task is considered "ready-to-start".
   Semantics are `<taskname>:{fail,wait,spawn}`, where `spawn` is fulfilled when (the first command of) a task has been
   started, `wait` if it has successfully completed, and `fail` if it has failed somewhere along the way. Here we can see
@@ -335,7 +338,7 @@ In the above case, the DEPENDS setting would be ignored.
 ### IO Redirections
 
 Crinit supports per-task IO redirection to/from file and between STDOUT/IN/ERR using `IO_REDIRECT` statements in the
-task configurations. The statements are of the form
+task configurations. Please note that currently IO redirections do not work for STOP_COMMAND. The statements are of the form
 ```
 <REDIRECT_FROM> <REDIRECT_TO> [ APPEND | TRUNCATE | PIPE ] [ OCTAL_MODE ]
 ```
@@ -537,7 +540,7 @@ USAGE: crinit-ctl <ACTION> [OPTIONS] <PARAMETER> [PARAMETERS...]
      disable <TASK_NAME>
              - Adds dependency '@ctl:enable' to the dependency list of <TASK_NAME>.
         stop <TASK_NAME>
-             - Sends SIGTERM to the PID of <TASK_NAME> if the PID is currently known.
+             - If the task has a STOP_COMMAND, it will be executed. Otherwise, Crinit sends SIGTERM to the PID of <TASK_NAME> if the PID is currently known.
         kill <TASK_NAME>
              - Sends SIGKILL to the PID of <TASK_NAME> if the PID is currently known.
      restart <TASK_NAME>
@@ -676,6 +679,8 @@ The cmake setup supports some optional features:
 * Install the bash completion script for crinit-ctl, using `-DINSTALL_BASH_COMPLETION={On, Off}`, to the
   `BASH_COMPLETION_DIR`. Default is `On` and default isntall path is
    `${CMAKE_INSTALL_DATADIR/bash-completion/completions`.
+* Set the `SONAME` of libelos crinit will try to open at run-time. Default is auto-detection if elos is present in the
+  build environment or `libelos.so.1` if it is not.
 
 ## Build Requirements
 

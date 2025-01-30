@@ -25,7 +25,8 @@
  *    disable <TASK_NAME>
  *            - Adds dependency '@ctl:enable' to the dependency list of <TASK_NAME>.
  *       stop <TASK_NAME>
- *            - Sends SIGTERM to the PID of <TASK_NAME> if the PID is currently known.
+ *            - If the task has a STOP_COMMAND, it will be executed. Otherwise, Crinit sends SIGTERM to the
+ *              PID of <TASK_NAME> if the PID is currently known.
  *       kill <TASK_NAME>
  *            - Sends SIGKILL to the PID of <TASK_NAME> if the PID is currently known.
  *    restart <TASK_NAME>
@@ -366,7 +367,8 @@ static void crinitPrintUsage(char *prgmPath) {
         "     disable <TASK_NAME>\n"
         "             - Adds dependency \'@ctl:enable\' to the dependency list of <TASK_NAME>.\n"
         "        stop <TASK_NAME>\n"
-        "             - Sends SIGTERM to the PID of <TASK_NAME> if the PID is currently known.\n"
+        "             - If the task has a STOP_COMMAND, it will be executed. Otherwise, Crinit sends SIGTERM to the\n"
+        "               PID of <TASK_NAME> if the PID is currently known.\n"
         "        kill <TASK_NAME>\n"
         "             - Sends SIGKILL to the PID of <TASK_NAME> if the PID is currently known.\n"
         "     restart <TASK_NAME>\n"

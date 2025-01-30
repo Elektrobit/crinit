@@ -1,12 +1,26 @@
 # SPDX-License-Identifier: MIT
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
-find_package(RE2C 3 REQUIRED)
 find_package(safu 0.58.2 REQUIRED)
 
 configure_file(version.c.in version.c)
 
-RE2C_TARGET(NAME lexers INPUT ${PROJECT_SOURCE_DIR}/src/lexers.re OUTPUT lexers.c OPTIONS -ibsc -W DEPENDS ${PROJECT_SOURCE_DIR}/inc/lexers.h)
+# if LIBELOS_SO_FILENAME is unset we do our best to autodetect. If we can't
+# we don't set it and let the code use the default value.
+if("${LIBELOS_SO_FILENAME}x" STREQUAL "x")
+    find_package(libelos QUIET)
+    if(libelos_FOUND)
+        message("LIBELOS_SO_FILENAME autodetected.")
+        add_compile_definitions(LIBELOS_SO_FILENAME="$<TARGET_SONAME_FILE_NAME:elos::libelos>")
+    else()
+        message("LIBELOS_SO_FILENAME is unset and libelos was not found. Default will be used.")
+    endif()
+else()
+    message("LIBELOS_SO_FILENAME set to ${LIBELOS_SO_FILENAME} via command-line.")
+    add_compile_definitions(LIBELOS_SO_FILENAME="${LIBELOS_SO_FILENAME}")
+endif()
+
+RE2C_TARGET(NAME lexers INPUT ${PROJECT_SOURCE_DIR}/src/lexers.re OUTPUT lexers.c OPTIONS ${RE2C_OPTIONS} -W DEPENDS ${PROJECT_SOURCE_DIR}/inc/lexers.h)
 
 # optional compile-time features
 
@@ -57,7 +71,7 @@ target_link_libraries(
   crinit
   PRIVATE Threads::Threads
   PRIVATE inih-local
-  PRIVATE safu
+  PRIVATE safu::safu
   PRIVATE ${MBEDTLS_CRYPTO_LIBRARY}
   PRIVATE ${CMAKE_DL_LIBS}
 )

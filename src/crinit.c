@@ -209,7 +209,7 @@ int main(int argc, char *argv[]) {
     }
 
     while (true) {
-        crinitTaskDBSpawnReady(&tdb);
+        crinitTaskDBSpawnReady(&tdb, CRINIT_DISPATCH_THREAD_MODE_START);
         pthread_mutex_lock(&tdb.lock);
         crinitDbgInfoPrint("Waiting for Task to be ready.");
         pthread_cond_wait(&tdb.changed, &tdb.lock);

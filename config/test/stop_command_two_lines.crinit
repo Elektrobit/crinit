@@ -1,0 +1,6 @@
+NAME = stop_command_two_lines
+
+COMMAND = "/bin/true"
+
+STOP_COMMAND = /bin/sh -c "echo 'Hello, world from STOP_COMMAND.' | tee -a /tmp/test-stop_command_two_lines.out"
+               /bin/sh -c "echo 'This second line is echoed after the first.' | tee -a /tmp/test-stop_command_two_lines.out"

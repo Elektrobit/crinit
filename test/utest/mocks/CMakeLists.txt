@@ -35,7 +35,10 @@ create_mock_lib(
     mock-calloc.c
     mock-realloc.c
     mock-free.c
+    mock-kill.c
     mock-memset.c
+    mock-mount.c
+    mock-reboot.c
     mock-strdup.c
     mock-strlen.c
     mock-strcmp.c
@@ -50,6 +53,7 @@ create_mock_lib(
     mock-errno-print.c
     mock-envset-init.c
     mock-envset-destroy.c
+    mock-umount2.c
   INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}
 )

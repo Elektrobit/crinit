@@ -22,18 +22,13 @@ pipeline {
     }
     options {
         gitlabBuilds(builds: [
-            "Build (amd64)",
-            "Build (arm64v8)",
-            "Build Doc (amd64)",
-            "Analyse: Lint (amd64)",
-            "Analyse: Lint (arm64v8)",
-            "Test: utests (amd64)",
-            "Test: utests (arm64v8)",
-            "Test: smoketests (amd64)",
-            "Test: smoketests (arm64v8)",
+            "Build",
+            "Build Doc",
+            "Analyse: Lint",
+            "Test: utests",
+            "Test: smoketests",
             "Test: integration",
-            "Demo (amd64)",
-            "Demo (arm64v8)"
+            "Demo",
         ])
         buildDiscarder(logRotator(numToKeepStr: '4'))
         disableConcurrentBuilds()
@@ -47,27 +42,18 @@ pipeline {
             }
         }
         stage ('Build and Test') {
-            matrix {
-                axes {
-                    axis {
-                        name 'ARCH'
-                        values 'amd64', 'arm64v8'
-                    }
-                }
-                agent {
+            agent {
                     dockerfile {
                         dir 'ci'
                         reuseNode true
                         additionalBuildArgs " \
                             --progress=plain \
-                            ${ARCH == 'arm64v8' ? '--platform linux/arm64/v8' : ''} \
-                            --build-arg REPO=${ARCH} \
+                            --build-arg REPO=amd64 \
                             --build-arg USER=jenkins \
                             --build-arg UID=${UID} \
                             --build-arg GID=${GID} \
                             --build-arg UBUNTU_RELEASE=jammy"
                         args "--privileged \
-                            ${ARCH == 'arm64v8' ? '--platform linux/arm64/v8' : ''} \
                             -v /home/jenkins/.ssh:/home/jenkins/.ssh \
                             -e HOME=/home/jenkins"
                         reuseNode true
@@ -76,7 +62,7 @@ pipeline {
                 stages {
                     stage ('Build') {
                         steps {
-                            gitlabCommitStatus("${STAGE_NAME} (${ARCH})") {
+                            gitlabCommitStatus("${STAGE_NAME}") {
                                 sh '''#!/bin/bash -xe
                                 ci/build.sh
                                 ci/build.sh Debug --asan
@@ -86,7 +72,7 @@ pipeline {
                     }
                     stage ('Analyse: Lint') {
                         steps {
-                            gitlabCommitStatus("${STAGE_NAME} (${ARCH})") {
+                            gitlabCommitStatus("${STAGE_NAME}") {
                                 sh '''#!/bin/bash -xe
                                 ci/clang-tidy.sh
                                 '''
@@ -95,7 +81,7 @@ pipeline {
                     }
                     stage ('Test: utests') {
                         steps {
-                            gitlabCommitStatus("${STAGE_NAME} (${ARCH})") {
+                            gitlabCommitStatus("${STAGE_NAME}") {
                                 sh '''#!/bin/bash -xe
                                 ci/run-utests.sh
                                 ci/run-utests.sh Debug
@@ -105,7 +91,7 @@ pipeline {
                     }
                     stage ('Test: smoketests') {
                         steps {
-                            gitlabCommitStatus("${STAGE_NAME} (${ARCH})") {
+                            gitlabCommitStatus("${STAGE_NAME}") {
                                 sh '''#!/bin/bash -xe
                                 ci/run-smoketests.sh
                                 ci/run-smoketests.sh Debug
@@ -115,7 +101,7 @@ pipeline {
                     }
                     stage ('Demo') {
                         steps {
-                            gitlabCommitStatus("${STAGE_NAME} (${ARCH})") {
+                            gitlabCommitStatus("${STAGE_NAME}") {
                                 sh '''#!/bin/bash -xe
                                 ci/demo.sh 2>&1 | tee result/demo_output.txt
                                 '''
@@ -123,7 +109,6 @@ pipeline {
                         }
                     }
                 }
-            }
         }
         stage ('Setup Doc') {
             agent {
@@ -146,7 +131,7 @@ pipeline {
             stages {
 		stage ('Build Doc') {
 		    steps {
-		        gitlabCommitStatus("${STAGE_NAME} (amd64)") {
+		        gitlabCommitStatus("${STAGE_NAME}") {
 		            sh '''#!/bin/bash -xe
 		            ci/build_doc.sh
 		            '''
