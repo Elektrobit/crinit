@@ -1188,8 +1188,18 @@ static void *crinitShdnThread(void *args) {
     int shutdownCmd = a->shutdownCmd;
     free(args);
 
-    if (crinitTaskDBSetSpawnInhibit(ctx, true) == -1) {
-        crinitErrPrint("Could not inhibit spawning of new tasks. Continuing anyway.");
+    bool haveStopCommands = false;
+    if ((errno = pthread_mutex_lock(&ctx->lock)) == 0) {
+        crinitTask_t *pTask;
+        crinitTaskDbForEach(ctx, pTask) {
+            if (pTask->stopCmdsSize > 0) {
+                haveStopCommands = true;
+                if (ctx->spawnFunc(ctx, pTask, CRINIT_DISPATCH_THREAD_MODE_STOP) == -1) {
+                    crinitErrPrint("Could not spawn new thread for execution STOP_COMMAND of task \'%s\'.", pTask->name);
+                }
+            }
+        }
+        pthread_mutex_unlock(&ctx->lock);
     }
 
     unsigned long long gpMicros = CRINIT_CONFIG_DEFAULT_SHDGRACEP;
@@ -1198,18 +1208,13 @@ static void *crinitShdnThread(void *args) {
         crinitErrPrint("Could not read global option for shutdown grace period, using default: %lluus.", gpMicros);
     }
 
-    if ((errno = pthread_mutex_lock(&ctx->lock)) == 0) {
-        crinitTask_t *pTask;
-        crinitTaskDbForEach(ctx, pTask) {
-            if (pTask->stopCmdsSize > 0) {
-                if (ctx->spawnFunc(ctx, pTask, CRINIT_DISPATCH_THREAD_MODE_STOP) == -1) {
-                    crinitErrPrint("Could not spawn new thread for execution STOP_COMMAND of task \'%s\'.", pTask->name);
-                }
-            }
-        }
-        pthread_mutex_unlock(&ctx->lock);
+    if (haveStopCommands && crinitGracePeriod(gpMicros) == -1) {
+        crinitErrPrint("Could not wait out the shutdown grace period, continuing anyway.");
     }
-    // TODO: Should we insert a grace period here?
+
+    if (crinitTaskDBSetSpawnInhibit(ctx, true) == -1) {
+        crinitErrPrint("Could not inhibit spawning of new tasks. Continuing anyway.");
+    }
 
     kill(-1, SIGCONT);
     kill(-1, SIGTERM);
