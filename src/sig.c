@@ -387,7 +387,7 @@ static int crinitLoadAndVerifySignedKeysFromFileSeries(mbedtls_pk_context *tgt, 
 #if MBEDTLS_VERSION_MAJOR == 2
         mbedtls_rsa_set_padding(mbedtls_pk_rsa(tgt[i]), MBEDTLS_RSA_PKCS_V21, MBEDTLS_MD_SHA256);
 #else
-        int err = mbedtls_rsa_set_padding(mbedtls_pk_rsa(tgt[i]), MBEDTLS_RSA_PKCS_V21, MBEDTLS_MD_SHA256);
+        err = mbedtls_rsa_set_padding(mbedtls_pk_rsa(tgt[i]), MBEDTLS_RSA_PKCS_V21, MBEDTLS_MD_SHA256);
         if (err != 0) {
             char errBuf[CRINIT_MBEDTLS_ERR_MAX_LEN];
             mbedtls_strerror(err, errBuf, sizeof(errBuf));
