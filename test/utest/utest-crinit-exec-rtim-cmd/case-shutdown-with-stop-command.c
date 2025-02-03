@@ -80,7 +80,7 @@ void crinitExecRtimCmdTestShutdownWithStopCommand(void **state) {
 
     crinitTask_t *task1 = crinitCreateTaskWithStopCommand("task1");
 
-    crinitTask_t *taskTmp = calloc(sizeof(crinitTask_t), 1);
+    crinitTask_t *taskTmp = calloc(1, sizeof(crinitTask_t));
     assert_int_equal(crinitTaskCopy(taskTmp, task1), 0);
     crinitDestroyTask(taskTmp);
     free(taskTmp);
