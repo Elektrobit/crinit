@@ -307,7 +307,7 @@ int crinitExpandPIDVariablesInSingleCommand(char *input, const pid_t pid, char *
                     sprintf(tmp, "%.*s%s", (int) (mbegin - 2 - src), src, substVal);        // Substitute 2 to get rid of '${' directly before the variable name.
                     if (*result) {
                         char *tmp2 = NULL;
-                        tmp2 = (char *) calloc(sizeof(char), strlen(*result) + strlen(tmp) + 1);
+                        tmp2 = calloc(strlen(*result) + strlen(tmp) + 1, sizeof(char));
                         if (!tmp2) {
                             crinitErrPrint("Error allocating memory for result string.\n");
                             tt = CRINIT_TK_ERR;
@@ -396,7 +396,7 @@ void crinitExpandPIDVariablesInCommands(crinitTaskCmd_t *commands, size_t cmdsSi
             }
 
             char *oldArgvBuf = commands[i].argv[0];
-            size_t *offsets = calloc(sizeof(size_t), commands[i].argc);
+            size_t *offsets = calloc(commands[i].argc, sizeof(size_t));
             for (int j = 0; j < commands[i].argc; j++) {
                 char *result = NULL;
                 if (crinitExpandPIDVariablesInSingleCommand(commands[i].argv[j], pid, &result) == -1) {
