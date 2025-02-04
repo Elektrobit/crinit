@@ -89,7 +89,7 @@ int crinitXfer(const char *sockFile, crinitRtimCmd_t *res, const crinitRtimCmd_t
 static int crinitConnect(int *sockFd, const char *sockFile) {
     crinitDbgInfoPrint("Sending message to server at \'%s\'.", sockFile);
 
-    *sockFd = socket(AF_UNIX, SOCK_SEQPACKET, 0);
+    *sockFd = socket(AF_UNIX, SOCK_SEQPACKET | SOCK_CLOEXEC, 0);
     if (*sockFd == -1) {
         crinitErrnoPrint("Could not create socket for connection to Crinit.");
         return -1;
