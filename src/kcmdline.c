@@ -18,7 +18,7 @@ int crinitKernelCmdlineParse(const char *cmdlinePath) {
     }
 
     char cmdlineBuf[CRINIT_KCMDLINE_MAX_LEN] = {0};
-    FILE *cmdlineHdl = fopen(cmdlinePath, "r");
+    FILE *cmdlineHdl = fopen(cmdlinePath, "re");
     if (cmdlineHdl == NULL) {
         crinitErrnoPrint("Could not open '%s' for reading.", cmdlinePath);
         return -1;

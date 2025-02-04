@@ -13,7 +13,7 @@
 
 int crinitBinReadAll(uint8_t *buf, size_t n, const char *path) {
     crinitNullCheck(-1, buf, path);
-    FILE *inf = fopen(path, "rb");
+    FILE *inf = fopen(path, "rbe");
     if (inf == NULL) {
         crinitErrnoPrint("Could not open '%s' for reading.", path);
         return -1;
