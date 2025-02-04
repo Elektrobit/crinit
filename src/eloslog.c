@@ -56,7 +56,7 @@ static inline int crinitFetchHWId(char *hwId) {
         return -1;
     }
 
-    fp = fopen(CRINIT_MACHINE_ID_FILE, "r");
+    fp = fopen(CRINIT_MACHINE_ID_FILE, "re");
     if (fp == NULL) {
         crinitErrnoPrint("Failed to open machine id file %s.\n", CRINIT_MACHINE_ID_FILE);
         return -1;
