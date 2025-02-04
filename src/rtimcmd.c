@@ -1263,7 +1263,7 @@ static inline int crinitGenUnMountList(crinitUnMountList_t **ml, bool *rootfsIsR
         return -1;
     }
     *rootfsIsRo = false;
-    FILE *mountListStream = fopen("/proc/mounts", "r");
+    FILE *mountListStream = fopen("/proc/mounts", "re");
     if (mountListStream == NULL) {
         crinitErrnoPrint("Could not open \'/proc/mounts\' for reading.");
         return -1;
