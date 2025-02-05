@@ -128,6 +128,26 @@ target_link_libraries(
     Threads::Threads
 )
 
+# crinit-launch
+
+add_executable(
+    crinit-launch
+    crinit-launch.c
+    logio.c
+    ${CMAKE_CURRENT_BINARY_DIR}/version.c
+)
+
+target_include_directories(
+  crinit-launch
+  PRIVATE ${PROJECT_SOURCE_DIR}/inc/
+)
+
+target_link_libraries(
+  crinit-launch
+  PUBLIC
+    crinit-client
+)
+
 # machine-id-gen
 if(MACHINE_ID_EXAMPLE)
   add_executable(
@@ -139,6 +159,7 @@ endif(MACHINE_ID_EXAMPLE)
 # Installation
 install(TARGETS crinit DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(TARGETS crinit-ctl DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(TARGETS crinit-launch DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 if(MACHINE_ID_EXAMPLE)
   install(TARGETS machine-id-gen DESTINATION ${CMAKE_INSTALL_BINDIR})
