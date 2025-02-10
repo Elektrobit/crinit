@@ -216,24 +216,9 @@ For Zombie-Reaping
 
 *Hint: no further rationale for the decision is given here! If you feel the need to add a rationale here consider to add it as pros and cons to the above lists.*
 
-### Review Team
-
-Following members and teams have reviewed and checked the decision:
-
-| *Team* | *Status* | *Date*   |
-| -------| -------- | -------- |
-| emlix  | OK       | 01.05.24 |
-
-
-*Status*
-
-- OK
-- not OK
-- not yet checked
-- don't care
 
 ## Open Point
 
 Following points are identified as open after the decision was taken.
 
-*Add/note what was left open after this decision*
+*none*
