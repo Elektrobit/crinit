@@ -30,6 +30,7 @@ List of ADRs
    ./adr-crypt-lib
    ./adr-pipe-redirection
    ./adr-pubkey-storage
+   ./adr-secondary-init
    ./adr-signature-algorithm
    ./adr-signature-conf-interface
    ./adr-signature-storage
