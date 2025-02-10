@@ -32,6 +32,12 @@ typedef struct crinitDispThrArgs_t {
     crinitDispatchThreadMode_t mode;    ///< Select between start and stop commands
 } crinitDispThrArgs_t;
 
+/** Launcher helper to launch commands with reduced user / group membership **/
+#ifdef CRINIT_LAUNCHER_COMMAND
+static char crinitLauncherCommand[] = CRINIT_LAUNCHER_COMMAND;
+#else
+static char crinitLauncherCommand[] = "crinit-launch";
+#endif
 /** Mutex to guard #crinitWaitInhibit **/
 static pthread_mutex_t crinitWaitInhibitLock = PTHREAD_MUTEX_INITIALIZER;
 /** Condition variable to signal threads waiting for #crinitWaitInhibit to become `false`. **/
@@ -177,6 +183,20 @@ int crinitPrepareIoRedirectionsForSpawn(size_t cmdIdx, crinitIoRedir_t * redirs,
 
 int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char* name, crinitTaskCmd_t *cmds, size_t cmdsSize, crinitTask_t *tCopy, pid_t *pid, bool deactivateFileactions)
 {
+    char *cmd = NULL;
+    char **argv = NULL;
+    char *argvBuffer = NULL;
+    bool useLauncher = false;
+
+    const char * const cmdParamFormatStr = "--cmd=%s";
+    const char * const userParamFormatStr = "--user=%d";
+    const char * const groupParamFormatStr = "--group=%d";
+
+    if (tCopy->user != 0 || tCopy->group != 0) {
+        cmd = crinitLauncherCommand;
+        useLauncher = true;
+    }
+
     for (size_t i = 0; i < cmdsSize; i++) {
         posix_spawn_file_actions_t fileact;
         errno = posix_spawn_file_actions_init(&fileact);
@@ -192,9 +212,60 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char* name, crinit
             return -1;
         }
 
-        if (crinitSpawnSingleCommand(cmds[i].argv[0], cmds[i].argv, tCopy->taskEnv.envp, deactivateFileactions == true ? NULL : &fileact, name, i, threadId, pid) == -1) {
+        if (!useLauncher) {
+            cmd = cmds[i].argv[0];
+            argv = cmds[i].argv;
+        }
+        else {
+            const size_t cmdParamLength = snprintf(NULL, 0, cmdParamFormatStr, cmds[i].argv[0]) + 1;
+            const size_t userParamLength = snprintf(NULL, 0, userParamFormatStr, tCopy->user) + 1;
+            const size_t groupParamLength = snprintf(NULL, 0, groupParamFormatStr, tCopy->group) + 1;
+            size_t targetParamTotalLength = 0;
+            for (int j = 0; j < cmds[j].argc; i++) {
+                targetParamTotalLength += strlen(cmds[i].argv[j]) + 1;
+            }
+            const size_t totalLength = cmdParamLength + userParamLength + groupParamLength + targetParamTotalLength;
+
+            argvBuffer = calloc(totalLength + 1, sizeof(char));
+            argv = calloc(5 + cmds[i].argc, sizeof(char *));
+            if (!argvBuffer || !argv) {
+                crinitErrnoPrint("Failed to allocate memory for temporary argv to use with command launcher.\n");
+                posix_spawn_file_actions_destroy(&fileact);
+                return -1;
+            }
+
+            snprintf(argvBuffer, cmdParamLength - 1, cmdParamFormatStr, cmds[i].argv[0]);
+            snprintf(argvBuffer + cmdParamLength, userParamLength - 1, userParamFormatStr, tCopy->user);
+            snprintf(argvBuffer + cmdParamLength + userParamLength, groupParamLength - 1, groupParamFormatStr, tCopy->group);
+            memcpy(argvBuffer + cmdParamLength + userParamLength + groupParamLength, cmds[i].argv, targetParamTotalLength);
+
+            argv[0] = cmd;
+            argv[1] = argvBuffer;
+            argv[2] = argvBuffer + cmdParamLength;
+            argv[3] = argvBuffer + cmdParamLength + userParamLength;
+            for (int argvIdx = 4, count = 0; count < cmds[i].argc; count++, argvIdx++) {
+                argv[argvIdx] = cmds[i].argv[count];
+            }
+        }
+
+        if (crinitSpawnSingleCommand(cmd, argv, tCopy->taskEnv.envp, deactivateFileactions == true ? NULL : &fileact, name, i, threadId, pid) == -1) {
             posix_spawn_file_actions_destroy(&fileact);
+            if (useLauncher) {
+                free(argvBuffer);
+                free(argv);
+                argvBuffer = NULL;
+                argv = NULL;
+            }
             return -1;
+        }
+        if (!useLauncher) {
+            cmd = NULL;
+        }
+        else {
+            free(argvBuffer);
+            free(argv);
+            argvBuffer = NULL;
+            argv = NULL;
         }
         posix_spawn_file_actions_destroy(&fileact);
 
