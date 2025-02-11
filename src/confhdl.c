@@ -71,6 +71,17 @@ static inline void *crinitCfgHandlerManageArrayMem(void *dynArr, size_t elementS
 static bool crinitDirExists(const char *path);
 
 /**
+ * Check if a path exists, is accessible, a file and is executable by owner.
+ *
+ * Uses stat().
+ *
+ * @param path  The path to check.
+ *
+ * @return  true if \a path refers to an executable file, false otherwise.
+ */
+static bool crinitFileIsExecutable(const char * path);
+
+/**
  * Check if given username exists and convert into numeric ID.
  *
  * @param name Username
@@ -770,6 +781,26 @@ int crinitCfgElosPortHandler(void *tgt, const char *val, crinitConfigType_t type
     return 0;
 }
 
+int crinitCfgLauncherCmdHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    CRINIT_PARAM_UNUSED(tgt);
+    crinitNullCheck(-1, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
+
+    if (!crinitIsAbsPath(val)) {
+        crinitErrPrint("The value for '%s' must be an absolute path.", CRINIT_CONFIG_KEYSTR_LAUNCHER_CMD);
+        return -1;
+    }
+    if (!crinitFileIsExecutable(val)) {
+        crinitErrPrint("The value for '%s' is not a file or not exectuable.", CRINIT_CONFIG_KEYSTR_LAUNCHER_CMD);
+        return -1;
+    }
+    if (crinitGlobOptSet(CRINIT_GLOBOPT_LAUNCHER_CMD, val) == -1) {
+        crinitErrPrint("Could not set global option '%s'.", CRINIT_CONFIG_KEYSTR_LAUNCHER_CMD);
+        return -1;
+    }
+    return 0;
+}
+
 int crinitCfgSigKeyDirHandler(void *tgt, const char *val, crinitConfigType_t type) {
     CRINIT_PARAM_UNUSED(tgt);
     crinitNullCheck(-1, val);
@@ -847,6 +878,25 @@ static bool crinitDirExists(const char *path) {
         return false;
     }
     return true;
+}
+
+static bool crinitFileIsExecutable(const char * path) {
+    crinitNullCheck(false, path);
+    struct stat st;
+    if (stat(path, &st) == -1) {
+        crinitErrnoPrint("Could not stat '%s'.", path);
+        return false;
+    }
+    if (!S_ISREG(st.st_mode)) {
+        crinitErrPrint("Given path '%s' is not a file.", path);
+        return false;
+    }
+
+    if (st.st_mode & S_IXUSR) {
+        return true;
+    }
+
+    return false;
 }
 
 static bool crinitUsernameToUid(const char *name, uid_t* uid) {
