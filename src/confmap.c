@@ -35,6 +35,7 @@ const crinitConfigMapping_t crinitSeriesCfgMap[] = {
     {CRINIT_CONFIG_FILTER_DEFINE, CRINIT_CONFIG_KEYSTR_FILTER_DEFINE, true, false, crinitCfgFilterHandler},
     {CRINIT_CONFIG_INCLUDEDIR, CRINIT_CONFIG_KEYSTR_INCLDIR, false, false, crinitCfgInclDirHandler},
     {CRINIT_CONFIG_INCLUDE_SUFFIX, CRINIT_CONFIG_KEYSTR_INCL_SUFFIX, false, false, crinitCfgInclSuffixHandler},
+    {CRINIT_CONFIG_LAUNCHER_CMD, CRINIT_CONFIG_KEYSTR_LAUNCHER_CMD, false, false, crinitCfgLauncherCmdHandler},
     {CRINIT_CONFIG_SHDGRACEP, CRINIT_CONFIG_KEYSTR_SHDGRACEP, false, false, crinitCfgShdGpHandler},
     {CRINIT_CONFIG_TASKDIR, CRINIT_CONFIG_KEYSTR_TASKDIR, false, false, crinitCfgTaskDirHandler},
     {CRINIT_CONFIG_TASKDIR_FOLLOW_SYMLINKS, CRINIT_CONFIG_KEYSTR_TASKDIR_SYMLINKS, false, false,
@@ -42,7 +43,7 @@ const crinitConfigMapping_t crinitSeriesCfgMap[] = {
     {CRINIT_CONFIG_TASKS, CRINIT_CONFIG_KEYSTR_TASKS, true, false, crinitCfgTasksHandler},
     {CRINIT_CONFIG_TASK_FILE_SUFFIX, CRINIT_CONFIG_KEYSTR_TASK_FILE_SUFFIX, false, false, crinitCfgTaskSuffixHandler},
     {CRINIT_CONFIG_USE_ELOS, CRINIT_CONFIG_KEYSTR_USE_ELOS, false, false, crinitCfgElosHandler},
-    {CRINIT_CONFIG_USE_SYSLOG, CRINIT_CONFIG_KEYSTR_USE_SYSLOG, false, false, crinitCfgSyslogHandler},
+    {CRINIT_CONFIG_USE_SYSLOG, CRINIT_CONFIG_KEYSTR_USE_SYSLOG, false, false, crinitCfgSyslogHandler}
 };
 const size_t crinitSeriesCfgMapSize = crinitNumElements(crinitSeriesCfgMap);
 

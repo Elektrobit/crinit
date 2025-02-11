@@ -75,11 +75,11 @@ target_link_libraries(
   PRIVATE ${MBEDTLS_CRYPTO_LIBRARY}
   PRIVATE ${CMAKE_DL_LIBS}
 )
-set(CRINIT_LAUNCHER "\"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/crinit-launch\"")
+
 target_compile_definitions(
     crinit
     PRIVATE
-    CRINIT_LAUNCHER_COMMAND=${CRINIT_LAUNCHER}
+    CRINIT_LAUNCHER_COMMAND_DEFAULT=${CRINIT_LAUNCHER_CMD}
 )
 
 # libcrinit-client

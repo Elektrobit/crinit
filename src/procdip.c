@@ -15,6 +15,7 @@
 #include <unistd.h>
 
 #include "envset.h"
+#include "globopt.h"
 #include "lexers.h"
 #include "logio.h"
 
@@ -32,12 +33,6 @@ typedef struct crinitDispThrArgs_t {
     crinitDispatchThreadMode_t mode;    ///< Select between start and stop commands
 } crinitDispThrArgs_t;
 
-/** Launcher helper to launch commands with reduced user / group membership **/
-#ifdef CRINIT_LAUNCHER_COMMAND
-static char crinitLauncherCommand[] = CRINIT_LAUNCHER_COMMAND;
-#else
-static char crinitLauncherCommand[] = "crinit-launch";
-#endif
 /** Mutex to guard #crinitWaitInhibit **/
 static pthread_mutex_t crinitWaitInhibitLock = PTHREAD_MUTEX_INITIALIZER;
 /** Condition variable to signal threads waiting for #crinitWaitInhibit to become `false`. **/
@@ -188,6 +183,12 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char* name, crinit
     char *argvBuffer = NULL;
     bool useLauncher = false;
 
+    char *crinitLauncherCommand = NULL;
+    if (crinitGlobOptGet(CRINIT_GLOBOPT_LAUNCHER_CMD, &crinitLauncherCommand) != 0) {
+        crinitErrPrint("Could not retrieve value for global setting LAUNCHER_CMD.");
+        return -1;
+    }
+
     const char * const cmdParamFormatStr = "--cmd=%s";
     const char * const userParamFormatStr = "--user=%d";
     const char * const groupParamFormatStr = "--group=%d";
@@ -204,11 +205,13 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char* name, crinit
             crinitErrnoPrint("(TID: %d) Could not initialize posix_spawn file actions for command %zu of Task '%s'",
                              threadId, i, name);
             posix_spawn_file_actions_destroy(&fileact);
+            free(crinitLauncherCommand);
             return -1;
         }
 
         if (crinitPrepareIoRedirectionsForSpawn(i, tCopy->redirs, tCopy->redirsSize, threadId, tCopy->name, &fileact) == -1) {
             posix_spawn_file_actions_destroy(&fileact);
+            free(crinitLauncherCommand);
             return -1;
         }
 
@@ -231,6 +234,7 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char* name, crinit
             if (!argvBuffer || !argv) {
                 crinitErrnoPrint("Failed to allocate memory for temporary argv to use with command launcher.\n");
                 posix_spawn_file_actions_destroy(&fileact);
+                free(crinitLauncherCommand);
                 return -1;
             }
 
@@ -256,6 +260,7 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char* name, crinit
                 argvBuffer = NULL;
                 argv = NULL;
             }
+            free(crinitLauncherCommand);
             return -1;
         }
         if (!useLauncher) {
@@ -274,6 +279,7 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char* name, crinit
 
         if (crinitTaskDBSetTaskPID(ctx, *pid, name) == -1) {
             crinitErrPrint("(TID: %d) Could not set PID of Task \'%s\' to %d.", threadId, name, *pid);
+            free(crinitLauncherCommand);
             return -1;
         }
 
@@ -286,6 +292,7 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char* name, crinit
             if (crinitTaskDBFulfillDep(ctx, &spawnDep, NULL) == -1) {
                 crinitErrPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, spawnDep.name,
                                spawnDep.event);
+                free(crinitLauncherCommand);
                 return -1;
             }
             crinitDbgInfoPrint("(TID: %d) Dependency \'%s:%s\' fulfilled.", threadId, spawnDep.name, spawnDep.event);
@@ -315,6 +322,7 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char* name, crinit
             } else {
                 crinitInfoPrint("(TID: %d) Task \'%s\' (PID %d) failed.", threadId, name, *pid);
             }
+            free(crinitLauncherCommand);
             return -1;
         }
 
@@ -328,6 +336,7 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char* name, crinit
         }
     }
 
+    free(crinitLauncherCommand);
     return 0;
 }
 

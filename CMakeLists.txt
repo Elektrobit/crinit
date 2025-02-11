@@ -52,6 +52,8 @@ option(INSTALL_BASH_COMPLETION "Install the bash completion script for crinit-ct
 set(BASH_COMPLETION_DIR "${CMAKE_INSTALL_DATADIR}/bash-completion/completions" CACHE PATH
     "Directory where bash completion scripts should be installed.")
 
+set(CRINIT_LAUNCHER_CMD "\"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/crinit-launch\"")
+
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Debug")
 endif()
