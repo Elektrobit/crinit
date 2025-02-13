@@ -224,7 +224,7 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char* name, crinit
             const size_t userParamLength = snprintf(NULL, 0, userParamFormatStr, tCopy->user) + 1;
             const size_t groupParamLength = snprintf(NULL, 0, groupParamFormatStr, tCopy->group) + 1;
             size_t targetParamTotalLength = 0;
-            for (int j = 0; j < cmds[j].argc; i++) {
+            for (int j = 0; j < cmds[i].argc; j++) {
                 targetParamTotalLength += strlen(cmds[i].argv[j]) + 1;
             }
             const size_t totalLength = cmdParamLength + userParamLength + groupParamLength + targetParamTotalLength;
@@ -238,16 +238,16 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char* name, crinit
                 return -1;
             }
 
-            snprintf(argvBuffer, cmdParamLength - 1, cmdParamFormatStr, cmds[i].argv[0]);
-            snprintf(argvBuffer + cmdParamLength, userParamLength - 1, userParamFormatStr, tCopy->user);
-            snprintf(argvBuffer + cmdParamLength + userParamLength, groupParamLength - 1, groupParamFormatStr, tCopy->group);
+            snprintf(argvBuffer, cmdParamLength, cmdParamFormatStr, cmds[i].argv[0]);
+            snprintf(argvBuffer + cmdParamLength, userParamLength, userParamFormatStr, tCopy->user);
+            snprintf(argvBuffer + cmdParamLength + userParamLength, groupParamLength, groupParamFormatStr, tCopy->group);
             memcpy(argvBuffer + cmdParamLength + userParamLength + groupParamLength, cmds[i].argv, targetParamTotalLength);
 
             argv[0] = cmd;
             argv[1] = argvBuffer;
             argv[2] = argvBuffer + cmdParamLength;
             argv[3] = argvBuffer + cmdParamLength + userParamLength;
-            for (int argvIdx = 4, count = 0; count < cmds[i].argc; count++, argvIdx++) {
+            for (int argvIdx = 4, count = 1; count < cmds[i].argc; count++, argvIdx++) {
                 argv[argvIdx] = cmds[i].argv[count];
             }
         }
