@@ -143,7 +143,7 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
     char **argvNew = NULL;
-    argvNew = calloc(argc - optind + 1, sizeof(char *));
+    argvNew = calloc(argc - optind + 2, sizeof(char *));
     if (!argvNew) {
         crinitErrPrint("Failed to alloc memory for target argv.\n");
         return EXIT_FAILURE;
