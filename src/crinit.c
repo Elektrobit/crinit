@@ -14,7 +14,7 @@
 #include "notiserv.h"
 #include "optfeat.h"
 #include "procdip.h"
-#include "rtimcmd.h"
+#include "rtimopmap.h"
 #include "version.h"
 
 #ifdef SIGNATURE_SUPPORT
