@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /**
- * @file case-negative-input.c
+ * @file case-invalid-input.c
  * @brief Unit test for crinitCfgLauncherCmdHandler(), handling of invalid input.
  */
 

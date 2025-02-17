@@ -235,6 +235,8 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char* name, crinit
                 crinitErrnoPrint("Failed to allocate memory for temporary argv to use with command launcher.\n");
                 posix_spawn_file_actions_destroy(&fileact);
                 free(crinitLauncherCommand);
+                free(argv);         // If only one call to calloc() failed.
+                free(argvBuffer);
                 return -1;
             }
 

@@ -48,7 +48,7 @@ static void crinitPrintUsage(void) {
         "      --version/-V - Print version information about crinit-launch.\n");
 }
 
-int extractGroups(char *input, gid_t **groups, size_t *groupSize) {
+int crinitExtractGroups(char *input, gid_t **groups, size_t *groupSize) {
     char *in = input;
     char *rest = NULL;
     char *token = NULL;
@@ -100,6 +100,8 @@ int main(int argc, char *argv[]) {
     uid_t user = -1;
     char *cmd = NULL;
     bool userFound = false;
+    char *argvNewBuffer = NULL;
+    char **argvNew = NULL;
 
     while (true) {
         opt = getopt_long(argc, argv, "hc:u:g:V", longOptions, NULL);
@@ -108,6 +110,11 @@ int main(int argc, char *argv[]) {
         }
         switch (opt) {
             case 'c':
+                if (cmd) {
+                    crinitErrPrint("Parameter --cmd may only given once.\n");
+                    crinitPrintUsage();
+                    goto failureExit;
+                }
                 cmd = strdup(optarg);
                 break;
             case 'u':
@@ -115,23 +122,29 @@ int main(int argc, char *argv[]) {
                 userFound = true;
                 break;
             case 'g':
-                if (extractGroups(optarg, &groups, &groupSize) != 0) {
+                if (groups) {
+                    crinitErrPrint("Parameter --groups may only given once.\n");
+                    crinitPrintUsage();
+                    goto failureExit;
+                }
+                if (crinitExtractGroups(optarg, &groups, &groupSize) != 0) {
                     crinitErrPrint("Failed to extract groups. Input: %s\n", optarg);
-                    return EXIT_FAILURE;
+                    goto failureExit;
                 }
                 break;
             case 'V':
                 crinitPrintVersion();
+                free(groups);
+                free(cmd);
                 return EXIT_SUCCESS;
             case 'h':
             case '?':
             default:
                 crinitPrintUsage();
-                return EXIT_FAILURE;
+                goto failureExit;
         }
     }
 
-    char *argvNewBuffer = NULL;
     size_t argvNewSize = strlen(cmd) + 1;
     for (int i = optind; i < argc; i++) {
         argvNewSize += strlen(argv[i]) + 1;
@@ -140,13 +153,12 @@ int main(int argc, char *argv[]) {
     argvNewBuffer = calloc(argvNewSize + 1, sizeof(char));
     if (!argvNewBuffer) {
         crinitErrPrint("Failed to alloc memory for target argv buffer.\n");
-        return EXIT_FAILURE;
+        goto failureExit;
     }
-    char **argvNew = NULL;
     argvNew = calloc(argc - optind + 2, sizeof(char *));
     if (!argvNew) {
         crinitErrPrint("Failed to alloc memory for target argv.\n");
-        return EXIT_FAILURE;
+        goto failureExit;
     }
     char *p = argvNewBuffer;
     strcpy(p, cmd);
@@ -163,17 +175,17 @@ int main(int argc, char *argv[]) {
     if (groupSize) {
         if (setgroups(0, NULL) != 0) {     // Drop all current sublimentary groups
             crinitErrPrint("Failed to drop all initial sublimentary groups.\n");
-            return EXIT_FAILURE;
+            goto failureExit;
         }
         if (setgid(groups[0]) != 0) {
             crinitErrPrint("Failed to set group to ID %du.\n", groups[0]);
-            return EXIT_FAILURE;
+            goto failureExit;
         }
 
         if (groupSize > 1) {
             if (setgroups(groupSize - 1, groups + 1) != 0) {
                 crinitErrPrint("Failed to set sublimentary groups.\n");
-                return EXIT_FAILURE;
+                goto failureExit;
             }
         }
     }
@@ -181,7 +193,7 @@ int main(int argc, char *argv[]) {
     if (userFound) {
         if (setuid(user) != 0) {
             crinitErrPrint("Failed to set UID to target %d.\n", user);
-            return EXIT_FAILURE;
+            goto failureExit;
         }
     }
 
@@ -189,6 +201,8 @@ int main(int argc, char *argv[]) {
 
     crinitErrnoPrint("Failed to execvp().\n");
 
+failureExit:
+    free(groups);
     free(cmd);
     free(argvNewBuffer);
     free(argvNew);
