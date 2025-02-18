@@ -66,7 +66,6 @@
     CRINIT_LAUNCHER_COMMAND_DEFAULT  ///< Default value for LAUNCHER_CMD global option.
 #endif
 
-#define CRINIT_CONFIG_DEFAULT_INCLDIR "/etc/crinit"    ///< Default value for INCLUDEDIR global option.
 #define CRINIT_CONFIG_DEFAULT_SHDGRACEP 100000uLL      ///< Default value for SHUTDOWN_GRACE_PERIOD_US global option
 #define CRINIT_CONFIG_DEFAULT_USE_SYSLOG false         ///< Default value for USE_SYSLOG global option.
 #define CRINIT_CONFIG_DEFAULT_USE_ELOS false           ///< Default value for USE_ELOS global option.
