@@ -73,6 +73,11 @@ set(DEFAULT_CRINIT_SOCKFILE
 )
 
 set(DEFAULT_SIGKEY_DIR
+  "${CMAKE_INSTALL_SYSCONFDIR}/crinit/pk"
+  CACHE PATH
+  "Default path to signing keys."
+)
+
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Debug")
 endif()
