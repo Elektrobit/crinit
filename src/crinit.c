@@ -283,8 +283,28 @@ static void crinitPrintVersion(void) {
 
 static void crinitPrintUsage(const char *basename) {
     crinitPrintVersion();
-    fprintf(stderr, "USAGE: %s [path/to/config.series]\n", basename);
-    fprintf(stderr, "If nothing is specified, the default path \'%s\' is used.\n", CRINIT_DEFAULT_CONFIG_SERIES);
+    fprintf(stderr, "USAGE: %s [OPTIONS] [path/to/config.series]\n", basename);
+    fprintf(stderr, "    If no path is specified, the default path \'%s\' is used.\n", CRINIT_DEFAULT_CONFIG_SERIES);
+    fprintf(stderr,
+            "Options:\n"
+            "    --help/-h    - Print this help and exit.\n"
+            "    --version/-V - Print version information and exit.\n"
+            "    --child-subreaper /\n"
+            "     --no-child-subreaper - Specify if Crinit should provide a CHILD_SUBREAPER\n"
+            "                  process if it is not started as PID 1. If set, Crinit will\n"
+            "                  handle all zombie processes among its descendants even if it\n"
+            "                  is not the primary init process.\n"
+            "                  Default is to respect the process attribute as it is set on\n"
+            "                  startup and handle or not handle zombies accordingly.\n"
+            "    --sys-mounts /\n"
+            "     --no-sys-mounts - Specify if Crinit should mount hardcoded system\n"
+            "                  directories on startup. Those are /dev, /dev/pts, /sys,\n"
+            "                  /proc, and a tmpfs on /run. Note that Crinit itself needs\n"
+            "                  at least /proc and /run for its own functionality. Also note\n"
+            "                  that Crinit will not remount a directory if it is already\n"
+            "                  mounted with correct source and target.\n"
+            "                  Default is to mount the system directories if Crinit is\n"
+            "                  PID 1, otherwise not.\n");
 }
 
 static void crinitTaskPrint(const crinitTask_t *t) {
