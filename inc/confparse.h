@@ -57,7 +57,6 @@
     "INCL_FILE_SUFFIX"  ///< Config key for the task include file extension in dynamic configurations.
 #define CRINIT_CONFIG_DEFAULT_INCL_FILE_SUFFIX ".crincl"  ///< Default filename extension of task include files.
 #define CRINIT_CONFIG_DEFAULT_DEBUG false                 ///< Default value for DEBUG global option.
-#define CRINIT_CONFIG_DEFAULT_TASKDIR "/etc/crinit"       ///< Default value for TASKDIR global option.
 #define CRINIT_CONFIG_DEFAULT_TASKDIR_SYMLINKS true
 #ifndef CRINIT_LAUNCHER_COMMAND_DEFAULT
 #define CRINIT_CONFIG_DEFAULT_LAUNCHER_CMD "/usr/bin/crinit-launch"
