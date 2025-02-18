@@ -74,7 +74,6 @@
 #define CRINIT_CONFIG_DEFAULT_ELOS_PORT 54321          ///< Default value for ELOS_SERVER global option.
 #define CRINIT_CONFIG_DEFAULT_INCL_SUFFIX ".crincl"    ///< Default filename extension of include files.
 
-#define CRINIT_CONFIG_DEFAULT_SIGKEYDIR "/etc/crinit/pk"
 #define CRINIT_CONFIG_DEFAULT_SIGNATURES false
 
 #define CRINIT_CONFIG_STDOUT_NAME "STDOUT"  ///< What stdout is called in task configs.
