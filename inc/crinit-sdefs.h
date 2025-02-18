@@ -8,9 +8,6 @@
 
 #include <sys/types.h>
 
-/** Default path to Crinit's AF_UNIX communication socket. **/
-#define CRINIT_SOCKFILE "/run/crinit/crinit.sock"
-
 /** The name/key of the environment variable Crinit passes to child processes for sd_notify(). */
 #define CRINIT_ENV_NOTIFY_NAME "CRINIT_TASK_NAME"
 

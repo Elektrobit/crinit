@@ -66,6 +66,13 @@ set(DEFAULT_CONFIG_SERIES_FILE
   "Default series file."
 )
 
+set(DEFAULT_CRINIT_SOCKFILE
+  "${CMAKE_INSTALL_RUNSTATEDIR}/crinit/crinit.sock"
+  CACHE PATH
+  "Default path to Crinit's AF_UNIX communication socket."
+)
+
+set(DEFAULT_SIGKEY_DIR
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Debug")
 endif()
