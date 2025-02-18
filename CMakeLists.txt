@@ -84,6 +84,12 @@ set(DEFAULT_INCL_DIR
   "Default value for INCLUDEDIR global option."
 )
 
+set(DEFAULT_TASK_DIR
+  "${CMAKE_INSTALL_SYSCONFDIR}/crinit"
+  CACHE PATH
+  "Default value for TASKDIR global option."
+)
+
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Debug")
 endif()
