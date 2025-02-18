@@ -60,6 +60,12 @@ set(DEFAULT_ELOS_EVENT_POLLING_TIME
   "Default polling interval for ELOS events."
 )
 
+set(DEFAULT_CONFIG_SERIES_FILE
+  "${CMAKE_INSTALL_SYSCONFDIR}/crinit/default.series"
+  CACHE PATH
+  "Default series file."
+)
+
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Debug")
 endif()

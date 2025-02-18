@@ -22,11 +22,6 @@
 #endif
 
 /**
- * The default series file. Used if nothing is specified on command line.
- */
-#define CRINIT_DEFAULT_CONFIG_SERIES "/etc/crinit/default.series"
-
-/**
  * Prints a message indicating Crinit's version to stderr.
  */
 static void crinitPrintVersion(void);
