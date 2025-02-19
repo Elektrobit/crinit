@@ -22,8 +22,8 @@
  */
 typedef struct crinitRtimCmd_t {
     crinitRtimOp_t op;  ///< The command or response opcode (see rtimopmap.h).
-    size_t argc;       ///< The number of arguments.
-    char **args;       ///< String array of arguments.
+    size_t argc;        ///< The number of arguments.
+    char **args;        ///< String array of arguments.
 } crinitRtimCmd_t;
 
 /**

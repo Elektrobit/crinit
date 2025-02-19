@@ -23,8 +23,7 @@ const crinitConfigMapping_t crinitTaskCfgMap[] = {
     {CRINIT_CONFIG_RESPAWN, CRINIT_CONFIG_KEYSTR_RESPAWN, false, false, crinitCfgRespHandler},
     {CRINIT_CONFIG_RESPAWN_RETRIES, CRINIT_CONFIG_KEYSTR_RESPAWN_RETRIES, false, false, crinitCfgRespRetHandler},
     {CRINIT_CONFIG_STOP_COMMAND, CRINIT_CONFIG_KEYSTR_STOP_COMMAND, true, false, crinitCfgStopCmdHandler},
-    {CRINIT_CONFIG_USER, CRINIT_CONFIG_KEYSTR_USER, false, false, crinitCfgUserHandler}
-};
+    {CRINIT_CONFIG_USER, CRINIT_CONFIG_KEYSTR_USER, false, false, crinitCfgUserHandler}};
 const size_t crinitTaskCfgMapSize = crinitNumElements(crinitTaskCfgMap);
 
 const crinitConfigMapping_t crinitSeriesCfgMap[] = {
@@ -43,8 +42,7 @@ const crinitConfigMapping_t crinitSeriesCfgMap[] = {
     {CRINIT_CONFIG_TASKS, CRINIT_CONFIG_KEYSTR_TASKS, true, false, crinitCfgTasksHandler},
     {CRINIT_CONFIG_TASK_FILE_SUFFIX, CRINIT_CONFIG_KEYSTR_TASK_FILE_SUFFIX, false, false, crinitCfgTaskSuffixHandler},
     {CRINIT_CONFIG_USE_ELOS, CRINIT_CONFIG_KEYSTR_USE_ELOS, false, false, crinitCfgElosHandler},
-    {CRINIT_CONFIG_USE_SYSLOG, CRINIT_CONFIG_KEYSTR_USE_SYSLOG, false, false, crinitCfgSyslogHandler}
-};
+    {CRINIT_CONFIG_USE_SYSLOG, CRINIT_CONFIG_KEYSTR_USE_SYSLOG, false, false, crinitCfgSyslogHandler}};
 const size_t crinitSeriesCfgMapSize = crinitNumElements(crinitSeriesCfgMap);
 
 const crinitConfigMapping_t crinitKCmdlineCfgMap[] = {

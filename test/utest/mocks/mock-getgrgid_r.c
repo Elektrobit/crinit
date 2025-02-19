@@ -11,12 +11,9 @@
 #include "common.h"
 #include "unit_test.h"
 
-
-
 // Rationale: Naming scheme fixed due to linker wrapping.
 // NOLINTNEXTLINE(readability-identifier-naming)
-int __wrap_getgrgid_r(gid_t gid, struct group *__restrict resultbuf,
-                      char *__restrict buffer, size_t buflen,
+int __wrap_getgrgid_r(gid_t gid, struct group *__restrict resultbuf, char *__restrict buffer, size_t buflen,
                       struct group **__restrict result) {
     assert_non_null(resultbuf);
     assert_non_null(buffer);
@@ -28,8 +25,7 @@ int __wrap_getgrgid_r(gid_t gid, struct group *__restrict resultbuf,
         strncpy(buffer, "disk", buflen);
         resultbuf->gr_name = buffer;
         *result = resultbuf;
-    }
-    else {
+    } else {
         *result = NULL;
     }
 

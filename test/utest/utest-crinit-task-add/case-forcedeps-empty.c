@@ -15,8 +15,7 @@
 static crinitRtimCmd_t *crinitBuildRtimArgCmd;
 static crinitRtimCmd_t *crinitXferArgRes;
 static char *crinitXferArgResOKArgs[1] = {CRINIT_RTIMCMD_RES_OK};
-static crinitRtimCmd_t crinitXferArgResOK = {
-    .op = CRINIT_RTIMCMD_R_ADDTASK, .argc = 1, .args = crinitXferArgResOKArgs};
+static crinitRtimCmd_t crinitXferArgResOK = {.op = CRINIT_RTIMCMD_R_ADDTASK, .argc = 1, .args = crinitXferArgResOKArgs};
 static struct crinitStoreRtimCmdArgs crinitXferArgResContext = {
     &crinitXferArgRes,
     &crinitXferArgResOK,

@@ -4,13 +4,13 @@
  * @brief Unit test for crinitCfgLauncherCmdHandler(), handling of null pointer input.
  */
 
-#include "confhdl.h"
+#include <string.h>
+
 #include "common.h"
+#include "confhdl.h"
 #include "globopt.h"
 #include "unit_test.h"
 #include "utest-crinit-cfg-launch-cmd-handler.h"
-
-#include <string.h>
 
 void crinitCfgLauncherCmdHandlerTestNullInput(void **state) {
     CRINIT_PARAM_UNUSED(state);

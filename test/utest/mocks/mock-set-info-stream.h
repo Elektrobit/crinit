@@ -14,7 +14,7 @@
  * Checks that the right parameters are given through the cmocka API.
  */
 void __wrap_crinitSetInfoStream(FILE *stream);  // NOLINT(readability-identifier-naming)
-                                               // Rationale: Naming scheme fixed due to linkerw
-                                               // wrapping.
+                                                // Rationale: Naming scheme fixed due to linkerw
+                                                // wrapping.
 
 #endif /* __MOCK_SET_INFO_STREAM_H__ */

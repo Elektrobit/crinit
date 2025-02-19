@@ -4,14 +4,14 @@
  * @brief Unit test for crinitCfgUserHandler(), successful execution.
  */
 
-#include "task.h"
-#include "common.h"
-#include "globopt.h"
-#include "unit_test.h"
-#include "utest-crinit-task-create-from-conf-kvlist.h"
-
 #include <stdlib.h>
 #include <string.h>
+
+#include "common.h"
+#include "globopt.h"
+#include "task.h"
+#include "unit_test.h"
+#include "utest-crinit-task-create-from-conf-kvlist.h"
 
 void crinitTaskCreateFromConfKvListTestGroupNumericSuccess(void **state) {
     CRINIT_PARAM_UNUSED(state);

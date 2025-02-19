@@ -236,7 +236,8 @@ int crinitClientTaskRestart(const char *taskName);
  * @return 0 on success, -1 on error
  */
 int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *pid, struct timespec *ct, struct timespec *st,
-                              struct timespec *et, gid_t *gid, uid_t *uid, char **username, char **groupname, const char *taskName);
+                              struct timespec *et, gid_t *gid, uid_t *uid, char **username, char **groupname,
+                              const char *taskName);
 /**
  * Request Crinit to report the list of task names from its TaskDB.
  *

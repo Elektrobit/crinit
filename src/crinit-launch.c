@@ -9,9 +9,9 @@
  * USAGE: crinit-launch --cmd=/path/to/targetcmd [--user=UID --groups=GID[,SGID1,SGID2]] -- [TARGET_COMMAND_ARGUMENTS]
  * where ACTION must be exactly one of (including specific options/parameters):
  *    cmd Path to the program to launch.
- *   user UID of the user to be used to start the specified command. If not given, the user of the crinit process is used.
- * groups Comma separated list of GIDs that shall be used to start the specified command. The first one will
- *        be used as the primary group, all others as suplimentary groups. If not given the group of the crinit process is used.
+ *   user UID of the user to be used to start the specified command. If not given, the user of the crinit process is
+ * used. groups Comma separated list of GIDs that shall be used to start the specified command. The first one will be
+ * used as the primary group, all others as suplimentary groups. If not given the group of the crinit process is used.
  *
  * After the delimiter -- the arguments of the specifed command can be given, if there are any.
  * General Options:
@@ -35,12 +35,15 @@ static void crinitPrintVersion(void) {
 static void crinitPrintUsage(void) {
     fprintf(
         stderr,
-        "USAGE: crinit-launch --cmd=/path/to/targetcmd [--user=UID --groups=GID[,SGID1,SGID2]] -- [TARGET_COMMAND_ARGUMENTS]\n"
+        "USAGE: crinit-launch --cmd=/path/to/targetcmd [--user=UID --groups=GID[,SGID1,SGID2]] -- "
+        "[TARGET_COMMAND_ARGUMENTS]\n"
         "  where ACTION must be exactly one of (including specific options/parameters):\n"
         "    cmd Path to the program to launch.\n"
-        "   user UID of the user to be used to start the specified command. If not given, the user of the crinit process is used.\n"
+        "   user UID of the user to be used to start the specified command. If not given, the user of the crinit "
+        "process is used.\n"
         " groups Comma separated list of GIDs that shall be used to start the specified command. The first one will\n"
-        "       be used as the primary group, all others as suplimentary groups. If not given the group of the crinit process is used.\n"
+        "       be used as the primary group, all others as suplimentary groups. If not given the group of the crinit "
+        "process is used.\n"
         "\n"
         " After the delimiter -- the arguments of the specifed command can be given, if there are any.\n"
         " General Options:\n"
@@ -77,13 +80,11 @@ int crinitExtractGroups(char *input, gid_t **groups, size_t *groupSize) {
             (*groups)[i] = strtoul(token, &endptr, 10);
             if (endptr != token && *endptr == '\0' && errno == 0) {
                 i++;
-            }
-            else {
+            } else {
                 crinitErrPrint("Malformed input: %s.\n", input);
                 return -1;
             }
-        }
-        else {
+        } else {
             crinitErrPrint("Malformed input: %s.\n", input);
             return -1;
         }
@@ -99,12 +100,9 @@ int crinitExtractGroups(char *input, gid_t **groups, size_t *groupSize) {
 
 int main(int argc, char *argv[]) {
     int opt;
-    const struct option longOptions[] = {{"help", no_argument, 0, 'h'},
-                                         {"version", no_argument, 0, 'V'},
-                                         {"cmd", required_argument, 0, 'c'},
-                                         {"user", required_argument, 0, 'u'},
-                                         {"groups", required_argument, 0, 'g'},
-                                         {0, 0, 0, 0}};
+    const struct option longOptions[] = {{"help", no_argument, 0, 'h'},         {"version", no_argument, 0, 'V'},
+                                         {"cmd", required_argument, 0, 'c'},    {"user", required_argument, 0, 'u'},
+                                         {"groups", required_argument, 0, 'g'}, {0, 0, 0, 0}};
 
     gid_t *groups = NULL;
     size_t groupSize = 0;
@@ -184,7 +182,7 @@ int main(int argc, char *argv[]) {
     }
 
     if (groupSize) {
-        if (setgroups(0, NULL) != 0) {     // Drop all current supplementary groups
+        if (setgroups(0, NULL) != 0) {  // Drop all current supplementary groups
             crinitErrPrint("Failed to drop all initial supplementary groups.\n");
             goto failureExit;
         }

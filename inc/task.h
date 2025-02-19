@@ -6,8 +6,8 @@
 #ifndef __TASK_H__
 #define __TASK_H__
 
-#include <time.h>
 #include <sys/types.h>
+#include <time.h>
 
 #include "confparse.h"
 #include "crinit-sdefs.h"

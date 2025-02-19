@@ -261,7 +261,8 @@ int main(int argc, char *argv[]) {
         char *groupname = NULL;
         char ctStr[TIME_REPR_MAX_LEN], stStr[TIME_REPR_MAX_LEN], etStr[TIME_REPR_MAX_LEN];
         const char *state;
-        if (crinitClientTaskGetStatus(&s, &pid, &ct, &st, &et, &gid, &uid, &username, &groupname, getoptArgv[optind]) == -1) {
+        if (crinitClientTaskGetStatus(&s, &pid, &ct, &st, &et, &gid, &uid, &username, &groupname, getoptArgv[optind]) ==
+            -1) {
             crinitErrPrint("Querying status of task \'%s\' failed.", getoptArgv[optind]);
             return EXIT_FAILURE;
         }
@@ -272,7 +273,8 @@ int main(int argc, char *argv[]) {
                  st.tv_nsec);
         snprintf(etStr, sizeof(etStr), (et.tv_sec == 0 && et.tv_nsec == 0) ? "n/a" : TIME_REPR_PRINTF_FORMAT, et.tv_sec,
                  et.tv_nsec);
-        crinitInfoPrint("Status: %s, PID: %d CTime: %s STime: %s ETime: %s USER: %s(%d) GROUP: %s(%d)", state, pid, ctStr, stStr, etStr, username, uid, groupname, gid);
+        crinitInfoPrint("Status: %s, PID: %d CTime: %s STime: %s ETime: %s USER: %s(%d) GROUP: %s(%d)", state, pid,
+                        ctStr, stStr, etStr, username, uid, groupname, gid);
         free(username);
         free(groupname);
         return EXIT_SUCCESS;
@@ -292,7 +294,7 @@ int main(int argc, char *argv[]) {
     }
     if (strcmp(getoptArgv[0], "list") == 0) {
         const char *tableHeaderGroup = "GROUP";
-        const char *tableHeaderUser  = "USER";
+        const char *tableHeaderUser = "USER";
         if (getoptArgv[optind] != NULL) {
             crinitPrintUsage(argv[0]);
             return EXIT_FAILURE;
@@ -327,10 +329,12 @@ int main(int argc, char *argv[]) {
                 }
             }
         }
-        crinitInfoPrint("%-*s  %4s  %-*s %-*s %s", maxNameLen, "NAME", "PID", maxUserLen, tableHeaderUser,  maxGroupLen, tableHeaderGroup, "STATUS");
+        crinitInfoPrint("%-*s  %4s  %-*s %-*s %s", maxNameLen, "NAME", "PID", maxUserLen, tableHeaderUser, maxGroupLen,
+                        tableHeaderGroup, "STATUS");
         for (size_t i = 0; i < tl->numTasks; i++) {
             const char *state = crinitTaskStateToStr(tl->tasks[i].state);
-            crinitInfoPrint("%-*s  %4d  %-*s %-*s %s", maxNameLen, tl->tasks[i].name, tl->tasks[i].pid, maxUserLen, tl->tasks[i].username, maxGroupLen, tl->tasks[i].groupname, state);
+            crinitInfoPrint("%-*s  %4d  %-*s %-*s %s", maxNameLen, tl->tasks[i].name, tl->tasks[i].pid, maxUserLen,
+                            tl->tasks[i].username, maxGroupLen, tl->tasks[i].groupname, state);
         }
         crinitClientFreeTaskList(tl);
         return EXIT_SUCCESS;

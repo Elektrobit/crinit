@@ -48,7 +48,7 @@ typedef struct crinitThreadPool_t {
  * @return 0 on success, -1 otherwise
  */
 int crinitThreadPoolInit(crinitThreadPool_t *ctx, size_t initialSize, void *(*threadFunc)(void *), const void *thrArgs,
-                        size_t thrArgsSize);
+                         size_t thrArgsSize);
 
 /**
  * Callback to be used by the worker thread function signalling it is busy/unavailable.

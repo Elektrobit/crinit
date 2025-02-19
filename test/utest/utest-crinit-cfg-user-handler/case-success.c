@@ -4,13 +4,13 @@
  * @brief Unit test for crinitCfgUserHandler(), successful execution.
  */
 
-#include "confhdl.h"
-#include "common.h"
-#include "unit_test.h"
-#include "utest-crinit-cfg-user-handler.h"
-
 #include <stdlib.h>
 #include <string.h>
+
+#include "common.h"
+#include "confhdl.h"
+#include "unit_test.h"
+#include "utest-crinit-cfg-user-handler.h"
 
 void crinitCfgUserHandlerTestNumericSuccess(void **state) {
     CRINIT_PARAM_UNUSED(state);

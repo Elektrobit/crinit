@@ -11,7 +11,7 @@
  *
  * Does nothing.
  */
-int __wrap_reboot(int cmd);     // NOLINT(readability-identifier-naming)
-                                // Rationale: Naming scheme fixed due to linker wrapping.
+int __wrap_reboot(int cmd);  // NOLINT(readability-identifier-naming)
+                             // Rationale: Naming scheme fixed due to linker wrapping.
 
 #endif /* __MOCK_REBOOT_H__ */

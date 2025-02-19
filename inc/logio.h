@@ -88,8 +88,8 @@ void crinitSetUseSyslog(bool sl);
  * Print an info message.
  *
  * Can be used like printf(). In contrast to printf(), this function adds the Crinit prefix at the start and a newline
- * at the end. It uses the output stream specified by crinitSetInfoStream() or stdout if unset. The function uses mutexes
- * internally and is thread-safe.
+ * at the end. It uses the output stream specified by crinitSetInfoStream() or stdout if unset. The function uses
+ * mutexes internally and is thread-safe.
  *
  */
 void crinitInfoPrint(const char *format, ...) __attribute__((format(printf, 1, 2)));
