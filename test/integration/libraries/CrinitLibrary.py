@@ -3,8 +3,6 @@
 import io
 import os
 import re
-import subprocess
-import grp
 import traceback
 
 from robot.libraries.BuiltIn import BuiltIn
