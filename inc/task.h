@@ -6,6 +6,7 @@
 #ifndef __TASK_H__
 #define __TASK_H__
 
+#include <sys/types.h>
 #include <time.h>
 
 #include "confparse.h"
@@ -92,6 +93,10 @@ typedef struct crinitTask_t {
     struct timespec createTime;  ///< The time the task was created (i.e. has been loaded and parsed).
     struct timespec startTime;   ///< The time the task last became 'running'.
     struct timespec endTime;     ///< The time the task last became 'done' or 'failed.
+    uid_t user;                  ///< The user id to run the task's commands with.
+    gid_t group;                 ///< The group id to run the task's commands with.
+    char *username;              ///< The username to run the task's commands with.
+    char *groupname;             ///< The groupname to run the task's commands with.
 } crinitTask_t;
 
 /**

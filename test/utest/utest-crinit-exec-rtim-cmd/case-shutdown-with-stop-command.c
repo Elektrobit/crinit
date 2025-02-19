@@ -4,18 +4,18 @@
  * @brief Unit test for crinitExecRtimCmd(), successful execution.
  */
 
-#include "rtimcmd.h"
-#include "common.h"
-#include "globopt.h"
-#include "version.h"
-#include "unit_test.h"
-#include "utest-crinit-exec-rtim-cmd.h"
-
 #include <errno.h>
-#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+
+#include "common.h"
+#include "globopt.h"
+#include "rtimcmd.h"
+#include "unit_test.h"
+#include "utest-crinit-exec-rtim-cmd.h"
+#include "version.h"
 
 static pthread_mutex_t crinitLock;
 static unsigned int crinitSpawnForStopCmdCalled = 0;
@@ -41,7 +41,7 @@ const crinitVersion_t crinitVersion = {
     .git = "none",
 };
 
-static crinitTask_t * crinitCreateTaskWithStopCommand(const char *taskname) {
+static crinitTask_t *crinitCreateTaskWithStopCommand(const char *taskname) {
     crinitTask_t *tgt = NULL;
     crinitConfKvList_t name;
     crinitConfKvList_t cmd;

@@ -13,7 +13,7 @@
  */
 int __wrap_mount(const char *source, const char *target,                // NOLINT(readability-identifier-naming)
                  const char *filesystemtype, unsigned long mountflags,  // NOLINT(readability-identifier-naming)
-                 const void * data);                                    // NOLINT(readability-identifier-naming)
-                                                                        // Rationale: Naming scheme fixed due to linker wrapping.
+                 const void *data);                                     // NOLINT(readability-identifier-naming)
+                                     // Rationale: Naming scheme fixed due to linker wrapping.
 
 #endif /* __MOCK_MOUNT_H__ */

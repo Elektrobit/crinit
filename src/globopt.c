@@ -85,6 +85,12 @@ int crinitGlobOptInitDefault(void) {
         goto fail;
     }
 
+    crinitGlobOpts.launcherCmd = strdup(CRINIT_CONFIG_DEFAULT_LAUNCHER_CMD);
+    if (crinitGlobOpts.launcherCmd == NULL) {
+        crinitGlobOptSetErrPrint(CRINIT_CONFIG_DEFAULT_LAUNCHER_CMD);
+        goto fail;
+    }
+
     if (crinitEnvSetInit(&crinitGlobOpts.globEnv, CRINIT_ENVSET_INITIAL_SIZE, CRINIT_ENVSET_SIZE_INCREMENT) == -1) {
         crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_ENV_SET);
         goto fail;
@@ -280,6 +286,7 @@ void crinitGlobOptDestroy(void) {
     free(crinitGlobOpts.taskFileSuffix);
     free(crinitGlobOpts.sigKeyDir);
     free(crinitGlobOpts.elosServer);
+    free(crinitGlobOpts.launcherCmd);
     crinitEnvSetDestroy(&crinitGlobOpts.globEnv);
     crinitEnvSetDestroy(&crinitGlobOpts.globFilters);
     pthread_mutex_unlock(&crinitOptLock);

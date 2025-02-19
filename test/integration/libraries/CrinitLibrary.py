@@ -6,8 +6,10 @@ import re
 import traceback
 
 from robot.libraries.BuiltIn import BuiltIn
+import robot.utils.asserts
 from robot.api import logger
-
+from robot.api.deco import keyword
+    
 
 class CrinitLibrary(object):
     """CrinitLibrary provides a set of keywords for direct interaction
@@ -64,6 +66,7 @@ class CrinitLibrary(object):
             sudo_password=(None if self.IS_ROOT else self.password)
         )
 
+        logger.info(f"{stdout}")
         if ret != 0 and stderr:
             logger.error(f"crinit-ctl: {err_msg} ({ret}): {stderr}")
         elif ret != 0:
@@ -257,6 +260,53 @@ class CrinitLibrary(object):
 
         return ret
 
+    def _crinit_get_task_pid(self, task_name):
+        """Queries the  PID of <task_name>.
+
+        | task_name | The task name |
+        """
+        pid = -1
+        stdout, stderr, ret = self.__crinit_run("status", "Requesting task status failed", task=task_name)
+        if ret == 0:
+            match = re.search(r"(?i)\bstatus\b\s*:\s*(?P<state>\w+)\s*,\s*\bpid\b\s*:\s*(?P<pid>[\+-]?\d+)", stdout)
+            if match is not None:
+              pid = int(match.groupdict()['pid'])
+              logger.info(f"task pid is : {pid}")
+            else:
+                logger.error(f"Failed to parse crinit state for task {task_name}.")
+        return pid    
+
+    @keyword("'${task}' User Is '${user}' And Group Is '${group}'")
+    def task_user_and_group_are(self, task, user, group):
+        """
+        Check if task user is given user and group is given group
+        """
+
+        pid = self._crinit_get_task_pid(task)
+        
+        stdout = None
+        stderr = None
+        ret = -1
+
+        stdout, stderr, ret = self.ssh.execute_command(
+            f"ps -p{pid} -ouser=,group=",
+            return_stdout=True,
+            return_stderr=True,
+            return_rc=True,
+            sudo=False,
+            sudo_password=None
+        )
+        
+        (rcuser, rcgroup) = stdout.split()
+        logger.info(f"USER: {rcuser}")
+        logger.info(f"GROUP: {rcgroup}")
+        
+        if rcuser == user and rcgroup == group:
+            return 0
+
+        return -1
+        
+   
     def crinit_reboot(self):
         """Will request Crinit to perform a graceful system reboot.
         crinit-ctl can be symlinked to reboot as a shortcut which will
@@ -270,3 +320,5 @@ class CrinitLibrary(object):
         invoke this command automatically.
         """
         return self.__crinit_run("poweroff", "Requesting poweroff failed")[2]
+
+    

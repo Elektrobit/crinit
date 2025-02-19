@@ -4,12 +4,12 @@
  * @brief Unit test for crinitCfgStopCmdHandler(), handling of null pointer input.
  */
 
-#include "confhdl.h"
+#include <string.h>
+
 #include "common.h"
+#include "confhdl.h"
 #include "unit_test.h"
 #include "utest-crinit-cfg-stop_command-handler.h"
-
-#include <string.h>
 
 void crinitCfgStopCommandHandlerTestNullInput(void **state) {
     CRINIT_PARAM_UNUSED(state);

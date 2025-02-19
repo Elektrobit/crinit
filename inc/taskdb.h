@@ -306,7 +306,9 @@ int crinitTaskDBSetSpawnInhibit(crinitTaskDB_t *ctx, bool inh);
  *
  *  @return 0 on success, -1 otherwise
  */
-int crinitTaskDBInitWithSize(crinitTaskDB_t *ctx, int (*spawnFunc)(crinitTaskDB_t *ctx, const crinitTask_t *, crinitDispatchThreadMode_t mode),
+int crinitTaskDBInitWithSize(crinitTaskDB_t *ctx,
+                             int (*spawnFunc)(crinitTaskDB_t *ctx, const crinitTask_t *,
+                                              crinitDispatchThreadMode_t mode),
                              size_t initialSize);
 /**
  * Initialize the internals of an crinitTaskDB_t with the default initial size of CRINIT_TASKDB_INITIAL_SIZE.
