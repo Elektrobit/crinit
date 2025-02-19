@@ -982,13 +982,14 @@ static bool crinitUidToUsername(uid_t uid, char **name) {
 
     const int rc = getpwuid_r(uid, &pwd, buf, bufsize, &resPwd);
     if (resPwd == NULL) {
+        errno = rc;
         switch (rc) {
             case 0:
             case ENOENT:
             case ESRCH:
             case EBADF:
             case EPERM:
-                crinitErrPrint("User ID %d couldn't be found.", uid);
+                crinitErrnoPrint("User ID %d couldn't be found.", uid);
                 result = false;
                 goto cleanup;
                 break;
@@ -998,12 +999,12 @@ static bool crinitUidToUsername(uid_t uid, char **name) {
             case ENFILE:
             case ENOMEM:
             case ERANGE:
-                crinitErrPrint("System error while trying to resolve username.");
+                crinitErrnoPrint("System error while trying to resolve username.");
                 result = false;
                 goto cleanup;
                 break;
             default:
-                crinitErrPrint("Unknown failure %d while trying to resolve username.", rc);
+                crinitErrnoPrint("Unknown failure %d while trying to resolve username.", rc);
                 result = false;
                 goto cleanup;
                 break;
@@ -1047,13 +1048,14 @@ static bool crinitGroupnameToGid(const char *name, gid_t* gid) {
 
     const int rc = getgrnam_r(name, &grp, buf, bufsize, &resGrp);
     if (resGrp == NULL) {
+        errno = rc;
         switch (rc) {
             case 0:
             case ENOENT:
             case ESRCH:
             case EBADF:
             case EPERM:
-                crinitErrPrint("Groupname %s couldn't be found.", name);
+                crinitErrnoPrint("Groupname %s couldn't be found.", name);
                 result = false;
                 goto cleanup;
                 break;
@@ -1063,12 +1065,12 @@ static bool crinitGroupnameToGid(const char *name, gid_t* gid) {
             case ENFILE:
             case ENOMEM:
             case ERANGE:
-                crinitErrPrint("System error while trying to resolve goupname.");
+                crinitErrnoPrint("System error while trying to resolve goupname.");
                 result = false;
                 goto cleanup;
                 break;
             default:
-                crinitErrPrint("Unknown failure %d while trying to resolve groupname.", rc);
+                crinitErrnoPrint("Unknown failure %d while trying to resolve groupname.", rc);
                 result = false;
                 goto cleanup;
                 break;
