@@ -72,9 +72,20 @@ int crinitExtractGroups(char *input, gid_t **groups, size_t *groupSize) {
     size_t i = 0;
     while ((token = strtok_r(in, ",", &rest))) {
         in = NULL;
-        if (token) {
-            (*groups)[i] = strtoul(token, NULL, 10);
-            i++;
+        if (*token != '\0') {
+            char *endptr = NULL;
+            (*groups)[i] = strtoul(token, &endptr, 10);
+            if (endptr != token && *endptr == '\0' && errno == 0) {
+                i++;
+            }
+            else {
+                crinitErrPrint("Malformed input: %s.\n", input);
+                return -1;
+            }
+        }
+        else {
+            crinitErrPrint("Malformed input: %s.\n", input);
+            return -1;
         }
     }
 
