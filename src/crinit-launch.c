@@ -79,7 +79,7 @@ int crinitExtractGroups(char *input, gid_t **groups, size_t *groupSize) {
     }
 
     if (i != *groupSize) {
-        crinitErrPrint("Parsing count missmatch. %lu != %lu\n", *groupSize, i);
+        crinitErrPrint("Parsing count mismatch. %lu != %lu\n", *groupSize, i);
         return -1;
     }
 
@@ -173,8 +173,8 @@ int main(int argc, char *argv[]) {
     }
 
     if (groupSize) {
-        if (setgroups(0, NULL) != 0) {     // Drop all current sublimentary groups
-            crinitErrPrint("Failed to drop all initial sublimentary groups.\n");
+        if (setgroups(0, NULL) != 0) {     // Drop all current supplementary groups
+            crinitErrPrint("Failed to drop all initial supplementary groups.\n");
             goto failureExit;
         }
         if (setgid(groups[0]) != 0) {
@@ -184,7 +184,7 @@ int main(int argc, char *argv[]) {
 
         if (groupSize > 1) {
             if (setgroups(groupSize - 1, groups + 1) != 0) {
-                crinitErrPrint("Failed to set sublimentary groups.\n");
+                crinitErrPrint("Failed to set supplementary groups.\n");
                 goto failureExit;
             }
         }
