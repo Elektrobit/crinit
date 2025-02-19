@@ -150,6 +150,8 @@ DEBUG = NO
 
 SHUTDOWN_GRACE_PERIOD_US = 100000
 
+LAUNCHER_CMD = /usr/bin/crinit-launch
+
 USE_SYSLOG = NO
 USE_ELOS = YES
 
@@ -172,6 +174,7 @@ ENV_SET = GREETING "Good morning!"
 - **INCLUDEDIR** -- Where to find include files referenced from task configurations. Default: Same as **TASKDIR**.
 - **INCLUDE_SUFFIX** -- Filename suffix of include files referenced from task configurations. Default: `.crincl`
 - **DEBUG** -- If crinit should be verbose in its output. Either `YES` or `NO`. Default: `NO`
+- **LAUNCHER_CMD** -- Specify location of the crinit-launch binary. Optional. If not given, crinit-launch is taken from the default installation path. Needed to execute a **COMMAND** as a different user or group.
 - **SHUTDOWN_GRACE_PERIOD_US** -- The amount of microseconds to wait both between `STOP_COMMAND` and `SIGTERM` as well as between`SIGTERM` and `SIGKILL` on shutdown/reboot.
                                   Default: 100000
 - **USE_SYSLOG** -- If syslog should be used for output if it is available. If set to `YES`, Crinit will switch to
@@ -588,7 +591,13 @@ the current session. The script can also be sourced from `.bashrc` if a system-w
 Once installed and loaded, `crinit-ctl <TAB><TAB>` will show/complete available command verbs like `addtask`, `enable`,
 `disable`, etc. For `crinit-ctl addtask <TAB><TAB>`, paths to `\*.crinit` files and specific options will be completed,
 similar for `addseries`. Verbs taking a task name as input will have completion of available tasks loaded by crinit.
-The script calls `crinit-ctl list` and parses its output in the background to achieve this.
+The script calls `crinit-ctl list` and parses its output in the background to 
+achieve this.
+
+
+## crinit-launch
+
+Helper program to start a command as a different user and / or group. It is not meant to be executed by the user directly.
 
 ## Build Instructions
 Executing
