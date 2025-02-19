@@ -26,9 +26,9 @@ ${TASK}        test_service
 ${TASK_CONF}    SEPARATOR=\n
 ...             # Task to test elos events emitted by a succeeding task.
 ...             NAME = test_service
-...             COMMAND = /usr/bin/sleep 60
-...             USER = user
-...             GROUP = grp
+...             COMMAND = /bin/sleep 60
+...             USER = @@USER@@
+...             GROUP = @@GROUP@@
 
 
 *** Test Cases ***
@@ -44,13 +44,13 @@ Crinit Executes Task As Different User And Group
 A Crinit Task With '${USER}' And '${GROUP}'
     [Documentation]    Set up a crinit task with given user and group
 
-    ${task_conf}=     Replace String     ${TASK_CONF}    user    ${USER} 
-    ${task_conf}=     Replace String     ${task_conf}    grp    ${GROUP}
+    ${TEMPORARY_CONF}=     Replace String     ${TASK_CONF}    @@USER@@    ${USER}
+    ${TEMPORARY_CONF}=     Replace String     ${TEMPORARY_CONF}    @@GROUP@@    ${GROUP}
 
-    Should Contain    ${task_conf}    ${USER}
-    Should Contain    ${task_conf}    ${GROUP}
+    Should Contain    ${TEMPORARY_CONF}    ${USER}
+    Should Contain    ${TEMPORARY_CONF}    ${GROUP}
 
-    Set Test Variable   ${NEW_CONF}    ${task_conf} 
+    Set Test Variable   ${NEW_CONF}    ${TEMPORARY_CONF}
 
 Crinit Starts The Task
     [Documentation]   Start the crinit task with task config.
