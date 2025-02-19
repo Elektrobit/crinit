@@ -597,7 +597,7 @@ achieve this.
 
 ## crinit-launch
 
-Helper program to start a command as a different user and / or group. It is not meant to be executed by the user directly.
+The `crinit-launch` executable is a helper program to start a command as a different user and / or group. It is not meant to be executed by the user directly.
 
 ## Build Instructions
 Executing
