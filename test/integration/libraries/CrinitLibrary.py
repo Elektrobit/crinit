@@ -68,7 +68,7 @@ class CrinitLibrary(object):
             sudo_password=(None if self.IS_ROOT else self.password)
         )
 
-        logger.info("{stdout}")
+        logger.info(f"{stdout}")
         if ret != 0 and stderr:
             logger.error(f"crinit-ctl: {err_msg} ({ret}): {stderr}")
         elif ret != 0:
