@@ -11,7 +11,7 @@
 /**
  * Macro to generate a mapping array for the specified commands.
  */
-#define crinitGenOpMap(f)                                                                                    \
+#define crinitGenOpMap(f)                                                                                   \
     f(ADDTASK) f(ADDSERIES) f(ENABLE) f(DISABLE) f(STOP) f(KILL) f(RESTART) f(NOTIFY) f(STATUS) f(TASKLIST) \
         f(SHUTDOWN) f(GETVER)
 /**
@@ -35,7 +35,7 @@ typedef enum crinitRtimOp_t { crinitGenOpMap(crinitGenOpEnum) } crinitRtimOp_t;
  */
 typedef struct crinitRtimOpMap_t {
     crinitRtimOp_t opCode;  ///< opcode
-    const char *opStr;     ///< equivalent string representation
+    const char *opStr;      ///< equivalent string representation
 } crinitRtimOpMap_t;
 
 /**

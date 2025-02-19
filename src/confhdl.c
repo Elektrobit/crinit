@@ -7,12 +7,12 @@
 
 #include <ctype.h>
 #include <grp.h>
+#include <pwd.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <pwd.h>
 #include <unistd.h>
 
 #include "common.h"
@@ -79,7 +79,7 @@ static bool crinitDirExists(const char *path);
  *
  * @return  true if \a path refers to an executable file, false otherwise.
  */
-static bool crinitFileIsExecutable(const char * path);
+static bool crinitFileIsExecutable(const char *path);
 
 /**
  * Check if given username exists and convert into numeric ID.
@@ -89,7 +89,7 @@ static bool crinitFileIsExecutable(const char * path);
  *
  * @return true if username could be resolved, false otherwise.
  */
-static bool crinitUsernameToUid(const char *name, uid_t* uid);
+static bool crinitUsernameToUid(const char *name, uid_t *uid);
 
 /**
  * Check if given UID exists and convert to username.
@@ -108,7 +108,7 @@ static bool crinitUidToUsername(uid_t uid, char **name);
  *
  * @return true if groupname could be resolved, false otherwise.
  */
-static bool crinitGroupnameToGid(const char *name, gid_t* gid);
+static bool crinitGroupnameToGid(const char *name, gid_t *gid);
 
 /**
  * Check if given GID exists and convert to groupname.
@@ -146,7 +146,8 @@ int crinitCfgStopCmdHandler(void *tgt, const char *val, crinitConfigType_t type)
     crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
     crinitTask_t *t = tgt;
     size_t newIdx = t->stopCmdsSize;
-    crinitTaskCmd_t *newArr = crinitCfgHandlerManageArrayMem(t->stopCmds, sizeof(*t->stopCmds), t->stopCmdsSize, newIdx + 1);
+    crinitTaskCmd_t *newArr =
+        crinitCfgHandlerManageArrayMem(t->stopCmds, sizeof(*t->stopCmds), t->stopCmdsSize, newIdx + 1);
     if (newArr == NULL) {
         crinitErrPrint("Could not perform memory allocation during handler for configuration key '%s'.",
                        CRINIT_CONFIG_KEYSTR_STOP_COMMAND);
@@ -455,9 +456,7 @@ int crinitCfgUserHandler(void *tgt, const char *val, crinitConfigType_t type) {
     if (crinitConfConvToInteger(&temp, val, 10) == -1) {
         crinitErrPrint("Invalid value for UID found");
         return -1;
-    }
-    else if (temp < 0)
-    {
+    } else if (temp < 0) {
         crinitErrPrint("Invalid (negative) value for UID found");
         return -1;
     }
@@ -493,12 +492,10 @@ int crinitCfgGroupHandler(void *tgt, const char *val, crinitConfigType_t type) {
 
     // Make sure input is not a negative number
     long long temp = 0;
-    if(crinitConfConvToInteger(&temp, val, 10) == -1) {
+    if (crinitConfConvToInteger(&temp, val, 10) == -1) {
         crinitErrPrint("Invalid value for UID found");
         return -1;
-    }
-    else if(temp < 0)
-    {
+    } else if (temp < 0) {
         crinitErrPrint("Invalid (negative) value for UID found");
         return -1;
     }
@@ -880,7 +877,7 @@ static bool crinitDirExists(const char *path) {
     return true;
 }
 
-static bool crinitFileIsExecutable(const char * path) {
+static bool crinitFileIsExecutable(const char *path) {
     crinitNullCheck(false, path);
     struct stat st;
     if (stat(path, &st) == -1) {
@@ -899,7 +896,7 @@ static bool crinitFileIsExecutable(const char * path) {
     return false;
 }
 
-static bool crinitUsernameToUid(const char *name, uid_t* uid) {
+static bool crinitUsernameToUid(const char *name, uid_t *uid) {
     crinitNullCheck(false, name, uid);
     struct passwd pwd;
     struct passwd *resPwd = NULL;
@@ -909,8 +906,8 @@ static bool crinitUsernameToUid(const char *name, uid_t* uid) {
     memset(&pwd, 0x00, sizeof(pwd));
 
     bufsize = sysconf(_SC_GETPW_R_SIZE_MAX);
-    if (bufsize == -1) {         /* Value was indeterminate */
-        bufsize = 16384;        /* Should be more than enough */
+    if (bufsize == -1) { /* Value was indeterminate */
+        bufsize = 16384; /* Should be more than enough */
     }
 
     buf = malloc(bufsize);
@@ -968,8 +965,8 @@ static bool crinitUidToUsername(uid_t uid, char **name) {
     memset(&pwd, 0x00, sizeof(pwd));
 
     bufsize = sysconf(_SC_GETPW_R_SIZE_MAX);
-    if (bufsize == -1) {        /* Value was indeterminate */
-        bufsize = 16384;        /* Should be more than enough */
+    if (bufsize == -1) { /* Value was indeterminate */
+        bufsize = 16384; /* Should be more than enough */
     }
 
     buf = malloc(bufsize);
@@ -1024,7 +1021,7 @@ cleanup:
     return result;
 }
 
-static bool crinitGroupnameToGid(const char *name, gid_t* gid) {
+static bool crinitGroupnameToGid(const char *name, gid_t *gid) {
     crinitNullCheck(false, name, gid);
     struct group grp;
     struct group *resGrp = NULL;
@@ -1034,8 +1031,8 @@ static bool crinitGroupnameToGid(const char *name, gid_t* gid) {
     memset(&grp, 0x00, sizeof(grp));
 
     bufsize = sysconf(_SC_GETGR_R_SIZE_MAX);
-    if (bufsize == -1) {        /* Value was indeterminate */
-        bufsize = 16384;        /* Should be more than enough */
+    if (bufsize == -1) { /* Value was indeterminate */
+        bufsize = 16384; /* Should be more than enough */
     }
 
     buf = malloc(bufsize);
@@ -1094,8 +1091,8 @@ static bool crinitGidToGroupname(gid_t gid, char **name) {
     memset(&grp, 0x00, sizeof(grp));
 
     bufsize = sysconf(_SC_GETGR_R_SIZE_MAX);
-    if (bufsize == -1) {        /* Value was indeterminate */
-        bufsize = 16384;        /* Should be more than enough */
+    if (bufsize == -1) { /* Value was indeterminate */
+        bufsize = 16384; /* Should be more than enough */
     }
 
     buf = malloc(bufsize);

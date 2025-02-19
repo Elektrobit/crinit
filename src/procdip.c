@@ -28,9 +28,9 @@
 
 /** Struct wrapper for arguments to dispatchThreadFunc **/
 typedef struct crinitDispThrArgs_t {
-    crinitTaskDB_t *ctx;    ///< The TaskDB context to update on task state changes.
-    const crinitTask_t *t;  ///< The task to run.
-    crinitDispatchThreadMode_t mode;    ///< Select between start and stop commands
+    crinitTaskDB_t *ctx;              ///< The TaskDB context to update on task state changes.
+    const crinitTask_t *t;            ///< The task to run.
+    crinitDispatchThreadMode_t mode;  ///< Select between start and stop commands
 } crinitDispThrArgs_t;
 
 /** Mutex to guard #crinitWaitInhibit **/
@@ -142,8 +142,9 @@ fail:
     return -1;
 }
 
-int crinitSpawnSingleCommand(const char* cmd, char* const argv[], char* const envp[], posix_spawn_file_actions_t *fileact, const char* name, size_t cmdIdx, pid_t threadId, pid_t *pid)
-{
+int crinitSpawnSingleCommand(const char *cmd, char *const argv[], char *const envp[],
+                             posix_spawn_file_actions_t *fileact, const char *name, size_t cmdIdx, pid_t threadId,
+                             pid_t *pid) {
     errno = posix_spawn(pid, cmd, fileact, NULL, argv, envp);
     if (errno != 0 || *pid == -1) {
         crinitErrnoPrint("(TID: %d) Could not spawn new process for command %zu of Task \'%s\'", threadId, cmdIdx,
@@ -153,8 +154,8 @@ int crinitSpawnSingleCommand(const char* cmd, char* const argv[], char* const en
     return 0;
 }
 
-int crinitPrepareIoRedirectionsForSpawn(size_t cmdIdx, crinitIoRedir_t * redirs, size_t redirsSize, pid_t threadId, const char *name, posix_spawn_file_actions_t *fileact)
-{
+int crinitPrepareIoRedirectionsForSpawn(size_t cmdIdx, crinitIoRedir_t *redirs, size_t redirsSize, pid_t threadId,
+                                        const char *name, posix_spawn_file_actions_t *fileact) {
     for (size_t j = 0; j < redirsSize; j++) {
         // NOTE: We currently have a umask of 0022 which precludes us from creating files with 0666 permissions.
         //       We may want to make that configurable in the future.
@@ -176,8 +177,8 @@ int crinitPrepareIoRedirectionsForSpawn(size_t cmdIdx, crinitIoRedir_t * redirs,
     return 0;
 }
 
-int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char* name, crinitTaskCmd_t *cmds, size_t cmdsSize, crinitTask_t *tCopy, pid_t *pid, bool deactivateFileactions)
-{
+int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char *name, crinitTaskCmd_t *cmds, size_t cmdsSize,
+                         crinitTask_t *tCopy, pid_t *pid, bool deactivateFileactions) {
     char *cmd = NULL;
     char **argv = NULL;
     char *argvBuffer = NULL;
@@ -189,9 +190,9 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char* name, crinit
         return -1;
     }
 
-    const char * const cmdParamFormatStr = "--cmd=%s";
-    const char * const userParamFormatStr = "--user=%d";
-    const char * const groupParamFormatStr = "--group=%d";
+    const char *const cmdParamFormatStr = "--cmd=%s";
+    const char *const userParamFormatStr = "--user=%d";
+    const char *const groupParamFormatStr = "--group=%d";
 
     if (tCopy->user != 0 || tCopy->group != 0) {
         cmd = crinitLauncherCommand;
@@ -209,7 +210,8 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char* name, crinit
             return -1;
         }
 
-        if (crinitPrepareIoRedirectionsForSpawn(i, tCopy->redirs, tCopy->redirsSize, threadId, tCopy->name, &fileact) == -1) {
+        if (crinitPrepareIoRedirectionsForSpawn(i, tCopy->redirs, tCopy->redirsSize, threadId, tCopy->name, &fileact) ==
+            -1) {
             posix_spawn_file_actions_destroy(&fileact);
             free(crinitLauncherCommand);
             return -1;
@@ -218,8 +220,7 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char* name, crinit
         if (!useLauncher) {
             cmd = cmds[i].argv[0];
             argv = cmds[i].argv;
-        }
-        else {
+        } else {
             const size_t cmdParamLength = snprintf(NULL, 0, cmdParamFormatStr, cmds[i].argv[0]) + 1;
             const size_t userParamLength = snprintf(NULL, 0, userParamFormatStr, tCopy->user) + 1;
             const size_t groupParamLength = snprintf(NULL, 0, groupParamFormatStr, tCopy->group) + 1;
@@ -235,15 +236,17 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char* name, crinit
                 crinitErrnoPrint("Failed to allocate memory for temporary argv to use with command launcher.\n");
                 posix_spawn_file_actions_destroy(&fileact);
                 free(crinitLauncherCommand);
-                free(argv);         // If only one call to calloc() failed.
+                free(argv);  // If only one call to calloc() failed.
                 free(argvBuffer);
                 return -1;
             }
 
             snprintf(argvBuffer, cmdParamLength, cmdParamFormatStr, cmds[i].argv[0]);
             snprintf(argvBuffer + cmdParamLength, userParamLength, userParamFormatStr, tCopy->user);
-            snprintf(argvBuffer + cmdParamLength + userParamLength, groupParamLength, groupParamFormatStr, tCopy->group);
-            memcpy(argvBuffer + cmdParamLength + userParamLength + groupParamLength, cmds[i].argv, targetParamTotalLength);
+            snprintf(argvBuffer + cmdParamLength + userParamLength, groupParamLength, groupParamFormatStr,
+                     tCopy->group);
+            memcpy(argvBuffer + cmdParamLength + userParamLength + groupParamLength, cmds[i].argv,
+                   targetParamTotalLength);
 
             argv[0] = cmd;
             argv[1] = argvBuffer;
@@ -254,7 +257,8 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char* name, crinit
             }
         }
 
-        if (crinitSpawnSingleCommand(cmd, argv, tCopy->taskEnv.envp, deactivateFileactions == true ? NULL : &fileact, name, i, threadId, pid) == -1) {
+        if (crinitSpawnSingleCommand(cmd, argv, tCopy->taskEnv.envp, deactivateFileactions == true ? NULL : &fileact,
+                                     name, i, threadId, pid) == -1) {
             posix_spawn_file_actions_destroy(&fileact);
             if (useLauncher) {
                 free(argvBuffer);
@@ -267,8 +271,7 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char* name, crinit
         }
         if (!useLauncher) {
             cmd = NULL;
-        }
-        else {
+        } else {
             free(argvBuffer);
             free(argv);
             argvBuffer = NULL;
@@ -300,8 +303,7 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char* name, crinit
             crinitDbgInfoPrint("(TID: %d) Dependency \'%s:%s\' fulfilled.", threadId, spawnDep.name, spawnDep.event);
 
             if (crinitTaskDBProvideFeature(ctx, tCopy, CRINIT_TASK_STATE_RUNNING) == -1) {
-                crinitErrPrint("(TID: %d) Could not fulfill provided features of spawned task \'%s\'.", threadId,
-                               name);
+                crinitErrPrint("(TID: %d) Could not fulfill provided features of spawned task \'%s\'.", threadId, name);
             }
             crinitDbgInfoPrint("(TID: %d) Features of spawned task \'%s\' fulfilled.", threadId, name);
         }
@@ -352,7 +354,7 @@ int crinitExpandPIDVariablesInSingleCommand(char *input, const pid_t pid, char *
     const char *mend = NULL;
 
     const int substValLen = snprintf(NULL, 0, "%d", pid);
-    substVal = (char *) calloc(substValLen + 1, sizeof(char));
+    substVal = (char *)calloc(substValLen + 1, sizeof(char));
     if (!substVal) {
         crinitErrnoPrint("Couldn't write PID into temporary string.\n");
         return -1;
@@ -380,13 +382,14 @@ int crinitExpandPIDVariablesInSingleCommand(char *input, const pid_t pid, char *
                 if (strcmp(substKey, "TASK_PID") == 0) {
                     free(substKey);
                     char *tmp = NULL;
-                    tmp = calloc((int) (mend - src) + substValLen + 1, sizeof(char));
+                    tmp = calloc((int)(mend - src) + substValLen + 1, sizeof(char));
                     if (!tmp) {
                         crinitErrPrint("Error allocating memory for result string.\n");
                         tt = CRINIT_TK_ERR;
                         break;
                     }
-                    sprintf(tmp, "%.*s%s", (int) (mbegin - 2 - src), src, substVal);        // Substitute 2 to get rid of '${' directly before the variable name.
+                    sprintf(tmp, "%.*s%s", (int)(mbegin - 2 - src), src,
+                            substVal);  // Substitute 2 to get rid of '${' directly before the variable name.
                     if (*result) {
                         char *tmp2 = NULL;
                         tmp2 = calloc(strlen(*result) + strlen(tmp) + 1, sizeof(char));
@@ -400,14 +403,12 @@ int crinitExpandPIDVariablesInSingleCommand(char *input, const pid_t pid, char *
                         free(*result);
                         free(tmp);
                         *result = tmp2;
-                    }
-                    else {
+                    } else {
                         free(*result);
                         *result = tmp;
                     }
                     src = mend + 1;
-                }
-                else {
+                } else {
                     free(substKey);
                 }
                 break;
@@ -433,7 +434,7 @@ int crinitExpandPIDVariablesInSingleCommand(char *input, const pid_t pid, char *
 
     if (tt == CRINIT_TK_END && *result) {
         char *tmp = NULL;
-        tmp = (char *) calloc(strlen(*result) + strlen(src) + 1, sizeof(char));
+        tmp = (char *)calloc(strlen(*result) + strlen(src) + 1, sizeof(char));
         if (!tmp) {
             crinitErrPrint("Error allocating memory for result string.\n");
             tt = CRINIT_TK_ERR;
@@ -444,8 +445,7 @@ int crinitExpandPIDVariablesInSingleCommand(char *input, const pid_t pid, char *
         free(*result);
         *result = tmp;
         return 1;
-    }
-    else if (tt == CRINIT_TK_ERR) {
+    } else if (tt == CRINIT_TK_ERR) {
         free(*result);
         return -1;
     }
@@ -486,8 +486,7 @@ void crinitExpandPIDVariablesInCommands(crinitTaskCmd_t *commands, size_t cmdsSi
                     free(argvBackbuf);
                     free(offsets);
                     return;
-                }
-                else {
+                } else {
                     char *tmpResult = commands[i].argv[j];
                     if (result) {
                         tmpResult = result;
@@ -571,7 +570,8 @@ static void *crinitDispatchThreadFunc(void *args) {
     }
 
     // Do not execute IO redirections for STOP_COMMANDS for now.
-    if (crinitHandleCommands(ctx, threadId, tCopy->name, cmds, cmdsSize, tCopy, &pid, a->mode == CRINIT_DISPATCH_THREAD_MODE_STOP ? true : false) != 0) {
+    if (crinitHandleCommands(ctx, threadId, tCopy->name, cmds, cmdsSize, tCopy, &pid,
+                             a->mode == CRINIT_DISPATCH_THREAD_MODE_STOP ? true : false) != 0) {
         goto threadExitFail;
     }
 

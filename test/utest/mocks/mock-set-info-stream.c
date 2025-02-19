@@ -8,7 +8,7 @@
 #include "unit_test.h"
 
 void __wrap_crinitSetInfoStream(FILE *stream) {  // NOLINT(readability-identifier-naming)
-                                                // Rationale: Naming scheme fixed due to linkerw
-                                                // wrapping.
+                                                 // Rationale: Naming scheme fixed due to linkerw
+                                                 // wrapping.
     check_expected(stream);
 }

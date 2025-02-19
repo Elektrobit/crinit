@@ -46,7 +46,7 @@ static void *crinitDryPoolWatchdog(void *thrpool);
 #define crinitDryPoolThreshold(poolSize) ((poolSize) / 10)
 
 int crinitThreadPoolInit(crinitThreadPool_t *ctx, size_t initialSize, void *(*threadFunc)(void *), const void *thrArgs,
-                        size_t thrArgsSize) {
+                         size_t thrArgsSize) {
     if (ctx == NULL) {
         crinitErrPrint("Given ThreadPool context must not be NULL.");
         return -1;

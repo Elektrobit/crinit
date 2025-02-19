@@ -17,9 +17,9 @@
  * Structure to hold version information for this software component.
  */
 typedef struct crinitVersion_t {
-    uint8_t major;                        ///< Major version.
-    uint8_t minor;                        ///< Minor version.
-    uint8_t micro;                        ///< Micro/patch version.
+    uint8_t major;                          ///< Major version.
+    uint8_t minor;                          ///< Minor version.
+    uint8_t micro;                          ///< Micro/patch version.
     char git[CRINIT_GIT_HASH_MAX_LEN + 1];  ///< git commit Hash
 } crinitVersion_t;
 

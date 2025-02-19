@@ -843,11 +843,11 @@ static int crinitExecRtimCmdStop(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, cons
                                       "Could not spawn STOP_COMMAND(s).");
         }
         pthread_mutex_unlock(&ctx->lock);
-    }
-    else {
+    } else {
         pid_t taskPid = pTask->pid;
         if (taskPid <= 0) {
-            return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR, "No PID registered for task.");
+            return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
+                                      "No PID registered for task.");
         }
         if (kill(taskPid, SIGTERM) == -1) {
             return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
@@ -1040,14 +1040,12 @@ static int crinitExecRtimCmdStatus(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, co
     user = pTask->user;
     if (pTask->username) {
         username = strdup(pTask->username);
-    }
-    else {
+    } else {
         username = strdup("root");
     }
     if (pTask->groupname) {
         groupname = strdup(pTask->groupname);
-    }
-    else {
+    } else {
         groupname = strdup("root");
     }
 
@@ -1096,8 +1094,8 @@ static int crinitExecRtimCmdStatus(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, co
     *groupnameStr = '\0';
     groupnameStr++;
 
-    if (crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STATUS, 10, CRINIT_RTIMCMD_RES_OK, resStr, pidStr, ctStr, stStr,
-                           etStr, userStr, groupStr, usernameStr, groupnameStr) == -1) {
+    if (crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STATUS, 10, CRINIT_RTIMCMD_RES_OK, resStr, pidStr, ctStr, stStr, etStr,
+                           userStr, groupStr, usernameStr, groupnameStr) == -1) {
         free(resStr);
         return -1;
     }
@@ -1230,7 +1228,8 @@ static void *crinitShdnThread(void *args) {
             if (pTask->stopCmdsSize > 0) {
                 haveStopCommands = true;
                 if (ctx->spawnFunc(ctx, pTask, CRINIT_DISPATCH_THREAD_MODE_STOP) == -1) {
-                    crinitErrPrint("Could not spawn new thread for execution STOP_COMMAND of task \'%s\'.", pTask->name);
+                    crinitErrPrint("Could not spawn new thread for execution STOP_COMMAND of task \'%s\'.",
+                                   pTask->name);
                 }
             }
         }

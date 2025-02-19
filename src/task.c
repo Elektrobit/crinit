@@ -212,7 +212,8 @@ int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig) {
     if (orig->groupname) {
         out->groupname = strdup(orig->groupname);
         if (out->groupname == NULL) {
-            crinitErrnoPrint("Could not allocate memory for task groupname during copy of Task \'%s\'.", orig->groupname);
+            crinitErrnoPrint("Could not allocate memory for task groupname during copy of Task \'%s\'.",
+                             orig->groupname);
             goto fail;
         }
     }
@@ -394,8 +395,7 @@ static int crinitCopyCommandBlock(char *name, size_t cmdsSize, crinitTaskCmd_t *
         crinitDbgInfoPrint("Sizeof(crinitTaskCmd_t: %lu", size);
         *outCmds = calloc(cmdsSize, sizeof(**outCmds));
         if (*outCmds == NULL) {
-            crinitErrnoPrint("Could not allocate memory for %zu COMMANDs during copy of Task \'%s\'.", cmdsSize,
-                             name);
+            crinitErrnoPrint("Could not allocate memory for %zu COMMANDs during copy of Task \'%s\'.", cmdsSize, name);
             return -1;
         }
 

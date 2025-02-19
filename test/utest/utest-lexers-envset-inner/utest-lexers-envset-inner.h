@@ -9,8 +9,8 @@
 /**
  * Tests successful lex-ing of valid inputs.
  *
- * All possible return values of crinitEnvVarInnerLex() save for CRINIT_TK_ERR are triggered using accordingly built input
- * strings.
+ * All possible return values of crinitEnvVarInnerLex() save for CRINIT_TK_ERR are triggered using accordingly built
+ * input strings.
  */
 void crinitEnvVarInnerLexTestSuccess(void **state);
 /**

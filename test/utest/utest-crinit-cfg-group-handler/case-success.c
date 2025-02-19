@@ -4,13 +4,13 @@
  * @brief Unit test for crinitCfgGroupHandler(), successful execution.
  */
 
-#include "confhdl.h"
-#include "common.h"
-#include "unit_test.h"
-#include "utest-crinit-cfg-group-handler.h"
-
 #include <stdlib.h>
 #include <string.h>
+
+#include "common.h"
+#include "confhdl.h"
+#include "unit_test.h"
+#include "utest-crinit-cfg-group-handler.h"
 
 void crinitCfgGroupHandlerTestNumericSuccess(void **state) {
     CRINIT_PARAM_UNUSED(state);

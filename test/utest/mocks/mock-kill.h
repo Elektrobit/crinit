@@ -13,7 +13,7 @@
  *
  * Does nothing.
  */
-int __wrap_kill(pid_t pid, int sig);    // NOLINT(readability-identifier-naming)
-                                        // Rationale: Naming scheme fixed due to linker wrapping.
+int __wrap_kill(pid_t pid, int sig);  // NOLINT(readability-identifier-naming)
+                                      // Rationale: Naming scheme fixed due to linker wrapping.
 
 #endif /* __MOCK_KILL_H__ */

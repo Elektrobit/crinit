@@ -4,12 +4,12 @@
  * @brief Unit test for crinitCfgGroupHandler(), handling of negative input.
  */
 
-#include "confhdl.h"
+#include <string.h>
+
 #include "common.h"
+#include "confhdl.h"
 #include "unit_test.h"
 #include "utest-crinit-cfg-group-handler.h"
-
-#include <string.h>
 
 void crinitCfgGroupHandlerTestNegativeInput(void **state) {
     CRINIT_PARAM_UNUSED(state);

@@ -4,12 +4,12 @@
  * @brief Unit test for crinitCfgUserHandler(), handling of null pointer input.
  */
 
-#include "confhdl.h"
+#include <string.h>
+
 #include "common.h"
+#include "confhdl.h"
 #include "unit_test.h"
 #include "utest-crinit-cfg-user-handler.h"
-
-#include <string.h>
 
 void crinitCfgUserHandlerTestNullInput(void **state) {
     CRINIT_PARAM_UNUSED(state);
