@@ -209,10 +209,14 @@ The configuration is done via commandline argument. Configuration via kernel-com
 After checking for completeness of alternatives and taking all pros and cons to account following decision was taken:
 
 For mount:
-*X*
+
+*1.3* mount if configured
+
+
 
 For Zombie-Reaping
-*Y*
+
+*2.4* configure crinit to become CHILD_SUBREAPER if pid!=1
 
 *Hint: no further rationale for the decision is given here! If you feel the need to add a rationale here consider to add it as pros and cons to the above lists.*
 
