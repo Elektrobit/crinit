@@ -673,9 +673,16 @@ cmake -B build/amd64 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=On -DUNIT
 make -C build/amd64
 ```
 
+Some default paths can be configured on compile time:
+* Default series file: `-DDEFAULT_CONFIG_SERIES_FILE`. Default is `$CMAKE_INSTALL_SYSCONFDIR/crinit/default.series`.
+* Sock file for the communication socket: `-DDEFAULT_CRINIT_SOCKFILE=<FILEPATH>`. Default is `$CMAKE_INSTALL_RUNSTATEDIR/crinit/crinit.sock`.
+* Default include directory: `-DDEFAULT_INCL_DIR=<PATH>`. Default is `$CMAKE_INSTALL_SYSCONFDIR/crinit`.
+* * Default task directory: `-DDEFAULT_TASK_DIR=<PATH>`. Default is `$CMAKE_INSTALL_SYSCONFDIR/crinit`.
+
 The cmake setup supports some optional features:
 * Crinit signature support using `-DENABLE_SIGNATURE_SUPPORT={On, Off}`. If set to on, crinit will have a dependency to
   [libmbedtls](https://github.com/Mbed-TLS/mbedtls). Default is `On`.
+* Configurable path for signature files: `-DDEFAULT_SIGKEY_DIR=<PATH>`. Default is `$CMAKE_INSTALL_SYSCONFDIR/crinit/pk`.
 * Unit tests using `-DUNIT_TESTS={On, Off}`. If set to on, Crinit's unit tests will be built and installed to
   `UNIT_TEST_INSTALL_DIR`. This will cause a dependency to cmocka 1.1.5 or greater. Default is `On` with installation
   path `${CMAKE_INSTALL_LIBDIR}/test/crinit/utest`.
@@ -683,6 +690,7 @@ The cmake setup supports some optional features:
   `On`.
 * Build and install an example generator for the machine id file (see above) using `-DMACHINE_ID_EXAMPLE={On, Off}`.
   Default is `Off`.
+* Name and path for the machine id file: `-DDEFAULT_MACHINE_ID_FILE=<FILEPATH>`. Default is `$CMAKE_INSTALL_SYSCONFDIR/machine-id`.
 * Install the example configurations from `config/example` to `/etc/${EXAMPLE_TASKDIR}`. Default is `Off`, default
   installation path is `/etc/crinit/example`.
 * Install the smoke test scripts and configurations, using `-DINSTALL_SMOKE_TESTS={On, Off}`, to the
