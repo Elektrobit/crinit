@@ -25,6 +25,7 @@
 #define CRINIT_CONFIG_KEYSTR_USE_ELOS "USE_ELOS"        ///< Config file key for USE_ELOS global option.
 #define CRINIT_CONFIG_KEYSTR_ELOS_SERVER "ELOS_SERVER"  ///< Config file key for ELOS_SERVER global option.
 #define CRINIT_CONFIG_KEYSTR_ELOS_PORT "ELOS_PORT"      ///< Config file key for ELOS_PORT global option.
+#define CRINIT_CONFIG_KEYSTR_LAUNCHER_CMD "LAUNCHER_CMD"   ///< Config file key for LAUNCHER_CMD global option.
 #define CRINIT_CONFIG_KEYSTR_INCL_SUFFIX "INCLUDE_SUFFIX"  ///< Config file key for INCLUDE_SUFFIX global option.
 #define CRINIT_CONFIG_KEYSTR_TASK_FILE_SUFFIX \
     "TASK_FILE_SUFFIX"  ///< Config key for the task file extension in dynamic configurations.
@@ -45,7 +46,9 @@
 #define CRINIT_CONFIG_KEYSTR_RESPAWN "RESPAWN"              ///< Config key to set a task to be respawning.
 #define CRINIT_CONFIG_KEYSTR_RESPAWN_RETRIES \
     "RESPAWN_RETRIES"  ///< Config key to set how often a task is allowed to respawn on failure.
-#define CRINIT_CONFIG_KEYSTR_STOP_COMMAND "STOP_COMMAND"    ///< Config key to add a stop command to the task.
+#define CRINIT_CONFIG_KEYSTR_STOP_COMMAND "STOP_COMMAND"  ///< Config key to add a stop command to the task.
+#define CRINIT_CONFIG_KEYSTR_USER "USER"                  ///< Config key to set a specific user to run task's commands.
+#define CRINIT_CONFIG_KEYSTR_GROUP "GROUP"  ///< Config key to set a specific group to run task's commands.
 
 #define CRINIT_CONFIG_DEFAULT_TASK_FILE_SUFFIX ".crinit"  ///< Default filename extension of task files.
 #define CRINIT_CONFIG_KEYSTR_INCL_FILE_SUFFIX \
@@ -54,6 +57,12 @@
 #define CRINIT_CONFIG_DEFAULT_DEBUG false                 ///< Default value for DEBUG global option.
 #define CRINIT_CONFIG_DEFAULT_TASKDIR "/etc/crinit"       ///< Default value for TASKDIR global option.
 #define CRINIT_CONFIG_DEFAULT_TASKDIR_SYMLINKS true
+#ifndef CRINIT_LAUNCHER_COMMAND_DEFAULT
+#define CRINIT_CONFIG_DEFAULT_LAUNCHER_CMD "/usr/bin/crinit-launch"
+#else
+#define CRINIT_CONFIG_DEFAULT_LAUNCHER_CMD \
+    CRINIT_LAUNCHER_COMMAND_DEFAULT  ///< Default value for LAUNCHER_CMD global option.
+#endif
 
 #define CRINIT_CONFIG_DEFAULT_INCLDIR "/etc/crinit"    ///< Default value for INCLUDEDIR global option.
 #define CRINIT_CONFIG_DEFAULT_SHDGRACEP 100000uLL      ///< Default value for SHUTDOWN_GRACE_PERIOD_US global option
@@ -79,6 +88,7 @@ typedef enum crinitConfigs_t {
     CRINIT_CONFIG_ELOS_SERVER,
     CRINIT_CONFIG_ENV_SET,
     CRINIT_CONFIG_FILTER_DEFINE,
+    CRINIT_CONFIG_GROUP,
     CRINIT_CONFIG_INCLUDE,
     CRINIT_CONFIG_INCLUDE_SUFFIX,
     CRINIT_CONFIG_INCLUDEDIR,
@@ -90,13 +100,15 @@ typedef enum crinitConfigs_t {
     CRINIT_CONFIG_SHDGRACEP,
     CRINIT_CONFIG_SIGKEYDIR,
     CRINIT_CONFIG_SIGNATURES,
+    CRINIT_CONFIG_STOP_COMMAND,
     CRINIT_CONFIG_TASK_FILE_SUFFIX,
     CRINIT_CONFIG_TASKDIR,
     CRINIT_CONFIG_TASKDIR_FOLLOW_SYMLINKS,
     CRINIT_CONFIG_TASKS,
     CRINIT_CONFIG_USE_SYSLOG,
     CRINIT_CONFIG_USE_ELOS,
-    CRINIT_CONFIG_STOP_COMMAND,
+    CRINIT_CONFIG_USER,
+    CRINIT_CONFIG_LAUNCHER_CMD,
     CRINIT_CONFIGS_SIZE
 } crinitConfigs_t;
 
@@ -126,7 +138,7 @@ typedef struct crinitConfKvList_t {
  * If the Kernel command line option `crinit.signatures` is set to `yes`, this function will also check the
  * configuration file's signature. A non-matching signature is handled as a parser error.
  *
- * @param confList  will return a pointer to dynamically allocated memory of a ConfKvList filled with the 
+ * @param confList  will return a pointer to dynamically allocated memory of a ConfKvList filled with the
  *                  key/value-pairs from the config file.
  * @param filename  Path to the configuration file.
  *

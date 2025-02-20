@@ -104,6 +104,10 @@ int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig) {
     out->elosFilters.envp = NULL;
     out->prv = NULL;
     out->redirs = NULL;
+    out->user = 0;
+    out->group = 0;
+    out->username = NULL;
+    out->groupname = NULL;
 
     out->name = strdup(orig->name);
     if (out->name == NULL) {
@@ -196,6 +200,24 @@ int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig) {
     out->maxRetries = orig->maxRetries;
     out->failCount = orig->failCount;
 
+    out->user = orig->user;
+    out->group = orig->group;
+    if (orig->username) {
+        out->username = strdup(orig->username);
+        if (out->username == NULL) {
+            crinitErrnoPrint("Could not allocate memory for task username during copy of Task \'%s\'.", orig->username);
+            goto fail;
+        }
+    }
+    if (orig->groupname) {
+        out->groupname = strdup(orig->groupname);
+        if (out->groupname == NULL) {
+            crinitErrnoPrint("Could not allocate memory for task groupname during copy of Task \'%s\'.",
+                             orig->groupname);
+            goto fail;
+        }
+    }
+
     return 0;
 
 fail:
@@ -263,6 +285,8 @@ void crinitDestroyTask(crinitTask_t *t) {
     free(t->redirs);
     crinitEnvSetDestroy(&t->taskEnv);
     crinitEnvSetDestroy(&t->elosFilters);
+    free(t->username);
+    free(t->groupname);
 }
 
 int crinitTaskMergeInclude(crinitTask_t *tgt, const char *src, char *importList) {
@@ -371,8 +395,7 @@ static int crinitCopyCommandBlock(char *name, size_t cmdsSize, crinitTaskCmd_t *
         crinitDbgInfoPrint("Sizeof(crinitTaskCmd_t: %lu", size);
         *outCmds = calloc(cmdsSize, sizeof(**outCmds));
         if (*outCmds == NULL) {
-            crinitErrnoPrint("Could not allocate memory for %zu COMMANDs during copy of Task \'%s\'.", cmdsSize,
-                             name);
+            crinitErrnoPrint("Could not allocate memory for %zu COMMANDs during copy of Task \'%s\'.", cmdsSize, name);
             return -1;
         }
 

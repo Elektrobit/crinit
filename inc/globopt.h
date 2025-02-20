@@ -29,6 +29,7 @@ typedef struct crinitGlobOptStore_t {
     bool taskDirFollowSl;          ///< Value for the TASKDIR_FOLLOW_SYMLINKS global option.
     char *taskFileSuffix;          ///< Value for the TASK_FILE_SUFFIX global option.
     char **tasks;                  ///< Value for the TASKS global option.
+    char *launcherCmd;             ///< Value for the LAUNCHER_CMD global option.
     unsigned long long shdGraceP;  ///< Value for the SHUTDOWN_GRACE_PERIOD_US global option.
     crinitEnvSet_t globEnv;        ///< Storage for global task environment variables.
     crinitEnvSet_t globFilters;    ///< Storage for global task filter variables.
@@ -45,6 +46,7 @@ typedef struct crinitGlobOptStore_t {
 #define CRINIT_GLOBOPT_TASKDIR_FOLLOW_SYMLINKS taskDirFollowSl  ///< TASKDIR_FOLLOW_SYMLINKS global option
 #define CRINIT_GLOBOPT_TASK_FILE_SUFFIX taskFileSuffix          ///< TASK_FILE_SUFFIX global option
 #define CRINIT_GLOBOPT_TASKS tasks                              ///< TASKS global option
+#define CRINIT_GLOBOPT_LAUNCHER_CMD launcherCmd                 ///< LAUNCHER_CMD global option
 #define CRINIT_GLOBOPT_SHDGRACEP shdGraceP                      ///< SHUTDOWN_GRACE_PERIOD_US global option
 #define CRINIT_GLOBOPT_ENV globEnv                              ///< Reference to the global task environment
 #define CRINIT_GLOBOPT_FILTERS globFilters                      ///< Reference to the global task filters

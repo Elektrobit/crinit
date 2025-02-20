@@ -150,6 +150,8 @@ DEBUG = NO
 
 SHUTDOWN_GRACE_PERIOD_US = 100000
 
+LAUNCHER_CMD = /usr/bin/crinit-launch
+
 USE_SYSLOG = NO
 USE_ELOS = YES
 
@@ -172,6 +174,7 @@ ENV_SET = GREETING "Good morning!"
 - **INCLUDEDIR** -- Where to find include files referenced from task configurations. Default: Same as **TASKDIR**.
 - **INCLUDE_SUFFIX** -- Filename suffix of include files referenced from task configurations. Default: `.crincl`
 - **DEBUG** -- If crinit should be verbose in its output. Either `YES` or `NO`. Default: `NO`
+- **LAUNCHER_CMD** -- Specify location of the crinit-launch binary. Optional. If not given, crinit-launch is taken from the default installation path. Needed to execute a **COMMAND** as a different user or group.
 - **SHUTDOWN_GRACE_PERIOD_US** -- The amount of microseconds to wait both between `STOP_COMMAND` and `SIGTERM` as well as between`SIGTERM` and `SIGKILL` on shutdown/reboot.
                                   Default: 100000
 - **USE_SYSLOG** -- If syslog should be used for output if it is available. If set to `YES`, Crinit will switch to
@@ -204,6 +207,9 @@ COMMAND = /bin/mkdir -p /var/lib/dhcpcd
 
 STOP_COMMAND = /sbin/ifconfig eth0 down
 
+USER = root
+GROUP = root
+
 DEPENDS = check_qemu:fail earlysetup:wait @provided:writable_var
 
 PROVIDES = ipv4_dhcp:wait resolvconf:wait
@@ -228,6 +234,10 @@ IO_REDIRECT = STDERR STDOUT
   the `network-dhcp:wait` dependency is fulfilled) if the last command has successfully returned. If no **COMMAND** is
   given, the task is treated as a dependency group or "meta-task", see below. (*array-like*)
 - **STOP_COMMAND** -- Optional. Given commands are executed on `crinit-ctl stop <TASKNAME>`, `crinit-ctl poweroff` or `crinit-ctl reboot` instead of sending the regular `SIGTERM`. Same rules as for **COMMAND** apply. Additionally the variable "TASK_PID" can be used and will be expanded with the stored PID of the task. Example: `STOP_COMMAND = /usr/bin/kill ${TASK_PID}`. Please note that TASK_PID will expand to "-1" if the task is no longer running or has forked itself without notifying Crinit. **ATTENTION:** Currently STOP_COMMAND does not support IO_REDIRECT! Its output will not be redirected!
+- **USER** -- Name of the user used to run the commands specified in **COMMAND**. Either the username or the numeric user ID can be used. If **USER** is not set, "root" is assumed.  
+**NOTE**: Changing user names, UIDs, group names or GIDs on the system while a task using them has already been loaded may result in undefined behaviour.
+- **GROUP** -- Name of the group used to run the commands specified in **COMMAND**. Either the group name or the numeric group ID can be used. If **GROUP** is not set, "root" is assumed. Note that setting supplementary groups is not yet supported.
+**Also see note on USER command.** This applies here, too.
 - **DEPENDS** -- A list of dependencies which need to be fulfilled before this task is considered "ready-to-start".
   Semantics are `<taskname>:{fail,wait,spawn}`, where `spawn` is fulfilled when (the first command of) a task has been
   started, `wait` if it has successfully completed, and `fail` if it has failed somewhere along the way. Here we can see
@@ -581,7 +591,13 @@ the current session. The script can also be sourced from `.bashrc` if a system-w
 Once installed and loaded, `crinit-ctl <TAB><TAB>` will show/complete available command verbs like `addtask`, `enable`,
 `disable`, etc. For `crinit-ctl addtask <TAB><TAB>`, paths to `\*.crinit` files and specific options will be completed,
 similar for `addseries`. Verbs taking a task name as input will have completion of available tasks loaded by crinit.
-The script calls `crinit-ctl list` and parses its output in the background to achieve this.
+The script calls `crinit-ctl list` and parses its output in the background to 
+achieve this.
+
+
+## crinit-launch
+
+The `crinit-launch` executable is a helper program to start a command as a different user and / or group. It is not meant to be executed by the user directly.
 
 ## Build Instructions
 Executing

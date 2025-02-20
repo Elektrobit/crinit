@@ -843,11 +843,11 @@ static int crinitExecRtimCmdStop(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, cons
                                       "Could not spawn STOP_COMMAND(s).");
         }
         pthread_mutex_unlock(&ctx->lock);
-    }
-    else {
+    } else {
         pid_t taskPid = pTask->pid;
         if (taskPid <= 0) {
-            return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR, "No PID registered for task.");
+            return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
+                                      "No PID registered for task.");
         }
         if (kill(taskPid, SIGTERM) == -1) {
             return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
@@ -1020,6 +1020,10 @@ static int crinitExecRtimCmdStatus(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, co
     crinitTaskState_t s;
     pid_t pid;
     struct timespec creation, start, end;
+    gid_t group;
+    uid_t user;
+    char *username = NULL;
+    char *groupname = NULL;
 
     crinitTask_t *pTask = crinitTaskDBBorrowTask(ctx, cmd->args[0]);
     if (pTask == NULL) {
@@ -1032,21 +1036,38 @@ static int crinitExecRtimCmdStatus(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, co
     creation = pTask->createTime;
     start = pTask->startTime;
     end = pTask->endTime;
+    group = pTask->group;
+    user = pTask->user;
+    if (pTask->username) {
+        username = strdup(pTask->username);
+    } else {
+        username = strdup("root");
+    }
+    if (pTask->groupname) {
+        groupname = strdup(pTask->groupname);
+    } else {
+        groupname = strdup("root");
+    }
 
     if (crinitTaskDBRemit(ctx) == -1) {
         crinitErrPrint(
             "Could not release mutex on TaskDB. This should not happen. Will try to continue but Crinit may lock up.");
     }
 
-    const char *resFmt = "%lu\n%d\n%lld.%.9ld\n%lld.%.9ld\n%lld.%.9ld";
+    const char *resFmt = "%lu\n%d\n%lld.%.9ld\n%lld.%.9ld\n%lld.%.9ld\n%d\n%d\n%s\n%s";
     size_t resStrLen = 1 + snprintf(NULL, 0, resFmt, s, pid, creation.tv_sec, creation.tv_nsec, start.tv_sec,
-                                    start.tv_nsec, end.tv_sec, end.tv_nsec);
+                                    start.tv_nsec, end.tv_sec, end.tv_nsec, user, group, username, groupname);
     char *resStr = malloc(resStrLen);
     if (resStr == NULL) {
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STATUS, 2, CRINIT_RTIMCMD_RES_ERR, "Memory allocation error.");
     }
     snprintf(resStr, resStrLen, resFmt, s, pid, creation.tv_sec, creation.tv_nsec, start.tv_sec, start.tv_nsec,
-             end.tv_sec, end.tv_nsec);
+             end.tv_sec, end.tv_nsec, user, group, username, groupname);
+
+    free(username);
+    free(groupname);
+    username = NULL;
+    groupname = NULL;
 
     char *pidStr = strchr(resStr, '\n');
     *pidStr = '\0';
@@ -1060,9 +1081,21 @@ static int crinitExecRtimCmdStatus(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, co
     char *etStr = strchr(stStr, '\n');
     *etStr = '\0';
     etStr++;
+    char *userStr = strchr(etStr, '\n');
+    *userStr = '\0';
+    userStr++;
+    char *groupStr = strchr(userStr, '\n');
+    *groupStr = '\0';
+    groupStr++;
+    char *usernameStr = strchr(groupStr, '\n');
+    *usernameStr = '\0';
+    usernameStr++;
+    char *groupnameStr = strchr(usernameStr, '\n');
+    *groupnameStr = '\0';
+    groupnameStr++;
 
-    if (crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STATUS, 6, CRINIT_RTIMCMD_RES_OK, resStr, pidStr, ctStr, stStr,
-                           etStr) == -1) {
+    if (crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STATUS, 10, CRINIT_RTIMCMD_RES_OK, resStr, pidStr, ctStr, stStr, etStr,
+                           userStr, groupStr, usernameStr, groupnameStr) == -1) {
         free(resStr);
         return -1;
     }
@@ -1195,7 +1228,8 @@ static void *crinitShdnThread(void *args) {
             if (pTask->stopCmdsSize > 0) {
                 haveStopCommands = true;
                 if (ctx->spawnFunc(ctx, pTask, CRINIT_DISPATCH_THREAD_MODE_STOP) == -1) {
-                    crinitErrPrint("Could not spawn new thread for execution STOP_COMMAND of task \'%s\'.", pTask->name);
+                    crinitErrPrint("Could not spawn new thread for execution STOP_COMMAND of task \'%s\'.",
+                                   pTask->name);
                 }
             }
         }
@@ -1263,7 +1297,7 @@ static inline int crinitGenUnMountList(crinitUnMountList_t **ml, bool *rootfsIsR
         return -1;
     }
     *rootfsIsRo = false;
-    FILE *mountListStream = fopen("/proc/mounts", "r");
+    FILE *mountListStream = fopen("/proc/mounts", "re");
     if (mountListStream == NULL) {
         crinitErrnoPrint("Could not open \'/proc/mounts\' for reading.");
         return -1;

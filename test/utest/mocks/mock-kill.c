@@ -4,8 +4,8 @@
  * @brief Implementation of a mock function for kill().
  */
 #include "mock-kill.h"
-#include "common.h"
 
+#include "common.h"
 #include "unit_test.h"
 
 // Rationale: Naming scheme fixed due to linker wrapping.

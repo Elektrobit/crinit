@@ -340,7 +340,8 @@ CRINIT_LIB_EXPORTED int crinitClientTaskRestart(const char *taskName) {
 }
 
 CRINIT_LIB_EXPORTED int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *pid, struct timespec *ct,
-                                                  struct timespec *st, struct timespec *et, const char *taskName) {
+                                                  struct timespec *st, struct timespec *et, gid_t *gid, uid_t *uid,
+                                                  char **username, char **groupname, const char *taskName) {
     crinitNullCheck(-1, taskName);
 
     crinitRtimCmd_t cmd, res;
@@ -356,7 +357,14 @@ CRINIT_LIB_EXPORTED int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *p
     }
     crinitDestroyRtimCmd(&cmd);
 
-    if (crinitResponseCheck(&res, CRINIT_RTIMCMD_R_STATUS) == 0 && res.argc == 6) {
+    if (username) {
+        *username = NULL;
+    }
+    if (groupname) {
+        *groupname = NULL;
+    }
+
+    if (crinitResponseCheck(&res, CRINIT_RTIMCMD_R_STATUS) == 0 && res.argc == 10) {
         char *endPtr;
         if (s != NULL) {
             *s = strtoul(res.args[1], &endPtr, 10);
@@ -423,11 +431,47 @@ CRINIT_LIB_EXPORTED int crinitClientTaskGetStatus(crinitTaskState_t *s, pid_t *p
                 goto responseFail;
             }
         }
+        if (uid != NULL) {
+            *uid = strtoul(res.args[6], &endPtr, 10);
+            if (endPtr == res.args[6] || errno == ERANGE) {
+                crinitErrPrint("Could not parse numerical value from '%s'.", res.args[6]);
+                goto responseFail;
+            }
+        }
+        if (gid != NULL) {
+            *gid = strtoul(res.args[7], &endPtr, 10);
+            if (endPtr == res.args[7] || errno == ERANGE) {
+                crinitErrPrint("Could not parse numerical value from '%s'.", res.args[7]);
+                goto responseFail;
+            }
+        }
+        if (username != NULL) {
+            *username = strdup(res.args[8]);
+            if (*username == NULL) {
+                crinitErrPrint("Could not copy task's username '%s'.", res.args[8]);
+                goto responseFail;
+            }
+        }
+        if (groupname != NULL) {
+            *groupname = strdup(res.args[9]);
+            if (*groupname == NULL) {
+                crinitErrPrint("Could not copy task's groupname '%s'.", res.args[9]);
+                goto responseFail;
+            }
+        }
         crinitDestroyRtimCmd(&res);
         return 0;
     }
 responseFail:
     crinitDestroyRtimCmd(&res);
+    if (username && *username) {
+        free(*username);
+        *username = NULL;
+    }
+    if (groupname && *groupname) {
+        free(*groupname);
+        *groupname = NULL;
+    }
     return -1;
 }
 
@@ -472,13 +516,17 @@ CRINIT_LIB_EXPORTED int crinitClientGetTaskList(crinitTaskList_t **tlptr) {
         goto fail_status;
     }
 
+    char *username = NULL;
+    char *groupname = NULL;
     for (size_t i = 0; i < res.argc - 1; i++) {
         const char *name = res.args[i + 1];
         pid_t pid = -1;
         struct timespec ct = {0}, st = {0}, et = {0};
+        gid_t gid = 0;
+        uid_t uid = 0;
         crinitTaskState_t state = 0;
 
-        if (crinitClientTaskGetStatus(&state, &pid, &ct, &st, &et, name) == -1) {
+        if (crinitClientTaskGetStatus(&state, &pid, &ct, &st, &et, &gid, &uid, &username, &groupname, name) == -1) {
             crinitErrPrint("Querying status of task \'%s\' failed.", name);
             ret = -1;
             goto fail_status;
@@ -495,7 +543,13 @@ CRINIT_LIB_EXPORTED int crinitClientGetTaskList(crinitTaskList_t **tlptr) {
         tl->tasks[i].createTime = ct;
         tl->tasks[i].startTime = st;
         tl->tasks[i].endTime = et;
+        tl->tasks[i].uid = uid;
+        tl->tasks[i].gid = gid;
+        tl->tasks[i].username = username;
+        tl->tasks[i].groupname = groupname;
         tl->numTasks++;
+        username = NULL;
+        groupname = NULL;
     }
 
     crinitDestroyRtimCmd(&res);
@@ -504,6 +558,8 @@ CRINIT_LIB_EXPORTED int crinitClientGetTaskList(crinitTaskList_t **tlptr) {
 fail_status:
     crinitClientFreeTaskList(tl);
     crinitDestroyRtimCmd(&res);
+    free(username);
+    free(groupname);
     return ret;
 }
 
@@ -513,6 +569,8 @@ CRINIT_LIB_EXPORTED void crinitClientFreeTaskList(crinitTaskList_t *tl) {
     }
     for (size_t i = 0; i < tl->numTasks; i++) {
         free(tl->tasks[i].name);
+        free(tl->tasks[i].groupname);
+        free(tl->tasks[i].username);
     }
     free(tl->tasks);
     free(tl);

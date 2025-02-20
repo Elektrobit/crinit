@@ -196,7 +196,7 @@ int crinitFileSeriesFromDir(crinitFileSeries_t *fse, const char *path, const cha
     }
 
     // If scandir hasn't found anything, we're done here.
-    if(scanRes == 0) {
+    if (scanRes == 0) {
         crinitFreeScandirList(scanList, scanRes);
         return 0;
     }
@@ -228,7 +228,8 @@ static char **crinitStrArrDeepCopy(char **source, size_t *numElements) {
 
     char **ptr, **target;
 
-    for (ptr = source; *ptr; ptr++);
+    for (ptr = source; *ptr; ptr++)
+        ;
     *numElements = ptr - source;
 
     target = calloc(*numElements + 1, sizeof(target));

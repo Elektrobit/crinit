@@ -15,6 +15,6 @@
  * Otherwise the function is a no-op.
  */
 int __wrap_crinitDestroyRtimCmd(crinitRtimCmd_t *c);  // NOLINT(readability-identifier-naming)
-                                                    // Rationale: Naming scheme fixed due to linker wrapping.
+                                                      // Rationale: Naming scheme fixed due to linker wrapping.
 
 #endif /* __MOCK_DESTROY_RTIM_CMD_H__ */

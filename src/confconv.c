@@ -154,6 +154,18 @@ int crinitConfConvToIntegerULL(unsigned long long *x, const char *confVal, int b
     return 0;
 }
 
+int crinitConfConvToIntegerUI(unsigned int *x, const char *confVal, int base) {
+    crinitNullCheck(-1, x, confVal);
+    crinitConfConvToIntegerFnBody(*x, confVal);
+    return 0;
+}
+
+int crinitConfConvToIntegerLL(long long *x, const char *confVal, int base) {
+    crinitNullCheck(-1, x, confVal);
+    crinitConfConvToIntegerFnBody(*x, confVal);
+    return 0;
+}
+
 int crinitConfConvToBool(bool *b, const char *confVal) {
     crinitNullCheck(-1, b, confVal);
     if (strcasecmp(confVal, "YES") == 0) {

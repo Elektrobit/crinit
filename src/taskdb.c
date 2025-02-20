@@ -37,7 +37,9 @@ static int crinitFindTask(crinitTask_t **task, const char *taskName, const crini
  */
 static bool crinitTaskIsReady(const crinitTask_t *t);
 
-int crinitTaskDBInitWithSize(crinitTaskDB_t *ctx, int (*spawnFunc)(crinitTaskDB_t *ctx, const crinitTask_t *, crinitDispatchThreadMode_t mode),
+int crinitTaskDBInitWithSize(crinitTaskDB_t *ctx,
+                             int (*spawnFunc)(crinitTaskDB_t *ctx, const crinitTask_t *,
+                                              crinitDispatchThreadMode_t mode),
                              size_t initialSize) {
     crinitNullCheck(-1, ctx);
 
