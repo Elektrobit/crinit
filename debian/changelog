@@ -1,3 +1,9 @@
+crinit (0.16.0-1) unstable; urgency=medium
+
+  * New upstream tag 0.16.0
+
+ -- Isaac True <isaac.true@emlix.com>  Thu, 20 Feb 2025 11:09:53 +0100
+
 crinit (0.15.1-1) unstable; urgency=medium
 
   * New upstream tag 0.15.1
