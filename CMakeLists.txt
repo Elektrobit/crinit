@@ -90,6 +90,12 @@ set(DEFAULT_TASK_DIR
   "Default value for TASKDIR global option."
 )
 
+set(DEFAULT_MACHINE_ID_FILE
+  "${CMAKE_INSTALL_SYSCONFDIR}/machine-id"
+  CACHE PATH
+  "Default value for machine id file."
+)
+
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Debug")
 endif()

@@ -86,6 +86,7 @@ target_compile_definitions(
     CRINIT_CONFIG_DEFAULT_SIGKEYDIR="${DEFAULT_SIGKEY_DIR}"
     CRINIT_CONFIG_DEFAULT_INCLDIR="${DEFAULT_INCL_DIR}"
     CRINIT_CONFIG_DEFAULT_TASKDIR="${DEFAULT_TASK_DIR}"
+    CRINIT_MACHINE_ID_FILE="${DEFAULT_MACHINE_ID_FILE}"
 )
 
 # libcrinit-client
@@ -175,6 +176,12 @@ if(MACHINE_ID_EXAMPLE)
     machine-id-gen
     machine-id-gen.c
   )
+
+target_compile_definitions(
+    machine-id-gen
+    PRIVATE
+    MACHINE_ID_FILE="${DEFAULT_MACHINE_ID_FILE}"
+)
 endif(MACHINE_ID_EXAMPLE)
 
 # Installation
