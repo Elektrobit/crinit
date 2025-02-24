@@ -151,6 +151,32 @@ in black on white or HKS43 color.
 
 # Details
 
+## Command-line options
+
+Crinit is mainly configured via global and task-specific configuration files. There are, however, some specific options
+related to its behavior as a secondary init process (e.g. if crinit is started by another init process, or even itself).
+These options can only be changed through command-line parameters.
+
+Specifically, those are
+
+* **--sys-mounts/--no-sys-mounts** - Depending on the setting, Crinit will or will not mount some hardcoded system
+    directories. Some of these are needed by Crinit itself to function. So, if deactivated, they need to be already
+    mounted when Crinit starts. If activated, Crinit will mount
+    - `/dev` - devtmpfs pseudo file system
+    - `/dev/pts` - devpts pseudo file system
+    - `/proc` - procfs filesystem, needed by Crinit to parse the Kernel cmdline
+    - `/run` - tmpfs, needed by Crinit to create its socket (default location)
+    - `/sys` - sysfs pseudo file system
+    Default: Activated if Crinit is PID 1, otherwise deactivated.
+* **--child-subreaper/--no-child-subreaper** - Depending on the setting, Crinit will or will not provide a process with
+    "child subreaper" process attribute (see [PR_SET_CHILD_SUBREAPER manpage](https://man7.org/linux/man-pages/man2/PR_SET_CHILD_SUBREAPER.2const.html)).
+    This is a relevant setting only if Crinit is not PID 1, i.e. started as a secondary init process. In that case,
+    Crinit can use this setting to provide the "zombie reaper" function for its descendent processes. For example, this
+    can be helpful in some containerization scenarios. If Crinit is PID 1, however, it will always provide a "zombie
+    reaper" regardless of this setting.
+    By default, Crinit will respect the attribute as it is set when Crinit is started and behave accordingly, i.e. if
+    Crinit either is PID 1 or it has the CHILD_SUBREAPER process attribute, it will reap zombies of its descendants.
+
 ## Configuration
 
 As described above, Crinit needs a global series-file containing global configuration options as well as a list of task
@@ -294,7 +320,7 @@ IO_REDIRECT = STDERR STDOUT
 - **GROUP** -- Name of the group used to run the commands specified in **COMMAND**. Either the group name or the numeric
   group ID can be used. If **GROUP** is not set, "root" is assumed. Note that setting supplementary groups is not yet
   supported.
-**Also see note on USER command.** This applies here, too.
+    **Also see note on USER command.** This applies here, too.
 - **DEPENDS** -- A list of dependencies which need to be fulfilled before this task is considered "ready-to-start".
   Semantics are `<taskname>:{fail,wait,spawn}`, where `spawn` is fulfilled when (the first command of) a task has been
   started, `wait` if it has successfully completed, and `fail` if it has failed somewhere along the way. Here we can see
@@ -652,9 +678,7 @@ the current session. The script can also be sourced from `.bashrc` if a system-w
 Once installed and loaded, `crinit-ctl <TAB><TAB>` will show/complete available command verbs like `addtask`, `enable`,
 `disable`, etc. For `crinit-ctl addtask <TAB><TAB>`, paths to `\*.crinit` files and specific options will be completed,
 similar for `addseries`. Verbs taking a task name as input will have completion of available tasks loaded by crinit.
-The script calls `crinit-ctl list` and parses its output in the background to
-achieve this.
-
+The script calls `crinit-ctl list` and parses its output in the background to achieve this.
 
 ## crinit-launch
 
