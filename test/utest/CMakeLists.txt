@@ -30,6 +30,12 @@ function(create_unit_test)
     ${CMOCKA_INCLUDE_DIR}
   )
 
+  target_compile_definitions(
+    ${PARSED_ARGS_NAME}
+    PRIVATE
+    CRINIT_ELOS_POLLING_TIME=${DEFAULT_ELOS_POLLING_TIME}
+  )
+
   if(PARSED_ARGS_DEFINITIONS)
     target_compile_definitions(${PARSED_ARGS_NAME} PRIVATE ${PARSED_ARGS_DEFINITIONS})
   endif()

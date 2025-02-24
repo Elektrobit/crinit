@@ -474,7 +474,7 @@ static void *crinitElosdepEventListener(void *arg) {
             }
         }
 
-        usleep(500000);
+        usleep(CRINIT_ELOS_POLLING_TIME);
     }
 
 err_connection_lost:
