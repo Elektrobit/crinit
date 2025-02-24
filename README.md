@@ -85,11 +85,12 @@ Crinit currently has the following features implemented:
 * ability to report task state changes back to elos
     - emits appropriate events when a task is created, starts, exits, or fails
 * optional signature checking of Crinit's configuration files
+* setting of UID and GID a task should be run as
 
 In the future we also plan to support:
 
-* restriction of processes started/managed by Crinit
-    - UID/GID, capabilities, cgroups,...
+* fine-grained restriction of processes started/managed by Crinit
+    - capabilities, cgroups,...
 
 There are example configurations below which show how to use the currently implemented features.
 For detailed explanations of Crinit's inner workings please refer to the Doxygen documentation generated during build.
