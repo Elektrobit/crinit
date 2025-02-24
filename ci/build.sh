@@ -71,6 +71,7 @@ cmake -B "$BUILDDIR" \
     -DENABLE_ASAN="$ENABLE_ASAN" \
     -DENABLE_ANALYZER="$ENABLE_ANALYZER" \
     -DENABLE_WERROR="$ENABLE_WERROR" \
+    -DDEFAULT_CRINIT_SOCKFILE=/run/crinit/crinit.sock \
     "$BASEDIR"
 make -C "$BUILDDIR"
 
