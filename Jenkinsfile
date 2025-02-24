@@ -15,33 +15,33 @@ pipeline {
         label 'docker'
     }
     environment {
-        DOCKER_BUILDKIT=1
+        DOCKER_BUILDKIT = 1
         UID = sh(script: 'id -u', returnStdout: true).trim()
         GID = sh(script: 'id -g', returnStdout: true).trim()
         TMPDIR = '/tmp'
     }
     options {
         gitlabBuilds(builds: [
-            "Build",
-            "Build Doc",
-            "Analyse: Lint",
-            "Test: utests",
-            "Test: smoketests",
-            "Test: integration",
-            "Demo",
+            'Build',
+            'Build Doc',
+            'Analyse: Lint',
+            'Test: utests',
+            'Test: smoketests',
+            'Test: integration',
+            'Demo',
         ])
         buildDiscarder(logRotator(numToKeepStr: '4'))
         disableConcurrentBuilds()
     }
     stages {
-        stage ('Setup') {
+        stage('Setup') {
             steps {
                 sh '''#!/bin/bash -xe
                 git clean -xdff
                 '''
             }
         }
-        stage ('Build and Test') {
+        stage('Build and Test') {
             agent {
                     dockerfile {
                         dir 'ci'
@@ -58,9 +58,9 @@ pipeline {
                             -e HOME=/home/jenkins"
                         reuseNode true
                     }
-                }
+            }
                 stages {
-                    stage ('Build') {
+                    stage('Build') {
                         steps {
                             gitlabCommitStatus("${STAGE_NAME}") {
                                 sh '''#!/bin/bash -xe
@@ -70,7 +70,7 @@ pipeline {
                             }
                         }
                     }
-                    stage ('Analyse: Lint') {
+                    stage('Analyse: Lint') {
                         steps {
                             gitlabCommitStatus("${STAGE_NAME}") {
                                 sh '''#!/bin/bash -xe
@@ -79,7 +79,7 @@ pipeline {
                             }
                         }
                     }
-                    stage ('Test: utests') {
+                    stage('Test: utests') {
                         steps {
                             gitlabCommitStatus("${STAGE_NAME}") {
                                 sh '''#!/bin/bash -xe
@@ -89,7 +89,7 @@ pipeline {
                             }
                         }
                     }
-                    stage ('Test: smoketests') {
+                    stage('Test: smoketests') {
                         steps {
                             gitlabCommitStatus("${STAGE_NAME}") {
                                 sh '''#!/bin/bash -xe
@@ -99,7 +99,7 @@ pipeline {
                             }
                         }
                     }
-                    stage ('Demo') {
+                    stage('Demo') {
                         steps {
                             gitlabCommitStatus("${STAGE_NAME}") {
                                 sh '''#!/bin/bash -xe
@@ -110,7 +110,7 @@ pipeline {
                     }
                 }
         }
-        stage ('Setup Doc') {
+        stage('Setup Doc') {
             agent {
                 dockerfile {
                     dir 'ci'
@@ -129,24 +129,24 @@ pipeline {
                 }
             }
             stages {
-		stage ('Build Doc') {
-		    steps {
-		        gitlabCommitStatus("${STAGE_NAME}") {
-		            sh '''#!/bin/bash -xe
-		            ci/build_doc.sh
-		            '''
-		        }
-		    }
-	        }
+                stage('Build Doc') {
+                    steps {
+                        gitlabCommitStatus("${STAGE_NAME}") {
+                            sh '''#!/bin/bash -xe
+                    ci/build_doc.sh
+                    '''
+                        }
+                    }
+                }
             }
         }
-        stage ('Target tests') {
+        stage('Target tests') {
             environment {
                 DOCKER_BUILDKIT = 1
-                BUILD_ARG = "--build-arg USER=jenkins"
+                BUILD_ARG = '--build-arg USER=jenkins'
             }
             stages {
-                stage ('Test: integration') {
+                stage('Test: integration') {
                     steps {
                         sshagent(credentials: ['jenkins-e2data']) {
                             gitlabCommitStatus("${STAGE_NAME}") {
@@ -166,3 +166,4 @@ pipeline {
         }
     }
 }
+
