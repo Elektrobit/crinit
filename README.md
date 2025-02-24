@@ -177,6 +177,15 @@ Specifically, those are
     By default, Crinit will respect the attribute as it is set when Crinit is started and behave accordingly, i.e. if
     Crinit either is PID 1 or it has the CHILD_SUBREAPER process attribute, it will reap zombies of its descendants.
 
+## Environment Variables
+
+Crinit also respects the environment variable
+* `CRINIT_SOCK` - The path to the socket file Crinit will create for communication through `libcrinit-client`.
+    Default: `/run/crinit/crinit.sock`
+
+Note that `crinit-ctl` uses the same environment variable to decide to which socket it will connect to. This makes it
+possible to have multiple instances of crinit running alongside each other, each controlled through a different socket.
+
 ## Configuration
 
 As described above, Crinit needs a global series-file containing global configuration options as well as a list of task
@@ -664,6 +673,9 @@ USAGE: crinit-ctl <ACTION> [OPTIONS] <PARAMETER> [PARAMETERS...]
         --version/-V - Print version information about crinit-ctl, the crinit-client library,
                        and -- if connection is successful -- the crinit daemon.
 ```
+
+As noted above, it will also make use of the `CRINIT_SOCK` environment variable to know which crinit socket to connect
+to (Default: `/run/crinit/crinit.sock`).
 
 ## Smart bash completion for crinit-ctl
 
