@@ -675,14 +675,14 @@ make -C build/amd64
 
 Some default paths can be configured on compile time:
 * Default series file: `-DDEFAULT_CONFIG_SERIES_FILE`. Default is `$CMAKE_INSTALL_SYSCONFDIR/crinit/default.series`.
-* Sock file for the communication socket: `-DDEFAULT_CRINIT_SOCKFILE=<FILEPATH>`. Default is `$CMAKE_INSTALL_RUNSTATEDIR/crinit/crinit.sock`.
+* Default location of the client communication socket: `-DDEFAULT_CRINIT_SOCKFILE=<FILEPATH>`. Default is `$CMAKE_INSTALL_RUNSTATEDIR/crinit/crinit.sock`.
 * Default include directory: `-DDEFAULT_INCL_DIR=<PATH>`. Default is `$CMAKE_INSTALL_SYSCONFDIR/crinit`.
-* * Default task directory: `-DDEFAULT_TASK_DIR=<PATH>`. Default is `$CMAKE_INSTALL_SYSCONFDIR/crinit`.
+* Default task directory: `-DDEFAULT_TASK_DIR=<PATH>`. Default is `$CMAKE_INSTALL_SYSCONFDIR/crinit`.
 
 The cmake setup supports some optional features:
 * Crinit signature support using `-DENABLE_SIGNATURE_SUPPORT={On, Off}`. If set to on, crinit will have a dependency to
   [libmbedtls](https://github.com/Mbed-TLS/mbedtls). Default is `On`.
-* Configurable path for signature files: `-DDEFAULT_SIGKEY_DIR=<PATH>`. Default is `$CMAKE_INSTALL_SYSCONFDIR/crinit/pk`.
+* Configurable default path of signed (downstream) public keys `-DDEFAULT_SIGKEY_DIR=<PATH>`. Default is `$CMAKE_INSTALL_SYSCONFDIR/crinit/pk`.
 * Unit tests using `-DUNIT_TESTS={On, Off}`. If set to on, Crinit's unit tests will be built and installed to
   `UNIT_TEST_INSTALL_DIR`. This will cause a dependency to cmocka 1.1.5 or greater. Default is `On` with installation
   path `${CMAKE_INSTALL_LIBDIR}/test/crinit/utest`.
