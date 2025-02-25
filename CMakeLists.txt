@@ -93,7 +93,7 @@ set(DEFAULT_TASK_DIR
 set(DEFAULT_MACHINE_ID_FILE
   "${CMAKE_INSTALL_SYSCONFDIR}/machine-id"
   CACHE PATH
-  "Default value for machine id file."
+  "Default path of the machine id file for the machine ID generator example."
 )
 
 if(NOT CMAKE_BUILD_TYPE)
