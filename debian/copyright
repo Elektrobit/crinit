@@ -1,7 +1,7 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: cmocka_extensions
-Upstream-Contact: https://github.com/Elektrobit/cmocka_extensions/issues
-Source: https://github.com/Elektrobit/cmocka_extensions
+Upstream-Name: crinit
+Upstream-Contact: https://github.com/Elektrobit/crinit/issues
+Source: https://github.com/Elektrobit/crinit
 
 Files: *
 Copyright: 2023, Elektrobit GmbH
