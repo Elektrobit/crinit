@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 /**
  * @file case-success.c
- * @brief Unit test for crinitCfgElosPollIntervalHandler(), successful execution.
+ * @brief Unit test for crinitCfgElosEventPollIntervalHandler(), successful execution.
  */
 
 #include <stdio.h>
@@ -23,8 +23,8 @@ void crinitCfgElosPollIntervalHandlerTestRuntimeSettingSuccess(void **state) {
     char val[20];
     snprintf(val, 20, "%d", CONFIGURED_POLL_TIME);
     assert_int_equal(crinitGlobOptInitDefault(), 0);
-    assert_int_equal(crinitCfgElosPollIntervalHandler(NULL, val, CRINIT_CONFIG_TYPE_SERIES), 0);
-    assert_int_equal(crinitGlobOptGet(CRINIT_GLOBOPT_ELOS_POLL_INTERVAL, &interval), 0);
+    assert_int_equal(crinitCfgElosEventPollIntervalHandler(NULL, val, CRINIT_CONFIG_TYPE_SERIES), 0);
+    assert_int_equal(crinitGlobOptGet(CRINIT_GLOBOPT_ELOS_EVENT_POLL_INTERVAL, &interval), 0);
     assert_int_equal(CONFIGURED_POLL_TIME, interval);
     crinitGlobOptDestroy();
 }
@@ -34,7 +34,7 @@ void crinitCfgElosPollIntervalDefaultValue(void **state) {
 
     unsigned long long interval = 0;
     assert_int_equal(crinitGlobOptInitDefault(), 0);
-    assert_int_equal(crinitGlobOptGet(CRINIT_GLOBOPT_ELOS_POLL_INTERVAL, &interval), 0);
-    assert_int_equal(CRINIT_CONFIG_DEFAULT_ELOS_POLLING_TIME, interval);
+    assert_int_equal(crinitGlobOptGet(CRINIT_GLOBOPT_ELOS_EVENT_POLL_INTERVAL, &interval), 0);
+    assert_int_equal(CRINIT_CONFIG_DEFAULT_ELOS_EVENT_POLLING_TIME, interval);
     crinitGlobOptDestroy();
 }

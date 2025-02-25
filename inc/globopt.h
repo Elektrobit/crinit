@@ -21,7 +21,7 @@ typedef struct crinitGlobOptStore_t {
     bool useElos;                  ///< Value for the USE_ELOS global option.
     bool signatures;               ///< Value for the crinit.signatures Kernel command line option.
     char *sigKeyDir;               ///< Value for the crinit.sigkeydir Kernel command line option.
-    unsigned long long elosPollInterval;    ///< Value for the ELOS_POLL_INTERVAL global option.
+    unsigned long long elosEventPollInterval;    ///< Value for the ELOS_EVENT_POLL_INTERVAL global option.
     int elosPort;                  ///< Value for the ELOS_PORT global option.
     char *elosServer;              ///< Value for the ELOS_SERVER global option.
     char *inclDir;                 ///< Value for the INCLUDEDIR global option.
@@ -39,7 +39,7 @@ typedef struct crinitGlobOptStore_t {
 #define CRINIT_GLOBOPT_DEBUG debug                              ///< DEBUG global option
 #define CRINIT_GLOBOPT_USE_SYSLOG useSyslog                     ///< USE_SYSLOG global option
 #define CRINIT_GLOBOPT_USE_ELOS useElos                         ///< USE_ELOS global option
-#define CRINIT_GLOBOPT_ELOS_POLL_INTERVAL elosPollInterval      ///< ELOS_POLL_INTERVAL global option
+#define CRINIT_GLOBOPT_ELOS_EVENT_POLL_INTERVAL elosEventPollInterval      ///< ELOS_EVENT_POLL_INTERVAL global option
 #define CRINIT_GLOBOPT_ELOS_PORT elosPort                       ///< ELOS_PORT global option
 #define CRINIT_GLOBOPT_ELOS_SERVER elosServer                   ///< ELOS_SERVER global option
 #define CRINIT_GLOBOPT_INCLDIR inclDir                          ///< INCLUDEDIR global option

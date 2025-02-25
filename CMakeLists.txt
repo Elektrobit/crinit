@@ -54,7 +54,7 @@ set(BASH_COMPLETION_DIR "${CMAKE_INSTALL_DATADIR}/bash-completion/completions" C
 
 set(CRINIT_LAUNCHER_CMD "\"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/crinit-launch\"")
 
-set(DEFAULT_ELOS_POLLING_TIME
+set(DEFAULT_ELOS_EVENT_POLLING_TIME
   500000
   CACHE STRING
   "Default polling interval vor ELOS events."
