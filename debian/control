@@ -1,7 +1,7 @@
 Source: crinit
 Section: admin
 Priority: optional
-Maintainer: Isaac True <isaac.true@emlix.com>
+Maintainer: Andreas Zdziarstek <andreas.zdziarstek@emlix.com>
 Build-Depends:
  debhelper-compat (= 13),
  cmake,
