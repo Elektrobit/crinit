@@ -43,6 +43,7 @@ int crinitGlobOptInitDefault(void) {
     crinitGlobOpts.debug = CRINIT_CONFIG_DEFAULT_DEBUG;
     crinitGlobOpts.useSyslog = CRINIT_CONFIG_DEFAULT_USE_SYSLOG;
     crinitGlobOpts.useElos = CRINIT_CONFIG_DEFAULT_USE_ELOS;
+    crinitGlobOpts.elosPollInterval = CRINIT_CONFIG_DEFAULT_ELOS_POLLING_TIME;
     crinitGlobOpts.elosPort = CRINIT_CONFIG_DEFAULT_ELOS_PORT;
     crinitGlobOpts.shdGraceP = CRINIT_CONFIG_DEFAULT_SHDGRACEP;
     crinitGlobOpts.taskDirFollowSl = CRINIT_CONFIG_DEFAULT_TASKDIR_SYMLINKS;
