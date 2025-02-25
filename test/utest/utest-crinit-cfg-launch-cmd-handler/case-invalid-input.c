@@ -17,6 +17,6 @@ void crinitCfgLauncherCmdHandlerTestExistingFileNotExecutable(void **state) {
 
     assert_int_equal(crinitGlobOptInitDefault(), 0);
     const char *val = "/etc/passwd";
-    assert_int_equal(crinitCfgUserHandler(NULL, val, CRINIT_CONFIG_TYPE_SERIES), -1);
+    assert_int_equal(crinitCfgLauncherCmdHandler(NULL, val, CRINIT_CONFIG_TYPE_SERIES), -1);
     crinitGlobOptDestroy();
 }
