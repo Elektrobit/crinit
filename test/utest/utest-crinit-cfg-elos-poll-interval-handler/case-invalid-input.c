@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 /**
  * @file case-invalid-input.c
- * @brief Unit test for crinitCfgElosPollIntervalHandler(), handling of invalid input.
+ * @brief Unit test for crinitCfgElosEventPollIntervalHandler(), handling of invalid input.
  */
 
 #include <string.h>
@@ -17,6 +17,6 @@ void crinitCfgElosPollIntervalHandlerTestInvalidInput(void **state) {
 
     const char *val = "this_is_not_a_number";
     assert_int_equal(crinitGlobOptInitDefault(), 0);
-    assert_int_equal(crinitCfgElosPollIntervalHandler(NULL, val, CRINIT_CONFIG_TYPE_SERIES), -1);
+    assert_int_equal(crinitCfgElosEventPollIntervalHandler(NULL, val, CRINIT_CONFIG_TYPE_SERIES), -1);
     crinitGlobOptDestroy();
 }

@@ -475,12 +475,12 @@ static void *crinitElosdepEventListener(void *arg) {
             }
         }
 
-        unsigned long long pollInterval;
-        if (crinitGlobOptGet(CRINIT_GLOBOPT_ELOS_POLL_INTERVAL, &pollInterval) != 0) {
-            crinitErrPrint("Could not retrieve value for global option '%s'.", CRINIT_CONFIG_KEYSTR_ELOS_POLL_INTERVAL);
+        unsigned long long eventPollInterval;
+        if (crinitGlobOptGet(CRINIT_GLOBOPT_ELOS_EVENT_POLL_INTERVAL, &eventPollInterval) != 0) {
+            crinitErrPrint("Could not retrieve value for global option '%s'.", CRINIT_CONFIG_KEYSTR_ELOS_EVENT_POLL_INTERVAL);
             goto err_connection_lost;
         }
-        usleep(pollInterval);
+        usleep(eventPollInterval);
     }
 
 err_connection_lost:

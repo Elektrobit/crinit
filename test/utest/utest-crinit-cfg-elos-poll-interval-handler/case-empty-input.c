@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 /**
  * @file case-empty-input.c
- * @brief Unit test for crinitCfgElosPollIntervalHandler(), handling of empty input.
+ * @brief Unit test for crinitCfgElosEventPollIntervalHandler(), handling of empty input.
  */
 
 #include <string.h>
@@ -17,6 +17,6 @@ void crinitCfgElosPollIntervalHandlerTestEmptyInput(void **state) {
 
     const char *val = "";
     assert_int_equal(crinitGlobOptInitDefault(), 0);
-    assert_int_equal(crinitCfgElosPollIntervalHandler(NULL, val, CRINIT_CONFIG_TYPE_SERIES), -1);
+    assert_int_equal(crinitCfgElosEventPollIntervalHandler(NULL, val, CRINIT_CONFIG_TYPE_SERIES), -1);
     crinitGlobOptDestroy();
 }
