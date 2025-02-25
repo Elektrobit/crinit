@@ -80,7 +80,7 @@ target_compile_definitions(
     crinit
     PRIVATE
     CRINIT_LAUNCHER_COMMAND_DEFAULT=${CRINIT_LAUNCHER_CMD}
-    CRINIT_ELOS_POLLING_TIME=${DEFAULT_ELOS_POLLING_TIME}
+    CRINIT_CONFIG_DEFAULT_ELOS_POLLING_TIME=${DEFAULT_ELOS_POLLING_TIME}
 )
 
 # libcrinit-client
@@ -100,6 +100,12 @@ add_library(
 set(CRINIT_PUBLIC_HEADERS
   ../inc/crinit-client.h
   ../inc/crinit-sdefs.h
+)
+
+target_compile_definitions(
+    crinit-client
+    PRIVATE
+    CRINIT_CONFIG_DEFAULT_ELOS_POLLING_TIME=${DEFAULT_ELOS_POLLING_TIME}
 )
 
 target_include_directories(

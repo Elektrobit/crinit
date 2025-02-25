@@ -25,6 +25,7 @@
 #define CRINIT_CONFIG_KEYSTR_USE_ELOS "USE_ELOS"        ///< Config file key for USE_ELOS global option.
 #define CRINIT_CONFIG_KEYSTR_ELOS_SERVER "ELOS_SERVER"  ///< Config file key for ELOS_SERVER global option.
 #define CRINIT_CONFIG_KEYSTR_ELOS_PORT "ELOS_PORT"      ///< Config file key for ELOS_PORT global option.
+#define CRINIT_CONFIG_KEYSTR_ELOS_POLL_INTERVAL "ELOS_POLL_INTERVAL"      ///< Config file key for ELOS_POLL_INTERVAL global option.
 #define CRINIT_CONFIG_KEYSTR_LAUNCHER_CMD "LAUNCHER_CMD"   ///< Config file key for LAUNCHER_CMD global option.
 #define CRINIT_CONFIG_KEYSTR_INCL_SUFFIX "INCLUDE_SUFFIX"  ///< Config file key for INCLUDE_SUFFIX global option.
 #define CRINIT_CONFIG_KEYSTR_TASK_FILE_SUFFIX \
@@ -84,6 +85,7 @@ typedef enum crinitConfigs_t {
     CRINIT_CONFIG_COMMAND = 0,
     CRINIT_CONFIG_DEBUG,
     CRINIT_CONFIG_DEPENDS,
+    CRINIT_CONFIG_ELOS_POLL_INTERVAL,
     CRINIT_CONFIG_ELOS_PORT,
     CRINIT_CONFIG_ELOS_SERVER,
     CRINIT_CONFIG_ENV_SET,

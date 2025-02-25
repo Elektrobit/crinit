@@ -28,6 +28,7 @@ const size_t crinitTaskCfgMapSize = crinitNumElements(crinitTaskCfgMap);
 
 const crinitConfigMapping_t crinitSeriesCfgMap[] = {
     {CRINIT_CONFIG_DEBUG, CRINIT_CONFIG_KEYSTR_DEBUG, false, false, crinitCfgDebugHandler},
+    {CRINIT_CONFIG_ELOS_POLL_INTERVAL, CRINIT_CONFIG_KEYSTR_ELOS_POLL_INTERVAL, false, false, crinitCfgElosPollIntervalHandler},
     {CRINIT_CONFIG_ELOS_PORT, CRINIT_CONFIG_KEYSTR_ELOS_PORT, false, false, crinitCfgElosPortHandler},
     {CRINIT_CONFIG_ELOS_SERVER, CRINIT_CONFIG_KEYSTR_ELOS_SERVER, false, false, crinitCfgElosServerHandler},
     {CRINIT_CONFIG_ENV_SET, CRINIT_CONFIG_KEYSTR_ENV_SET, true, false, crinitCfgEnvHandler},

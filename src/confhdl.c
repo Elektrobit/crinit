@@ -778,6 +778,23 @@ int crinitCfgElosPortHandler(void *tgt, const char *val, crinitConfigType_t type
     return 0;
 }
 
+int crinitCfgElosPollIntervalHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    CRINIT_PARAM_UNUSED(tgt);
+    crinitNullCheck(-1, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
+
+    unsigned long long pollInterval;
+    if (crinitConfConvToIntegerULL(&pollInterval, val, 10) == -1) {
+        crinitErrPrint("Could not parse value of integral numeric option '%s'.", CRINIT_CONFIG_KEYSTR_ELOS_POLL_INTERVAL);
+        return -1;
+    }
+    if (crinitGlobOptSet(CRINIT_GLOBOPT_ELOS_POLL_INTERVAL, pollInterval) == -1) {
+        crinitErrPrint("Could not set global option '%s'.", CRINIT_CONFIG_KEYSTR_ELOS_POLL_INTERVAL);
+        return -1;
+    }
+    return 0;
+}
+
 int crinitCfgLauncherCmdHandler(void *tgt, const char *val, crinitConfigType_t type) {
     CRINIT_PARAM_UNUSED(tgt);
     crinitNullCheck(-1, val);

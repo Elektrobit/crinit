@@ -11,6 +11,7 @@
 
 #include "common.h"
 #include "elos-common.h"
+#include "globopt.h"
 #include "list.h"
 #include "logio.h"
 #include "task.h"
@@ -474,7 +475,12 @@ static void *crinitElosdepEventListener(void *arg) {
             }
         }
 
-        usleep(CRINIT_ELOS_POLLING_TIME);
+        unsigned long long pollInterval;
+        if (crinitGlobOptGet(CRINIT_GLOBOPT_ELOS_POLL_INTERVAL, &pollInterval) != 0) {
+            crinitErrPrint("Could not retrieve value for global option '%s'.", CRINIT_CONFIG_KEYSTR_ELOS_POLL_INTERVAL);
+            goto err_connection_lost;
+        }
+        usleep(pollInterval);
     }
 
 err_connection_lost:
