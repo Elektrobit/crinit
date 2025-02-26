@@ -754,11 +754,17 @@ int crinitCfgElosServerHandler(void *tgt, const char *val, crinitConfigType_t ty
     crinitNullCheck(-1, val);
     crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
 
+#ifdef ENABLE_ELOS
     if (crinitGlobOptSet(CRINIT_GLOBOPT_ELOS_SERVER, val) == -1) {
         crinitErrPrint("Could not set global option '%s'.", CRINIT_CONFIG_KEYSTR_ELOS_SERVER);
         return -1;
     }
     return 0;
+#else
+    crinitErrPrint("To support the option '%s' ELOS support must be activated at compile time.",
+                   CRINIT_CONFIG_KEYSTR_ELOS_PORT);
+    return -1;
+#endif
 }
 
 int crinitCfgElosPortHandler(void *tgt, const char *val, crinitConfigType_t type) {
@@ -766,6 +772,7 @@ int crinitCfgElosPortHandler(void *tgt, const char *val, crinitConfigType_t type
     crinitNullCheck(-1, val);
     crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
 
+#ifdef ENABLE_ELOS
     int port;
     if (crinitConfConvToInteger(&port, val, 10) == -1) {
         crinitErrPrint("Could not parse value of integral numeric option '%s'.", CRINIT_CONFIG_KEYSTR_ELOS_PORT);
@@ -776,6 +783,11 @@ int crinitCfgElosPortHandler(void *tgt, const char *val, crinitConfigType_t type
         return -1;
     }
     return 0;
+#else
+    crinitErrPrint("To support the option '%s' ELOS support must be activated at compile time.",
+                   CRINIT_CONFIG_KEYSTR_ELOS_PORT);
+    return -1;
+#endif
 }
 
 int crinitCfgElosEventPollIntervalHandler(void *tgt, const char *val, crinitConfigType_t type) {
