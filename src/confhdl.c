@@ -749,6 +749,14 @@ int crinitCfgSyslogHandler(void *tgt, const char *val, crinitConfigType_t type) 
 }
 
 int crinitCfgElosHandler(void *tgt, const char *val, crinitConfigType_t type) {
+#ifndef ENABLE_ELOS
+    CRINIT_PARAM_UNUSED(tgt);
+    CRINIT_PARAM_UNUSED(val);
+    CRINIT_PARAM_UNUSED(type);
+    crinitErrPrint("To support the option '%s' ELOS support must be activated at compile time.",
+                   CRINIT_CONFIG_KEYSTR_USE_ELOS);
+    return -1;
+#else
     CRINIT_PARAM_UNUSED(tgt);
     crinitNullCheck(-1, val);
     crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
@@ -763,6 +771,7 @@ int crinitCfgElosHandler(void *tgt, const char *val, crinitConfigType_t type) {
         return -1;
     }
     return 0;
+#endif
 }
 
 int crinitCfgElosServerHandler(void *tgt, const char *val, crinitConfigType_t type) {
