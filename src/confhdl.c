@@ -785,7 +785,8 @@ int crinitCfgElosEventPollIntervalHandler(void *tgt, const char *val, crinitConf
 
     unsigned long long pollInterval;
     if (crinitConfConvToIntegerULL(&pollInterval, val, 10) == -1) {
-        crinitErrPrint("Could not parse value of integral numeric option '%s'.", CRINIT_CONFIG_KEYSTR_ELOS_EVENT_POLL_INTERVAL);
+        crinitErrPrint("Could not parse value of integral numeric option '%s'.",
+                       CRINIT_CONFIG_KEYSTR_ELOS_EVENT_POLL_INTERVAL);
         return -1;
     }
     if (crinitGlobOptSet(CRINIT_GLOBOPT_ELOS_EVENT_POLL_INTERVAL, pollInterval) == -1) {

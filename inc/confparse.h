@@ -25,7 +25,8 @@
 #define CRINIT_CONFIG_KEYSTR_USE_ELOS "USE_ELOS"        ///< Config file key for USE_ELOS global option.
 #define CRINIT_CONFIG_KEYSTR_ELOS_SERVER "ELOS_SERVER"  ///< Config file key for ELOS_SERVER global option.
 #define CRINIT_CONFIG_KEYSTR_ELOS_PORT "ELOS_PORT"      ///< Config file key for ELOS_PORT global option.
-#define CRINIT_CONFIG_KEYSTR_ELOS_EVENT_POLL_INTERVAL "ELOS_EVENT_POLL_INTERVAL"      ///< Config file key for ELOS_EVENT_POLL_INTERVAL global option.
+#define CRINIT_CONFIG_KEYSTR_ELOS_EVENT_POLL_INTERVAL \
+    "ELOS_EVENT_POLL_INTERVAL"  ///< Config file key for ELOS_EVENT_POLL_INTERVAL global option.
 #define CRINIT_CONFIG_KEYSTR_LAUNCHER_CMD "LAUNCHER_CMD"   ///< Config file key for LAUNCHER_CMD global option.
 #define CRINIT_CONFIG_KEYSTR_INCL_SUFFIX "INCLUDE_SUFFIX"  ///< Config file key for INCLUDE_SUFFIX global option.
 #define CRINIT_CONFIG_KEYSTR_TASK_FILE_SUFFIX \
