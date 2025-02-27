@@ -105,18 +105,23 @@ class CrinitLibrary(object):
 
         return ret == 0
 
-    def crinit_start(self, series_file=None, chroot=None, crinit_args=None):
+    def crinit_start(self, series_file=None, chroot=None, strace_output=None, strace_filter=None, crinit_args=None):
         """ Starts crinit if it is not already running with the specified socket. """
         chroot_cmd = ""
+        strace_cmd = ""
         if chroot is not None:
             chroot_cmd = f"chroot {chroot}"
+        if strace_output is not None:
+            strace_cmd = f"strace --output={strace_output}"
+        if strace_filter is not None:
+            strace_cmd = f"{strace_cmd} --trace={strace_filter}"
         if series_file is None:
             series_file = self.CRINIT_SERIES
 
         if self.crinit_is_running():
             return 0
 
-        start_cmd = f"sh -c \"export CRINIT_SOCK={self.CRINIT_SOCK}; {chroot_cmd} {self.CRINIT_BIN}"
+        start_cmd = f"sh -c \"export CRINIT_SOCK={self.CRINIT_SOCK}; {chroot_cmd} {strace_cmd} {self.CRINIT_BIN}"
         if crinit_args is not None:
             start_cmd = start_cmd + f" {crinit_args}"
         start_cmd = start_cmd + f" {series_file}\""
@@ -161,7 +166,7 @@ class CrinitLibrary(object):
         if crinit_args is not None:
             stop_cmd = stop_cmd + f"\\ {crinit_args}"
         stop_cmd = stop_cmd + f"\\ {series_file} && rm -rf {self.CRINIT_SOCK}\""
-        
+
         stdout, stderr, ret = self.ssh.execute_command(
             stop_cmd,
             return_stdout=True,
