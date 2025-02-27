@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.21)
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE AND DEFINED ENV{CMAKE_TOOLCHAIN_FILE})
   set(CMAKE_TOOLCHAIN_FILE $ENV{CMAKE_TOOLCHAIN_FILE})
 endif()
-project(crinit VERSION 0.16.2)
+project(crinit VERSION 0.16.3)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -53,6 +53,12 @@ set(BASH_COMPLETION_DIR "${CMAKE_INSTALL_DATADIR}/bash-completion/completions" C
     "Directory where bash completion scripts should be installed.")
 
 set(CRINIT_LAUNCHER_CMD "\"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/crinit-launch\"")
+
+set(DEFAULT_ELOS_EVENT_POLLING_TIME
+  500000
+  CACHE STRING
+  "Default polling interval for ELOS events."
+)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Debug")

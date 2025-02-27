@@ -16,42 +16,44 @@
  * Structure definition for the global option storage.
  */
 typedef struct crinitGlobOptStore_t {
-    bool debug;                    ///< Value for the DEBUG global option.
-    bool useSyslog;                ///< Value for the USE_SYSLOG global option.
-    bool useElos;                  ///< Value for the USE_ELOS global option.
-    bool signatures;               ///< Value for the crinit.signatures Kernel command line option.
-    char *sigKeyDir;               ///< Value for the crinit.sigkeydir Kernel command line option.
-    int elosPort;                  ///< Value for the ELOS_PORT global option.
-    char *elosServer;              ///< Value for the ELOS_SERVER global option.
-    char *inclDir;                 ///< Value for the INCLUDEDIR global option.
-    char *inclSuffix;              ///< Value for the INCLUDE_SUFFIX global option.
-    char *taskDir;                 ///< Value for the TASKDIR global option.
-    bool taskDirFollowSl;          ///< Value for the TASKDIR_FOLLOW_SYMLINKS global option.
-    char *taskFileSuffix;          ///< Value for the TASK_FILE_SUFFIX global option.
-    char **tasks;                  ///< Value for the TASKS global option.
-    char *launcherCmd;             ///< Value for the LAUNCHER_CMD global option.
-    unsigned long long shdGraceP;  ///< Value for the SHUTDOWN_GRACE_PERIOD_US global option.
-    crinitEnvSet_t globEnv;        ///< Storage for global task environment variables.
-    crinitEnvSet_t globFilters;    ///< Storage for global task filter variables.
+    bool debug;                                ///< Value for the DEBUG global option.
+    bool useSyslog;                            ///< Value for the USE_SYSLOG global option.
+    bool useElos;                              ///< Value for the USE_ELOS global option.
+    bool signatures;                           ///< Value for the crinit.signatures Kernel command line option.
+    char *sigKeyDir;                           ///< Value for the crinit.sigkeydir Kernel command line option.
+    unsigned long long elosEventPollInterval;  ///< Value for the ELOS_EVENT_POLL_INTERVAL global option.
+    int elosPort;                              ///< Value for the ELOS_PORT global option.
+    char *elosServer;                          ///< Value for the ELOS_SERVER global option.
+    char *inclDir;                             ///< Value for the INCLUDEDIR global option.
+    char *inclSuffix;                          ///< Value for the INCLUDE_SUFFIX global option.
+    char *taskDir;                             ///< Value for the TASKDIR global option.
+    bool taskDirFollowSl;                      ///< Value for the TASKDIR_FOLLOW_SYMLINKS global option.
+    char *taskFileSuffix;                      ///< Value for the TASK_FILE_SUFFIX global option.
+    char **tasks;                              ///< Value for the TASKS global option.
+    char *launcherCmd;                         ///< Value for the LAUNCHER_CMD global option.
+    unsigned long long shdGraceP;              ///< Value for the SHUTDOWN_GRACE_PERIOD_US global option.
+    crinitEnvSet_t globEnv;                    ///< Storage for global task environment variables.
+    crinitEnvSet_t globFilters;                ///< Storage for global task filter variables.
 } crinitGlobOptStore_t;
 
-#define CRINIT_GLOBOPT_DEBUG debug                              ///< DEBUG global option
-#define CRINIT_GLOBOPT_USE_SYSLOG useSyslog                     ///< USE_SYSLOG global option
-#define CRINIT_GLOBOPT_USE_ELOS useElos                         ///< USE_ELOS global option
-#define CRINIT_GLOBOPT_ELOS_PORT elosPort                       ///< ELOS_PORT global option
-#define CRINIT_GLOBOPT_ELOS_SERVER elosServer                   ///< ELOS_SERVER global option
-#define CRINIT_GLOBOPT_INCLDIR inclDir                          ///< INCLUDEDIR global option
-#define CRINIT_GLOBOPT_INCL_SUFFIX inclSuffix                   ///< INCLUDE_SUFFIX global option
-#define CRINIT_GLOBOPT_TASKDIR taskDir                          ///< TASKDIR global option
-#define CRINIT_GLOBOPT_TASKDIR_FOLLOW_SYMLINKS taskDirFollowSl  ///< TASKDIR_FOLLOW_SYMLINKS global option
-#define CRINIT_GLOBOPT_TASK_FILE_SUFFIX taskFileSuffix          ///< TASK_FILE_SUFFIX global option
-#define CRINIT_GLOBOPT_TASKS tasks                              ///< TASKS global option
-#define CRINIT_GLOBOPT_LAUNCHER_CMD launcherCmd                 ///< LAUNCHER_CMD global option
-#define CRINIT_GLOBOPT_SHDGRACEP shdGraceP                      ///< SHUTDOWN_GRACE_PERIOD_US global option
-#define CRINIT_GLOBOPT_ENV globEnv                              ///< Reference to the global task environment
-#define CRINIT_GLOBOPT_FILTERS globFilters                      ///< Reference to the global task filters
-#define CRINIT_GLOBOPT_SIGNATURES signatures                    ///< Reference to global setting of signature checking.
-#define CRINIT_GLOBOPT_SIGKEYDIR sigKeyDir                      ///< Reference to global setting for public key dir.
+#define CRINIT_GLOBOPT_DEBUG debug                                     ///< DEBUG global option
+#define CRINIT_GLOBOPT_USE_SYSLOG useSyslog                            ///< USE_SYSLOG global option
+#define CRINIT_GLOBOPT_USE_ELOS useElos                                ///< USE_ELOS global option
+#define CRINIT_GLOBOPT_ELOS_EVENT_POLL_INTERVAL elosEventPollInterval  ///< ELOS_EVENT_POLL_INTERVAL global option
+#define CRINIT_GLOBOPT_ELOS_PORT elosPort                              ///< ELOS_PORT global option
+#define CRINIT_GLOBOPT_ELOS_SERVER elosServer                          ///< ELOS_SERVER global option
+#define CRINIT_GLOBOPT_INCLDIR inclDir                                 ///< INCLUDEDIR global option
+#define CRINIT_GLOBOPT_INCL_SUFFIX inclSuffix                          ///< INCLUDE_SUFFIX global option
+#define CRINIT_GLOBOPT_TASKDIR taskDir                                 ///< TASKDIR global option
+#define CRINIT_GLOBOPT_TASKDIR_FOLLOW_SYMLINKS taskDirFollowSl         ///< TASKDIR_FOLLOW_SYMLINKS global option
+#define CRINIT_GLOBOPT_TASK_FILE_SUFFIX taskFileSuffix                 ///< TASK_FILE_SUFFIX global option
+#define CRINIT_GLOBOPT_TASKS tasks                                     ///< TASKS global option
+#define CRINIT_GLOBOPT_LAUNCHER_CMD launcherCmd                        ///< LAUNCHER_CMD global option
+#define CRINIT_GLOBOPT_SHDGRACEP shdGraceP                             ///< SHUTDOWN_GRACE_PERIOD_US global option
+#define CRINIT_GLOBOPT_ENV globEnv                                     ///< Reference to the global task environment
+#define CRINIT_GLOBOPT_FILTERS globFilters                             ///< Reference to the global task filters
+#define CRINIT_GLOBOPT_SIGNATURES signatures  ///< Reference to global setting of signature checking.
+#define CRINIT_GLOBOPT_SIGKEYDIR sigKeyDir    ///< Reference to global setting for public key dir.
 
 /** Dummy instance for Generic Selection of members to work (see type-generic macros below). **/
 static crinitGlobOptStore_t crinitGenericGlobOptHelper __attribute__((unused));

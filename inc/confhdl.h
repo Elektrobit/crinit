@@ -77,6 +77,8 @@ int crinitCfgElosHandler(void *tgt, const char *val, crinitConfigType_t type);
 int crinitCfgElosServerHandler(void *tgt, const char *val, crinitConfigType_t type);
 /** Handler for `ELOS_PORT` config directives. See crinitConfigHandler_t. **/
 int crinitCfgElosPortHandler(void *tgt, const char *val, crinitConfigType_t type);
+/** Handler for `ELOS_EVENT_POLL_INTERVAL` config directive. See crinitConfigHandler_t. **/
+int crinitCfgElosEventPollIntervalHandler(void *tgt, const char *val, crinitConfigType_t type);
 /** Handler for `LAUNCHER_CMD` config directive. See crinitConfigHandler_t. **/
 int crinitCfgLauncherCmdHandler(void *tgt, const char *val, crinitConfigType_t type);
 
