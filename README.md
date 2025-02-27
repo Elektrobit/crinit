@@ -183,10 +183,14 @@ ENV_SET = GREETING "Good morning!"
                     a task file loading a syslog server such as syslogd or elosd. Default: `NO`
 - **USE_ELOS** -- If Elos should be used as event based dependency provider if it is available. If set to `YES`, Crinit will allow Elos event filters as
                   task dependency with the `@elos` prefix as soon as a task file `PROVIDES` the `elos` feature. Ideally this should be
-                  a task file loading the Elos daemon elosd. Default: `NO`
-- **ELOS_SERVER** -- Ip address of the elos server. Default: `127.0.0.1`
+                  a task file loading the Elos daemon elosd. Default: `NO`  
+                  Needs ELOS support included at build-time.
+- **ELOS_SERVER** -- Ip address of the elos server. Default: `127.0.0.1`  
+Needs ELOS support included at build-time.
 - **ELOS_PORT** -- Port of the elos server. Default: `54321`
+Needs ELOS support included at build-time.
 - **ELOS_EVENT_POLL_INTERVAL** -- Interval in microseconds between polling requests for events from elos. This is a tradeoff between idle CPU use and latency of tasks depending on an elos event (see section **Defining Elos Filters** below). Default: 500000
+Needs ELOS support included at build-time.
 - **ENV_SET** -- See section **Setting Environment Variables** below. (*array-like*)
 - **FILTER_DEFINE** -- See section **Defining Elos Filters** below. (*array-like*)
 
@@ -282,7 +286,7 @@ VAR_WITH_ESC_SEQUENCES=hex  hex            # Support for escape sequences includ
 
 ### Defining Elos Filters
 
-Crinit supports an optional feature, which enables a task to depend on specific system events issued by the elos event logger.
+Crinit supports an optional feature, which enables a task to depend on specific system events issued by the elos event logger. This needs ELOS support included at build-time.
 In order to depend on elos events, a task uses the `@elos` dependency prefix in conjunction with a elos filter name. The corresponding
 filter has to be defined within the task itself or within the global environment. The definition follows the syntax of normal
 environment variables, but uses the `FILTER_DEFINE` prefix instead:
@@ -685,6 +689,7 @@ The cmake setup supports some optional features:
 * Crinit signature support using `-DENABLE_SIGNATURE_SUPPORT={On, Off}`. If set to on, crinit will have a dependency to
   [libmbedtls](https://github.com/Mbed-TLS/mbedtls). Default is `On`.
 * Configurable default path of signed (downstream) public keys `-DDEFAULT_SIGKEY_DIR=<PATH>`. Default is `$CMAKE_INSTALL_SYSCONFDIR/crinit/pk`.
+* Crinit ELOS support using `-DENABLE_ELOS={On, Off}`. If set to on, crinit will have a dependency to [safu](https://github.com/elektrobit/safu). Default is `On`.
 * Unit tests using `-DUNIT_TESTS={On, Off}`. If set to on, Crinit's unit tests will be built and installed to
   `UNIT_TEST_INSTALL_DIR`. This will cause a dependency to cmocka 1.1.5 or greater. Default is `On` with installation
   path `${CMAKE_INSTALL_LIBDIR}/test/crinit/utest`.
@@ -716,7 +721,7 @@ In order to build crinit, some prerequisites have to be installed.
 - a modern GCC toolchain with C17 support
 - cmake >= 3.21
 - re2c >= 3.0
-- [safu](https://github.com/elektrobit/safu) >= 0.58.2
+- optional, for ELOS support: [safu](https://github.com/elektrobit/safu) >= 0.58.2
 - optional, for signature support: [MbedTLS](https://github.com/Mbed-TLS/mbedtls) 2.28.x or 3.x
 - optional, for unit tests: cmocka >= 1.1.5
 - optional, for HTML API documentation: Doxygen
