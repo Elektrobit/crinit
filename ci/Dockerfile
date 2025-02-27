@@ -49,6 +49,7 @@ RUN apt-get update \
     valgrind \
     vim \
     wget \
+    npm \
     && rm -rf /var/lib/apt/lists/*
 
 # Install safu
@@ -106,6 +107,12 @@ RUN locale-gen en_US.UTF-8 \
     && groupadd -g $GID -o ci \
     && useradd -m -u $UID -g $GID -o -s /bin/bash $USER \
     && echo "$USER ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# Install commitlint too with conventional commit config and dependencies.
+RUN npm install n -g \
+    && n stable
+RUN npm install @commitlint/cli -g \
+    && npm install @commitlint/config-conventional -g
 
 USER $USER
 ENV LC_ALL=en_US.UTF-8
