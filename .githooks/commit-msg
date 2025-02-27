@@ -1,0 +1,15 @@
+#!/bin/sh -e
+# SPDX-License-Identifier: MIT
+#
+# Commit message lint hook.
+#
+# Activate via
+#     git config --local  core.hooksPath .githooks/
+#
+# Commitlint needs to be installed, see ci/index.rst.
+#
+# Export COMMITLINT_CMD env variable in your shell if your commitlint
+# binary/script is not in your $PATH or if you want to run using e.g. npx.
+#
+COMMITLINT_CMD=${COMMITLINT_CMD:-commitlint}
+${COMMITLINT_CMD} --edit "$1"
