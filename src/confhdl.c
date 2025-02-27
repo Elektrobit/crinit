@@ -205,6 +205,12 @@ int crinitCfgDepHandler(void *tgt, const char *val, crinitConfigType_t type) {
         char *strtokState = NULL;
         t->deps[i].name = strtok_r(t->deps[i].name, ":", &strtokState);
         t->deps[i].event = strtok_r(NULL, ":", &strtokState);
+
+        if (t->deps[i].name == NULL || t->deps[i].event == NULL) {
+            crinitErrPrint("Could not parse dependency '%s'.", tempDeps[i - oldSz]);
+            crinitFreeArgvArray(tempDeps);
+            return -1;
+        }
 #ifndef ENABLE_ELOS
         if (strcmp(t->deps[i].name, "@elos") == 0) {
             crinitErrPrint("To depend on an ELOS filter ELOS support must be enabled at compile time.");
@@ -212,12 +218,6 @@ int crinitCfgDepHandler(void *tgt, const char *val, crinitConfigType_t type) {
             return -1;
         }
 #endif
-
-        if (t->deps[i].name == NULL || t->deps[i].event == NULL) {
-            crinitErrPrint("Could not parse dependency '%s'.", tempDeps[i - oldSz]);
-            crinitFreeArgvArray(tempDeps);
-            return -1;
-        }
     }
 
     crinitFreeArgvArray(tempDeps);
@@ -323,22 +323,23 @@ int crinitCfgEnvHandler(void *tgt, const char *val, crinitConfigType_t type) {
 }
 
 int crinitCfgFilterHandler(void *tgt, const char *val, crinitConfigType_t type) {
+#ifndef ENABLE_ELOS
+    CRINIT_PARAM_UNUSED(tgt);
+    CRINIT_PARAM_UNUSED(val);
+    CRINIT_PARAM_UNUSED(type);
+    crinitErrPrint("To support the option '%s' ELOS support must be activated at compile time.",
+                   CRINIT_CONFIG_KEYSTR_FILTER_DEFINE);
+    return -1;
+#else
     if (type == CRINIT_CONFIG_TYPE_TASK) {
         crinitNullCheck(-1, tgt, val);
-#ifdef ENABLE_ELOS
         crinitTask_t *t = tgt;
         if (crinitConfConvToEnvSetMember(&t->elosFilters, val) == -1) {
             crinitErrPrint("Could not parse task filters directive '%s'.", val);
             return -1;
         }
-#else
-        crinitErrPrint("To support the option '%s' ELOS support must be activated at compile time.",
-                       CRINIT_CONFIG_KEYSTR_FILTER_DEFINE);
-        return -1;
-#endif
     } else if (type == CRINIT_CONFIG_TYPE_SERIES) {
         crinitNullCheck(-1, val);
-#ifdef ENABLE_ELOS
         crinitGlobOptStore_t *globOpts = crinitGlobOptBorrow();
         if (globOpts == NULL) {
             crinitErrPrint("Could not get exclusive access to global option storage.");
@@ -353,16 +354,12 @@ int crinitCfgFilterHandler(void *tgt, const char *val, crinitConfigType_t type) 
             crinitErrPrint("Could not release exclusive access of global option storage.");
             return -1;
         }
-#else
-        crinitErrPrint("To support the option '%s' ELOS support must be activated at compile time.",
-                       CRINIT_CONFIG_KEYSTR_FILTER_DEFINE);
-        return -1;
-#endif
     } else {
         crinitErrPrint("Unexpected value for configuration file type.");
         return -1;
     }
     return 0;
+#endif
 }
 
 int crinitCfgIoRedirHandler(void *tgt, const char *val, crinitConfigType_t type) {
