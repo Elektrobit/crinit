@@ -778,7 +778,7 @@ int crinitCfgElosServerHandler(void *tgt, const char *val, crinitConfigType_t ty
     return 0;
 #else
     crinitErrPrint("To support the option '%s' ELOS support must be activated at compile time.",
-                   CRINIT_CONFIG_KEYSTR_ELOS_PORT);
+                   CRINIT_CONFIG_KEYSTR_ELOS_SERVER);
     return -1;
 #endif
 }
