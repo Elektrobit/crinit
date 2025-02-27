@@ -57,7 +57,7 @@ set(CRINIT_LAUNCHER_CMD "\"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/crini
 set(DEFAULT_ELOS_EVENT_POLLING_TIME
   500000
   CACHE STRING
-  "Default polling interval vor ELOS events."
+  "Default polling interval for ELOS events."
 )
 
 if(NOT CMAKE_BUILD_TYPE)
