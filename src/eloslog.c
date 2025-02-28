@@ -21,7 +21,6 @@
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
 
-#define CRINIT_MACHINE_ID_FILE "/etc/machine-id"
 #define CRINIT_MACHINE_ID_LENGTH 32
 #define CRINIT_MACHINE_ID_FORMAT "%" STR(CRINIT_MACHINE_ID_LENGTH) "s"
 

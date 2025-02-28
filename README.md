@@ -157,6 +157,7 @@ USE_ELOS = YES
 
 ELOS_SERVER = 192.168.3.43
 ELOS_PORT = 2342
+ELOS_EVENT_POLL_INTERVAL = 250000
 
 ENV_SET = FOO "foo"
 ENV_SET = FOO_BAZ "${FOO} baz"
@@ -185,6 +186,7 @@ ENV_SET = GREETING "Good morning!"
                   a task file loading the Elos daemon elosd. Default: `NO`
 - **ELOS_SERVER** -- Ip address of the elos server. Default: `127.0.0.1`
 - **ELOS_PORT** -- Port of the elos server. Default: `54321`
+- **ELOS_EVENT_POLL_INTERVAL** -- Interval in microseconds between polling requests for events from elos. This is a tradeoff between idle CPU use and latency of tasks depending on an elos event (see section **Defining Elos Filters** below). Default: 500000
 - **ENV_SET** -- See section **Setting Environment Variables** below. (*array-like*)
 - **FILTER_DEFINE** -- See section **Defining Elos Filters** below. (*array-like*)
 
@@ -673,16 +675,25 @@ cmake -B build/amd64 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=On -DUNIT
 make -C build/amd64
 ```
 
+Some default paths can be configured on compile time:
+* Default series file: `-DDEFAULT_CONFIG_SERIES_FILE`. Default is `$CMAKE_INSTALL_SYSCONFDIR/crinit/default.series`.
+* Default location of the client communication socket: `-DDEFAULT_CRINIT_SOCKFILE=<FILEPATH>`. Default is `$CMAKE_INSTALL_RUNSTATEDIR/crinit/crinit.sock`.
+* Default include directory: `-DDEFAULT_INCL_DIR=<PATH>`. Default is `$CMAKE_INSTALL_SYSCONFDIR/crinit`.
+* Default task directory: `-DDEFAULT_TASK_DIR=<PATH>`. Default is `$CMAKE_INSTALL_SYSCONFDIR/crinit`.
+
 The cmake setup supports some optional features:
 * Crinit signature support using `-DENABLE_SIGNATURE_SUPPORT={On, Off}`. If set to on, crinit will have a dependency to
   [libmbedtls](https://github.com/Mbed-TLS/mbedtls). Default is `On`.
+* Configurable default path of signed (downstream) public keys `-DDEFAULT_SIGKEY_DIR=<PATH>`. Default is `$CMAKE_INSTALL_SYSCONFDIR/crinit/pk`.
 * Unit tests using `-DUNIT_TESTS={On, Off}`. If set to on, Crinit's unit tests will be built and installed to
   `UNIT_TEST_INSTALL_DIR`. This will cause a dependency to cmocka 1.1.5 or greater. Default is `On` with installation
   path `${CMAKE_INSTALL_LIBDIR}/test/crinit/utest`.
+* Elos event polling time (see global configuration example) `-DDEFAULT_ELOS_EVENT_POLLING_TIME=<usecs>`. Default is 500000.
 * Build and install API documentation in doxygen HTML format using `-DAPI_DOC={On, Off}`. Needs doxygen. Default is
   `On`.
 * Build and install an example generator for the machine id file (see above) using `-DMACHINE_ID_EXAMPLE={On, Off}`.
   Default is `Off`.
+* Name and path for the machine id file: `-DDEFAULT_MACHINE_ID_FILE=<FILEPATH>`. Default is `$CMAKE_INSTALL_SYSCONFDIR/machine-id`.
 * Install the example configurations from `config/example` to `/etc/${EXAMPLE_TASKDIR}`. Default is `Off`, default
   installation path is `/etc/crinit/example`.
 * Install the smoke test scripts and configurations, using `-DINSTALL_SMOKE_TESTS={On, Off}`, to the

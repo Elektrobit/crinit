@@ -40,8 +40,6 @@
 #define KERNEL_CMDLINE_MAX_LEN 4096              ///< Maximum length of the Kernel command line options to be read.
 #define KERNEL_CMDLINE_KEY "systemd.machine_id"  ///< Kernel command line key to set machine ID.
 
-#define MACHINE_ID_PATH "/etc/machine-id"  ///< Path to the machine-id file to generate.
-
 /**
  * Print application usage information (to stderr).
  *
@@ -158,13 +156,13 @@ int main(int argc, char *argv[]) {
 #endif /* __aarch64__ */
     }
 
-    FILE *machIdF = fopen(MACHINE_ID_PATH, "w");
+    FILE *machIdF = fopen(MACHINE_ID_FILE, "w");
     if (machIdF == NULL) {
-        perror("Could not open \'" MACHINE_ID_PATH "\' for writing");
+        perror("Could not open \'" MACHINE_ID_FILE "\' for writing");
         return EXIT_FAILURE;
     }
     if (fprintf(machIdF, "%s\n", machId) < 0) {
-        fprintf(stderr, "Could not write to \'" MACHINE_ID_PATH "\'.\n");
+        fprintf(stderr, "Could not write to \'" MACHINE_ID_FILE "\'.\n");
         fclose(machIdF);
         return EXIT_FAILURE;
     }

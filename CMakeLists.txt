@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.21)
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE AND DEFINED ENV{CMAKE_TOOLCHAIN_FILE})
   set(CMAKE_TOOLCHAIN_FILE $ENV{CMAKE_TOOLCHAIN_FILE})
 endif()
-project(crinit VERSION 0.16.3)
+project(crinit VERSION 0.16.4)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -58,6 +58,42 @@ set(DEFAULT_ELOS_EVENT_POLLING_TIME
   500000
   CACHE STRING
   "Default polling interval for ELOS events."
+)
+
+set(DEFAULT_CONFIG_SERIES_FILE
+  "${CMAKE_INSTALL_SYSCONFDIR}/crinit/default.series"
+  CACHE PATH
+  "Default series file."
+)
+
+set(DEFAULT_CRINIT_SOCKFILE
+  "${CMAKE_INSTALL_RUNSTATEDIR}/crinit/crinit.sock"
+  CACHE PATH
+  "Default path to Crinit's AF_UNIX communication socket."
+)
+
+set(DEFAULT_SIGKEY_DIR
+  "${CMAKE_INSTALL_SYSCONFDIR}/crinit/pk"
+  CACHE PATH
+  "Default path to signing keys."
+)
+
+set(DEFAULT_INCL_DIR
+  "${CMAKE_INSTALL_SYSCONFDIR}/crinit"
+  CACHE PATH
+  "Default value for INCLUDEDIR global option."
+)
+
+set(DEFAULT_TASK_DIR
+  "${CMAKE_INSTALL_SYSCONFDIR}/crinit"
+  CACHE PATH
+  "Default value for TASKDIR global option."
+)
+
+set(DEFAULT_MACHINE_ID_FILE
+  "${CMAKE_INSTALL_SYSCONFDIR}/machine-id"
+  CACHE PATH
+  "Default path of the machine id file for the machine ID generator example."
 )
 
 if(NOT CMAKE_BUILD_TYPE)

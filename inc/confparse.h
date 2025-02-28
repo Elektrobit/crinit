@@ -57,7 +57,6 @@
     "INCL_FILE_SUFFIX"  ///< Config key for the task include file extension in dynamic configurations.
 #define CRINIT_CONFIG_DEFAULT_INCL_FILE_SUFFIX ".crincl"  ///< Default filename extension of task include files.
 #define CRINIT_CONFIG_DEFAULT_DEBUG false                 ///< Default value for DEBUG global option.
-#define CRINIT_CONFIG_DEFAULT_TASKDIR "/etc/crinit"       ///< Default value for TASKDIR global option.
 #define CRINIT_CONFIG_DEFAULT_TASKDIR_SYMLINKS true
 #ifndef CRINIT_LAUNCHER_COMMAND_DEFAULT
 #define CRINIT_CONFIG_DEFAULT_LAUNCHER_CMD "/usr/bin/crinit-launch"
@@ -66,7 +65,6 @@
     CRINIT_LAUNCHER_COMMAND_DEFAULT  ///< Default value for LAUNCHER_CMD global option.
 #endif
 
-#define CRINIT_CONFIG_DEFAULT_INCLDIR "/etc/crinit"    ///< Default value for INCLUDEDIR global option.
 #define CRINIT_CONFIG_DEFAULT_SHDGRACEP 100000uLL      ///< Default value for SHUTDOWN_GRACE_PERIOD_US global option
 #define CRINIT_CONFIG_DEFAULT_USE_SYSLOG false         ///< Default value for USE_SYSLOG global option.
 #define CRINIT_CONFIG_DEFAULT_USE_ELOS false           ///< Default value for USE_ELOS global option.
@@ -74,7 +72,6 @@
 #define CRINIT_CONFIG_DEFAULT_ELOS_PORT 54321          ///< Default value for ELOS_SERVER global option.
 #define CRINIT_CONFIG_DEFAULT_INCL_SUFFIX ".crincl"    ///< Default filename extension of include files.
 
-#define CRINIT_CONFIG_DEFAULT_SIGKEYDIR "/etc/crinit/pk"
 #define CRINIT_CONFIG_DEFAULT_SIGNATURES false
 
 #define CRINIT_CONFIG_STDOUT_NAME "STDOUT"  ///< What stdout is called in task configs.
