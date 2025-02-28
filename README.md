@@ -157,6 +157,7 @@ USE_ELOS = YES
 
 ELOS_SERVER = 192.168.3.43
 ELOS_PORT = 2342
+ELOS_EVENT_POLL_INTERVAL = 250000
 
 ENV_SET = FOO "foo"
 ENV_SET = FOO_BAZ "${FOO} baz"
@@ -185,6 +186,7 @@ ENV_SET = GREETING "Good morning!"
                   a task file loading the Elos daemon elosd. Default: `NO`
 - **ELOS_SERVER** -- Ip address of the elos server. Default: `127.0.0.1`
 - **ELOS_PORT** -- Port of the elos server. Default: `54321`
+- **ELOS_EVENT_POLL_INTERVAL** -- ELOS event polling time in microseconds. Default: 500000
 - **ENV_SET** -- See section **Setting Environment Variables** below. (*array-like*)
 - **FILTER_DEFINE** -- See section **Defining Elos Filters** below. (*array-like*)
 
@@ -684,6 +686,7 @@ The cmake setup supports some optional features:
   [libmbedtls](https://github.com/Mbed-TLS/mbedtls). Default is `On`.
 * Configurable default path of signed (downstream) public keys `-DDEFAULT_SIGKEY_DIR=<PATH>`. Default is `$CMAKE_INSTALL_SYSCONFDIR/crinit/pk`.
 * Unit tests using `-DUNIT_TESTS={On, Off}`. If set to on, Crinit's unit tests will be built and installed to
+* ELOS event polling time `-DDEFAULT_ELOS_EVENT_POLLING_TIME=<usecs>` Default is 500000.
   `UNIT_TEST_INSTALL_DIR`. This will cause a dependency to cmocka 1.1.5 or greater. Default is `On` with installation
   path `${CMAKE_INSTALL_LIBDIR}/test/crinit/utest`.
 * Build and install API documentation in doxygen HTML format using `-DAPI_DOC={On, Off}`. Needs doxygen. Default is
