@@ -686,9 +686,9 @@ The cmake setup supports some optional features:
   [libmbedtls](https://github.com/Mbed-TLS/mbedtls). Default is `On`.
 * Configurable default path of signed (downstream) public keys `-DDEFAULT_SIGKEY_DIR=<PATH>`. Default is `$CMAKE_INSTALL_SYSCONFDIR/crinit/pk`.
 * Unit tests using `-DUNIT_TESTS={On, Off}`. If set to on, Crinit's unit tests will be built and installed to
-* ELOS event polling time `-DDEFAULT_ELOS_EVENT_POLLING_TIME=<usecs>` Default is 500000.
   `UNIT_TEST_INSTALL_DIR`. This will cause a dependency to cmocka 1.1.5 or greater. Default is `On` with installation
   path `${CMAKE_INSTALL_LIBDIR}/test/crinit/utest`.
+* Elos event polling time (see global configuration example) `-DDEFAULT_ELOS_EVENT_POLLING_TIME=<usecs>`. Default is 500000.
 * Build and install API documentation in doxygen HTML format using `-DAPI_DOC={On, Off}`. Needs doxygen. Default is
   `On`.
 * Build and install an example generator for the machine id file (see above) using `-DMACHINE_ID_EXAMPLE={On, Off}`.
