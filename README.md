@@ -186,7 +186,7 @@ ENV_SET = GREETING "Good morning!"
                   a task file loading the Elos daemon elosd. Default: `NO`
 - **ELOS_SERVER** -- Ip address of the elos server. Default: `127.0.0.1`
 - **ELOS_PORT** -- Port of the elos server. Default: `54321`
-- **ELOS_EVENT_POLL_INTERVAL** -- ELOS event polling time in microseconds. Default: 500000
+- **ELOS_EVENT_POLL_INTERVAL** -- Interval in microseconds between polling requests for events from elos. This is a tradeoff between idle CPU use and latency of tasks depending on an elos event (see section **Defining Elos Filters** below). Default: 500000
 - **ENV_SET** -- See section **Setting Environment Variables** below. (*array-like*)
 - **FILTER_DEFINE** -- See section **Defining Elos Filters** below. (*array-like*)
 
