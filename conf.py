@@ -63,4 +63,5 @@ c_autodoc_roots = [
 
 set_type_checking_flag = True
 myst_footnote_transition = False
+myst_heading_anchors = 4
 
