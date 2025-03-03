@@ -114,6 +114,9 @@ RUN npm install n -g \
 RUN npm install @commitlint/cli -g \
     && npm install @commitlint/config-conventional -g
 
+# Install doctoc
+RUN npm install doctoc -g
+
 USER $USER
 ENV LC_ALL=en_US.UTF-8
 ENV DOCKERBUILD=1
