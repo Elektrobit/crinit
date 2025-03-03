@@ -1,6 +1,15 @@
 # SPDX-License-Identifier: MIT
 find_package(cmocka 1.1.5 REQUIRED)
 
+if(ENABLE_CAPABILITIES)
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(LIBCAP REQUIRED libcap)
+
+    set(CAPABILITIES_DEFINES
+        ENABLE_CAPABILITIES
+    )
+endif()
+
 function(create_unit_test)
   cmake_parse_arguments(PARSED_ARGS "" "NAME" "SOURCES;INCLUDES;LIBRARIES;DEFINITIONS;WRAPS" ${ARGN})
   get_filename_component(UNIT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../.. ABSOLUTE)
@@ -13,6 +22,7 @@ function(create_unit_test)
     PRIVATE
     ${PARSED_ARGS_LIBRARIES}
     cmocka
+    $<IF:$<BOOL:${ENABLE_CAPABILITIES}>,${LIBCAP_LIBRARIES},>
   )
 
   target_link_options(
@@ -40,6 +50,7 @@ function(create_unit_test)
     CRINIT_CONFIG_DEFAULT_INCLDIR="${DEFAULT_INCL_DIR}"
     CRINIT_CONFIG_DEFAULT_TASKDIR="${DEFAULT_TASK_DIR}"
     CRINIT_MACHINE_ID_FILE="${DEFAULT_MACHINE_ID_FILE}"
+    ${CAPABILITIES_DEFINES}
   )
 
   if(PARSED_ARGS_DEFINITIONS)

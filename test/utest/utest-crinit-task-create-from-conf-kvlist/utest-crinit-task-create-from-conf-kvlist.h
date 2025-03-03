@@ -16,4 +16,18 @@ void crinitTaskCreateFromConfKvListTestGroupNumericSuccess(void **state);
 void crinitTaskCreateFromConfKvListTestUserNumericSuccess(void **state);
 int crinitTaskCreateFromConfKvListTestTeardown(void **state);
 
+#ifdef ENABLE_CAPABILITIES
+void test_crinitTaskCreateFromConfKvListSuccessSetAnClearCaps(void **state);
+void test_crinitTaskCreateFromConfKvListSuccessSetAnClearMultipleCaps(void **state);
+int crinitTaskSetAndClearCapabilitiesTeardown(void **state);
+
+void test_crinitTaskCreateFromConfKvListErrorInvalidSetCapabilityNames(void **state);
+void test_crinitTaskCreateFromConfKvListErrorInvalidClearCapabilityNames(void **state);
+int crinitTaskSetAndClearInvalidCapabilityNameTeardown(void **state);
+
+void test_crinitTaskCreateFromConfKvListErrorInvalidSetCapabilityDirective(void **state);
+void test_crinitTaskCreateFromConfKvListErrorInvalidClearCapabilityDirective(void **state);
+int crinitTaskSetAndCleaInvalidCapabilityDirectiveTeardown(void **state);
+#endif
+
 #endif /* __UTEST_TASK_CREATE_FROM_CONF_KVLIST_H__ */
