@@ -86,11 +86,12 @@ Crinit currently has the following features implemented:
     - emits appropriate events when a task is created, starts, exits, or fails
 * optional signature checking of Crinit's configuration files
 * setting of UID and GID a task should be run as
+* setting/clearing of specific capabilities that a task shall be (not) equipped with
 
 In the future we also plan to support:
 
 * fine-grained restriction of processes started/managed by Crinit
-    - capabilities, cgroups,...
+    - cgroups,...
 
 There are example configurations below which show how to use the currently implemented features.
 For detailed explanations of Crinit's inner workings please refer to the Doxygen documentation generated during build.
@@ -291,6 +292,9 @@ STOP_COMMAND = /sbin/ifconfig eth0 down
 USER = root
 GROUP = root
 
+CAPABILITY_SET = CAP_NET_RAW
+CAPABILITY_CLEAR = CAP_SYS_ADMIN CAP_SYS_BOOT
+
 DEPENDS = check_qemu:fail earlysetup:wait @provided:writable_var
 
 PROVIDES = ipv4_dhcp:wait resolvconf:wait
@@ -327,6 +331,8 @@ IO_REDIRECT = STDERR STDOUT
 - **GROUP** -- Name of the group used to run the commands specified in **COMMAND**. Either the group name or the numeric
   group ID can be used. If **GROUP** is not set, "root" is assumed. Supplementary groups can be added after the main group, space separated. GROUP can be an array, too. Similar to **COMMAND**.
     **Also see note on USER command.** This applies here, too.
+- **CAPABILITY_SET** -- List of capability defitions that a task shall be specifically equipped with.
+- **CAPABILITY_CLEAR** -- List of capability defitions that a task shall be stripped from.
 - **DEPENDS** -- A list of dependencies which need to be fulfilled before this task is considered "ready-to-start".
   Semantics are `<taskname>:{fail,wait,spawn}`, where `spawn` is fulfilled when (the first command of) a task has been
   started, `wait` if it has successfully completed, and `fail` if it has failed somewhere along the way. Here we can see

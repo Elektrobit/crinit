@@ -35,6 +35,7 @@ RUN apt-get update \
     git-buildpackage \
     graphviz \
     keyutils \
+    libcap-dev \
     libcmocka-dev \
     libiberty-dev \
     libjson-c-dev \

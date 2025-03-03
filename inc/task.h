@@ -6,6 +6,7 @@
 #ifndef __TASK_H__
 #define __TASK_H__
 
+#include <stdint.h>
 #include <sys/types.h>
 #include <time.h>
 
@@ -104,6 +105,10 @@ typedef struct crinitTask {
     size_t supGroupsSize;        ///< Number of supplementary group IDs in supGroups.
     char *username;              ///< The username to run the task's commands with.
     char *groupname;             ///< The groupname to run the task's commands with.
+#ifdef ENABLE_CAPABILITIES
+    uint64_t capabilitiesSet;    ///< Bitmask to hold the capabilities that shall be added to a task.
+    uint64_t capabilitiesClear;  ///< Bitmask to hold the capabilities that shall be cleared from a task.
+#endif
 } crinitTask_t;
 
 /**

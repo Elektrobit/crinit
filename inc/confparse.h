@@ -49,6 +49,12 @@
 
 /**  Config key to add a command to the task. **/
 #define CRINIT_CONFIG_KEYSTR_COMMAND "COMMAND"
+#ifdef ENABLE_CAPABILITIES
+/** Config key to clear a capability to the task. **/
+#define CRINIT_CONFIG_KEYSTR_CAP_CLEAR "CAPABILITY_CLEAR"
+/** Config key to add a capability to the task. **/
+#define CRINIT_CONFIG_KEYSTR_CAP_SET "CAPABILITY_SET"
+#endif
 /**  Config key to add dependencies to the task. **/
 #define CRINIT_CONFIG_KEYSTR_DEPENDS "DEPENDS"
 /**  Config key to set an environment variable with. **/
@@ -144,6 +150,10 @@ typedef enum crinitConfigs {
     CRINIT_CONFIG_USE_ELOS,
     CRINIT_CONFIG_USER,
     CRINIT_CONFIG_LAUNCHER_CMD,
+#ifdef ENABLE_CAPABILITIES
+    CRINIT_CONFIG_CAP_CLEAR,
+    CRINIT_CONFIG_CAP_SET,
+#endif
     CRINIT_CONFIGS_SIZE
 } crinitConfigs_t;
 

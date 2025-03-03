@@ -29,7 +29,7 @@ RUN apt-get update \
  build-essential binutils-dev pkg-config cmake valgrind strace \
  git wget curl netcat-traditional net-tools ssh libssl-dev openssl re2c \
  strace libjson-c-dev libmnl-dev libsqlite3-0 libsqlite3-dev libesmtp-dev \
- expat liblog4c-dev libmbedtls-dev \
+ expat liblog4c-dev libmbedtls-dev libcap-dev \
  && rm -rf /var/lib/apt/lists/*
 
 RUN locale-gen en_US.UTF-8 \

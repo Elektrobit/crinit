@@ -11,6 +11,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef ENABLE_CAPABILITIES
+#include <sys/capability.h>
+#endif
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -119,6 +122,17 @@ static bool crinitGroupnameToGid(const char *name, gid_t *gid);
  */
 static bool crinitGidToGroupname(gid_t gid, char **name);
 
+#ifdef ENABLE_CAPABILITIES
+/**
+ * Convert capability name to integral value and set it in bitmask.
+
+ @param bitmask Bitmask to maintain capability settings.
+ @param capabilities Array of capability names
+ @return 0 if each capability could be converted and set in the bitmask, -1 otherwise.
+*/
+static int crinitCapConverter(uint64_t *bitmask, const char *capabilities);
+#endif
+
 int crinitCfgCmdHandler(void *tgt, const char *val, crinitConfigType_t type) {
     crinitNullCheck(-1, tgt, val);
     crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
@@ -140,6 +154,38 @@ int crinitCfgCmdHandler(void *tgt, const char *val, crinitConfigType_t type) {
     }
     return 0;
 }
+
+#ifdef ENABLE_CAPABILITIES
+int crinitCfgCapClearHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    crinitNullCheck(-1, tgt, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
+
+    crinitTask_t *t = tgt;
+    crinitDbgInfoPrint("(Task %s) Configure capability clear '%s'.", t->name, val);
+
+    if (crinitCapConverter(&(t->capabilitiesClear), val) != 0) {
+        return -1;
+    }
+
+    crinitDbgInfoPrint("(Task %s) Configured capabilities to be set: %lx.", t->name, t->capabilitiesClear);
+    return 0;
+}
+
+int crinitCfgCapSetHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    crinitNullCheck(-1, tgt, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
+
+    crinitTask_t *t = tgt;
+    crinitDbgInfoPrint("(Task %s) Configure capability set '%s'.", t->name, val);
+
+    if (crinitCapConverter(&(t->capabilitiesSet), val) != 0) {
+        return -1;
+    }
+
+    crinitDbgInfoPrint("(Task %s) Configured capabilities to be cleared: %lx.", t->name, t->capabilitiesSet);
+    return 0;
+}
+#endif
 
 int crinitCfgStopCmdHandler(void *tgt, const char *val, crinitConfigType_t type) {
     crinitNullCheck(-1, tgt, val);
@@ -932,6 +978,36 @@ int crinitCfgSignaturesHandler(void *tgt, const char *val, crinitConfigType_t ty
     }
     return 0;
 }
+
+#ifdef ENABLE_CAPABILITIES
+static int crinitCapConverter(uint64_t *bitmask, const char *capabilities) {
+    int ret = 0;
+
+    int confArrLen;
+    char **parsedVal = crinitConfConvToStrArr(&confArrLen, capabilities, true);
+    if (parsedVal == NULL) {
+        crinitErrPrint("Could not convert capabilities list '%s' to string array.", capabilities);
+        return -1;
+    }
+    for (int i = 0; i < confArrLen; i++) {
+        cap_value_t capability;
+        if (cap_from_name(parsedVal[i], &capability)) {
+            crinitErrPrint("Could not convert capability '%s'.", parsedVal[i]);
+            ret = -1;
+            goto out;
+        } else {
+            *bitmask |= 1uL << capability;
+            crinitDbgInfoPrint("Configure capability '%s' (%d).", parsedVal[i], capability);
+        }
+    }
+    crinitDbgInfoPrint("Configured total set of capabilities %lx.", *bitmask);
+
+out:
+    crinitFreeArgvArray(parsedVal);
+
+    return ret;
+}
+#endif
 
 static inline int crinitCfgHandlerSetTaskOptFromStr(crinitTaskOpts_t *tgt, crinitTaskOpts_t opt, const char *val) {
     bool b;
