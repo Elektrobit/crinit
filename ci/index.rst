@@ -93,3 +93,25 @@ If you want to bypass the hook for e.g. a work-in-progress commit, just use
 Note that the hook will not complain about 'fixup' commits, assuming that you
 plan to squash them later. However, the pipeline step will still prevent
 'fixup' commits from being merged.
+
+README Table-of-Contents Generation
+===================================
+
+The Table-of-Contents in README.md is auto-generated using doctoc. The tool
+is included in the build container or can be installed via ``npm`` similar
+to commitlint above:
+
+.. code-block:: sh
+
+   sudo npm install doctoc -g
+
+Then (or in docker) you can run:
+
+.. code-block:: sh
+
+   ci/readme-toc.sh
+
+to re-generate the ToC if you have made any alterations or additions to the
+sections. The script will return ``1`` if there are unstaged changes in
+README.md. This is a feature so the CI can check if the ToC is currently
+in need of an update. For development the return code can be ignored.
