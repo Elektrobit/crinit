@@ -5,8 +5,39 @@
 
 ## Table of Contents
 
-<!-- START doctoc -->
-<!-- END doctoc -->
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+  - [In a Nutshell](#in-a-nutshell)
+  - [Concept](#concept)
+  - [Features](#features)
+- [License](#license)
+  - [Powered by EB](#powered-by-eb)
+  - [Maintainers](#maintainers)
+  - [Credits](#credits)
+  - [Artwork](#artwork)
+- [Details](#details)
+  - [Configuration](#configuration)
+    - [Example Global Configuration](#example-global-configuration)
+      - [Explanation](#explanation)
+    - [Example Task Configuration](#example-task-configuration)
+      - [Explanation](#explanation-1)
+    - [Setting Environment Variables](#setting-environment-variables)
+    - [Defining Elos Filters](#defining-elos-filters)
+      - [Ruleset](#ruleset)
+    - [Include files](#include-files)
+    - [IO Redirections](#io-redirections)
+      - [Named pipes](#named-pipes)
+      - [A note on buffering](#a-note-on-buffering)
+    - [Dependency groups (meta-tasks)](#dependency-groups-meta-tasks)
+    - [Configuration Signatures](#configuration-signatures)
+  - [crinit-ctl Usage Info](#crinit-ctl-usage-info)
+  - [Smart bash completion for crinit-ctl](#smart-bash-completion-for-crinit-ctl)
+  - [crinit-launch](#crinit-launch)
+  - [Build Instructions](#build-instructions)
+  - [Build Requirements](#build-requirements)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## In a Nutshell
 
