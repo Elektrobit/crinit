@@ -76,6 +76,7 @@ pipeline {
                                 sh '''#!/bin/bash -xe
                                 ci/clang-tidy.sh
                                 ci/lint-commits.sh origin/integration
+                                ci/readme-toc.sh
                                 '''
                             }
                         }
