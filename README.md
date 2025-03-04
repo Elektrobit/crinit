@@ -17,6 +17,8 @@
   - [Credits](#credits)
   - [Artwork](#artwork)
 - [Details](#details)
+  - [Command-line options](#command-line-options)
+  - [Environment Variables](#environment-variables)
   - [Configuration](#configuration)
     - [Example Global Configuration](#example-global-configuration)
       - [Explanation](#explanation)
