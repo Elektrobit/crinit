@@ -31,4 +31,3 @@ int crinitIoRedirCpy(crinitIoRedir_t *dest, const crinitIoRedir_t *src) {
     }
     return 0;
 }
-

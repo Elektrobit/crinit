@@ -499,4 +499,3 @@ static char *crinitCopyEscaped(char *dst, const char *src, const char *end) {
 
     return runner;
 }
-
