@@ -22,6 +22,7 @@ RUN apt-get update \
     bc \
     build-essential \
     clang \
+    clang-format \
     clang-tidy \
     cmake \
     doxygen \
