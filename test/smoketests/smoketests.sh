@@ -18,7 +18,7 @@ NUM=0
 NUMOK=0
 
 for t in "$CMDPATH"/test-*.sh; do
-    : $(( NUM += 1 ))
+    : $((NUM += 1))
 
     SMOKETESTS_NAME="${t##*/test-}"
     SMOKETESTS_NAME="${SMOKETESTS_NAME%.sh}"
@@ -52,14 +52,14 @@ for t in "$CMDPATH"/test-*.sh; do
         success=0
     fi
 
-    : $(( NUMOK += success ))
+    : $((NUMOK += success))
 
-    if [ "$success" -ne 1 ] && [ "$SMOKETESTS_FAILSTOP" -eq 1 ] ; then
+    if [ "$success" -ne 1 ] && [ "$SMOKETESTS_FAILSTOP" -eq 1 ]; then
         break
     fi
 done
 
-NUMFAIL=$(( NUM - NUMOK ))
+NUMFAIL=$((NUM - NUMOK))
 
 echo ""
 echo "--> $NUM tests: $NUMOK success, $NUMFAIL failed"

@@ -22,7 +22,7 @@ setup() {
     rm -f "${task_stdout}"
     rm -f "${task_stderr}"
     rm -f "${task_stdin}"
-    cat << EOF > "${task_stdout}"
+    cat <<EOF >"${task_stdout}"
 # Config to test IO redirection of STDOUT
 
 NAME = io_redirections_test_stdout
@@ -35,7 +35,7 @@ DEPENDS = ""
 
 RESPAWN = NO
 EOF
-    cat << EOF > "${task_stderr}"
+    cat <<EOF >"${task_stderr}"
 # Config to test a chain of IO redirections from STDOUT to STDERR in shell, then in Crinit back to STDOUT and to file.
 # Also tests setting the file mode.
 
@@ -50,7 +50,7 @@ DEPENDS = ""
 
 RESPAWN = NO
 EOF
-    cat << EOF > "${task_stdin}"
+    cat <<EOF >"${task_stdin}"
 # Config to test a redirection from a file to STDIN.
 # Also tests appending to the output file.
 
@@ -65,8 +65,8 @@ DEPENDS = ""
 
 RESPAWN = NO
 EOF
-echo -n "prefix: " > ${out_stdin}
-echo "suffix" > ${in_stdin}
+    echo -n "prefix: " >${out_stdin}
+    echo "suffix" >${in_stdin}
 }
 
 run() {
@@ -86,7 +86,7 @@ run() {
 
     sleep 1
     compare_output "${sample}" "${out_stdout}"
-   
+
     # add stderr/chain redirection task
     if ! "${BINDIR}"/crinit-ctl addtask "${task_stderr}"; then
         echo "crinit-ctl addtask failed unexpectedly (stderr/chain)"
@@ -125,4 +125,3 @@ teardown() {
     # Terminate crinit daemon
     crinit_daemon_stop
 }
-

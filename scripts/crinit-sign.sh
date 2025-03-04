@@ -22,17 +22,17 @@ EOF
 
 while :; do
     case "$1" in
-        -h|--help)
+        -h | --help)
             print_help
             exit 1
             ;;
-        -k|--key-file)
+        -k | --key-file)
             if [ -n "$2" ]; then
                 KEY_FILE="$2"
                 shift
             fi
             ;;
-        -o|--output)
+        -o | --output)
             if [ -n "$2" ]; then
                 OUTPUT_FILE="$2"
                 shift

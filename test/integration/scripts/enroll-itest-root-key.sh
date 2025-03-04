@@ -8,8 +8,7 @@ print_usage() {
 }
 
 if [ ! -f "$1" ]; then
-    print_usage()
-    exit 1
+    print_usage() exit 1
 fi
 
 set -e
@@ -28,7 +27,7 @@ KEY_ID=$(cat "$1" | keyctl padd user crinit-root @s)
 # In case, the current session keyring has not been initialized, it is recommended to run this script in a new keyring
 # session, via `keyctl session - enroll-itest-root-key.sh`.
 #
-keyctl setperm "${KEY_ID}" 0x3f3f0000 > /dev/null
-keyctl link "${KEY_ID}" @u > /dev/null
-keyctl unlink "${KEY_ID}" @s > /dev/null
+keyctl setperm "${KEY_ID}" 0x3f3f0000 >/dev/null
+keyctl link "${KEY_ID}" @u >/dev/null
+keyctl unlink "${KEY_ID}" @s >/dev/null
 echo "${KEY_ID}"

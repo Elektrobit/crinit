@@ -32,9 +32,10 @@ docker build \
 echo "==> run $PROJECT robot container"
 
 if ! [ -e "$BASE_DIR"/ci/sshconfig ]; then
-    { echo "Host *"
-      echo "  User $(id -u -n)"
-    } > "$BASE_DIR"/ci/sshconfig
+    {
+        echo "Host *"
+        echo "  User $(id -u -n)"
+    } >"$BASE_DIR"/ci/sshconfig
 fi
 
 if [ "$SSH_AUTH_SOCK" ]; then

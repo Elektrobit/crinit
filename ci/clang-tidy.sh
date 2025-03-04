@@ -20,18 +20,18 @@ rm -rf "$BASEDIR"/result/clang-tidy
 mkdir "$BASEDIR"/result/clang-tidy
 cd "$BASEDIR"
 
-CLANG_TIDY_FLAGS=( -p "${BUILDDIR}" )
+CLANG_TIDY_FLAGS=(-p "${BUILDDIR}")
 
 # run clang-tidy for crinit
 clang-tidy "${CLANG_TIDY_FLAGS[@]}" -dump-config "$BASEDIR"/inc/*.h "$BASEDIR"/src/*.c "$BASEDIR"/"$BUILDDIR"/src/version.c \
-    > "$BASEDIR"/result/clang-tidy/config
+    >"$BASEDIR"/result/clang-tidy/config
 # catch errors even though we use a pipe to tee
 set -o pipefail
 clang-tidy "${CLANG_TIDY_FLAGS[@]}" "$BASEDIR"/inc/*.h "$BASEDIR"/src/*.c "$BASEDIR"/"$BUILDDIR"/src/version.c 2>&1 \
     | tee "$BASEDIR"/result/clang-tidy/report-crinit
 
 # run clang-tidy for unit tests
-for d in "$BASEDIR"/test/utest/utest-*/ ; do
+for d in "$BASEDIR"/test/utest/utest-*/; do
     SUBDIR="$d"
     clang-tidy "${CLANG_TIDY_FLAGS[@]}" "$SUBDIR"/*.c 2>&1 \
         | tee "$BASEDIR"/result/clang-tidy/report-"$(basename "$SUBDIR")"

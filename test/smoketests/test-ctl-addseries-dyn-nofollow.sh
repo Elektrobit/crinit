@@ -20,7 +20,7 @@ run() {
 
     out="${SMOKETESTS_RESULTDIR}"/"${SMOKETESTS_NAME}".out
     sample="${CMDPATH}"/test-"${SMOKETESTS_NAME}".out
-    "$BINDIR"/crinit-ctl list | grep -o 'task_add_chain.' > "$out"
+    "$BINDIR"/crinit-ctl list | grep -o 'task_add_chain.' >"$out"
     compare_output "$sample" "$out"
 }
 
@@ -28,4 +28,3 @@ teardown() {
     # Terminate crinit daemon
     crinit_daemon_stop
 }
-

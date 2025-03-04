@@ -30,7 +30,7 @@ TEST_DOCKER_NAME="$(clean_tag "${PROJECT}-runner")"
 echo "==> create docker image"
 cd $BASE_DIR
 DOCKER_BUILDKIT=1 \
-docker build \
+    docker build \
     --progress=plain \
     --build-arg REPO="$REPO" \
     --build-arg UBUNTU_RELEASE="$UBUNTU_RELEASE" \
@@ -41,9 +41,10 @@ cd $BASE_DIR/ci
 echo "==> run $PROJECT container"
 
 if ! [ -e "$BASE_DIR"/ci/sshconfig ]; then
-    { echo "Host *"
-      echo "  User $(id -u -n)"
-    } > "$BASE_DIR"/ci/sshconfig
+    {
+        echo "Host *"
+        echo "  User $(id -u -n)"
+    } >"$BASE_DIR"/ci/sshconfig
 fi
 
 if [ "$SSH_AUTH_SOCK" ]; then
@@ -56,4 +57,3 @@ docker run --rm -it --cap-add=SYS_ADMIN --security-opt apparmor=unconfined $SSH_
     --name ${CRINIT_DOCKER_NAME} \
     -w / \
     ${CRINIT_IMAGE_NAME} $@
-

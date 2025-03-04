@@ -35,7 +35,7 @@ IMAGE="${PROJECT}${ARCH:+-}${ARCH}"
 echo "==> create docker image"
 cd $BASEDIR/ci
 DOCKER_BUILDKIT=1 \
-docker build \
+    docker build \
     --progress=plain \
     ${PLATFORM_OPTS} \
     --build-arg REPO="$REPO" \
@@ -44,9 +44,10 @@ docker build \
     --tag "${IMAGE}" .
 
 if ! [ -e "$BASEDIR/ci/sshconfig" ]; then
-    { echo "Host *"
-      echo "  User $(id -u -n)"
-    } > $BASEDIR/ci/sshconfig
+    {
+        echo "Host *"
+        echo "  User $(id -u -n)"
+    } >$BASEDIR/ci/sshconfig
 fi
 
 if [ "$SSH_AUTH_SOCK" ]; then
@@ -60,4 +61,3 @@ docker run --rm -it --privileged \
     $PLATFORM_OPTS \
     -v $HOME/.ssh:/home/ci/.ssh -v $BASEDIR/ci/sshconfig:/home/ci/.ssh/config \
     -v $BASEDIR:/base -w /base "$IMAGE" $@
-

@@ -13,7 +13,7 @@ setup() {
     crinit_config_setup
     rm -f ${out}
     rm -f ${task}
-    cat << EOF > ${task}
+    cat <<EOF >${task}
 # Config to show off environment settings.
 
 NAME = smoketest_incl
@@ -50,9 +50,9 @@ run() {
         echo "crinit-ctl addtask successful, but task not in list"
         return 1
     fi
- 
+
     sleep 1
-    
+
     if ! "$BINDIR"/crinit-ctl status smoketest_incl | grep -q loaded; then
         echo "crinit-ctl addtask successful, but task already ran before enabling it"
         return 1
@@ -85,4 +85,3 @@ teardown() {
     # Terminate crinit daemon
     crinit_daemon_stop
 }
-

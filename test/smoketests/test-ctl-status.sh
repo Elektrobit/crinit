@@ -21,4 +21,3 @@ teardown() {
     # Terminate crinit daemon
     crinit_daemon_stop
 }
-

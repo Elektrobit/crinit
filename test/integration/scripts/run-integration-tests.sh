@@ -50,4 +50,3 @@ for dir in $(ls -d "$TEST_SOURCE"/*/); do
 done
 
 exit "${exit_status:-0}"
-

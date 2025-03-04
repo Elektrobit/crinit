@@ -59,18 +59,18 @@ UPDATE_ALL=1
 
 while getopts "raph" opt; do
     case $opt in
-    r) UPDATE_RELEASE=1 ;;
-    p) UPDATE_PRISTINE=1 ;;
-    a) UPDATE_ALL=1 ;;
-    h)
-        print_help
-        exit 0
-        ;;
-    \?)
-        echo "Invalid option: -$OPTARG"
-        print_help
-        exit 1
-        ;;
+        r) UPDATE_RELEASE=1 ;;
+        p) UPDATE_PRISTINE=1 ;;
+        a) UPDATE_ALL=1 ;;
+        h)
+            print_help
+            exit 0
+            ;;
+        \?)
+            echo "Invalid option: -$OPTARG"
+            print_help
+            exit 1
+            ;;
     esac
 done
 NEW_VERSION=${!OPTIND}

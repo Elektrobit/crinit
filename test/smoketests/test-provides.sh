@@ -17,7 +17,7 @@ run() {
         echo "crinit-ctl enable of feature provider task failed"
         return 1
     fi
- 
+
     sleep 1
 
     out="/tmp/crinit-feature_dependent.log"
@@ -29,4 +29,3 @@ teardown() {
     # Terminate crinit daemon
     crinit_daemon_stop
 }
-
