@@ -666,7 +666,7 @@ Executing
 ci/docker-run.sh
 ```
 will start a Docker container for the native host architecture with all necessary programs to build Crinit and its
-Doxygen documentation and to run a short local demonstration.
+Doxygen documentation and to run the tests.
 
 It is possible to run the Docker container for a foreign architecture such as arm64 with the help of qemu-user-static
 and binfmt-support. Make sure these packages are installed on your host system if you want to use this functionality.
@@ -693,12 +693,6 @@ to enable AddressSanitizer (ASAN) for additional runtime checks or static analys
 ```
 ci/build.sh Debug --asan --analyzer
 ```
-
-Afterwards, it is possible to run (also inside the container)
-```
-ci/demo.sh
-```
-for a short local demonstration of `crinit`'s client API using `crinit-ctl`.
 
 A `clang-tidy` analysis of the source can be performed using
 ```

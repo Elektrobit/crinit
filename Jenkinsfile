@@ -28,7 +28,6 @@ pipeline {
             'Test: utests',
             'Test: smoketests',
             'Test: integration',
-            'Demo',
         ])
         buildDiscarder(logRotator(numToKeepStr: '4'))
         disableConcurrentBuilds()
@@ -97,15 +96,6 @@ pipeline {
                                 sh '''#!/bin/bash -xe
                                 ci/run-smoketests.sh
                                 ci/run-smoketests.sh Debug
-                                '''
-                            }
-                        }
-                    }
-                    stage('Demo') {
-                        steps {
-                            gitlabCommitStatus("${STAGE_NAME}") {
-                                sh '''#!/bin/bash -xe
-                                ci/demo.sh 2>&1 | tee result/demo_output.txt
                                 '''
                             }
                         }
