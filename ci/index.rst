@@ -115,3 +115,16 @@ to re-generate the ToC if you have made any alterations or additions to the
 sections. The script will return ``1`` if there are unstaged changes in
 README.md. This is a feature so the CI can check if the ToC is currently
 in need of an update. For development the return code can be ignored.
+
+Code-Formatting
+===============
+
+The code formatter script ``ci/format-code.sh`` will use ``clang-format`` and
+``shfmt`` with the correct settings to format C code, header files and shell
+scripts within the project.
+
+Optionally, the ``--check`` parameter does a dry run, reporting errors if any
+files do not conform to formatting rules.
+
+The ``clang-format`` and ``shfmt`` tools should be available in most distros.
+Alternatively, they are available n the build container as well.
