@@ -45,6 +45,7 @@ RUN apt-get update \
     re2c \
     rpm \
     screen \
+    shfmt \
     sudo \
     valgrind \
     vim \
