@@ -10,7 +10,6 @@ task_dep3="${SMOKETESTS_CONFDIR}"/meta_tasks_dep3.crinit
 task_grp="${SMOKETESTS_CONFDIR}"/meta_tasks_grp.crinit
 task_final="${SMOKETESTS_CONFDIR}"/meta_tasks_fin.crinit
 
-
 setup() {
     crinit_config_setup
     rm -f "${task_dep1}"
@@ -18,28 +17,28 @@ setup() {
     rm -f "${task_dep3}"
     rm -f "${task_grp}"
     rm -f "${task_final}"
-    cat << EOF > "${task_dep1}"
+    cat <<EOF >"${task_dep1}"
 # Config to test dependency groups (dep group member 1)
 
 NAME = task_dep1
 COMMAND = /bin/true
 DEPENDS = "@ctl:enable"
 EOF
-    cat << EOF > "${task_dep2}"
+    cat <<EOF >"${task_dep2}"
 # Config to test dependency groups (dep group member 2)
 
 NAME = task_dep2
 COMMAND = /bin/true
 DEPENDS = "@ctl:enable"
 EOF
-    cat << EOF > "${task_dep3}"
+    cat <<EOF >"${task_dep3}"
 # Config to test dependency groups (dep group member 3)
 
 NAME = task_dep3
 COMMAND = /bin/true
 DEPENDS = "@ctl:enable"
 EOF
-    cat << EOF > "${task_grp}"
+    cat <<EOF >"${task_grp}"
 # Config to test dependency groups (dependency group meta-task)
 
 NAME = task_grp
@@ -47,7 +46,7 @@ DEPENDS = task_dep1:wait task_dep2:wait
           task_dep3:wait
 PROVIDES = "depgrp:wait"
 EOF
-    cat << EOF > "${task_final}"
+    cat <<EOF >"${task_final}"
 # Config to test dependency groups (dep group member 3)
 
 NAME = task_final
@@ -129,4 +128,3 @@ teardown() {
     # Terminate crinit daemon
     crinit_daemon_stop
 }
-

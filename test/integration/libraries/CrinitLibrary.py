@@ -9,7 +9,7 @@ from robot.libraries.BuiltIn import BuiltIn
 import robot.utils.asserts
 from robot.api import logger
 from robot.api.deco import keyword
-    
+
 
 class CrinitLibrary(object):
     """CrinitLibrary provides a set of keywords for direct interaction
@@ -105,16 +105,29 @@ class CrinitLibrary(object):
 
         return ret == 0
 
-    def crinit_start(self, series_file=None):
-        """ Starts crinit if it is not running. """
+    def crinit_start(self, series_file=None, chroot=None, strace_output=None, strace_filter=None, crinit_args=None):
+        """ Starts crinit if it is not already running with the specified socket. """
+        chroot_cmd = ""
+        strace_cmd = ""
+        if chroot is not None:
+            chroot_cmd = f"chroot {chroot}"
+        if strace_output is not None:
+            strace_cmd = f"strace --output={strace_output}"
+        if strace_filter is not None:
+            strace_cmd = f"{strace_cmd} --trace={strace_filter}"
         if series_file is None:
             series_file = self.CRINIT_SERIES
 
         if self.crinit_is_running():
             return 0
 
+        start_cmd = f"sh -c \"export CRINIT_SOCK={self.CRINIT_SOCK}; {chroot_cmd} {strace_cmd} {self.CRINIT_BIN}"
+        if crinit_args is not None:
+            start_cmd = start_cmd + f" {crinit_args}"
+        start_cmd = start_cmd + f" {series_file}\""
+
         self.ssh.start_command(
-            f"sh -c \"export CRINIT_SOCK={self.CRINIT_SOCK}; {self.CRINIT_BIN} {series_file}\"",
+            start_cmd,
             sudo=(not self.IS_ROOT),
             sudo_password=(None if self.IS_ROOT else self.password)
         )
@@ -134,7 +147,7 @@ class CrinitLibrary(object):
 
         return 0
 
-    def crinit_stop(self, series_file=None):
+    def crinit_stop(self, series_file=None, crinit_args=None):
         """ Stops all remaining crinit tasks and kills crinit. """
         if series_file is None:
             series_file = self.CRINIT_SERIES
@@ -149,8 +162,13 @@ class CrinitLibrary(object):
 
         ret = -1
 
+        stop_cmd = f"sh -c \"pkill -f {self.CRINIT_BIN}"
+        if crinit_args is not None:
+            stop_cmd = stop_cmd + f"\\ {crinit_args}"
+        stop_cmd = stop_cmd + f"\\ {series_file} && rm -rf {self.CRINIT_SOCK}\""
+
         stdout, stderr, ret = self.ssh.execute_command(
-            f"sh -c \"pkill -f {self.CRINIT_BIN}\\ {series_file} && rm -rf {self.CRINIT_SOCK}\"",
+            stop_cmd,
             return_stdout=True,
             return_stderr=True,
             return_rc=True,
@@ -274,7 +292,7 @@ class CrinitLibrary(object):
               logger.info(f"task pid is : {pid}")
             else:
                 logger.error(f"Failed to parse crinit state for task {task_name}.")
-        return pid    
+        return pid
 
     @keyword("'${task}' User Is '${user}' And Group Is '${group}'")
     def task_user_and_group_are(self, task, user, group):
@@ -283,7 +301,7 @@ class CrinitLibrary(object):
         """
 
         pid = self._crinit_get_task_pid(task)
-        
+
         stdout = None
         stderr = None
         ret = -1
@@ -296,17 +314,16 @@ class CrinitLibrary(object):
             sudo=False,
             sudo_password=None
         )
-        
+
         (rcuser, rcgroup) = stdout.split()
         logger.info(f"USER: {rcuser}")
         logger.info(f"GROUP: {rcgroup}")
-        
+
         if rcuser == user and rcgroup == group:
             return 0
 
         return -1
-        
-   
+
     def crinit_reboot(self):
         """Will request Crinit to perform a graceful system reboot.
         crinit-ctl can be symlinked to reboot as a shortcut which will
@@ -320,5 +337,3 @@ class CrinitLibrary(object):
         invoke this command automatically.
         """
         return self.__crinit_run("poweroff", "Requesting poweroff failed")[2]
-
-    

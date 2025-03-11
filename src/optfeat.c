@@ -8,8 +8,10 @@
 #include <string.h>
 
 #include "common.h"
+#ifdef ENABLE_ELOS
 #include "elosdep.h"
 #include "eloslog.h"
+#endif
 #include "globopt.h"
 #include "logio.h"
 #include "taskdb.h"
@@ -30,6 +32,7 @@ static int crinitActivateSyslog(void *data) {
     return 0;
 }
 
+#ifdef ENABLE_ELOS
 static int crinitElosdepActivateCb(void *data) {
     return crinitElosdepActivate((crinitTaskDB_t *)data, true);
 }
@@ -59,6 +62,7 @@ static int crinitEloslogDeactivateCb(void *data) {
 
     return crinitEloslogActivate(false);
 }
+#endif
 
 int crinitFeatureHook(const char *sysFeatName, crinitHookType_t type, void *data) {
     static const crinitOptFeatMap_t fmap[] = {
@@ -66,6 +70,7 @@ int crinitFeatureHook(const char *sysFeatName, crinitHookType_t type, void *data
          .type = CRINIT_HOOK_START,
          .af = crinitActivateSyslog,
          .globMemberOffset = offsetof(crinitGlobOptStore_t, CRINIT_GLOBOPT_USE_SYSLOG)},
+#ifdef ENABLE_ELOS
         {.name = CRINIT_ELOSDEP_FEATURE_NAME,
          .type = CRINIT_HOOK_START,
          .af = crinitElosdepActivateCb,
@@ -90,6 +95,7 @@ int crinitFeatureHook(const char *sysFeatName, crinitHookType_t type, void *data
          .type = CRINIT_HOOK_STOP,
          .af = crinitEloslogDeactivateCb,
          .globMemberOffset = offsetof(crinitGlobOptStore_t, CRINIT_GLOBOPT_USE_ELOS)},
+#endif
     };
 
     crinitDbgInfoPrint("Searching feature hooks for %s (%d) with %p.", sysFeatName, type, data);

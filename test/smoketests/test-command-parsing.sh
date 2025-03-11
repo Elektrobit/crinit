@@ -10,12 +10,11 @@ sample="${CMDPATH}"/test-"${SMOKETESTS_NAME}"-sample.txt
 
 # COMMAND[] = "/bin/sh" -c    "echo \\" ''' \\t \\xe2\\x99\\xa5  \\" | tee ${out}"
 
-
 setup() {
     crinit_config_setup
     rm -f "${out}"
     rm -f "${task}"
-    cat << EOF > "${task}"
+    cat <<EOF >"${task}"
 # Config to test features of the parser in COMMAND values.
 NAME = command_parsing_test
 
@@ -47,4 +46,3 @@ teardown() {
     # Terminate crinit daemon
     crinit_daemon_stop
 }
-

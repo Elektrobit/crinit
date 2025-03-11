@@ -6,8 +6,7 @@
 
 setup() {
     crinit_config_setup
-    if [ -e /tmp/test-stop_command_two_lines.out ]
-    then
+    if [ -e /tmp/test-stop_command_two_lines.out ]; then
         rm /tmp/test-stop_command_two_lines.out
     fi
 }
@@ -20,7 +19,7 @@ run() {
         echo "crinit-ctl stop failed"
         return 1
     fi
- 
+
     sleep 1
 
     out="/tmp/test-stop_command_two_lines.out"

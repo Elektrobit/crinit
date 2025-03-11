@@ -23,23 +23,23 @@ EOF
 
 while :; do
     case "$1" in
-        -h|--help)
+        -h | --help)
             print_help
             exit 1
             ;;
-        -k|--key-file)
+        -k | --key-file)
             if [ -n "$2" ]; then
                 KEY_FILE="$2"
                 shift
             fi
             ;;
-        -o|--output)
+        -o | --output)
             if [ -n "$2" ]; then
                 OUTPUT_FILE="$2"
                 shift
             fi
             ;;
-        -f|--format)
+        -f | --format)
             if [ -n "$2" ]; then
                 OUTPUT_FORM="$2"
                 shift
@@ -63,7 +63,7 @@ if [ -n "${KEY_FILE}" ]; then
         echo "The given path to the key file ('${KEY_FILE}') is invalid." 1>&2
         exit 1
     fi
-    openssl rsa -out "${OUTPUT_FILE}" -outform "${OUTPUT_FORM}" -pubout < "${KEY_FILE}"
+    openssl rsa -out "${OUTPUT_FILE}" -outform "${OUTPUT_FORM}" -pubout <"${KEY_FILE}"
     exit
 fi
 

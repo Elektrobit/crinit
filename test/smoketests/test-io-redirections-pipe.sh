@@ -16,7 +16,7 @@ setup() {
     rm -f "${task_recv}"
     rm -f "${out_recv}"
     rm -f "${pipe_path}"
-    cat << EOF > "${task_send}"
+    cat <<EOF >"${task_send}"
 # Config to test IO redirection of STDOUT to a pipe.
 
 NAME = io_redirections_test_pipe_send
@@ -25,7 +25,7 @@ IO_REDIRECT = STDOUT "${pipe_path}" PIPE 0640
 DEPENDS = ""
 RESPAWN = NO
 EOF
-    cat << EOF > "${task_recv}"
+    cat <<EOF >"${task_recv}"
 # Config to test IO redirection of STDIN from a pipe.
 
 NAME = io_redirections_test_pipe_recv
@@ -78,4 +78,3 @@ teardown() {
     # Terminate crinit daemon
     crinit_daemon_stop
 }
-

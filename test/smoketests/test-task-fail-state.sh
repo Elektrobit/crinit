@@ -17,7 +17,7 @@ setup() {
     rm -f "${task_fail2}"
     rm -f "${task_dependent}"
     rm -f "${out_stdout}"
-    cat << EOF > "${task_fail1}"
+    cat <<EOF >"${task_fail1}"
 # Config to test handling of task failures (bad return code)
 
 NAME = task_fail1
@@ -27,21 +27,21 @@ DEPENDS = "@ctl:enable"
 
 IO_REDIRECT = STDOUT "${out_stdout}"
 EOF
-    cat << EOF > "${task_fail2}"
+    cat <<EOF >"${task_fail2}"
 # Config to test handling of task failures (command not found)
 
 NAME = task_fail2
 COMMAND = /bin/this/does/not/exist
 DEPENDS = "@ctl:enable"
 EOF
-    cat << EOF > "${task_fail3}"
+    cat <<EOF >"${task_fail3}"
 # Config to test handling of task failures (command is not an absolute path)
 
 NAME = task_fail3
 COMMAND = true
 DEPENDS = "@ctl:enable"
 EOF
-    cat << EOF > "${task_dependent}"
+    cat <<EOF >"${task_dependent}"
 # Config to test handling of task failures (dependent task to check if the others have failed.)
 
 NAME = task_dependent
@@ -130,4 +130,3 @@ teardown() {
     # Terminate crinit daemon
     crinit_daemon_stop
 }
-

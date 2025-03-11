@@ -3,7 +3,10 @@
  * @file crinit.c
  * @brief Implementation of the Crinit main program.
  */
+#include <getopt.h>
+#include <linux/prctl.h>
 #include <stdlib.h>
+#include <sys/prctl.h>
 #include <unistd.h>
 
 #include "common.h"
@@ -14,17 +17,12 @@
 #include "notiserv.h"
 #include "optfeat.h"
 #include "procdip.h"
-#include "rtimcmd.h"
+#include "rtimopmap.h"
 #include "version.h"
 
 #ifdef SIGNATURE_SUPPORT
 #include "sig.h"
 #endif
-
-/**
- * The default series file. Used if nothing is specified on command line.
- */
-#define CRINIT_DEFAULT_CONFIG_SERIES "/etc/crinit/default.series"
 
 /**
  * Prints a message indicating Crinit's version to stderr.
@@ -53,30 +51,72 @@ static void crinitTaskPrint(const crinitTask_t *t);
  */
 int main(int argc, char *argv[]) {
     const char *seriesFname = CRINIT_DEFAULT_CONFIG_SERIES;
-    if (argc > 1) {
-        for (int i = 0; i < argc; i++) {
-            if (crinitParamCheck(argv[i], "-V", "--version")) {
+    enum {
+        SUBREAPER_FLAG_UNCHANGED = -1,
+        SUBREAPER_FLAG_RESET = 0,
+        SUBREAPER_FLAG_SET = 1
+    } subReaper = SUBREAPER_FLAG_UNCHANGED;
+    const int isPidOne = (getpid() == 1);
+    int sysMounts = isPidOne;
+    const struct option optDef[] = {{"help", no_argument, 0, 'h'},
+                                    {"version", no_argument, 0, 'V'},
+                                    {"child-subreaper", no_argument, &subReaper, SUBREAPER_FLAG_SET},
+                                    {"no-child-subreaper", no_argument, &subReaper, SUBREAPER_FLAG_RESET},
+                                    {"sys-mounts", no_argument, &sysMounts, 1},
+                                    {"no-sys-mounts", no_argument, &sysMounts, 0},
+                                    {0, 0, 0, 0}};
+    int opt;
+    while (true) {
+        opt = getopt_long(argc, argv, "hV", optDef, NULL);
+        if (opt == -1) {
+            break;
+        }
+        switch (opt) {
+            case 'V':
                 crinitPrintVersion();
                 return EXIT_FAILURE;
-            }
-            if (crinitParamCheck(argv[i], "-h", "--help")) {
+                break;
+            case 0:  // Option which sets/unsets a flag automatically.
+                break;
+            case 'h':
+            case '?':
+            default:
                 crinitPrintUsage(argv[0]);
                 return EXIT_FAILURE;
-            }
         }
-        if (!crinitIsAbsPath(argv[1])) {
+    }
+    if (optind < argc) {
+        if (!crinitIsAbsPath(argv[optind])) {
             crinitErrPrint("Program argument must be an absolute path.");
             crinitPrintUsage(argv[0]);
             return EXIT_FAILURE;
         }
-        seriesFname = argv[1];
+        seriesFname = argv[optind];
     }
+
     crinitInfoPrint("Crinit daemon version %s started.", crinitGetVersionString());
-    if (getpid() == 1) {
-        if (crinitForkZombieReaper() == -1) {
-            crinitErrPrint("I am PID 1 but failed to create a zombie reaper process.");
+    if (subReaper != SUBREAPER_FLAG_UNCHANGED) {
+        if (prctl(PR_SET_CHILD_SUBREAPER, subReaper) == -1) {
+            crinitErrnoPrint("Could not set PR_SET_CHILD_SUBREAPER to %d.", subReaper);
             return EXIT_FAILURE;
         }
+    } else if (!isPidOne) {
+        // In case we're not PID 1, we also need to check our subreaper attribute if the
+        // option wasn't given. Someone may have set the attribute for crinit prior to exec(),
+        // i.e. without our knowledge. In that case we still need to fork the Zombie reaper.
+        if (prctl(PR_GET_CHILD_SUBREAPER, &subReaper) == -1) {
+            crinitErrnoPrint("Could not check crinit's CHILD_SUBREAPER process attribute.");
+        }
+    }
+
+    if (isPidOne || subReaper != SUBREAPER_FLAG_RESET) {
+        if (crinitForkZombieReaper() == -1) {
+            crinitErrPrint("Could not create a zombie reaper process.");
+            return EXIT_FAILURE;
+        }
+    }
+
+    if (sysMounts) {
         if (crinitSetupSystemFs() == -1) {
             crinitErrPrint("I started as PID 1 but failed to do minimal system setup.");
             return EXIT_FAILURE;
@@ -115,8 +155,8 @@ int main(int argc, char *argv[]) {
         }
 #else
         crinitErrPrint(
-            "Config signature option is set but signature support was not compiled in. You will need to recompile "
-            "Crinit with mbedtls.");
+            "Config signature option is set but signature support was not compiled in. You will need to "
+            "recompile Crinit with mbedtls.");
         goto failFreeGlobOpts;
 #endif
     }
@@ -243,8 +283,28 @@ static void crinitPrintVersion(void) {
 
 static void crinitPrintUsage(const char *basename) {
     crinitPrintVersion();
-    fprintf(stderr, "USAGE: %s [path/to/config.series]\n", basename);
-    fprintf(stderr, "If nothing is specified, the default path \'%s\' is used.\n", CRINIT_DEFAULT_CONFIG_SERIES);
+    fprintf(stderr, "USAGE: %s [OPTIONS] [path/to/config.series]\n", basename);
+    fprintf(stderr, "    If no path is specified, the default path \'%s\' is used.\n", CRINIT_DEFAULT_CONFIG_SERIES);
+    fprintf(stderr,
+            "Options:\n"
+            "    --help/-h    - Print this help and exit.\n"
+            "    --version/-V - Print version information and exit.\n"
+            "    --child-subreaper /\n"
+            "     --no-child-subreaper - Specify if Crinit should provide a CHILD_SUBREAPER\n"
+            "                  process if it is not started as PID 1. If set, Crinit will\n"
+            "                  handle all zombie processes among its descendants even if it\n"
+            "                  is not the primary init process.\n"
+            "                  Default is to respect the process attribute as it is set on\n"
+            "                  startup and handle or not handle zombies accordingly.\n"
+            "    --sys-mounts /\n"
+            "     --no-sys-mounts - Specify if Crinit should mount hardcoded system\n"
+            "                  directories on startup. Those are /dev, /dev/pts, /sys,\n"
+            "                  /proc, and a tmpfs on /run. Note that Crinit itself needs\n"
+            "                  at least /proc and /run for its own functionality. Also note\n"
+            "                  that Crinit will not remount a directory if it is already\n"
+            "                  mounted with correct source and target.\n"
+            "                  Default is to mount the system directories if Crinit is\n"
+            "                  PID 1, otherwise not.\n");
 }
 
 static void crinitTaskPrint(const crinitTask_t *t) {

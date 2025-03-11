@@ -27,7 +27,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
  && apt-get install -y sudo vim locales uuid-runtime keyutils \
  build-essential binutils-dev pkg-config cmake valgrind strace \
- git wget curl netcat net-tools ssh libssl-dev openssl re2c \
+ git wget curl netcat net-tools ssh libssl-dev openssl re2c strace \
  libjson-c-dev libmnl-dev libsqlite3-0 libsqlite3-dev libesmtp-dev expat liblog4c-dev \
  libmbedtls-dev \
  && rm -rf /var/lib/apt/lists/*

@@ -15,16 +15,19 @@ PARAM=""
 OPTION_CLEAN=0
 for element in $@; do
     case $element in
-        --clean|-c)
-            OPTION_CLEAN=1 ;;
-        --help|-h)
+        --clean | -c)
+            OPTION_CLEAN=1
+            ;;
+        --help | -h)
             printHelp
-			exit 0 ;;
+            exit 0
+            ;;
         -*)
             echo "error: unknown option: ${element}"
             printHelp
-            exit 1 ;;
-        *)  PARAM="$PARAM $element" ;;
+            exit 1
+            ;;
+        *) PARAM="$PARAM $element" ;;
     esac
 done
 
@@ -48,7 +51,6 @@ SPHINX_HTML_OUTPUT_DIR=${SPHINX_BUILD_DIR}/html
 
 . ${SPHINX_VENV-${BASE_DIR}/.venv/}/bin/activate
 
-
 function createApiDocu() {
     sphinx-c-apidoc --force \
         -o ${SPHINX_GENERATED_SOURCE_DIR}/api/crinit \
@@ -58,8 +60,6 @@ function createApiDocu() {
         -o ${SPHINX_GENERATED_SOURCE_DIR}/api/crinit \
         --tocfile header \
         ${CRINIT_SOURCE_HEADER_DIR}/
-
-
 
     echo -e "
 Crinit API
@@ -71,7 +71,7 @@ Crinit API
 
   crinit sources <crinit/sources>
   crinit header <crinit/header>
-" > ${SPHINX_GENERATED_SOURCE_DIR}/api/index.rst
+" >${SPHINX_GENERATED_SOURCE_DIR}/api/index.rst
 }
 
 if [ ${OPTION_CLEAN} -eq 1 ]; then
@@ -91,7 +91,7 @@ trap resetReadMeImages EXIT
 
 export PATH="${PATH}:${DIST_DIR}/usr/local/bin"
 export LD_LIBRARY_PATH="${LD_LIBRARY_PATH-"./"}:${DIST_DIR}/usr/local/lib"
-sphinx-build -b html ${SPHINX_SOURCE_DIR} ${SPHINX_HTML_OUTPUT_DIR} 2> ${SPHINX_BUILD_DIR}/html_doc_error.log
+sphinx-build -b html ${SPHINX_SOURCE_DIR} ${SPHINX_HTML_OUTPUT_DIR} 2>${SPHINX_BUILD_DIR}/html_doc_error.log
 if [ $? -ne 0 ]; then
     echo "Build failed, for details see ${SPHINX_BUILD_DIR}/html_doc_error.log"
     exit 1

@@ -13,7 +13,7 @@ setup() {
     crinit_config_setup
     rm -f ${out}
     rm -f ${task}
-    cat << EOF > ${task}
+    cat <<EOF >${task}
 # Config to show off environment settings.
 
 NAME = smoketest_env
@@ -70,4 +70,3 @@ teardown() {
     # Terminate crinit daemon
     crinit_daemon_stop
 }
-

@@ -100,4 +100,3 @@ int crinitConfConvToIntegerLL(long long *x, const char *confVal, int base);
  * @return  0 on success, -1 on error.
  */
 int crinitConfConvToBool(bool *b, const char *confVal);
-

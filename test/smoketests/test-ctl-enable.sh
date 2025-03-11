@@ -29,7 +29,7 @@ run() {
 
     sleep 1
 
-    count=$(grep -c 'A second is over' < /tmp/crinit-one_second_respawn.log)
+    count=$(grep -c 'A second is over' </tmp/crinit-one_second_respawn.log)
     if [ "$count" -lt 1 ]; then
         echo "wrong execution count: $count"
         return 1
@@ -40,4 +40,3 @@ teardown() {
     # Terminate crinit daemon
     crinit_daemon_stop
 }
-

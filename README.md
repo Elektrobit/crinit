@@ -3,6 +3,44 @@
 
 <img src="images/crinit-logo.png" width=20% height=20% align="right">
 
+## Table of Contents
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+  - [In a Nutshell](#in-a-nutshell)
+  - [Concept](#concept)
+  - [Features](#features)
+- [License](#license)
+  - [Powered by EB](#powered-by-eb)
+  - [Maintainers](#maintainers)
+  - [Credits](#credits)
+  - [Artwork](#artwork)
+- [Details](#details)
+  - [Command-line options](#command-line-options)
+  - [Environment Variables](#environment-variables)
+  - [Configuration](#configuration)
+    - [Example Global Configuration](#example-global-configuration)
+      - [Explanation](#explanation)
+    - [Example Task Configuration](#example-task-configuration)
+      - [Explanation](#explanation-1)
+    - [Setting Environment Variables](#setting-environment-variables)
+    - [Defining Elos Filters](#defining-elos-filters)
+      - [Ruleset](#ruleset)
+    - [Include files](#include-files)
+    - [IO Redirections](#io-redirections)
+      - [Named pipes](#named-pipes)
+      - [A note on buffering](#a-note-on-buffering)
+    - [Dependency groups (meta-tasks)](#dependency-groups-meta-tasks)
+    - [Configuration Signatures](#configuration-signatures)
+  - [crinit-ctl Usage Info](#crinit-ctl-usage-info)
+  - [Smart bash completion for crinit-ctl](#smart-bash-completion-for-crinit-ctl)
+  - [crinit-launch](#crinit-launch)
+  - [Build Instructions](#build-instructions)
+  - [Build Requirements](#build-requirements)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## In a Nutshell
 
 Crinit is an init daemon executed as PID 1 by the Linux Kernel. It reads a global configuration ("series"-file) either
@@ -49,11 +87,12 @@ Crinit currently has the following features implemented:
 * ability to report task state changes back to elos
     - emits appropriate events when a task is created, starts, exits, or fails
 * optional signature checking of Crinit's configuration files
+* setting of UID and GID a task should be run as
 
 In the future we also plan to support:
 
-* restriction of processes started/managed by Crinit
-    - UID/GID, capabilities, cgroups,...
+* fine-grained restriction of processes started/managed by Crinit
+    - capabilities, cgroups,...
 
 There are example configurations below which show how to use the currently implemented features.
 For detailed explanations of Crinit's inner workings please refer to the Doxygen documentation generated during build.
@@ -68,7 +107,6 @@ unique ID burned to on-chip OTP memory. If the Kernel command line value is set,
 physical memory OTP reads are omitted. This means that while the application has special functionality for S32G SoCs,
 it can work on any target as long as the Kernel command line contains the necessary value.
 
-
 # License
 
 MIT License
@@ -82,10 +120,11 @@ The full text of the license can be found in the [LICENSE](LICENSE) file in the 
 <img src="images/eb-logo.png" width=70 height=70 hspace=10 align="left">
 Crinit is powered by Elektrobit Automotive GmbH.
 
-Elektrobit is an automotive software company and developer of embedded software products for ECU, AUTOSAR, automated driving, connected vehicles and UX.
-Crinit is an integrated part of EB corbos Linux.
+Elektrobit is an automotive software company and developer of embedded software products for ECU, AUTOSAR, automated
+driving, connected vehicles and UX. Crinit is an integrated part of EB corbos Linux.
 
-EB corbos Linux – built on Ubuntu - is an open-source operating system for high-performance computing, leveraging the rich functionality of Linux while meeting security and industry regulations.
+EB corbos Linux – built on Ubuntu - is an open-source operating system for high-performance computing, leveraging the
+rich functionality of Linux while meeting security and industry regulations.
 
 
 ## Maintainers
@@ -108,9 +147,46 @@ EB corbos Linux – built on Ubuntu - is an open-source operating system for hig
 
 ## Artwork
 
-The crinit logo is the Swallow (Hirundinidae). A quick and small bird able to fly long distances. Originator is Anja Lehwess-Litzmann (emlix GmbH). Year 2023. It is licensed under Creative Commons No Derivatives (CC-nd). It shall be used in black on white or HKS43 color.
+The crinit logo is the Swallow (Hirundinidae). A quick and small bird able to fly long distances. Originator is Anja
+Lehwess-Litzmann (emlix GmbH). Year 2023. It is licensed under Creative Commons No Derivatives (CC-nd). It shall be used
+in black on white or HKS43 color.
 
 # Details
+
+## Command-line options
+
+Crinit is mainly configured via global and task-specific configuration files. There are, however, some specific options
+related to its behavior as a secondary init process (e.g. if crinit is started by another init process, or even itself).
+These options can only be changed through command-line parameters.
+
+Specifically, those are
+
+* **--sys-mounts/--no-sys-mounts** - Depending on the setting, Crinit will or will not mount some hardcoded system
+    directories. Some of these are needed by Crinit itself to function. So, if deactivated, they need to be already
+    mounted when Crinit starts. If activated, Crinit will mount
+    - `/dev` - devtmpfs pseudo file system
+    - `/dev/pts` - devpts pseudo file system
+    - `/proc` - procfs filesystem, needed by Crinit to parse the Kernel cmdline
+    - `/run` - tmpfs, needed by Crinit to create its socket (default location)
+    - `/sys` - sysfs pseudo file system
+    Default: Activated if Crinit is PID 1, otherwise deactivated.
+* **--child-subreaper/--no-child-subreaper** - Depending on the setting, Crinit will or will not provide a process with
+    "child subreaper" process attribute (see [PR_SET_CHILD_SUBREAPER manpage](https://man7.org/linux/man-pages/man2/PR_SET_CHILD_SUBREAPER.2const.html)).
+    This is a relevant setting only if Crinit is not PID 1, i.e. started as a secondary init process. In that case,
+    Crinit can use this setting to provide the "zombie reaper" function for its descendent processes. For example, this
+    can be helpful in some containerization scenarios. If Crinit is PID 1, however, it will always provide a "zombie
+    reaper" regardless of this setting.
+    By default, Crinit will respect the attribute as it is set when Crinit is started and behave accordingly, i.e. if
+    Crinit either is PID 1 or it has the CHILD_SUBREAPER process attribute, it will reap zombies of its descendants.
+
+## Environment Variables
+
+Crinit also respects the environment variable
+* `CRINIT_SOCK` - The path to the socket file Crinit will create for communication through `libcrinit-client`.
+    Default: `/run/crinit/crinit.sock`
+
+Note that `crinit-ctl` uses the same environment variable to decide to which socket it will connect to. This makes it
+possible to have multiple instances of crinit running alongside each other, each controlled through a different socket.
 
 ## Configuration
 
@@ -157,6 +233,7 @@ USE_ELOS = YES
 
 ELOS_SERVER = 192.168.3.43
 ELOS_PORT = 2342
+ELOS_EVENT_POLL_INTERVAL = 250000
 
 ENV_SET = FOO "foo"
 ENV_SET = FOO_BAZ "${FOO} baz"
@@ -174,17 +251,25 @@ ENV_SET = GREETING "Good morning!"
 - **INCLUDEDIR** -- Where to find include files referenced from task configurations. Default: Same as **TASKDIR**.
 - **INCLUDE_SUFFIX** -- Filename suffix of include files referenced from task configurations. Default: `.crincl`
 - **DEBUG** -- If crinit should be verbose in its output. Either `YES` or `NO`. Default: `NO`
-- **LAUNCHER_CMD** -- Specify location of the crinit-launch binary. Optional. If not given, crinit-launch is taken from the default installation path. Needed to execute a **COMMAND** as a different user or group.
-- **SHUTDOWN_GRACE_PERIOD_US** -- The amount of microseconds to wait both between `STOP_COMMAND` and `SIGTERM` as well as between`SIGTERM` and `SIGKILL` on shutdown/reboot.
-                                  Default: 100000
+- **LAUNCHER_CMD** -- Specify location of the crinit-launch binary. Optional. If not given, crinit-launch is taken from
+  the default installation path. Needed to execute a **COMMAND** as a different user or group.
+- **SHUTDOWN_GRACE_PERIOD_US** -- The amount of microseconds to wait both between `STOP_COMMAND` and `SIGTERM` as well
+  as between`SIGTERM` and `SIGKILL` on shutdown/reboot.
+  Default: 100000
 - **USE_SYSLOG** -- If syslog should be used for output if it is available. If set to `YES`, Crinit will switch to
-                    syslog for output as soon as a task file `PROVIDES` the `syslog` feature. Ideally this should be
-                    a task file loading a syslog server such as syslogd or elosd. Default: `NO`
-- **USE_ELOS** -- If Elos should be used as event based dependency provider if it is available. If set to `YES`, Crinit will allow Elos event filters as
-                  task dependency with the `@elos` prefix as soon as a task file `PROVIDES` the `elos` feature. Ideally this should be
-                  a task file loading the Elos daemon elosd. Default: `NO`
+  syslog for output as soon as a task file `PROVIDES` the `syslog` feature. Ideally this should be a task file loading
+  a syslog server such as syslogd or elosd. Default: `NO`
+- **USE_ELOS** -- If Elos should be used as event based dependency provider if it is available. If set to `YES`, Crinit
+  will allow Elos event filters as task dependencies with the `@elos` prefix as soon as a task file `PROVIDES` the
+  `elos` feature. Ideally this should be a task file loading the Elos daemon elosd. Default is `NO`.
+  Needs ELOS support included at build-time.
 - **ELOS_SERVER** -- Ip address of the elos server. Default: `127.0.0.1`
+  Needs ELOS support included at build-time.
 - **ELOS_PORT** -- Port of the elos server. Default: `54321`
+  Needs ELOS support included at build-time.
+- **ELOS_EVENT_POLL_INTERVAL** -- Interval in microseconds between polling requests for events from elos. This is a
+  tradeoff between idle CPU use and latency of tasks depending on an elos event (see section **Defining Elos Filters**
+  below). Default is 500000. Needs ELOS support included at build-time.
 - **ENV_SET** -- See section **Setting Environment Variables** below. (*array-like*)
 - **FILTER_DEFINE** -- See section **Defining Elos Filters** below. (*array-like*)
 
@@ -233,11 +318,20 @@ IO_REDIRECT = STDERR STDOUT
   one of them fails and the whole task will be considered failed. The whole task is considered finished (i.e.
   the `network-dhcp:wait` dependency is fulfilled) if the last command has successfully returned. If no **COMMAND** is
   given, the task is treated as a dependency group or "meta-task", see below. (*array-like*)
-- **STOP_COMMAND** -- Optional. Given commands are executed on `crinit-ctl stop <TASKNAME>`, `crinit-ctl poweroff` or `crinit-ctl reboot` instead of sending the regular `SIGTERM`. Same rules as for **COMMAND** apply. Additionally the variable "TASK_PID" can be used and will be expanded with the stored PID of the task. Example: `STOP_COMMAND = /usr/bin/kill ${TASK_PID}`. Please note that TASK_PID will expand to "-1" if the task is no longer running or has forked itself without notifying Crinit. **ATTENTION:** Currently STOP_COMMAND does not support IO_REDIRECT! Its output will not be redirected!
-- **USER** -- Name of the user used to run the commands specified in **COMMAND**. Either the username or the numeric user ID can be used. If **USER** is not set, "root" is assumed.  
-**NOTE**: Changing user names, UIDs, group names or GIDs on the system while a task using them has already been loaded may result in undefined behaviour.
-- **GROUP** -- Name of the group used to run the commands specified in **COMMAND**. Either the group name or the numeric group ID can be used. If **GROUP** is not set, "root" is assumed. Note that setting supplementary groups is not yet supported.
-**Also see note on USER command.** This applies here, too.
+- **STOP_COMMAND** -- Optional. Given commands are executed on `crinit-ctl stop <TASKNAME>`, `crinit-ctl poweroff` or
+  `crinit-ctl reboot` instead of sending the regular `SIGTERM`. Same rules as for **COMMAND** apply. Additionally the
+  variable "TASK_PID" can be used and will be expanded with the stored PID of the task.
+  Example: `STOP_COMMAND = /usr/bin/kill ${TASK_PID}`.
+  Please note that TASK_PID will expand to "-1" if the task is no longer running or has forked itself without notifying
+  Crinit. **ATTENTION:** Currently `STOP_COMMAND` does not support `IO_REDIRECT`! Its output will not be redirected!
+- **USER** -- Name of the user used to run the commands specified in **COMMAND**. Either the username or the numeric
+  user ID can be used. If **USER** is not set, "root" is assumed.
+    **NOTE**: Changing user names, UIDs, group names or GIDs on the system while a task using them has already been
+    loaded may result in undefined behaviour.
+- **GROUP** -- Name of the group used to run the commands specified in **COMMAND**. Either the group name or the numeric
+  group ID can be used. If **GROUP** is not set, "root" is assumed. Note that setting supplementary groups is not yet
+  supported.
+    **Also see note on USER command.** This applies here, too.
 - **DEPENDS** -- A list of dependencies which need to be fulfilled before this task is considered "ready-to-start".
   Semantics are `<taskname>:{fail,wait,spawn}`, where `spawn` is fulfilled when (the first command of) a task has been
   started, `wait` if it has successfully completed, and `fail` if it has failed somewhere along the way. Here we can see
@@ -280,10 +374,12 @@ VAR_WITH_ESC_SEQUENCES=hex  hex            # Support for escape sequences includ
 
 ### Defining Elos Filters
 
-Crinit supports an optional feature, which enables a task to depend on specific system events issued by the elos event logger.
-In order to depend on elos events, a task uses the `@elos` dependency prefix in conjunction with a elos filter name. The corresponding
-filter has to be defined within the task itself or within the global environment. The definition follows the syntax of normal
-environment variables, but uses the `FILTER_DEFINE` prefix instead:
+Crinit supports an optional feature, which enables a task to depend on specific system events issued by the elos event
+logger. This needs ELOS support included at build-time.
+
+In order to depend on elos events, a task uses the `@elos` dependency prefix in conjunction with a elos filter name. The
+corresponding filter has to be defined within the task itself or within the global environment. The definition follows
+the syntax of normal environment variables, but uses the `FILTER_DEFINE` prefix instead:
 
 ```
 FILTER_DEFINE = <filter_name> <filter_rule>
@@ -348,7 +444,8 @@ In the above case, the DEPENDS setting would be ignored.
 ### IO Redirections
 
 Crinit supports per-task IO redirection to/from file and between STDOUT/IN/ERR using `IO_REDIRECT` statements in the
-task configurations. Please note that currently IO redirections do not work for STOP_COMMAND. The statements are of the form
+task configurations. Please note that currently IO redirections do not work for STOP_COMMAND. The statements are of the
+form
 ```
 <REDIRECT_FROM> <REDIRECT_TO> [ APPEND | TRUNCATE | PIPE ] [ OCTAL_MODE ]
 ```
@@ -550,7 +647,8 @@ USAGE: crinit-ctl <ACTION> [OPTIONS] <PARAMETER> [PARAMETERS...]
      disable <TASK_NAME>
              - Adds dependency '@ctl:enable' to the dependency list of <TASK_NAME>.
         stop <TASK_NAME>
-             - If the task has a STOP_COMMAND, it will be executed. Otherwise, Crinit sends SIGTERM to the PID of <TASK_NAME> if the PID is currently known.
+             - If the task has a STOP_COMMAND, it will be executed. Otherwise, Crinit sends SIGTERM to the
+               PID of <TASK_NAME> if the PID is currently known.
         kill <TASK_NAME>
              - Sends SIGKILL to the PID of <TASK_NAME> if the PID is currently known.
      restart <TASK_NAME>
@@ -578,6 +676,9 @@ USAGE: crinit-ctl <ACTION> [OPTIONS] <PARAMETER> [PARAMETERS...]
                        and -- if connection is successful -- the crinit daemon.
 ```
 
+As noted above, it will also make use of the `CRINIT_SOCK` environment variable to know which crinit socket to connect
+to (Default: `/run/crinit/crinit.sock`).
+
 ## Smart bash completion for crinit-ctl
 
 There is a script to support smart bash completions for the crinit-ctl executable located at
@@ -591,13 +692,12 @@ the current session. The script can also be sourced from `.bashrc` if a system-w
 Once installed and loaded, `crinit-ctl <TAB><TAB>` will show/complete available command verbs like `addtask`, `enable`,
 `disable`, etc. For `crinit-ctl addtask <TAB><TAB>`, paths to `\*.crinit` files and specific options will be completed,
 similar for `addseries`. Verbs taking a task name as input will have completion of available tasks loaded by crinit.
-The script calls `crinit-ctl list` and parses its output in the background to 
-achieve this.
-
+The script calls `crinit-ctl list` and parses its output in the background to achieve this.
 
 ## crinit-launch
 
-The `crinit-launch` executable is a helper program to start a command as a different user and / or group. It is not meant to be executed by the user directly.
+The `crinit-launch` executable is a helper program to start a command as a different user and / or group. It is not
+meant to be executed by the user directly.
 
 ## Build Instructions
 Executing
@@ -605,7 +705,7 @@ Executing
 ci/docker-run.sh
 ```
 will start a Docker container for the native host architecture with all necessary programs to build Crinit and its
-Doxygen documentation and to run a short local demonstration.
+Doxygen documentation and to run the tests.
 
 It is possible to run the Docker container for a foreign architecture such as arm64 with the help of qemu-user-static
 and binfmt-support. Make sure these packages are installed on your host system if you want to use this functionality.
@@ -632,12 +732,6 @@ to enable AddressSanitizer (ASAN) for additional runtime checks or static analys
 ```
 ci/build.sh Debug --asan --analyzer
 ```
-
-Afterwards, it is possible to run (also inside the container)
-```
-ci/demo.sh
-```
-for a short local demonstration of `crinit`'s client API using `crinit-ctl`.
 
 A `clang-tidy` analysis of the source can be performed using
 ```
@@ -673,16 +767,31 @@ cmake -B build/amd64 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=On -DUNIT
 make -C build/amd64
 ```
 
+Some default paths can be configured on compile time:
+* Default series file: `-DDEFAULT_CONFIG_SERIES_FILE`. Default is `$CMAKE_INSTALL_SYSCONFDIR/crinit/default.series`.
+* Default location of the client communication socket: `-DDEFAULT_CRINIT_SOCKFILE=<FILEPATH>`.
+  Default is `$CMAKE_INSTALL_RUNSTATEDIR/crinit/crinit.sock`.
+* Default include directory: `-DDEFAULT_INCL_DIR=<PATH>`. Default is `$CMAKE_INSTALL_SYSCONFDIR/crinit`.
+* Default task directory: `-DDEFAULT_TASK_DIR=<PATH>`. Default is `$CMAKE_INSTALL_SYSCONFDIR/crinit`.
+
 The cmake setup supports some optional features:
 * Crinit signature support using `-DENABLE_SIGNATURE_SUPPORT={On, Off}`. If set to on, crinit will have a dependency to
   [libmbedtls](https://github.com/Mbed-TLS/mbedtls). Default is `On`.
+* Configurable default path of signed (downstream) public keys `-DDEFAULT_SIGKEY_DIR=<PATH>`.
+  Default is `$CMAKE_INSTALL_SYSCONFDIR/crinit/pk`.
+* Crinit ELOS support using `-DENABLE_ELOS={On, Off}`. If set to on, crinit will have a dependency to
+  [safu](https://github.com/elektrobit/safu). Default is `On`.
 * Unit tests using `-DUNIT_TESTS={On, Off}`. If set to on, Crinit's unit tests will be built and installed to
   `UNIT_TEST_INSTALL_DIR`. This will cause a dependency to cmocka 1.1.5 or greater. Default is `On` with installation
   path `${CMAKE_INSTALL_LIBDIR}/test/crinit/utest`.
+* Elos event polling time (see global configuration example) `-DDEFAULT_ELOS_EVENT_POLLING_TIME=<usecs>`.
+  Default is 500000.
 * Build and install API documentation in doxygen HTML format using `-DAPI_DOC={On, Off}`. Needs doxygen. Default is
   `On`.
 * Build and install an example generator for the machine id file (see above) using `-DMACHINE_ID_EXAMPLE={On, Off}`.
   Default is `Off`.
+* Name and path for the machine id file: `-DDEFAULT_MACHINE_ID_FILE=<FILEPATH>`.
+  Default is `$CMAKE_INSTALL_SYSCONFDIR/machine-id`.
 * Install the example configurations from `config/example` to `/etc/${EXAMPLE_TASKDIR}`. Default is `Off`, default
   installation path is `/etc/crinit/example`.
 * Install the smoke test scripts and configurations, using `-DINSTALL_SMOKE_TESTS={On, Off}`, to the
@@ -705,7 +814,7 @@ In order to build crinit, some prerequisites have to be installed.
 - a modern GCC toolchain with C17 support
 - cmake >= 3.21
 - re2c >= 3.0
-- [safu](https://github.com/elektrobit/safu) >= 0.58.2
+- optional, for ELOS support: [safu](https://github.com/elektrobit/safu) >= 0.58.2
 - optional, for signature support: [MbedTLS](https://github.com/Mbed-TLS/mbedtls) 2.28.x or 3.x
 - optional, for unit tests: cmocka >= 1.1.5
 - optional, for HTML API documentation: Doxygen

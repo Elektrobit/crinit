@@ -32,11 +32,11 @@ crinit_config_setup() {
     rm -rf "$SMOKETESTS_CONFDIR"
     mkdir -p "$SMOKETESTS_CONFDIR"
     cp -R "$CONFDIR"/* "$SMOKETESTS_CONFDIR"/
-    sed "s#TASKDIR = .*#TASKDIR = ${SMOKETESTS_CONFDIR}#" < "${SMOKETESTS_CONFDIR}"/local.series > "${SMOKETESTS_CONFDIR}"/demo.series
-    sed "s#TASKDIR = .*#TASKDIR = ${SMOKETESTS_CONFDIR}/addseries#" < "${SMOKETESTS_CONFDIR}"/addseries/add.series > "${SMOKETESTS_CONFDIR}"/addseries/demoadd.series
-    sed "s#TASKDIR = .*#TASKDIR = ${SMOKETESTS_CONFDIR}/addseries#" < "${SMOKETESTS_CONFDIR}"/addseries/add_dyn.series > "${SMOKETESTS_CONFDIR}"/addseries/demoadd_dyn.series
-    sed "s#TASKDIR = .*#TASKDIR = ${SMOKETESTS_CONFDIR}/addseries#" < "${SMOKETESTS_CONFDIR}"/addseries/add_dyn_nofollow.series > "${SMOKETESTS_CONFDIR}"/addseries/demoadd_dyn_nofollow.series
-    sed "s#TASKDIR = .*#TASKDIR = ${SMOKETESTS_CONFDIR}/addseries#" < "${SMOKETESTS_CONFDIR}"/addseries/add_dyn_suffix.series > "${SMOKETESTS_CONFDIR}"/addseries/demoadd_dyn_suffix.series
+    sed "s#TASKDIR = .*#TASKDIR = ${SMOKETESTS_CONFDIR}#" <"${SMOKETESTS_CONFDIR}"/local.series >"${SMOKETESTS_CONFDIR}"/demo.series
+    sed "s#TASKDIR = .*#TASKDIR = ${SMOKETESTS_CONFDIR}/addseries#" <"${SMOKETESTS_CONFDIR}"/addseries/add.series >"${SMOKETESTS_CONFDIR}"/addseries/demoadd.series
+    sed "s#TASKDIR = .*#TASKDIR = ${SMOKETESTS_CONFDIR}/addseries#" <"${SMOKETESTS_CONFDIR}"/addseries/add_dyn.series >"${SMOKETESTS_CONFDIR}"/addseries/demoadd_dyn.series
+    sed "s#TASKDIR = .*#TASKDIR = ${SMOKETESTS_CONFDIR}/addseries#" <"${SMOKETESTS_CONFDIR}"/addseries/add_dyn_nofollow.series >"${SMOKETESTS_CONFDIR}"/addseries/demoadd_dyn_nofollow.series
+    sed "s#TASKDIR = .*#TASKDIR = ${SMOKETESTS_CONFDIR}/addseries#" <"${SMOKETESTS_CONFDIR}"/addseries/add_dyn_suffix.series >"${SMOKETESTS_CONFDIR}"/addseries/demoadd_dyn_suffix.series
 }
 
 crinit_daemon_start() {
@@ -50,7 +50,7 @@ crinit_daemon_start() {
     rm -f "$CRINIT_SOCK"
 
     # shellcheck disable=SC2024
-    "$@" > "${SMOKETESTS_RESULTDIR}/${SMOKETESTS_NAME}-crinit.log" 2>&1 &
+    "$@" >"${SMOKETESTS_RESULTDIR}/${SMOKETESTS_NAME}-crinit.log" 2>&1 &
     CRINIT_PID="$!"
 
     # give crinit some time to initialize in background
@@ -63,7 +63,7 @@ crinit_daemon_start() {
             fi
         fi
         sleep 1
-        : $(( i -= 1 ))
+        : $((i -= 1))
     done
 
     return 1
@@ -84,7 +84,7 @@ compare_output() {
     sample="$1"
     out="$2"
     if ! cmp -s "$sample" "$out"; then
-        diff "$sample" "$out" > "${out%.out}".diff
+        diff "$sample" "$out" >"${out%.out}".diff
         return 1
     fi
 }

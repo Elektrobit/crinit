@@ -49,5 +49,5 @@ set -o pipefail
 RETURNCODE=0
 ctest --test-dir "$BUILDDIR" 2>&1 | tee "$UTEST_REPORT" || RETURNCODE=$?
 
-tee "$UTEST_LOG" < "$BUILDDIR"/Testing/Temporary/LastTest.log
+tee "$UTEST_LOG" <"$BUILDDIR"/Testing/Temporary/LastTest.log
 exit $RETURNCODE

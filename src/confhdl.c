@@ -211,6 +211,13 @@ int crinitCfgDepHandler(void *tgt, const char *val, crinitConfigType_t type) {
             crinitFreeArgvArray(tempDeps);
             return -1;
         }
+#ifndef ENABLE_ELOS
+        if (strcmp(t->deps[i].name, "@elos") == 0) {
+            crinitErrPrint("To depend on an ELOS filter ELOS support must be enabled at compile time.");
+            crinitFreeArgvArray(tempDeps);
+            return -1;
+        }
+#endif
     }
 
     crinitFreeArgvArray(tempDeps);
@@ -316,6 +323,14 @@ int crinitCfgEnvHandler(void *tgt, const char *val, crinitConfigType_t type) {
 }
 
 int crinitCfgFilterHandler(void *tgt, const char *val, crinitConfigType_t type) {
+#ifndef ENABLE_ELOS
+    CRINIT_PARAM_UNUSED(tgt);
+    CRINIT_PARAM_UNUSED(val);
+    CRINIT_PARAM_UNUSED(type);
+    crinitErrPrint("To support the option '%s' ELOS support must be activated at compile time.",
+                   CRINIT_CONFIG_KEYSTR_FILTER_DEFINE);
+    return -1;
+#else
     if (type == CRINIT_CONFIG_TYPE_TASK) {
         crinitNullCheck(-1, tgt, val);
         crinitTask_t *t = tgt;
@@ -344,6 +359,7 @@ int crinitCfgFilterHandler(void *tgt, const char *val, crinitConfigType_t type) 
         return -1;
     }
     return 0;
+#endif
 }
 
 int crinitCfgIoRedirHandler(void *tgt, const char *val, crinitConfigType_t type) {
@@ -733,6 +749,14 @@ int crinitCfgSyslogHandler(void *tgt, const char *val, crinitConfigType_t type) 
 }
 
 int crinitCfgElosHandler(void *tgt, const char *val, crinitConfigType_t type) {
+#ifndef ENABLE_ELOS
+    CRINIT_PARAM_UNUSED(tgt);
+    CRINIT_PARAM_UNUSED(val);
+    CRINIT_PARAM_UNUSED(type);
+    crinitErrPrint("To support the option '%s' ELOS support must be activated at compile time.",
+                   CRINIT_CONFIG_KEYSTR_USE_ELOS);
+    return -1;
+#else
     CRINIT_PARAM_UNUSED(tgt);
     crinitNullCheck(-1, val);
     crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
@@ -747,6 +771,7 @@ int crinitCfgElosHandler(void *tgt, const char *val, crinitConfigType_t type) {
         return -1;
     }
     return 0;
+#endif
 }
 
 int crinitCfgElosServerHandler(void *tgt, const char *val, crinitConfigType_t type) {
@@ -754,11 +779,17 @@ int crinitCfgElosServerHandler(void *tgt, const char *val, crinitConfigType_t ty
     crinitNullCheck(-1, val);
     crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
 
+#ifndef ENABLE_ELOS
+    crinitErrPrint("To support the option '%s' ELOS support must be activated at compile time.",
+                   CRINIT_CONFIG_KEYSTR_ELOS_SERVER);
+    return -1;
+#else
     if (crinitGlobOptSet(CRINIT_GLOBOPT_ELOS_SERVER, val) == -1) {
         crinitErrPrint("Could not set global option '%s'.", CRINIT_CONFIG_KEYSTR_ELOS_SERVER);
         return -1;
     }
     return 0;
+#endif
 }
 
 int crinitCfgElosPortHandler(void *tgt, const char *val, crinitConfigType_t type) {
@@ -766,6 +797,11 @@ int crinitCfgElosPortHandler(void *tgt, const char *val, crinitConfigType_t type
     crinitNullCheck(-1, val);
     crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
 
+#ifndef ENABLE_ELOS
+    crinitErrPrint("To support the option '%s' ELOS support must be activated at compile time.",
+                   CRINIT_CONFIG_KEYSTR_ELOS_PORT);
+    return -1;
+#else
     int port;
     if (crinitConfConvToInteger(&port, val, 10) == -1) {
         crinitErrPrint("Could not parse value of integral numeric option '%s'.", CRINIT_CONFIG_KEYSTR_ELOS_PORT);
@@ -773,6 +809,25 @@ int crinitCfgElosPortHandler(void *tgt, const char *val, crinitConfigType_t type
     }
     if (crinitGlobOptSet(CRINIT_GLOBOPT_ELOS_PORT, port) == -1) {
         crinitErrPrint("Could not set global option '%s'.", CRINIT_CONFIG_KEYSTR_ELOS_PORT);
+        return -1;
+    }
+    return 0;
+#endif
+}
+
+int crinitCfgElosEventPollIntervalHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    CRINIT_PARAM_UNUSED(tgt);
+    crinitNullCheck(-1, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
+
+    unsigned long long pollInterval;
+    if (crinitConfConvToIntegerULL(&pollInterval, val, 10) == -1) {
+        crinitErrPrint("Could not parse value of integral numeric option '%s'.",
+                       CRINIT_CONFIG_KEYSTR_ELOS_EVENT_POLL_INTERVAL);
+        return -1;
+    }
+    if (crinitGlobOptSet(CRINIT_GLOBOPT_ELOS_EVENT_POLL_INTERVAL, pollInterval) == -1) {
+        crinitErrPrint("Could not set global option '%s'.", CRINIT_CONFIG_KEYSTR_ELOS_EVENT_POLL_INTERVAL);
         return -1;
     }
     return 0;

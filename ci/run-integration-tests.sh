@@ -55,7 +55,7 @@ rm -rf $BUILD_DIR/test/integration
 mkdir -p $BUILD_DIR/test/integration
 
 DOCKER_BUILDKIT=1 \
-docker build \
+    docker build \
     $BUILD_ARG \
     --progress=plain \
     --build-arg REPO="$REPO" \

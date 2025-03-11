@@ -17,7 +17,9 @@
 #include <sys/un.h>
 #include <unistd.h>
 
+#ifdef ENABLE_ELOS
 #include "eloslog.h"
+#endif
 #include "logio.h"
 #include "rtimcmd.h"
 #include "thrpool.h"
@@ -301,10 +303,12 @@ static void *crinitConnThread(void *args) {
         free(clientMsg);
         if (!crinitCheckPerm(cmd.op, &msgCreds)) {
             crinitErrPrint("(TID %d) Client does not have permission to issue command.", threadId);
+#ifdef ENABLE_ELOS
             if (crinitElosLog(ELOS_SEVERITY_WARN, ELOS_MSG_CODE_IPC_NOT_AUTHORIZED,
                               ELOS_CLASSIFICATION_SECURITY | ELOS_CLASSIFICATION_IPC, "%d", msgCreds.pid) == -1) {
                 crinitErrPrint("Could not enqueue elos permission event. Will continue but logging may be impaired.");
             }
+#endif
             if (crinitBuildRtimCmd(&res, cmd.op + 1, 2, CRINIT_RTIMCMD_RES_ERR, "Permission denied.") == -1) {
                 crinitErrPrint("Could not generate response to client.");
                 crinitDestroyRtimCmd(&cmd);
