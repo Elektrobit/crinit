@@ -1,3 +1,9 @@
+crinit (0.17.0-1) unstable; urgency=medium
+
+  * New upstream tag 0.17.0
+
+ -- Wolfgang Gehrhardt <wolfgang.gehrhardt@emlix.com>  Tue, 11 Mar 2025 15:46:11 +0000
+
 crinit (0.16.1-1) unstable; urgency=medium
 
   * New upstream tag 0.16.1
