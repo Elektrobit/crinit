@@ -81,17 +81,6 @@ OUTPUT_DIRECTORY       = ./doc/api
 
 CREATE_SUBDIRS         = NO
 
-# Controls the number of sub-directories that will be created when
-# CREATE_SUBDIRS tag is set to YES. Level 0 represents 16 directories, and every
-# level increment doubles the number of directories, resulting in 4096
-# directories at level 8 which is the default and also the maximum value. The
-# sub-directories are organized in 2 levels, the first level always has a fixed
-# number of 16 directories.
-# Minimum value: 0, maximum value: 8, default value: 8.
-# This tag requires that the tag CREATE_SUBDIRS is set to YES.
-
-CREATE_SUBDIRS_LEVEL   = 8
-
 # If the ALLOW_UNICODE_NAMES tag is set to YES, doxygen will allow non-ASCII
 # characters to appear in the names of generated files. If set to NO, non-ASCII
 # characters will be escaped, for example _xE3_x81_x84 will be used for Unicode
@@ -498,14 +487,6 @@ LOOKUP_CACHE_SIZE      = 0
 
 NUM_PROC_THREADS       = 1
 
-# If the TIMESTAMP tag is set different from NO then each generated page will
-# contain the date or date and time when the page was generated. Setting this to
-# NO can help when comparing the output of multiple runs.
-# Possible values are: YES, NO, DATETIME and DATE.
-# The default value is: NO.
-
-TIMESTAMP              = NO
-
 #---------------------------------------------------------------------------
 # Build related configuration options
 #---------------------------------------------------------------------------
@@ -644,12 +625,6 @@ HIDE_SCOPE_NAMES       = NO
 # The default value is: NO.
 
 HIDE_COMPOUND_REFERENCE= NO
-
-# If the SHOW_HEADERFILE tag is set to YES then the documentation for a class
-# will show which file needs to be included to use the class.
-# The default value is: YES.
-
-SHOW_HEADERFILE        = YES
 
 # If the SHOW_INCLUDE_FILES tag is set to YES then doxygen will put a list of
 # the files that are included by a file in the documentation of that file.
@@ -862,13 +837,6 @@ WARN_IF_UNDOCUMENTED   = YES
 
 WARN_IF_DOC_ERROR      = YES
 
-# If WARN_IF_INCOMPLETE_DOC is set to YES, doxygen will warn about incomplete
-# function parameter documentation. If set to NO, doxygen will accept that some
-# parameters have no documentation without warning.
-# The default value is: YES.
-
-WARN_IF_INCOMPLETE_DOC = YES
-
 # This WARN_NO_PARAMDOC option can be enabled to get warnings for functions that
 # are documented, but have no documentation for their parameters or return
 # value. If set to NO, doxygen will only warn about wrong parameter
@@ -878,14 +846,6 @@ WARN_IF_INCOMPLETE_DOC = YES
 # The default value is: NO.
 
 WARN_NO_PARAMDOC       = NO
-
-# If WARN_IF_UNDOC_ENUM_VAL option is set to YES, doxygen will warn about
-# undocumented enumeration values. If set to NO, doxygen will accept
-# undocumented enumeration values. If EXTRACT_ALL is set to YES then this flag
-# will automatically be disabled.
-# The default value is: NO.
-
-WARN_IF_UNDOC_ENUM_VAL = NO
 
 # If the WARN_AS_ERROR tag is set to YES then doxygen will immediately stop when
 # a warning is encountered. If the WARN_AS_ERROR tag is set to FAIL_ON_WARNINGS
@@ -913,16 +873,6 @@ WARN_AS_ERROR          = NO
 # The default value is: $file:$line: $text.
 
 WARN_FORMAT            = "$file:$line: $text"
-
-# In the $text part of the WARN_FORMAT command it is possible that a reference
-# to a more specific place is given. To make it easier to jump to this place
-# (outside of doxygen) the user can define a custom "cut" / "paste" string.
-# Example:
-# WARN_LINE_FORMAT = "'vi $file +$line'"
-# See also: WARN_FORMAT
-# The default value is: at line $line of file $file.
-
-WARN_LINE_FORMAT       = "at line $line of file $file"
 
 # The WARN_LOGFILE tag can be used to specify a file to which warning and error
 # messages should be written. If left blank the output is written to standard
@@ -957,16 +907,6 @@ INPUT                  = ./src \
 # The default value is: UTF-8.
 
 INPUT_ENCODING         = UTF-8
-
-# This tag can be used to specify the character encoding of the source files
-# that doxygen parses The INPUT_FILE_ENCODING tag can be used to specify
-# character encoding on a per file pattern basis. Doxygen will compare the file
-# name with each pattern and apply the encoding instead of the default
-# INPUT_ENCODING) if there is a match. The character encodings are a list of the
-# form: pattern=encoding (like *.php=ISO-8859-1). See cfg_input_encoding
-# "INPUT_ENCODING" for further information on supported encodings.
-
-INPUT_FILE_ENCODING    =
 
 # If the value of the INPUT tag contains directories, you can use the
 # FILE_PATTERNS tag to specify one or more wildcard patterns (like *.cpp and
@@ -1115,15 +1055,6 @@ FILTER_SOURCE_PATTERNS =
 # and want to reuse the introduction page also for the doxygen output.
 
 USE_MDFILE_AS_MAINPAGE = ./README.md
-
-# The Fortran standard specifies that for fixed formatted Fortran code all
-# characters from position 72 are to be considered as comment. A common
-# extension is to allow longer lines before the automatic comment starts. The
-# setting FORTRAN_COMMENT_AFTER will also make it possible that longer lines can
-# be processed before the automatic comment starts.
-# Minimum value: 7, maximum value: 10000, default value: 72.
-
-FORTRAN_COMMENT_AFTER  = 72
 
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing
@@ -1365,19 +1296,6 @@ HTML_EXTRA_STYLESHEET  =
 
 HTML_EXTRA_FILES       =
 
-# The HTML_COLORSTYLE tag can be used to specify if the generated HTML output
-# should be rendered with a dark or light theme.
-# Possible values are: LIGHT always generate light mode output, DARK always
-# generate dark mode output, AUTO_LIGHT automatically set the mode according to
-# the user preference, use light mode if no preference is set (the default),
-# AUTO_DARK automatically set the mode according to the user preference, use
-# dark mode if no preference is set and TOGGLE allow to user to switch between
-# light and dark mode via a button.
-# The default value is: AUTO_LIGHT.
-# This tag requires that the tag GENERATE_HTML is set to YES.
-
-HTML_COLORSTYLE        = AUTO_LIGHT
-
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output. Doxygen
 # will adjust the colors in the style sheet and background images according to
 # this color. Hue is specified as an angle on a color-wheel, see
@@ -1427,13 +1345,6 @@ HTML_DYNAMIC_MENUS     = YES
 
 HTML_DYNAMIC_SECTIONS  = NO
 
-# If the HTML_CODE_FOLDING tag is set to YES then classes and functions can be
-# dynamically folded and expanded in the generated HTML source code.
-# The default value is: YES.
-# This tag requires that the tag GENERATE_HTML is set to YES.
-
-HTML_CODE_FOLDING      = YES
-
 # With HTML_INDEX_NUM_ENTRIES one can control the preferred number of entries
 # shown in the various tree structured indices initially; the user can expand
 # and collapse entries dynamically later on. Doxygen will expand the tree to
@@ -1469,13 +1380,6 @@ GENERATE_DOCSET        = NO
 # This tag requires that the tag GENERATE_DOCSET is set to YES.
 
 DOCSET_FEEDNAME        = "Doxygen generated docs"
-
-# This tag determines the URL of the docset feed. A documentation feed provides
-# an umbrella under which multiple documentation sets from a single provider
-# (such as a company or product suite) can be grouped.
-# This tag requires that the tag GENERATE_DOCSET is set to YES.
-
-DOCSET_FEEDURL         =
 
 # This tag specifies a string that should uniquely identify the documentation
 # set bundle. This should be a reverse domain-name style string, e.g.
@@ -1563,16 +1467,6 @@ BINARY_TOC             = NO
 # This tag requires that the tag GENERATE_HTMLHELP is set to YES.
 
 TOC_EXPAND             = NO
-
-# The SITEMAP_URL tag is used to specify the full URL of the place where the
-# generated documentation will be placed on the server by the user during the
-# deployment of the documentation. The generated sitemap is called sitemap.xml
-# and placed on the directory specified by HTML_OUTPUT. In case no SITEMAP_URL
-# is specified no sitemap is generated. For information about the sitemap
-# protocol see https://www.sitemaps.org
-# This tag requires that the tag GENERATE_HTML is set to YES.
-
-SITEMAP_URL            =
 
 # If the GENERATE_QHP tag is set to YES and both QHP_NAMESPACE and
 # QHP_VIRTUAL_FOLDER are set, an additional index file will be generated that
@@ -1686,18 +1580,6 @@ DISABLE_INDEX          = NO
 
 GENERATE_TREEVIEW      = YES
 
-# When both GENERATE_TREEVIEW and DISABLE_INDEX are set to YES, then the
-# FULL_SIDEBAR option determines if the side bar is limited to only the treeview
-# area (value NO) or if it should extend to the full height of the window (value
-# YES). Setting this to YES gives a layout similar to
-# https://docs.readthedocs.io with more room for contents, but less room for the
-# project logo, title, and description. If either GENERATE_TREEVIEW or
-# DISABLE_INDEX is set to NO, this option has no effect.
-# The default value is: NO.
-# This tag requires that the tag GENERATE_HTML is set to YES.
-
-FULL_SIDEBAR           = NO
-
 # The ENUM_VALUES_PER_LINE tag can be used to set the number of enum values that
 # doxygen will group on one line in the generated HTML documentation.
 #
@@ -1721,13 +1603,6 @@ TREEVIEW_WIDTH         = 250
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
 EXT_LINKS_IN_WINDOW    = NO
-
-# If the OBFUSCATE_EMAILS tag is set to YES, doxygen will obfuscate email
-# addresses.
-# The default value is: YES.
-# This tag requires that the tag GENERATE_HTML is set to YES.
-
-OBFUSCATE_EMAILS       = YES
 
 # If the HTML_FORMULA_FORMAT option is set to svg, doxygen will use the pdf2svg
 # tool (see https://github.com/dawbarton/pdf2svg) or inkscape (see
@@ -1765,17 +1640,6 @@ FORMULA_MACROFILE      =
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
 USE_MATHJAX            = NO
-
-# With MATHJAX_VERSION it is possible to specify the MathJax version to be used.
-# Note that the different versions of MathJax have different requirements with
-# regards to the different settings, so it is possible that also other MathJax
-# settings have to be changed when switching between the different MathJax
-# versions.
-# Possible values are: MathJax_2 and MathJax_3.
-# The default value is: MathJax_2.
-# This tag requires that the tag USE_MATHJAX is set to YES.
-
-MATHJAX_VERSION        = MathJax_2
 
 # When MathJax is enabled you can set the default output format to be used for
 # the MathJax output. For more details about the output format see MathJax
@@ -2265,32 +2129,6 @@ DOCBOOK_OUTPUT         = docbook
 GENERATE_AUTOGEN_DEF   = NO
 
 #---------------------------------------------------------------------------
-# Configuration options related to Sqlite3 output
-#---------------------------------------------------------------------------
-
-# If the GENERATE_SQLITE3 tag is set to YES doxygen will generate a Sqlite3
-# database with symbols found by doxygen stored in tables.
-# The default value is: NO.
-
-GENERATE_SQLITE3       = NO
-
-# The SQLITE3_OUTPUT tag is used to specify where the Sqlite3 database will be
-# put. If a relative path is entered the value of OUTPUT_DIRECTORY will be put
-# in front of it.
-# The default directory is: sqlite3.
-# This tag requires that the tag GENERATE_SQLITE3 is set to YES.
-
-SQLITE3_OUTPUT         = sqlite3
-
-# The SQLITE3_OVERWRITE_DB tag is set to YES, the existing doxygen_sqlite3.db
-# database file will be recreated with each doxygen run. If set to NO, doxygen
-# will warn if an a database file is already found and not modify it.
-# The default value is: YES.
-# This tag requires that the tag GENERATE_SQLITE3 is set to YES.
-
-SQLITE3_RECREATE_DB    = YES
-
-#---------------------------------------------------------------------------
 # Configuration options related to the Perl module output
 #---------------------------------------------------------------------------
 
@@ -2482,36 +2320,6 @@ HAVE_DOT               = YES
 
 DOT_NUM_THREADS        = 0
 
-# DOT_COMMON_ATTR is common attributes for nodes, edges and labels of
-# subgraphs. When you want a differently looking font in the dot files that
-# doxygen generates you can specify fontname, fontcolor and fontsize attributes.
-# For details please see <a href=https://graphviz.org/doc/info/attrs.html>Node,
-# Edge and Graph Attributes specification</a> You need to make sure dot is able
-# to find the font, which can be done by putting it in a standard location or by
-# setting the DOTFONTPATH environment variable or by setting DOT_FONTPATH to the
-# directory containing the font. Default graphviz fontsize is 14.
-# The default value is: fontname=Helvetica,fontsize=10.
-# This tag requires that the tag HAVE_DOT is set to YES.
-
-DOT_COMMON_ATTR        = "fontname=Helvetica,fontsize=10"
-
-# DOT_EDGE_ATTR is concatenated with DOT_COMMON_ATTR. For elegant style you can
-# add 'arrowhead=open, arrowtail=open, arrowsize=0.5'. <a
-# href=https://graphviz.org/doc/info/arrows.html>Complete documentation about
-# arrows shapes.</a>
-# The default value is: labelfontname=Helvetica,labelfontsize=10.
-# This tag requires that the tag HAVE_DOT is set to YES.
-
-DOT_EDGE_ATTR          = "labelfontname=Helvetica,labelfontsize=10"
-
-# DOT_NODE_ATTR is concatenated with DOT_COMMON_ATTR. For view without boxes
-# around nodes set 'shape=plain' or 'shape=plaintext' <a
-# href=https://www.graphviz.org/doc/info/shapes.html>Shapes specification</a>
-# The default value is: shape=box,height=0.2,width=0.4.
-# This tag requires that the tag HAVE_DOT is set to YES.
-
-DOT_NODE_ATTR          = "shape=box,height=0.2,width=0.4"
-
 # You can set the path where dot can find font specified with fontname in
 # DOT_COMMON_ATTR and others dot attributes.
 # This tag requires that the tag HAVE_DOT is set to YES.
@@ -2671,13 +2479,6 @@ GRAPHICAL_HIERARCHY    = YES
 
 DIRECTORY_GRAPH        = YES
 
-# The DIR_GRAPH_MAX_DEPTH tag can be used to limit the maximum number of levels
-# of child directories generated in directory dependency graphs by dot.
-# Minimum value: 1, maximum value: 25, default value: 1.
-# This tag requires that the tag DIRECTORY_GRAPH is set to YES.
-
-DIR_GRAPH_MAX_DEPTH    = 1
-
 # The DOT_IMAGE_FORMAT tag can be used to set the image format of the images
 # generated by dot. For an explanation of the image formats see the section
 # output formats in the documentation of the dot tool (Graphviz (see:
@@ -2801,16 +2602,6 @@ GENERATE_LEGEND        = NO
 # The default value is: YES.
 
 DOT_CLEANUP            = YES
-
-# You can define message sequence charts within doxygen comments using the \msc
-# command. If the MSCGEN_TOOL tag is left empty (the default), then doxygen will
-# use a built-in version of mscgen tool to produce the charts. Alternatively,
-# the MSCGEN_TOOL tag can also specify the name an external tool. For instance,
-# specifying prog as the value, doxygen will call the tool as prog -T
-# <outfile_format> -o <outputfile> <inputfile>. The external tool should support
-# output file formats "png", "eps", "svg", and "ismap".
-
-MSCGEN_TOOL            =
 
 # The MSCFILE_DIRS tag can be used to specify one or more directories that
 # contain msc files that are included in the documentation (see the \mscfile
