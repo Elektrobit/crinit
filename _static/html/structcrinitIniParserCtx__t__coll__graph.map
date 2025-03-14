@@ -1,4 +1,6 @@
 <map id="crinitIniParserCtx_t" name="crinitIniParserCtx_t">
-<area shape="rect" id="node1" title=" " alt="" coords="5,124,151,151"/>
-<area shape="rect" id="node2" href="$structcrinitConfKvList__t.html" title=" " alt="" coords="9,5,147,32"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,123,151,148"/>
+<area shape="rect" id="Node000002" href="$structcrinitConfKvList__t.html" title=" " alt="" coords="9,5,147,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="81,44,81,123,75,123,75,44"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="161,7,170,11,173,18,165,27,147,31,146,26,163,23,168,18,166,15,159,12"/>
 </map>

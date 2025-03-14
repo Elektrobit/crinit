@@ -1,11 +1,21 @@
 <map id="test/utest/mocks/mock&#45;err&#45;print.c" name="test/utest/mocks/mock&#45;err&#45;print.c">
-<area shape="rect" id="node1" title="Implementation of a mock function for crinitErrPrintFFL()." alt="" coords="117,5,288,47"/>
-<area shape="rect" id="node2" href="$mock-err-print_8h.html" title="Header declaring a mock function for crinitErrPrintFFL()." alt="" coords="5,95,133,121"/>
-<area shape="rect" id="node3" href="$common_8h.html" title="Header for common definitions not related to other specific features." alt="" coords="157,95,248,121"/>
-<area shape="rect" id="node4" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="272,95,363,121"/>
-<area shape="rect" id="node5" title=" " alt="" coords="78,169,157,196"/>
-<area shape="rect" id="node6" title=" " alt="" coords="181,169,256,196"/>
-<area shape="rect" id="node7" title=" " alt="" coords="280,169,355,196"/>
-<area shape="rect" id="node8" title=" " alt="" coords="379,169,450,196"/>
-<area shape="rect" id="node9" title=" " alt="" coords="474,169,558,196"/>
+<area shape="rect" id="Node000001" title="Implementation of a mock function for crinitErrPrintFFL()." alt="" coords="117,5,288,45"/>
+<area shape="rect" id="Node000002" href="$mock-err-print_8h.html" title="Header declaring a mock function for crinitErrPrintFFL()." alt="" coords="5,93,133,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="172,48,102,89,99,84,169,43"/>
+<area shape="rect" id="Node000003" href="$common_8h.html" title="Header for common definitions/functions not related to other specific features." alt="" coords="157,93,248,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="205,46,205,79,200,79,200,46"/>
+<area shape="rect" id="Node000006" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="272,93,363,119"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="232,43,291,83,288,88,229,48"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="179,167,253,192"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="207,119,214,153,209,154,202,119"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="83,167,154,192"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="191,121,145,160,141,155,187,117"/>
+<area shape="poly" id="edge8_Node000006_Node000004" title=" " alt="" coords="303,121,245,161,242,156,300,116"/>
+<area shape="poly" id="edge9_Node000006_Node000005" title=" " alt="" coords="286,121,165,164,163,159,285,116"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="278,167,357,192"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="320,119,320,153,315,153,315,119"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="381,167,456,192"/>
+<area shape="poly" id="edge7_Node000006_Node000008" title=" " alt="" coords="335,116,392,156,389,161,332,121"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="481,167,565,192"/>
+<area shape="poly" id="edge10_Node000006_Node000009" title=" " alt="" coords="351,116,477,160,476,165,349,121"/>
 </map>

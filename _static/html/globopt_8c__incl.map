@@ -1,17 +1,39 @@
 <map id="src/globopt.c" name="src/globopt.c">
-<area shape="rect" id="node1" title="Implementation of global option storage." alt="" coords="303,5,409,32"/>
-<area shape="rect" id="node2" href="$globopt_8h.html" title="Header related to global option storage." alt="" coords="105,80,188,107"/>
-<area shape="rect" id="node10" title=" " alt="" coords="213,80,297,107"/>
-<area shape="rect" id="node11" title=" " alt="" coords="321,80,391,107"/>
-<area shape="rect" id="node12" href="$common_8h.html" title="Header for common definitions not related to other specific features." alt="" coords="416,80,507,107"/>
-<area shape="rect" id="node13" href="$logio_8h.html" title="Header related to debug/log output." alt="" coords="531,80,597,107"/>
-<area shape="rect" id="node3" title=" " alt="" coords="263,379,345,405"/>
-<area shape="rect" id="node4" title=" " alt="" coords="375,155,446,181"/>
-<area shape="rect" id="node5" href="$envset_8h.html" title="Header defining data types and functions to work with sets of environment variables." alt="" coords="107,155,186,181"/>
-<area shape="rect" id="node6" title=" " alt="" coords="5,379,80,405"/>
-<area shape="rect" id="node7" href="$confparse_8h.html" title="Header related to the Config Parser." alt="" coords="113,229,212,256"/>
-<area shape="rect" id="node8" title=" " alt="" coords="145,304,241,331"/>
-<area shape="rect" id="node9" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="42,304,121,331"/>
-<area shape="rect" id="node14" title=" " alt="" coords="527,155,595,181"/>
-<area shape="rect" id="node15" title=" " alt="" coords="620,155,687,181"/>
+<area shape="rect" id="Node000001" title="Implementation of global option storage." alt="" coords="309,5,414,31"/>
+<area shape="rect" id="Node000002" href="$globopt_8h.html" title="Header related to global option storage." alt="" coords="111,79,194,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="329,33,200,77,199,72,327,28"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="218,79,302,104"/>
+<area shape="poly" id="edge12_Node000001_Node000010" title=" " alt="" coords="347,33,290,73,287,68,344,28"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="326,79,397,104"/>
+<area shape="poly" id="edge13_Node000001_Node000011" title=" " alt="" coords="364,31,364,65,359,65,359,31"/>
+<area shape="rect" id="Node000012" href="$common_8h.html" title="Header for common definitions/functions not related to other specific features." alt="" coords="582,79,672,104"/>
+<area shape="poly" id="edge14_Node000001_Node000012" title=" " alt="" coords="405,28,571,72,570,78,404,33"/>
+<area shape="rect" id="Node000014" href="$logio_8h.html" title="Header related to debug/log output." alt="" coords="422,79,488,104"/>
+<area shape="poly" id="edge17_Node000001_Node000014" title=" " alt="" coords="378,29,431,68,427,72,375,33"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="151,372,234,397"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="138,106,93,144,42,199,22,230,11,262,10,293,23,323,46,346,75,362,107,372,138,378,137,383,105,377,73,367,43,350,18,325,5,294,5,261,18,228,38,196,89,140,135,102"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="246,152,317,177"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="174,102,250,143,247,147,172,106"/>
+<area shape="rect" id="Node000005" href="$envset_8h.html" title="Header defining data types and functions to work with sets of environment variables." alt="" coords="126,152,205,177"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="157,104,164,138,158,139,152,105"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="283,372,358,397"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="183,175,238,224,269,259,296,297,310,328,318,358,313,359,305,330,291,300,265,262,234,228,179,179"/>
+<area shape="rect" id="Node000007" href="$confparse_8h.html" title="Header related to the Config Parser." alt="" coords="116,225,215,251"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="168,178,168,212,163,212,163,178"/>
+<area shape="poly" id="edge7_Node000007_Node000003" title=" " alt="" coords="171,251,190,358,185,359,165,252"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="32,299,128,324"/>
+<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="154,253,106,292,103,288,150,249"/>
+<area shape="rect" id="Node000009" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="204,299,282,324"/>
+<area shape="poly" id="edge9_Node000007_Node000009" title=" " alt="" coords="180,249,222,287,218,291,176,253"/>
+<area shape="poly" id="edge10_Node000009_Node000003" title=" " alt="" coords="237,326,211,362,206,359,233,323"/>
+<area shape="poly" id="edge11_Node000009_Node000006" title=" " alt="" coords="257,322,299,361,296,364,254,326"/>
+<area shape="poly" id="edge15_Node000012_Node000006" title=" " alt="" coords="644,102,659,117,674,136,682,157,677,178,648,219,613,255,573,285,530,311,445,350,372,374,371,369,443,345,528,306,570,281,610,251,644,216,673,176,676,157,669,138,655,121,640,106"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="592,152,662,177"/>
+<area shape="poly" id="edge16_Node000012_Node000013" title=" " alt="" coords="630,104,630,138,624,138,624,104"/>
+<area shape="poly" id="edge19_Node000014_Node000003" title=" " alt="" coords="444,106,398,154,369,201,351,242,331,282,296,326,265,350,234,368,231,364,262,345,292,322,327,279,346,240,364,199,394,150,440,102"/>
+<area shape="poly" id="edge21_Node000014_Node000004" title=" " alt="" coords="428,106,324,149,322,144,426,102"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="500,152,568,177"/>
+<area shape="poly" id="edge18_Node000014_Node000015" title=" " alt="" coords="469,102,513,141,509,145,466,106"/>
+<area shape="rect" id="Node000016" title=" " alt="" coords="408,152,475,177"/>
+<area shape="poly" id="edge20_Node000014_Node000016" title=" " alt="" coords="455,105,449,139,444,138,450,104"/>
 </map>

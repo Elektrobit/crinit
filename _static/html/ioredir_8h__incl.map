@@ -1,8 +1,14 @@
 <map id="inc/ioredir.h" name="inc/ioredir.h">
-<area shape="rect" id="node1" title="Header related to IO redirection types and functions." alt="" coords="35,5,133,32"/>
-<area shape="rect" id="node2" href="$confparse_8h.html" title="Header related to the Config Parser." alt="" coords="35,80,133,107"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,229,88,256"/>
-<area shape="rect" id="node4" title=" " alt="" coords="36,155,132,181"/>
-<area shape="rect" id="node5" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="157,155,235,181"/>
-<area shape="rect" id="node6" title=" " alt="" coords="159,229,233,256"/>
+<area shape="rect" id="Node000001" title="Header related to IO redirection types and functions." alt="" coords="35,5,133,31"/>
+<area shape="rect" id="Node000002" href="$confparse_8h.html" title="Header related to the Config Parser." alt="" coords="35,79,133,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="87,31,87,65,81,65,81,31"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,225,88,251"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="68,106,45,126,26,153,23,168,24,183,35,212,30,214,19,184,18,167,22,151,41,123,64,102"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="36,152,132,177"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="87,104,87,138,81,138,81,104"/>
+<area shape="rect" id="Node000005" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="157,152,235,177"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="103,102,167,142,164,147,101,106"/>
+<area shape="poly" id="edge5_Node000005_Node000003" title=" " alt="" coords="173,180,85,222,82,217,171,175"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="159,225,233,251"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="199,178,199,212,193,212,193,178"/>
 </map>

@@ -1,4 +1,5 @@
 <map id="inc/version.h" name="inc/version.h">
-<area shape="rect" id="node1" title="Header definitions related to component versioning." alt="" coords="5,5,111,32"/>
-<area shape="rect" id="node2" title=" " alt="" coords="23,80,93,107"/>
+<area shape="rect" id="Node000001" title="Header definitions related to component versioning." alt="" coords="5,5,111,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="23,79,93,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="61,31,61,65,55,65,55,31"/>
 </map>

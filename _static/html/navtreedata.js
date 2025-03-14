@@ -25,60 +25,28 @@
 var NAVTREE =
 [
   [ "Crinit -- Configurable Rootfs Init", "index.html", [
-    [ "Crinit – Configurable Rootfs Init", "index.html", [
-      [ "In a Nutshell", "index.html#autotoc_md3", null ],
-      [ "Concept", "index.html#autotoc_md4", null ],
-      [ "Features", "index.html#autotoc_md5", null ],
-      [ "License", "index.html#autotoc_md6", [
-        [ "Powered by EB", "index.html#autotoc_md7", null ],
-        [ "Maintainers", "index.html#autotoc_md8", null ],
-        [ "Credits", "index.html#autotoc_md9", null ],
-        [ "Artwork", "index.html#autotoc_md10", null ]
-      ] ],
-      [ "Details", "index.html#autotoc_md11", [
-        [ "Configuration", "index.html#autotoc_md12", [
-          [ "Example Global Configuration", "index.html#autotoc_md13", [
-            [ "Explanation", "index.html#autotoc_md14", null ]
-          ] ],
-          [ "Example Task Configuration", "index.html#autotoc_md15", [
-            [ "Explanation", "index.html#autotoc_md16", null ]
-          ] ],
-          [ "Setting Environment Variables", "index.html#autotoc_md17", null ],
-          [ "Defining Elos Filters", "index.html#autotoc_md18", [
-            [ "Ruleset", "index.html#autotoc_md19", null ]
-          ] ],
-          [ "Include files", "index.html#autotoc_md20", null ],
-          [ "IO Redirections", "index.html#autotoc_md21", [
-            [ "Named pipes", "index.html#autotoc_md22", null ],
-            [ "A note on buffering", "index.html#autotoc_md23", null ]
-          ] ],
-          [ "Dependency groups (meta-tasks)", "index.html#autotoc_md24", null ]
-        ] ],
-        [ "crinit-ctl Usage Info", "index.html#autotoc_md25", null ],
-        [ "Build Instructions", "index.html#autotoc_md26", null ]
-      ] ]
+    [ "Crinit – Configurable Rootfs Init", "index.html", "index" ],
+    [ "Unit Tests", "md_test_2README.html", [
+      [ "File Hierarchy", "md_test_2README.html#file-hierarchy", null ]
     ] ],
-    [ "Unit Tests", "md_test_README.html", [
-      [ "File Hierarchy", "md_test_README.html#autotoc_md1", null ]
-    ] ],
-    [ "Classes", "annotated.html", [
-      [ "Class List", "annotated.html", "annotated_dup" ],
-      [ "Class Index", "classes.html", null ],
-      [ "Class Members", "functions.html", [
+    [ "Data Structures", "annotated.html", [
+      [ "Data Structures", "annotated.html", "annotated_dup" ],
+      [ "Data Structure Index", "classes.html", null ],
+      [ "Data Fields", "functions.html", [
         [ "All", "functions.html", null ],
         [ "Variables", "functions_vars.html", null ]
       ] ]
     ] ],
     [ "Files", "files.html", [
       [ "File List", "files.html", "files_dup" ],
-      [ "File Members", "globals.html", [
+      [ "Globals", "globals.html", [
         [ "All", "globals.html", "globals_dup" ],
         [ "Functions", "globals_func.html", "globals_func" ],
         [ "Variables", "globals_vars.html", null ],
         [ "Typedefs", "globals_type.html", null ],
         [ "Enumerations", "globals_enum.html", null ],
         [ "Enumerator", "globals_eval.html", null ],
-        [ "Macros", "globals_defs.html", null ]
+        [ "Macros", "globals_defs.html", "globals_defs" ]
       ] ]
     ] ]
   ] ]
@@ -87,11 +55,13 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"confparse_8h.html#ad50f70c5b8115405c26215eb0d1b8179",
-"globopt_8c.html#ae137c724ebbd0023922608b7842b8306",
-"mock-scandir_8h.html",
-"structcrinitRtimCmd__t.html#a6bd531450d6fc0ca0c915e98a7cac617",
-"utest-envset-destroy_2case-success_8c.html#af40a6debf356109a47afd12a6b60b485"
+"confparse_8h.html#a7bf020bb973d9fe92ae0ec333ebef4f7",
+"elosdep_8c.html#a2ea6f8a6d817fb706308ca3492afdaa6",
+"lexers_8h.html#a23e31a160d34abfcad120270de7dfdfb",
+"mock-strdup_8c.html#a3518447f93d9a5518da1fb899a11b569",
+"structcrinitGlobOptStore__t.html#ab4b9018dacb143a5e87f142dd9acf8cd",
+"utest-confconv-envset_8h_source.html",
+"utest-file-series-from-dir_2case-no-mem-error_8c.html#ad24cbb2cb3ce7d7284a01c22d7b4ddf3"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

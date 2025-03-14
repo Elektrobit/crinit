@@ -3,7 +3,6 @@ var machine_id_gen_8c =
     [ "KERNEL_CMDLINE_KEY", "machine-id-gen_8c.html#af5cd23e30e37815858c219c0bef3e754", null ],
     [ "KERNEL_CMDLINE_MAX_LEN", "machine-id-gen_8c.html#a331f96bc37e6c65add8327959cadfe74", null ],
     [ "KERNEL_CMDLINE_PATH", "machine-id-gen_8c.html#a99f1cbaf4945d175bb57b51ef9d1c62d", null ],
-    [ "MACHINE_ID_PATH", "machine-id-gen_8c.html#abca1a9457e93cac34707697c3cc98a10", null ],
     [ "MID_STR_LEN", "machine-id-gen_8c.html#a51f139ecf828ff1abbf9cbc2ba66b829", null ],
     [ "S32G_OCOTP_BASE", "machine-id-gen_8c.html#a1afe54b690fcd87967165bbfdae4db6e", null ],
     [ "S32G_OCOTP_OFFSET_UID", "machine-id-gen_8c.html#a84099274f83c7ceaffed80b410224ba2", null ],

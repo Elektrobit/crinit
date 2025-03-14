@@ -1,10 +1,17 @@
 <map id="test/utest/utest&#45;inih&#45;configuration/utest&#45;inih&#45;configuration.c" name="test/utest/utest&#45;inih&#45;configuration/utest&#45;inih&#45;configuration.c">
-<area shape="rect" id="node1" title="Implementation of the unit test group for the libinih compile&#45;time configuration." alt="" coords="104,5,256,61"/>
-<area shape="rect" id="node2" href="$utest-inih-configuration_8h.html" title="Header declaring the regression test for the libinih compile&#45;time&#45;configuration." alt="" coords="5,109,192,136"/>
-<area shape="rect" id="node3" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="216,109,307,136"/>
-<area shape="rect" id="node4" title=" " alt="" coords="22,184,101,211"/>
-<area shape="rect" id="node5" title=" " alt="" coords="125,184,200,211"/>
-<area shape="rect" id="node6" title=" " alt="" coords="224,184,299,211"/>
-<area shape="rect" id="node7" title=" " alt="" coords="323,184,394,211"/>
-<area shape="rect" id="node8" title=" " alt="" coords="418,184,502,211"/>
+<area shape="rect" id="Node000001" title="Implementation of the unit test group for the libinih compile&#45;time configuration." alt="" coords="104,5,256,60"/>
+<area shape="rect" id="Node000002" href="$utest-inih-configuration_8h.html" title="Header declaring the regression test for the libinih compile&#45;time&#45;configuration." alt="" coords="5,108,192,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="157,62,121,100,117,96,153,58"/>
+<area shape="rect" id="Node000003" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="216,108,307,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="207,58,243,96,239,100,203,62"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="22,181,101,207"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="230,136,108,179,106,174,228,131"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="125,181,200,207"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="247,136,191,175,188,171,244,131"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="224,181,299,207"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="264,134,264,168,259,168,259,134"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="323,181,394,207"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="279,131,333,171,330,175,275,136"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="418,181,502,207"/>
+<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="294,131,415,174,414,179,292,136"/>
 </map>

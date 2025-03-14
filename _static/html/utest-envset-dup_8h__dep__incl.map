@@ -1,6 +1,9 @@
 <map id="test/utest/utest&#45;envset&#45;dup/utest&#45;envset&#45;dup.h" name="test/utest/utest&#45;envset&#45;dup/utest&#45;envset&#45;dup.h">
-<area shape="rect" id="node1" title="Header declaring the unit tests for crinitEnvSetDup()." alt="" coords="196,5,375,47"/>
-<area shape="rect" id="node2" href="$utest-envset-dup_2case-null-input_8c.html" title="Unit test for crinitEnvSetDup() with a NULL input." alt="" coords="5,95,176,136"/>
-<area shape="rect" id="node3" href="$utest-envset-dup_2case-success_8c.html" title="Unit test for crinitEnvSetDup(), successful execution." alt="" coords="200,95,371,136"/>
-<area shape="rect" id="node4" href="$utest-envset-dup_8c.html" title="Implementation of the crinitEnvSetDup() unit test group." alt="" coords="395,95,573,136"/>
+<area shape="rect" id="Node000001" title="Header declaring the unit tests for crinitEnvSetDup()." alt="" coords="196,5,375,45"/>
+<area shape="rect" id="Node000002" href="$utest-envset-dup_2case-null-input_8c.html" title="Unit test for crinitEnvSetDup() with a NULL input." alt="" coords="5,93,176,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="231,53,134,96,132,91,229,48"/>
+<area shape="rect" id="Node000003" href="$utest-envset-dup_2case-success_8c.html" title="Unit test for crinitEnvSetDup(), successful execution." alt="" coords="200,93,371,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="288,59,288,93,283,93,283,59"/>
+<area shape="rect" id="Node000004" href="$utest-envset-dup_8c.html" title="Implementation of the crinitEnvSetDup() unit test group." alt="" coords="395,93,573,133"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="343,48,442,91,439,96,340,53"/>
 </map>

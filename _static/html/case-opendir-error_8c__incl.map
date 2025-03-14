@@ -1,13 +1,26 @@
 <map id="test/utest/utest&#45;file&#45;series&#45;from&#45;dir/case&#45;opendir&#45;error.c" name="test/utest/utest&#45;file&#45;series&#45;from&#45;dir/case&#45;opendir&#45;error.c">
-<area shape="rect" id="node1" title="Unit test for crinitFileSeriesFromDir(), given opendir fails." alt="" coords="117,5,275,61"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,109,72,136"/>
-<area shape="rect" id="node3" href="$common_8h.html" title="Header for common definitions not related to other specific features." alt="" coords="96,109,187,136"/>
-<area shape="rect" id="node4" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="211,109,290,136"/>
-<area shape="rect" id="node7" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="361,109,452,136"/>
-<area shape="rect" id="node5" title=" " alt="" coords="107,184,189,211"/>
-<area shape="rect" id="node6" title=" " alt="" coords="213,184,288,211"/>
-<area shape="rect" id="node8" title=" " alt="" coords="313,184,391,211"/>
-<area shape="rect" id="node9" title=" " alt="" coords="416,184,491,211"/>
-<area shape="rect" id="node10" title=" " alt="" coords="515,184,586,211"/>
-<area shape="rect" id="node11" title=" " alt="" coords="610,184,694,211"/>
+<area shape="rect" id="Node000001" title="Unit test for crinitFileSeriesFromDir(), given opendir fails." alt="" coords="111,5,270,60"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,108,72,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="146,62,72,104,69,99,143,58"/>
+<area shape="rect" id="Node000003" href="$common_8h.html" title="Header for common definitions/functions not related to other specific features." alt="" coords="200,108,291,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="210,59,233,95,228,98,205,62"/>
+<area shape="rect" id="Node000006" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="97,108,175,133"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="176,62,153,98,149,95,172,59"/>
+<area shape="rect" id="Node000008" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="315,108,405,133"/>
+<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="244,58,326,99,324,104,241,62"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="127,181,201,207"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="234,135,189,174,186,170,231,131"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="226,181,297,207"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="251,133,258,168,253,169,245,134"/>
+<area shape="poly" id="edge7_Node000006_Node000004" title=" " alt="" coords="143,133,157,168,152,170,138,135"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="20,181,103,207"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="126,135,85,174,82,170,122,131"/>
+<area shape="poly" id="edge11_Node000008_Node000004" title=" " alt="" coords="329,136,210,179,208,174,328,131"/>
+<area shape="poly" id="edge12_Node000008_Node000005" title=" " alt="" coords="346,136,290,175,287,171,343,131"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="321,181,399,207"/>
+<area shape="poly" id="edge9_Node000008_Node000009" title=" " alt="" coords="363,134,363,168,357,168,357,134"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="424,181,499,207"/>
+<area shape="poly" id="edge10_Node000008_Node000010" title=" " alt="" coords="378,131,435,171,432,175,375,136"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="523,181,607,207"/>
+<area shape="poly" id="edge13_Node000008_Node000011" title=" " alt="" coords="394,131,520,174,518,179,392,136"/>
 </map>

@@ -1,14 +1,14 @@
 var searchData=
 [
-  ['path_780',['path',['../structcrinitIoRedir__t.html#ab6638ba2f6d280944b88acee331c7dee',1,'crinitIoRedir_t']]],
-  ['pid_781',['pid',['../structcrinitTaskListEntry__t.html#acc14888865fe905a61a378770af7c2cf',1,'crinitTaskListEntry_t::pid()'],['../structcrinitTask__t.html#ab5b8e3de21fa7cd74f18da0b3697e12a',1,'crinitTask_t::pid()']]],
-  ['plist_782',['pList',['../structcrinitIniParserCtx__t.html#ae27bfd2f2eed91126635a6aa0ac47765',1,'crinitIniParserCtx_t']]],
-  ['poolsize_783',['poolSize',['../structcrinitThreadPool__t.html#a2ee0dc594ebf92d27de90c767132439c',1,'crinitThreadPool_t']]],
-  ['poolsizeincrement_784',['poolSizeIncrement',['../structcrinitThreadPool__t.html#adf8f7e431937125d50df9472e253af33',1,'crinitThreadPool_t']]],
-  ['prev_785',['prev',['../structcrinitList.html#ad3f4b40ec180ad70b239e770dcccff45',1,'crinitList']]],
-  ['procdip_2ec_786',['procdip.c',['../procdip_8c.html',1,'']]],
-  ['procdip_2eh_787',['procdip.h',['../procdip_8h.html',1,'']]],
-  ['prv_788',['prv',['../structcrinitTask__t.html#a08f4002893bb2af75899af47c404b5bd',1,'crinitTask_t']]],
-  ['prvsize_789',['prvSize',['../structcrinitTask__t.html#a83681cc43a6e480c4399e2cf9c365640',1,'crinitTask_t']]],
-  ['ptr_790',['ptr',['../structcrinitStoreRtimCmdArgs.html#affee9fc5d67d3ca9ec36cd737c7a0583',1,'crinitStoreRtimCmdArgs']]]
+  ['of_20contents_0',['Table of Contents',['../index.html#table-of-contents',1,'']]],
+  ['oflags_1',['oflags',['../structcrinitIoRedir__t.html#ab013b6259dfef62cb92fbdb3c45a56b8',1,'crinitIoRedir_t']]],
+  ['oldfd_2',['oldFd',['../structcrinitIoRedir__t.html#a0b8a8892c14c42f3aef845a34ef233e7',1,'crinitIoRedir_t']]],
+  ['on_20buffering_3',['A note on buffering',['../index.html#a-note-on-buffering',1,'']]],
+  ['op_4',['op',['../structcrinitRtimCmd__t.html#a467f90753710b3f3f14627e0d8d279d9',1,'crinitRtimCmd_t']]],
+  ['opcode_5',['opCode',['../structcrinitRtimOpMap__t.html#ae7262597d795225937b641cb96bc060d',1,'crinitRtimOpMap_t']]],
+  ['opstr_6',['opStr',['../structcrinitRtimOpMap__t.html#a0f1c151cb8884071406e817fe7c8e069',1,'crinitRtimOpMap_t']]],
+  ['optfeat_2ec_7',['optfeat.c',['../optfeat_8c.html',1,'']]],
+  ['optfeat_2eh_8',['optfeat.h',['../optfeat_8h.html',1,'']]],
+  ['options_9',['Command-line options',['../index.html#command-line-options',1,'']]],
+  ['opts_10',['opts',['../structcrinitTask__t.html#aa85b90bb84717368e4c4fd54ab4a797d',1,'crinitTask_t']]]
 ];

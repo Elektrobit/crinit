@@ -1,10 +1,20 @@
 <map id="inc/globopt.h" name="inc/globopt.h">
-<area shape="rect" id="node1" title="Header related to global option storage." alt="" coords="27,5,134,32"/>
-<area shape="rect" id="node2" title=" " alt="" coords="136,304,219,331"/>
-<area shape="rect" id="node3" title=" " alt="" coords="45,80,116,107"/>
-<area shape="rect" id="node4" href="$envset_8h.html" title="Header defining data types and functions to work with sets of environment variables." alt="" coords="140,80,218,107"/>
-<area shape="rect" id="node5" title=" " alt="" coords="268,304,343,331"/>
-<area shape="rect" id="node6" href="$confparse_8h.html" title="Header related to the Config Parser." alt="" coords="128,155,227,181"/>
-<area shape="rect" id="node7" title=" " alt="" coords="44,229,140,256"/>
-<area shape="rect" id="node8" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="216,229,294,256"/>
+<area shape="rect" id="Node000001" title="Header related to global option storage." alt="" coords="27,5,133,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="136,299,219,324"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="68,33,50,53,34,80,18,128,9,168,13,206,34,249,52,268,74,283,123,300,122,305,72,288,48,272,30,252,8,208,4,168,13,126,30,78,45,50,64,29"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="45,79,115,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="83,31,83,65,77,65,77,31"/>
+<area shape="rect" id="Node000004" href="$envset_8h.html" title="Header defining data types and functions to work with sets of environment variables." alt="" coords="139,79,218,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="97,29,153,68,150,73,94,33"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="268,299,343,324"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="198,102,225,122,257,150,287,184,309,224,315,256,313,285,308,285,310,256,304,226,282,187,253,153,222,126,195,106"/>
+<area shape="rect" id="Node000006" href="$confparse_8h.html" title="Header related to the Config Parser." alt="" coords="128,152,227,177"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="181,104,180,139,175,138,176,104"/>
+<area shape="poly" id="edge6_Node000006_Node000002" title=" " alt="" coords="180,178,180,285,175,285,175,178"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="44,225,140,251"/>
+<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="165,179,118,219,115,214,162,175"/>
+<area shape="rect" id="Node000008" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="215,225,294,251"/>
+<area shape="poly" id="edge8_Node000006_Node000008" title=" " alt="" coords="192,175,234,214,230,218,188,179"/>
+<area shape="poly" id="edge9_Node000008_Node000002" title=" " alt="" coords="244,253,202,291,198,287,240,249"/>
+<area shape="poly" id="edge10_Node000008_Node000005" title=" " alt="" coords="265,249,291,286,287,289,261,253"/>
 </map>

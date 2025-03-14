@@ -1,9 +1,8 @@
 var searchData=
 [
-  ['oflags_1544',['oflags',['../structcrinitIoRedir__t.html#ab013b6259dfef62cb92fbdb3c45a56b8',1,'crinitIoRedir_t']]],
-  ['oldfd_1545',['oldFd',['../structcrinitIoRedir__t.html#a0b8a8892c14c42f3aef845a34ef233e7',1,'crinitIoRedir_t']]],
-  ['op_1546',['op',['../structcrinitRtimCmd__t.html#a467f90753710b3f3f14627e0d8d279d9',1,'crinitRtimCmd_t']]],
-  ['opcode_1547',['opCode',['../structcrinitRtimOpMap__t.html#ae7262597d795225937b641cb96bc060d',1,'crinitRtimOpMap_t']]],
-  ['opstr_1548',['opStr',['../structcrinitRtimOpMap__t.html#a0f1c151cb8884071406e817fe7c8e069',1,'crinitRtimOpMap_t']]],
-  ['opts_1549',['opts',['../structcrinitTask__t.html#aa85b90bb84717368e4c4fd54ab4a797d',1,'crinitTask_t']]]
+  ['name_0',['name',['../structcrinitElosdepFilter__t.html#ad6c11579e55cd69476aecfb3a2e31ff2',1,'crinitElosdepFilter_t::name'],['../structcrinitOptFeatMap__t.html#a7fde3743ef1eafb3bc6785c478c3336e',1,'crinitOptFeatMap_t::name'],['../structcrinitTaskListEntry__t.html#a4aeb8bc29eba1b6a49419cb962dd2056',1,'crinitTaskListEntry_t::name'],['../structcrinitTaskDep__t.html#af468b99ec7d80f01329214cebc641d92',1,'crinitTaskDep_t::name'],['../structcrinitTaskPrv__t.html#a6e945c7e9980440af324695004045e12',1,'crinitTaskPrv_t::name'],['../structcrinitTask__t.html#a29602304fb5bb5d58159f9d7747a604e',1,'crinitTask_t::name']]],
+  ['newfd_1',['newFd',['../structcrinitIoRedir__t.html#a19825874fdd3157df824af85cf3d34d6',1,'crinitIoRedir_t']]],
+  ['next_2',['next',['../structcrinitUnMountList__t.html#ae75529b9c6f2616e6f75cd20b38c5478',1,'crinitUnMountList_t::next'],['../structcrinitConfKvList__t.html#a1f9f1650f5bfd93b617a5dd28cea5b76',1,'crinitConfKvList_t::next'],['../structcrinitList.html#a7f36bf2fb2c5e60d83312419bd701e33',1,'crinitList::next']]],
+  ['numsignedkeys_3',['numSignedKeys',['../sig_8c.html#a09b682f25c26d93772118a0255ae551b',1,'sig.c']]],
+  ['numtasks_4',['numTasks',['../structcrinitTaskList__t.html#a1dd7dfcb460e826bd89890c716bbc567',1,'crinitTaskList_t']]]
 ];

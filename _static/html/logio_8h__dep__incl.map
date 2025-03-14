@@ -1,34 +1,85 @@
 <map id="inc/logio.h" name="inc/logio.h">
-<area shape="rect" id="node1" title="Header related to debug/log output." alt="" coords="1702,5,1791,32"/>
-<area shape="rect" id="node2" href="$confconv_8c.html" title="Implementations of conversion operations from configuration values to structured data." alt="" coords="5,95,120,121"/>
-<area shape="rect" id="node3" href="$confhdl_8c.html" title="Implementation of type&#45; and target&#45;specific handler functions for configuration parsing." alt="" coords="144,95,248,121"/>
-<area shape="rect" id="node4" href="$confmap_8c.html" title="Implementation file related to mapping configuration options and their string representations." alt="" coords="273,95,386,121"/>
-<area shape="rect" id="node5" href="$confparse_8c.html" title="Implementation of the Config Parser." alt="" coords="411,95,531,121"/>
-<area shape="rect" id="node6" href="$crinit-client_8c.html" title="Implementation of the crinit&#45;client shared library." alt="" coords="555,95,685,121"/>
-<area shape="rect" id="node7" href="$crinit-ctl_8c.html" title="Implementation of the crinit&#45;ctl service program using the crinit&#45;client library." alt="" coords="710,95,821,121"/>
-<area shape="rect" id="node8" href="$crinit_8c.html" title="Implementation of the Crinit main program." alt="" coords="845,95,934,121"/>
-<area shape="rect" id="node9" href="$elosio_8c.html" title="Implementation of elos connection." alt="" coords="958,95,1053,121"/>
-<area shape="rect" id="node10" href="$envset_8c.html" title="Implementation file related to working with environment variable sets." alt="" coords="1077,95,1177,121"/>
-<area shape="rect" id="node11" href="$fseries_8c.html" title="Implementation file related to the handling of a series of filenames within a directory." alt="" coords="1201,95,1301,121"/>
-<area shape="rect" id="node12" href="$globopt_8c.html" title="Implementation of global option storage." alt="" coords="1325,95,1430,121"/>
-<area shape="rect" id="node13" href="$ioredir_8c.html" title="Implementation of functions related to IO redirection." alt="" coords="1454,95,1551,121"/>
-<area shape="rect" id="node14" href="$logio_8c.html" title="Implementation of debug/log output." alt="" coords="1576,95,1664,121"/>
-<area shape="rect" id="node15" href="$minsetup_8c.html" title="Implementation of minimal early system setup." alt="" coords="1688,95,1805,121"/>
-<area shape="rect" id="node16" href="$notiserv_8c.html" title="Implementation of the notification and service interface." alt="" coords="1830,95,1938,121"/>
-<area shape="rect" id="node17" href="$optfeat_8c.html" title="Implementation of optional behavior dependent on available system features." alt="" coords="1962,95,2065,121"/>
-<area shape="rect" id="node18" href="$procdip_8c.html" title="Implementation of the Process Dispatcher." alt="" coords="2089,95,2193,121"/>
-<area shape="rect" id="node19" href="$rtimcmd_8c.html" title="Implementation of runtime commands to be triggered by the notification/service interface." alt="" coords="2218,95,2329,121"/>
-<area shape="rect" id="node20" href="$rtimopmap_8c.html" title="Implementation of functions related to the runtime command opcode map." alt="" coords="2353,95,2481,121"/>
-<area shape="rect" id="node21" href="$sockcom_8c.html" title="Implementation of socket communication functions for the crinit&#45;client library." alt="" coords="2505,95,2620,121"/>
-<area shape="rect" id="node22" href="$task_8c.html" title="Implementation of functions related to a single task." alt="" coords="2645,95,2729,121"/>
-<area shape="rect" id="node23" href="$taskdb_8c.html" title="Implementation of the central Task Database and related functions." alt="" coords="2753,95,2853,121"/>
-<area shape="rect" id="node24" href="$thrpool_8c.html" title="Implementations of a generic worker thread pool. Used by the notification/service interface to handle..." alt="" coords="2877,95,2979,121"/>
-<area shape="rect" id="node25" href="$mock-set-err-stream_8h.html" title="Header declaring a mock function for crinitSetErrStream()." alt="" coords="3004,87,3175,129"/>
-<area shape="rect" id="node28" href="$mock-set-info-stream_8h.html" title="Header declaring a mock function for crinitSetInfoStream()." alt="" coords="3199,87,3369,129"/>
-<area shape="rect" id="node31" href="$utest-cfgmap-order_2regression-test_8c.html" title="Implementation of a regression test for the order and completeness of crinit{Task,..." alt="" coords="3394,87,3569,129"/>
-<area shape="rect" id="node32" href="$utest-file-basename-macro_2regression-test_8c.html" title="Implementation of a regression test to check the FILE_BASENAME macro." alt="" coords="3593,80,3807,136"/>
-<area shape="rect" id="node26" href="$mock-set-err-stream_8c.html" title="Implementation of a mock function for crinitSetErrStream()." alt="" coords="2793,184,2964,225"/>
-<area shape="rect" id="node27" href="$utest-crinit-set-err-stream_2case-set_8c.html" title="Implementation of a unit test for crinitClientSetErrStream()." alt="" coords="2989,184,3179,225"/>
-<area shape="rect" id="node29" href="$mock-set-info-stream_8c.html" title="Implementation of a mock function for crinitSetInfoStream()." alt="" coords="3204,184,3375,225"/>
-<area shape="rect" id="node30" href="$utest-crinit-set-info-stream_2case-set_8c.html" title="Implementation of a unit test for crinitClientSetInfoStream()." alt="" coords="3399,184,3598,225"/>
+<area shape="rect" id="Node000001" title="Header related to debug/log output." alt="" coords="2203,5,2292,31"/>
+<area shape="rect" id="Node000002" href="$elos-common_8h.html" title="Implementation file related to elos connection." alt="" coords="154,93,301,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="2189,22,1831,23,1289,30,1001,37,730,48,496,62,320,81,261,96,259,91,319,76,495,57,729,42,1001,32,1289,25,1831,18,2189,17"/>
+<area shape="rect" id="Node000005" href="$elos-common_8c.html" title=" " alt="" coords="5,189,151,214"/>
+<area shape="poly" id="edge15_Node000001_Node000005" title=" " alt="" coords="2189,22,1742,24,1075,31,742,38,453,49,242,63,177,71,143,81,118,104,100,135,89,165,83,189,78,188,84,163,96,132,114,101,141,76,176,66,242,58,453,43,742,33,1075,26,1742,18,2189,17"/>
+<area shape="rect" id="Node000006" href="$elosdep_8c.html" title="Implementation of elos connection." alt="" coords="303,189,410,214"/>
+<area shape="poly" id="edge16_Node000001_Node000006" title=" " alt="" coords="2189,22,1782,21,1185,26,889,33,633,44,449,60,392,70,365,81,356,92,351,105,347,136,350,165,356,188,350,189,345,166,342,136,346,104,352,89,362,77,391,65,448,55,633,39,888,28,1185,21,1782,16,2189,16"/>
+<area shape="rect" id="Node000007" href="$common_8c.html" title="Implementation of common functions not related to other specific features." alt="" coords="376,93,489,119"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="2189,23,1302,41,797,59,611,69,503,81,458,96,456,91,501,76,611,64,796,53,1301,36,2189,18"/>
+<area shape="rect" id="Node000008" href="$confconv_8c.html" title="Implementations of conversion operations from configuration values to structured data." alt="" coords="514,93,629,119"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="2189,22,1884,22,1435,28,1198,35,976,46,785,61,641,81,597,96,595,91,640,76,784,56,976,41,1198,30,1435,23,1884,17,2189,16"/>
+<area shape="rect" id="Node000009" href="$confhdl_8c.html" title="Implementation of type&#45; and target&#45;specific handler functions for configuration parsing." alt="" coords="653,93,757,119"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="2189,22,1906,22,1494,29,1277,36,1075,46,900,61,769,81,728,96,726,91,768,76,899,56,1074,41,1277,30,1494,23,1905,17,2189,16"/>
+<area shape="rect" id="Node000010" href="$confmap_8c.html" title="Implementation file related to mapping configuration options and their string representations." alt="" coords="781,93,895,119"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="2189,22,1929,25,1558,33,1182,51,1025,64,908,81,864,96,862,91,907,76,1025,59,1181,45,1558,28,1929,19,2189,17"/>
+<area shape="rect" id="Node000011" href="$confparse_8c.html" title="Implementation of the Config Parser." alt="" coords="919,93,1039,119"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="2189,23,1954,27,1625,36,1293,54,1156,66,1052,81,1006,96,1005,91,1051,76,1155,61,1293,48,1625,31,1954,21,2189,17"/>
+<area shape="rect" id="Node000012" href="$crinit-client_8c.html" title="Implementation of the crinit&#45;client shared library." alt="" coords="1063,93,1194,119"/>
+<area shape="poly" id="edge11_Node000001_Node000012" title=" " alt="" coords="2189,23,1698,40,1413,57,1295,68,1207,81,1157,96,1156,91,1205,76,1295,63,1413,52,1697,35,2189,18"/>
+<area shape="rect" id="Node000013" href="$crinit-ctl_8c.html" title="Implementation of the crinit&#45;ctl service program using the crinit&#45;client library." alt="" coords="1219,93,1329,119"/>
+<area shape="poly" id="edge12_Node000001_Node000013" title=" " alt="" coords="2189,23,1761,41,1518,58,1417,69,1341,81,1299,96,1297,91,1340,76,1416,63,1517,52,1760,35,2189,18"/>
+<area shape="rect" id="Node000014" href="$crinit-launch_8c.html" title="Launcher helper needed to start programs with different user / group permissions." alt="" coords="1353,93,1491,119"/>
+<area shape="poly" id="edge13_Node000001_Node000014" title=" " alt="" coords="2189,22,2064,25,1893,33,1698,51,1599,64,1503,81,1452,96,1451,91,1501,76,1598,59,1698,46,1892,28,2064,19,2189,17"/>
+<area shape="rect" id="Node000015" href="$crinit_8c.html" title="Implementation of the Crinit main program." alt="" coords="1515,93,1604,119"/>
+<area shape="poly" id="edge14_Node000001_Node000015" title=" " alt="" coords="2189,21,2081,22,1937,30,1776,48,1695,63,1616,81,1580,96,1578,91,1615,76,1694,57,1775,43,1937,25,2081,17,2189,16"/>
+<area shape="rect" id="Node000016" href="$envset_8c.html" title="Implementation file related to working with environment variable sets." alt="" coords="1628,93,1728,119"/>
+<area shape="poly" id="edge17_Node000001_Node000016" title=" " alt="" coords="2189,23,2101,28,1988,38,1864,55,1740,81,1702,96,1700,91,1739,76,1863,50,1988,33,2101,23,2189,18"/>
+<area shape="rect" id="Node000017" href="$fseries_8c.html" title="Implementation file related to the handling of a series of filenames within a directory." alt="" coords="1752,93,1852,119"/>
+<area shape="poly" id="edge18_Node000001_Node000017" title=" " alt="" coords="2189,26,2040,44,1952,60,1864,81,1826,96,1824,91,1863,76,1950,55,2039,39,2188,21"/>
+<area shape="rect" id="Node000018" href="$globopt_8c.html" title="Implementation of global option storage." alt="" coords="1876,93,1981,119"/>
+<area shape="poly" id="edge19_Node000001_Node000018" title=" " alt="" coords="2190,33,2097,53,1993,81,1955,96,1954,91,1992,76,2096,48,2189,28"/>
+<area shape="rect" id="Node000019" href="$ioredir_8c.html" title="Implementation of functions related to IO redirection." alt="" coords="2005,93,2103,119"/>
+<area shape="poly" id="edge20_Node000001_Node000019" title=" " alt="" coords="2210,39,2081,96,2079,91,2208,34"/>
+<area shape="rect" id="Node000020" href="$kcmdline_8c.html" title="Implementation of functions related to working with the Kernel command line." alt="" coords="2127,93,2243,119"/>
+<area shape="poly" id="edge21_Node000001_Node000020" title=" " alt="" coords="2233,43,2196,94,2191,91,2229,40"/>
+<area shape="rect" id="Node000021" href="$logio_8c.html" title="Implementation of debug/log output." alt="" coords="2267,93,2355,119"/>
+<area shape="poly" id="edge22_Node000001_Node000021" title=" " alt="" coords="2266,40,2305,91,2300,94,2262,43"/>
+<area shape="rect" id="Node000022" href="$minsetup_8c.html" title="Implementation of minimal early system setup." alt="" coords="2379,93,2497,119"/>
+<area shape="poly" id="edge23_Node000001_Node000022" title=" " alt="" coords="2287,34,2413,91,2411,96,2284,39"/>
+<area shape="rect" id="Node000023" href="$notiserv_8c.html" title="Implementation of the notification and service interface." alt="" coords="2521,93,2629,119"/>
+<area shape="poly" id="edge24_Node000001_Node000023" title=" " alt="" coords="2306,27,2402,48,2509,76,2549,91,2547,96,2508,81,2401,53,2305,33"/>
+<area shape="rect" id="Node000024" href="$optfeat_8c.html" title="Implementation of optional behavior dependent on available system features." alt="" coords="2653,93,2756,119"/>
+<area shape="poly" id="edge25_Node000001_Node000024" title=" " alt="" coords="2306,21,2459,39,2551,55,2641,76,2681,91,2679,96,2640,81,2550,60,2458,45,2306,26"/>
+<area shape="rect" id="Node000025" href="$procdip_8c.html" title="Implementation of the Process Dispatcher." alt="" coords="2781,93,2885,119"/>
+<area shape="poly" id="edge26_Node000001_Node000025" title=" " alt="" coords="2306,18,2396,23,2512,33,2640,50,2768,76,2809,91,2807,96,2767,81,2639,55,2511,38,2396,28,2306,24"/>
+<area shape="rect" id="Node000026" href="$rtimcmd_8c.html" title="Implementation of runtime commands to be triggered by the notification/service interface." alt="" coords="2909,93,3020,119"/>
+<area shape="poly" id="edge27_Node000001_Node000026" title=" " alt="" coords="2306,17,2416,19,2564,28,2731,46,2815,59,2897,76,2940,91,2939,96,2896,81,2814,65,2730,51,2564,33,2416,25,2306,22"/>
+<area shape="rect" id="Node000027" href="$rtimopmap_8c.html" title="Implementation of functions related to the runtime command opcode map." alt="" coords="3045,93,3173,119"/>
+<area shape="poly" id="edge28_Node000001_Node000027" title=" " alt="" coords="2306,16,2437,18,2618,26,2824,44,2929,58,3032,76,3081,91,3080,96,3031,81,2928,63,2823,49,2617,31,2437,23,2306,21"/>
+<area shape="rect" id="Node000028" href="$sig_8c.html" title="Implementation of signature checking." alt="" coords="3197,93,3271,119"/>
+<area shape="poly" id="edge29_Node000001_Node000028" title=" " alt="" coords="2306,17,2495,21,2750,30,3003,47,3107,60,3185,76,3218,91,3215,96,3184,81,3106,65,3002,53,2750,35,2495,26,2306,23"/>
+<area shape="rect" id="Node000029" href="$sockcom_8c.html" title="Implementation of socket communication functions for the crinit&#45;client library." alt="" coords="3295,93,3410,119"/>
+<area shape="poly" id="edge30_Node000001_Node000029" title=" " alt="" coords="2306,18,2512,23,2795,33,3078,51,3195,62,3284,76,3328,91,3327,96,3283,81,3195,68,3077,56,2795,39,2512,28,2306,23"/>
+<area shape="rect" id="Node000030" href="$task_8c.html" title="Implementation of functions related to a single task." alt="" coords="3435,93,3519,119"/>
+<area shape="poly" id="edge31_Node000001_Node000030" title=" " alt="" coords="2306,17,2537,18,2861,26,3029,33,3186,44,3321,58,3423,76,3459,91,3457,96,3421,81,3320,63,3186,49,3029,39,2861,31,2537,24,2306,22"/>
+<area shape="rect" id="Node000031" href="$taskdb_8c.html" title="Implementation of the central Task Database and related functions." alt="" coords="3543,93,3643,119"/>
+<area shape="poly" id="edge32_Node000001_Node000031" title=" " alt="" coords="2306,17,2556,19,2911,27,3269,44,3418,58,3531,76,3572,91,3570,96,3529,81,3418,64,3269,50,2911,32,2556,24,2306,22"/>
+<area shape="rect" id="Node000032" href="$thrpool_8c.html" title="Implementations of a generic worker thread pool. Used by the notification/service interface to handle..." alt="" coords="3667,93,3769,119"/>
+<area shape="poly" id="edge33_Node000001_Node000032" title=" " alt="" coords="2305,16,2577,18,2968,25,3173,32,3365,42,3530,57,3655,76,3696,91,3695,96,3653,81,3530,62,3364,48,3172,37,2967,30,2577,23,2305,22"/>
+<area shape="rect" id="Node000033" href="$mock-set-err-stream_8h.html" title="Header declaring a mock function for crinitSetErrStream()." alt="" coords="3794,86,3965,126"/>
+<area shape="poly" id="edge34_Node000001_Node000033" title=" " alt="" coords="2306,17,2598,21,3025,31,3461,49,3644,61,3781,76,3817,83,3816,89,3780,81,3643,66,3461,54,3025,37,2598,27,2306,23"/>
+<area shape="rect" id="Node000036" href="$mock-set-info-stream_8h.html" title="Header declaring a mock function for crinitSetInfoStream()." alt="" coords="3989,86,4159,126"/>
+<area shape="poly" id="edge37_Node000001_Node000036" title=" " alt="" coords="2306,17,2631,20,3115,28,3612,46,3820,59,3977,76,4013,83,4012,89,3976,81,3820,65,3612,51,3115,34,2631,25,2306,22"/>
+<area shape="rect" id="Node000039" href="$utest-cfgmap-order_2regression-test_8c.html" title="Implementation of a regression test for the order and completeness of crinit{Task,..." alt="" coords="4184,86,4359,126"/>
+<area shape="poly" id="edge40_Node000001_Node000039" title=" " alt="" coords="2306,17,2663,19,3204,26,3762,44,3996,58,4172,76,4208,83,4207,88,4171,81,3995,63,3762,50,3204,32,2663,24,2306,22"/>
+<area shape="rect" id="Node000040" href="$utest-file-basename-macro_2regression-test_8c.html" title="Implementation of a regression test to check the FILE_BASENAME macro." alt="" coords="4383,79,4597,133"/>
+<area shape="poly" id="edge41_Node000001_Node000040" title=" " alt="" coords="2305,17,2695,19,3294,28,3915,45,4175,59,4372,76,4383,78,4382,83,4371,81,4175,64,3915,51,3294,33,2695,25,2305,22"/>
+<area shape="rect" id="Node000041" href="$utest-globopt-defaults_2regression-test_8c.html" title="Implementation of a regression test if default values for all global options are present and intializ..." alt="" coords="4621,86,4815,126"/>
+<area shape="poly" id="edge42_Node000001_Node000041" title=" " alt="" coords="2306,16,2734,17,3402,23,3759,30,4097,41,4389,56,4609,76,4649,83,4649,89,4608,81,4389,61,4097,46,3759,36,3402,29,2734,22,2306,22"/>
+<area shape="rect" id="Node000003" href="$eloslog_8h.html" title="Header related to elos connection." alt="" coords="175,189,279,214"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="230,132,230,189,225,189,225,132"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="199,128,98,191,95,186,196,124"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="256,124,342,186,339,191,253,129"/>
+<area shape="rect" id="Node000004" href="$eloslog_8c.html" title="Implementation of elos event handling." alt="" coords="176,269,279,295"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="230,228,230,269,225,269,225,228"/>
+<area shape="rect" id="Node000034" href="$mock-set-err-stream_8c.html" title="Implementation of a mock function for crinitSetErrStream()." alt="" coords="3786,181,3957,221"/>
+<area shape="poly" id="edge35_Node000033_Node000034" title=" " alt="" coords="3879,140,3876,182,3870,181,3874,139"/>
+<area shape="rect" id="Node000035" href="$utest-crinit-set-err-stream_2case-set_8c.html" title="Implementation of a unit test for crinitClientSetErrStream()." alt="" coords="3571,181,3761,221"/>
+<area shape="poly" id="edge36_Node000033_Node000035" title=" " alt="" coords="3825,134,3710,184,3708,179,3822,129"/>
+<area shape="rect" id="Node000037" href="$mock-set-info-stream_8c.html" title="Implementation of a mock function for crinitSetInfoStream()." alt="" coords="4205,181,4375,221"/>
+<area shape="poly" id="edge38_Node000036_Node000037" title=" " alt="" coords="4131,129,4247,179,4245,184,4129,134"/>
+<area shape="rect" id="Node000038" href="$utest-crinit-set-info-stream_2case-set_8c.html" title="Implementation of a unit test for crinitClientSetInfoStream()." alt="" coords="3981,181,4180,221"/>
+<area shape="poly" id="edge39_Node000036_Node000038" title=" " alt="" coords="4079,139,4082,181,4077,181,4074,140"/>
 </map>

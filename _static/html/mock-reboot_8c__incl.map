@@ -1,0 +1,21 @@
+<map id="test/utest/mocks/mock&#45;reboot.c" name="test/utest/mocks/mock&#45;reboot.c">
+<area shape="rect" id="Node000001" title="Implementation of a mock function for reboot()." alt="" coords="107,5,277,45"/>
+<area shape="rect" id="Node000002" href="$mock-reboot_8h.html" title="Header declaring a mock function for reboot()." alt="" coords="5,93,123,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="162,48,96,88,93,84,160,43"/>
+<area shape="rect" id="Node000003" href="$common_8h.html" title="Header for common definitions/functions not related to other specific features." alt="" coords="147,93,237,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="195,46,195,79,189,79,189,46"/>
+<area shape="rect" id="Node000006" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="261,93,352,119"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="221,43,280,83,277,88,218,48"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="168,167,243,192"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="197,119,203,153,198,154,192,119"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="73,167,143,192"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="180,121,134,160,131,155,177,117"/>
+<area shape="poly" id="edge8_Node000006_Node000004" title=" " alt="" coords="292,121,235,161,232,156,289,116"/>
+<area shape="poly" id="edge9_Node000006_Node000005" title=" " alt="" coords="276,121,154,164,153,159,274,116"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="267,167,346,192"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="309,119,309,153,304,153,304,119"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="371,167,445,192"/>
+<area shape="poly" id="edge7_Node000006_Node000008" title=" " alt="" coords="324,116,382,156,379,161,321,121"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="470,167,554,192"/>
+<area shape="poly" id="edge10_Node000006_Node000009" title=" " alt="" coords="341,116,467,160,465,165,339,121"/>
+</map>

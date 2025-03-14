@@ -1,5 +1,7 @@
 <map id="test/utest/utest&#45;file&#45;series&#45;suffix&#45;filter/utest&#45;file&#45;series&#45;suffix&#45;filter.h" name="test/utest/utest&#45;file&#45;series&#45;suffix&#45;filter/utest&#45;file&#45;series&#45;suffix&#45;filter.h">
-<area shape="rect" id="node1" title=" " alt="" coords="85,5,254,76"/>
-<area shape="rect" id="node2" href="$utest-file-series-suffix-filter_2case-success_8c.html" title="Unit test for crinitSuffixFilter(), successful execution." alt="" coords="5,131,152,187"/>
-<area shape="rect" id="node3" href="$utest-file-series-suffix-filter_8c.html" title="Implementation of the crinitSuffixFilter() unit test group." alt="" coords="177,124,346,195"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="85,5,254,75"/>
+<area shape="rect" id="Node000002" href="$utest-file-series-suffix-filter_2case-success_8c.html" title="Unit test for crinitSuffixFilter(), successful execution." alt="" coords="5,130,152,185"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="136,87,102,131,97,128,132,84"/>
+<area shape="rect" id="Node000003" href="$utest-file-series-suffix-filter_8c.html" title="Implementation of the crinitSuffixFilter() unit test group." alt="" coords="177,123,346,192"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="207,84,237,121,232,124,203,87"/>
 </map>

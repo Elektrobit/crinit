@@ -1,0 +1,9 @@
+<map id="test/utest/utest&#45;crinit&#45;cfg&#45;stop_command&#45;handler/utest&#45;crinit&#45;cfg&#45;stop_command&#45;handler.h" name="test/utest/utest&#45;crinit&#45;cfg&#45;stop_command&#45;handler/utest&#45;crinit&#45;cfg&#45;stop_command&#45;handler.h">
+<area shape="rect" id="Node000001" title="Header declaring the unit tests for crinitCfgStopCommandHandler()." alt="" coords="226,5,453,75"/>
+<area shape="rect" id="Node000002" href="$utest-crinit-cfg-stop__command-handler_2case-null-input_8c.html" title="Unit test for crinitCfgStopCmdHandler(), handling of null pointer input." alt="" coords="5,130,212,185"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="261,83,162,132,160,128,259,79"/>
+<area shape="rect" id="Node000003" href="$utest-crinit-cfg-stop__command-handler_2case-success_8c.html" title="Unit test for crinitCfgStopCmdHandler(), successful execution." alt="" coords="236,130,443,185"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="342,89,342,130,337,130,337,89"/>
+<area shape="rect" id="Node000004" href="$utest-crinit-cfg-stop__command-handler_8c.html" title="Implementation of the crinitCfgGroupHandler() unit test group." alt="" coords="467,123,694,192"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="423,78,511,120,509,125,421,83"/>
+</map>

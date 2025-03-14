@@ -1,12 +1,23 @@
 <map id="src/thrpool.c" name="src/thrpool.c">
-<area shape="rect" id="node1" title="Implementations of a generic worker thread pool. Used by the notification/service interface to handle..." alt="" coords="249,5,352,32"/>
-<area shape="rect" id="node2" href="$thrpool_8h.html" title="Header defining a generic worker thread pool. Used by the notification/service interface to handle so..." alt="" coords="102,80,182,107"/>
-<area shape="rect" id="node5" title=" " alt="" coords="209,155,291,181"/>
-<area shape="rect" id="node6" title=" " alt="" coords="429,80,500,107"/>
-<area shape="rect" id="node7" title=" " alt="" coords="316,155,387,181"/>
-<area shape="rect" id="node8" href="$logio_8h.html" title="Header related to debug/log output." alt="" coords="338,80,405,107"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,155,76,181"/>
-<area shape="rect" id="node4" title=" " alt="" coords="100,155,184,181"/>
-<area shape="rect" id="node9" title=" " alt="" coords="411,155,479,181"/>
-<area shape="rect" id="node10" title=" " alt="" coords="503,155,570,181"/>
+<area shape="rect" id="Node000001" title="Implementations of a generic worker thread pool. Used by the notification/service interface to handle..." alt="" coords="249,5,352,31"/>
+<area shape="rect" id="Node000002" href="$thrpool_8h.html" title="Header defining a generic worker thread pool. Used by the notification/service interface to handle so..." alt="" coords="102,79,182,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="276,33,181,75,179,71,274,28"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="209,152,291,177"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="299,32,261,140,256,138,294,30"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="429,79,500,104"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="328,28,427,71,424,76,326,33"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="316,152,387,177"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="306,30,329,103,343,138,338,140,323,105,301,32"/>
+<area shape="rect" id="Node000008" href="$logio_8h.html" title="Header related to debug/log output." alt="" coords="338,79,405,104"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="314,29,352,67,348,71,310,33"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,152,76,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="127,106,70,146,67,142,124,102"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="100,152,184,177"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="145,104,145,138,139,138,139,104"/>
+<area shape="poly" id="edge9_Node000008_Node000005" title=" " alt="" coords="353,106,283,147,280,143,350,102"/>
+<area shape="poly" id="edge11_Node000008_Node000007" title=" " alt="" coords="371,105,361,140,356,138,365,104"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="411,152,479,177"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="385,102,425,140,421,144,382,106"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="503,152,570,177"/>
+<area shape="poly" id="edge10_Node000008_Node000010" title=" " alt="" coords="399,102,498,144,496,149,397,106"/>
 </map>

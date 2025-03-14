@@ -1,5 +1,6 @@
 var task_8c =
 [
+    [ "crinitCopyCommandBlock", "task_8c.html#ab4c1cb34b2ac31851acefcde2a84e5b7", null ],
     [ "crinitDestroyTask", "task_8c.html#a06ca49ffb4a4f860db47b76777be84c4", null ],
     [ "crinitFreeTask", "task_8c.html#a6fb2e3c89b6e0f6f13c93995f6ebcfb2", null ],
     [ "crinitTaskCopy", "task_8c.html#a04673521322f9a3182e39e1b4d7c3d8e", null ],

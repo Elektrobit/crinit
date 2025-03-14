@@ -1,9 +1,10 @@
 <map id="test/utest/utest&#45;crinit&#45;set&#45;err&#45;stream" name="test/utest/utest&#45;crinit&#45;set&#45;err&#45;stream">
-<area shape="rect" id="node1" href="dir_6981c69a4f7b342fb8d63373eefa6be4.html" title="mocks" alt="" coords="56,148,128,196"/>
-<area shape="rect" id="node3" href="dir_bfccd401955b95cf8c75461437045ac0.html" title="inc" alt="" coords="92,244,164,292"/>
-<area shape="rect" id="edge1-headlabel" href="dir_000004_000000.html" title="12" alt="" coords="112,217,129,231"/>
-<area shape="rect" id="node2" href="dir_0ae8b168a1164bd85ec3b6aded14b7b2.html" title="utest&#45;crinit&#45;set&#45;err&#45;stream" alt="" coords="27,52,219,100"/>
-<area shape="rect" id="edge2-headlabel" href="dir_000027_000004.html" title="1" alt="" coords="109,126,118,141"/>
-<area shape="rect" id="edge3-headlabel" href="dir_000027_000000.html" title="2" alt="" coords="141,220,150,235"/>
-<area shape="rect" id="clust1" href="dir_4c2f9d8b93c9bdc7f8adbdd63ef5fe7f.html" title="utest" alt="" coords="16,16,229,207"/>
+<area shape="rect" id="node1" href="dir_6981c69a4f7b342fb8d63373eefa6be4.html" title="mocks" alt="" coords="65,140,130,165"/>
+<area shape="rect" id="node2" href="dir_0ae8b168a1164bd85ec3b6aded14b7b2.html" title="utest&#45;crinit&#45;set&#45;err\l&#45;stream" alt="" coords="27,52,168,92"/>
+<area shape="poly" id="edge1" href="dir_000014_000001.html" alt="" coords="100,92,100,126,95,126,95,92"/>
+<area shape="rect" id="edge1-headlabel" href="dir_000014_000001.html" title="1" alt="" coords="101,114,110,129"/>
+<area shape="rect" id="node3" href="dir_bfccd401955b95cf8c75461437045ac0.html" title="inc" alt="" coords="190,140,231,165"/>
+<area shape="poly" id="edge2" href="dir_000014_000000.html" alt="" coords="126,90,184,130,181,134,123,94"/>
+<area shape="rect" id="edge2-headlabel" href="dir_000014_000000.html" title="2" alt="" coords="179,115,188,130"/>
+<area shape="rect" id="clust1" href="dir_4c2f9d8b93c9bdc7f8adbdd63ef5fe7f.html" title="utest" alt="" coords="16,16,179,176"/>
 </map>

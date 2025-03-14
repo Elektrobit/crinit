@@ -7,23 +7,25 @@
     <link href="../_static/favicon_16x16.png" sizes="16x16" rel="icon" type="image/png">
     <link href="../_static/favicon_32x32.png" sizes="32x32" rel="icon" type="image/png">
     <title>Crinit-related scripts &#8212; crinit  documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=4f649999" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=039e1c02" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <script src="../_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Unit Tests" href="../test/README.html" />
-    <link rel="prev" title="Developer" href="../src/index.html" />
+    <link rel="next" title="CI/CD Tooling" href="../ci/index.html" />
+    <link rel="prev" title="API Documentation" href="../API-Doc.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
+
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  
 
   </head><body>
   
@@ -42,27 +44,26 @@
 generate signatures for task and global configuration files as well as generating the root key and signed downstream
 keys.</p>
 <p>While crinit internally uses mbedTLS as a cryptography library, the scripts depend on OpenSSL’s user-space interface.</p>
-</section>
 <section id="script-usage-information">
-<h1>Script usage information<a class="headerlink" href="#script-usage-information" title="Link to this heading">¶</a></h1>
+<h2>Script usage information<a class="headerlink" href="#script-usage-information" title="Link to this heading">¶</a></h2>
 <section id="crinit-genkeys-sh">
-<h2><code class="docutils literal notranslate"><span class="pre">crinit-genkeys.sh</span></code><a class="headerlink" href="#crinit-genkeys-sh" title="Link to this heading">¶</a></h2>
+<h3><code class="docutils literal notranslate"><span class="pre">crinit-genkeys.sh</span></code><a class="headerlink" href="#crinit-genkeys-sh" title="Link to this heading">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Usage</span><span class="p">:</span> <span class="n">crinit</span><span class="o">-</span><span class="n">genkeys</span><span class="o">.</span><span class="n">sh</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="o">/--</span><span class="n">help</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">k</span><span class="o">/--</span><span class="n">key</span><span class="o">-</span><span class="n">file</span> <span class="o">&lt;</span><span class="n">KEY_FILE</span><span class="o">&gt;</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">o</span><span class="o">/--</span><span class="n">output</span> <span class="o">&lt;</span><span class="n">OUTPUT_FILE</span><span class="o">&gt;</span><span class="p">]</span>
   <span class="n">If</span> <span class="n">no</span> <span class="n">other</span> <span class="n">arguments</span> <span class="n">are</span> <span class="n">given</span><span class="p">,</span> <span class="n">will</span> <span class="n">generate</span> <span class="n">an</span> <span class="n">RSA</span><span class="o">-</span><span class="mi">4096</span> <span class="n">private</span> <span class="n">key</span><span class="o">.</span> <span class="n">Alternatively</span> <span class="n">using</span> <span class="s1">&#39;-k&#39;</span><span class="p">,</span> <span class="n">you</span> <span class="n">can</span> <span class="n">obtain</span>
   <span class="n">the</span> <span class="n">public</span> <span class="n">key</span> <span class="k">for</span> <span class="n">the</span> <span class="n">given</span> <span class="n">private</span> <span class="n">key</span><span class="o">.</span>
     <span class="o">-</span><span class="n">h</span><span class="o">/--</span><span class="n">help</span>
         <span class="o">-</span> <span class="n">Show</span> <span class="n">this</span> <span class="n">help</span><span class="o">.</span>
     <span class="o">-</span><span class="n">k</span><span class="o">/--</span><span class="n">key</span><span class="o">-</span><span class="n">file</span> <span class="o">&lt;</span><span class="n">KEY_FILE</span><span class="o">&gt;</span>
-        <span class="o">-</span> <span class="n">Generate</span> <span class="n">a</span> <span class="n">public</span> <span class="n">key</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">given</span> <span class="n">private</span> <span class="n">key</span><span class="o">.</span> <span class="n">Use</span> <span class="s1">&#39;-&#39;</span> <span class="k">for</span> <span class="n">Standard</span> <span class="n">Input</span><span class="o">.</span> <span class="n">Default</span><span class="p">:</span> <span class="n">Generate</span> <span class="n">a</span> <span class="n">private</span> <span class="n">key</span><span class="o">.</span>
+        <span class="o">-</span> <span class="n">Generate</span> <span class="n">a</span> <span class="n">public</span> <span class="n">key</span> <span class="kn">from</span><span class="w"> </span><span class="nn">the</span> <span class="n">given</span> <span class="n">private</span> <span class="n">key</span><span class="o">.</span> <span class="n">Use</span> <span class="s1">&#39;-&#39;</span> <span class="k">for</span> <span class="n">Standard</span> <span class="n">Input</span><span class="o">.</span> <span class="n">Default</span><span class="p">:</span> <span class="n">Generate</span> <span class="n">a</span> <span class="n">private</span> <span class="n">key</span><span class="o">.</span>
     <span class="o">-</span><span class="n">o</span><span class="o">/--</span><span class="n">output</span> <span class="o">&lt;</span><span class="n">OUTPUT_FILE</span><span class="o">&gt;</span>
         <span class="o">-</span> <span class="n">The</span> <span class="n">filename</span> <span class="n">of</span> <span class="n">the</span> <span class="n">output</span> <span class="n">key</span><span class="o">.</span> <span class="n">Default</span><span class="p">:</span> <span class="n">write</span> <span class="n">to</span> <span class="n">Standard</span> <span class="n">Output</span>
 </pre></div>
 </div>
 </section>
 <section id="crinit-sign-sh">
-<h2><code class="docutils literal notranslate"><span class="pre">crinit-sign.sh</span></code><a class="headerlink" href="#crinit-sign-sh" title="Link to this heading">¶</a></h2>
+<h3><code class="docutils literal notranslate"><span class="pre">crinit-sign.sh</span></code><a class="headerlink" href="#crinit-sign-sh" title="Link to this heading">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Usage</span><span class="p">:</span> <span class="n">crinit</span><span class="o">-</span><span class="n">sign</span><span class="o">.</span><span class="n">sh</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="o">/--</span><span class="n">help</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">k</span><span class="o">/--</span><span class="n">key</span><span class="o">-</span><span class="n">file</span> <span class="o">&lt;</span><span class="n">KEY_FILE</span><span class="o">&gt;</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">o</span><span class="o">/--</span><span class="n">output</span> <span class="o">&lt;</span><span class="n">OUTPUT_FILE</span><span class="o">&gt;</span><span class="p">]</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">INPUT_FILE</span><span class="o">&gt;</span><span class="p">]</span>
-  <span class="n">Will</span> <span class="n">sign</span> <span class="n">given</span> <span class="nb">input</span> <span class="n">data</span> <span class="k">with</span> <span class="n">an</span> <span class="n">RSA</span><span class="o">-</span><span class="n">PSS</span> <span class="n">signature</span> <span class="kn">from</span> <span class="nn">an</span> <span class="n">RSA</span><span class="o">-</span><span class="mi">4096</span> <span class="n">private</span> <span class="n">key</span> <span class="n">using</span> <span class="n">a</span> <span class="n">SHA</span><span class="o">-</span><span class="mi">256</span> <span class="nb">hash</span><span class="o">.</span>
+  <span class="n">Will</span> <span class="n">sign</span> <span class="n">given</span> <span class="nb">input</span> <span class="n">data</span> <span class="k">with</span> <span class="n">an</span> <span class="n">RSA</span><span class="o">-</span><span class="n">PSS</span> <span class="n">signature</span> <span class="kn">from</span><span class="w"> </span><span class="nn">an</span> <span class="n">RSA</span><span class="o">-</span><span class="mi">4096</span> <span class="n">private</span> <span class="n">key</span> <span class="n">using</span> <span class="n">a</span> <span class="n">SHA</span><span class="o">-</span><span class="mi">256</span> <span class="nb">hash</span><span class="o">.</span>
     <span class="o">-</span><span class="n">h</span><span class="o">/--</span><span class="n">help</span>
         <span class="o">-</span> <span class="n">Show</span> <span class="n">this</span> <span class="n">help</span><span class="o">.</span>
     <span class="o">-</span><span class="n">k</span><span class="o">/--</span><span class="n">key</span><span class="o">-</span><span class="n">file</span> <span class="o">&lt;</span><span class="n">KEY_FILE</span><span class="o">&gt;</span>
@@ -76,9 +77,9 @@ keys.</p>
 </section>
 </section>
 <section id="usage-examples">
-<h1>Usage examples<a class="headerlink" href="#usage-examples" title="Link to this heading">¶</a></h1>
+<h2>Usage examples<a class="headerlink" href="#usage-examples" title="Link to this heading">¶</a></h2>
 <section id="generate-a-root-key-pair">
-<h2>Generate a root key pair<a class="headerlink" href="#generate-a-root-key-pair" title="Link to this heading">¶</a></h2>
+<h3>Generate a root key pair<a class="headerlink" href="#generate-a-root-key-pair" title="Link to this heading">¶</a></h3>
 <p>First generate the private root key.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ crinit-genkeys.sh -o crinit-root.key
 </pre></div>
@@ -90,7 +91,7 @@ execution, e.g. by using an HSM or by compiling it into the Kernel.</p>
 </div>
 </section>
 <section id="generate-downstream-keys-signed-by-the-root-key">
-<h2>Generate downstream keys signed by the root key<a class="headerlink" href="#generate-downstream-keys-signed-by-the-root-key" title="Link to this heading">¶</a></h2>
+<h3>Generate downstream keys signed by the root key<a class="headerlink" href="#generate-downstream-keys-signed-by-the-root-key" title="Link to this heading">¶</a></h3>
 <p>Assuming the presence of a root key (<code class="docutils literal notranslate"><span class="pre">crinit-root.key</span></code>) we can generate downstream signed keys which do not have to
 reside in the Kernel keyring but can be supplied externally.</p>
 <p>First we generate a key pair as above.</p>
@@ -107,7 +108,7 @@ for its software. The upstream system integrator would do the signing of their p
 vendor can supply trusted configuration files.</p>
 </section>
 <section id="sign-configuration-files">
-<h2>Sign configuration files<a class="headerlink" href="#sign-configuration-files" title="Link to this heading">¶</a></h2>
+<h3>Sign configuration files<a class="headerlink" href="#sign-configuration-files" title="Link to this heading">¶</a></h3>
 <p>The signing of configuration files can be done either with the root key or with downstream signed keys. The command is
 the same as above.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ crinit-sign.sh -k some-key.key -o task.sig task.crinit
@@ -116,7 +117,7 @@ the same as above.</p>
 </section>
 </section>
 <section id="note-on-the-key-type-used-in-crinit-genkeys-sh">
-<h1>Note on the key type used in <code class="docutils literal notranslate"><span class="pre">crinit-genkeys.sh</span></code><a class="headerlink" href="#note-on-the-key-type-used-in-crinit-genkeys-sh" title="Link to this heading">¶</a></h1>
+<h2>Note on the key type used in <code class="docutils literal notranslate"><span class="pre">crinit-genkeys.sh</span></code><a class="headerlink" href="#note-on-the-key-type-used-in-crinit-genkeys-sh" title="Link to this heading">¶</a></h2>
 <p>In recent versions, OpenSSL can also generate special <code class="docutils literal notranslate"><span class="pre">rsa-pss</span></code> type keys instead of the more general <code class="docutils literal notranslate"><span class="pre">rsa</span></code> type. The
 difference between them lies in metadata. While <code class="docutils literal notranslate"><span class="pre">rsa</span></code> keys have no limitations on their usage, <code class="docutils literal notranslate"><span class="pre">rsa-pss</span></code> keys may
 contain flags and settings restricting them to pre-configured signature usage only. These are respected by OpenSSL
@@ -126,16 +127,17 @@ prevents <code class="docutils literal notranslate"><span class="pre">rsa-pss</s
 sure the given key is a valid 4096-bit RSA key. The bug was fixed on March 22, 2022 but the fix has not yet made its
 way downstream to current (July 2023) stable distributions.</p>
 </section>
+</section>
 
 
           </div>
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/crinit-logo.png" alt="Logo"/>
+              <img class="logo" src="../_static/crinit_logo_blk.svg" alt="Logo of crinit"/>
             </a></p>
 <h1 class="logo"><a href="../index.html">crinit</a></h1>
 
@@ -146,50 +148,39 @@ way downstream to current (July 2023) stable distributions.</p>
 
 
 
-<h3>Navigation</h3>
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../README.html">Crinit – Configurable Rootfs Init</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../README.html#license">License</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../README.html#details">Details</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../API-Doc.html">Public API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../src/index.html">Developers</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Crinit-related scripts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#script-usage-information">Script usage information</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#crinit-genkeys-sh"><code class="docutils literal notranslate"><span class="pre">crinit-genkeys.sh</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#crinit-sign-sh"><code class="docutils literal notranslate"><span class="pre">crinit-sign.sh</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">README manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API-Doc.html">API Documentation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Helper Scripts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#script-usage-information">Script usage information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage-examples">Usage examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#note-on-the-key-type-used-in-crinit-genkeys-sh">Note on the key type used in <code class="docutils literal notranslate"><span class="pre">crinit-genkeys.sh</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="#usage-examples">Usage examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#generate-a-root-key-pair">Generate a root key pair</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#generate-downstream-keys-signed-by-the-root-key">Generate downstream keys signed by the root key</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#sign-configuration-files">Sign configuration files</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="#note-on-the-key-type-used-in-crinit-genkeys-sh">Note on the key type used in <code class="docutils literal notranslate"><span class="pre">crinit-genkeys.sh</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../test/README.html">Tests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../doc/adr/index.html">ADRS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ci/index.html">CI/CD Tooling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/adr/index.html">ADRs</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="../src/index.html" title="previous chapter">Developer</a></li>
-      <li>Next: <a href="../test/README.html" title="next chapter">Unit Tests</a></li>
+      <li>Previous: <a href="../API-Doc.html" title="previous chapter">API Documentation</a></li>
+      <li>Next: <a href="../ci/index.html" title="next chapter">CI/CD Tooling</a></li>
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -203,11 +194,11 @@ way downstream to current (July 2023) stable distributions.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2023, emlix GmbH/Elektrobit Automotive GmbH.
+      &#169;2023, emlix GmbH/Elektrobit Automotive GmbH.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.2.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
       <a href="../_sources/scripts/README.md.txt"

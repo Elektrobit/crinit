@@ -1,27 +1,69 @@
 <map id="test/utest/utest&#45;crinit&#45;task&#45;add/case&#45;success.c" name="test/utest/utest&#45;crinit&#45;task&#45;add/case&#45;success.c">
-<area shape="rect" id="node1" title="Unit test for crinitClientTaskAdd() testing error handling for crinitXfer()." alt="" coords="399,5,585,47"/>
-<area shape="rect" id="node2" href="$common_8h.html" title="Header for common definitions not related to other specific features." alt="" coords="137,95,228,121"/>
-<area shape="rect" id="node3" href="$crinit-client_8h.html" title="Public definitions/declarations for using the crinit&#45;client shared library." alt="" coords="253,95,361,121"/>
-<area shape="rect" id="node12" href="$rtimcmd_8h.html" title="Header related to handling of runtime commands received via the notification/service interface." alt="" coords="614,169,703,196"/>
-<area shape="rect" id="node22" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="721,95,812,121"/>
-<area shape="rect" id="node25" href="$utest-crinit-task-add_8h.html" title="Header declaring the unit tests for crinitClientTaskAdd()." alt="" coords="409,95,575,121"/>
-<area shape="rect" id="node4" title=" " alt="" coords="203,169,333,196"/>
-<area shape="rect" id="node5" title=" " alt="" coords="5,169,77,196"/>
-<area shape="rect" id="node6" title=" " alt="" coords="515,169,589,196"/>
-<area shape="rect" id="node7" title=" " alt="" coords="300,617,383,644"/>
-<area shape="rect" id="node8" href="$crinit-sdefs_8h.html" title="Definitions shared between crinit&#39;s public and internal APIs." alt="" coords="188,393,295,420"/>
-<area shape="rect" id="node10" href="$version_8h.html" title="Header definitions related to component versioning." alt="" coords="357,169,440,196"/>
-<area shape="rect" id="node9" title=" " alt="" coords="195,543,291,569"/>
-<area shape="rect" id="node11" title=" " alt="" coords="425,244,495,271"/>
-<area shape="rect" id="node13" href="$rtimopmap_8h.html" title="Header defining the runtime commands available through the notification/service interface." alt="" coords="623,244,729,271"/>
-<area shape="rect" id="node14" href="$taskdb_8h.html" title="Header defining the central Task Data Structure and related types/functions." alt="" coords="519,244,598,271"/>
-<area shape="rect" id="node15" title=" " alt="" coords="463,319,547,345"/>
-<area shape="rect" id="node16" title=" " alt="" coords="523,617,597,644"/>
-<area shape="rect" id="node17" href="$task_8h.html" title="Header defining the data structures belonging to a single task and related functions." alt="" coords="375,319,438,345"/>
-<area shape="rect" id="node18" href="$confparse_8h.html" title="Header related to the Config Parser." alt="" coords="295,468,393,495"/>
-<area shape="rect" id="node20" href="$envset_8h.html" title="Header defining data types and functions to work with sets of environment variables." alt="" coords="469,393,547,420"/>
-<area shape="rect" id="node21" href="$ioredir_8h.html" title="Header related to IO redirection types and functions." alt="" coords="369,393,444,420"/>
-<area shape="rect" id="node19" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="379,543,458,569"/>
-<area shape="rect" id="node23" title=" " alt="" coords="830,169,909,196"/>
-<area shape="rect" id="node24" title=" " alt="" coords="933,169,1017,196"/>
+<area shape="rect" id="Node000001" title="Unit test for crinitClientTaskAdd() testing error handling for crinitXfer()." alt="" coords="174,5,359,45"/>
+<area shape="rect" id="Node000002" href="$common_8h.html" title="Header for common definitions/functions not related to other specific features." alt="" coords="5,167,96,192"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="235,48,159,96,76,160,73,155,156,91,232,43"/>
+<area shape="rect" id="Node000005" href="$crinit-client_8h.html" title="Public definitions/declarations for using the crinit&#45;client shared library." alt="" coords="815,93,923,119"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="360,36,802,93,801,99,359,41"/>
+<area shape="rect" id="Node000013" href="$rtimcmd_8h.html" title="Header related to handling of runtime commands received via the notification/service interface." alt="" coords="121,167,210,192"/>
+<area shape="poly" id="edge13_Node000001_Node000013" title=" " alt="" coords="225,48,196,68,173,95,164,124,164,153,159,153,159,123,168,92,193,64,222,43"/>
+<area shape="rect" id="Node000023" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="396,93,487,119"/>
+<area shape="poly" id="edge33_Node000001_Node000023" title=" " alt="" coords="310,43,404,85,402,90,307,48"/>
+<area shape="rect" id="Node000026" href="$utest-crinit-task-add_8h.html" title="Header declaring the unit tests for crinitClientTaskAdd()." alt="" coords="183,93,350,119"/>
+<area shape="poly" id="edge39_Node000001_Node000026" title=" " alt="" coords="269,46,269,79,264,79,264,46"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="524,607,599,632"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="54,192,60,325,60,474,63,490,74,505,90,519,111,531,168,554,236,573,386,598,511,612,510,617,385,604,235,578,166,559,109,536,87,523,70,508,59,492,55,474,55,325,49,192"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="334,240,405,265"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="97,188,321,237,320,242,96,193"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="805,167,934,192"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="872,119,872,153,867,153,867,119"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="959,167,1031,192"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="891,116,964,157,961,162,888,121"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="599,167,673,192"/>
+<area shape="poly" id="edge7_Node000005_Node000008" title=" " alt="" coords="833,121,687,165,686,160,831,116"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="811,607,893,632"/>
+<area shape="poly" id="edge8_Node000005_Node000009" title=" " alt="" coords="924,110,990,123,1025,134,1059,148,1090,166,1115,189,1131,218,1137,251,1137,474,1131,510,1113,539,1086,563,1053,581,1016,595,978,605,908,617,907,612,977,600,1015,590,1051,576,1083,558,1109,536,1126,508,1132,474,1132,252,1126,219,1111,193,1087,171,1057,153,1024,139,989,128,923,115"/>
+<area shape="rect" id="Node000010" href="$crinit-sdefs_8h.html" title="Definitions shared between crinit&#39;s public and internal APIs." alt="" coords="991,387,1097,412"/>
+<area shape="poly" id="edge9_Node000005_Node000010" title=" " alt="" coords="924,107,956,113,989,124,1020,141,1045,165,1059,191,1068,219,1072,277,1065,332,1055,374,1050,373,1060,331,1067,277,1062,220,1054,193,1041,168,1017,145,987,129,955,118,923,113"/>
+<area shape="rect" id="Node000012" href="$version_8h.html" title="Header definitions related to component versioning." alt="" coords="697,167,780,192"/>
+<area shape="poly" id="edge11_Node000005_Node000012" title=" " alt="" coords="850,121,773,162,771,158,847,116"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="905,533,1001,559"/>
+<area shape="poly" id="edge10_Node000010_Node000011" title=" " alt="" coords="1039,414,970,523,966,520,1034,411"/>
+<area shape="poly" id="edge12_Node000012_Node000004" title=" " alt="" coords="697,192,686,195,419,245,418,240,685,189,696,187"/>
+<area shape="rect" id="Node000014" href="$rtimopmap_8h.html" title="Header defining the runtime commands available through the notification/service interface." alt="" coords="100,240,207,265"/>
+<area shape="poly" id="edge14_Node000013_Node000014" title=" " alt="" coords="166,193,160,227,155,226,161,192"/>
+<area shape="rect" id="Node000015" href="$taskdb_8h.html" title="Header defining the central Task Data Structure and related types/functions." alt="" coords="231,240,310,265"/>
+<area shape="poly" id="edge15_Node000013_Node000015" title=" " alt="" coords="184,190,244,230,241,235,181,194"/>
+<area shape="poly" id="edge17_Node000015_Node000003" title=" " alt="" coords="303,263,343,282,385,311,404,329,419,350,430,373,433,398,433,474,436,494,443,513,466,548,497,576,528,597,525,602,494,580,462,551,438,516,431,495,428,474,428,398,424,374,415,352,400,333,382,315,340,287,300,268"/>
+<area shape="rect" id="Node000016" title=" " alt="" coords="229,313,313,339"/>
+<area shape="poly" id="edge16_Node000015_Node000016" title=" " alt="" coords="273,266,273,300,268,300,268,266"/>
+<area shape="rect" id="Node000017" href="$task_8h.html" title="Header defining the data structures belonging to a single task and related functions." alt="" coords="773,313,835,339"/>
+<area shape="poly" id="edge18_Node000015_Node000017" title=" " alt="" coords="311,261,322,263,568,298,759,318,759,323,568,303,321,268,310,266"/>
+<area shape="poly" id="edge27_Node000017_Node000010" title=" " alt="" coords="836,334,993,380,992,385,835,339"/>
+<area shape="poly" id="edge19_Node000017_Node000011" title=" " alt="" coords="837,331,886,349,910,365,930,385,948,418,956,455,959,490,959,520,953,519,954,490,951,456,943,420,926,388,907,369,883,354,835,336"/>
+<area shape="rect" id="Node000018" title=" " alt="" coords="703,387,767,412"/>
+<area shape="poly" id="edge20_Node000017_Node000018" title=" " alt="" coords="794,341,757,379,753,375,791,337"/>
+<area shape="rect" id="Node000019" href="$confparse_8h.html" title="Header related to the Config Parser." alt="" coords="771,460,869,485"/>
+<area shape="poly" id="edge21_Node000017_Node000019" title=" " alt="" coords="808,339,820,446,815,447,803,339"/>
+<area shape="rect" id="Node000021" href="$envset_8h.html" title="Header defining data types and functions to work with sets of environment variables." alt="" coords="599,387,678,412"/>
+<area shape="poly" id="edge28_Node000017_Node000021" title=" " alt="" coords="778,341,679,384,677,379,776,336"/>
+<area shape="rect" id="Node000022" href="$ioredir_8h.html" title="Header related to IO redirection types and functions." alt="" coords="841,387,916,412"/>
+<area shape="poly" id="edge31_Node000017_Node000022" title=" " alt="" coords="818,337,858,375,855,379,814,341"/>
+<area shape="poly" id="edge22_Node000019_Node000009" title=" " alt="" coords="825,485,849,593,844,594,820,486"/>
+<area shape="poly" id="edge23_Node000019_Node000011" title=" " alt="" coords="843,483,921,524,918,529,840,488"/>
+<area shape="rect" id="Node000020" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="735,533,814,559"/>
+<area shape="poly" id="edge24_Node000019_Node000020" title=" " alt="" coords="815,487,792,523,787,520,810,484"/>
+<area shape="poly" id="edge26_Node000020_Node000003" title=" " alt="" coords="741,561,610,605,608,600,740,556"/>
+<area shape="poly" id="edge25_Node000020_Node000009" title=" " alt="" coords="789,557,831,595,827,599,785,561"/>
+<area shape="poly" id="edge29_Node000021_Node000003" title=" " alt="" coords="637,413,573,595,567,593,632,411"/>
+<area shape="poly" id="edge30_Node000021_Node000019" title=" " alt="" coords="669,410,779,452,777,457,667,415"/>
+<area shape="poly" id="edge32_Node000022_Node000019" title=" " alt="" coords="871,414,840,451,836,448,867,411"/>
+<area shape="poly" id="edge36_Node000023_Node000003" title=" " alt="" coords="471,116,505,136,537,165,551,186,560,205,564,251,564,474,564,593,559,593,559,474,559,251,554,207,547,189,533,168,502,140,468,121"/>
+<area shape="poly" id="edge37_Node000023_Node000004" title=" " alt="" coords="397,120,357,138,340,151,326,168,322,183,326,199,347,229,343,232,321,201,317,183,322,165,336,148,355,134,395,115"/>
+<area shape="poly" id="edge35_Node000023_Node000008" title=" " alt="" coords="474,116,592,159,591,164,472,121"/>
+<area shape="rect" id="Node000024" title=" " alt="" coords="337,167,415,192"/>
+<area shape="poly" id="edge34_Node000023_Node000024" title=" " alt="" coords="433,121,398,158,394,155,429,117"/>
+<area shape="rect" id="Node000025" title=" " alt="" coords="439,167,523,192"/>
+<area shape="poly" id="edge38_Node000023_Node000025" title=" " alt="" coords="450,118,470,153,466,156,446,120"/>
+<area shape="poly" id="edge40_Node000026_Node000004" title=" " alt="" coords="274,118,292,151,317,190,350,229,346,232,313,194,287,154,270,120"/>
+<area shape="poly" id="edge41_Node000026_Node000013" title=" " alt="" coords="252,121,195,161,192,156,249,116"/>
 </map>

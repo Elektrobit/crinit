@@ -1,5 +1,7 @@
 <map id="test/utest/utest&#45;crinit&#45;set&#45;err&#45;stream/utest&#45;crinit&#45;set&#45;err&#45;stream.h" name="test/utest/utest&#45;crinit&#45;set&#45;err&#45;stream/utest&#45;crinit&#45;set&#45;err&#45;stream.h">
-<area shape="rect" id="node1" title="Header declaring the unit tests for crinitClientSetErrStream()." alt="" coords="118,5,289,61"/>
-<area shape="rect" id="node2" href="$utest-crinit-set-err-stream_2case-set_8c.html" title="Implementation of a unit test for crinitClientSetErrStream()." alt="" coords="5,117,196,158"/>
-<area shape="rect" id="node3" href="$utest-crinit-set-err-stream_8c.html" title="Implementation of the crinitClientSetErrStream() unit test group." alt="" coords="221,109,391,165"/>
+<area shape="rect" id="Node000001" title="Header declaring the unit tests for crinitClientSetErrStream()." alt="" coords="118,5,289,60"/>
+<area shape="rect" id="Node000002" href="$utest-crinit-set-err-stream_2case-set_8c.html" title="Implementation of a unit test for crinitClientSetErrStream()." alt="" coords="5,115,196,155"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="168,72,122,117,118,113,165,68"/>
+<area shape="rect" id="Node000003" href="$utest-crinit-set-err-stream_8c.html" title="Implementation of the crinitClientSetErrStream() unit test group." alt="" coords="221,108,391,163"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="242,68,281,106,277,110,238,72"/>
 </map>

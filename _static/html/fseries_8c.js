@@ -9,6 +9,7 @@ var fseries_8c =
     [ "crinitResizeFileSeries", "fseries_8c.html#aa7fd75ae1f95eaf0c318aa44c111a753", null ],
     [ "crinitScanDirFilter", "fseries_8c.html#af69e62d20a2e8e21e3fe9a14fb50f4aa", null ],
     [ "crinitStatFilter", "fseries_8c.html#a58fdb13d9d2ed3b583fd2fe15dd472c5", null ],
+    [ "crinitStrArrDeepCopy", "fseries_8c.html#a2d73fa699ccc5b6d053cf276a216dbc0", null ],
     [ "crinitSuffixFilter", "fseries_8c.html#a8c3eaa9ef6aa9ce734d87b3b9b86b5f6", null ],
     [ "baseDirFd", "fseries_8c.html#a94028bf324532d8d740f2e457d37eaf4", null ],
     [ "crinitScState", "fseries_8c.html#a16cf3b761c509ac26a7f15886cf33fcb", null ],

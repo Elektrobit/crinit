@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['key_1529',['key',['../structcrinitConfKvList__t.html#abe67cc219886b729ee0bf876eaa84ab0',1,'crinitConfKvList_t']]],
-  ['keyarraycount_1530',['keyArrayCount',['../structcrinitIniParserCtx__t.html#ab6341caad1bbc022b1a3463bbc874f73',1,'crinitIniParserCtx_t']]]
+  ['incldir_0',['inclDir',['../structcrinitGlobOptStore__t.html#a8d2985882ef7f44373466e166e21e590',1,'crinitGlobOptStore_t']]],
+  ['inclsuffix_1',['inclSuffix',['../structcrinitGlobOptStore__t.html#adad5f535caf5b1bd5d50447eb91ed38c',1,'crinitGlobOptStore_t']]],
+  ['includesafe_2',['includeSafe',['../structcrinitConfigMapping__t.html#a66584df2b8094c3ef6d9d060ace8d720',1,'crinitConfigMapping_t']]]
 ];

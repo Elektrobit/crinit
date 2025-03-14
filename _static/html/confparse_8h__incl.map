@@ -1,7 +1,12 @@
 <map id="inc/confparse.h" name="inc/confparse.h">
-<area shape="rect" id="node1" title="Header related to the Config Parser." alt="" coords="23,5,145,32"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,155,88,181"/>
-<area shape="rect" id="node3" title=" " alt="" coords="36,80,132,107"/>
-<area shape="rect" id="node4" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="157,80,235,107"/>
-<area shape="rect" id="node5" title=" " alt="" coords="159,155,233,181"/>
+<area shape="rect" id="Node000001" title="Header related to the Config Parser." alt="" coords="23,5,145,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,152,88,177"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="68,33,45,53,26,80,23,94,24,110,35,139,30,141,19,111,18,94,22,78,41,49,64,29"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="36,79,132,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="87,31,87,65,81,65,81,31"/>
+<area shape="rect" id="Node000004" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="157,79,235,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="103,28,167,69,164,73,101,33"/>
+<area shape="poly" id="edge4_Node000004_Node000002" title=" " alt="" coords="173,106,85,148,82,144,171,102"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="159,152,233,177"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="199,104,199,138,193,138,193,104"/>
 </map>

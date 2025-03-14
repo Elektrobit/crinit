@@ -1,10 +1,18 @@
 <map id="src/rtimopmap.c" name="src/rtimopmap.c">
-<area shape="rect" id="node1" title="Implementation of functions related to the runtime command opcode map." alt="" coords="144,5,272,32"/>
-<area shape="rect" id="node2" href="$rtimopmap_8h.html" title="Header defining the runtime commands available through the notification/service interface." alt="" coords="5,80,112,107"/>
-<area shape="rect" id="node3" title=" " alt="" coords="137,80,207,107"/>
-<area shape="rect" id="node4" title=" " alt="" coords="198,155,269,181"/>
-<area shape="rect" id="node5" href="$logio_8h.html" title="Header related to debug/log output." alt="" coords="293,80,360,107"/>
-<area shape="rect" id="node6" title=" " alt="" coords="293,155,361,181"/>
-<area shape="rect" id="node7" title=" " alt="" coords="385,155,468,181"/>
-<area shape="rect" id="node8" title=" " alt="" coords="492,155,559,181"/>
+<area shape="rect" id="Node000001" title="Implementation of functions related to the runtime command opcode map." alt="" coords="144,5,272,31"/>
+<area shape="rect" id="Node000002" href="$rtimopmap_8h.html" title="Header defining the runtime commands available through the notification/service interface." alt="" coords="5,79,112,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="185,33,97,75,94,70,183,28"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="137,79,207,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="204,32,186,68,182,65,200,30"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="198,152,269,177"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="213,30,221,78,232,138,226,139,216,79,207,31"/>
+<area shape="rect" id="Node000005" href="$logio_8h.html" title="Header related to debug/log output." alt="" coords="293,79,360,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="228,28,297,69,294,74,226,33"/>
+<area shape="poly" id="edge8_Node000005_Node000004" title=" " alt="" coords="313,106,261,146,258,141,310,102"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="293,152,361,177"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="329,104,329,138,324,138,324,104"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="385,152,468,177"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="344,102,401,142,398,146,341,106"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="492,152,559,177"/>
+<area shape="poly" id="edge7_Node000005_Node000008" title=" " alt="" coords="359,102,481,145,479,150,358,107"/>
 </map>

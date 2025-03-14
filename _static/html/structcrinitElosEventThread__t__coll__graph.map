@@ -1,0 +1,19 @@
+<map id="crinitElosEventThread_t" name="crinitElosEventThread_t">
+<area shape="rect" id="Node000001" title=" " alt="" coords="339,284,515,309"/>
+<area shape="rect" id="Node000002" href="$structcrinitTaskDB__t.html" title=" " alt="" coords="297,196,411,221"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="375,230,419,282,415,285,371,234"/>
+<area shape="rect" id="Node000003" href="$structcrinitTask__t.html" title=" " alt="" coords="306,108,402,133"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="357,147,357,195,351,195,351,147"/>
+<area shape="rect" id="Node000004" href="$structcrinitTaskCmd__t.html" title=" " alt="" coords="5,5,132,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="96,36,133,60,176,82,243,101,306,112,305,117,242,106,174,86,131,65,93,41"/>
+<area shape="rect" id="Node000005" href="$structcrinitEnvSet__t.html" title=" " alt="" coords="157,5,269,31"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="233,40,254,61,278,82,324,106,321,110,275,86,250,65,229,43"/>
+<area shape="rect" id="Node000006" href="$structcrinitTaskDep__t.html" title=" " alt="" coords="293,5,415,31"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="357,45,357,108,351,108,351,45"/>
+<area shape="rect" id="Node000007" href="$structcrinitTaskPrv__t.html" title=" " alt="" coords="439,5,557,31"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="472,41,372,110,369,106,469,36"/>
+<area shape="rect" id="Node000008" href="$structcrinitIoRedir__t.html" title=" " alt="" coords="581,5,695,31"/>
+<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="599,38,474,87,396,110,395,105,472,81,597,33"/>
+<area shape="rect" id="Node000009" href="$structcrinitElosSession.html" title=" " alt="" coords="436,196,568,221"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="485,234,440,285,436,282,481,230"/>
+</map>

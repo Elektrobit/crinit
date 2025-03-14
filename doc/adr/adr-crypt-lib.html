@@ -7,11 +7,12 @@
     <link href="../../_static/favicon_16x16.png" sizes="16x16" rel="icon" type="image/png">
     <link href="../../_static/favicon_32x32.png" sizes="32x32" rel="icon" type="image/png">
     <title>Architecture Design Record - Choice of cryptographic library for config signatures &#8212; crinit  documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=4f649999" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=039e1c02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
@@ -22,8 +23,9 @@
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
+
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  
 
   </head><body>
   
@@ -66,10 +68,10 @@ suit our needs.</p>
 <ul class="simple">
 <li><p>widely used in embedded devices on different OSes.</p></li>
 <li><p>active development, regular releases</p></li>
-<li><p>good documentation, available in a modern hyoertext format <a class="footnote-reference brackets" href="#id15" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></a></p></li>
+<li><p>good documentation, available in a modern hyoertext format <a class="footnote-reference brackets" href="#id21" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></a></p></li>
 <li><p>large amount of tests</p>
 <ul>
-<li><p>also organical part of their github merge process via their CI <a class="footnote-reference brackets" href="#id16" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>8<span class="fn-bracket">]</span></a></p></li>
+<li><p>also organical part of their github merge process via their CI <a class="footnote-reference brackets" href="#id22" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>8<span class="fn-bracket">]</span></a></p></li>
 </ul>
 </li>
 <li><p>permissive license (Apache License 2.0)</p></li>
@@ -92,7 +94,7 @@ options.</p>
 <ul class="simple">
 <li><p>very widely used</p></li>
 <li><p>active development, regular releases</p></li>
-<li><p>good documentation available as a huge set of manpages <a class="footnote-reference brackets" href="#id17" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a></p></li>
+<li><p>good documentation available as a huge set of manpages <a class="footnote-reference brackets" href="#id20" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a></p></li>
 <li><p>extensive amount of tests</p></li>
 <li><p>permissive license (Apache License 2.0, since v3.0.0)</p></li>
 <li><p>some versions are FIPS 140 certified (with reduced functionality), currently 3.0.8</p></li>
@@ -108,7 +110,7 @@ options.</p>
 </li>
 <li><p>large and complex codebase</p>
 <ul>
-<li><p>Evidenced by performance regressions in v3.0.0 which have, so far, not been solved.<a class="footnote-reference brackets" href="#id18" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a><a class="footnote-reference brackets" href="#id19" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a></p></li>
+<li><p>Evidenced by performance regressions in v3.0.0 which have, so far, not been solved.<a class="footnote-reference brackets" href="#id15" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a><a class="footnote-reference brackets" href="#id16" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a></p></li>
 </ul>
 </li>
 </ul>
@@ -124,11 +126,11 @@ support and differently licensed editions of the library.</p>
 <li><p>small size</p></li>
 <li><p>active development, regular releases</p></li>
 <li><p>OpenSSL-compatible API wraps exist</p></li>
-<li><p>good documentation <a class="footnote-reference brackets" href="#id20" id="id9" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a></p></li>
+<li><p>good documentation <a class="footnote-reference brackets" href="#id18" id="id9" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a></p></li>
 <li><p>FIPS 140 certified versions exist</p>
 <ul>
 <li><p><em>But:</em> The current certificates are older than those of OpenSSL. Also, while the FIPS-module is free, the website
-informing about FIPS-compliance does suggest that this is an area where paid support might be needed. <a class="footnote-reference brackets" href="#id21" id="id10" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a></p></li>
+informing about FIPS-compliance does suggest that this is an area where paid support might be needed. <a class="footnote-reference brackets" href="#id17" id="id10" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a></p></li>
 </ul>
 </li>
 </ul>
@@ -154,7 +156,7 @@ since been split off from the main GNU project.</p>
 <h4>Pros<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>permissive license (LGPL 2.1)</p></li>
-<li><p>good documentation <a class="footnote-reference brackets" href="#id22" id="id13" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a></p></li>
+<li><p>good documentation <a class="footnote-reference brackets" href="#id19" id="id13" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a></p></li>
 <li><p>extensive test suite</p></li>
 <li><p>has a FIPS 140 mode which aims to be compliant</p>
 <ul>
@@ -187,52 +189,52 @@ rebuild.</p>
 </section>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
+</section>
+</section>
 <aside class="footnote-list brackets">
 <aside class="footnote brackets" id="id15" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">7</a><span class="fn-bracket">]</span></span>
-<p><a class="reference external" href="https://mbed-tls.readthedocs.io/en/latest/"><em>mbedTLS documentation</em></a></p>
-</aside>
-<aside class="footnote brackets" id="id16" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">8</a><span class="fn-bracket">]</span></span>
-<p><a class="reference external" href="https://github.com/Mbed-TLS/mbedtls-test"><em>mbedTLS CI</em></a></p>
-</aside>
-<aside class="footnote brackets" id="id17" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">6</a><span class="fn-bracket">]</span></span>
-<p><a class="reference external" href="https://www.openssl.org/docs/manpages.html"><em>OpenSSL documentation</em></a></p>
-</aside>
-<aside class="footnote brackets" id="id18" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">1</a><span class="fn-bracket">]</span></span>
 <p><a class="reference external" href="https://github.com/openssl/openssl/issues/16791"><em>OpenSSL Issue 16791</em></a></p>
 </aside>
-<aside class="footnote brackets" id="id19" role="doc-footnote">
+<aside class="footnote brackets" id="id16" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id7">2</a><span class="fn-bracket">]</span></span>
 <p><a class="reference external" href="https://github.com/openssl/openssl/issues/17064"><em>OpenSSL Issue 17064</em></a></p>
 </aside>
-<aside class="footnote brackets" id="id20" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id9">4</a><span class="fn-bracket">]</span></span>
-<p><a class="reference external" href="https://www.wolfssl.com/docs/"><em>wolfSSL documentation</em></a></p>
-</aside>
-<aside class="footnote brackets" id="id21" role="doc-footnote">
+<aside class="footnote brackets" id="id17" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id10">3</a><span class="fn-bracket">]</span></span>
 <p><a class="reference external" href="https://www.wolfssl.com/license/fips/"><em>WOLFCRYPT FIPS 140-2 and FIPS 140-3</em></a></p>
 </aside>
-<aside class="footnote brackets" id="id22" role="doc-footnote">
+<aside class="footnote brackets" id="id18" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id9">4</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://www.wolfssl.com/docs/"><em>wolfSSL documentation</em></a></p>
+</aside>
+<aside class="footnote brackets" id="id19" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id13">5</a><span class="fn-bracket">]</span></span>
 <p><a class="reference external" href="https://gnutls.org/manual/gnutls.html"><em>GnuTLS documentation</em></a></p>
 </aside>
+<aside class="footnote brackets" id="id20" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">6</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://www.openssl.org/docs/manpages.html"><em>OpenSSL documentation</em></a></p>
 </aside>
-</section>
-</section>
+<aside class="footnote brackets" id="id21" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">7</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://mbed-tls.readthedocs.io/en/latest/"><em>mbedTLS documentation</em></a></p>
+</aside>
+<aside class="footnote brackets" id="id22" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">8</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://github.com/Mbed-TLS/mbedtls-test"><em>mbedTLS CI</em></a></p>
+</aside>
+</aside>
 
 
           </div>
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../index.html">
-              <img class="logo" src="../../_static/crinit-logo.png" alt="Logo"/>
+              <img class="logo" src="../../_static/crinit_logo_blk.svg" alt="Logo of crinit"/>
             </a></p>
 <h1 class="logo"><a href="../../index.html">crinit</a></h1>
 
@@ -243,20 +245,23 @@ rebuild.</p>
 
 
 
-<h3>Navigation</h3>
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../README.html">Crinit – Configurable Rootfs Init</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../README.html#license">License</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../README.html#details">Details</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../API-Doc.html">Public API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../src/index.html">Developers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../scripts/README.html">Crinit-related scripts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../scripts/README.html#script-usage-information">Script usage information</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../scripts/README.html#usage-examples">Usage examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../scripts/README.html#note-on-the-key-type-used-in-crinit-genkeys-sh">Note on the key type used in <code class="docutils literal notranslate"><span class="pre">crinit-genkeys.sh</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../test/README.html">Tests</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">ADRS</a><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">README manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../API-Doc.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/README.html">Helper Scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ci/index.html">CI/CD Tooling</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">ADRs</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="index.html#list-of-adrs">List of ADRs</a></li>
 </ul>
 </li>
@@ -273,16 +278,6 @@ rebuild.</p>
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -296,11 +291,11 @@ rebuild.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2023, emlix GmbH/Elektrobit Automotive GmbH.
+      &#169;2023, emlix GmbH/Elektrobit Automotive GmbH.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.2.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
       <a href="../../_sources/doc/adr/adr-crypt-lib.md.txt"

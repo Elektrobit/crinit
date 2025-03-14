@@ -1,0 +1,29 @@
+<map id="inc/elos&#45;common.h" name="inc/elos&#45;common.h">
+<area shape="rect" id="Node000001" title="Implementation file related to elos connection." alt="" coords="284,5,431,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="6,152,90,177"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="284,24,208,29,127,39,57,56,31,67,14,80,8,94,11,109,29,140,25,143,6,111,3,93,10,77,29,62,55,51,126,34,208,24,284,19"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="24,79,147,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="315,33,143,78,142,73,313,28"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="522,152,604,177"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="432,20,464,27,497,37,528,54,554,77,563,91,568,107,569,138,564,138,562,108,558,93,550,80,525,58,495,42,463,32,431,25"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="276,79,346,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="352,32,328,69,324,66,348,30"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="370,79,441,104"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="368,30,392,66,388,69,363,33"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="466,79,540,104"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="382,28,468,70,466,75,380,33"/>
+<area shape="rect" id="Node000008" href="$logio_8h.html" title="Header related to debug/log output." alt="" coords="630,79,696,104"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="407,28,617,77,616,82,406,33"/>
+<area shape="rect" id="Node000012" href="$thrpool_8h.html" title="Header defining a generic worker thread pool. Used by the notification/service interface to handle so..." alt="" coords="171,79,251,104"/>
+<area shape="poly" id="edge12_Node000001_Node000012" title=" " alt="" coords="335,33,248,75,246,70,333,28"/>
+<area shape="poly" id="edge9_Node000008_Node000004" title=" " alt="" coords="648,106,592,146,589,142,645,102"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="629,152,697,177"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="666,104,666,138,660,138,660,104"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="722,152,788,177"/>
+<area shape="poly" id="edge10_Node000008_Node000010" title=" " alt="" coords="679,102,731,141,728,146,676,106"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="813,152,884,177"/>
+<area shape="poly" id="edge11_Node000008_Node000011" title=" " alt="" coords="694,102,806,145,804,149,692,107"/>
+<area shape="poly" id="edge14_Node000012_Node000002" title=" " alt="" coords="186,106,88,149,86,144,184,102"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="176,152,246,177"/>
+<area shape="poly" id="edge13_Node000012_Node000013" title=" " alt="" coords="214,104,214,138,208,138,208,104"/>
+</map>

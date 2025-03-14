@@ -1,5 +1,7 @@
 <map id="test/utest/mocks/mock&#45;set&#45;info&#45;stream.h" name="test/utest/mocks/mock&#45;set&#45;info&#45;stream.h">
-<area shape="rect" id="node1" title="Header declaring a mock function for crinitSetInfoStream()." alt="" coords="109,5,280,47"/>
-<area shape="rect" id="node2" href="$mock-set-info-stream_8c.html" title="Implementation of a mock function for crinitSetInfoStream()." alt="" coords="5,95,176,136"/>
-<area shape="rect" id="node3" href="$utest-crinit-set-info-stream_2case-set_8c.html" title="Implementation of a unit test for crinitClientSetInfoStream()." alt="" coords="201,95,399,136"/>
+<area shape="rect" id="Node000001" title="Header declaring a mock function for crinitSetInfoStream()." alt="" coords="109,5,280,45"/>
+<area shape="rect" id="Node000002" href="$mock-set-info-stream_8c.html" title="Implementation of a mock function for crinitSetInfoStream()." alt="" coords="5,93,176,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="163,56,115,95,112,91,159,52"/>
+<area shape="rect" id="Node000003" href="$utest-crinit-set-info-stream_2case-set_8c.html" title="Implementation of a unit test for crinitClientSetInfoStream()." alt="" coords="201,93,399,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="230,52,278,91,275,95,227,56"/>
 </map>

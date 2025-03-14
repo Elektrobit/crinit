@@ -1,5 +1,7 @@
 <map id="inc/thrpool.h" name="inc/thrpool.h">
-<area shape="rect" id="node1" title="Header defining a generic worker thread pool. Used by the notification/service interface to handle so..." alt="" coords="40,5,143,32"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,80,76,107"/>
-<area shape="rect" id="node3" title=" " alt="" coords="100,80,184,107"/>
+<area shape="rect" id="Node000001" title="Header defining a generic worker thread pool. Used by the notification/service interface to handle so..." alt="" coords="40,5,143,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,76,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="85,33,59,69,55,66,81,29"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="100,79,184,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="102,29,128,66,124,69,98,33"/>
 </map>

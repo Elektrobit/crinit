@@ -1,13 +1,25 @@
 <map id="test/utest/utest&#45;lexers&#45;envset&#45;inner/case&#45;lexer&#45;error.c" name="test/utest/utest&#45;lexers&#45;envset&#45;inner/case&#45;lexer&#45;error.c">
-<area shape="rect" id="node1" title="Unit test for crinitEnvVarInnerLex() testing error handling of the lexer." alt="" coords="159,5,339,61"/>
-<area shape="rect" id="node2" href="$common_8h.html" title="Header for common definitions not related to other specific features." alt="" coords="44,117,135,143"/>
-<area shape="rect" id="node3" href="$lexers_8h.html" title="Header related to lexers built with re2c, used in the config/envset parser." alt="" coords="159,117,233,143"/>
-<area shape="rect" id="node5" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="257,117,348,143"/>
-<area shape="rect" id="node11" href="$utest-lexers-envset-inner_8h.html" title="Header declaring the unit tests for crinitEnvVarInnerLex()." alt="" coords="373,109,521,151"/>
-<area shape="rect" id="node4" title=" " alt="" coords="5,199,88,225"/>
-<area shape="rect" id="node6" title=" " alt="" coords="113,199,191,225"/>
-<area shape="rect" id="node7" title=" " alt="" coords="216,199,291,225"/>
-<area shape="rect" id="node8" title=" " alt="" coords="315,199,389,225"/>
-<area shape="rect" id="node9" title=" " alt="" coords="414,199,485,225"/>
-<area shape="rect" id="node10" title=" " alt="" coords="509,199,593,225"/>
+<area shape="rect" id="Node000001" title="Unit test for crinitEnvVarInnerLex() testing error handling of the lexer." alt="" coords="210,5,390,60"/>
+<area shape="rect" id="Node000002" href="$common_8h.html" title="Header for common definitions/functions not related to other specific features." alt="" coords="87,115,177,141"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="254,62,166,111,163,107,251,58"/>
+<area shape="rect" id="Node000005" href="$lexers_8h.html" title="Header related to lexers built with re2c, used in the config/envset parser." alt="" coords="317,115,390,141"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="317,59,342,102,337,104,313,62"/>
+<area shape="rect" id="Node000007" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="201,115,292,141"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="287,62,263,104,258,102,283,59"/>
+<area shape="rect" id="Node000011" href="$utest-lexers-envset-inner_8h.html" title="Header declaring the unit tests for crinitEnvVarInnerLex()." alt="" coords="414,108,562,148"/>
+<area shape="poly" id="edge12_Node000001_Node000011" title=" " alt="" coords="354,58,439,100,437,104,352,62"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,196,80,221"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="121,143,68,189,64,185,117,139"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="105,196,175,221"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="136,141,140,182,135,182,131,141"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="511,196,593,221"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="383,138,511,188,509,193,381,143"/>
+<area shape="poly" id="edge9_Node000007_Node000003" title=" " alt="" coords="218,143,86,194,84,189,216,138"/>
+<area shape="poly" id="edge10_Node000007_Node000004" title=" " alt="" coords="233,143,168,190,165,186,229,139"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="199,196,278,221"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="248,141,244,182,239,182,243,141"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="303,196,377,221"/>
+<area shape="poly" id="edge8_Node000007_Node000009" title=" " alt="" coords="262,139,317,185,314,189,259,143"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="402,196,486,221"/>
+<area shape="poly" id="edge11_Node000007_Node000010" title=" " alt="" coords="276,138,404,188,402,193,274,143"/>
 </map>

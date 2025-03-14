@@ -1,4 +1,5 @@
 <map id="test/utest/utest&#45;init&#45;file&#45;series/utest&#45;init&#45;file&#45;series.h" name="test/utest/utest&#45;init&#45;file&#45;series/utest&#45;init&#45;file&#45;series.h">
-<area shape="rect" id="node1" title="Header declaring the unit tests for crinitFreeScandirList()." alt="" coords="5,5,160,61"/>
-<area shape="rect" id="node2" href="$utest-init-file-series_8c.html" title="Implementation of the crinitInitFileSeries() unit test group." alt="" coords="5,109,160,165"/>
+<area shape="rect" id="Node000001" title="Header declaring the unit tests for crinitFreeScandirList()." alt="" coords="5,5,160,60"/>
+<area shape="rect" id="Node000002" href="$utest-init-file-series_8c.html" title="Implementation of the crinitInitFileSeries() unit test group." alt="" coords="5,108,160,163"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="85,74,85,108,80,108,80,74"/>
 </map>

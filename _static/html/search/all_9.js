@@ -1,8 +1,14 @@
 var searchData=
 [
-  ['kernel_5fcmdline_5fkey_693',['KERNEL_CMDLINE_KEY',['../machine-id-gen_8c.html#af5cd23e30e37815858c219c0bef3e754',1,'machine-id-gen.c']]],
-  ['kernel_5fcmdline_5fmax_5flen_694',['KERNEL_CMDLINE_MAX_LEN',['../machine-id-gen_8c.html#a331f96bc37e6c65add8327959cadfe74',1,'machine-id-gen.c']]],
-  ['kernel_5fcmdline_5fpath_695',['KERNEL_CMDLINE_PATH',['../machine-id-gen_8c.html#a99f1cbaf4945d175bb57b51ef9d1c62d',1,'machine-id-gen.c']]],
-  ['key_696',['key',['../structcrinitConfKvList__t.html#abe67cc219886b729ee0bf876eaa84ab0',1,'crinitConfKvList_t']]],
-  ['keyarraycount_697',['keyArrayCount',['../structcrinitIniParserCtx__t.html#ab6341caad1bbc022b1a3463bbc874f73',1,'crinitIniParserCtx_t']]]
+  ['in_20a_20nutshell_0',['In a Nutshell',['../index.html#in-a-nutshell',1,'']]],
+  ['incldir_1',['inclDir',['../structcrinitGlobOptStore__t.html#a8d2985882ef7f44373466e166e21e590',1,'crinitGlobOptStore_t']]],
+  ['inclsuffix_2',['inclSuffix',['../structcrinitGlobOptStore__t.html#adad5f535caf5b1bd5d50447eb91ed38c',1,'crinitGlobOptStore_t']]],
+  ['include_20files_3',['Include files',['../index.html#include-files',1,'']]],
+  ['includesafe_4',['includeSafe',['../structcrinitConfigMapping__t.html#a66584df2b8094c3ef6d9d060ace8d720',1,'crinitConfigMapping_t']]],
+  ['info_5',['crinit-ctl Usage Info',['../index.html#crinit-ctl-usage-info',1,'']]],
+  ['init_6',['Crinit &amp;ndash; Configurable Rootfs Init',['../index.html',1,'']]],
+  ['instructions_7',['Build Instructions',['../index.html#build-instructions',1,'']]],
+  ['io_20redirections_8',['IO Redirections',['../index.html#io-redirections',1,'']]],
+  ['ioredir_2ec_9',['ioredir.c',['../ioredir_8c.html',1,'']]],
+  ['ioredir_2eh_10',['ioredir.h',['../ioredir_8h.html',1,'']]]
 ];

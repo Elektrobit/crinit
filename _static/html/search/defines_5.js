@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['machine_5fid_5fpath_1831',['MACHINE_ID_PATH',['../machine-id-gen_8c.html#abca1a9457e93cac34707697c3cc98a10',1,'machine-id-gen.c']]],
-  ['max_5fconn_5fbacklog_1832',['MAX_CONN_BACKLOG',['../notiserv_8c.html#ad6b5db0b24f59254f3bd1f863e14bb25',1,'notiserv.c']]],
-  ['mid_5fstr_5flen_1833',['MID_STR_LEN',['../machine-id-gen_8c.html#a51f139ecf828ff1abbf9cbc2ba66b829',1,'machine-id-gen.c']]]
+  ['kernel_5fcmdline_5fkey_0',['KERNEL_CMDLINE_KEY',['../machine-id-gen_8c.html#af5cd23e30e37815858c219c0bef3e754',1,'machine-id-gen.c']]],
+  ['kernel_5fcmdline_5fmax_5flen_1',['KERNEL_CMDLINE_MAX_LEN',['../machine-id-gen_8c.html#a331f96bc37e6c65add8327959cadfe74',1,'machine-id-gen.c']]],
+  ['kernel_5fcmdline_5fpath_2',['KERNEL_CMDLINE_PATH',['../machine-id-gen_8c.html#a99f1cbaf4945d175bb57b51ef9d1c62d',1,'machine-id-gen.c']]]
 ];

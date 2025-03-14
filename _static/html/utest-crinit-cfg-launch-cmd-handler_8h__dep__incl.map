@@ -1,0 +1,13 @@
+<map id="test/utest/utest&#45;crinit&#45;cfg&#45;launch&#45;cmd&#45;handler/utest&#45;crinit&#45;cfg&#45;launch&#45;cmd&#45;handler.h" name="test/utest/utest&#45;crinit&#45;cfg&#45;launch&#45;cmd&#45;handler/utest&#45;crinit&#45;cfg&#45;launch&#45;cmd&#45;handler.h">
+<area shape="rect" id="Node000001" title="Header declaring the unit tests for crinitCfgLauncherCmdHandler()." alt="" coords="419,5,601,75"/>
+<area shape="rect" id="Node000002" href="$utest-crinit-cfg-launch-cmd-handler_2case-empty-input_8c.html" title="Unit test for crinitCfgLauncherCmdHandler(), handling of empty input." alt="" coords="5,130,188,185"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="406,70,200,125,176,132,175,127,199,120,405,65"/>
+<area shape="rect" id="Node000003" href="$utest-crinit-cfg-launch-cmd-handler_2case-invalid-input_8c.html" title="Unit test for crinitCfgLauncherCmdHandler(), handling of invalid input." alt="" coords="212,130,395,185"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="439,84,352,132,349,128,437,79"/>
+<area shape="rect" id="Node000004" href="$utest-crinit-cfg-launch-cmd-handler_2case-null-input_8c.html" title="Unit test for crinitCfgLauncherCmdHandler(), handling of null pointer input." alt="" coords="419,130,601,185"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="513,89,513,130,507,130,507,89"/>
+<area shape="rect" id="Node000005" href="$utest-crinit-cfg-launch-cmd-handler_2case-success_8c.html" title="Unit test for crinitCfgLauncherCmdHandler(), successful execution." alt="" coords="625,130,808,185"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="583,79,671,128,668,132,581,84"/>
+<area shape="rect" id="Node000006" href="$utest-crinit-cfg-launch-cmd-handler_8c.html" title="Implementation of the crinitCfgLauncherCmdHandler() unit test group." alt="" coords="832,123,1015,192"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="615,65,821,120,832,123,831,128,820,125,614,70"/>
+</map>

@@ -1,0 +1,13 @@
+<map id="test/utest/utest&#45;crinit&#45;cfg&#45;elos&#45;poll&#45;interval&#45;handler/utest&#45;crinit&#45;cfg&#45;elos&#45;poll&#45;interval&#45;handler.h" name="test/utest/utest&#45;crinit&#45;cfg&#45;elos&#45;poll&#45;interval&#45;handler/utest&#45;crinit&#45;cfg&#45;elos&#45;poll&#45;interval&#45;handler.h">
+<area shape="rect" id="Node000001" title="Header declaring the unit tests for crinitCfgElosPollIntervalHandler()." alt="" coords="462,5,665,75"/>
+<area shape="rect" id="Node000002" href="$utest-crinit-cfg-elos-poll-interval-handler_2case-empty-input_8c.html" title="Unit test for crinitCfgElosEventPollIntervalHandler(), handling of empty input." alt="" coords="5,130,212,185"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="449,70,225,125,199,133,197,127,224,120,448,65"/>
+<area shape="rect" id="Node000003" href="$utest-crinit-cfg-elos-poll-interval-handler_2case-invalid-input_8c.html" title="Unit test for crinitCfgElosEventPollIntervalHandler(), handling of invalid input." alt="" coords="237,130,445,185"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="487,83,392,132,390,128,485,79"/>
+<area shape="rect" id="Node000004" href="$utest-crinit-cfg-elos-poll-interval-handler_2case-null-input_8c.html" title="Unit test for crinitCfgElosEventPollIntervalHandler(), handling of null pointer input." alt="" coords="469,130,657,185"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="566,89,566,130,561,130,561,89"/>
+<area shape="rect" id="Node000005" href="$utest-crinit-cfg-elos-poll-interval-handler_2case-success_8c.html" title="Unit test for crinitCfgElosEventPollIntervalHandler(), successful execution." alt="" coords="681,130,859,185"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="637,79,724,128,722,132,634,84"/>
+<area shape="rect" id="Node000006" href="$utest-crinit-cfg-elos-poll-interval-handler_8c.html" title="Implementation of the crinitCfgElosPollIntervalHandler() unit test group." alt="" coords="883,123,1086,192"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="678,68,872,120,883,123,882,128,871,125,677,73"/>
+</map>

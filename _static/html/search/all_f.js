@@ -1,11 +1,17 @@
 var searchData=
 [
-  ['readme_2emd_791',['README.md',['../test_2README_8md.html',1,'(Global Namespace)'],['../README_8md.html',1,'(Global Namespace)']]],
-  ['redirs_792',['redirs',['../structcrinitTask__t.html#a9b18ce31d6572499213c7f42d756de49',1,'crinitTask_t']]],
-  ['redirssize_793',['redirsSize',['../structcrinitTask__t.html#a3f57ab31b84ecce2f2b33ec5de9bf714',1,'crinitTask_t']]],
-  ['regression_2dtest_2ec_794',['regression-test.c',['../utest-cfgmap-order_2regression-test_8c.html',1,'(Global Namespace)'],['../utest-file-basename-macro_2regression-test_8c.html',1,'(Global Namespace)'],['../utest-inih-configuration_2regression-test_8c.html',1,'(Global Namespace)']]],
-  ['rtimcmd_2ec_795',['rtimcmd.c',['../rtimcmd_8c.html',1,'']]],
-  ['rtimcmd_2eh_796',['rtimcmd.h',['../rtimcmd_8h.html',1,'']]],
-  ['rtimopmap_2ec_797',['rtimopmap.c',['../rtimopmap_8c.html',1,'']]],
-  ['rtimopmap_2eh_798',['rtimopmap.h',['../rtimopmap_8h.html',1,'']]]
+  ['path_0',['path',['../structcrinitIoRedir__t.html#ab6638ba2f6d280944b88acee331c7dee',1,'crinitIoRedir_t']]],
+  ['payload_1',['payload',['../structcrinitElosEvent.html#a24a8cf408b76625af41a5869974c072a',1,'crinitElosEvent']]],
+  ['pid_2',['pid',['../structcrinitTaskListEntry__t.html#acc14888865fe905a61a378770af7c2cf',1,'crinitTaskListEntry_t::pid'],['../structcrinitElosEventSource.html#a607cc14671ec955a8da168c4489429f4',1,'crinitElosEventSource::pid'],['../structcrinitTask__t.html#ab5b8e3de21fa7cd74f18da0b3697e12a',1,'crinitTask_t::pid']]],
+  ['pipes_3',['Named pipes',['../index.html#named-pipes',1,'']]],
+  ['plist_4',['pList',['../structcrinitIniParserCtx__t.html#ae27bfd2f2eed91126635a6aa0ac47765',1,'crinitIniParserCtx_t']]],
+  ['poolsize_5',['poolSize',['../structcrinitThreadPool__t.html#a2ee0dc594ebf92d27de90c767132439c',1,'crinitThreadPool_t']]],
+  ['poolsizeincrement_6',['poolSizeIncrement',['../structcrinitThreadPool__t.html#adf8f7e431937125d50df9472e253af33',1,'crinitThreadPool_t']]],
+  ['powered_20by_20eb_7',['Powered by EB',['../index.html#powered-by-eb',1,'']]],
+  ['prev_8',['prev',['../structcrinitList.html#ad3f4b40ec180ad70b239e770dcccff45',1,'crinitList']]],
+  ['procdip_2ec_9',['procdip.c',['../procdip_8c.html',1,'']]],
+  ['procdip_2eh_10',['procdip.h',['../procdip_8h.html',1,'']]],
+  ['prv_11',['prv',['../structcrinitTask__t.html#a08f4002893bb2af75899af47c404b5bd',1,'crinitTask_t']]],
+  ['prvsize_12',['prvSize',['../structcrinitTask__t.html#a83681cc43a6e480c4399e2cf9c365640',1,'crinitTask_t']]],
+  ['ptr_13',['ptr',['../structcrinitStoreRtimCmdArgs.html#affee9fc5d67d3ca9ec36cd737c7a0583',1,'crinitStoreRtimCmdArgs']]]
 ];

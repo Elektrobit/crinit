@@ -1,6 +1,9 @@
 <map id="inc/procdip.h" name="inc/procdip.h">
-<area shape="rect" id="node1" title="Header related to the Process Dispatcher." alt="" coords="119,5,224,32"/>
-<area shape="rect" id="node2" href="$crinit_8c.html" title="Implementation of the Crinit main program." alt="" coords="5,80,95,107"/>
-<area shape="rect" id="node3" href="$procdip_8c.html" title="Implementation of the Process Dispatcher." alt="" coords="119,80,223,107"/>
-<area shape="rect" id="node4" href="$rtimcmd_8c.html" title="Implementation of runtime commands to be triggered by the notification/service interface." alt="" coords="248,80,359,107"/>
+<area shape="rect" id="Node000001" title="Header related to the Process Dispatcher." alt="" coords="119,5,224,31"/>
+<area shape="rect" id="Node000002" href="$crinit_8c.html" title="Implementation of the Crinit main program." alt="" coords="5,79,95,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="141,40,71,81,69,76,138,35"/>
+<area shape="rect" id="Node000003" href="$procdip_8c.html" title="Implementation of the Process Dispatcher." alt="" coords="119,79,223,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="174,44,174,79,169,79,169,44"/>
+<area shape="rect" id="Node000004" href="$rtimcmd_8c.html" title="Implementation of runtime commands to be triggered by the notification/service interface." alt="" coords="248,79,359,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="206,35,283,76,280,81,203,39"/>
 </map>

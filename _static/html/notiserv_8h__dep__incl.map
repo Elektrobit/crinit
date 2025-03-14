@@ -1,5 +1,7 @@
 <map id="inc/notiserv.h" name="inc/notiserv.h">
-<area shape="rect" id="node1" title="Header related to the notification and service interface." alt="" coords="57,5,166,32"/>
-<area shape="rect" id="node2" href="$crinit_8c.html" title="Implementation of the Crinit main program." alt="" coords="5,80,95,107"/>
-<area shape="rect" id="node3" href="$notiserv_8c.html" title="Implementation of the notification and service interface." alt="" coords="119,80,227,107"/>
+<area shape="rect" id="Node000001" title="Header related to the notification and service interface." alt="" coords="57,5,166,31"/>
+<area shape="rect" id="Node000002" href="$crinit_8c.html" title="Implementation of the Crinit main program." alt="" coords="5,79,95,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="94,43,62,80,58,77,90,40"/>
+<area shape="rect" id="Node000003" href="$notiserv_8c.html" title="Implementation of the notification and service interface." alt="" coords="119,79,227,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="132,40,165,77,161,80,128,43"/>
 </map>
