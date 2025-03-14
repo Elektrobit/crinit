@@ -128,3 +128,32 @@ files do not conform to formatting rules.
 
 The ``clang-format`` and ``shfmt`` tools should be available in most distros.
 Alternatively, they are available n the build container as well.
+
+Github Pages
+============
+
+To update our github pages, you need to first build the Doxygen and Sphinx
+doc. To get best results for github pages, use an Ubuntu 24.04 build docker:
+
+.. code-block:: sh
+
+   ci/docker-run.sh amd64 noble
+
+Inside the container, run
+
+.. code-block:: sh
+
+   # first, some clean up
+   rm -rf doc/api result/amd64/doc/sphinx
+   # build crinit and doxygen HTML
+   ci/build.sh
+   # build sphinx doc (it will automatically grab the doxygen HTML as well)
+   ci/build_doc.sh
+   # package the result excluding unneeded files
+   cd result/amd64/doc/sphinx/html
+   tar --exclude='./objects.inv' --exclude='./.doctrees' \
+           --exclude='./.buildinfo' -czf /base/gh-pages.tar.gz .
+
+The resulting tar file can be used to update the ``gh-pages`` branch inside this
+repo by creating a new branch from it, unpacking the tar file to the branch root
+and creating a pull request.
