@@ -45,7 +45,7 @@ language = 'en'
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = 'alabaster'
-html_static_path = ['images', 'result/amd64/doc/doxygen/doc/']
+html_static_path = ['images', 'doc/api']
 html_logo = 'images/crinit-logo.png'
 
 favicons = [
