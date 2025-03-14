@@ -6,7 +6,7 @@ Crinit -- Configurable Rootfs Init
    :caption: Contents
 
    README manual <README>
-   Public API <API-Doc>
+   API Documentation <API-Doc>
    Helper Scripts <scripts/README>
    CI/CD Tooling <ci/index>
    ADRs <doc/adr/index>
