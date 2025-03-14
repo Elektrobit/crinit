@@ -172,8 +172,10 @@ endif(UNIT_TESTS)
 
 if(API_DOC)
   find_package(Doxygen REQUIRED)
-  file(GLOB images "images/*.plantuml")
-  foreach(img ${images})
+  file(GLOB plantuml_images "images/*.plantuml")
+  # Exclude rootfs_init_comp as we have already pre-built it as an SVG with a newer PlantUML.
+  list(FILTER plantuml_images EXCLUDE REGEX "rootfs_init_comp\.svg$")
+  foreach(img ${plantuml_images})
     get_filename_component(output ${img} NAME_WLE)
     add_custom_command(
       OUTPUT
@@ -186,6 +188,21 @@ if(API_DOC)
        "Running plantuml to generate: ${output}"
     )
     list(APPEND doxygen_images ${CMAKE_SOURCE_DIR}/doc/api/html/images/${output}.svg)
+  endforeach()
+  file(GLOB binary_images "images/*.*")
+  list(FILTER binary_images EXCLUDE REGEX "\.plantuml$")
+  foreach(img ${binary_images})
+    add_custom_command(
+      OUTPUT
+        ${CMAKE_SOURCE_DIR}/doc/api/html/images/${img}
+      COMMAND
+        mkdir -p ${CMAKE_SOURCE_DIR}/doc/api/html/images/ && cp ${img} ${CMAKE_SOURCE_DIR}/doc/api/html/images/
+      MAIN_DEPENDENCY
+        ${img}
+      COMMENT
+      "Copying binary image: ${img}"
+    )
+    list(APPEND doxygen_images ${CMAKE_SOURCE_DIR}/doc/api/html/images/${img})
   endforeach()
 
   add_custom_target(
