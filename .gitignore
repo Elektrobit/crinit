@@ -16,6 +16,7 @@ packaging/rpmbuild/SRPMS
 .ycm*
 *.svg
 compile_commands.json
+gh-pages.tar.gz
 
 # Vim temporary files
 # Swap
