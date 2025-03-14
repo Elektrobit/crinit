@@ -8,36 +8,35 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-  - [In a Nutshell](#in-a-nutshell)
-  - [Concept](#concept)
-  - [Features](#features)
+- [In a Nutshell](#in-a-nutshell)
+- [Concept](#concept)
+- [Features](#features)
 - [License](#license)
-  - [Powered by EB](#powered-by-eb)
-  - [Maintainers](#maintainers)
-  - [Credits](#credits)
-  - [Artwork](#artwork)
-- [Details](#details)
-  - [Command-line options](#command-line-options)
-  - [Environment Variables](#environment-variables)
-  - [Configuration](#configuration)
-    - [Example Global Configuration](#example-global-configuration)
-      - [Explanation](#explanation)
-    - [Example Task Configuration](#example-task-configuration)
-      - [Explanation](#explanation-1)
-    - [Setting Environment Variables](#setting-environment-variables)
-    - [Defining Elos Filters](#defining-elos-filters)
-      - [Ruleset](#ruleset)
-    - [Include files](#include-files)
-    - [IO Redirections](#io-redirections)
-      - [Named pipes](#named-pipes)
-      - [A note on buffering](#a-note-on-buffering)
-    - [Dependency groups (meta-tasks)](#dependency-groups-meta-tasks)
-    - [Configuration Signatures](#configuration-signatures)
-  - [crinit-ctl Usage Info](#crinit-ctl-usage-info)
-  - [Smart bash completion for crinit-ctl](#smart-bash-completion-for-crinit-ctl)
-  - [crinit-launch](#crinit-launch)
-  - [Build Instructions](#build-instructions)
-  - [Build Requirements](#build-requirements)
+- [Powered by EB](#powered-by-eb)
+- [Maintainers](#maintainers)
+- [Credits](#credits)
+- [Artwork](#artwork)
+- [Command-line options](#command-line-options)
+- [Environment Variables](#environment-variables)
+- [Configuration](#configuration)
+  - [Example Global Configuration](#example-global-configuration)
+    - [Explanation](#explanation)
+  - [Example Task Configuration](#example-task-configuration)
+    - [Explanation](#explanation-1)
+  - [Setting Environment Variables](#setting-environment-variables)
+  - [Defining Elos Filters](#defining-elos-filters)
+    - [Ruleset](#ruleset)
+  - [Include files](#include-files)
+  - [IO Redirections](#io-redirections)
+    - [Named pipes](#named-pipes)
+    - [A note on buffering](#a-note-on-buffering)
+  - [Dependency groups (meta-tasks)](#dependency-groups-meta-tasks)
+  - [Configuration Signatures](#configuration-signatures)
+- [crinit-ctl Usage Info](#crinit-ctl-usage-info)
+- [Smart bash completion for crinit-ctl](#smart-bash-completion-for-crinit-ctl)
+- [crinit-launch](#crinit-launch)
+- [Build Instructions](#build-instructions)
+- [Build Requirements](#build-requirements)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -107,7 +106,7 @@ unique ID burned to on-chip OTP memory. If the Kernel command line value is set,
 physical memory OTP reads are omitted. This means that while the application has special functionality for S32G SoCs,
 it can work on any target as long as the Kernel command line contains the necessary value.
 
-# License
+## License
 
 MIT License
 
@@ -150,8 +149,6 @@ rich functionality of Linux while meeting security and industry regulations.
 The crinit logo is the Swallow (Hirundinidae). A quick and small bird able to fly long distances. Originator is Anja
 Lehwess-Litzmann (emlix GmbH). Year 2023. It is licensed under Creative Commons No Derivatives (CC-nd). It shall be used
 in black on white or HKS43 color.
-
-# Details
 
 ## Command-line options
 
