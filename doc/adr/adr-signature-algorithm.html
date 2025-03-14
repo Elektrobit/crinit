@@ -7,23 +7,25 @@
     <link href="../../_static/favicon_16x16.png" sizes="16x16" rel="icon" type="image/png">
     <link href="../../_static/favicon_32x32.png" sizes="32x32" rel="icon" type="image/png">
     <title>Architecture Design Record - Choice of signature algorithm for signed configurations &#8212; crinit  documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=4f649999" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=039e1c02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Architecture Design Record - Configuration interface for signature handling" href="adr-signature-conf-interface.html" />
-    <link rel="prev" title="Architecture Design Record - Storage scheme for public keys" href="adr-pubkey-storage.html" />
+    <link rel="prev" title="ADR crinit as secondary init" href="adr-secondary-init.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
+
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  
 
   </head><body>
   
@@ -60,14 +62,14 @@ security and long-term usability.</p>
 <h3>Option 1 - RSA(SSA)-PSS<a class="headerlink" href="#option-1-rsa-ssa-pss" title="Link to this heading">¶</a></h3>
 <p>Combines classical RSA signatures with PSS (Probabilistic Signature Scheme). The addition of PSS made it possible to
 mathematically prove that the cryptographic strength of the resulting signature is tightly related to the strength of
-the underlying RSA scheme. <a class="footnote-reference brackets" href="#id17" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a></p>
+the underlying RSA scheme. <a class="footnote-reference brackets" href="#id18" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a></p>
 <section id="pros">
 <h4>Pros<a class="headerlink" href="#pros" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>well-understood and widely used</p></li>
 <li><p>widely implemented in libraries</p></li>
 <li><p>secure, given large enough key length and hash function</p></li>
-<li><p>also approved by NIST as of FIPS 186-5 <a class="footnote-reference brackets" href="#id18" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a></p></li>
+<li><p>also approved by NIST as of FIPS 186-5 <a class="footnote-reference brackets" href="#id19" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a></p></li>
 </ul>
 </section>
 <section id="cons">
@@ -94,7 +96,7 @@ similar to RSA-PSS (public/private key cryptography with an underlying hash func
 <section id="id5">
 <h4>Cons<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h4>
 <ul class="simple">
-<li><p>not considered secure enough anymore by NIST as of the recently released FIPS 186-5. <a class="footnote-reference brackets" href="#id18" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a></p></li>
+<li><p>not considered secure enough anymore by NIST as of the recently released FIPS 186-5. <a class="footnote-reference brackets" href="#id19" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a></p></li>
 <li><p>speed similar to RSA with current key lengths</p>
 <ul>
 <li><p><em>But</em>: see above</p></li>
@@ -112,7 +114,7 @@ lengths for equivalent security.</p>
 <ul class="simple">
 <li><p>widely implemented in libraries</p></li>
 <li><p>considered secure, given large enough key length, hash function, and a suitable elliptic curve function</p></li>
-<li><p>also approved by NIST as of FIPS 186-5 <a class="footnote-reference brackets" href="#id18" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a></p></li>
+<li><p>also approved by NIST as of FIPS 186-5 <a class="footnote-reference brackets" href="#id19" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a></p></li>
 <li><p>theoretically faster than RSA due to shorter necessary key length</p>
 <ul>
 <li><p><em>But:</em> As stated above, speed of cryptography not really a concern, also practical implementation may differ due to
@@ -151,8 +153,8 @@ a hash function and a random number generator but no asymmetric mathematical pro
 <li><p>Public keys can only be securely used a limited number of times. The number of possible uses is proportional with the
 computational effort required to generate the key. <a class="footnote-reference brackets" href="#id16" id="id13" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p></li>
 <li><p>Not widely used</p></li>
-<li><p>cutting-edge, implementation in crypto libraries still very new if present at all <a class="footnote-reference brackets" href="#id19" id="id14" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a></p></li>
-<li><p>Not (yet) mentioned in the NIST DSS. <a class="footnote-reference brackets" href="#id18" id="id15" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a></p></li>
+<li><p>cutting-edge, implementation in crypto libraries still very new if present at all <a class="footnote-reference brackets" href="#id17" id="id14" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a></p></li>
+<li><p>Not (yet) mentioned in the NIST DSS. <a class="footnote-reference brackets" href="#id19" id="id15" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a></p></li>
 </ul>
 </section>
 </section>
@@ -166,6 +168,8 @@ the current PKCS standard.</p>
 </section>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
+</section>
+</section>
 <aside class="footnote-list brackets">
 <aside class="footnote brackets" id="id16" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
@@ -175,36 +179,34 @@ Federal Office for Information Security (BSI).
 <a class="reference external" href="https://www.bsi.bund.de/SharedDocs/Downloads/EN/BSI/Publications/TechGuidelines/TG02102/BSI-TR-02102-1.pdf?__blob=publicationFile&amp;amp;v=6">[PDF Link]</a></p>
 </aside>
 <aside class="footnote brackets" id="id17" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">3</a><span class="fn-bracket">]</span></span>
-<p>Bellare, Mihir, and Phillip Rogaway. 1996. “The Exact Security of Digital Signatures – How to Sign with RSA
-and Rabin.” In <em>Advances in Cryptology — EUROCRYPT ’96</em>, edited by Ueli Maurer, 399–416.
-Berlin, Heidelberg: Springer Berlin Heidelberg. <a class="reference external" href="https://www.cs.ucdavis.edu/~rogaway/papers/exact.pdf">[PDF Link]</a></p>
-</aside>
-<aside class="footnote brackets" id="id18" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id3">1</a>,<a role="doc-backlink" href="#id6">2</a>,<a role="doc-backlink" href="#id8">3</a>,<a role="doc-backlink" href="#id15">4</a>)</span>
-<p><em>FIPS 186-5: Digital Signature Standard (DSS)</em>. 2023. National Institute of Standards and Technology (NIST).
-<a class="reference external" href="https://doi.org/10.6028/NIST.FIPS.186-5">[PDF Link]</a></p>
-</aside>
-<aside class="footnote brackets" id="id19" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id14">2</a><span class="fn-bracket">]</span></span>
 <p>Butin, Denis, Julian Wälde, and Johannes Buchmann. 2017. “Post-Quantum Authentication in OpenSSL with Hash-Based
 Signatures.” In <em>2017 Tenth International Conference on Mobile Computing and Ubiquitous Network (ICMU)</em>, 1–6.
 <a class="reference external" href="http://www.amphawa.eu/data/icmu-paper.pdf">[PDF Link]</a></p>
 </aside>
+<aside class="footnote brackets" id="id18" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">3</a><span class="fn-bracket">]</span></span>
+<p>Bellare, Mihir, and Phillip Rogaway. 1996. “The Exact Security of Digital Signatures – How to Sign with RSA
+and Rabin.” In <em>Advances in Cryptology — EUROCRYPT ’96</em>, edited by Ueli Maurer, 399–416.
+Berlin, Heidelberg: Springer Berlin Heidelberg. <a class="reference external" href="https://www.cs.ucdavis.edu/~rogaway/papers/exact.pdf">[PDF Link]</a></p>
 </aside>
-</section>
-</section>
+<aside class="footnote brackets" id="id19" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id3">1</a>,<a role="doc-backlink" href="#id6">2</a>,<a role="doc-backlink" href="#id8">3</a>,<a role="doc-backlink" href="#id15">4</a>)</span>
+<p><em>FIPS 186-5: Digital Signature Standard (DSS)</em>. 2023. National Institute of Standards and Technology (NIST).
+<a class="reference external" href="https://doi.org/10.6028/NIST.FIPS.186-5">[PDF Link]</a></p>
+</aside>
+</aside>
 
 
           </div>
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../index.html">
-              <img class="logo" src="../../_static/crinit-logo.png" alt="Logo"/>
+              <img class="logo" src="../../_static/crinit_logo_blk.svg" alt="Logo of crinit"/>
             </a></p>
 <h1 class="logo"><a href="../../index.html">crinit</a></h1>
 
@@ -215,20 +217,23 @@ Signatures.” In <em>2017 Tenth International Conference on Mobile Computing an
 
 
 
-<h3>Navigation</h3>
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../README.html">Crinit – Configurable Rootfs Init</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../README.html#license">License</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../README.html#details">Details</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../API-Doc.html">Public API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../src/index.html">Developers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../scripts/README.html">Crinit-related scripts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../scripts/README.html#script-usage-information">Script usage information</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../scripts/README.html#usage-examples">Usage examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../scripts/README.html#note-on-the-key-type-used-in-crinit-genkeys-sh">Note on the key type used in <code class="docutils literal notranslate"><span class="pre">crinit-genkeys.sh</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../test/README.html">Tests</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">ADRS</a><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">README manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../API-Doc.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/README.html">Helper Scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ci/index.html">CI/CD Tooling</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">ADRs</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="index.html#list-of-adrs">List of ADRs</a></li>
 </ul>
 </li>
@@ -239,22 +244,12 @@ Signatures.” In <em>2017 Tenth International Conference on Mobile Computing an
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="index.html">Architecture Design Records</a><ul>
-      <li>Previous: <a href="adr-pubkey-storage.html" title="previous chapter">Architecture Design Record - Storage scheme for public keys</a></li>
+      <li>Previous: <a href="adr-secondary-init.html" title="previous chapter">ADR crinit as secondary init</a></li>
       <li>Next: <a href="adr-signature-conf-interface.html" title="next chapter">Architecture Design Record - Configuration interface for signature handling</a></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -268,11 +263,11 @@ Signatures.” In <em>2017 Tenth International Conference on Mobile Computing an
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2023, emlix GmbH/Elektrobit Automotive GmbH.
+      &#169;2023, emlix GmbH/Elektrobit Automotive GmbH.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.2.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
       <a href="../../_sources/doc/adr/adr-signature-algorithm.md.txt"

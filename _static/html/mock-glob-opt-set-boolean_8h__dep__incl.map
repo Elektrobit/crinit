@@ -1,6 +1,9 @@
 <map id="test/utest/mocks/mock&#45;glob&#45;opt&#45;set&#45;boolean.h" name="test/utest/mocks/mock&#45;glob&#45;opt&#45;set&#45;boolean.h">
-<area shape="rect" id="node1" title="Header declaring a mock function for crinitGlobOptSetBoolean()." alt="" coords="203,5,377,47"/>
-<area shape="rect" id="node2" href="$mock-glob-opt-set-boolean_8c.html" title="Implementation of a mock function for crinitGlobOptSetBoolean()." alt="" coords="5,102,180,143"/>
-<area shape="rect" id="node3" href="$case-glob-opt-error_8c.html" title="Implementation of a unit test for crinitClientSetVerbose() with the assumption crinitGlobOptSet() fai..." alt="" coords="205,95,375,151"/>
-<area shape="rect" id="node4" href="$utest-crinit-set-verbose_2case-success_8c.html" title="Implementation of a unit test for crinitClientSetVerbose(), under the assumption no internal function..." alt="" coords="400,102,604,143"/>
+<area shape="rect" id="Node000001" title="Header declaring a mock function for crinitGlobOptSetBoolean()." alt="" coords="203,5,377,45"/>
+<area shape="rect" id="Node000002" href="$mock-glob-opt-set-boolean_8c.html" title="Implementation of a mock function for crinitGlobOptSetBoolean()." alt="" coords="5,101,180,141"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="239,54,134,103,131,98,237,49"/>
+<area shape="rect" id="Node000003" href="$case-glob-opt-error_8c.html" title="Implementation of a unit test for crinitClientSetVerbose() with the assumption crinitGlobOptSet() fai..." alt="" coords="205,93,375,148"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="293,59,293,93,287,93,287,59"/>
+<area shape="rect" id="Node000004" href="$utest-crinit-set-verbose_2case-success_8c.html" title="Implementation of a unit test for crinitClientSetVerbose(), under the assumption no internal function..." alt="" coords="400,101,604,141"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="347,48,460,98,458,103,344,53"/>
 </map>

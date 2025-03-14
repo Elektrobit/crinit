@@ -16,7 +16,13 @@ var task_8h =
     [ "crinitTaskDep_t", "task_8h.html#aaf59daef58a8aad070be4f439bc43f89", null ],
     [ "crinitTaskOpts_t", "task_8h.html#a523f262e4df9641850b7abd75910ca29", null ],
     [ "crinitTaskPrv_t", "task_8h.html#a9eda49b67ce2f654caa531081145b286", null ],
+    [ "crinitTaskTimestampType_t", "task_8h.html#a6b17f4a60f02a370befae820e109e30e", null ],
     [ "crinitTaskType_t", "task_8h.html#ae2715f1d7a9c39801367f744eaf1da1e", null ],
+    [ "crinitTaskTimestampType_t", "task_8h.html#a494295a84a109a9829682690d9a4db74", [
+      [ "CRINIT_TASK_TS_CREATION", "task_8h.html#a494295a84a109a9829682690d9a4db74a9586839fd98d581e49213e4f4a50f8fe", null ],
+      [ "CRINIT_TASK_TS_START", "task_8h.html#a494295a84a109a9829682690d9a4db74aa8b8d696dc6db89ad0245ec2b9a54044", null ],
+      [ "CRINIT_TASK_TS_END", "task_8h.html#a494295a84a109a9829682690d9a4db74a2564bacbe42b23696d73988dc70aed2c", null ]
+    ] ],
     [ "crinitTaskType_t", "task_8h.html#a67fde6c95021664845e40db3d2f53c3d", [
       [ "CRINIT_TASK_TYPE_STANDARD", "task_8h.html#a67fde6c95021664845e40db3d2f53c3dad9ae6b8eecffea93c67de23a4c27a906", null ],
       [ "CRINIT_TASK_TYPE_INCLUDE", "task_8h.html#a67fde6c95021664845e40db3d2f53c3daa277d1338a21172463203cfb382ba25c", null ]

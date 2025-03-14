@@ -1,11 +1,19 @@
 <map id="test/utest/utest&#45;file&#45;series&#45;suffix&#45;filter/utest&#45;file&#45;series&#45;suffix&#45;filter.c" name="test/utest/utest&#45;file&#45;series&#45;suffix&#45;filter/utest&#45;file&#45;series&#45;suffix&#45;filter.c">
-<area shape="rect" id="node1" title="Implementation of the crinitSuffixFilter() unit test group." alt="" coords="115,5,285,76"/>
-<area shape="rect" id="node2" href="$utest-file-series-suffix-filter_8h.html" title=" " alt="" coords="41,124,207,165"/>
-<area shape="rect" id="node4" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="257,131,348,158"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,213,88,240"/>
-<area shape="rect" id="node5" title=" " alt="" coords="113,213,191,240"/>
-<area shape="rect" id="node6" title=" " alt="" coords="216,213,291,240"/>
-<area shape="rect" id="node7" title=" " alt="" coords="315,213,389,240"/>
-<area shape="rect" id="node8" title=" " alt="" coords="414,213,485,240"/>
-<area shape="rect" id="node9" title=" " alt="" coords="509,213,593,240"/>
+<area shape="rect" id="Node000001" title="Implementation of the crinitSuffixFilter() unit test group." alt="" coords="115,5,285,75"/>
+<area shape="rect" id="Node000002" href="$utest-file-series-suffix-filter_8h.html" title=" " alt="" coords="41,123,207,163"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="176,77,149,113,145,110,172,74"/>
+<area shape="rect" id="Node000004" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="257,130,348,155"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="237,73,283,118,279,122,233,77"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,211,88,236"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="107,165,70,203,66,199,103,161"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="113,211,191,236"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="282,158,188,207,185,202,279,153"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="216,211,291,236"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="298,157,270,200,266,198,293,154"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="315,211,389,236"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="312,154,340,198,335,200,308,157"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="414,211,485,236"/>
+<area shape="poly" id="edge7_Node000004_Node000008" title=" " alt="" coords="326,153,417,202,414,206,323,158"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="509,211,593,236"/>
+<area shape="poly" id="edge8_Node000004_Node000009" title=" " alt="" coords="340,153,503,204,501,209,338,158"/>
 </map>

@@ -1,14 +1,28 @@
 <map id="test/utest/utest&#45;destroy&#45;file&#45;series/case&#45;success.c" name="test/utest/utest&#45;destroy&#45;file&#45;series/case&#45;success.c">
-<area shape="rect" id="node1" title="Unit test for crinitDestroyFileSeries(), successful execution." alt="" coords="155,5,347,47"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,95,72,121"/>
-<area shape="rect" id="node3" href="$common_8h.html" title="Header for common definitions not related to other specific features." alt="" coords="96,95,187,121"/>
-<area shape="rect" id="node4" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="211,95,290,121"/>
-<area shape="rect" id="node7" title=" " alt="" coords="314,95,385,121"/>
-<area shape="rect" id="node8" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="409,95,500,121"/>
-<area shape="rect" id="node5" title=" " alt="" coords="108,169,191,196"/>
-<area shape="rect" id="node6" title=" " alt="" coords="215,169,289,196"/>
-<area shape="rect" id="node9" title=" " alt="" coords="314,169,393,196"/>
-<area shape="rect" id="node10" title=" " alt="" coords="417,169,492,196"/>
-<area shape="rect" id="node11" title=" " alt="" coords="517,169,587,196"/>
-<area shape="rect" id="node12" title=" " alt="" coords="611,169,695,196"/>
+<area shape="rect" id="Node000001" title="Unit test for crinitDestroyFileSeries(), successful execution." alt="" coords="149,5,341,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,93,72,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="197,48,83,91,81,86,195,43"/>
+<area shape="rect" id="Node000003" href="$common_8h.html" title="Header for common definitions/functions not related to other specific features." alt="" coords="200,93,291,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="248,46,248,79,243,79,243,46"/>
+<area shape="rect" id="Node000006" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="97,93,175,119"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="220,48,165,87,162,83,217,43"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="430,93,501,119"/>
+<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="299,43,421,86,419,91,297,48"/>
+<area shape="rect" id="Node000009" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="315,93,405,119"/>
+<area shape="poly" id="edge9_Node000001_Node000009" title=" " alt="" coords="275,43,333,83,330,88,272,48"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="127,167,201,192"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="234,121,189,160,186,156,231,117"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="226,167,297,192"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="251,118,258,153,253,154,245,120"/>
+<area shape="poly" id="edge7_Node000006_Node000004" title=" " alt="" coords="143,118,157,153,152,155,138,120"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="20,167,103,192"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="126,121,85,159,82,155,122,117"/>
+<area shape="poly" id="edge12_Node000009_Node000004" title=" " alt="" coords="329,121,210,164,208,159,328,116"/>
+<area shape="poly" id="edge13_Node000009_Node000005" title=" " alt="" coords="346,121,290,161,287,156,343,117"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="321,167,399,192"/>
+<area shape="poly" id="edge10_Node000009_Node000010" title=" " alt="" coords="363,119,363,153,357,153,357,119"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="424,167,499,192"/>
+<area shape="poly" id="edge11_Node000009_Node000011" title=" " alt="" coords="378,116,435,156,432,161,375,121"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="523,167,607,192"/>
+<area shape="poly" id="edge14_Node000009_Node000012" title=" " alt="" coords="394,116,520,160,518,165,392,121"/>
 </map>

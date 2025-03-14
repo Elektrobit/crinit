@@ -3,7 +3,6 @@ var crinit_sdefs_8h =
     [ "crinitTaskListEntry_t", "structcrinitTaskListEntry__t.html", "structcrinitTaskListEntry__t" ],
     [ "crinitTaskList_t", "structcrinitTaskList__t.html", "structcrinitTaskList__t" ],
     [ "CRINIT_ENV_NOTIFY_NAME", "crinit-sdefs_8h.html#a8a70a653993cfb028af1bc1c1f72b8b6", null ],
-    [ "CRINIT_SOCKFILE", "crinit-sdefs_8h.html#add823ca8f14b14d6a45f2d9515488305", null ],
     [ "CRINIT_TASK_STATE_DONE", "crinit-sdefs_8h.html#ae2c25b39f02dab5aba41cbbafcff876a", null ],
     [ "CRINIT_TASK_STATE_FAILED", "crinit-sdefs_8h.html#a0d9c49d0bab264f769bf49414a6cecec", null ],
     [ "CRINIT_TASK_STATE_LOADED", "crinit-sdefs_8h.html#a32a5f50c36f5cd875be93db93d150285", null ],

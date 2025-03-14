@@ -1,10 +1,17 @@
 <map id="test/utest/utest&#45;init&#45;file&#45;series/utest&#45;init&#45;file&#45;series.c" name="test/utest/utest&#45;init&#45;file&#45;series/utest&#45;init&#45;file&#45;series.c">
-<area shape="rect" id="node1" title="Implementation of the crinitInitFileSeries() unit test group." alt="" coords="91,5,246,61"/>
-<area shape="rect" id="node2" href="$utest-init-file-series_8h.html" title="Header declaring the unit tests for crinitFreeScandirList()." alt="" coords="13,109,175,136"/>
-<area shape="rect" id="node3" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="199,109,290,136"/>
-<area shape="rect" id="node4" title=" " alt="" coords="5,184,84,211"/>
-<area shape="rect" id="node5" title=" " alt="" coords="109,184,183,211"/>
-<area shape="rect" id="node6" title=" " alt="" coords="207,184,282,211"/>
-<area shape="rect" id="node7" title=" " alt="" coords="307,184,377,211"/>
-<area shape="rect" id="node8" title=" " alt="" coords="401,184,485,211"/>
+<area shape="rect" id="Node000001" title="Implementation of the crinitInitFileSeries() unit test group." alt="" coords="91,5,246,60"/>
+<area shape="rect" id="Node000002" href="$utest-init-file-series_8h.html" title="Header declaring the unit tests for crinitFreeScandirList()." alt="" coords="13,108,175,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="148,62,115,99,111,96,144,58"/>
+<area shape="rect" id="Node000003" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="199,108,290,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="194,58,227,96,223,99,190,62"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="5,181,84,207"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="213,136,91,179,90,174,212,131"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="109,181,183,207"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="230,136,175,175,172,171,227,131"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="207,181,282,207"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="247,134,247,168,242,168,242,134"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="307,181,377,207"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="262,131,316,171,313,175,259,136"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="401,181,485,207"/>
+<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="277,131,399,174,397,179,276,136"/>
 </map>

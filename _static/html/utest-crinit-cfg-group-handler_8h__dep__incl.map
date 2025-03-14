@@ -1,0 +1,13 @@
+<map id="test/utest/utest&#45;crinit&#45;cfg&#45;group&#45;handler/utest&#45;crinit&#45;cfg&#45;group&#45;handler.h" name="test/utest/utest&#45;crinit&#45;cfg&#45;group&#45;handler/utest&#45;crinit&#45;cfg&#45;group&#45;handler.h">
+<area shape="rect" id="Node000001" title="Header declaring the unit tests for crinitCfgGroupHandler()." alt="" coords="401,5,593,60"/>
+<area shape="rect" id="Node000002" href="$utest-crinit-cfg-group-handler_2case-empty-input_8c.html" title="Unit test for crinitCfgGroupHandler(), handling of empty input." alt="" coords="5,108,183,163"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="388,63,195,111,184,113,182,108,193,105,387,58"/>
+<area shape="rect" id="Node000003" href="$utest-crinit-cfg-group-handler_2case-negative-input_8c.html" title="Unit test for crinitCfgGroupHandler(), handling of negative input." alt="" coords="207,108,384,163"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="433,68,349,110,347,106,431,64"/>
+<area shape="rect" id="Node000004" href="$utest-crinit-cfg-group-handler_2case-null-input_8c.html" title="Unit test for crinitCfgGroupHandler(), handling of null pointer input." alt="" coords="408,108,585,163"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="499,74,499,108,494,108,494,74"/>
+<area shape="rect" id="Node000005" href="$utest-crinit-cfg-group-handler_2case-success_8c.html" title="Unit test for crinitCfgGroupHandler(), successful execution." alt="" coords="609,108,787,163"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="562,64,647,106,644,110,560,68"/>
+<area shape="rect" id="Node000006" href="$utest-crinit-cfg-group-handler_8c.html" title="Implementation of the crinitCfgGroupHandler() unit test group." alt="" coords="811,108,1001,163"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="607,58,811,108,810,113,606,63"/>
+</map>

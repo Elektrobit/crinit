@@ -1,5 +1,7 @@
 <map id="inc/sockcom.h" name="inc/sockcom.h">
-<area shape="rect" id="node1" title="Header defining Crinit socket communication functions used internally by the crinit&#45;client library." alt="" coords="87,5,201,32"/>
-<area shape="rect" id="node2" href="$crinit-client_8c.html" title="Implementation of the crinit&#45;client shared library." alt="" coords="5,80,136,107"/>
-<area shape="rect" id="node3" href="$sockcom_8c.html" title="Implementation of socket communication functions for the crinit&#45;client library." alt="" coords="160,80,275,107"/>
+<area shape="rect" id="Node000001" title="Header defining Crinit socket communication functions used internally by the crinit&#45;client library." alt="" coords="87,5,201,31"/>
+<area shape="rect" id="Node000002" href="$crinit-client_8c.html" title="Implementation of the crinit&#45;client shared library." alt="" coords="5,79,136,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="124,42,84,80,81,77,120,38"/>
+<area shape="rect" id="Node000003" href="$sockcom_8c.html" title="Implementation of socket communication functions for the crinit&#45;client library." alt="" coords="160,79,275,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="168,38,207,77,204,80,164,42"/>
 </map>

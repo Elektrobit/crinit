@@ -1,5 +1,7 @@
 <map id="test/utest/mocks/mock&#45;set&#45;err&#45;stream.h" name="test/utest/mocks/mock&#45;set&#45;err&#45;stream.h">
-<area shape="rect" id="node1" title="Header declaring a mock function for crinitSetErrStream()." alt="" coords="108,5,279,47"/>
-<area shape="rect" id="node2" href="$mock-set-err-stream_8c.html" title="Implementation of a mock function for crinitSetErrStream()." alt="" coords="5,95,176,136"/>
-<area shape="rect" id="node3" href="$utest-crinit-set-err-stream_2case-set_8c.html" title="Implementation of a unit test for crinitClientSetErrStream()." alt="" coords="201,95,391,136"/>
+<area shape="rect" id="Node000001" title="Header declaring a mock function for crinitSetErrStream()." alt="" coords="108,5,279,45"/>
+<area shape="rect" id="Node000002" href="$mock-set-err-stream_8c.html" title="Implementation of a mock function for crinitSetErrStream()." alt="" coords="5,93,176,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="162,56,115,95,112,91,158,52"/>
+<area shape="rect" id="Node000003" href="$utest-crinit-set-err-stream_2case-set_8c.html" title="Implementation of a unit test for crinitClientSetErrStream()." alt="" coords="201,93,391,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="228,52,275,91,272,95,225,56"/>
 </map>

@@ -36,8 +36,8 @@ The signature is stored as ASCII plaintext (using uuencode or similar) and appen
 ### Option 2 - Separate file associated by name
 
 The signature is stored in either ASCII or binary format and placed in its own file. A config file `some_task.crinit`
-would have a corresponding `some_task.sig` signature file. The signature file should be placed in the same path as the
-configuration file.
+would have a corresponding `some_task.crinit.sig` signature file. The signature file should be placed in the same path
+as the configuration file.
 
 #### Pros
 

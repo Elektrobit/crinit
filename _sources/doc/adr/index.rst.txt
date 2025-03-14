@@ -13,10 +13,11 @@ An *Architecture Design Record* (**ADR**) should follow roughly the pattern
 * Assumptions
 * Considered Alternatives
 * Decision
-  * Rational
-  * Open Points
+   * Rationale
+   * Open Points
 
-There is an ADR-Template :doc:`ADR_template` which can be started with.
+There is an :doc:`ADR template<ADR_template>` which can be used as a starting
+point.
 
 
 List of ADRs
@@ -26,11 +27,12 @@ List of ADRs
    :maxdepth: 1
    :caption: Contents:
 
-   ./ADR_template
-   ./adr-crypt-lib
-   ./adr-pipe-redirection
-   ./adr-pubkey-storage
-   ./adr-signature-algorithm
-   ./adr-signature-conf-interface
-   ./adr-signature-storage
-   ./adr-task-include-strategy
+   ADR Template<./ADR_template.md>
+   ./adr-crypt-lib.md
+   ./adr-pipe-redirection.md
+   ./adr-pubkey-storage.md
+   ./adr-secondary-init.md
+   ./adr-signature-algorithm.md
+   ./adr-signature-conf-interface.md
+   ./adr-signature-storage.md
+   ./adr-task-include-strategy.md

@@ -3,7 +3,7 @@ var globopt_8c =
     [ "crinitGlobOptCommonLock", "globopt_8c.html#ae8f96989a473f4b0e19445723f3d588c", null ],
     [ "crinitGlobOptCommonUnlock", "globopt_8c.html#ac55657742bc4a2cb9ce25dd9c355984d", null ],
     [ "crinitGlobOptSetErrPrint", "globopt_8c.html#aed2b07acaf3ee793263a95b0b7d797e8", null ],
-    [ "crinitGlobOptBorrow", "globopt_8c.html#a3993c8866e61125a65dfce47451cf1b6", null ],
+    [ "crinitGlobOptBorrow", "globopt_8c.html#a6d45883a63a3b431aa0a8fcc1efd0a08", null ],
     [ "crinitGlobOptDestroy", "globopt_8c.html#adeb2381abb03eba8cbf630908d68d9cc", null ],
     [ "crinitGlobOptGetBoolean", "globopt_8c.html#a0eebe3ca6cc07418eac490a328304ea4", null ],
     [ "crinitGlobOptGetEnvSet", "globopt_8c.html#a77b35f7eb1d9bff255bfac1d483bbbde", null ],

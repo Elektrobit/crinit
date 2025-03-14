@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="../_static/favicon_16x16.png" sizes="16x16" rel="icon" type="image/png">
+    <link href="../_static/favicon_32x32.png" sizes="32x32" rel="icon" type="image/png">
+    <title>CI/CD Tooling &#8212; crinit  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Architecture Design Records" href="../doc/adr/index.html" />
+    <link rel="prev" title="Crinit-related scripts" href="../scripts/README.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="ci-cd-tooling">
+<h1>CI/CD Tooling<a class="headerlink" href="#ci-cd-tooling" title="Link to this heading">¶</a></h1>
+<section id="debian-ubuntu-ppa-release">
+<h2>Debian/Ubuntu PPA Release<a class="headerlink" href="#debian-ubuntu-ppa-release" title="Link to this heading">¶</a></h2>
+<p>To prepare a new release <code class="docutils literal notranslate"><span class="pre">debian/main</span></code> and <code class="docutils literal notranslate"><span class="pre">pristine-tar</span></code> branches needs
+to be updated and published on github.</p>
+<ol class="arabic simple">
+<li><p>Ensure the local branches <code class="docutils literal notranslate"><span class="pre">debian/main</span></code> and <code class="docutils literal notranslate"><span class="pre">pristine-tar</span></code> match the
+ones on github remote and the tag with the new version to be released is
+available</p></li>
+<li><p>Checkout <code class="docutils literal notranslate"><span class="pre">debian/main</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">./ci/docker-run.sh</span></code> and check for clean workspace <cite>git clean -dnx</cite>,
+usually you have to delete at least <cite>ci/sshconfig</cite>.</p></li>
+<li><p>Run
+<code class="docutils literal notranslate"><span class="pre">GIT_AUTHOR_NAME=&quot;Your</span> <span class="pre">Name&quot;</span> <span class="pre">EMAIL=&quot;your&#64;mail.org&quot;</span> <span class="pre">./ci/create_debian_release.sh</span> <span class="pre">x.y.z</span></code></p></li>
+<li><p>Push the branches <code class="docutils literal notranslate"><span class="pre">debian/main</span></code> and <code class="docutils literal notranslate"><span class="pre">pristine-tar</span></code> to github. Not on
+<em>main</em> and not on <em>integration</em>!</p></li>
+</ol>
+</section>
+<section id="commit-message-linting">
+<h2>Commit Message Linting<a class="headerlink" href="#commit-message-linting" title="Link to this heading">¶</a></h2>
+<p>The pipeline now contains a commit linting step which uses
+<a class="reference external" href="https://github.com/conventional-changelog/commitlint">commitlint</a> using its
+configuration for
+<a class="reference external" href="https://www.conventionalcommits.org/en/v1.0.0/">Conventional Commits</a>.</p>
+<p>Commitlint is now part of the build docker container and we have linting
+wrapper script which will lint all commits that would be merged from your
+current branch to a given target branch.</p>
+<p>For example:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>ci/docker-run.sh
+ci/lint-commits.sh<span class="w"> </span>origin/integration
+</pre></div>
+</div>
+<p>will lint all commits from HEAD that would be merged to origin/integration with
+a PR. Note that this may not work if your feature branch is not up to date with
+the target branch.</p>
+<section id="running-the-linter-outside-docker">
+<h3>Running the Linter Outside Docker<a class="headerlink" href="#running-the-linter-outside-docker" title="Link to this heading">¶</a></h3>
+<p>In order to use the script above outside Docker, you have to install
+commitlint.</p>
+<p>To install globally on a recent Ubuntu/Debian, you could do (note that this
+will install an updated node.js in /usr/local):</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># install repository npm</span>
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>npm
+<span class="c1"># install node updater globally</span>
+sudo<span class="w"> </span>npm<span class="w"> </span>install<span class="w"> </span>n<span class="w"> </span>-g
+<span class="c1"># update node</span>
+sudo<span class="w"> </span>n<span class="w"> </span>stable
+<span class="c1"># install commitlint and conventional commit configuration</span>
+sudo<span class="w"> </span>npm<span class="w"> </span>install<span class="w"> </span>@commitlint/cli<span class="w"> </span>-g
+sudo<span class="w"> </span>npm<span class="w"> </span>install<span class="w"> </span>@commitlint/config-conventional<span class="w"> </span>-g
+</pre></div>
+</div>
+<p>This should take care of everything. If you’re getting path errors nonetheless,
+you may need to set the <code class="docutils literal notranslate"><span class="pre">NODE_PATH</span></code> environment variable to
+<code class="docutils literal notranslate"><span class="pre">/usr/local/lib/node_modules</span></code>.</p>
+<p>Alternatively, if a global installation is not preferred, you can look for
+local installation instructions using <code class="docutils literal notranslate"><span class="pre">npm</span></code>/<code class="docutils literal notranslate"><span class="pre">npx</span></code> in the commitlint
+documentation. You can set the <code class="docutils literal notranslate"><span class="pre">COMMITLINT_CMD</span></code> environment variable to
+indicate how your local <code class="docutils literal notranslate"><span class="pre">commitlint</span></code> should be executed if it is not in path
+or if you want to use a wrapper like <code class="docutils literal notranslate"><span class="pre">npx</span></code>.</p>
+</section>
+<section id="using-the-optional-git-hook">
+<h3>Using the Optional Git Hook<a class="headerlink" href="#using-the-optional-git-hook" title="Link to this heading">¶</a></h3>
+<p>There is a <code class="docutils literal notranslate"><span class="pre">commit-msg</span></code> hook for linting your commit message in the
+<code class="docutils literal notranslate"><span class="pre">.githooks/</span></code> directory. If you want to use it, you must have installed the
+prerequisites to run the <code class="docutils literal notranslate"><span class="pre">ci/lint-commits.sh</span></code> script outside of docker, as
+described above.</p>
+<p>To then activate the git hook, run the following command <em>from the repo root</em>:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>config<span class="w"> </span>--local<span class="w">  </span>core.hooksPath<span class="w"> </span>.githooks/
+</pre></div>
+</div>
+<p>If you want to bypass the hook for e.g. a work-in-progress commit, just use
+<code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">commit</span> <span class="pre">-n</span></code> or <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">commit</span> <span class="pre">--no-verify</span></code>.</p>
+<p>Note that the hook will not complain about ‘fixup’ commits, assuming that you
+plan to squash them later. However, the pipeline step will still prevent
+‘fixup’ commits from being merged.</p>
+</section>
+</section>
+<section id="readme-table-of-contents-generation">
+<h2>README Table-of-Contents Generation<a class="headerlink" href="#readme-table-of-contents-generation" title="Link to this heading">¶</a></h2>
+<p>The Table-of-Contents in README.md is auto-generated using doctoc. The tool
+is included in the build container or can be installed via <code class="docutils literal notranslate"><span class="pre">npm</span></code> similar
+to commitlint above:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>npm<span class="w"> </span>install<span class="w"> </span>doctoc<span class="w"> </span>-g
+</pre></div>
+</div>
+<p>Then (or in docker) you can run:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>ci/readme-toc.sh
+</pre></div>
+</div>
+<p>to re-generate the ToC if you have made any alterations or additions to the
+sections. The script will return <code class="docutils literal notranslate"><span class="pre">1</span></code> if there are unstaged changes in
+README.md. This is a feature so the CI can check if the ToC is currently
+in need of an update. For development the return code can be ignored.</p>
+</section>
+<section id="code-formatting">
+<h2>Code-Formatting<a class="headerlink" href="#code-formatting" title="Link to this heading">¶</a></h2>
+<p>The code formatter script <code class="docutils literal notranslate"><span class="pre">ci/format-code.sh</span></code> will use <code class="docutils literal notranslate"><span class="pre">clang-format</span></code> and
+<code class="docutils literal notranslate"><span class="pre">shfmt</span></code> with the correct settings to format C code, header files and shell
+scripts within the project.</p>
+<p>Optionally, the <code class="docutils literal notranslate"><span class="pre">--check</span></code> parameter does a dry run, reporting errors if any
+files do not conform to formatting rules.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">clang-format</span></code> and <code class="docutils literal notranslate"><span class="pre">shfmt</span></code> tools should be available in most distros.
+Alternatively, they are available n the build container as well.</p>
+</section>
+<section id="github-pages">
+<h2>Github Pages<a class="headerlink" href="#github-pages" title="Link to this heading">¶</a></h2>
+<p>To update our github pages, you need to first build the Doxygen and Sphinx
+doc. To get best results for github pages, use an Ubuntu 24.04 build docker:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>ci/docker-run.sh<span class="w"> </span>amd64<span class="w"> </span>noble
+</pre></div>
+</div>
+<p>Inside the container, run</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># first, some clean up</span>
+rm<span class="w"> </span>-rf<span class="w"> </span>doc/api<span class="w"> </span>result/amd64/doc/sphinx
+<span class="c1"># build crinit and doxygen HTML</span>
+ci/build.sh
+<span class="c1"># build sphinx doc (it will automatically grab the doxygen HTML as well)</span>
+ci/build_doc.sh
+<span class="c1"># package the result excluding unneeded files</span>
+<span class="nb">cd</span><span class="w"> </span>result/amd64/doc/sphinx/html
+tar<span class="w"> </span>--exclude<span class="o">=</span><span class="s1">&#39;./objects.inv&#39;</span><span class="w"> </span>--exclude<span class="o">=</span><span class="s1">&#39;./.doctrees&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--exclude<span class="o">=</span><span class="s1">&#39;./.buildinfo&#39;</span><span class="w"> </span>-czf<span class="w"> </span>/base/gh-pages.tar.gz<span class="w"> </span>.
+</pre></div>
+</div>
+<p>The resulting tar file can be used to update the <code class="docutils literal notranslate"><span class="pre">gh-pages</span></code> branch inside this
+repo by creating a new branch from it, unpacking the tar file to the branch root
+and creating a pull request.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/crinit_logo_blk.svg" alt="Logo of crinit"/>
+            </a></p>
+<h1 class="logo"><a href="../index.html">crinit</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">README manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API-Doc.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/README.html">Helper Scripts</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">CI/CD Tooling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#debian-ubuntu-ppa-release">Debian/Ubuntu PPA Release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#commit-message-linting">Commit Message Linting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#readme-table-of-contents-generation">README Table-of-Contents Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#code-formatting">Code-Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#github-pages">Github Pages</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/adr/index.html">ADRs</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../scripts/README.html" title="previous chapter">Crinit-related scripts</a></li>
+      <li>Next: <a href="../doc/adr/index.html" title="next chapter">Architecture Design Records</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2023, emlix GmbH/Elektrobit Automotive GmbH.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/ci/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
