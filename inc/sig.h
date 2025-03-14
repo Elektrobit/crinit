@@ -9,10 +9,12 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define CRINIT_SIGNATURE_DEFAULT_ROOT_KEY_DESC \
-    "crinit-root"                               ///< The key description of the root public key within the user keyring
-#define CRINIT_SIGNATURE_FILE_SUFFIX ".sig"     ///< The filename suffix identifying signature files
-#define CRINIT_RSASSA_PSS_SIGNATURE_SIZE 512uL  ///< The size in bytes of a signature as used by crinit.
+/** The key description of the root public key within the user keyring. **/
+#define CRINIT_SIGNATURE_DEFAULT_ROOT_KEY_DESC "crinit-root"
+/** The filename suffix identifying signature files. **/
+#define CRINIT_SIGNATURE_FILE_SUFFIX ".sig"
+/** The size in bytes of a signature as used by crinit. **/
+#define CRINIT_RSASSA_PSS_SIGNATURE_SIZE 512uL
 
 /**
  * Initializes the Crinit signature subsystem.

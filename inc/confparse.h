@@ -11,72 +11,107 @@
 
 #include "fseries.h"
 
-#define CRINIT_CONFIG_KEYSTR_TASKS "TASKS"        ///< Config key for the list of task file names.
-#define CRINIT_CONFIG_KEYSTR_INCLUDES "INCLUDES"  ///< Config key for the list of task file names.
-#define CRINIT_CONFIG_KEYSTR_TASKDIR_SYMLINKS \
-    "TASKDIR_FOLLOW_SYMLINKS"  ///< Config key for the option to follow symbolic links from `TASKDIR` in dynamic
-                               ///< configurations.
-#define CRINIT_CONFIG_KEYSTR_DEBUG "DEBUG"         ///< Config file key for DEBUG global option.
-#define CRINIT_CONFIG_KEYSTR_TASKDIR "TASKDIR"     ///< Config file key for TASKDIR global option.
-#define CRINIT_CONFIG_KEYSTR_INCLDIR "INCLUDEDIR"  ///< Config file key for INCLUDEDIR global option.
-#define CRINIT_CONFIG_KEYSTR_SHDGRACEP \
-    "SHUTDOWN_GRACE_PERIOD_US"                          ///< Config file key for SHUTDOWN_GRACE_PERIOD_US global option
-#define CRINIT_CONFIG_KEYSTR_USE_SYSLOG "USE_SYSLOG"    ///< Config file key for USE_SYSLOG global option.
-#define CRINIT_CONFIG_KEYSTR_USE_ELOS "USE_ELOS"        ///< Config file key for USE_ELOS global option.
-#define CRINIT_CONFIG_KEYSTR_ELOS_SERVER "ELOS_SERVER"  ///< Config file key for ELOS_SERVER global option.
-#define CRINIT_CONFIG_KEYSTR_ELOS_PORT "ELOS_PORT"      ///< Config file key for ELOS_PORT global option.
-#define CRINIT_CONFIG_KEYSTR_ELOS_EVENT_POLL_INTERVAL \
-    "ELOS_EVENT_POLL_INTERVAL"  ///< Config file key for ELOS_EVENT_POLL_INTERVAL global option.
-#define CRINIT_CONFIG_KEYSTR_LAUNCHER_CMD "LAUNCHER_CMD"   ///< Config file key for LAUNCHER_CMD global option.
-#define CRINIT_CONFIG_KEYSTR_INCL_SUFFIX "INCLUDE_SUFFIX"  ///< Config file key for INCLUDE_SUFFIX global option.
-#define CRINIT_CONFIG_KEYSTR_TASK_FILE_SUFFIX \
-    "TASK_FILE_SUFFIX"  ///< Config key for the task file extension in dynamic configurations.
+/**  Config key for the list of task file names. **/
+#define CRINIT_CONFIG_KEYSTR_TASKS "TASKS"
+/**  Config key for the list of task file names. **/
+#define CRINIT_CONFIG_KEYSTR_INCLUDES "INCLUDES"
+/**  Config key for the option to follow symbolic links from `TASKDIR` in dynamic configurations. **/
+#define CRINIT_CONFIG_KEYSTR_TASKDIR_SYMLINKS "TASKDIR_FOLLOW_SYMLINKS"
+/**  Config file key for DEBUG global option. **/
+#define CRINIT_CONFIG_KEYSTR_DEBUG "DEBUG"
+/**  Config file key for TASKDIR global option. **/
+#define CRINIT_CONFIG_KEYSTR_TASKDIR "TASKDIR"
+/**  Config file key for INCLUDEDIR global option. **/
+#define CRINIT_CONFIG_KEYSTR_INCLDIR "INCLUDEDIR"
+/**  Config file key for SHUTDOWN_GRACE_PERIOD_US global option **/
+#define CRINIT_CONFIG_KEYSTR_SHDGRACEP "SHUTDOWN_GRACE_PERIOD_US"
+/**  Config file key for USE_SYSLOG global option. **/
+#define CRINIT_CONFIG_KEYSTR_USE_SYSLOG "USE_SYSLOG"
+/**  Config file key for USE_ELOS global option. **/
+#define CRINIT_CONFIG_KEYSTR_USE_ELOS "USE_ELOS"
+/**  Config file key for ELOS_SERVER global option. **/
+#define CRINIT_CONFIG_KEYSTR_ELOS_SERVER "ELOS_SERVER"
+/**  Config file key for ELOS_PORT global option. **/
+#define CRINIT_CONFIG_KEYSTR_ELOS_PORT "ELOS_PORT"
+/**  Config file key for ELOS_EVENT_POLL_INTERVAL global option. **/
+#define CRINIT_CONFIG_KEYSTR_ELOS_EVENT_POLL_INTERVAL "ELOS_EVENT_POLL_INTERVAL"
+/**  Config file key for LAUNCHER_CMD global option. **/
+#define CRINIT_CONFIG_KEYSTR_LAUNCHER_CMD "LAUNCHER_CMD"
+/**  Config file key for INCLUDE_SUFFIX global option. **/
+#define CRINIT_CONFIG_KEYSTR_INCL_SUFFIX "INCLUDE_SUFFIX"
+/**  Config key for the task file extension in dynamic configurations. **/
+#define CRINIT_CONFIG_KEYSTR_TASK_FILE_SUFFIX "TASK_FILE_SUFFIX"
 
-#define CRINIT_CONFIG_KEYSTR_SIGKEYDIR \
-    "sigkeydir"  ///< Name of the option to set the public key dir from Kernel command line.
-#define CRINIT_CONFIG_KEYSTR_SIGNATURES \
-    "signatures"  ///< Name of the option to activate signature checking on the Kernel command line.
+/**  Name of the option to set the public key dir from Kernel command line. **/
+#define CRINIT_CONFIG_KEYSTR_SIGKEYDIR "sigkeydir"
+/**  Name of the option to activate signature checking on the Kernel command line. **/
+#define CRINIT_CONFIG_KEYSTR_SIGNATURES "signatures"
 
-#define CRINIT_CONFIG_KEYSTR_COMMAND "COMMAND"              ///< Config key to add a command to the task.
-#define CRINIT_CONFIG_KEYSTR_DEPENDS "DEPENDS"              ///< Config key to add dependencies to the task.
-#define CRINIT_CONFIG_KEYSTR_ENV_SET "ENV_SET"              ///< Config key to set an environment variable with.
-#define CRINIT_CONFIG_KEYSTR_FILTER_DEFINE "FILTER_DEFINE"  ///< Config key to define an elos filter.
-#define CRINIT_CONFIG_KEYSTR_INCLUDE "INCLUDE"              ///< Config key for file include directives.
-#define CRINIT_CONFIG_KEYSTR_IOREDIR "IO_REDIRECT"          ///< Config key for IO redirections.
-#define CRINIT_CONFIG_KEYSTR_NAME "NAME"                    ///< Config key for the task name.
-#define CRINIT_CONFIG_KEYSTR_PROVIDES "PROVIDES"            ///< Config key for provided features.
-#define CRINIT_CONFIG_KEYSTR_RESPAWN "RESPAWN"              ///< Config key to set a task to be respawning.
-#define CRINIT_CONFIG_KEYSTR_RESPAWN_RETRIES \
-    "RESPAWN_RETRIES"  ///< Config key to set how often a task is allowed to respawn on failure.
-#define CRINIT_CONFIG_KEYSTR_STOP_COMMAND "STOP_COMMAND"  ///< Config key to add a stop command to the task.
-#define CRINIT_CONFIG_KEYSTR_USER "USER"                  ///< Config key to set a specific user to run task's commands.
-#define CRINIT_CONFIG_KEYSTR_GROUP "GROUP"  ///< Config key to set a specific group to run task's commands.
+/**  Config key to add a command to the task. **/
+#define CRINIT_CONFIG_KEYSTR_COMMAND "COMMAND"
+/**  Config key to add dependencies to the task. **/
+#define CRINIT_CONFIG_KEYSTR_DEPENDS "DEPENDS"
+/**  Config key to set an environment variable with. **/
+#define CRINIT_CONFIG_KEYSTR_ENV_SET "ENV_SET"
+/**  Config key to define an elos filter. **/
+#define CRINIT_CONFIG_KEYSTR_FILTER_DEFINE "FILTER_DEFINE"
+/**  Config key for file include directives. **/
+#define CRINIT_CONFIG_KEYSTR_INCLUDE "INCLUDE"
+/**  Config key for IO redirections. **/
+#define CRINIT_CONFIG_KEYSTR_IOREDIR "IO_REDIRECT"
+/**  Config key for the task name. **/
+#define CRINIT_CONFIG_KEYSTR_NAME "NAME"
+/**  Config key for provided features. **/
+#define CRINIT_CONFIG_KEYSTR_PROVIDES "PROVIDES"
+/**  Config key to set a task to be respawning. **/
+#define CRINIT_CONFIG_KEYSTR_RESPAWN "RESPAWN"
+/**  Config key to set how often a task is allowed to respawn on failure. **/
+#define CRINIT_CONFIG_KEYSTR_RESPAWN_RETRIES "RESPAWN_RETRIES"
+/**  Config key to add a stop command to the task. **/
+#define CRINIT_CONFIG_KEYSTR_STOP_COMMAND "STOP_COMMAND"
+/**  Config key to set a specific user to run task's commands. **/
+#define CRINIT_CONFIG_KEYSTR_USER "USER"
+/**  Config key to set a specific group to run task's commands. **/
+#define CRINIT_CONFIG_KEYSTR_GROUP "GROUP"
 
-#define CRINIT_CONFIG_DEFAULT_TASK_FILE_SUFFIX ".crinit"  ///< Default filename extension of task files.
-#define CRINIT_CONFIG_KEYSTR_INCL_FILE_SUFFIX \
-    "INCL_FILE_SUFFIX"  ///< Config key for the task include file extension in dynamic configurations.
-#define CRINIT_CONFIG_DEFAULT_INCL_FILE_SUFFIX ".crincl"  ///< Default filename extension of task include files.
-#define CRINIT_CONFIG_DEFAULT_DEBUG false                 ///< Default value for DEBUG global option.
+/**  Default filename extension of task files. **/
+#define CRINIT_CONFIG_DEFAULT_TASK_FILE_SUFFIX ".crinit"
+/**  Config key for the task include file extension in dynamic configurations. **/
+#define CRINIT_CONFIG_KEYSTR_INCL_FILE_SUFFIX "INCL_FILE_SUFFIX"
+/**  Default filename extension of task include files. **/
+#define CRINIT_CONFIG_DEFAULT_INCL_FILE_SUFFIX ".crincl"
+/**  Default value for DEBUG global option. **/
+#define CRINIT_CONFIG_DEFAULT_DEBUG false
+/** Default value for the `TASKDIR_FOLLOW_SYMLINKS` global option. **/
 #define CRINIT_CONFIG_DEFAULT_TASKDIR_SYMLINKS true
 #ifndef CRINIT_LAUNCHER_COMMAND_DEFAULT
 #define CRINIT_CONFIG_DEFAULT_LAUNCHER_CMD "/usr/bin/crinit-launch"
 #else
-#define CRINIT_CONFIG_DEFAULT_LAUNCHER_CMD \
-    CRINIT_LAUNCHER_COMMAND_DEFAULT  ///< Default value for LAUNCHER_CMD global option.
+/**  Default value for LAUNCHER_CMD global option. **/
+#define CRINIT_CONFIG_DEFAULT_LAUNCHER_CMD CRINIT_LAUNCHER_COMMAND_DEFAULT
 #endif
 
-#define CRINIT_CONFIG_DEFAULT_SHDGRACEP 100000uLL      ///< Default value for SHUTDOWN_GRACE_PERIOD_US global option
-#define CRINIT_CONFIG_DEFAULT_USE_SYSLOG false         ///< Default value for USE_SYSLOG global option.
-#define CRINIT_CONFIG_DEFAULT_USE_ELOS false           ///< Default value for USE_ELOS global option.
-#define CRINIT_CONFIG_DEFAULT_ELOS_SERVER "127.0.0.1"  ///< Default value for ELOS_SERVER global option.
-#define CRINIT_CONFIG_DEFAULT_ELOS_PORT 54321          ///< Default value for ELOS_SERVER global option.
-#define CRINIT_CONFIG_DEFAULT_INCL_SUFFIX ".crincl"    ///< Default filename extension of include files.
+/**  Default value for SHUTDOWN_GRACE_PERIOD_US global option **/
+#define CRINIT_CONFIG_DEFAULT_SHDGRACEP 100000uLL
+/**  Default value for USE_SYSLOG global option. **/
+#define CRINIT_CONFIG_DEFAULT_USE_SYSLOG false
+/**  Default value for USE_ELOS global option. **/
+#define CRINIT_CONFIG_DEFAULT_USE_ELOS false
+/**  Default value for ELOS_SERVER global option. **/
+#define CRINIT_CONFIG_DEFAULT_ELOS_SERVER "127.0.0.1"
+/**  Default value for ELOS_SERVER global option. **/
+#define CRINIT_CONFIG_DEFAULT_ELOS_PORT 54321
+/**  Default filename extension of include files. **/
+#define CRINIT_CONFIG_DEFAULT_INCL_SUFFIX ".crincl"
 
 #define CRINIT_CONFIG_DEFAULT_SIGNATURES false
 
-#define CRINIT_CONFIG_STDOUT_NAME "STDOUT"  ///< What stdout is called in task configs.
-#define CRINIT_CONFIG_STDERR_NAME "STDERR"  ///< What stderr is called in task configs.
-#define CRINIT_CONFIG_STDIN_NAME "STDIN"    ///< What stdin is called in task configs.
+/**  What stdout is called in task configs. **/
+#define CRINIT_CONFIG_STDOUT_NAME "STDOUT"
+/**  What stderr is called in task configs. **/
+#define CRINIT_CONFIG_STDERR_NAME "STDERR"
+/**  What stdin is called in task configs. **/
+#define CRINIT_CONFIG_STDIN_NAME "STDIN"
 
 /** Enumeration of all configuration keys. Goes together with crinitTaskCfgMap and crinitSeriesCfgMap. **/
 typedef enum crinitConfigs_t {
