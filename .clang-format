@@ -1,9 +1,0 @@
-﻿---
-BasedOnStyle: Google
-ColumnLimit: 120
-AllowShortFunctionsOnASingleLine: Empty
-DerivePointerAlignment: false
-PointerAlignment: Right
-UseTab: Never
-IndentWidth: 4
-...
