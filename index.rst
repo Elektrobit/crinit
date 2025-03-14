@@ -5,10 +5,8 @@ Crinit -- Configurable Rootfs Init
    :maxdepth: 2
    :caption: Contents
 
-   Users <README>
+   README manual <README>
    Public API <API-Doc>
-   Developers <src/index>
    Helper Scripts <scripts/README>
-   CI/CD <ci/index>
-   Tests <test/README>
-   ADRS <doc/adr/index>
+   CI/CD Tooling <ci/index>
+   ADRs <doc/adr/index>

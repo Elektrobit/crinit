@@ -33,7 +33,17 @@ extensions = [
 ]
 
 templates_path = ['doc/_templates']
-exclude_patterns = ['deps/*', 'packaging/**', "build/**/README.md", "build/*/debbuild/**", "result/**", "build/*/doc/doxygen/doc/adr/**", "build/*/doc/sphinx/**", "build/*-Debug/**"]
+exclude_patterns = [
+        'deps/*',
+        'packaging/**',
+        "build/**/README.md",
+        "build/*/debbuild/**",
+        "result/**",
+        "build/*/doc/doxygen/doc/adr/**",
+        "build/*/doc/sphinx/**",
+        "build/*-Debug/**",
+        "test/*",
+]
 source_suffix = {
     '.rst': 'restructuredtext',
     '.md': 'markdown',
