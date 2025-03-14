@@ -128,8 +128,8 @@ rich functionality of Linux while meeting security and industry regulations.
 
 ## Maintainers
 
-* Andreas Zdziarstek andreas.zdziarstek@emlix.com [@gmcn42](https://github.com/gmcn42)
-* Thomas Brinker thomas.brinker@emlix.com [@ThomasBrinker](https://github.com/ThomasBrinker)
+* Andreas Zdziarstek andreas.zdziarstek@emlix.com [\@gmcn42](https://github.com/gmcn42)
+* Thomas Brinker thomas.brinker@emlix.com [\@ThomasBrinker](https://github.com/ThomasBrinker)
 
 ## Credits
 
@@ -189,7 +189,7 @@ possible to have multiple instances of crinit running alongside each other, each
 
 As described above, Crinit needs a global series-file containing global configuration options as well as a list of task
 configurations. Examples for a local demonstration inside the build environment (see [Build
-Instructions](#Build Instructions) below) are available in `config/test/` and examples to use as a starting point for a
+Instructions](#build-instructions) below) are available in `config/test/` and examples to use as a starting point for a
 minimal system boot are available in `config/example/`.
 
 The general format of crinit configuration files is INI-style `KEY = value` pairs. Some settings may be array-like,
@@ -558,8 +558,8 @@ integrator who maintains `dep_grp_server`.
 
 ### Configuration Signatures
 
-If compiled in (see Build Instructions), Crinit supports checking signatures of its task and global configuration files.
-The algorithm used is RSA-PSS using 4096 Bit keys and SHA256 hashing.
+If compiled in (see [Build Instructions](#build-instructions)), Crinit supports checking signatures of its task and
+global configuration files. The algorithm used is RSA-PSS using 4096 Bit keys and SHA256 hashing.
 
 Crinit will use a root public key (named `crinit-root` as the searchable key description`) stored in the Kernel user
 keyring and optionally downstream signed public keys stored in the rootfs. The downstream keys need to be signed using

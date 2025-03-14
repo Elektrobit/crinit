@@ -70,7 +70,7 @@ void crinitClientSetNotifyTaskName(const char *taskName);
 /**
  * Sets the path to Crinit's AF_UNIX communication socket.
  *
- * The default is set by #CRINIT_SOCKFILE.
+ * The default is set at library compile-time via the CMake `CRINIT_SOCKFILE` setting.
  *
  * @param sockFile  Path to the socket file.
  */
