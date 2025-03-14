@@ -82,6 +82,7 @@
 #define CRINIT_CONFIG_DEFAULT_INCL_FILE_SUFFIX ".crincl"
 /**  Default value for DEBUG global option. **/
 #define CRINIT_CONFIG_DEFAULT_DEBUG false
+/** Default value for the `TASKDIR_FOLLOW_SYMLINKS` global option. **/
 #define CRINIT_CONFIG_DEFAULT_TASKDIR_SYMLINKS true
 #ifndef CRINIT_LAUNCHER_COMMAND_DEFAULT
 #define CRINIT_CONFIG_DEFAULT_LAUNCHER_CMD "/usr/bin/crinit-launch"
