@@ -5,7 +5,7 @@ poweroff
 reboot
 *.o
 build/
-doc/html/
+doc/api/
 lib/
 ci/sshconfig
 result/
