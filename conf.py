@@ -56,7 +56,7 @@ language = 'en'
 
 html_theme = 'alabaster'
 html_static_path = ['images', 'doc/api']
-html_logo = 'images/crinit-logo.png'
+html_logo = 'images/crinit_logo_blk.svg'
 
 favicons = [
     "favicon_16x16.png",

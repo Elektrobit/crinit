@@ -1,9 +1,8 @@
 # Crinit -- Configurable Rootfs Init
 
-
-<img src="images/crinit-logo.png" width=20% height=20% align="right">
-
 ## Table of Contents
+
+<img src="images/crinit_logo_blu.svg" width=20% height=20% align="right">
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
