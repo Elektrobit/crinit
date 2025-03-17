@@ -173,6 +173,7 @@ endif(UNIT_TESTS)
 if(API_DOC)
   set(API_DOC_HTML_OUTPUT_DIR "${CMAKE_SOURCE_DIR}/doc/api/html")
   find_package(Doxygen REQUIRED)
+  find_program(PLANTUML_BIN plantuml NAMES plantuml REQUIRED)
   file(GLOB plantuml_images "images/*.plantuml")
   # Exclude rootfs_init_comp as we have already pre-built it as an SVG with a newer PlantUML.
   list(FILTER plantuml_images EXCLUDE REGEX "rootfs_init_comp\.svg$")
@@ -180,13 +181,13 @@ if(API_DOC)
     get_filename_component(output ${img} NAME_WLE)
     add_custom_command(
       OUTPUT
-      ${API_DOC_HTML_OUTPUT_DIR}/images/${output}.svg
+        ${API_DOC_HTML_OUTPUT_DIR}/images/${output}.svg
       COMMAND
-        plantuml -o ${API_DOC_HTML_OUTPUT_DIR}/images -tsvg ${img}
+        ${PLANTUML_BIN} -o ${API_DOC_HTML_OUTPUT_DIR}/images -tsvg ${img}
       MAIN_DEPENDENCY
         ${img}
       COMMENT
-       "Running plantuml to generate: ${output}"
+        "Running plantuml to generate: ${output}"
     )
     list(APPEND doxygen_images ${API_DOC_HTML_OUTPUT_DIR}/images/${output}.svg)
   endforeach()
@@ -201,7 +202,7 @@ if(API_DOC)
       MAIN_DEPENDENCY
         ${img}
       COMMENT
-      "Copying binary image: ${img}"
+       "Copying binary image: ${img}"
     )
     list(APPEND doxygen_images ${API_DOC_HTML_OUTPUT_DIR}/images/${img})
   endforeach()
