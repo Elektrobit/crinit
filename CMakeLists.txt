@@ -172,7 +172,7 @@ endif(UNIT_TESTS)
 
 if(API_DOC)
   set(API_DOC_HTML_OUTPUT_DIR "${CMAKE_SOURCE_DIR}/doc/api/html")
-  find_package(Doxygen REQUIRED)
+  find_package(Doxygen REQUIRED doxygen)
   find_program(PLANTUML_BIN plantuml NAMES plantuml REQUIRED)
   file(GLOB plantuml_images "images/*.plantuml")
   # Exclude rootfs_init_comp as we have already pre-built it as an SVG with a newer PlantUML.
@@ -210,7 +210,7 @@ if(API_DOC)
   add_custom_target(
     api-doc
     ALL
-    COMMAND doxygen
+    COMMAND Doxygen::doxygen
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     DEPENDS ${doxygen_images}
   )
