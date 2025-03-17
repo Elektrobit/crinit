@@ -25,6 +25,11 @@ int __wrap_getgrgid_r(gid_t gid, struct group *__restrict resultbuf, char *__res
         strncpy(buffer, "disk", buflen);
         resultbuf->gr_name = buffer;
         *result = resultbuf;
+    } else if (gid == 15) {
+        resultbuf->gr_gid = 15;
+        strncpy(buffer, "floppy", buflen);
+        resultbuf->gr_name = buffer;
+        *result = resultbuf;
     } else {
         *result = NULL;
     }

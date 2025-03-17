@@ -15,6 +15,10 @@ void crinitCfgGroupHandlerTestNumericSuccess(void **state);
  */
 void crinitCfgGroupHandlerTestAlphaInputSuccess(void **state);
 /**
+ * Tests successful parsing of two numeric group IDs.
+ */
+void crinitCfgGroupHandlerTestNumericMultipleGroupsSuccess(void **state);
+/**
  * Tests unsuccessful parsing of a negative numeric group ID.
  */
 void crinitCfgGroupHandlerTestNegativeInput(void **state);
