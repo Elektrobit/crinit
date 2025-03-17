@@ -192,7 +192,23 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char *name, crinit
 
     const char *const cmdParamFormatStr = "--cmd=%s";
     const char *const userParamFormatStr = "--user=%d";
-    const char *const groupParamFormatStr = "--group=%d";
+
+    // "--group=" => 8 bytes
+    // "%d" => 2 bytes
+    // ",%d" => 3 bytes
+    const unsigned int groupParamFormatStrLength = 8 + 2 + tCopy->supGroupsSize * 3;
+    char *groupParamFormatStr = calloc(groupParamFormatStrLength + 1, sizeof(char));
+    if (groupParamFormatStr == NULL) {
+        free(crinitLauncherCommand);
+        crinitErrPrint("Failed to allocate memory for group format string");
+        return -1;
+    }
+
+    snprintf(groupParamFormatStr, groupParamFormatStrLength, "--group=%%d");
+    char *tmpGroupFormat = groupParamFormatStr + 10;
+    for (size_t i = 0; i < tCopy->supGroupsSize; i++) {
+        sprintf(tmpGroupFormat, ",%%d");
+    }
 
     if (tCopy->user != 0 || tCopy->group != 0) {
         cmd = crinitLauncherCommand;
@@ -207,6 +223,7 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char *name, crinit
                              threadId, i, name);
             posix_spawn_file_actions_destroy(&fileact);
             free(crinitLauncherCommand);
+            free(groupParamFormatStr);
             return -1;
         }
 
@@ -214,6 +231,7 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char *name, crinit
             -1) {
             posix_spawn_file_actions_destroy(&fileact);
             free(crinitLauncherCommand);
+            free(groupParamFormatStr);
             return -1;
         }
 
@@ -236,6 +254,7 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char *name, crinit
                 crinitErrnoPrint("Failed to allocate memory for temporary argv to use with command launcher.\n");
                 posix_spawn_file_actions_destroy(&fileact);
                 free(crinitLauncherCommand);
+                free(groupParamFormatStr);
                 free(argv);  // If only one call to calloc() failed.
                 free(argvBuffer);
                 return -1;
@@ -267,6 +286,7 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char *name, crinit
                 argv = NULL;
             }
             free(crinitLauncherCommand);
+            free(groupParamFormatStr);
             return -1;
         }
         if (!useLauncher) {
@@ -285,6 +305,7 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char *name, crinit
         if (crinitTaskDBSetTaskPID(ctx, *pid, name) == -1) {
             crinitErrPrint("(TID: %d) Could not set PID of Task \'%s\' to %d.", threadId, name, *pid);
             free(crinitLauncherCommand);
+            free(groupParamFormatStr);
             return -1;
         }
 
@@ -298,6 +319,7 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char *name, crinit
                 crinitErrPrint("(TID: %d) Could not fulfill dependency %s:%s.", threadId, spawnDep.name,
                                spawnDep.event);
                 free(crinitLauncherCommand);
+                free(groupParamFormatStr);
                 return -1;
             }
             crinitDbgInfoPrint("(TID: %d) Dependency \'%s:%s\' fulfilled.", threadId, spawnDep.name, spawnDep.event);
@@ -327,6 +349,7 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char *name, crinit
                 crinitInfoPrint("(TID: %d) Task \'%s\' (PID %d) failed.", threadId, name, *pid);
             }
             free(crinitLauncherCommand);
+            free(groupParamFormatStr);
             return -1;
         }
 
@@ -341,6 +364,7 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char *name, crinit
     }
 
     free(crinitLauncherCommand);
+    free(groupParamFormatStr);
     return 0;
 }
 

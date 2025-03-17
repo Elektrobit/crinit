@@ -108,6 +108,8 @@ int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig) {
     out->group = 0;
     out->username = NULL;
     out->groupname = NULL;
+    out->supGroups = NULL;
+    out->supGroupsSize = 0;
 
     out->name = strdup(orig->name);
     if (out->name == NULL) {
@@ -217,6 +219,14 @@ int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig) {
             goto fail;
         }
     }
+    if (orig->supGroups && orig->supGroupsSize > 0) {
+        out->supGroupsSize = orig->supGroupsSize;
+        out->supGroups = calloc(out->supGroupsSize, sizeof(gid_t));
+        if (!out->supGroups) {
+            goto fail;
+        }
+        memcpy(out->supGroups, orig->supGroups, out->supGroupsSize);
+    }
 
     return 0;
 
@@ -287,6 +297,7 @@ void crinitDestroyTask(crinitTask_t *t) {
     crinitEnvSetDestroy(&t->elosFilters);
     free(t->username);
     free(t->groupname);
+    free(t->supGroups);
 }
 
 int crinitTaskMergeInclude(crinitTask_t *tgt, const char *src, char *importList) {
