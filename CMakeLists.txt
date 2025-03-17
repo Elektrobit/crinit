@@ -171,6 +171,7 @@ if(UNIT_TESTS)
 endif(UNIT_TESTS)
 
 if(API_DOC)
+  set(API_DOC_HTML_OUTPUT_DIR "${CMAKE_SOURCE_DIR}/doc/api/html")
   find_package(Doxygen REQUIRED)
   file(GLOB plantuml_images "images/*.plantuml")
   # Exclude rootfs_init_comp as we have already pre-built it as an SVG with a newer PlantUML.
@@ -179,30 +180,30 @@ if(API_DOC)
     get_filename_component(output ${img} NAME_WLE)
     add_custom_command(
       OUTPUT
-        ${CMAKE_SOURCE_DIR}/doc/api/html/images/${output}.svg
+      ${API_DOC_HTML_OUTPUT_DIR}/images/${output}.svg
       COMMAND
-        plantuml -o ${CMAKE_SOURCE_DIR}/doc/api/html/images -tsvg ${img}
+        plantuml -o ${API_DOC_HTML_OUTPUT_DIR}/images -tsvg ${img}
       MAIN_DEPENDENCY
         ${img}
       COMMENT
        "Running plantuml to generate: ${output}"
     )
-    list(APPEND doxygen_images ${CMAKE_SOURCE_DIR}/doc/api/html/images/${output}.svg)
+    list(APPEND doxygen_images ${API_DOC_HTML_OUTPUT_DIR}/images/${output}.svg)
   endforeach()
   file(GLOB binary_images "images/*.*")
   list(FILTER binary_images EXCLUDE REGEX "\.plantuml$")
   foreach(img ${binary_images})
     add_custom_command(
       OUTPUT
-        ${CMAKE_SOURCE_DIR}/doc/api/html/images/${img}
+        ${API_DOC_HTML_OUTPUT_DIR}/images/${img}
       COMMAND
-        mkdir -p ${CMAKE_SOURCE_DIR}/doc/api/html/images/ && cp ${img} ${CMAKE_SOURCE_DIR}/doc/api/html/images/
+        mkdir -p ${API_DOC_HTML_OUTPUT_DIR}/images/ && cp ${img} ${API_DOC_HTML_OUTPUT_DIR}/images/
       MAIN_DEPENDENCY
         ${img}
       COMMENT
       "Copying binary image: ${img}"
     )
-    list(APPEND doxygen_images ${CMAKE_SOURCE_DIR}/doc/api/html/images/${img})
+    list(APPEND doxygen_images ${API_DOC_HTML_OUTPUT_DIR}/images/${img})
   endforeach()
 
   add_custom_target(
@@ -212,7 +213,7 @@ if(API_DOC)
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     DEPENDS ${doxygen_images}
   )
-  install(DIRECTORY ${CMAKE_SOURCE_DIR}/doc/api/html DESTINATION "${CMAKE_INSTALL_DOCDIR}")
+  install(DIRECTORY ${API_DOC_HTML_OUTPUT_DIR} DESTINATION "${CMAKE_INSTALL_DOCDIR}")
 endif(API_DOC)
 
 if(INSTALL_EXAMPLE_CONFIGS)
