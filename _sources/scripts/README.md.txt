@@ -8,9 +8,9 @@ keys.
 
 While crinit internally uses mbedTLS as a cryptography library, the scripts depend on OpenSSL's user-space interface.
 
-# Script usage information
+## Script usage information
 
-## `crinit-genkeys.sh`
+### `crinit-genkeys.sh`
 
 ```
 Usage: crinit-genkeys.sh [-h/--help] [-k/--key-file <KEY_FILE>] [-o/--output <OUTPUT_FILE>]
@@ -24,7 +24,7 @@ Usage: crinit-genkeys.sh [-h/--help] [-k/--key-file <KEY_FILE>] [-o/--output <OU
         - The filename of the output key. Default: write to Standard Output
 ```
 
-## `crinit-sign.sh`
+### `crinit-sign.sh`
 
 ```
 Usage: crinit-sign.sh [-h/--help] [-k/--key-file <KEY_FILE>] [-o/--output <OUTPUT_FILE>] [<INPUT_FILE>]
@@ -38,9 +38,9 @@ Usage: crinit-sign.sh [-h/--help] [-k/--key-file <KEY_FILE>] [-o/--output <OUTPU
     <INPUT_FILE>
         - Positional argument. The input data to sign. Default: Standard Input
 ```
-# Usage examples
+## Usage examples
 
-## Generate a root key pair
+### Generate a root key pair
 
 First generate the private root key.
 
@@ -55,7 +55,7 @@ execution, e.g. by using an HSM or by compiling it into the Kernel.
 $ crinit-genkeys.sh -k crinit-root.key -o crinit-root.pub
 ```
 
-## Generate downstream keys signed by the root key
+### Generate downstream keys signed by the root key
 
 Assuming the presence of a root key (`crinit-root.key`) we can generate downstream signed keys which do not have to
 reside in the Kernel keyring but can be supplied externally.
@@ -77,7 +77,7 @@ The key generation step could for example be done by a third-party vendor wishin
 for its software. The upstream system integrator would do the signing of their public key. From then on the third-party
 vendor can supply trusted configuration files.
 
-## Sign configuration files
+### Sign configuration files
 
 The signing of configuration files can be done either with the root key or with downstream signed keys. The command is
 the same as above.
@@ -86,7 +86,7 @@ the same as above.
 $ crinit-sign.sh -k some-key.key -o task.sig task.crinit
 ```
 
-# Note on the key type used in `crinit-genkeys.sh`
+## Note on the key type used in `crinit-genkeys.sh`
 
 In recent versions, OpenSSL can also generate special `rsa-pss` type keys instead of the more general `rsa` type. The
 difference between them lies in metadata. While `rsa` keys have no limitations on their usage, `rsa-pss` keys may

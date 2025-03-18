@@ -1,6 +1,9 @@
 <map id="test/utest/utest&#45;crinit&#45;set&#45;verbose/utest&#45;crinit&#45;set&#45;verbose.h" name="test/utest/utest&#45;crinit&#45;set&#45;verbose/utest&#45;crinit&#45;set&#45;verbose.h">
-<area shape="rect" id="node1" title="Header declaring the unit tests for crinitClientSetVerbose()." alt="" coords="213,5,392,61"/>
-<area shape="rect" id="node2" href="$case-glob-opt-error_8c.html" title="Implementation of a unit test for crinitClientSetVerbose() with the assumption crinitGlobOptSet() fai..." alt="" coords="5,109,176,165"/>
-<area shape="rect" id="node3" href="$utest-crinit-set-verbose_2case-success_8c.html" title="Implementation of a unit test for crinitClientSetVerbose(), under the assumption no internal function..." alt="" coords="201,117,405,158"/>
-<area shape="rect" id="node4" href="$utest-crinit-set-verbose_8c.html" title="Implementation of the crinitClientSetVerbose() unit test group." alt="" coords="429,109,608,165"/>
+<area shape="rect" id="Node000001" title="Header declaring the unit tests for crinitClientSetVerbose()." alt="" coords="213,5,392,60"/>
+<area shape="rect" id="Node000002" href="$case-glob-opt-error_8c.html" title="Implementation of a unit test for crinitClientSetVerbose() with the assumption crinitGlobOptSet() fai..." alt="" coords="5,108,176,163"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="237,68,147,110,145,106,234,63"/>
+<area shape="rect" id="Node000003" href="$utest-crinit-set-verbose_2case-success_8c.html" title="Implementation of a unit test for crinitClientSetVerbose(), under the assumption no internal function..." alt="" coords="201,115,405,155"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="305,74,305,115,300,115,300,74"/>
+<area shape="rect" id="Node000004" href="$utest-crinit-set-verbose_8c.html" title="Implementation of the crinitClientSetVerbose() unit test group." alt="" coords="429,108,608,163"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="372,63,464,106,461,110,370,68"/>
 </map>

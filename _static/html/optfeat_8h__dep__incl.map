@@ -1,5 +1,9 @@
 <map id="inc/optfeat.h" name="inc/optfeat.h">
-<area shape="rect" id="node1" title="Header related to optional behavior dependent on available system features." alt="" coords="67,5,171,32"/>
-<area shape="rect" id="node2" href="$optfeat_8c.html" title="Implementation of optional behavior dependent on available system features." alt="" coords="5,80,108,107"/>
-<area shape="rect" id="node3" href="$taskdb_8c.html" title="Implementation of the central Task Database and related functions." alt="" coords="132,80,232,107"/>
+<area shape="rect" id="Node000001" title="Header related to optional behavior dependent on available system features." alt="" coords="118,5,222,31"/>
+<area shape="rect" id="Node000002" href="$crinit_8c.html" title="Implementation of the Crinit main program." alt="" coords="5,79,95,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="140,40,71,81,68,76,137,35"/>
+<area shape="rect" id="Node000003" href="$optfeat_8c.html" title="Implementation of optional behavior dependent on available system features." alt="" coords="119,79,221,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="173,44,173,79,167,79,167,44"/>
+<area shape="rect" id="Node000004" href="$taskdb_8c.html" title="Implementation of the central Task Database and related functions." alt="" coords="245,79,345,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="203,35,276,76,274,81,201,40"/>
 </map>

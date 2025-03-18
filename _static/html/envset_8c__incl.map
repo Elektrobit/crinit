@@ -1,17 +1,39 @@
 <map id="src/envset.c" name="src/envset.c">
-<area shape="rect" id="node1" title="Implementation file related to working with environment variable sets." alt="" coords="314,5,414,32"/>
-<area shape="rect" id="node2" href="$envset_8h.html" title="Header defining data types and functions to work with sets of environment variables." alt="" coords="107,155,186,181"/>
-<area shape="rect" id="node8" title=" " alt="" coords="182,80,253,107"/>
-<area shape="rect" id="node9" title=" " alt="" coords="367,155,438,181"/>
-<area shape="rect" id="node10" href="$confconv_8h.html" title="Definitions related to conversion operations from configuration values to structured data." alt="" coords="277,80,369,107"/>
-<area shape="rect" id="node12" href="$lexers_8h.html" title="Header related to lexers built with re2c, used in the config/envset parser." alt="" coords="594,229,667,256"/>
-<area shape="rect" id="node13" href="$logio_8h.html" title="Header related to debug/log output." alt="" coords="444,80,511,107"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,379,80,405"/>
-<area shape="rect" id="node4" href="$confparse_8h.html" title="Header related to the Config Parser." alt="" coords="144,229,243,256"/>
-<area shape="rect" id="node5" title=" " alt="" coords="288,379,371,405"/>
-<area shape="rect" id="node6" title=" " alt="" coords="145,304,241,331"/>
-<area shape="rect" id="node7" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="42,304,121,331"/>
-<area shape="rect" id="node11" href="$ioredir_8h.html" title="Header related to IO redirection types and functions." alt="" coords="216,155,291,181"/>
-<area shape="rect" id="node14" title=" " alt="" coords="605,155,673,181"/>
-<area shape="rect" id="node15" title=" " alt="" coords="513,155,580,181"/>
+<area shape="rect" id="Node000001" title="Implementation file related to working with environment variable sets." alt="" coords="314,5,414,31"/>
+<area shape="rect" id="Node000002" href="$envset_8h.html" title="Header defining data types and functions to work with sets of environment variables." alt="" coords="107,152,186,177"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="314,24,279,29,240,40,203,56,171,81,162,93,156,108,150,139,144,138,151,107,157,91,167,77,200,52,238,35,278,24,314,19"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="182,79,253,104"/>
+<area shape="poly" id="edge9_Node000001_Node000008" title=" " alt="" coords="342,33,255,75,252,70,339,28"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="367,152,438,177"/>
+<area shape="poly" id="edge10_Node000001_Node000009" title=" " alt="" coords="370,30,383,78,399,138,394,139,377,79,364,31"/>
+<area shape="rect" id="Node000010" href="$confconv_8h.html" title="Definitions related to conversion operations from configuration values to structured data." alt="" coords="277,79,369,104"/>
+<area shape="poly" id="edge11_Node000001_Node000010" title=" " alt="" coords="359,32,339,68,334,65,355,30"/>
+<area shape="rect" id="Node000012" href="$lexers_8h.html" title="Header related to lexers built with re2c, used in the config/envset parser." alt="" coords="594,225,667,251"/>
+<area shape="poly" id="edge16_Node000001_Node000012" title=" " alt="" coords="415,20,480,31,556,54,594,71,630,92,662,118,688,151,693,169,687,187,675,204,660,218,656,215,671,201,682,185,687,169,683,153,658,122,627,96,592,75,554,59,479,36,414,26"/>
+<area shape="rect" id="Node000013" href="$logio_8h.html" title="Header related to debug/log output." alt="" coords="444,79,511,104"/>
+<area shape="poly" id="edge18_Node000001_Node000013" title=" " alt="" coords="384,28,449,69,446,74,381,33"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,372,80,397"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="133,179,80,227,52,261,32,299,29,329,35,358,30,359,23,330,27,298,48,258,76,224,129,175"/>
+<area shape="rect" id="Node000004" href="$confparse_8h.html" title="Header related to the Config Parser." alt="" coords="144,225,243,251"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="157,176,180,212,176,215,152,179"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="288,372,371,397"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="207,249,255,297,312,360,308,363,251,301,204,253"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="145,299,241,324"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="196,251,196,285,191,285,191,251"/>
+<area shape="rect" id="Node000007" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="42,299,121,324"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="177,253,113,293,110,289,174,248"/>
+<area shape="poly" id="edge8_Node000007_Node000003" title=" " alt="" coords="77,326,58,361,53,359,73,323"/>
+<area shape="poly" id="edge7_Node000007_Node000005" title=" " alt="" coords="122,321,277,366,275,371,120,327"/>
+<area shape="poly" id="edge13_Node000010_Node000002" title=" " alt="" coords="295,106,189,149,187,144,293,102"/>
+<area shape="poly" id="edge12_Node000010_Node000005" title=" " alt="" coords="326,104,331,358,326,358,320,104"/>
+<area shape="rect" id="Node000011" href="$ioredir_8h.html" title="Header related to IO redirection types and functions." alt="" coords="216,152,291,177"/>
+<area shape="poly" id="edge14_Node000010_Node000011" title=" " alt="" coords="313,106,276,144,272,140,309,102"/>
+<area shape="poly" id="edge15_Node000011_Node000004" title=" " alt="" coords="245,179,214,217,210,213,241,176"/>
+<area shape="poly" id="edge17_Node000012_Node000005" title=" " alt="" coords="616,253,564,288,496,326,438,351,382,370,381,365,436,346,493,322,561,283,613,249"/>
+<area shape="poly" id="edge20_Node000013_Node000005" title=" " alt="" coords="477,105,452,178,397,282,347,362,343,359,392,280,447,176,472,104"/>
+<area shape="poly" id="edge22_Node000013_Node000009" title=" " alt="" coords="467,106,427,144,423,141,464,102"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="605,152,673,177"/>
+<area shape="poly" id="edge19_Node000013_Node000014" title=" " alt="" coords="504,102,601,144,599,149,502,106"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="513,152,580,177"/>
+<area shape="poly" id="edge21_Node000013_Node000015" title=" " alt="" coords="491,102,528,140,524,144,487,106"/>
 </map>

@@ -18,6 +18,7 @@ var lexers_8h =
     [ "crinitEnvVarInnerLex", "lexers_8h.html#a300346fc84ca0014737f7d5625b730bb", null ],
     [ "crinitEnvVarOuterLex", "lexers_8h.html#a4fc50086d1d9bac3ebb7bdf97f78ea3f", null ],
     [ "crinitEscLex", "lexers_8h.html#af240aa25c1ae50fc13c553e16d934fd3", null ],
+    [ "crinitKernelCmdlineLex", "lexers_8h.html#a6b7e167dc4e9cf273bba9edf4b4102c2", null ],
     [ "crinitMatchQuotedConfig", "lexers_8h.html#a948c5954b4da553fa9526612e49679f7", null ],
     [ "crinitEscMap", "lexers_8h.html#a3cb60bfe827827c6aae1d4dee6e1045f", null ]
 ];

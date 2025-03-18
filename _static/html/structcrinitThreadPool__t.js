@@ -8,5 +8,5 @@ var structcrinitThreadPool__t =
     [ "thrArgsSize", "structcrinitThreadPool__t.html#a2425c11609e2c9d1aaba1ace4f152c41", null ],
     [ "threadAvail", "structcrinitThreadPool__t.html#a9c60f1eb1380305902ae0a90c2fa02b0", null ],
     [ "threadAvailChanged", "structcrinitThreadPool__t.html#a05a7a0a73e16b88be40b4384921fd6f0", null ],
-    [ "threadFunc", "structcrinitThreadPool__t.html#af3f0865e481e52a54f0033c2d1c45ef2", null ]
+    [ "threadFunc", "structcrinitThreadPool__t.html#a6f0959fabc6d765889a07c808e06ba3a", null ]
 ];

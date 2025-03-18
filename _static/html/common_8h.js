@@ -6,5 +6,6 @@ var common_8h =
     [ "crinitNullify", "common_8h.html#a576622b44f07db9e05e315e43b41d041", null ],
     [ "crinitNumElements", "common_8h.html#a5fafb79fa7c29c88f96a4dabd00fe077", null ],
     [ "crinitParamCheck", "common_8h.html#af2f54de5b8b3514496402466c76c0ce4", null ],
-    [ "crinitStrtoGenericInteger", "common_8h.html#aa22b17c78eea06dd907877af4babc006", null ]
+    [ "crinitStrtoGenericInteger", "common_8h.html#aa22b17c78eea06dd907877af4babc006", null ],
+    [ "crinitBinReadAll", "common_8h.html#a40a590c097a2f65530ef68da45694676", null ]
 ];

@@ -2,10 +2,14 @@ var structcrinitTask__t =
 [
     [ "cmds", "structcrinitTask__t.html#a2d473447fc93d797c96968d3c819fbb3", null ],
     [ "cmdsSize", "structcrinitTask__t.html#a8763edc44e013eff2548e68afff0ab7a", null ],
+    [ "createTime", "structcrinitTask__t.html#aa908ac0a0555141dc877ea0145a962c7", null ],
     [ "deps", "structcrinitTask__t.html#ade4034f914b448f0cfb4e9249669ab95", null ],
     [ "depsSize", "structcrinitTask__t.html#a577a31bf5e540e93c859e4d3b53ccf67", null ],
     [ "elosFilters", "structcrinitTask__t.html#a1698af4093a424daa653fbd92946a818", null ],
+    [ "endTime", "structcrinitTask__t.html#afe213af954835d91e1cc78deb774d9ea", null ],
     [ "failCount", "structcrinitTask__t.html#a1fc37e71d1faac1ed5861893610b2b68", null ],
+    [ "group", "structcrinitTask__t.html#a16d6446ebc83615a9f484ec631a526b3", null ],
+    [ "groupname", "structcrinitTask__t.html#a59a5c3839062e1b8f3b4f1925455dc42", null ],
     [ "maxRetries", "structcrinitTask__t.html#a27b870f3a781be025b410d567372d1c2", null ],
     [ "name", "structcrinitTask__t.html#a29602304fb5bb5d58159f9d7747a604e", null ],
     [ "opts", "structcrinitTask__t.html#aa85b90bb84717368e4c4fd54ab4a797d", null ],
@@ -14,6 +18,11 @@ var structcrinitTask__t =
     [ "prvSize", "structcrinitTask__t.html#a83681cc43a6e480c4399e2cf9c365640", null ],
     [ "redirs", "structcrinitTask__t.html#a9b18ce31d6572499213c7f42d756de49", null ],
     [ "redirsSize", "structcrinitTask__t.html#a3f57ab31b84ecce2f2b33ec5de9bf714", null ],
+    [ "startTime", "structcrinitTask__t.html#a5d483f22f3da30735e69d7cdcc553ab2", null ],
     [ "state", "structcrinitTask__t.html#abfac7a104064c66f0ae14d1e3e2f4c36", null ],
-    [ "taskEnv", "structcrinitTask__t.html#a9cb78710173db4ff669a50858a4f4204", null ]
+    [ "stopCmds", "structcrinitTask__t.html#ac58c979c2b4b3595832fa0251541c0d3", null ],
+    [ "stopCmdsSize", "structcrinitTask__t.html#a02e961a50cc67fa6d7334e5825a391cb", null ],
+    [ "taskEnv", "structcrinitTask__t.html#a9cb78710173db4ff669a50858a4f4204", null ],
+    [ "user", "structcrinitTask__t.html#a277e93a70db574a9c2dfade182cea596", null ],
+    [ "username", "structcrinitTask__t.html#a56fc40cea8308fdc5e5c416d95a1c376", null ]
 ];

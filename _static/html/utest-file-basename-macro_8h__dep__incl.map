@@ -1,5 +1,7 @@
 <map id="test/utest/utest&#45;file&#45;basename&#45;macro/utest&#45;file&#45;basename&#45;macro.h" name="test/utest/utest&#45;file&#45;basename&#45;macro/utest&#45;file&#45;basename&#45;macro.h">
-<area shape="rect" id="node1" title="Header declaring the regression test for the FILE_BASENAME macro." alt="" coords="132,5,311,61"/>
-<area shape="rect" id="node2" href="$utest-file-basename-macro_2regression-test_8c.html" title="Implementation of a regression test to check the FILE_BASENAME macro." alt="" coords="5,109,219,165"/>
-<area shape="rect" id="node3" href="$utest-file-basename-macro_8c.html" title="Implementation of the unit test group for the FILE_BASENAME macro." alt="" coords="243,109,421,165"/>
+<area shape="rect" id="Node000001" title="Header declaring the regression test for the FILE_BASENAME macro." alt="" coords="132,5,311,60"/>
+<area shape="rect" id="Node000002" href="$utest-file-basename-macro_2regression-test_8c.html" title="Implementation of a regression test to check the FILE_BASENAME macro." alt="" coords="5,108,219,163"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="184,72,142,110,139,106,181,68"/>
+<area shape="rect" id="Node000003" href="$utest-file-basename-macro_8c.html" title="Implementation of the unit test group for the FILE_BASENAME macro." alt="" coords="243,108,421,163"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="262,67,305,106,301,110,259,71"/>
 </map>

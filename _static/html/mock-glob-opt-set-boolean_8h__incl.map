@@ -1,11 +1,22 @@
 <map id="test/utest/mocks/mock&#45;glob&#45;opt&#45;set&#45;boolean.h" name="test/utest/mocks/mock&#45;glob&#45;opt&#45;set&#45;boolean.h">
-<area shape="rect" id="node1" title="Header declaring a mock function for crinitGlobOptSetBoolean()." alt="" coords="5,5,180,47"/>
-<area shape="rect" id="node2" href="$globopt_8h.html" title="Header related to global option storage." alt="" coords="51,95,134,121"/>
-<area shape="rect" id="node3" title=" " alt="" coords="149,393,231,420"/>
-<area shape="rect" id="node4" title=" " alt="" coords="57,169,128,196"/>
-<area shape="rect" id="node5" href="$envset_8h.html" title="Header defining data types and functions to work with sets of environment variables." alt="" coords="152,169,231,196"/>
-<area shape="rect" id="node6" title=" " alt="" coords="281,393,355,420"/>
-<area shape="rect" id="node7" href="$confparse_8h.html" title="Header related to the Config Parser." alt="" coords="141,244,239,271"/>
-<area shape="rect" id="node8" title=" " alt="" coords="57,319,153,345"/>
-<area shape="rect" id="node9" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="228,319,307,345"/>
+<area shape="rect" id="Node000001" title="Header declaring a mock function for crinitGlobOptSetBoolean()." alt="" coords="5,5,180,45"/>
+<area shape="rect" id="Node000002" href="$globopt_8h.html" title="Header related to global option storage." alt="" coords="51,93,134,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="95,46,95,79,90,79,90,46"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="149,387,231,412"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="81,121,62,141,47,168,30,216,22,256,26,294,47,337,65,356,87,371,136,388,134,393,84,376,61,360,42,340,21,296,16,256,25,214,42,166,58,138,77,117"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="57,167,128,192"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="95,119,95,153,90,153,90,119"/>
+<area shape="rect" id="Node000005" href="$envset_8h.html" title="Header defining data types and functions to work with sets of environment variables." alt="" coords="152,167,231,192"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="110,117,166,156,163,161,107,121"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="281,387,355,412"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="211,190,238,210,269,238,299,272,322,312,328,344,326,373,321,373,322,344,317,314,295,275,265,241,234,214,208,194"/>
+<area shape="rect" id="Node000007" href="$confparse_8h.html" title="Header related to the Config Parser." alt="" coords="141,240,239,265"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="194,192,193,227,188,226,188,192"/>
+<area shape="poly" id="edge7_Node000007_Node000003" title=" " alt="" coords="193,266,193,373,187,373,187,266"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="57,313,153,339"/>
+<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="178,267,131,307,127,302,175,263"/>
+<area shape="rect" id="Node000009" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="228,313,307,339"/>
+<area shape="poly" id="edge9_Node000007_Node000009" title=" " alt="" coords="204,263,246,302,243,306,201,267"/>
+<area shape="poly" id="edge10_Node000009_Node000003" title=" " alt="" coords="257,341,215,379,211,375,253,337"/>
+<area shape="poly" id="edge11_Node000009_Node000006" title=" " alt="" coords="278,337,304,374,300,377,274,341"/>
 </map>

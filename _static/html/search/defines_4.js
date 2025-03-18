@@ -1,6 +1,26 @@
 var searchData=
 [
-  ['kernel_5fcmdline_5fkey_1828',['KERNEL_CMDLINE_KEY',['../machine-id-gen_8c.html#af5cd23e30e37815858c219c0bef3e754',1,'machine-id-gen.c']]],
-  ['kernel_5fcmdline_5fmax_5flen_1829',['KERNEL_CMDLINE_MAX_LEN',['../machine-id-gen_8c.html#a331f96bc37e6c65add8327959cadfe74',1,'machine-id-gen.c']]],
-  ['kernel_5fcmdline_5fpath_1830',['KERNEL_CMDLINE_PATH',['../machine-id-gen_8c.html#a99f1cbaf4945d175bb57b51ef9d1c62d',1,'machine-id-gen.c']]]
+  ['elos_5fclassification_5felos_0',['ELOS_CLASSIFICATION_ELOS',['../elos-common_8h.html#a2c5e1cdff9150586b008334cdec245b2',1,'elos-common.h']]],
+  ['elos_5fclassification_5felos_5fmask_1',['ELOS_CLASSIFICATION_ELOS_MASK',['../elos-common_8h.html#aaeedac9079578f45d029c51caff7c687',1,'elos-common.h']]],
+  ['elos_5fclassification_5fhardware_2',['ELOS_CLASSIFICATION_HARDWARE',['../elos-common_8h.html#a65b4cf1cee27faa69bb0fb28c74ed9c9',1,'elos-common.h']]],
+  ['elos_5fclassification_5fipc_3',['ELOS_CLASSIFICATION_IPC',['../elos-common_8h.html#acb5285a35482727d99b770429c7e94dd',1,'elos-common.h']]],
+  ['elos_5fclassification_5fkernel_4',['ELOS_CLASSIFICATION_KERNEL',['../elos-common_8h.html#aaf502edc81ca2bad09063fa5b4d40947',1,'elos-common.h']]],
+  ['elos_5fclassification_5fnetwork_5',['ELOS_CLASSIFICATION_NETWORK',['../elos-common_8h.html#a749a856c5e41ffffd3da80a996fe69ed',1,'elos-common.h']]],
+  ['elos_5fclassification_5fpower_6',['ELOS_CLASSIFICATION_POWER',['../elos-common_8h.html#aa85bf58ef559d8538641c169beff5460',1,'elos-common.h']]],
+  ['elos_5fclassification_5fprocess_7',['ELOS_CLASSIFICATION_PROCESS',['../elos-common_8h.html#a469087d7377639f0356104cae4215dbe',1,'elos-common.h']]],
+  ['elos_5fclassification_5fprocess_5ferrors_8',['ELOS_CLASSIFICATION_PROCESS_ERRORS',['../elos-common_8h.html#aa4d3f1f946e225b2db2b0d54a68e384b',1,'elos-common.h']]],
+  ['elos_5fclassification_5freserved_5fmask_9',['ELOS_CLASSIFICATION_RESERVED_MASK',['../elos-common_8h.html#aac3948a8944f627fa3e46f31e8ecdc6d',1,'elos-common.h']]],
+  ['elos_5fclassification_5fsecurity_10',['ELOS_CLASSIFICATION_SECURITY',['../elos-common_8h.html#aaebb2da2b50abdcbc30079c7fbeaf9a9',1,'elos-common.h']]],
+  ['elos_5fclassification_5fstorage_11',['ELOS_CLASSIFICATION_STORAGE',['../elos-common_8h.html#af722dea2b1f784810b7431fa719b883f',1,'elos-common.h']]],
+  ['elos_5fclassification_5fundefined_12',['ELOS_CLASSIFICATION_UNDEFINED',['../elos-common_8h.html#a04d4b320d7e5e2b3dc19713174ffedae',1,'elos-common.h']]],
+  ['elos_5fclassification_5fuser_5f0_13',['ELOS_CLASSIFICATION_USER_0',['../elos-common_8h.html#a52d2e535ac3fdd13b1aa8d38225b65e8',1,'elos-common.h']]],
+  ['elos_5fclassification_5fuser_5f1_14',['ELOS_CLASSIFICATION_USER_1',['../elos-common_8h.html#ab6eaeef4ecd011c801758095d2bf1b7f',1,'elos-common.h']]],
+  ['elos_5fclassification_5fuser_5f2_15',['ELOS_CLASSIFICATION_USER_2',['../elos-common_8h.html#afd341eaaf5a671fda602b803184c3f47',1,'elos-common.h']]],
+  ['elos_5fclassification_5fuser_5f3_16',['ELOS_CLASSIFICATION_USER_3',['../elos-common_8h.html#a5758af775ec960fdc6b757534b8e4da9',1,'elos-common.h']]],
+  ['elos_5fclassification_5fuser_5f4_17',['ELOS_CLASSIFICATION_USER_4',['../elos-common_8h.html#aa6c01df827a0d00c1460aaa0c63a2b78',1,'elos-common.h']]],
+  ['elos_5fclassification_5fuser_5f5_18',['ELOS_CLASSIFICATION_USER_5',['../elos-common_8h.html#af5535f6c1188d0bdd8988be5a8c1bcb4',1,'elos-common.h']]],
+  ['elos_5fclassification_5fuser_5f6_19',['ELOS_CLASSIFICATION_USER_6',['../elos-common_8h.html#a56774297809b4980985c30a5a9dd85ee',1,'elos-common.h']]],
+  ['elos_5fclassification_5fuser_5f7_20',['ELOS_CLASSIFICATION_USER_7',['../elos-common_8h.html#a9ebf11073d7f1ba2a36905d670397da5',1,'elos-common.h']]],
+  ['elos_5fclassification_5fuser_5fmask_21',['ELOS_CLASSIFICATION_USER_MASK',['../elos-common_8h.html#aad587843785aadff0dde69b6e0c112b8',1,'elos-common.h']]],
+  ['elos_5fid_5finvalid_22',['ELOS_ID_INVALID',['../elos-common_8h.html#a79c894eb16442a58044d6f94dd765c63',1,'elos-common.h']]]
 ];

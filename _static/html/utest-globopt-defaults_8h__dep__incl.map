@@ -1,0 +1,7 @@
+<map id="test/utest/utest&#45;globopt&#45;defaults/utest&#45;globopt&#45;defaults.h" name="test/utest/utest&#45;globopt&#45;defaults/utest&#45;globopt&#45;defaults.h">
+<area shape="rect" id="Node000001" title="Header declaring the regression test for default initialization of global options." alt="" coords="119,5,293,60"/>
+<area shape="rect" id="Node000002" href="$utest-globopt-defaults_2regression-test_8c.html" title="Implementation of a regression test if default values for all global options are present and intializ..." alt="" coords="5,115,199,155"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="171,72,124,117,120,113,167,68"/>
+<area shape="rect" id="Node000003" href="$utest-globopt-defaults_8c.html" title="Implementation of the test group for the regression test for default initialization of global options..." alt="" coords="223,108,397,163"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="245,68,285,106,281,110,241,72"/>
+</map>

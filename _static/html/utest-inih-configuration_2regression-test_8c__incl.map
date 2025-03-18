@@ -1,13 +1,25 @@
 <map id="test/utest/utest&#45;inih&#45;configuration/regression&#45;test.c" name="test/utest/utest&#45;inih&#45;configuration/regression&#45;test.c">
-<area shape="rect" id="node1" title="Implementation of a regression test to check the compile&#45;time configuration of libinih." alt="" coords="149,5,333,61"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,109,76,136"/>
-<area shape="rect" id="node3" href="$common_8h.html" title="Header for common definitions not related to other specific features." alt="" coords="101,109,191,136"/>
-<area shape="rect" id="node4" title=" " alt="" coords="215,109,266,136"/>
-<area shape="rect" id="node5" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="290,109,381,136"/>
-<area shape="rect" id="node11" href="$utest-inih-configuration_8h.html" title="Header declaring the regression test for the libinih compile&#45;time&#45;configuration." alt="" coords="405,109,591,136"/>
-<area shape="rect" id="node6" title=" " alt="" coords="96,184,175,211"/>
-<area shape="rect" id="node7" title=" " alt="" coords="199,184,274,211"/>
-<area shape="rect" id="node8" title=" " alt="" coords="298,184,373,211"/>
-<area shape="rect" id="node9" title=" " alt="" coords="397,184,468,211"/>
-<area shape="rect" id="node10" title=" " alt="" coords="492,184,576,211"/>
+<area shape="rect" id="Node000001" title="Implementation of a regression test to check the compile&#45;time configuration of libinih." alt="" coords="169,5,353,60"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,108,76,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="194,63,84,105,82,100,192,58"/>
+<area shape="rect" id="Node000003" href="$common_8h.html" title="Header for common definitions/functions not related to other specific features." alt="" coords="101,108,191,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="227,62,174,102,171,97,224,58"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="330,108,381,133"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="291,58,334,97,331,101,288,62"/>
+<area shape="rect" id="Node000007" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="215,108,306,133"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="263,60,263,94,258,94,258,60"/>
+<area shape="rect" id="Node000011" href="$utest-inih-configuration_8h.html" title="Header declaring the regression test for the libinih compile&#45;time&#45;configuration." alt="" coords="405,108,591,133"/>
+<area shape="poly" id="edge12_Node000001_Node000011" title=" " alt="" coords="334,58,454,101,453,106,332,63"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="122,181,197,207"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="151,133,157,167,152,168,146,134"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="27,181,97,207"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="134,135,88,174,85,170,131,131"/>
+<area shape="poly" id="edge9_Node000007_Node000004" title=" " alt="" coords="246,136,189,175,186,171,243,131"/>
+<area shape="poly" id="edge10_Node000007_Node000005" title=" " alt="" coords="230,136,108,179,107,174,228,131"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="221,181,300,207"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="263,134,263,168,258,168,258,134"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="325,181,399,207"/>
+<area shape="poly" id="edge8_Node000007_Node000009" title=" " alt="" coords="278,131,336,171,333,175,275,136"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="424,181,508,207"/>
+<area shape="poly" id="edge11_Node000007_Node000010" title=" " alt="" coords="295,131,421,174,419,179,293,136"/>
 </map>

@@ -1,0 +1,32 @@
+<map id="test/utest/mocks/mock&#45;getpwuid_r.c" name="test/utest/mocks/mock&#45;getpwuid_r.c">
+<area shape="rect" id="Node000001" title="Implementation of a mock function for getpwnam_r()." alt="" coords="414,5,585,45"/>
+<area shape="rect" id="Node000002" href="$mock-getpwuid__r_8h.html" title="Header declaring a mock function for getpwuid_r()." alt="" coords="147,93,294,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="433,48,275,92,274,87,432,43"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="569,93,640,119"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="526,43,580,83,576,87,523,48"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="665,93,761,119"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="551,43,669,86,667,91,550,48"/>
+<area shape="rect" id="Node000009" href="$common_8h.html" title="Header for common definitions/functions not related to other specific features." alt="" coords="339,93,430,119"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="473,48,414,88,411,83,470,43"/>
+<area shape="rect" id="Node000011" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="454,93,545,119"/>
+<area shape="poly" id="edge11_Node000001_Node000011" title=" " alt="" coords="502,46,502,79,497,79,497,46"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,167,68,192"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="192,121,81,164,79,159,190,116"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="93,167,154,192"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="207,121,152,160,149,156,203,117"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="287,167,362,192"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="239,116,298,156,295,161,236,121"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="178,167,263,192"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="223,119,223,153,218,153,218,119"/>
+<area shape="poly" id="edge9_Node000009_Node000005" title=" " alt="" coords="377,121,345,158,341,154,373,117"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="387,167,457,192"/>
+<area shape="poly" id="edge10_Node000009_Node000010" title=" " alt="" coords="393,118,412,153,407,156,388,120"/>
+<area shape="poly" id="edge14_Node000011_Node000005" title=" " alt="" coords="472,121,367,164,365,159,470,116"/>
+<area shape="poly" id="edge15_Node000011_Node000010" title=" " alt="" coords="489,121,447,159,443,155,485,117"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="481,167,560,192"/>
+<area shape="poly" id="edge12_Node000011_Node000012" title=" " alt="" coords="505,118,516,153,511,154,500,120"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="585,167,659,192"/>
+<area shape="poly" id="edge13_Node000011_Node000013" title=" " alt="" coords="520,116,592,157,589,162,518,121"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="684,167,768,192"/>
+<area shape="poly" id="edge16_Node000011_Node000014" title=" " alt="" coords="537,116,677,160,675,165,535,121"/>
+</map>

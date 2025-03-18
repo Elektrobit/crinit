@@ -1,21 +1,44 @@
 <map id="inc/version.h" name="inc/version.h">
-<area shape="rect" id="node1" title="Header definitions related to component versioning." alt="" coords="885,5,991,32"/>
-<area shape="rect" id="node2" href="$crinit-ctl_8c.html" title="Implementation of the crinit&#45;ctl service program using the crinit&#45;client library." alt="" coords="5,169,116,196"/>
-<area shape="rect" id="node3" href="$crinit_8c.html" title="Implementation of the Crinit main program." alt="" coords="832,80,921,107"/>
-<area shape="rect" id="node4" href="$rtimcmd_8c.html" title="Implementation of runtime commands to be triggered by the notification/service interface." alt="" coords="945,80,1056,107"/>
-<area shape="rect" id="node5" href="$crinit-client_8h.html" title="Public definitions/declarations for using the crinit&#45;client shared library." alt="" coords="1290,80,1421,107"/>
-<area shape="rect" id="node6" href="$crinit-client_8c.html" title="Implementation of the crinit&#45;client shared library." alt="" coords="141,169,271,196"/>
-<area shape="rect" id="node7" href="$utest-crinit-set-err-stream_2case-set_8c.html" title="Implementation of a unit test for crinitClientSetErrStream()." alt="" coords="296,162,487,203"/>
-<area shape="rect" id="node8" href="$utest-crinit-set-info-stream_2case-set_8c.html" title="Implementation of a unit test for crinitClientSetInfoStream()." alt="" coords="511,162,709,203"/>
-<area shape="rect" id="node9" href="$case-glob-opt-error_8c.html" title="Implementation of a unit test for crinitClientSetVerbose() with the assumption crinitGlobOptSet() fai..." alt="" coords="734,155,905,211"/>
-<area shape="rect" id="node10" href="$utest-crinit-set-verbose_2case-success_8c.html" title="Implementation of a unit test for crinitClientSetVerbose(), under the assumption no internal function..." alt="" coords="929,162,1133,203"/>
-<area shape="rect" id="node11" href="$case-build-rtim-cmd-error_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for crinitBuildRtimCmd()." alt="" coords="1158,155,1345,211"/>
-<area shape="rect" id="node12" href="$case-confpath-null_8c.html" title="Unit test for crinitClientTaskAdd() with confFilePath as NULL." alt="" coords="1369,155,1549,211"/>
-<area shape="rect" id="node13" href="$case-crinit-response-cmd-error_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for wrong command in response." alt="" coords="1574,155,1739,211"/>
-<area shape="rect" id="node14" href="$case-crinit-response-code-error_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for error code response." alt="" coords="1763,155,1931,211"/>
-<area shape="rect" id="node15" href="$case-crinit-xfer-error_8c.html" title=" " alt="" coords="1956,155,2115,211"/>
-<area shape="rect" id="node16" href="$case-forcedeps-empty_8c.html" title="Unit test for crinitClientTaskAdd() with forceDeps as empty string." alt="" coords="2139,155,2326,211"/>
-<area shape="rect" id="node17" href="$case-forcedeps-null_8c.html" title="Unit test for crinitClientTaskAdd() with forceDeps as NULL." alt="" coords="2350,155,2537,211"/>
-<area shape="rect" id="node18" href="$case-overwrite-bool-to-string_8c.html" title="Unit test for crinitClientTaskAdd() testing overwrite is passed on correctly." alt="" coords="2561,155,2747,211"/>
-<area shape="rect" id="node19" href="$utest-crinit-task-add_2case-success_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for crinitXfer()." alt="" coords="2771,162,2956,203"/>
+<area shape="rect" id="Node000001" title="Header definitions related to component versioning." alt="" coords="1529,5,1635,31"/>
+<area shape="rect" id="Node000002" href="$crinit-client_8h.html" title="Public definitions/declarations for using the crinit&#45;client shared library." alt="" coords="1290,93,1421,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1540,38,1387,96,1385,91,1538,33"/>
+<area shape="rect" id="Node000004" href="$crinit-ctl_8c.html" title="Implementation of the crinit&#45;ctl service program using the crinit&#45;client library." alt="" coords="5,196,116,221"/>
+<area shape="poly" id="edge17_Node000001_Node000004" title=" " alt="" coords="1516,23,1285,33,941,58,743,79,538,106,331,141,129,184,87,198,85,193,128,179,330,136,537,101,743,74,940,53,1285,28,1515,18"/>
+<area shape="rect" id="Node000018" href="$crinit-launch_8c.html" title="Launcher helper needed to start programs with different user / group permissions." alt="" coords="1445,93,1583,119"/>
+<area shape="poly" id="edge18_Node000001_Node000018" title=" " alt="" coords="1566,43,1526,94,1521,91,1562,40"/>
+<area shape="rect" id="Node000019" href="$crinit_8c.html" title="Implementation of the Crinit main program." alt="" coords="1607,93,1696,119"/>
+<area shape="poly" id="edge19_Node000001_Node000019" title=" " alt="" coords="1602,40,1644,91,1640,94,1598,43"/>
+<area shape="rect" id="Node000020" href="$rtimcmd_8c.html" title="Implementation of runtime commands to be triggered by the notification/service interface." alt="" coords="1720,93,1831,119"/>
+<area shape="poly" id="edge20_Node000001_Node000020" title=" " alt="" coords="1622,34,1750,91,1748,96,1620,39"/>
+<area shape="rect" id="Node000021" href="$case-shutdown-with-stop-command_8c.html" title="Unit test for crinitExecRtimCmd(), successful execution." alt="" coords="1855,79,2079,133"/>
+<area shape="poly" id="edge21_Node000001_Node000021" title=" " alt="" coords="1647,31,1856,77,1855,82,1646,36"/>
+<area shape="rect" id="Node000003" href="$crinit-client_8c.html" title="Implementation of the crinit&#45;client shared library." alt="" coords="141,196,271,221"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="1277,113,772,138,490,158,373,171,285,184,235,198,234,193,284,179,373,165,489,153,771,132,1276,108"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="1276,113,649,144,320,164,200,174,129,184,86,198,84,193,128,179,199,169,319,159,649,138,1276,108"/>
+<area shape="rect" id="Node000005" href="$utest-crinit-set-err-stream_2case-set_8c.html" title="Implementation of a unit test for crinitClientSetErrStream()." alt="" coords="296,189,487,229"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="1276,113,1131,120,938,134,719,154,500,184,463,191,462,186,499,179,719,149,937,128,1131,115,1276,108"/>
+<area shape="rect" id="Node000006" href="$utest-crinit-set-info-stream_2case-set_8c.html" title="Implementation of a unit test for crinitClientSetInfoStream()." alt="" coords="511,189,709,229"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="1277,116,1029,141,876,160,722,184,686,191,685,186,722,179,875,155,1028,136,1276,111"/>
+<area shape="rect" id="Node000007" href="$case-glob-opt-error_8c.html" title="Implementation of a unit test for crinitClientSetVerbose() with the assumption crinitGlobOptSet() fai..." alt="" coords="734,181,905,236"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="1277,121,1111,147,919,184,905,187,904,182,917,179,1110,142,1276,116"/>
+<area shape="rect" id="Node000008" href="$utest-crinit-set-verbose_2case-success_8c.html" title="Implementation of a unit test for crinitClientSetVerbose(), under the assumption no internal function..." alt="" coords="929,189,1133,229"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="1306,125,1093,191,1092,186,1304,120"/>
+<area shape="rect" id="Node000009" href="$case-build-rtim-cmd-error_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for crinitBuildRtimCmd()." alt="" coords="1158,181,1345,236"/>
+<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="1335,130,1281,183,1277,179,1332,126"/>
+<area shape="rect" id="Node000010" href="$case-confpath-null_8c.html" title="Unit test for crinitClientTaskAdd() with confFilePath as NULL." alt="" coords="1369,181,1549,236"/>
+<area shape="poly" id="edge9_Node000002_Node000010" title=" " alt="" coords="1379,126,1434,179,1430,183,1375,130"/>
+<area shape="rect" id="Node000011" href="$case-crinit-response-cmd-error_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for wrong command in response." alt="" coords="1574,181,1739,236"/>
+<area shape="poly" id="edge10_Node000002_Node000011" title=" " alt="" coords="1404,121,1579,179,1577,184,1402,126"/>
+<area shape="rect" id="Node000012" href="$case-crinit-response-code-error_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for error code response." alt="" coords="1763,181,1931,236"/>
+<area shape="poly" id="edge11_Node000002_Node000012" title=" " alt="" coords="1399,120,1435,131,1523,148,1593,156,1663,163,1752,179,1764,181,1763,187,1751,184,1662,169,1592,161,1522,153,1433,136,1398,126"/>
+<area shape="rect" id="Node000013" href="$case-crinit-xfer-error_8c.html" title=" " alt="" coords="1956,181,2115,236"/>
+<area shape="poly" id="edge12_Node000002_Node000013" title=" " alt="" coords="1398,121,1435,131,1511,144,1576,152,1688,156,1801,160,1867,167,1944,179,1956,181,1955,187,1943,184,1866,172,1801,165,1688,162,1576,157,1510,150,1433,136,1396,126"/>
+<area shape="rect" id="Node000014" href="$case-forcedeps-empty_8c.html" title="Unit test for crinitClientTaskAdd() with forceDeps as empty string." alt="" coords="2139,181,2326,236"/>
+<area shape="poly" id="edge13_Node000002_Node000014" title=" " alt="" coords="1397,121,1435,131,1539,148,1627,157,1780,159,1933,159,2023,165,2128,179,2140,181,2139,186,2127,184,2022,171,1933,165,1780,164,1627,162,1538,153,1433,136,1396,126"/>
+<area shape="rect" id="Node000015" href="$case-forcedeps-null_8c.html" title="Unit test for crinitClientTaskAdd() with forceDeps as NULL." alt="" coords="2350,181,2537,236"/>
+<area shape="poly" id="edge14_Node000002_Node000015" title=" " alt="" coords="1397,121,1435,131,1570,152,1686,161,1789,163,1885,160,1981,157,2085,157,2201,163,2338,179,2350,181,2349,186,2338,184,2201,168,2084,162,1981,162,1885,166,1789,168,1686,167,1570,157,1433,136,1396,126"/>
+<area shape="rect" id="Node000016" href="$case-overwrite-bool-to-string_8c.html" title="Unit test for crinitClientTaskAdd() testing overwrite is passed on correctly." alt="" coords="2561,181,2747,236"/>
+<area shape="poly" id="edge15_Node000002_Node000016" title=" " alt="" coords="1397,121,1435,131,1602,156,1745,166,1872,167,1990,162,2109,156,2236,154,2380,160,2549,179,2562,181,2561,186,2548,184,2380,165,2236,159,2109,161,1990,167,1872,172,1745,171,1602,161,1433,136,1396,126"/>
+<area shape="rect" id="Node000017" href="$utest-crinit-task-add_2case-success_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for crinitXfer()." alt="" coords="2771,189,2956,229"/>
+<area shape="poly" id="edge16_Node000002_Node000017" title=" " alt="" coords="1397,121,1435,131,1634,159,1804,171,1954,170,2095,163,2236,155,2388,151,2559,157,2760,179,2798,186,2797,191,2759,184,2558,162,2388,156,2237,160,2096,168,1954,175,1804,176,1633,165,1433,136,1395,126"/>
 </map>
