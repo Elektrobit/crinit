@@ -70,7 +70,7 @@ void crinitClientSetNotifyTaskName(const char *taskName);
 /**
  * Sets the path to Crinit's AF_UNIX communication socket.
  *
- * The default is set by #CRINIT_SOCKFILE.
+ * The default is set at library compile-time via the CMake `CRINIT_SOCKFILE` setting.
  *
  * @param sockFile  Path to the socket file.
  */
@@ -181,10 +181,11 @@ int crinitClientTaskEnable(const char *taskName);
  */
 int crinitClientTaskDisable(const char *taskName);
 /**
- * Request Crinit to send SIGTERM to a task process.
+ * Request Crinit to stop a task. This will either result in the corresponding `STOP_COMMAND` being executed or, if
+ * no `STOP_COMMAND` is defined, a SIGTERM being sent to the currently running task process.
  *
- * Will only send a signal if a corresponding PID has been saved in the TaskDB, either through sd_notify() or the
- * Process Dispatcher during process start.
+ * Crinit will only send a SIGTERM if a corresponding PID is known, either through sd_notify() or the Process Dispatcher
+ * during process start.
  *
  * @param taskName  The name of the task.
  *

@@ -1,43 +1,41 @@
 # Crinit -- Configurable Rootfs Init
 
-
-<img src="images/crinit-logo.png" width=20% height=20% align="right">
-
 ## Table of Contents
+
+<img src="images/crinit_logo_blu.svg" width=20% height=20% align="right">
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-  - [In a Nutshell](#in-a-nutshell)
-  - [Concept](#concept)
-  - [Features](#features)
+- [In a Nutshell](#in-a-nutshell)
+- [Concept](#concept)
+- [Features](#features)
 - [License](#license)
-  - [Powered by EB](#powered-by-eb)
-  - [Maintainers](#maintainers)
-  - [Credits](#credits)
-  - [Artwork](#artwork)
-- [Details](#details)
-  - [Command-line options](#command-line-options)
-  - [Environment Variables](#environment-variables)
-  - [Configuration](#configuration)
-    - [Example Global Configuration](#example-global-configuration)
-      - [Explanation](#explanation)
-    - [Example Task Configuration](#example-task-configuration)
-      - [Explanation](#explanation-1)
-    - [Setting Environment Variables](#setting-environment-variables)
-    - [Defining Elos Filters](#defining-elos-filters)
-      - [Ruleset](#ruleset)
-    - [Include files](#include-files)
-    - [IO Redirections](#io-redirections)
-      - [Named pipes](#named-pipes)
-      - [A note on buffering](#a-note-on-buffering)
-    - [Dependency groups (meta-tasks)](#dependency-groups-meta-tasks)
-    - [Configuration Signatures](#configuration-signatures)
-  - [crinit-ctl Usage Info](#crinit-ctl-usage-info)
-  - [Smart bash completion for crinit-ctl](#smart-bash-completion-for-crinit-ctl)
-  - [crinit-launch](#crinit-launch)
-  - [Build Instructions](#build-instructions)
-  - [Build Requirements](#build-requirements)
+- [Powered by EB](#powered-by-eb)
+- [Maintainers](#maintainers)
+- [Credits](#credits)
+- [Artwork](#artwork)
+- [Command-line options](#command-line-options)
+- [Environment Variables](#environment-variables)
+- [Configuration](#configuration)
+  - [Example Global Configuration](#example-global-configuration)
+    - [Explanation](#explanation)
+  - [Example Task Configuration](#example-task-configuration)
+    - [Explanation](#explanation-1)
+  - [Setting Environment Variables](#setting-environment-variables)
+  - [Defining Elos Filters](#defining-elos-filters)
+    - [Ruleset](#ruleset)
+  - [Include files](#include-files)
+  - [IO Redirections](#io-redirections)
+    - [Named pipes](#named-pipes)
+    - [A note on buffering](#a-note-on-buffering)
+  - [Dependency groups (meta-tasks)](#dependency-groups-meta-tasks)
+  - [Configuration Signatures](#configuration-signatures)
+- [crinit-ctl Usage Info](#crinit-ctl-usage-info)
+- [Smart bash completion for crinit-ctl](#smart-bash-completion-for-crinit-ctl)
+- [crinit-launch](#crinit-launch)
+- [Build Instructions](#build-instructions)
+- [Build Requirements](#build-requirements)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -107,7 +105,7 @@ unique ID burned to on-chip OTP memory. If the Kernel command line value is set,
 physical memory OTP reads are omitted. This means that while the application has special functionality for S32G SoCs,
 it can work on any target as long as the Kernel command line contains the necessary value.
 
-# License
+## License
 
 MIT License
 
@@ -129,8 +127,8 @@ rich functionality of Linux while meeting security and industry regulations.
 
 ## Maintainers
 
-* Andreas Zdziarstek andreas.zdziarstek@emlix.com [@gmcn42](https://github.com/gmcn42)
-* Thomas Brinker thomas.brinker@emlix.com [@ThomasBrinker](https://github.com/ThomasBrinker)
+* Andreas Zdziarstek andreas.zdziarstek@emlix.com [\@gmcn42](https://github.com/gmcn42)
+* Thomas Brinker thomas.brinker@emlix.com [\@ThomasBrinker](https://github.com/ThomasBrinker)
 
 ## Credits
 
@@ -150,8 +148,6 @@ rich functionality of Linux while meeting security and industry regulations.
 The crinit logo is the Swallow (Hirundinidae). A quick and small bird able to fly long distances. Originator is Anja
 Lehwess-Litzmann (emlix GmbH). Year 2023. It is licensed under Creative Commons No Derivatives (CC-nd). It shall be used
 in black on white or HKS43 color.
-
-# Details
 
 ## Command-line options
 
@@ -192,18 +188,18 @@ possible to have multiple instances of crinit running alongside each other, each
 
 As described above, Crinit needs a global series-file containing global configuration options as well as a list of task
 configurations. Examples for a local demonstration inside the build environment (see [Build
-Instructions](#Build Instructions) below) are available in `config/test/` and examples to use as a starting point for a
+Instructions](#build-instructions) below) are available in `config/test/` and examples to use as a starting point for a
 minimal system boot are available in `config/example/`.
 
 The general format of crinit configuration files is INI-style `KEY = value` pairs. Some settings may be array-like,
 meaning they can be specified multiple times to append values. Leaving out the `KEY =` part at the start of the line in
 favor of at least one whitespace character is shorthand for appending to the last key, for example:
-```
+```ini
 ARRAY_LIKE_KEY = value 1
 ARRAY_LIKE_KEY = value 2
 ```
 is equivalent to
-```
+```ini
 ARRAY_LIKE_KEY = value 1
                  value 2
 ```
@@ -211,7 +207,7 @@ ARRAY_LIKE_KEY = value 1
 ### Example Global Configuration
 
 An example to boot a minimal environment may look like this:
-```
+```ini
 # Crinit global configuration file
 
 TASKS = earlysetup.crinit check_qemu.crinit network-dhcp.crinit
@@ -275,7 +271,7 @@ ENV_SET = GREETING "Good morning!"
 
 ### Example Task Configuration
 The `network-dhcp.crinit` from above could for example look like this:
-```
+```ini
 # DHCP config for a minimal system
 
 NAME = network-dhcp
@@ -363,7 +359,7 @@ Crinit supports setting environment variables in the global and task configurati
 global config are valid for all tasks and may be locally overriden or referenced. The above examples together would
 result in the following list of environment variables for the task `network-dhcp` (with explanatory comments).
 
-```
+```sh
 FOO=foo
 FOO_BAZ=foo baz                            # Expansion of variable set before in the same config.
 FOO_BAR=foo bar                            # Expansion of global variable in task-local variable.
@@ -387,7 +383,7 @@ FILTER_DEFINE = <filter_name> <filter_rule>
 
 For example:
 
-```
+```ini
 NAME = elos_ssh_event_task
 COMMAND = /bin/echo "Event task has been run."
 
@@ -426,14 +422,14 @@ file is taken.
 Currently only `IO_REDIRECT`, `DEPENDS`, and `ENV_SET` are supported in include files.
 
 Example:
-```
+```ini
 INCLUDE = server_settings ENV_SET,IO_REDIRECT
 ```
 Imports only the `ENV_SET` and `IO_REDIRECT` settings from (assuming default values for include dir and suffix)
 `/etc/crinit/server_settings.crincl`.
 
 `server_settings.crincl` could look like
-```
+```ini
 ENV_SET = HTTP_PORT "8080"
 IO_REDIRECT = STDOUT /some/file.txt
 IO_REDIRECT = STDERR STDOUT
@@ -459,12 +455,12 @@ Accordingly the statements in the example configuration above will result in `st
 The second statement then redirects stderr to stdout, capturing both in the log.
 
 Other examples could be
-```
+```ini
 IO_REDIRECT = STDERR "/var/log/err.log" APPEND
 IO_REDIRECT = STDOUT "/dev/null"
 ```
 to silence stdout and log stderr, or
-```
+```ini
 IO_REDIRECT = STDIN /opt/data/backup.tar
 IO_REDIRECT = STDOUT /opt/data/backup.tar.gz
 ```
@@ -481,7 +477,7 @@ and another as the receiver (using the `logger` utility provided by e.g. busybox
 
 **Sending Task**
 
-```
+```ini
 NAME = some_task
 
 COMMAND = /bin/echo "This output will be redirected to syslog!"
@@ -493,7 +489,7 @@ IO_REDIRECT = STDOUT "/tmp/some_task_log_pipe" PIPE 0640
 
 **Receiving Task**
 
-```
+```ini
 NAME = some_task_logger
 
 COMMAND = /usr/bin/logger -t some_task
@@ -516,7 +512,7 @@ hard to use e.g. `tail -f ...` to monitor the output in parallel. To get around 
 utility (part of GNU coreutils).
 
 In a `crinit` task, the following
-```
+```ini
 NAME = line_buffered_task
 
 COMMAND = /usr/bin/stdbuf -oL -eL <SOME_EXECUTABLE>
@@ -537,7 +533,7 @@ for third-party applications having an opaque view of their target system.
 
 As an example a dependency group and a task using it could look like
 
-```
+```ini
 NAME = dep_grp_server
 
 DEPENDS = @provided:sql-db @provided:network @provided:firewall-open-port httpd:spawn
@@ -545,7 +541,7 @@ DEPENDS = @provided:sql-db @provided:network @provided:firewall-open-port httpd:
 PROVIDES = server:wait
 ```
 
-```
+```ini
 NAME = local_http_client
 
 COMMAND = /usr/bin/some-http-request localhost
@@ -561,8 +557,8 @@ integrator who maintains `dep_grp_server`.
 
 ### Configuration Signatures
 
-If compiled in (see Build Instructions), Crinit supports checking signatures of its task and global configuration files.
-The algorithm used is RSA-PSS using 4096 Bit keys and SHA256 hashing.
+If compiled in (see [Build Instructions](#build-instructions)), Crinit supports checking signatures of its task and
+global configuration files. The algorithm used is RSA-PSS using 4096 Bit keys and SHA256 hashing.
 
 Crinit will use a root public key (named `crinit-root` as the searchable key description`) stored in the Kernel user
 keyring and optionally downstream signed public keys stored in the rootfs. The downstream keys need to be signed using
@@ -701,7 +697,7 @@ meant to be executed by the user directly.
 
 ## Build Instructions
 Executing
-```
+```sh
 ci/docker-run.sh
 ```
 will start a Docker container for the native host architecture with all necessary programs to build Crinit and its
@@ -710,18 +706,18 @@ Doxygen documentation and to run the tests.
 It is possible to run the Docker container for a foreign architecture such as arm64 with the help of qemu-user-static
 and binfmt-support. Make sure these packages are installed on your host system if you want to use this functionality.
 All following commands to be run inside the container will be the same regardless of the architecture.
-```
+```sh
 ci/docker-run.sh arm64
 ```
 
 By default, `ci/docker-run.sh` will use a container based on Ubuntu Jammy. If another version is desired, it can be
 specified as a second parameter. For example, you can run a Lunar-based container using
-```
+```sh
 ci/docker-run.sh amd64 lunar
 ```
 
 Inside the container, it is sufficient to run
-```
+```sh
 ci/build.sh
 ```
 which will compile the release configuration for `crinit`, the client library and crinit-ctl as well as a suite of RPMs.
@@ -729,19 +725,19 @@ The doxygen documentation is built as well. The script will copy relevant build 
 
 For debugging purposes, the debug configuration can be built with the following command. Optionally it is also possible
 to enable AddressSanitizer (ASAN) for additional runtime checks or static analysis using `-fanalyzer` at compile-time.
-```
+```sh
 ci/build.sh Debug --asan --analyzer
 ```
 
 A `clang-tidy` analysis of the source can be performed using
-```
+```sh
 ci/clang-tidy.sh
 ```
 This will also generate a `compile_commands.json`. The output will be saved to `result/clang-tidy`.
 
 Unit tests or smoke tests can be run using the respective commands below. For the debug configuration, either of them
 takes an additional `Debug` argument.
-```
+```sh
 ci/run-utest.sh
 ci/run-smoketests.sh
 ```
@@ -750,7 +746,7 @@ In order to run integration tests, you can use `ci/run-integration-tests.sh`. Th
 one for the Robot test framework and one that runs Crinit and Elos, and executes all integration tests inside the robot
 container.
 
-```
+```sh
 ci/run-integration-tests.sh
 ```
 
@@ -761,7 +757,7 @@ executing `test/integration/scripts/run-integration-tests.sh` inside the robot c
 
 If a manual test build is desired, running the following command sequence
 inside the container will setup the build system and build native binaries.
-```
+```sh
 mkdir -p build/amd64
 cmake -B build/amd64 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=On -DUNIT_TESTS=On
 make -C build/amd64
