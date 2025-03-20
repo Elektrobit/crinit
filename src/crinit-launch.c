@@ -161,6 +161,12 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    if (cmd == NULL) {
+        crinitErrPrint("Option --cmd not provided.");
+        crinitPrintUsage();
+        goto failureExit;
+    }
+
     size_t argvNewSize = strlen(cmd) + 1;
     for (int i = optind; i < argc; i++) {
         argvNewSize += strlen(argv[i]) + 1;
