@@ -244,8 +244,8 @@ int crinitCreateLauncherParameters(crinitTaskCmd_t *taskCmd, crinitTask_t *tCopy
         return -1;
     }
     size_t targetParamTotalLength = 0;
-    for (int j = 0; j < taskCmd->argc; j++) {
-        targetParamTotalLength += strlen(taskCmd->argv[j]) + 1;
+    for (int i = 1; i < taskCmd->argc; i++) {
+        targetParamTotalLength += strlen(taskCmd->argv[i]) + 1;
     }
     const size_t totalLength = cmdParamLength + userParamLength + groupParamFixedPartLength + groupParamVarPartLength +
                                doubleDashLength + targetParamTotalLength;
