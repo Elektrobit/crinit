@@ -72,13 +72,14 @@ void crinitCfgLauncherCmdHandlerTestWithOneGroupSuccess(void **state) {
         argvCounter++;
     }
 
-    assert_int_equal(argvCounter, 6);
+    assert_int_equal(argvCounter, 7);
     assert_string_equal(argv[0], cmd);
     assert_string_equal(argv[1], "--cmd=/bin/echo");
     assert_string_equal(argv[2], "--user=65534");
     assert_string_equal(argv[3], "--group=65534");
-    assert_string_equal(argv[4], "-ne");
-    assert_string_equal(argv[5], "This is a test.");
+    assert_string_equal(argv[4], "--");
+    assert_string_equal(argv[5], "-ne");
+    assert_string_equal(argv[6], "This is a test.");
 
     free(argv);
     free(argvBuffer);
@@ -114,13 +115,14 @@ void crinitCfgLauncherCmdHandlerTestWithTwoGroupsSuccess(void **state) {
         argvCounter++;
     }
 
-    assert_int_equal(argvCounter, 6);
+    assert_int_equal(argvCounter, 7);
     assert_string_equal(argv[0], cmd);
     assert_string_equal(argv[1], "--cmd=/bin/echo");
     assert_string_equal(argv[2], "--user=65534");
     assert_string_equal(argv[3], "--group=65534,6");
-    assert_string_equal(argv[4], "-ne");
-    assert_string_equal(argv[5], "This is a test.");
+    assert_string_equal(argv[4], "--");
+    assert_string_equal(argv[5], "-ne");
+    assert_string_equal(argv[6], "This is a test.");
 
     free(argv);
     free(argvBuffer);
@@ -157,13 +159,14 @@ void crinitCfgLauncherCmdHandlerTestWithThreeGroupsSuccess(void **state) {
         argvCounter++;
     }
 
-    assert_int_equal(argvCounter, 6);
+    assert_int_equal(argvCounter, 7);
     assert_string_equal(argv[0], cmd);
     assert_string_equal(argv[1], "--cmd=/bin/echo");
     assert_string_equal(argv[2], "--user=65534");
     assert_string_equal(argv[3], "--group=65534,6,35");
-    assert_string_equal(argv[4], "-ne");
-    assert_string_equal(argv[5], "This is a test.");
+    assert_string_equal(argv[4], "--");
+    assert_string_equal(argv[5], "-ne");
+    assert_string_equal(argv[6], "This is a test.");
 
     free(argv);
     free(argvBuffer);

@@ -232,10 +232,12 @@ int crinitCreateLauncherParameters(crinitTaskCmd_t *taskCmd, crinitTask_t *tCopy
     const char *const cmdParamFormatStr = "--cmd=%s";
     const char *const userParamFormatStr = "--user=%d";
     const char *const groupParamFormatStr = "--group=%d";
-
+    const char *const delimiterEndOfOptionsStr = "--";
+    const size_t doubleDashLength = strlen(delimiterEndOfOptionsStr) + 1;
     const size_t cmdParamLength = snprintf(NULL, 0, cmdParamFormatStr, taskCmd->argv[0]) + 1;
     const size_t userParamLength = snprintf(NULL, 0, userParamFormatStr, tCopy->user) + 1;
     const size_t groupParamFixedPartLength = snprintf(NULL, 0, groupParamFormatStr, tCopy->group) + 1;
+
     const int groupParamVarPartLength = crinitCalculateVariableGroupParamLength(tCopy->supGroupsSize, tCopy->supGroups);
     if (groupParamVarPartLength == -1) {
         crinitErrPrint("Failed to calculate the size of the supplementary groups parmaeter string.\n");
@@ -245,14 +247,14 @@ int crinitCreateLauncherParameters(crinitTaskCmd_t *taskCmd, crinitTask_t *tCopy
     for (int j = 0; j < taskCmd->argc; j++) {
         targetParamTotalLength += strlen(taskCmd->argv[j]) + 1;
     }
-    const size_t totalLength =
-        cmdParamLength + userParamLength + groupParamFixedPartLength + groupParamVarPartLength + targetParamTotalLength;
+    const size_t totalLength = cmdParamLength + userParamLength + groupParamFixedPartLength + groupParamVarPartLength +
+                               doubleDashLength + targetParamTotalLength;
 
     char *argBuf = NULL;
     char **av = NULL;
 
     argBuf = calloc(totalLength + 1, sizeof(char));
-    const size_t launcherParamCount = 5;  // Including trailing null element
+    const size_t launcherParamCount = 6;  // Including trailing null element
     av = calloc(launcherParamCount + taskCmd->argc, sizeof(char *));
     if (!argBuf || !av) {
         crinitErrnoPrint("Failed to allocate memory for temporary argv to use with command launcher.\n");
@@ -278,13 +280,17 @@ int crinitCreateLauncherParameters(crinitTaskCmd_t *taskCmd, crinitTask_t *tCopy
         free(variableGroupParam);
     }
     memcpy(argBuf + cmdParamLength + userParamLength + groupParamFixedPartLength + groupParamVarPartLength,
+           delimiterEndOfOptionsStr, doubleDashLength);
+    memcpy(argBuf + cmdParamLength + userParamLength + groupParamFixedPartLength + groupParamVarPartLength +
+               doubleDashLength,
            taskCmd->argv, targetParamTotalLength);
 
     av[0] = cmd;
     av[1] = argBuf;
     av[2] = argBuf + cmdParamLength;
     av[3] = argBuf + cmdParamLength + userParamLength;
-    for (int argvIdx = 4, count = 1; count < taskCmd->argc; count++, argvIdx++) {
+    av[4] = argBuf + cmdParamLength + userParamLength + groupParamFixedPartLength + groupParamVarPartLength;
+    for (int argvIdx = 5, count = 1; count < taskCmd->argc; count++, argvIdx++) {
         av[argvIdx] = taskCmd->argv[count];
     }
 
