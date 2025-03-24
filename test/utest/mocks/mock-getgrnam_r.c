@@ -26,6 +26,16 @@ int __wrap_getgrnam_r(const char *__restrict name, struct group *__restrict resu
         strncpy(buffer, name, buflen);
         resultbuf->gr_name = buffer;
         *result = resultbuf;
+    } else if (strcmp(name, "floppy") == 0) {
+        resultbuf->gr_gid = 15;
+        strncpy(buffer, name, buflen);
+        resultbuf->gr_name = buffer;
+        *result = resultbuf;
+    } else if (strcmp(name, "nogroup") == 0) {
+        resultbuf->gr_gid = 65534;
+        strncpy(buffer, name, buflen);
+        resultbuf->gr_name = buffer;
+        *result = resultbuf;
     } else {
         *result = NULL;
     }
