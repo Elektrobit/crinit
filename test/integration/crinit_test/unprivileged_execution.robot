@@ -22,7 +22,7 @@ ${SERIES_DIR}             /etc/crinit/itest
 ${LOCAL_TEST_DIR}           /tmp
 ${USER}        nobody
 ${GROUP}       nogroup
-${MULTIGROUPS}      nogroup disk
+${MULTIGROUPS}      nogroup disk floppy
 ${TASK}        test_service
 ${TASK_CONF}    SEPARATOR=\n
 ...             # Task to test elos events emitted by a succeeding task.
