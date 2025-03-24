@@ -225,7 +225,7 @@ int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig) {
         if (!out->supGroups) {
             goto fail;
         }
-        memcpy(out->supGroups, orig->supGroups, out->supGroupsSize);
+        memcpy(out->supGroups, orig->supGroups, out->supGroupsSize * sizeof(gid_t));
     }
 
     return 0;
