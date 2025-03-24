@@ -502,7 +502,7 @@ int crinitCfgGroupHandler(void *tgt, const char *val, crinitConfigType_t type) {
 
     gid_t gid;
 
-    if (confArrLen - 1 > 0) {
+    if (confArrLen > 1) {
         t->supGroupsSize = confArrLen - 1;
         t->supGroups = calloc(t->supGroupsSize, sizeof(gid_t));
         if (t->supGroups == NULL) {
