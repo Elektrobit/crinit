@@ -327,7 +327,7 @@ class CrinitLibrary(object):
     @keyword("'${task}' User Is '${user}' And Supplementary Groups Are '${multigroups}'")
     def task_user_and_supgroups_are(self, task, user, multigroups):
         """
-        Check if task user is given user and supplementary groups arge given groups
+        Check if task user is given user and supplementary groups are given groups
         """
 
         pid = self._crinit_get_task_pid(task)
