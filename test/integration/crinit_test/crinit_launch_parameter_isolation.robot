@@ -26,7 +26,7 @@ ${TASK}        echo_test_service
 ${TASK_CONF}    SEPARATOR=\n
 ...             # Task to test elos events emitted by a succeeding task.
 ...             NAME = echo_test_service
-...             COMMAND = /bin/echo -ne "Hello, World!\\n"
+...             COMMAND = /bin/timeout --preserve-status -s 15 -v 5 echo -ne "Hello, World!\\n"
 ...             USER = @@USER@@
 ...             GROUP = @@GROUP@@
 
