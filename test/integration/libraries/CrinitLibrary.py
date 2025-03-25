@@ -345,14 +345,19 @@ class CrinitLibrary(object):
             sudo_password=None
         )
         
-        (rcuser, rcgroup, rcsupgroups) = stdout.split()
+        logger.info(f"STDOUT: {stdout}")
+        logger.info(f"RET: {ret}")
+        tmpstring = re.sub(r'\s+', ' ', stdout)
+        (rcuser, rcgroup, tmpsupgroups) = tmpstring.split(' ', 2)
+        rcsupgroups = tmpsupgroups.split(',')
         supgroups = multigroups.split()
         logger.info(f"USER: {rcuser}")
         logger.info(f"GROUP: {rcgroup}")
         logger.info(f"SUPGROUPS: {rcsupgroups}")
-        logger.info(f"Target sup group: {supgroups[1]}")
+        group = supgroups.pop(0)
+        logger.info(f"Target sup groups: {supgroups}")
         
-        if rcuser == user and rcgroup == supgroups[0] and rcsupgroups == supgroups[1]:
+        if rcuser == user and rcgroup == group and sorted(rcsupgroups) == sorted(supgroups):
             return 0
 
         return -1
