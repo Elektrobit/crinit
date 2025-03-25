@@ -1,0 +1,8 @@
+*** Test Cases ***,${cap_set_key},${cap_set_val},${cap_clear_key},${cap_clear_val},${exp_res}
+Valid Capability Key,CAPABILITY_SET,CAP_KILL,CAPABILITY_CLEAR,CAP_NET_ADMIN,Successful
+Valid Capability Set Key List ,CAPABILITY_SET,CAP_KILL,CAPABILITY_CLEAR,CAP_NET_ADMIN,Successful
+Valid Capability Clear Key List,CAPABILITY_SET,CAP_KILL CAP_SYS_BOOT,CAPABILITY_CLEAR,CAP_NET_ADMIN CAP_NET_RAW,Successful
+Invalid Capability Set Key   ,CAPABILITY_SE,CAP_KILL,CAPABILITY_CLEAR,CAP_NET_ADMIN,Successful
+Invalid Capability Set Value  ,CAPABILITY_SET,CA_KILL,CAPABILITY_CLEAR,CAP_NET_ADMIN,Unsuccessful
+Invalid Capability Clear Key   ,CAPABILITY_SET,CAP_KILL,CAPABILITY_CLEA,CAP_NET_ADMIN,Successful
+Invalid Capability Clear Value,CAPABILITY_SET,CA_KILL,CAPABILITY_CLEAR,CAP_NET_ADMI,Unsuccessful

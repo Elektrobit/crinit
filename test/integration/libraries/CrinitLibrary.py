@@ -6,7 +6,7 @@ import re
 import traceback
 
 from robot.libraries.BuiltIn import BuiltIn
-from robot.utils.asserts import assert_equal
+from robot.utils.asserts import assert_equal, assert_not_equal
 from robot.api import logger
 from robot.api.deco import keyword
 
@@ -67,6 +67,42 @@ class CrinitLibrary(object):
             logger.error(f"crinit-ctl: {err_msg} ({ret})")
 
         return (stdout, stderr, ret)
+
+    @keyword("A Task Config")
+    def crinit_create_task_config(self):
+        conf = BuiltIn().get_variable_value("${TASK_CONF}")
+        conf = conf.replace('@@USER@@', BuiltIn().get_variable_value("${USER}"))
+        conf = conf.replace('@@GROUP@@', BuiltIn().get_variable_value("${GROUP}"))
+        conf = conf.replace('@@CAP_SET_KEY@@', BuiltIn().get_variable_value("${CAP_SET_KEY}"))
+        conf = conf.replace('@@CAP_SET_VAL@@', BuiltIn().get_variable_value("${CAP_SET_VAL}"))
+        conf = conf.replace('@@CAP_CLEAR_KEY@@', BuiltIn().get_variable_value("${CAP_CLEAR_KEY}"))
+        conf = conf.replace('@@CAP_CLEAR_VAL@@', BuiltIn().get_variable_value("${CAP_CLEAR_VAL}"))
+
+        BuiltIn().set_test_variable("${NEW_CONF}", conf)
+
+    @keyword("Crinit Starts The Task With Config")
+    def crinit_starts_the_task_with_config(self):
+        task = BuiltIn().get_variable_value("${TASK}")
+        new_conf = BuiltIn().get_variable_value("${NEW_CONF}")
+
+        rc = self.crinit_add_task_config(task, new_conf)
+        if rc != 0:
+            logger.error("Failed to add crinit task config.")
+            return rc
+
+        rc = self.crinit_add_task(f"{task}.crinit")
+        if rc != 0:
+            logger.error("Failed to add crinit task.")
+
+    @keyword("Crinit Task Creation Was '${expected_result}'")
+    def crinit_task_is_created_successfully(self, expected_result):
+        task = BuiltIn().get_variable_value("${TASK}")
+        rc, task_state = self._crinit_get_task_state(task)
+
+        if (expected_result == "Successful"):
+            assert_equal(task_state, "running", "Task is running")
+        else:
+            assert_not_equal(task_state, "running", "Task is not running")
 
     def crinit_add_task_config(self, task, config):
         """ Creates a new crinit task config on the target.
