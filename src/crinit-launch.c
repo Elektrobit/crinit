@@ -77,6 +77,7 @@ int crinitExtractGroups(char *input, gid_t **groups, size_t *groupSize) {
         in = NULL;
         if (*token != '\0') {
             char *endptr = NULL;
+            errno = 0;
             (*groups)[i] = strtoul(token, &endptr, 10);
             if (endptr != token && *endptr == '\0' && errno == 0) {
                 i++;
