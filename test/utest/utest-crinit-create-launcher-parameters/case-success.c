@@ -97,8 +97,7 @@ void crinitCfgLauncherCmdHandlerTestWithTwoGroupsSuccess(void **state) {
 
     const size_t numSupGroups = 1;
 
-    gid_t *supGroups;
-    supGroups = calloc(numSupGroups, sizeof(gid_t));
+    gid_t *supGroups = calloc(numSupGroups, sizeof(*supGroups));
     assert_non_null(supGroups);
     *supGroups = 6;
 
@@ -140,8 +139,7 @@ void crinitCfgLauncherCmdHandlerTestWithThreeGroupsSuccess(void **state) {
 
     const size_t numSupGroups = 2;
 
-    gid_t *supGroups;
-    supGroups = calloc(numSupGroups, sizeof(gid_t));
+    gid_t *supGroups = calloc(numSupGroups, sizeof(*supGroups));
     assert_non_null(supGroups);
     supGroups[0] = 6;
     supGroups[1] = 35;

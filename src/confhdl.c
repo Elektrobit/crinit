@@ -504,7 +504,7 @@ int crinitCfgGroupHandler(void *tgt, const char *val, crinitConfigType_t type) {
 
     if (confArrLen > 1) {
         t->supGroupsSize = confArrLen - 1;
-        t->supGroups = calloc(t->supGroupsSize, sizeof(gid_t));
+        t->supGroups = calloc(t->supGroupsSize, sizeof(*t->supGroups));
         if (t->supGroups == NULL) {
             crinitErrPrint("Couldn not allocate memory for supplementary groups.\n");
             goto failInit;

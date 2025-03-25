@@ -204,7 +204,7 @@ static char *crinitCreateSupGroupsParamString(size_t supGroupsSize, gid_t *supGr
         return NULL;
     }
 
-    char *buf = calloc(expOutSize + 1, sizeof(char));
+    char *buf = calloc(expOutSize + 1, sizeof(*buf));
     if (buf == NULL) {
         crinitErrnoPrint("Failed to allocate memory for supplementary groups parameter string.\n");
         return NULL;
@@ -253,9 +253,9 @@ int crinitCreateLauncherParameters(crinitTaskCmd_t *taskCmd, crinitTask_t *tCopy
     char *argBuf = NULL;
     char **av = NULL;
 
-    argBuf = calloc(totalLength + 1, sizeof(char));
+    argBuf = calloc(totalLength + 1, sizeof(*argBuf));
     const size_t launcherParamCount = 6;  // Including trailing null element
-    av = calloc(launcherParamCount + taskCmd->argc, sizeof(char *));
+    av = calloc(launcherParamCount + taskCmd->argc, sizeof(*av));
     if (!argBuf || !av) {
         crinitErrnoPrint("Failed to allocate memory for temporary argv to use with command launcher.\n");
         free(av);  // If only one call to calloc() failed.

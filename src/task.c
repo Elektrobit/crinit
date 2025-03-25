@@ -221,11 +221,11 @@ int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig) {
     }
     if (orig->supGroups && orig->supGroupsSize > 0) {
         out->supGroupsSize = orig->supGroupsSize;
-        out->supGroups = calloc(out->supGroupsSize, sizeof(gid_t));
+        out->supGroups = calloc(out->supGroupsSize, sizeof(*out->supGroups));
         if (!out->supGroups) {
             goto fail;
         }
-        memcpy(out->supGroups, orig->supGroups, out->supGroupsSize * sizeof(gid_t));
+        memcpy(out->supGroups, orig->supGroups, out->supGroupsSize * sizeof(*out->supGroups));
     }
 
     return 0;
