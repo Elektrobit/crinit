@@ -121,7 +121,7 @@ int main(int argc, char *argv[]) {
         switch (opt) {
             case 'c':
                 if (cmd) {
-                    crinitErrPrint("Parameter --cmd may only given once.\n");
+                    crinitErrPrint("Parameter --cmd may only be given once.\n");
                     crinitPrintUsage();
                     goto failureExit;
                 }
@@ -139,7 +139,7 @@ int main(int argc, char *argv[]) {
             } break;
             case 'g':
                 if (groups) {
-                    crinitErrPrint("Parameter --groups may only given once.\n");
+                    crinitErrPrint("Parameter --groups may only be given once.\n");
                     crinitPrintUsage();
                     goto failureExit;
                 }
