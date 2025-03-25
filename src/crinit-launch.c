@@ -127,10 +127,16 @@ int main(int argc, char *argv[]) {
                 }
                 cmd = strdup(optarg);
                 break;
-            case 'u':
-                user = strtoul(optarg, NULL, 10);
+            case 'u': {
+                char *endptr = NULL;
+                errno = 0;
+                user = strtoul(optarg, &endptr, 10);
+                if (endptr == NULL || endptr == optarg || *endptr != '\0' || errno != 0) {
+                    crinitErrPrint("Malformed input for user parameter: %s.\n", optarg);
+                    goto failureExit;
+                }
                 userFound = true;
-                break;
+            } break;
             case 'g':
                 if (groups) {
                     crinitErrPrint("Parameter --groups may only given once.\n");
