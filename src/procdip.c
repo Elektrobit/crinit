@@ -254,9 +254,13 @@ int crinitCreateLauncherParameters(crinitTaskCmd_t *taskCmd, crinitTask_t *tCopy
     char **av = NULL;
 
     argBuf = calloc(totalLength + 1, sizeof(*argBuf));
+    if (!argBuf) {
+        crinitErrnoPrint("Failed to allocate memory for temporary argv to use with command launcher.\n");
+        return -1;
+    }
     const size_t launcherParamCount = 6;  // Including trailing null element
     av = calloc(launcherParamCount + taskCmd->argc, sizeof(*av));
-    if (!argBuf || !av) {
+    if (!av) {
         crinitErrnoPrint("Failed to allocate memory for temporary argv to use with command launcher.\n");
         free(av);  // If only one call to calloc() failed.
         free(argBuf);
