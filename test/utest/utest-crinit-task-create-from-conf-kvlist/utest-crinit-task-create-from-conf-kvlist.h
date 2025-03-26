@@ -14,5 +14,6 @@ void crinitTaskCreateFromConfKvListTestGroupNumericSuccess(void **state);
  * Tests successful parsing key "USER" with numeric value.
  */
 void crinitTaskCreateFromConfKvListTestUserNumericSuccess(void **state);
+int crinitTaskCreateFromConfKvListTestTeardown(void **state);
 
 #endif /* __UTEST_TASK_CREATE_FROM_CONF_KVLIST_H__ */
