@@ -26,6 +26,7 @@ function(create_unit_test)
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${PROJECT_SOURCE_DIR}/test/utest
     ${PROJECT_SOURCE_DIR}/inc/
+    ${PROJECT_BINARY_DIR}/inc/
     ${PARSED_ARGS_INCLUDES}
     ${CMOCKA_INCLUDE_DIR}
   )
