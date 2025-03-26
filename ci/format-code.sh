@@ -41,7 +41,7 @@ CLANG_FORMAT_ACTION_ARGS="-i"
 YAPF_ACTION_ARGS="-i"
 
 # The directories we want to search in for both tools.
-C_CODE_DIRS="${BASEDIR}/inc ${BASEDIR}/src"
+C_CODE_DIRS="${BASEDIR}/inc ${BASEDIR}/src ${BASEDIR}/test"
 SH_CODE_DIRS="${BASEDIR}/ci ${BASEDIR}/scripts ${BASEDIR}/test"
 PY_CODE_DIRS="${BASEDIR}" # We have conf.py in the root dir.
 

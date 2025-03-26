@@ -19,8 +19,8 @@ static void crinitTestVariant(size_t initialSize, size_t numElements) {
         fse.fnames = fnamesBuff;
     }
 
-    print_message("Testing crinitResizeFileSeriesTestSuccess with %zu elements resizing to %zu elements.\n", initialSize,
-                  numElements);
+    print_message("Testing crinitResizeFileSeriesTestSuccess with %zu elements resizing to %zu elements.\n",
+                  initialSize, numElements);
 
     if (numElements != initialSize) {
         expect_value(__wrap_realloc, ptr, fse.fnames);
