@@ -105,10 +105,18 @@ class CrinitLibrary(object):
 
         return ret == 0
 
-    def crinit_start(self, series_file=None, chroot=None, strace_output=None, strace_filter=None, crinit_args=None):
+    def crinit_start(
+            self,
+            series_file=None,
+            chroot=None,
+            strace_output=None,
+            strace_filter=None,
+            ld_preload=None,
+            crinit_args=None):
         """ Starts crinit if it is not already running with the specified socket. """
         chroot_cmd = ""
         strace_cmd = ""
+        ldprld_cmd = ""
         if chroot is not None:
             chroot_cmd = f"chroot {chroot}"
         if strace_output is not None:
@@ -117,11 +125,14 @@ class CrinitLibrary(object):
             strace_cmd = f"{strace_cmd} --trace={strace_filter}"
         if series_file is None:
             series_file = self.CRINIT_SERIES
+        if ld_preload is not None:
+            ldprld_cmd = f"export LD_PRELOAD=/etc/crinit/itest/ld_preload/{ld_preload};"
 
         if self.crinit_is_running():
             return 0
 
-        start_cmd = f"sh -c \"export CRINIT_SOCK={self.CRINIT_SOCK}; {chroot_cmd} {strace_cmd} {self.CRINIT_BIN}"
+        start_cmd = \
+            f"sh -c \"export CRINIT_SOCK={self.CRINIT_SOCK}; {ldprld_cmd} {chroot_cmd} {strace_cmd} {self.CRINIT_BIN}"
         if crinit_args is not None:
             start_cmd = start_cmd + f" {crinit_args}"
         start_cmd = start_cmd + f" {series_file}\""

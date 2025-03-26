@@ -263,6 +263,7 @@ if(INSTALL_SMOKE_TESTS)
 endif(INSTALL_SMOKE_TESTS)
 
 if(INSTALL_ROBOT_TEST_RESOURCES)
+  add_subdirectory(test/integration/libraries/ld-preload)
   install(
     PROGRAMS
     "${CMAKE_SOURCE_DIR}/test/integration/scripts/enroll-itest-root-key.sh"
