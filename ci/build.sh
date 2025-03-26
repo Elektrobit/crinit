@@ -87,4 +87,4 @@ cp -a doc "$RESULTDIR/doc/api"
 
 # copy client API headers
 cp inc/crinit-client.h "$RESULTDIR"/include
-cp inc/crinit-sdefs.h "$RESULTDIR"/include
+cp "$BUILDDIR"/inc/crinit-sdefs.h "$RESULTDIR"/include
