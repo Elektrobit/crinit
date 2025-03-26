@@ -10,6 +10,7 @@
 #include <unistd.h>
 
 #include "common.h"
+#include "crinit-sdefs.h"
 #include "globopt.h"
 #include "kcmdline.h"
 #include "logio.h"

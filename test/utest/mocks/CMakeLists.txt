@@ -16,6 +16,7 @@ function(create_mock_lib)
     PRIVATE
     ${PROJECT_SOURCE_DIR}/test/utest
     ${PROJECT_SOURCE_DIR}/inc
+    ${PROJECT_BINARY_DIR}/inc
     INTERFACE
     ${PARSED_ARGS_INCLUDES}
   )

@@ -79,7 +79,9 @@ add_executable(
 
 target_include_directories(
   crinit
-  PRIVATE ${PROJECT_SOURCE_DIR}/inc/
+  PRIVATE
+  ${PROJECT_SOURCE_DIR}/inc/
+  ${PROJECT_BINARY_DIR}/inc
 )
 target_link_libraries(
   crinit
@@ -96,7 +98,6 @@ target_compile_definitions(
     CRINIT_LAUNCHER_COMMAND_DEFAULT=${CRINIT_LAUNCHER_CMD}
     CRINIT_CONFIG_DEFAULT_ELOS_EVENT_POLLING_TIME=${DEFAULT_ELOS_EVENT_POLLING_TIME}
     CRINIT_DEFAULT_CONFIG_SERIES="${DEFAULT_CONFIG_SERIES_FILE}"
-    CRINIT_SOCKFILE="${DEFAULT_CRINIT_SOCKFILE}"
     CRINIT_CONFIG_DEFAULT_SIGKEYDIR="${DEFAULT_SIGKEY_DIR}"
     CRINIT_CONFIG_DEFAULT_INCLDIR="${DEFAULT_INCL_DIR}"
     CRINIT_CONFIG_DEFAULT_TASKDIR="${DEFAULT_TASK_DIR}"
@@ -120,14 +121,13 @@ add_library(
 
 set(CRINIT_PUBLIC_HEADERS
   ../inc/crinit-client.h
-  ../inc/crinit-sdefs.h
+  ${CMAKE_BINARY_DIR}/inc/crinit-sdefs.h
 )
 
 target_compile_definitions(
     crinit-client
     PRIVATE
     CRINIT_CONFIG_DEFAULT_ELOS_EVENT_POLLING_TIME=${DEFAULT_ELOS_EVENT_POLLING_TIME}
-    CRINIT_SOCKFILE="${DEFAULT_CRINIT_SOCKFILE}"
     CRINIT_CONFIG_DEFAULT_SIGKEYDIR="${DEFAULT_SIGKEY_DIR}"
     CRINIT_CONFIG_DEFAULT_INCLDIR="${DEFAULT_INCL_DIR}"
     CRINIT_CONFIG_DEFAULT_TASKDIR="${DEFAULT_TASK_DIR}"
@@ -135,7 +135,9 @@ target_compile_definitions(
 
 target_include_directories(
   crinit-client
-  PRIVATE ${PROJECT_SOURCE_DIR}/inc/
+  PRIVATE
+  ${PROJECT_SOURCE_DIR}/inc/
+  ${PROJECT_BINARY_DIR}/inc
 )
 
 set_target_properties(crinit-client PROPERTIES
@@ -156,7 +158,9 @@ add_executable(
 
 target_include_directories(
   crinit-ctl
-  PRIVATE ${PROJECT_SOURCE_DIR}/inc/
+  PRIVATE
+  ${PROJECT_SOURCE_DIR}/inc/
+  ${PROJECT_BINARY_DIR}/inc
 )
 target_link_libraries(
   crinit-ctl

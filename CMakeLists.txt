@@ -105,6 +105,7 @@ if(ENABLE_ANALYZER)
   set(ENABLE_WERROR OFF)
 endif()
 
+configure_file(inc/crinit-sdefs.h.in inc/crinit-sdefs.h)
 
 set(CRINIT_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
 set(CRINIT_VERSION_MINOR ${PROJECT_VERSION_MINOR})
