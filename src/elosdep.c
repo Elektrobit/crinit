@@ -451,6 +451,11 @@ static void *crinitElosdepEventListener(void *arg) {
             goto err_connection_lost;
         }
 
+        if ((errno = pthread_mutex_lock(&crinitElosdepFilterTaskLock)) != 0) {
+            crinitErrnoPrint("Failed to lock elos filter task list.");
+            goto err_connection_lost;
+        }
+
         crinitListForEachEntry(filterTask, &crinitFilterTasks, list) {
             crinitListForEachEntrySafe(filter, tempFilter, &filterTask->filterList, list) {
                 err = crinitElosTryExec(crinitTinfo.session, &crinitElosdepSessionLock,
@@ -473,6 +478,10 @@ static void *crinitElosdepEventListener(void *arg) {
                     }
                 }
             }
+        }
+
+        if ((errno = pthread_mutex_unlock(&crinitElosdepFilterTaskLock)) != 0) {
+            crinitErrnoPrint("Failed to unlock elos filter task list.");
         }
 
         unsigned long long eventPollInterval;
@@ -502,6 +511,10 @@ err_connection_lost:
     return NULL;
 
 err_session:
+    if ((errno = pthread_mutex_unlock(&crinitElosdepFilterTaskLock)) != 0) {
+        crinitErrnoPrint("Failed to unlock elos filter task list.");
+    }
+
     if ((err = crinitElosdepFilterListUnsubscribe()) != 0) {
         crinitErrnoPrint("Failed to unsubscribe elos filters.");
     }
