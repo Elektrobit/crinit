@@ -15,8 +15,10 @@ create_unit_test(
     ${PROJECT_SOURCE_DIR}/src/logio.c
     ${PROJECT_SOURCE_DIR}/src/confconv.c
     ${PROJECT_SOURCE_DIR}/src/confhdl.c
+    ${PROJECT_SOURCE_DIR}/src/confparse.c
   LIBRARIES
     libmockfunctions
+    inih-local
   WRAPS
     -Wl,--wrap=getgrnam_r
     -Wl,--wrap=getgrgid_r

@@ -22,6 +22,7 @@ ${SERIES_DIR}             /etc/crinit/itest
 ${LOCAL_TEST_DIR}           /tmp
 ${USER}        nobody
 ${GROUP}       nogroup
+${MULTIGROUPS}      nogroup disk floppy
 ${TASK}        test_service
 ${TASK_CONF}    SEPARATOR=\n
 ...             # Task to test elos events emitted by a succeeding task.
@@ -37,8 +38,16 @@ Crinit Executes Task As Different User And Group
 
     Given A Crinit Task With '${USER}' And '${GROUP}'
     When Crinit Starts The Task
-    Then The Task Is Owned By '${USER}' And '${GROUP}'
+    Then Wait Until Keyword Succeeds  5s  200ms  The Task Is Owned By '${USER}' And '${GROUP}'
 
+
+Crinit Executes Task With Supplementary Groups
+    [Documentation]     Test if supplementary groups are set correctly
+
+    Given A Crinit Task With '${USER}' And '${MULTIGROUPS}'
+    When Crinit Starts The Task
+    Then Wait Until Keyword Succeeds  5s  200ms  The Task Has Owner '${USER}' And Supplementary Groups '${MULTIGROUPS}'
+    
 
 *** Keywords ***
 A Crinit Task With '${USER}' And '${GROUP}'
@@ -52,6 +61,14 @@ A Crinit Task With '${USER}' And '${GROUP}'
 
     Set Test Variable   ${NEW_CONF}    ${TEMPORARY_CONF}
 
+
+Check If '${Task}' Is Running
+    [Documentation]     Pass return value from Crinit Check Task State to caller
+
+    ${rc} =  Crinit Check Task State    ${TASK}    running
+    Should Be Equal As Numbers  ${rc}  0
+
+
 Crinit Starts The Task
     [Documentation]   Start the crinit task with task config.
 
@@ -62,8 +79,7 @@ Crinit Starts The Task
     Should Be Equal As Numbers  ${rc}  0
     ${rc} =  Crinit Add Task    ${TASK}.crinit
     Should Be Equal As Numbers  ${rc}  0
-    ${rc} =  Crinit Check Task State    ${TASK}    running
-    Should Be Equal As Numbers  ${rc}  0
+    Wait Until Keyword Succeeds  5s  200ms  Check If '${Task}' Is Running 
 
 
 The Task Is Owned By '${USER}' And '${GROUP}'
@@ -71,4 +87,12 @@ The Task Is Owned By '${USER}' And '${GROUP}'
     ...                given user and group
 
     ${rc} =  '${TASK}' User Is '${USER}' And Group Is '${GROUP}'
+    Should Be Equal As Numbers  ${rc}  0
+
+
+The Task Has Owner '${USER}' And Supplementary Groups '${MULTIGROUPS}'
+    [Documentation]    Check if started crinit task is owned by
+    ...                given user and belongs to the given groups
+
+    ${rc} =  '${TASK}' User Is '${USER}' And Supplementary Groups Are '${MULTIGROUPS}'
     Should Be Equal As Numbers  ${rc}  0

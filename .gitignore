@@ -5,7 +5,7 @@ poweroff
 reboot
 *.o
 build/
-doc/html/
+doc/api/
 lib/
 ci/sshconfig
 result/
@@ -16,6 +16,7 @@ packaging/rpmbuild/SRPMS
 .ycm*
 *.svg
 compile_commands.json
+gh-pages.tar.gz
 
 # Vim temporary files
 # Swap

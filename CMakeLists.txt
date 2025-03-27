@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.21)
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE AND DEFINED ENV{CMAKE_TOOLCHAIN_FILE})
   set(CMAKE_TOOLCHAIN_FILE $ENV{CMAKE_TOOLCHAIN_FILE})
 endif()
-project(crinit VERSION 0.17.0)
+project(crinit VERSION 0.17.1)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -171,31 +171,50 @@ if(UNIT_TESTS)
 endif(UNIT_TESTS)
 
 if(API_DOC)
-  find_package(Doxygen REQUIRED)
-  file(GLOB images "images/*.plantuml")
-  foreach(img ${images})
+  set(API_DOC_HTML_OUTPUT_DIR "${CMAKE_SOURCE_DIR}/doc/api/html")
+  find_package(Doxygen REQUIRED doxygen)
+  find_program(PLANTUML_BIN plantuml NAMES plantuml REQUIRED)
+  file(GLOB plantuml_images "images/*.plantuml")
+  # Exclude rootfs_init_comp as we have already pre-built it as an SVG with a newer PlantUML.
+  list(FILTER plantuml_images EXCLUDE REGEX "rootfs_init_comp\.svg$")
+  foreach(img ${plantuml_images})
     get_filename_component(output ${img} NAME_WLE)
     add_custom_command(
       OUTPUT
-        ${CMAKE_SOURCE_DIR}/doc/html/images/${output}.svg
+        ${API_DOC_HTML_OUTPUT_DIR}/images/${output}.svg
       COMMAND
-        plantuml -o ${CMAKE_SOURCE_DIR}/doc/html/images -tsvg ${img}
+        ${PLANTUML_BIN} -o ${API_DOC_HTML_OUTPUT_DIR}/images -tsvg ${img}
       MAIN_DEPENDENCY
         ${img}
       COMMENT
-       "Running plantuml to generate: ${output}"
+        "Running plantuml to generate: ${output}"
     )
-    list(APPEND doxygen_images ${CMAKE_SOURCE_DIR}/doc/html/images/${output}.svg)
+    list(APPEND doxygen_images ${API_DOC_HTML_OUTPUT_DIR}/images/${output}.svg)
+  endforeach()
+  file(GLOB binary_images "images/*.*")
+  list(FILTER binary_images EXCLUDE REGEX "\.plantuml$")
+  foreach(img ${binary_images})
+    add_custom_command(
+      OUTPUT
+        ${API_DOC_HTML_OUTPUT_DIR}/images/${img}
+      COMMAND
+        mkdir -p ${API_DOC_HTML_OUTPUT_DIR}/images/ && cp ${img} ${API_DOC_HTML_OUTPUT_DIR}/images/
+      MAIN_DEPENDENCY
+        ${img}
+      COMMENT
+       "Copying binary image: ${img}"
+    )
+    list(APPEND doxygen_images ${API_DOC_HTML_OUTPUT_DIR}/images/${img})
   endforeach()
 
   add_custom_target(
     api-doc
     ALL
-    COMMAND doxygen
+    COMMAND Doxygen::doxygen
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     DEPENDS ${doxygen_images}
   )
-  install(DIRECTORY ${CMAKE_SOURCE_DIR}/doc/html DESTINATION "${CMAKE_INSTALL_DOCDIR}")
+  install(DIRECTORY ${API_DOC_HTML_OUTPUT_DIR} DESTINATION "${CMAKE_INSTALL_DOCDIR}")
 endif(API_DOC)
 
 if(INSTALL_EXAMPLE_CONFIGS)

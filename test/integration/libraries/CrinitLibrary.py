@@ -323,7 +323,45 @@ class CrinitLibrary(object):
             return 0
 
         return -1
+    
+    @keyword("'${task}' User Is '${user}' And Supplementary Groups Are '${multigroups}'")
+    def task_user_and_supgroups_are(self, task, user, multigroups):
+        """
+        Check if task user is given user and supplementary groups are given groups
+        """
 
+        pid = self._crinit_get_task_pid(task)
+        
+        stdout = None
+        stderr = None
+        ret = -1
+
+        stdout, stderr, ret = self.ssh.execute_command(
+            f"ps -p{pid} -ouser=,group=,supgrp=",
+            return_stdout=True,
+            return_stderr=True,
+            return_rc=True,
+            sudo=False,
+            sudo_password=None
+        )
+        
+        logger.info(f"STDOUT: {stdout}")
+        logger.info(f"RET: {ret}")
+        tmpstring = re.sub(r'\s+', ' ', stdout)
+        (rcuser, rcgroup, tmpsupgroups) = tmpstring.split(' ', 2)
+        rcsupgroups = tmpsupgroups.split(',')
+        supgroups = multigroups.split()
+        logger.info(f"USER: {rcuser}")
+        logger.info(f"GROUP: {rcgroup}")
+        logger.info(f"SUPGROUPS: {rcsupgroups}")
+        group = supgroups.pop(0)
+        logger.info(f"Target sup groups: {supgroups}")
+        
+        if rcuser == user and rcgroup == group and sorted(rcsupgroups) == sorted(supgroups):
+            return 0
+
+        return -1
+   
     def crinit_reboot(self):
         """Will request Crinit to perform a graceful system reboot.
         crinit-ctl can be symlinked to reboot as a shortcut which will

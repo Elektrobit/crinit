@@ -177,6 +177,131 @@ int crinitPrepareIoRedirectionsForSpawn(size_t cmdIdx, crinitIoRedir_t *redirs, 
     return 0;
 }
 
+static int crinitCalculateVariableGroupParamLength(size_t supGroupsSize, gid_t *supGroups) {
+    if (supGroupsSize == 0) {
+        return 0;
+    } else if (supGroups == NULL) {
+        return -1;
+    }
+
+    int retval = 0;
+    int rc;
+
+    for (size_t i = 0; i < supGroupsSize; i++) {
+        rc = snprintf(NULL, 0, ",%d", supGroups[i]);
+        if (rc == -1) {
+            return -1;
+        }
+        retval += rc;
+    }
+
+    return retval + 1;
+}
+
+static char *crinitCreateSupGroupsParamString(size_t supGroupsSize, gid_t *supGroups, int expOutSize) {
+    if (supGroups == NULL) {
+        crinitErrPrint("supGroups may not be NULL.\n");
+        return NULL;
+    }
+
+    char *buf = calloc(expOutSize + 1, sizeof(*buf));
+    if (buf == NULL) {
+        crinitErrnoPrint("Failed to allocate memory for supplementary groups parameter string.\n");
+        return NULL;
+    }
+
+    char *p = buf;
+    int bytesLeft = expOutSize + 1;
+
+    for (size_t i = 0; i < supGroupsSize; i++) {
+        int written = snprintf(p, bytesLeft, ",%d", supGroups[i]);
+        if (written == -1) {
+            free(buf);
+            crinitErrPrint("Failed to write supplementary groups parameter string.\n");
+            return NULL;
+        }
+        bytesLeft -= written;
+        p += written;
+    }
+
+    return buf;
+}
+
+int crinitCreateLauncherParameters(crinitTaskCmd_t *taskCmd, crinitTask_t *tCopy, char *cmd, char ***argv,
+                                   char **argBuffer) {
+    const char *const cmdParamFormatStr = "--cmd=%s";
+    const char *const userParamFormatStr = "--user=%d";
+    const char *const groupParamFormatStr = "--group=%d";
+    const char *const delimiterEndOfOptionsStr = "--";
+    const size_t doubleDashLength = strlen(delimiterEndOfOptionsStr) + 1;
+    const size_t cmdParamLength = snprintf(NULL, 0, cmdParamFormatStr, taskCmd->argv[0]) + 1;
+    const size_t userParamLength = snprintf(NULL, 0, userParamFormatStr, tCopy->user) + 1;
+    const size_t groupParamFixedPartLength = snprintf(NULL, 0, groupParamFormatStr, tCopy->group) + 1;
+
+    const int groupParamVarPartLength = crinitCalculateVariableGroupParamLength(tCopy->supGroupsSize, tCopy->supGroups);
+    if (groupParamVarPartLength == -1) {
+        crinitErrPrint("Failed to calculate the size of the supplementary groups parmaeter string.\n");
+        return -1;
+    }
+    size_t targetParamTotalLength = 0;
+    for (int i = 1; i < taskCmd->argc; i++) {
+        targetParamTotalLength += strlen(taskCmd->argv[i]) + 1;
+    }
+    const size_t totalLength = cmdParamLength + userParamLength + groupParamFixedPartLength + groupParamVarPartLength +
+                               doubleDashLength + targetParamTotalLength;
+
+    char *argBuf = NULL;
+    char **av = NULL;
+
+    argBuf = calloc(totalLength + 1, sizeof(*argBuf));
+    if (argBuf == NULL) {
+        crinitErrnoPrint("Failed to allocate memory for temporary argv to use with command launcher.\n");
+        return -1;
+    }
+    const size_t launcherParamCount = 6;  // Including trailing null element
+    av = calloc(launcherParamCount + taskCmd->argc, sizeof(*av));
+    if (av == NULL) {
+        crinitErrnoPrint("Failed to allocate memory for temporary argv to use with command launcher.\n");
+        free(argBuf);
+        return -1;
+    }
+
+    snprintf(argBuf, cmdParamLength, cmdParamFormatStr, taskCmd->argv[0]);
+    snprintf(argBuf + cmdParamLength, userParamLength, userParamFormatStr, tCopy->user);
+    snprintf(argBuf + cmdParamLength + userParamLength, groupParamFixedPartLength, groupParamFormatStr, tCopy->group);
+    char *variableGroupParam = NULL;
+    if (groupParamVarPartLength) {
+        variableGroupParam =
+            crinitCreateSupGroupsParamString(tCopy->supGroupsSize, tCopy->supGroups, groupParamVarPartLength);
+        if (variableGroupParam == NULL) {
+            free(av);
+            free(argBuf);
+            return -1;
+        }
+        snprintf(argBuf + cmdParamLength + userParamLength + groupParamFixedPartLength - 1, groupParamVarPartLength,
+                 "%s", variableGroupParam);
+        free(variableGroupParam);
+    }
+    memcpy(argBuf + cmdParamLength + userParamLength + groupParamFixedPartLength + groupParamVarPartLength,
+           delimiterEndOfOptionsStr, doubleDashLength);
+    memcpy(argBuf + cmdParamLength + userParamLength + groupParamFixedPartLength + groupParamVarPartLength +
+               doubleDashLength,
+           taskCmd->argv, targetParamTotalLength);
+
+    av[0] = cmd;
+    av[1] = argBuf;
+    av[2] = argBuf + cmdParamLength;
+    av[3] = argBuf + cmdParamLength + userParamLength;
+    av[4] = argBuf + cmdParamLength + userParamLength + groupParamFixedPartLength + groupParamVarPartLength;
+    for (int argvIdx = 5, count = 1; count < taskCmd->argc; count++, argvIdx++) {
+        av[argvIdx] = taskCmd->argv[count];
+    }
+
+    *argv = av;
+    *argBuffer = argBuf;
+    return 0;
+}
+
 int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char *name, crinitTaskCmd_t *cmds, size_t cmdsSize,
                          crinitTask_t *tCopy, pid_t *pid, bool deactivateFileactions) {
     char *cmd = NULL;
@@ -189,10 +314,6 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char *name, crinit
         crinitErrPrint("Could not retrieve value for global setting LAUNCHER_CMD.");
         return -1;
     }
-
-    const char *const cmdParamFormatStr = "--cmd=%s";
-    const char *const userParamFormatStr = "--user=%d";
-    const char *const groupParamFormatStr = "--group=%d";
 
     if (tCopy->user != 0 || tCopy->group != 0) {
         cmd = crinitLauncherCommand;
@@ -221,39 +342,13 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char *name, crinit
             cmd = cmds[i].argv[0];
             argv = cmds[i].argv;
         } else {
-            const size_t cmdParamLength = snprintf(NULL, 0, cmdParamFormatStr, cmds[i].argv[0]) + 1;
-            const size_t userParamLength = snprintf(NULL, 0, userParamFormatStr, tCopy->user) + 1;
-            const size_t groupParamLength = snprintf(NULL, 0, groupParamFormatStr, tCopy->group) + 1;
-            size_t targetParamTotalLength = 0;
-            for (int j = 0; j < cmds[i].argc; j++) {
-                targetParamTotalLength += strlen(cmds[i].argv[j]) + 1;
-            }
-            const size_t totalLength = cmdParamLength + userParamLength + groupParamLength + targetParamTotalLength;
-
-            argvBuffer = calloc(totalLength + 1, sizeof(char));
-            argv = calloc(5 + cmds[i].argc, sizeof(char *));
-            if (!argvBuffer || !argv) {
-                crinitErrnoPrint("Failed to allocate memory for temporary argv to use with command launcher.\n");
+            if (crinitCreateLauncherParameters(&(cmds[i]), tCopy, cmd, &argv, &argvBuffer) != 0) {
+                crinitErrPrint("Failed to create launcher parameters.\n");
                 posix_spawn_file_actions_destroy(&fileact);
                 free(crinitLauncherCommand);
-                free(argv);  // If only one call to calloc() failed.
                 free(argvBuffer);
+                free(argv);
                 return -1;
-            }
-
-            snprintf(argvBuffer, cmdParamLength, cmdParamFormatStr, cmds[i].argv[0]);
-            snprintf(argvBuffer + cmdParamLength, userParamLength, userParamFormatStr, tCopy->user);
-            snprintf(argvBuffer + cmdParamLength + userParamLength, groupParamLength, groupParamFormatStr,
-                     tCopy->group);
-            memcpy(argvBuffer + cmdParamLength + userParamLength + groupParamLength, cmds[i].argv,
-                   targetParamTotalLength);
-
-            argv[0] = cmd;
-            argv[1] = argvBuffer;
-            argv[2] = argvBuffer + cmdParamLength;
-            argv[3] = argvBuffer + cmdParamLength + userParamLength;
-            for (int argvIdx = 4, count = 1; count < cmds[i].argc; count++, argvIdx++) {
-                argv[argvIdx] = cmds[i].argv[count];
             }
         }
 

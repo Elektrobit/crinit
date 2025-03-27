@@ -77,6 +77,7 @@ int crinitExtractGroups(char *input, gid_t **groups, size_t *groupSize) {
         in = NULL;
         if (*token != '\0') {
             char *endptr = NULL;
+            errno = 0;
             (*groups)[i] = strtoul(token, &endptr, 10);
             if (endptr != token && *endptr == '\0' && errno == 0) {
                 i++;
@@ -120,19 +121,25 @@ int main(int argc, char *argv[]) {
         switch (opt) {
             case 'c':
                 if (cmd) {
-                    crinitErrPrint("Parameter --cmd may only given once.\n");
+                    crinitErrPrint("Parameter --cmd may only be given once.\n");
                     crinitPrintUsage();
                     goto failureExit;
                 }
                 cmd = strdup(optarg);
                 break;
-            case 'u':
-                user = strtoul(optarg, NULL, 10);
+            case 'u': {
+                char *endptr = NULL;
+                errno = 0;
+                user = strtoul(optarg, &endptr, 10);
+                if (endptr == NULL || endptr == optarg || *endptr != '\0' || errno != 0) {
+                    crinitErrPrint("Malformed input for user parameter: %s.\n", optarg);
+                    goto failureExit;
+                }
                 userFound = true;
-                break;
+            } break;
             case 'g':
                 if (groups) {
-                    crinitErrPrint("Parameter --groups may only given once.\n");
+                    crinitErrPrint("Parameter --groups may only be given once.\n");
                     crinitPrintUsage();
                     goto failureExit;
                 }
@@ -152,6 +159,12 @@ int main(int argc, char *argv[]) {
                 crinitPrintUsage();
                 goto failureExit;
         }
+    }
+
+    if (cmd == NULL) {
+        crinitErrPrint("Option --cmd not provided.");
+        crinitPrintUsage();
+        goto failureExit;
     }
 
     size_t argvNewSize = strlen(cmd) + 1;

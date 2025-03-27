@@ -33,7 +33,17 @@ extensions = [
 ]
 
 templates_path = ['doc/_templates']
-exclude_patterns = ['deps/*', 'packaging/**', "build/**/README.md", "build/*/debbuild/**", "result/**", "build/*/doc/doxygen/doc/adr/**", "build/*/doc/sphinx/**", "build/*-Debug/**"]
+exclude_patterns = [
+        'deps/*',
+        'packaging/**',
+        "build/**/README.md",
+        "build/*/debbuild/**",
+        "result/**",
+        "build/*/doc/doxygen/doc/adr/**",
+        "build/*/doc/sphinx/**",
+        "build/*-Debug/**",
+        "test/*",
+]
 source_suffix = {
     '.rst': 'restructuredtext',
     '.md': 'markdown',
@@ -45,8 +55,8 @@ language = 'en'
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = 'alabaster'
-html_static_path = ['images', 'result/amd64/doc/doxygen/doc/']
-html_logo = 'images/crinit-logo.png'
+html_static_path = ['images', 'doc/api']
+html_logo = 'images/crinit_logo_blk.svg'
 
 favicons = [
     "favicon_16x16.png",

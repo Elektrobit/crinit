@@ -493,38 +493,88 @@ int crinitCfgGroupHandler(void *tgt, const char *val, crinitConfigType_t type) {
     crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
     crinitTask_t *t = tgt;
 
+    int confArrLen;
+    char **parsedVal = crinitConfConvToStrArr(&confArrLen, val, true);
+    if (parsedVal == NULL) {
+        crinitErrPrint("Could not convert group list '%s' to string array.", val);
+        return -1;
+    }
+
     gid_t gid;
-    if (isalpha(*val)) {
-        if (crinitGroupnameToGid(val, &gid)) {
-            t->group = gid;
-            t->groupname = strdup(val);
-            if (t->groupname == NULL) {
-                crinitErrPrint("Failed to allocate memory for groupname %s.", val);
-                return -1;
-            }
-            return 0;
+
+    if (confArrLen > 1) {
+        t->supGroupsSize = confArrLen - 1;
+        t->supGroups = calloc(t->supGroupsSize, sizeof(*t->supGroups));
+        if (t->supGroups == NULL) {
+            crinitErrPrint("Couldn not allocate memory for supplementary groups.\n");
+            goto failInit;
         }
     }
 
-    // Make sure input is not a negative number
-    long long temp = 0;
-    if (crinitConfConvToInteger(&temp, val, 10) == -1) {
-        crinitErrPrint("Invalid value for UID found");
-        return -1;
-    } else if (temp < 0) {
-        crinitErrPrint("Invalid (negative) value for UID found");
-        return -1;
+    for (int i = 0; i < confArrLen; i++) {
+        if (isalpha(*parsedVal[i])) {
+            if (crinitGroupnameToGid(parsedVal[i], &gid)) {
+                if (i == 0) {  // First run is main group
+                    t->group = gid;
+                    t->groupname = strdup(parsedVal[i]);
+                    if (t->groupname == NULL) {
+                        crinitErrPrint("Failed to allocate memory for groupname %s.", val);
+                        goto failLoop;
+                    }
+                } else {
+                    t->supGroups[i - 1] = gid;
+                }
+            }
+        } else {
+            // Make sure input is not a negative number
+            long long temp = 0;
+            if (crinitConfConvToInteger(&temp, parsedVal[i], 10) == -1) {
+                crinitErrPrint("Invalid value for UID found");
+                goto failLoop;
+            } else if (temp < 0) {
+                crinitErrPrint("Invalid (negative) value for UID found");
+                goto failLoop;
+            }
+
+            if (crinitConfConvToInteger(&gid, parsedVal[i], 10) == -1) {
+                crinitErrPrint("Invalid GID / group name found");
+                goto failLoop;
+            }
+            if (i == 0) {  // First run is main group
+                t->group = gid;
+                if (crinitGidToGroupname(t->group, &t->groupname) != true) {
+                    crinitErrPrint("Failed to map GID %d to a groupname.", t->group);
+                    goto failLoop;
+                }
+            } else {
+                char *tmp = NULL;
+                if (crinitGidToGroupname(gid, &tmp) != true) {
+                    crinitErrPrint("Failed to map GID %d to a groupname for supplementary group.", t->group);
+                    free(tmp);
+                    goto failLoop;
+                }
+                free(tmp);
+                t->supGroups[i - 1] = gid;
+            }
+        }
     }
 
-    if (crinitConfConvToInteger(&t->group, val, 10) == -1) {
-        crinitErrPrint("Invalid GID / group name found");
-        return -1;
+    // If GROUP is specified, we need at least one valid entry.
+    if (t->groupname == NULL) {
+        crinitErrPrint("Configuration key %s is empty.", CRINIT_CONFIG_KEYSTR_GROUP);
+        goto failLoop;
     }
-    if (crinitGidToGroupname(t->group, &t->groupname) != true) {
-        crinitErrPrint("Failed to map GID %d to a groupname.", t->group);
-        return -1;
-    }
+
+    crinitFreeArgvArray(parsedVal);
     return 0;
+
+failLoop:
+    free(t->supGroups);
+    t->supGroups = NULL;
+    t->supGroups = 0;
+failInit:
+    crinitFreeArgvArray(parsedVal);
+    return -1;
 }
 
 int crinitCfgDebugHandler(void *tgt, const char *val, crinitConfigType_t type) {
