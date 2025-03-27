@@ -26,13 +26,15 @@ var searchData=
   ['source_23',['source',['../structcrinitElosEvent.html#a150f2b0d1d15bcef2bf01c055115a07c',1,'crinitElosEvent']]],
   ['spawnfunc_24',['spawnFunc',['../structcrinitTaskDB__t.html#a90788e6de7d9d292a85a89fb1aea4b11',1,'crinitTaskDB_t']]],
   ['spawninhibit_25',['spawnInhibit',['../structcrinitTaskDB__t.html#a48a1cd6ffad4abec7f3f98f7d9398f74',1,'crinitTaskDB_t']]],
-  ['starttime_26',['starttime',['../structcrinitTask__t.html#a5d483f22f3da30735e69d7cdcc553ab2',1,'crinitTask_t::startTime'],['../structcrinitTaskListEntry__t.html#a430d687894522692371d2aa8f231c95e',1,'crinitTaskListEntry_t::startTime']]],
-  ['state_27',['state',['../structcrinitTask__t.html#abfac7a104064c66f0ae14d1e3e2f4c36',1,'crinitTask_t::state'],['../structcrinitTaskListEntry__t.html#ad8ad179c6de2a23fb1e68a9afabbafe7',1,'crinitTaskListEntry_t::state']]],
+  ['starttime_26',['starttime',['../structcrinitTaskListEntry__t.html#a430d687894522692371d2aa8f231c95e',1,'crinitTaskListEntry_t::startTime'],['../structcrinitTask__t.html#a5d483f22f3da30735e69d7cdcc553ab2',1,'crinitTask_t::startTime']]],
+  ['state_27',['state',['../structcrinitTaskListEntry__t.html#ad8ad179c6de2a23fb1e68a9afabbafe7',1,'crinitTaskListEntry_t::state'],['../structcrinitTask__t.html#abfac7a104064c66f0ae14d1e3e2f4c36',1,'crinitTask_t::state']]],
   ['statereq_28',['stateReq',['../structcrinitTaskPrv__t.html#a8b4f40c236fa202ae79547a851406519',1,'crinitTaskPrv_t']]],
   ['stopcmds_29',['stopCmds',['../structcrinitTask__t.html#ac58c979c2b4b3595832fa0251541c0d3',1,'crinitTask_t']]],
   ['stopcmdssize_30',['stopCmdsSize',['../structcrinitTask__t.html#a02e961a50cc67fa6d7334e5825a391cb',1,'crinitTask_t']]],
   ['str_31',['STR',['../eloslog_8c.html#a18d295a837ac71add5578860b55e5502',1,'eloslog.c']]],
   ['str_5fcheck_5finline_32',['STR_CHECK_INLINE',['../utest-inih-configuration_2regression-test_8c.html#a606438a248609952d42c38f56849252d',1,'regression-test.c']]],
   ['str_5fhelper_33',['STR_HELPER',['../eloslog_8c.html#a890d84b9b5d0b0aede9eea1092a7a10a',1,'eloslog.c']]],
-  ['str_5fsemicolon_5fline_34',['STR_SEMICOLON_LINE',['../utest-inih-configuration_2regression-test_8c.html#ad62807e7713755f2ca516afe2de2c275',1,'regression-test.c']]]
+  ['str_5fsemicolon_5fline_34',['STR_SEMICOLON_LINE',['../utest-inih-configuration_2regression-test_8c.html#ad62807e7713755f2ca516afe2de2c275',1,'regression-test.c']]],
+  ['supgroups_35',['supGroups',['../structcrinitTask__t.html#a0e939ef543c566e8496254b598a6f96a',1,'crinitTask_t']]],
+  ['supgroupssize_36',['supGroupsSize',['../structcrinitTask__t.html#a816d40c305f29c46d4b525ed0de0291c',1,'crinitTask_t']]]
 ];

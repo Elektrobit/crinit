@@ -184,6 +184,12 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a16d6446ebc83615a9f484ec631a526b3" id="r_a16d6446ebc83615a9f484ec631a526b3"><td class="memItemLeft" align="right" valign="top">gid_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcrinitTask__t.html#a16d6446ebc83615a9f484ec631a526b3">group</a></td></tr>
 <tr class="memdesc:a16d6446ebc83615a9f484ec631a526b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">The group id to run the task's commands with.  <br /></td></tr>
 <tr class="separator:a16d6446ebc83615a9f484ec631a526b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e939ef543c566e8496254b598a6f96a" id="r_a0e939ef543c566e8496254b598a6f96a"><td class="memItemLeft" align="right" valign="top">gid_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcrinitTask__t.html#a0e939ef543c566e8496254b598a6f96a">supGroups</a></td></tr>
+<tr class="memdesc:a0e939ef543c566e8496254b598a6f96a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dynamic array of supplementary group IDs.  <br /></td></tr>
+<tr class="separator:a0e939ef543c566e8496254b598a6f96a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a816d40c305f29c46d4b525ed0de0291c" id="r_a816d40c305f29c46d4b525ed0de0291c"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcrinitTask__t.html#a816d40c305f29c46d4b525ed0de0291c">supGroupsSize</a></td></tr>
+<tr class="memdesc:a816d40c305f29c46d4b525ed0de0291c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of supplementary group IDs in supGroups.  <br /></td></tr>
+<tr class="separator:a816d40c305f29c46d4b525ed0de0291c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56fc40cea8308fdc5e5c416d95a1c376" id="r_a56fc40cea8308fdc5e5c416d95a1c376"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcrinitTask__t.html#a56fc40cea8308fdc5e5c416d95a1c376">username</a></td></tr>
 <tr class="memdesc:a56fc40cea8308fdc5e5c416d95a1c376"><td class="mdescLeft">&#160;</td><td class="mdescRight">The username to run the task's commands with.  <br /></td></tr>
 <tr class="separator:a56fc40cea8308fdc5e5c416d95a1c376"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -544,6 +550,38 @@ Data Fields</h2></td></tr>
 
 </div>
 </div>
+<a id="a0e939ef543c566e8496254b598a6f96a" name="a0e939ef543c566e8496254b598a6f96a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e939ef543c566e8496254b598a6f96a">&#9670;&#160;</a></span>supGroups</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">gid_t* crinitTask_t::supGroups</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Dynamic array of supplementary group IDs. </p>
+
+</div>
+</div>
+<a id="a816d40c305f29c46d4b525ed0de0291c" name="a816d40c305f29c46d4b525ed0de0291c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a816d40c305f29c46d4b525ed0de0291c">&#9670;&#160;</a></span>supGroupsSize</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t crinitTask_t::supGroupsSize</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Number of supplementary group IDs in supGroups. </p>
+
+</div>
+</div>
 <a id="a9cb78710173db4ff669a50858a4f4204" name="a9cb78710173db4ff669a50858a4f4204"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9cb78710173db4ff669a50858a4f4204">&#9670;&#160;</a></span>taskEnv</h2>
 
@@ -594,7 +632,7 @@ Data Fields</h2></td></tr>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>inc/<a class="el" href="task_8h_source.html">task.h (/usr/bin/git
-2025-03-14, commit: 3f3d877e)</a></li>
+2025-03-27, commit: 9ebccc0)</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

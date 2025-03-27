@@ -22,6 +22,8 @@ var structcrinitTask__t =
     [ "state", "structcrinitTask__t.html#abfac7a104064c66f0ae14d1e3e2f4c36", null ],
     [ "stopCmds", "structcrinitTask__t.html#ac58c979c2b4b3595832fa0251541c0d3", null ],
     [ "stopCmdsSize", "structcrinitTask__t.html#a02e961a50cc67fa6d7334e5825a391cb", null ],
+    [ "supGroups", "structcrinitTask__t.html#a0e939ef543c566e8496254b598a6f96a", null ],
+    [ "supGroupsSize", "structcrinitTask__t.html#a816d40c305f29c46d4b525ed0de0291c", null ],
     [ "taskEnv", "structcrinitTask__t.html#a9cb78710173db4ff669a50858a4f4204", null ],
     [ "user", "structcrinitTask__t.html#a277e93a70db574a9c2dfade182cea596", null ],
     [ "username", "structcrinitTask__t.html#a56fc40cea8308fdc5e5c416d95a1c376", null ]

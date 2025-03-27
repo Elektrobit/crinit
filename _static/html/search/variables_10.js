@@ -16,5 +16,7 @@ var searchData=
   ['state_13',['state',['../structcrinitTaskListEntry__t.html#ad8ad179c6de2a23fb1e68a9afabbafe7',1,'crinitTaskListEntry_t::state'],['../structcrinitTask__t.html#abfac7a104064c66f0ae14d1e3e2f4c36',1,'crinitTask_t::state']]],
   ['statereq_14',['stateReq',['../structcrinitTaskPrv__t.html#a8b4f40c236fa202ae79547a851406519',1,'crinitTaskPrv_t']]],
   ['stopcmds_15',['stopCmds',['../structcrinitTask__t.html#ac58c979c2b4b3595832fa0251541c0d3',1,'crinitTask_t']]],
-  ['stopcmdssize_16',['stopCmdsSize',['../structcrinitTask__t.html#a02e961a50cc67fa6d7334e5825a391cb',1,'crinitTask_t']]]
+  ['stopcmdssize_16',['stopCmdsSize',['../structcrinitTask__t.html#a02e961a50cc67fa6d7334e5825a391cb',1,'crinitTask_t']]],
+  ['supgroups_17',['supGroups',['../structcrinitTask__t.html#a0e939ef543c566e8496254b598a6f96a',1,'crinitTask_t']]],
+  ['supgroupssize_18',['supGroupsSize',['../structcrinitTask__t.html#a816d40c305f29c46d4b525ed0de0291c',1,'crinitTask_t']]]
 ];

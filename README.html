@@ -403,8 +403,7 @@ user ID can be used. If <strong>USER</strong> is not set, “root” is assumed.
 <strong>NOTE</strong>: Changing user names, UIDs, group names or GIDs on the system while a task using them has already been
 loaded may result in undefined behaviour.</p></li>
 <li><p><strong>GROUP</strong> – Name of the group used to run the commands specified in <strong>COMMAND</strong>. Either the group name or the numeric
-group ID can be used. If <strong>GROUP</strong> is not set, “root” is assumed. Note that setting supplementary groups is not yet
-supported.
+group ID can be used. If <strong>GROUP</strong> is not set, “root” is assumed. Supplementary groups can be added after the main group, space separated. GROUP can be an array, too. Similar to <strong>COMMAND</strong>.
 <strong>Also see note on USER command.</strong> This applies here, too.</p></li>
 <li><p><strong>DEPENDS</strong> – A list of dependencies which need to be fulfilled before this task is considered “ready-to-start”.
 Semantics are <code class="docutils literal notranslate"><span class="pre">&lt;taskname&gt;:{fail,wait,spawn}</span></code>, where <code class="docutils literal notranslate"><span class="pre">spawn</span></code> is fulfilled when (the first command of) a task has been

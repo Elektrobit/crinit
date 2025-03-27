@@ -99,7 +99,7 @@ $(document).ready(function(){initNavTree('procdip_8c.html',''); initResizable();
 </div><!--header-->
 <div class="contents">
 <h3 class="version">(/usr/bin/git
-2025-02-19, commit: 5f1bbfa6)</h3>
+2025-03-27, commit: ffe114c)</h3>
 <p>Implementation of the Process Dispatcher.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="procdip_8h_source.html">procdip.h</a>&quot;</code><br />
@@ -224,6 +224,12 @@ Functions</h2></td></tr>
 <tr class="separator:a53e91c9086d3f3c60365e5535a33dff9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae6e71a9cc7e9e8f1d21a345048274b4a" id="r_ae6e71a9cc7e9e8f1d21a345048274b4a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#ae6e71a9cc7e9e8f1d21a345048274b4a">crinitPrepareIoRedirectionsForSpawn</a> (size_t cmdIdx, <a class="el" href="structcrinitIoRedir__t.html">crinitIoRedir_t</a> *redirs, size_t redirsSize, pid_t threadId, const char *name, posix_spawn_file_actions_t *fileact)</td></tr>
 <tr class="separator:ae6e71a9cc7e9e8f1d21a345048274b4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a065363cd4fd4202ea289d23257f26873" id="r_a065363cd4fd4202ea289d23257f26873"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#a065363cd4fd4202ea289d23257f26873">crinitCalculateVariableGroupParamLength</a> (size_t supGroupsSize, gid_t *supGroups)</td></tr>
+<tr class="separator:a065363cd4fd4202ea289d23257f26873"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acad477cb1b2964cdbb45be8c74dd054c" id="r_acad477cb1b2964cdbb45be8c74dd054c"><td class="memItemLeft" align="right" valign="top">static char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#acad477cb1b2964cdbb45be8c74dd054c">crinitCreateSupGroupsParamString</a> (size_t supGroupsSize, gid_t *supGroups, int expOutSize)</td></tr>
+<tr class="separator:acad477cb1b2964cdbb45be8c74dd054c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6e0ead4979b999295a3aa4b1b3b5701" id="r_ac6e0ead4979b999295a3aa4b1b3b5701"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#ac6e0ead4979b999295a3aa4b1b3b5701">crinitCreateLauncherParameters</a> (<a class="el" href="structcrinitTaskCmd__t.html">crinitTaskCmd_t</a> *taskCmd, <a class="el" href="structcrinitTask__t.html">crinitTask_t</a> *tCopy, char *cmd, char ***argv, char **argBuffer)</td></tr>
+<tr class="separator:ac6e0ead4979b999295a3aa4b1b3b5701"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aead13491b6b2ac0c0dfd4e77b74aa30a" id="r_aead13491b6b2ac0c0dfd4e77b74aa30a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#aead13491b6b2ac0c0dfd4e77b74aa30a">crinitHandleCommands</a> (<a class="el" href="structcrinitTaskDB__t.html">crinitTaskDB_t</a> *ctx, pid_t threadId, char *name, <a class="el" href="structcrinitTaskCmd__t.html">crinitTaskCmd_t</a> *cmds, size_t cmdsSize, <a class="el" href="structcrinitTask__t.html">crinitTask_t</a> *tCopy, pid_t *pid, bool deactivateFileactions)</td></tr>
 <tr class="separator:aead13491b6b2ac0c0dfd4e77b74aa30a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a29fcb0967a7d51060c74a6a1417a620e" id="r_a29fcb0967a7d51060c74a6a1417a620e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#a29fcb0967a7d51060c74a6a1417a620e">crinitExpandPIDVariablesInSingleCommand</a> (char *input, const pid_t pid, char **result)</td></tr>
@@ -307,6 +313,130 @@ Variables</h2></td></tr>
 <p>Block calling thread until <a class="el" href="procdip_8c.html#ab1dd2ea37bc3070af4c89485683142ac">crinitWaitInhibit</a> becomes false.</p>
 <p>Called by dispatcher threads to delay reaping of zombie processes if needed.</p>
 <dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on error </dd></dl>
+
+</div>
+</div>
+<a id="a065363cd4fd4202ea289d23257f26873" name="a065363cd4fd4202ea289d23257f26873"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a065363cd4fd4202ea289d23257f26873">&#9670;&#160;</a></span>crinitCalculateVariableGroupParamLength()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int crinitCalculateVariableGroupParamLength </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>supGroupsSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">gid_t *&#160;</td>
+          <td class="paramname"><em>supGroups</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac6e0ead4979b999295a3aa4b1b3b5701" name="ac6e0ead4979b999295a3aa4b1b3b5701"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6e0ead4979b999295a3aa4b1b3b5701">&#9670;&#160;</a></span>crinitCreateLauncherParameters()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int crinitCreateLauncherParameters </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structcrinitTaskCmd__t.html">crinitTaskCmd_t</a> *&#160;</td>
+          <td class="paramname"><em>taskCmd</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structcrinitTask__t.html">crinitTask_t</a> *&#160;</td>
+          <td class="paramname"><em>tCopy</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>cmd</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char ***&#160;</td>
+          <td class="paramname"><em>argv</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char **&#160;</td>
+          <td class="paramname"><em>argBuffer</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acad477cb1b2964cdbb45be8c74dd054c" name="acad477cb1b2964cdbb45be8c74dd054c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acad477cb1b2964cdbb45be8c74dd054c">&#9670;&#160;</a></span>crinitCreateSupGroupsParamString()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static char * crinitCreateSupGroupsParamString </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>supGroupsSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">gid_t *&#160;</td>
+          <td class="paramname"><em>supGroups</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>expOutSize</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>

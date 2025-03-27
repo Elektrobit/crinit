@@ -325,8 +325,7 @@ IO_REDIRECT = STDERR STDOUT
     **NOTE**: Changing user names, UIDs, group names or GIDs on the system while a task using them has already been
     loaded may result in undefined behaviour.
 - **GROUP** -- Name of the group used to run the commands specified in **COMMAND**. Either the group name or the numeric
-  group ID can be used. If **GROUP** is not set, "root" is assumed. Note that setting supplementary groups is not yet
-  supported.
+  group ID can be used. If **GROUP** is not set, "root" is assumed. Supplementary groups can be added after the main group, space separated. GROUP can be an array, too. Similar to **COMMAND**.
     **Also see note on USER command.** This applies here, too.
 - **DEPENDS** -- A list of dependencies which need to be fulfilled before this task is considered "ready-to-start".
   Semantics are `<taskname>:{fail,wait,spawn}`, where `spawn` is fulfilled when (the first command of) a task has been

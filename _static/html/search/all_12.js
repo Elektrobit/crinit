@@ -34,6 +34,6 @@ var searchData=
   ['time_5frepr_5fmax_5flen_31',['TIME_REPR_MAX_LEN',['../crinit-ctl_8c.html#a01f8171bc13e2f5038599047e280cb3c',1,'crinit-ctl.c']]],
   ['time_5frepr_5fprintf_5fformat_32',['TIME_REPR_PRINTF_FORMAT',['../crinit-ctl_8c.html#ac4ecac1a7ae684099461c5e68bbedcd4',1,'crinit-ctl.c']]],
   ['tpref_33',['tpRef',['../structcrinitConnThrArgs__t.html#ac69b62c45512ee6839fe021f4df56d80',1,'crinitConnThrArgs_t']]],
-  ['true_5fcmd_34',['TRUE_CMD',['../utest-crinit-cfg-launch-cmd-handler_2case-success_8c.html#ad8450c55685088f16fa6fb4dc0d68ad9',1,'case-success.c']]],
+  ['true_5fcmd_34',['true_cmd',['../utest-crinit-cfg-launch-cmd-handler_2case-success_8c.html#ad8450c55685088f16fa6fb4dc0d68ad9',1,'TRUE_CMD:&#160;case-success.c'],['../utest-crinit-create-launcher-parameters_2case-success_8c.html#ad8450c55685088f16fa6fb4dc0d68ad9',1,'TRUE_CMD:&#160;case-success.c']]],
   ['type_35',['type',['../structcrinitOptFeatMap__t.html#a164fa48c10e40bc11a3837c9bfa044e0',1,'crinitOptFeatMap_t']]]
 ];

@@ -95,7 +95,7 @@ $(document).ready(function(){initNavTree('utest-crinit-cfg-group-handler_2case-s
 </div><!--header-->
 <div class="contents">
 <h3 class="version">(/usr/bin/git
-2025-02-19, commit: 5f1bbfa6)</h3>
+2025-03-27, commit: 72cdbda)</h3>
 <p>Unit test for <a class="el" href="confhdl_8c.html#a45ec6c72068dc4273bd7f7516f41ad7c">crinitCfgGroupHandler()</a>, successful execution.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;stdlib.h&gt;</code><br />
@@ -168,6 +168,12 @@ Functions</h2></td></tr>
 <tr class="separator:a5519b6cdad22358a206bfaf14959f53b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a247e65b8357c1f3e58d04e124601cab7" id="r_a247e65b8357c1f3e58d04e124601cab7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utest-crinit-cfg-group-handler_2case-success_8c.html#a247e65b8357c1f3e58d04e124601cab7">crinitCfgGroupHandlerTestAlphaInputSuccess</a> (void **state)</td></tr>
 <tr class="separator:a247e65b8357c1f3e58d04e124601cab7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9379948e703d34ed593a995dcf3cb75b" id="r_a9379948e703d34ed593a995dcf3cb75b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utest-crinit-cfg-group-handler_2case-success_8c.html#a9379948e703d34ed593a995dcf3cb75b">crinitCfgGroupHandlerTestAlphaInputTwoGroupsSuccess</a> (void **state)</td></tr>
+<tr class="separator:a9379948e703d34ed593a995dcf3cb75b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49dec1da7ce6e1a03cbeaf5803389af2" id="r_a49dec1da7ce6e1a03cbeaf5803389af2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utest-crinit-cfg-group-handler_2case-success_8c.html#a49dec1da7ce6e1a03cbeaf5803389af2">crinitCfgGroupHandlerTestAlphaInputThreeGroupsSuccess</a> (void **state)</td></tr>
+<tr class="separator:a49dec1da7ce6e1a03cbeaf5803389af2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab42d0dfb838b178e1b5c122d7b5c989d" id="r_ab42d0dfb838b178e1b5c122d7b5c989d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utest-crinit-cfg-group-handler_2case-success_8c.html#ab42d0dfb838b178e1b5c122d7b5c989d">crinitCfgGroupHandlerTestNumericMultipleGroupsSuccess</a> (void **state)</td></tr>
+<tr class="separator:ab42d0dfb838b178e1b5c122d7b5c989d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Unit test for <a class="el" href="confhdl_8c.html#a45ec6c72068dc4273bd7f7516f41ad7c">crinitCfgGroupHandler()</a>, successful execution. </p>
@@ -188,6 +194,63 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Tests successful parsing of a alphabetical group name (e.g. "disk") instead of an ID. </p>
+
+</div>
+</div>
+<a id="a49dec1da7ce6e1a03cbeaf5803389af2" name="a49dec1da7ce6e1a03cbeaf5803389af2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49dec1da7ce6e1a03cbeaf5803389af2">&#9670;&#160;</a></span>crinitCfgGroupHandlerTestAlphaInputThreeGroupsSuccess()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void crinitCfgGroupHandlerTestAlphaInputThreeGroupsSuccess </td>
+          <td>(</td>
+          <td class="paramtype">void **&#160;</td>
+          <td class="paramname"><em>state</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Tests successful parsing of three alphabetical group names (e.g. "nogroup disk floppy") instead of an ID. </p>
+
+</div>
+</div>
+<a id="a9379948e703d34ed593a995dcf3cb75b" name="a9379948e703d34ed593a995dcf3cb75b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9379948e703d34ed593a995dcf3cb75b">&#9670;&#160;</a></span>crinitCfgGroupHandlerTestAlphaInputTwoGroupsSuccess()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void crinitCfgGroupHandlerTestAlphaInputTwoGroupsSuccess </td>
+          <td>(</td>
+          <td class="paramtype">void **&#160;</td>
+          <td class="paramname"><em>state</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Tests successful parsing of two alphabetical group names (e.g. "disk floppy") instead of an ID. </p>
+
+</div>
+</div>
+<a id="ab42d0dfb838b178e1b5c122d7b5c989d" name="ab42d0dfb838b178e1b5c122d7b5c989d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab42d0dfb838b178e1b5c122d7b5c989d">&#9670;&#160;</a></span>crinitCfgGroupHandlerTestNumericMultipleGroupsSuccess()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void crinitCfgGroupHandlerTestNumericMultipleGroupsSuccess </td>
+          <td>(</td>
+          <td class="paramtype">void **&#160;</td>
+          <td class="paramname"><em>state</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Tests successful parsing of two numeric group IDs. </p>
 
 </div>
 </div>
