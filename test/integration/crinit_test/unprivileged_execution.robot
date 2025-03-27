@@ -61,6 +61,14 @@ A Crinit Task With '${USER}' And '${GROUP}'
 
     Set Test Variable   ${NEW_CONF}    ${TEMPORARY_CONF}
 
+
+Check If '${Task}' Is Running
+    [Documentation]     Pass return value from Crinit Check Task State to caller
+
+    ${rc} =  Crinit Check Task State    ${TASK}    running
+    Should Be Equal As Numbers  ${rc}  0
+
+
 Crinit Starts The Task
     [Documentation]   Start the crinit task with task config.
 
@@ -71,8 +79,7 @@ Crinit Starts The Task
     Should Be Equal As Numbers  ${rc}  0
     ${rc} =  Crinit Add Task    ${TASK}.crinit
     Should Be Equal As Numbers  ${rc}  0
-    ${rc} =  Wait Until Keyword Succeeds  5s  200ms  Crinit Check Task State    ${TASK}    running
-    Should Be Equal As Numbers  ${rc}  0
+    Wait Until Keyword Succeeds  5s  200ms  Check If '${Task}' Is Running 
 
 
 The Task Is Owned By '${USER}' And '${GROUP}'
