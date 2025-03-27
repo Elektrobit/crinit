@@ -1,3 +1,9 @@
+crinit (0.17.1-1) unstable; urgency=medium
+
+  * New upstream tag 0.17.1
+
+ -- Andreas Zdziarstek <andreas.zdziarstek@emlix.com>  Thu, 27 Mar 2025 13:18:30 +0000
+
 crinit (0.17.0-1) unstable; urgency=medium
 
   * New upstream tag 0.17.0
