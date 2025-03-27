@@ -57,14 +57,14 @@ Crinit Starts The Task
 
     Log     ${TASK}
     Log     ${NEW_CONF} 
-    ${rc} =  Crinit Add Task Config    ${TASK}    ${NEW_CONF}
+    ${rc}=  Crinit Add Task Config    ${TASK}    ${NEW_CONF}
    
     Should Be Equal As Numbers  ${rc}  0
-    ${rc} =  Crinit Add Task    ${TASK}.crinit
+    ${rc}=  Crinit Add Task    ${TASK}.crinit
     Should Be Equal As Numbers  ${rc}  0
 
 The Task Finished Successfully
     [Documentation]   Task must be finished successfully
 
-    ${rc} =  Crinit Check Task State    ${TASK}    done
+    ${rc}=  Crinit Check Task State    ${TASK}    done
     Should Be Equal As Numbers  ${rc}  0
