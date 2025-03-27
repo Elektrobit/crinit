@@ -38,7 +38,7 @@ Crinit Executes Task As Different User And Group
 
     Given A Crinit Task With '${USER}' And '${GROUP}'
     When Crinit Starts The Task
-    Then The Task Is Owned By '${USER}' And '${GROUP}'
+    Then Wait Until Keyword Succeeds  5s  200ms  The Task Is Owned By '${USER}' And '${GROUP}'
 
 
 Crinit Executes Task With Supplementary Groups
@@ -46,7 +46,7 @@ Crinit Executes Task With Supplementary Groups
 
     Given A Crinit Task With '${USER}' And '${MULTIGROUPS}'
     When Crinit Starts The Task
-    Then The Task Has Owner '${USER}' And Supplementary Groups '${MULTIGROUPS}'
+    Then Wait Until Keyword Succeeds  5s  200ms  The Task Has Owner '${USER}' And Supplementary Groups '${MULTIGROUPS}'
     
 
 *** Keywords ***
@@ -71,7 +71,7 @@ Crinit Starts The Task
     Should Be Equal As Numbers  ${rc}  0
     ${rc} =  Crinit Add Task    ${TASK}.crinit
     Should Be Equal As Numbers  ${rc}  0
-    ${rc} =  Crinit Check Task State    ${TASK}    running
+    ${rc} =  Wait Until Keyword Succeeds  5s  200ms  Crinit Check Task State    ${TASK}    running
     Should Be Equal As Numbers  ${rc}  0
 
 

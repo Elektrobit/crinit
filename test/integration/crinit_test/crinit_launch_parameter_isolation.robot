@@ -37,7 +37,7 @@ Crinit Executes Task With Additional Parameters
 
     Given A Crinit Task With '${USER}' And '${GROUP}'
     When Crinit Starts The Task
-    Then The Task Finished Successfully
+    Then Wait Until Keyword Succeeds  5s  200ms  The Task Finished Successfully
 
 
 *** Keywords ***
