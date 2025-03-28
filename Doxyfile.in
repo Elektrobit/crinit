@@ -174,6 +174,7 @@ FULL_PATH_NAMES        = YES
 # This tag requires that the tag FULL_PATH_NAMES is set to YES.
 
 STRIP_FROM_PATH        = @PROJECT_BINARY_DIR@ \
+                         @PROJECT_BINARY_DIR@/doxygen \
                          @PROJECT_SOURCE_DIR@
 
 # The STRIP_FROM_INC_PATH tag can be used to strip a user-defined part of the
@@ -895,10 +896,9 @@ WARN_LOGFILE           =
 # Note: If this tag is empty the current directory is searched.
 
 INPUT                  = ./src \
-                         ./inc \
                          ./test \
                          ./README.md \
-                         @PROJECT_BINARY_DIR@/inc
+                         @PROJECT_BINARY_DIR@/doxygen/inc
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses

@@ -171,6 +171,20 @@ if(UNIT_TESTS)
   add_subdirectory(test/utest)
 endif(UNIT_TESTS)
 
+add_custom_target(copy_includes_for_doxygen
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_SOURCE_DIR}/inc/"
+        "${CMAKE_BINARY_DIR}/doxygen/inc"
+    COMMENT "Copying includes for doxygen"
+)
+
+add_custom_target(copy_generated_includes_for_doxygen
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_BINARY_DIR}/inc/"
+        "${CMAKE_BINARY_DIR}/doxygen/inc"
+    COMMENT "Copying includes for doxygen"
+)
+
 if(API_DOC)
   configure_file(Doxyfile.in Doxyfile @ONLY)
   set(API_DOC_HTML_OUTPUT_DIR "${CMAKE_SOURCE_DIR}/doc/api/html")
@@ -214,7 +228,7 @@ if(API_DOC)
     ALL
     COMMAND Doxygen::doxygen ${PROJECT_BINARY_DIR}/Doxyfile
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    DEPENDS ${doxygen_images}
+    DEPENDS ${doxygen_images} copy_includes_for_doxygen copy_generated_includes_for_doxygen
   )
   install(DIRECTORY ${API_DOC_HTML_OUTPUT_DIR} DESTINATION "${CMAKE_INSTALL_DOCDIR}")
 endif(API_DOC)
