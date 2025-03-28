@@ -12,7 +12,6 @@ Library           DataDriver    file=test_data/test_capability_config.csv    dia
 Suite Setup       Connect To Target And Log In
 Suite Teardown    Close All Connections
 
-Test Setup        Crinit Start
 Test Teardown     Crinit Stop
 
 Test Template    Crinit Creates Task With Capability Configuration
@@ -21,27 +20,31 @@ Test Template    Crinit Creates Task With Capability Configuration
 *** Variables ***
 ${SERIES_DIR}             /etc/crinit/itest
 ${LOCAL_TEST_DIR}           /tmp
-${USER}        nobody
-${GROUP}       nogroup
 ${TASK}        test_service
-${TASK_CONF}    SEPARATOR=\n
+${TASK_CONFIG}  SEPARATOR=\n
 ...             NAME = test_service
 ...             COMMAND = /bin/sleep 10
-...             USER = @@USER@@
-...             GROUP = @@GROUP@@
+...             USER = nobody
+...             GROUP = nogroup
 ...             @@CAP_SET_KEY@@ = @@CAP_SET_VAL@@
 ...             @@CAP_CLEAR_KEY@@ = @@CAP_CLEAR_VAL@@
 
 *** Test Cases ***
-Crinit Creates Task With Capability Configuration ${cap_set_key} ${cap_set_val} ${cap_clear_key} ${cap_clear_val} ${exp_res}    Default    UserData
+Crinit Creates Task With Capability Configuration ${cap_set_key} ${cap_set_val} ${cap_clear_key} ${cap_clear_val} ${exp_cap_proc} ${exp_task_creation}    Default    UserData
 
 *** Keywords ***
 Crinit Creates Task With Capability Configuration
-    [Documentation]     Test if user and group configuration is obeyed
-    [Arguments]         ${cap_set_key}    ${cap_set_val}    ${cap_clear_key}    ${cap_clear_val}    ${exp_res}
+    [Documentation]     Test if capability configuration is obeyed
+    [Arguments]         ${cap_default_key}    ${cap_default_val}    ${cap_set_key}    ${cap_set_val}    ${cap_clear_key}    ${cap_clear_val}    ${exp_cap_proc}    ${exp_task_creation}
+    
+    Given Crint Start With Default Capabilities ${cap_default_val}
+    
+    And A Task Config ${TASK_CONFIG}
 
-    Given A Task Config
+    When Crinit Add Task Config    ${TASK}    ${TASK_CONFIG}
 
-    When Crinit Starts The Task With Config
+    And Crinit Add Task    ${TASK}.crinit
+    
+    Then Crinit Task Creation Was '${exp_task_creation}'
 
-    Then Crinit Task Creation Was '${exp_res}'
+    And The '${TASK}' Should Have The Capabilities '${exp_cap_proc}'
