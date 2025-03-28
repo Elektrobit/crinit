@@ -172,6 +172,7 @@ if(UNIT_TESTS)
 endif(UNIT_TESTS)
 
 if(API_DOC)
+  configure_file(Doxyfile.in Doxyfile @ONLY)
   set(API_DOC_HTML_OUTPUT_DIR "${CMAKE_SOURCE_DIR}/doc/api/html")
   find_package(Doxygen REQUIRED doxygen)
   find_program(PLANTUML_BIN plantuml NAMES plantuml REQUIRED)
@@ -211,7 +212,7 @@ if(API_DOC)
   add_custom_target(
     api-doc
     ALL
-    COMMAND Doxygen::doxygen
+    COMMAND Doxygen::doxygen ${PROJECT_BINARY_DIR}/Doxyfile
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     DEPENDS ${doxygen_images}
   )
