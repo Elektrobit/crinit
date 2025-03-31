@@ -69,20 +69,6 @@ Crinit Sends All Relevant Events Of An Unsuccessful Task execution To Elos
         ...    severity=2  msgcode=5006  classification=544  payload=${FAILURE_TASK_NAME}
 
 *** Keywords ***
-The Crinit Task ${task_name} Containing ${task_body} Is Loaded
-    ${rc} =  Crinit Add Task Config    ${task_name}    ${task_body}
-    Should Be Equal As Numbers  ${rc}  0
-    ${rc} =  Crinit Add Task    ${task_name}.crinit
-    Should Be Equal As Numbers  ${rc}  0
-
 Elosd Has Been Started
     ${running} =  Elosd Is Running
     Should Be True  ${running}
-
-The Task ${task_name} Has Exited Successfully
-    ${rc} =  Crinit Check Task State    ${task_name}    done
-    Should Be Equal As Numbers  ${rc}  0
-
-The Task ${task_name} Has Exited Unsuccessfully
-    ${rc} =  Crinit Check Task State    ${task_name}    failed
-    Should Be Equal As Numbers  ${rc}  0
