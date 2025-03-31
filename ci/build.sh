@@ -80,10 +80,8 @@ cp "$BUILDDIR"/src/crinit "$RESULTDIR"/bin/
 cp "$BUILDDIR"/src/crinit-ctl "$RESULTDIR"/bin/
 cp "$BUILDDIR"/src/*.so* "$RESULTDIR"/lib/
 
-# build and copy documentation
-make -C "$BUILDDIR" api-doc
-mkdir -p $RESULTDIR/doc/api
-cp -a doc "$RESULTDIR/doc/api"
+# copy documentation
+cp -a doc "$RESULTDIR"
 
 # copy client API headers
 cp inc/crinit-client.h "$RESULTDIR"/include
