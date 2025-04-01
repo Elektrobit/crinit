@@ -258,6 +258,8 @@ int crinitCreateLauncherParameters(crinitTaskCmd_t *taskCmd, crinitTask_t *tCopy
         crinitErrnoPrint("Failed to allocate memory for temporary argv to use with command launcher.\n");
         return -1;
     }
+    char *argBufCurr = argBuf;
+    int argBufIdx = 0;
     const size_t launcherParamCount = 6;  // Including trailing null element
     av = calloc(launcherParamCount + taskCmd->argc, sizeof(*av));
     if (av == NULL) {
@@ -265,35 +267,41 @@ int crinitCreateLauncherParameters(crinitTaskCmd_t *taskCmd, crinitTask_t *tCopy
         free(argBuf);
         return -1;
     }
+    av[argBufIdx++] = cmd;
 
-    snprintf(argBuf, cmdParamLength, cmdParamFormatStr, taskCmd->argv[0]);
-    snprintf(argBuf + cmdParamLength, userParamLength, userParamFormatStr, tCopy->user);
-    snprintf(argBuf + cmdParamLength + userParamLength, groupParamFixedPartLength, groupParamFormatStr, tCopy->group);
-    char *variableGroupParam = NULL;
+    av[argBufIdx++] = argBufCurr;
+    snprintf(argBufCurr, cmdParamLength, cmdParamFormatStr, taskCmd->argv[0]);
+    argBufCurr += cmdParamLength;
+
+    av[argBufIdx++] = argBufCurr;
+    snprintf(argBufCurr, userParamLength, userParamFormatStr, tCopy->user);
+    argBufCurr += userParamLength;
+
+    av[argBufIdx++] = argBufCurr;
+    snprintf(argBufCurr, groupParamFixedPartLength, groupParamFormatStr, tCopy->group);
+    argBufCurr += groupParamFixedPartLength;
+
     if (groupParamVarPartLength) {
-        variableGroupParam =
+        char *variableGroupParam =
             crinitCreateSupGroupsParamString(tCopy->supGroupsSize, tCopy->supGroups, groupParamVarPartLength);
         if (variableGroupParam == NULL) {
             free(av);
             free(argBuf);
             return -1;
         }
-        snprintf(argBuf + cmdParamLength + userParamLength + groupParamFixedPartLength - 1, groupParamVarPartLength,
-                 "%s", variableGroupParam);
+        snprintf(argBufCurr - 1, groupParamVarPartLength, "%s", variableGroupParam);
+        argBufCurr += groupParamVarPartLength;
         free(variableGroupParam);
     }
-    memcpy(argBuf + cmdParamLength + userParamLength + groupParamFixedPartLength + groupParamVarPartLength,
-           delimiterEndOfOptionsStr, doubleDashLength);
-    memcpy(argBuf + cmdParamLength + userParamLength + groupParamFixedPartLength + groupParamVarPartLength +
-               doubleDashLength,
-           taskCmd->argv, targetParamTotalLength);
 
-    av[0] = cmd;
-    av[1] = argBuf;
-    av[2] = argBuf + cmdParamLength;
-    av[3] = argBuf + cmdParamLength + userParamLength;
-    av[4] = argBuf + cmdParamLength + userParamLength + groupParamFixedPartLength + groupParamVarPartLength;
-    for (int argvIdx = 5, count = 1; count < taskCmd->argc; count++, argvIdx++) {
+    av[argBufIdx++] = argBufCurr;
+    memcpy(argBufCurr, delimiterEndOfOptionsStr, doubleDashLength);
+    argBufCurr += doubleDashLength;
+
+    memcpy(argBufCurr, taskCmd->argv, targetParamTotalLength);
+    argBufCurr += targetParamTotalLength;
+
+    for (int argvIdx = argBufIdx, count = 1; count < taskCmd->argc; count++, argvIdx++) {
         av[argvIdx] = taskCmd->argv[count];
     }
 
