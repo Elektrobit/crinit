@@ -388,3 +388,18 @@ class CrinitLibrary(object):
     def crinit_task_running(self, task_name: str):
         assert_equal(self.crinit_check_task_state(task_name, "running"), 0,
                      f"The task {task_name} is not currently running")
+
+    @keyword("Ensure Regular Files Exist")
+    def reg_files_exist(self, *files: os.path):
+        for file in files:
+            stdout, stderr, ret = self.ssh.execute_command(f"test -f {file}",
+                                                           return_stdout=True,
+                                                           return_stderr=True,
+                                                           return_rc=True,
+                                                           sudo=(not self.IS_ROOT),
+                                                           sudo_password=(None if self.IS_ROOT else self.password))
+            if stdout:
+                logger.info(stdout)
+            if stderr:
+                logger.error(stderr)
+            assert_equal(ret, 0)

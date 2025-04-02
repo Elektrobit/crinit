@@ -87,12 +87,3 @@ Clean Up Test Artifacts
     ...    rm -f ${TASK_OUT_SINGLE} ${TASK_OUT_MULTI_FIRST} ${TASK_OUT_MULTI_SECOND} ${TASK_OUT_MULTI_THIRD}
     ...    ${RETURN_RC}
     Should Be Equal As Numbers    ${rc}    0
-
-Ensure Regular Files Exist
-    [Arguments]    @{files}
-    FOR    ${file}    IN    @{files}
-        ${rc}  Execute And Log Based On User Permissions
-        ...    test -f ${file}
-        ...    ${RETURN_RC}
-        Should Be Equal As Numbers    ${rc}    0
-    END
