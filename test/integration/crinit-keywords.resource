@@ -24,21 +24,3 @@ Check If Tasks Have State
         ${rc} =  Crinit Check Task State    ${Task}    ${State}
         Should Be Equal As Numbers  ${rc}  0
     END
-
-The Crinit Task ${task_name} Containing ${task_body} Is Loaded
-    ${rc} =  Crinit Add Task Config    ${task_name}    ${task_body}
-    Should Be Equal As Numbers  ${rc}  0
-    ${rc} =  Crinit Add Task    ${task_name}.crinit
-    Should Be Equal As Numbers  ${rc}  0
-
-The Task ${task_name} Has Exited Successfully
-    ${rc} =  Crinit Check Task State    ${task_name}    done
-    Should Be Equal As Numbers  ${rc}  0
-
-The Task ${task_name} Has Exited Unsuccessfully
-    ${rc} =  Crinit Check Task State    ${task_name}    failed
-    Should Be Equal As Numbers  ${rc}  0
-
-The Task ${task_name} Is Currently Running
-    ${rc} =  Crinit Check Task State    ${task_name}    running
-    Should Be Equal As Numbers  ${rc}  0

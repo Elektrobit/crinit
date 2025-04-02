@@ -6,7 +6,7 @@ import re
 import traceback
 
 from robot.libraries.BuiltIn import BuiltIn
-import robot.utils.asserts
+from robot.utils.asserts import assert_equal
 from robot.api import logger
 from robot.api.deco import keyword
 
@@ -58,7 +58,7 @@ class CrinitLibrary(object):
 
         stdout, stderr, ret = self.ssh.execute_command(
             f"sh -c \"export CRINIT_SOCK={self.CRINIT_SOCK}; \
-                    crinit-ctl {action} {kwargs.get('task') or ''} {kwargs.get('options') or ''}\"",
+                    crinit-ctl {action} {kwargs.get('task') or ''} {kwargs.get('options') or ''}\""                                                                                                   ,
             return_stdout=True,
             return_stderr=True,
             return_rc=True,
@@ -299,8 +299,8 @@ class CrinitLibrary(object):
         if ret == 0:
             match = re.search(r"(?i)\bstatus\b\s*:\s*(?P<state>\w+)\s*,\s*\bpid\b\s*:\s*(?P<pid>[\+-]?\d+)", stdout)
             if match is not None:
-              pid = int(match.groupdict()['pid'])
-              logger.info(f"task pid is : {pid}")
+                pid = int(match.groupdict()['pid'])
+                logger.info(f"task pid is : {pid}")
             else:
                 logger.error(f"Failed to parse crinit state for task {task_name}.")
         return pid
@@ -334,7 +334,7 @@ class CrinitLibrary(object):
             return 0
 
         return -1
-    
+
     @keyword("'${task}' User Is '${user}' And Supplementary Groups Are '${multigroups}'")
     def task_user_and_supgroups_are(self, task, user, multigroups):
         """
@@ -342,7 +342,7 @@ class CrinitLibrary(object):
         """
 
         pid = self._crinit_get_task_pid(task)
-        
+
         stdout = None
         stderr = None
         ret = -1
@@ -355,7 +355,7 @@ class CrinitLibrary(object):
             sudo=False,
             sudo_password=None
         )
-        
+
         logger.info(f"STDOUT: {stdout}")
         logger.info(f"RET: {ret}")
         tmpstring = re.sub(r'\s+', ' ', stdout)
@@ -367,12 +367,12 @@ class CrinitLibrary(object):
         logger.info(f"SUPGROUPS: {rcsupgroups}")
         group = supgroups.pop(0)
         logger.info(f"Target sup groups: {supgroups}")
-        
+
         if rcuser == user and rcgroup == group and sorted(rcsupgroups) == sorted(supgroups):
             return 0
 
         return -1
-   
+
     def crinit_reboot(self):
         """Will request Crinit to perform a graceful system reboot.
         crinit-ctl can be symlinked to reboot as a shortcut which will
@@ -386,3 +386,24 @@ class CrinitLibrary(object):
         invoke this command automatically.
         """
         return self.__crinit_run("poweroff", "Requesting poweroff failed")[2]
+
+    @keyword("The Crinit Task ${task_name} Containing ${task_body} Is Loaded")
+    def crinit_task_is_loaded(self, task_name: str, task_body: str):
+        assert_equal(self.crinit_add_task_config(task_name, task_body), 0,
+                     f"The task {task_name} could not be copied to the target.")
+        assert_equal(self.crinit_add_task(f"{task_name}.crinit"), 0, f"The task {task_name} could not be loaded.")
+
+    @keyword("The Task ${task_name} Has Exited Successfully")
+    def crinit_task_successful(self, task_name: str):
+        assert_equal(self.crinit_check_task_state(task_name, "done"), 0,
+                     f"The task {task_name} has not (yet) exited successfully.")
+
+    @keyword("The Task ${task_name} Has Exited Unsuccessfully")
+    def crinit_task_unsuccessful(self, task_name: str):
+        assert_equal(self.crinit_check_task_state(task_name, "failed"), 0,
+                     f"The task {task_name} has not (yet) exited unsuccessfully.")
+
+    @keyword("The Task ${task_name} Is Currently Running")
+    def crinit_task_running(self, task_name: str):
+        assert_equal(self.crinit_check_task_state(task_name, "running"), 0,
+                     f"The task {task_name} is not currently running")
