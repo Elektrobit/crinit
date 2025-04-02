@@ -30,16 +30,12 @@ class CrinitLibrary(object):
 
     def __print_traceback(self):
         logger.error("Exception in user code:")
-        logger.error("-"*60)
+        logger.error("-" * 60)
         logger.error(traceback.format_exc())
-        logger.error("-"*60)
+        logger.error("-" * 60)
 
     def __local_path(self, file):
-        return os.path.normpath(
-            os.path.join(
-                os.path.dirname(os.path.realpath(__file__)), file
-            )
-        )
+        return os.path.normpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), file))
 
     def __target_path(self, file):
         return os.path.join(self.LOCAL_TEST_DIR, os.path.basename(file))
@@ -56,15 +52,13 @@ class CrinitLibrary(object):
         stderr = None
         ret = -1
 
-        stdout, stderr, ret = self.ssh.execute_command(
-            f"sh -c \"export CRINIT_SOCK={self.CRINIT_SOCK}; \
-                    crinit-ctl {action} {kwargs.get('task') or ''} {kwargs.get('options') or ''}\""                                                                                                   ,
-            return_stdout=True,
-            return_stderr=True,
-            return_rc=True,
-            sudo=(not self.IS_ROOT),
-            sudo_password=(None if self.IS_ROOT else self.password)
-        )
+        stdout, stderr, ret = self.ssh.execute_command(f"sh -c \"export CRINIT_SOCK={self.CRINIT_SOCK}; \
+                    crinit-ctl {action} {kwargs.get('task') or ''} {kwargs.get('options') or ''}\"",
+                                                       return_stdout=True,
+                                                       return_stderr=True,
+                                                       return_rc=True,
+                                                       sudo=(not self.IS_ROOT),
+                                                       sudo_password=(None if self.IS_ROOT else self.password))
 
         logger.info(f"{stdout}")
         if ret != 0 and stderr:
@@ -98,21 +92,17 @@ class CrinitLibrary(object):
         """ Checks if crinit is already running at the specified socket. """
         ret = -1
 
-        stdout, ret = self.ssh.execute_command(
-            f"test -S {self.CRINIT_SOCK}",
-            return_rc=True
-        )
+        stdout, ret = self.ssh.execute_command(f"test -S {self.CRINIT_SOCK}", return_rc=True)
 
         return ret == 0
 
-    def crinit_start(
-            self,
-            series_file=None,
-            chroot=None,
-            strace_output=None,
-            strace_filter=None,
-            ld_preload=None,
-            crinit_args=None):
+    def crinit_start(self,
+                     series_file=None,
+                     chroot=None,
+                     strace_output=None,
+                     strace_filter=None,
+                     ld_preload=None,
+                     crinit_args=None):
         """ Starts crinit if it is not already running with the specified socket. """
         chroot_cmd = ""
         strace_cmd = ""
@@ -137,19 +127,15 @@ class CrinitLibrary(object):
             start_cmd = start_cmd + f" {crinit_args}"
         start_cmd = start_cmd + f" {series_file}\""
 
-        self.ssh.start_command(
-            start_cmd,
-            sudo=(not self.IS_ROOT),
-            sudo_password=(None if self.IS_ROOT else self.password)
-        )
+        self.ssh.start_command(start_cmd,
+                               sudo=(not self.IS_ROOT),
+                               sudo_password=(None if self.IS_ROOT else self.password))
 
         try:
-            self.ssh.execute_command(
-                f"sh -c \"until [ -S {self.CRINIT_SOCK} ]; do sleep 0.1; done\"",
-                sudo=(not self.IS_ROOT),
-                sudo_password=(None if self.IS_ROOT else self.password),
-                timeout=self.WAIT_TIMEOUT
-            )
+            self.ssh.execute_command(f"sh -c \"until [ -S {self.CRINIT_SOCK} ]; do sleep 0.1; done\"",
+                                     sudo=(not self.IS_ROOT),
+                                     sudo_password=(None if self.IS_ROOT else self.password),
+                                     timeout=self.WAIT_TIMEOUT)
         except Exception as e:
             out, err = self.ssh.read_command_output(return_stderr=True, timeout=self.WAIT_TIMEOUT)
             logger.info(out)
@@ -178,14 +164,12 @@ class CrinitLibrary(object):
             stop_cmd = stop_cmd + f"\\ {crinit_args}"
         stop_cmd = stop_cmd + f"\\ {series_file} && rm -rf {self.CRINIT_SOCK}\""
 
-        stdout, stderr, ret = self.ssh.execute_command(
-            stop_cmd,
-            return_stdout=True,
-            return_stderr=True,
-            return_rc=True,
-            sudo=(not self.IS_ROOT),
-            sudo_password=(None if self.IS_ROOT else self.password)
-        )
+        stdout, stderr, ret = self.ssh.execute_command(stop_cmd,
+                                                       return_stdout=True,
+                                                       return_stderr=True,
+                                                       return_rc=True,
+                                                       sudo=(not self.IS_ROOT),
+                                                       sudo_password=(None if self.IS_ROOT else self.password))
 
         if stdout:
             logger.info(stdout)
@@ -233,6 +217,7 @@ class CrinitLibrary(object):
         return self.__crinit_run("kill", "Killing task failed", task=task_name)[2]
 
     """ for crinit-ctl ls proc ; do PID != -1 -> Kill process; done Finally kill crinit """
+
     def crinit_kill_all_tasks(self):
         """ Kills all running crinit tasks and stops crinit """
         (stdout, stderr, ret) = self.__crinit_run("list", "Could not list tasks.")
@@ -317,14 +302,12 @@ class CrinitLibrary(object):
         stderr = None
         ret = -1
 
-        stdout, stderr, ret = self.ssh.execute_command(
-            f"ps -p{pid} -ouser=,group=",
-            return_stdout=True,
-            return_stderr=True,
-            return_rc=True,
-            sudo=False,
-            sudo_password=None
-        )
+        stdout, stderr, ret = self.ssh.execute_command(f"ps -p{pid} -ouser=,group=",
+                                                       return_stdout=True,
+                                                       return_stderr=True,
+                                                       return_rc=True,
+                                                       sudo=False,
+                                                       sudo_password=None)
 
         (rcuser, rcgroup) = stdout.split()
         logger.info(f"USER: {rcuser}")
@@ -347,14 +330,12 @@ class CrinitLibrary(object):
         stderr = None
         ret = -1
 
-        stdout, stderr, ret = self.ssh.execute_command(
-            f"ps -p{pid} -ouser=,group=,supgrp=",
-            return_stdout=True,
-            return_stderr=True,
-            return_rc=True,
-            sudo=False,
-            sudo_password=None
-        )
+        stdout, stderr, ret = self.ssh.execute_command(f"ps -p{pid} -ouser=,group=,supgrp=",
+                                                       return_stdout=True,
+                                                       return_stderr=True,
+                                                       return_rc=True,
+                                                       sudo=False,
+                                                       sudo_password=None)
 
         logger.info(f"STDOUT: {stdout}")
         logger.info(f"RET: {ret}")
