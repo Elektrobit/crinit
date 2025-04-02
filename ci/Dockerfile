@@ -26,6 +26,7 @@ RUN apt-get update \
     clang-tidy \
     cmake \
     doxygen \
+    flake8 \
     git \
     graphviz \
     keyutils \
@@ -52,6 +53,7 @@ RUN apt-get update \
     vim \
     wget \
     npm \
+    yapf3 \
     && rm -rf /var/lib/apt/lists/*
 
 # Install safu
