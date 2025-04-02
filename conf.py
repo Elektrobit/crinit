@@ -34,15 +34,15 @@ extensions = [
 
 templates_path = ['doc/_templates']
 exclude_patterns = [
-        'deps/*',
-        'packaging/**',
-        "build/**/README.md",
-        "build/*/debbuild/**",
-        "result/**",
-        "build/*/doc/doxygen/doc/adr/**",
-        "build/*/doc/sphinx/**",
-        "build/*-Debug/**",
-        "test/*",
+    'deps/*',
+    'packaging/**',
+    "build/**/README.md",
+    "build/*/debbuild/**",
+    "result/**",
+    "build/*/doc/doxygen/doc/adr/**",
+    "build/*/doc/sphinx/**",
+    "build/*-Debug/**",
+    "test/*",
 ]
 source_suffix = {
     '.rst': 'restructuredtext',
@@ -69,9 +69,8 @@ master_doc = "index"
 c_autodoc_roots = [
     './src/',
     './inc/',
-  ]
+]
 
 set_type_checking_flag = True
 myst_footnote_transition = False
 myst_heading_anchors = 4
-
