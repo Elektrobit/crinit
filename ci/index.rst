@@ -119,15 +119,24 @@ in need of an update. For development the return code can be ignored.
 Code-Formatting
 ===============
 
-The code formatter script ``ci/format-code.sh`` will use ``clang-format`` and
-``shfmt`` with the correct settings to format C code, header files and shell
-scripts within the project.
+The code formatter script ``ci/format-code.sh`` will use ``clang-format``,
+``shfmt`` and ``yapf3`` with the correct settings to format C code, header
+files, shell, and Python scripts within the project.
 
 Optionally, the ``--check`` parameter does a dry run, reporting errors if any
 files do not conform to formatting rules.
 
-The ``clang-format`` and ``shfmt`` tools should be available in most distros.
-Alternatively, they are available n the build container as well.
+The ``clang-format``, ``shfmt`` and ``yapf3`` tools should be available in most
+distros. Alternatively, they are available n the build container as well.
+
+Script Linting
+==============
+
+The script ``ci/lint-scripts.sh`` will use the ``flake8`` tool to lint the
+Python code in the project. Settings are aligned with the ``yapf3`` formatter
+mentioned above.
+
+An extension of the script with shellcheck is planned.
 
 Github Pages
 ============
