@@ -11,6 +11,7 @@
 
 #include "common.h"
 #include "crinit-sdefs.h"
+#include "crinit-version.h"
 #include "globopt.h"
 #include "kcmdline.h"
 #include "logio.h"
@@ -19,7 +20,6 @@
 #include "optfeat.h"
 #include "procdip.h"
 #include "rtimopmap.h"
-#include "version.h"
 
 #ifdef SIGNATURE_SUPPORT
 #include "sig.h"

@@ -19,11 +19,11 @@
 #include <unistd.h>
 
 #include "common.h"
+#include "crinit-version.h"
 #include "fseries.h"
 #include "globopt.h"
 #include "logio.h"
 #include "procdip.h"
-#include "version.h"
 
 /**
  * Argument structure for shdnThread().

@@ -5,7 +5,7 @@ if(ENABLE_ELOS)
     find_package(safu 0.58.2 REQUIRED)
 endif()
 
-configure_file(version.c.in version.c)
+configure_file(crinit-version.c.in crinit-version.c)
 
 if(ENABLE_ELOS)
     # if LIBELOS_SO_FILENAME is unset we do our best to autodetect. If we can't
@@ -74,7 +74,7 @@ add_executable(
   ioredir.c
   ${SIG_SOURCES}
   ${ELOS_SOURCES}
-  ${CMAKE_CURRENT_BINARY_DIR}/version.c
+  ${CMAKE_CURRENT_BINARY_DIR}/crinit-version.c
 )
 
 target_include_directories(
@@ -116,7 +116,7 @@ add_library(
   rtimopmap.c
   globopt.c
   sockcom.c
-  ${CMAKE_CURRENT_BINARY_DIR}/version.c
+  ${CMAKE_CURRENT_BINARY_DIR}/crinit-version.c
 )
 
 set(CRINIT_PUBLIC_HEADERS
@@ -153,7 +153,7 @@ add_executable(
   crinit-ctl
   crinit-ctl.c
   logio.c
-  ${CMAKE_CURRENT_BINARY_DIR}/version.c
+  ${CMAKE_CURRENT_BINARY_DIR}/crinit-version.c
 )
 
 target_include_directories(
@@ -175,7 +175,7 @@ add_executable(
     crinit-launch
     crinit-launch.c
     logio.c
-    ${CMAKE_CURRENT_BINARY_DIR}/version.c
+    ${CMAKE_CURRENT_BINARY_DIR}/crinit-version.c
 )
 
 target_include_directories(

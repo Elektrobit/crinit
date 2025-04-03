@@ -12,7 +12,7 @@
 #include <stdbool.h>
 
 #include "crinit-sdefs.h"
-#include "version.h"
+#include "crinit-version.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -63,8 +63,8 @@
 
 #include "common.h"
 #include "crinit-client.h"
+#include "crinit-version.h"
 #include "logio.h"
-#include "version.h"
 
 #define TIME_REPR_MAX_LEN 64                          ///< Maximum length of task time represented as a string.
 #define TIME_REPR_PRINTF_FORMAT "%" PRId64 ".%.9lds"  ///< Format string to represent a task timespec.

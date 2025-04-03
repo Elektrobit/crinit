@@ -25,8 +25,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "crinit-version.h"
 #include "logio.h"
-#include "version.h"
 
 static void crinitPrintVersion(void) {
     fprintf(stderr, "Crinit version %s\n", crinitGetVersionString());
