@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 /**
- * @file version.c.in
+ * @file crinit-version.c
  * @brief Implementation of functionality related to component versioning.
  */
 #include <string.h>
 
-#include "version.h"
+#include "crinit-version.h"
 
 // clang-format off
 //     Rationale: clang-format does not play nice with the CMake variables.
