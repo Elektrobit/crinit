@@ -95,6 +95,11 @@ int main(int argc, char *argv[]) {
 
     crinitSetPrintPrefix("");
 
+    char *sockFile = getenv("CRINIT_SOCK");
+    if (sockFile != NULL) {
+        crinitClientSetSocketPath(sockFile);
+    }
+
     if (strcmp(basename(argv[0]), "poweroff") != 0 && strcmp(basename(argv[0]), "reboot") != 0) {
         if (argc < 2) {
             crinitPrintUsage(argv[0]);
@@ -152,11 +157,6 @@ int main(int argc, char *argv[]) {
     }
 
     crinitClientSetVerbose(verbose);
-
-    char *sockFile = getenv("CRINIT_SOCK");
-    if (sockFile != NULL) {
-        crinitClientSetSocketPath(sockFile);
-    }
 
     if (ignoreDeps) {
         overDeps = "@empty";
