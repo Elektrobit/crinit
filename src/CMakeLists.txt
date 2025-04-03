@@ -122,6 +122,7 @@ add_library(
 set(CRINIT_PUBLIC_HEADERS
   ../inc/crinit-client.h
   ${CMAKE_BINARY_DIR}/inc/crinit-sdefs.h
+  ../inc/crinit-version.h
 )
 
 target_compile_definitions(
