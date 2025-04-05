@@ -267,20 +267,20 @@ class CrinitLibrary(object):
             if line.startswith("NAME"):
                 continue
 
-            fields = line.split()
+            task_name, task_pid = line.split()[:2]
 
             # Skip stopped processes
-            if fields[1] == "-1":
+            if task_pid == "-1":
                 continue
 
-            res = self.crinit_disable_task(fields[0])
+            res = self.crinit_disable_task(task_name)
             if res != 0:
-                logger.error(f"Failed to disable task {fields[0]}")
+                logger.error(f"Failed to disable task {task_name}")
                 return res
 
-            res = self.crinit_kill_task(fields[0])
+            res = self.crinit_kill_task(task_name)
             if res != 0:
-                logger.error(f"Failed to kill task {fields[0]}")
+                logger.error(f"Failed to kill task {task_name}")
                 return res
 
         return 0
