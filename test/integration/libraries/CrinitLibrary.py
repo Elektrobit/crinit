@@ -292,25 +292,31 @@ class CrinitLibrary(object):
         """
         return self.__crinit_run("restart", "Restarting task failed", task=task_name)[2]
 
+    def _crinit_get_task_state(self, task_name):
+        stdout, stderr, ret = self.__crinit_run("status", "Requesting task status failed", task=task_name)
+        if ret != 0:
+            return -1, ""
+
+        match = re.search(r"(?i)\bstatus\b\s*:\s*(?P<state>\w+)\s*,\s*\bpid\b\s*:\s*(?P<pid>[\+-]?\d+)", stdout)
+        if match is None:
+            logger.error(f"Failed to parse crinit state for task {task_name}.")
+            return -1, ""
+
+        task_state = match.groupdict()
+        return 0, task_state['state']
+
     def crinit_check_task_state(self, task_name, state):
         """Queries status bits and PID of <task_name>.
 
         | task_name | The task name |
         """
-        stdout, stderr, ret = self.__crinit_run("status", "Requesting task status failed", task=task_name)
-        if ret == 0:
-            match = re.search(r"(?i)\bstatus\b\s*:\s*(?P<state>\w+)\s*,\s*\bpid\b\s*:\s*(?P<pid>[\+-]?\d+)", stdout)
-            if match is not None:
-                task_state = match.groupdict()
+        res, task_state = self._crinit_get_task_state(task_name)
+        if res != 0:
+            return res
 
-                return 0 if task_state['state'] == state else -1
-            else:
-                logger.error(f"Failed to parse crinit state for task {task_name}.")
-                return -1
+        return 0 if task_state == state else -1
 
-        return ret
-
-    def _crinit_get_task_pid(self, task_name):
+    def __crinit_get_task_pid(self, task_name):
         """Queries the  PID of <task_name>.
 
         | task_name | The task name |
