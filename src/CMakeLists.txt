@@ -84,12 +84,12 @@ target_include_directories(
   ${PROJECT_BINARY_DIR}/inc
 )
 target_link_libraries(
-  crinit
-  PRIVATE Threads::Threads
-  PRIVATE inih-local
-  PRIVATE ${ELOS_LIBRARIES}
-  PRIVATE ${MBEDTLS_CRYPTO_LIBRARY}
-  PRIVATE ${CMAKE_DL_LIBS}
+  crinit PRIVATE
+  Threads::Threads
+  inih-local
+  $<IF:$<BOOL:${ENABLE_ELOS}>,${ELOS_LIBRARIES},>
+  ${MBEDTLS_CRYPTO_LIBRARY}
+  ${CMAKE_DL_LIBS}
 )
 
 target_compile_definitions(
