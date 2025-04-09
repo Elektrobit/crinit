@@ -25,9 +25,14 @@ RUN apt-get update \
     clang-format \
     clang-tidy \
     cmake \
+    debhelper \
+    devscripts \
     doxygen \
+    equivs \
+    fakeroot \
     flake8 \
     git \
+    git-buildpackage \
     graphviz \
     keyutils \
     libcmocka-dev \
@@ -48,13 +53,17 @@ RUN apt-get update \
     rpm \
     screen \
     shfmt \
+    software-properties-common \
     sudo \
     valgrind \
     vim \
     wget \
     npm \
     yapf3 \
-    && rm -rf /var/lib/apt/lists/*
+    && add-apt-repository -y ppa:elos-team/ppa \
+    && apt-get install -y libsafu-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && ln -fs /usr/share/zoneinfo/UTC /etc/localtime
 
 # Install safu
 RUN git clone ${SAFU_REPO_PATH} \
