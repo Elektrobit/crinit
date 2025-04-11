@@ -58,10 +58,6 @@ typedef struct crinitGlobOptStore_t {
 /** Dummy instance for Generic Selection of members to work (see type-generic macros below). **/
 static crinitGlobOptStore_t crinitGenericGlobOptHelper __attribute__((unused));
 
-// clang-format off
-// Rationale: Used version of clang-format does not format _Generic macros correctly. This is a known bug and has been
-// fixed very recently. We may remove this exemption once we are on the new clang version as standard.
-// See: https://github.com/llvm/llvm-project/issues/18080
 /**
  * Type-generic macro to get the value of a given global option.
  *
@@ -74,14 +70,13 @@ static crinitGlobOptStore_t crinitGenericGlobOptHelper __attribute__((unused));
  *
  * @return  0 on success, -1 otherwise
  */
-#define crinitGlobOptGet(globOptMember, retPtr) \
+#define crinitGlobOptGet(globOptMember, retPtr)          \
     _Generic((crinitGenericGlobOptHelper.globOptMember), \
-        char * : crinitGlobOptGetString, \
-        bool : crinitGlobOptGetBoolean, \
-        int : crinitGlobOptGetInteger, \
-        unsigned long long : crinitGlobOptGetUnsignedLL, \
-        crinitEnvSet_t : crinitGlobOptGetEnvSet) \
-        ((offsetof(crinitGlobOptStore_t, globOptMember)), (retPtr))
+        char *: crinitGlobOptGetString,                  \
+        bool: crinitGlobOptGetBoolean,                   \
+        int: crinitGlobOptGetInteger,                    \
+        unsigned long long: crinitGlobOptGetUnsignedLL,  \
+        crinitEnvSet_t: crinitGlobOptGetEnvSet)((offsetof(crinitGlobOptStore_t, globOptMember)), (retPtr))
 /**
  * Type-generic macro to get the value of a given global option.
  *
@@ -93,16 +88,14 @@ static crinitGlobOptStore_t crinitGenericGlobOptHelper __attribute__((unused));
  *
  * @return  0 on success, -1 otherwise
  */
-#define crinitGlobOptSet(globOptMember, val) \
+#define crinitGlobOptSet(globOptMember, val)             \
     _Generic((crinitGenericGlobOptHelper.globOptMember), \
-        char * : crinitGlobOptSetString, \
-        const char * : crinitGlobOptSetString, \
-        bool : crinitGlobOptSetBoolean, \
-        int : crinitGlobOptSetInteger, \
-        unsigned long long : crinitGlobOptSetUnsignedLL, \
-        crinitEnvSet_t : crinitGlobOptSetEnvSet) \
-        ((offsetof(crinitGlobOptStore_t, globOptMember)), (val))
-// clang-format on
+        char *: crinitGlobOptSetString,                  \
+        const char *: crinitGlobOptSetString,            \
+        bool: crinitGlobOptSetBoolean,                   \
+        int: crinitGlobOptSetInteger,                    \
+        unsigned long long: crinitGlobOptSetUnsignedLL,  \
+        crinitEnvSet_t: crinitGlobOptSetEnvSet)((offsetof(crinitGlobOptStore_t, globOptMember)), (val))
 
 /**
  * Sets global options to their default values.
