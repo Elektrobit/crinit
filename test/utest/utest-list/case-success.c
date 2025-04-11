@@ -9,7 +9,7 @@
 #include "unit_test.h"
 #include "utest-list.h"
 
-typedef struct crinitTestEntry {
+typedef struct crinitTestEntry_t {
     uint8_t val;
     crinitList_t list;
 } crinitTestEntry_t;

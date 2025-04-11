@@ -28,9 +28,9 @@
 /**
  * Simple intrusive list struct.
  */
-typedef struct crinitList {
-    struct crinitList *prev;  ///< Pointer to last entry in list.
-    struct crinitList *next;  ///< Pointer to next entry in list.
+typedef struct crinitList_t {
+    struct crinitList_t *prev;  ///< Pointer to last entry in list.
+    struct crinitList_t *next;  ///< Pointer to next entry in list.
 } crinitList_t;
 
 /**

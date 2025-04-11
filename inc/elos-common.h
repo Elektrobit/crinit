@@ -56,7 +56,7 @@ typedef uint32_t crinitElosEventQueueId_t;
 /**
  * Elos session type.
  */
-typedef struct crinitElosSession {
+typedef struct crinitElosSession_t {
     int fd;          ///< Connection socket file descriptor
     bool connected;  ///< Connection state
 } crinitElosSession_t;
@@ -64,7 +64,7 @@ typedef struct crinitElosSession {
 /**
  * Information of the sender sending an event to elos.
  */
-typedef struct crinitElosEventSource {
+typedef struct crinitElosEventSource_t {
     char *appName;   ///< Name of the application sending the event
     char *fileName;  ///< Filename sending the event
     pid_t pid;       ///< Id of the event sending process (0 for crinit)
@@ -98,7 +98,7 @@ typedef enum crinitElosEventMessageCodeE_t {
 /**
  * Event send to elos.
  */
-typedef struct crinitElosEvent {
+typedef struct crinitElosEvent_t {
     struct timespec date;            ///< Unix timestamp in nano seconds resolution.
     crinitElosEventSource_t source;  ///< Struct containing informations about where the event originated from
     crinitElosSeverityE_t
@@ -113,7 +113,7 @@ typedef struct crinitElosEvent {
 /**
  * Elos event vector type.
  */
-typedef struct crinitElosEventVector {
+typedef struct crinitElosEventVector_t {
     size_t memorySize;      ///< Size of memory used
     size_t elementSize;     ///< Size of a single element
     uint32_t elementCount;  ///< Number of elements in the event vector
@@ -123,7 +123,7 @@ typedef struct crinitElosEventVector {
 /**
  * Elos virtual table and connection data.
  */
-typedef struct crinitElosVirtualTable {
+typedef struct crinitElosVirtualTable_t {
     char *elosServer;  ///< Elos server name or ip
     int elosPort;      ///< Elos server port
 
