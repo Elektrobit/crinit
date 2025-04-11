@@ -51,7 +51,7 @@ pipeline {
                             --build-arg USER=jenkins \
                             --build-arg UID=${UID} \
                             --build-arg GID=${GID} \
-                            --build-arg UBUNTU_RELEASE=jammy"
+                            --build-arg UBUNTU_RELEASE=noble"
                         args "--privileged \
                             -v /home/jenkins/.ssh:/home/jenkins/.ssh \
                             -e HOME=/home/jenkins"
@@ -115,7 +115,7 @@ pipeline {
                         --build-arg USER=jenkins \
                         --build-arg UID=${UID} \
                         --build-arg GID=${GID} \
-                        --build-arg UBUNTU_RELEASE=jammy"
+                        --build-arg UBUNTU_RELEASE=noble"
                     args "--privileged \
                         -v /home/jenkins/.ssh:/home/jenkins/.ssh \
                         -e HOME=/home/jenkins"

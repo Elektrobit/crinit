@@ -7,7 +7,7 @@ CMD_PATH=$(cd $(dirname $0) && pwd)
 BASE_DIR=${CMD_PATH%/*}
 PROJECT=${BASE_DIR##*/}
 REPO="amd64"
-UBUNTU_RELEASE="jammy"
+UBUNTU_RELEASE="noble"
 
 clean_tag() {
     if [ -z "${1}" ]; then

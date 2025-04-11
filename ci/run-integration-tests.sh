@@ -8,7 +8,7 @@ BUILD_TYPE="${1:-Release}"
 
 # architecture name amd64, arm64, ...
 ARCH=$(dpkg --print-architecture)
-UBUNTU_RELEASE="jammy"
+UBUNTU_RELEASE="noble"
 
 case "$BUILD_TYPE" in
     Release)

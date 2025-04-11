@@ -10,7 +10,7 @@ CMDPATH=$(cd $(dirname $0) && pwd)
 BASEDIR=${CMDPATH%/*}
 PROJECT=crinit
 ARCH="amd64"
-UBUNTU_RELEASE="jammy"
+UBUNTU_RELEASE="noble"
 
 if [ -n "$1" ]; then
     ARCH="$1"
