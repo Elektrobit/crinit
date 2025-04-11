@@ -52,6 +52,7 @@ RUN apt-get update \
     re2c \
     rpm \
     screen \
+    shellcheck \
     shfmt \
     software-properties-common \
     sudo \
