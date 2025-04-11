@@ -7,7 +7,8 @@ ARG GID=1000
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
  && apt-get install -y sudo locales build-essential binutils-dev pkg-config \
- git wget curl netcat net-tools libssl-dev openssl python3-pip iputils-ping \
+ git wget curl netcat-traditional net-tools libssl-dev openssl python3-pip \
+ iputils-ping \
  && rm -rf /var/lib/apt/lists/*
 
 RUN locale-gen en_US.UTF-8 \
