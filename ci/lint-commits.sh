@@ -23,6 +23,7 @@ if [[ $# -ne 1 ]]; then
 fi
 
 cleanup() {
+    # shellcheck disable=SC2317 # False positive "unreachable statement" due to trap.
     popd >/dev/null
 }
 

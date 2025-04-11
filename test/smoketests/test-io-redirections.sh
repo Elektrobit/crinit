@@ -65,8 +65,8 @@ DEPENDS = ""
 
 RESPAWN = NO
 EOF
-    echo -n "prefix: " >${out_stdin}
-    echo "suffix" >${in_stdin}
+    echo -n "prefix: " >"${out_stdin}"
+    echo "suffix" >"${in_stdin}"
 }
 
 run() {
@@ -101,7 +101,7 @@ run() {
     sleep 1
     compare_output "${sample}" "${out_stderr}"
     # check permissions
-    if ! ls -l "${out_stderr}" | grep -q '\-rw-r-----'; then
+    if [ "$(stat -c %a "${out_stderr}")" != 640 ]; then
         echo "Permissions of stderr output file are wrong."
         return 1
     fi

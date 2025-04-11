@@ -24,6 +24,7 @@ for t in "$CMDPATH"/test-*.sh; do
     SMOKETESTS_NAME="${SMOKETESTS_NAME%.sh}"
     echo "--> Running test $SMOKETESTS_NAME" >&2
 
+    # shellcheck disable=SC1090 # The test-*.sh scripts are linted separately, so no need to follow.
     . "$t"
 
     export ASAN_OPTIONS="${ASAN_OPTIONS}:log_path=${SMOKETESTS_RESULTDIR}/${SMOKETESTS_NAME}-asan"

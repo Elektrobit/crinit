@@ -24,7 +24,7 @@ BASEDIR=${CMDPATH%/*}
 
 print_usage() {
     echo "Usage: $0 [--check]" 1>&2
-    echo "Formats shell and C code in this repo. If \'--check\' is specified," \
+    echo "Formats shell and C code in this repo. If '--check' is specified," \
         "it will only do a dry-run and report an error code if files would be" \
         "changed. This functionality is mainly meant for the CI." 1>&2
 }

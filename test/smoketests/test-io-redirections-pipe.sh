@@ -67,7 +67,7 @@ run() {
     compare_output "${sample}" "${out_recv}"
 
     # check type and permissions of named pipe
-    if ! ls -l "${pipe_path}" | grep -q '\prw-r-----'; then
+    if ! stat -c %A "${pipe_path}" | grep -q '\prw-r-----$'; then
         echo "Permissions and/or type of FIFO special file are wrong."
         return 1
     fi
