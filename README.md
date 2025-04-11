@@ -653,11 +653,21 @@ USAGE: crinit-ctl <ACTION> [OPTIONS] <PARAMETER> [PARAMETERS...]
                represent the times the task was Created (loaded/parsed), last Started (became running), and
                last Ended (failed or is done). If the event has not occurred yet, the timestamp's value will
                be 'n/a'.
+               See "list" for a detailed description of different statuses.
       notify <TASK_NAME> <"SD_NOTIFY_STRING">
              - Will send an sd_notify-style status report to Crinit. Only MAINPID and READY are
                implemented. See the sd_notify documentation for their meaning.
         list
              - Print the list of loaded tasks and their status.
+               Following states can be reported:
+               - loaded: the task was loaded but never ran
+               - starting: the task currently spawns a new process
+               - running: the task has spawned a process and is currently running
+               - done: the task finished without an error
+               - failed: the task has finished with an error code
+
+               The states "running", "done" and "failed" can appear with the suffix "(notified)". That means that the information was transmitted
+               to crinit via the sd_notify API.
       reboot
              - Will request Crinit to perform a graceful system reboot. crinit-ctl can be symlinked to
                reboot as a shortcut which will invoke this command automatically.
