@@ -132,9 +132,9 @@ distros. Alternatively, they are available n the build container as well.
 Script Linting
 ==============
 
-The script ``ci/lint-scripts.sh`` will use the ``flake8`` tool to lint the
-Python code in the project. Settings are aligned with the ``yapf3`` formatter
-mentioned above.
+The script ``ci/lint-scripts.sh`` will use the ``flake8`` and ``shellcheck``
+tools to lint python and shell scripts in the project. The ``flake8`` settings
+are aligned with the ``yapf3`` formatter mentioned above.
 
 An extension of the script with shellcheck is planned.
 
