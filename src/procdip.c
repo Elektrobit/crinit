@@ -27,7 +27,7 @@
 #define crinitGettid() ((pid_t)syscall(SYS_gettid))
 
 /** Struct wrapper for arguments to dispatchThreadFunc **/
-typedef struct crinitDispThrArgs_t {
+typedef struct crinitDispThrArgs {
     crinitTaskDB_t *ctx;              ///< The TaskDB context to update on task state changes.
     const crinitTask_t *t;            ///< The task to run.
     crinitDispatchThreadMode_t mode;  ///< Select between start and stop commands

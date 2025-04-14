@@ -23,7 +23,7 @@ typedef unsigned long crinitTaskState_t;     ///< Type to store Task state bitma
 #define CRINIT_TASK_STATE_NOTIFIED (1 << 4)  ///< Bitmask indicating the state was reported through the sd_notify()-API.
 
 /** Type to represent an entry in a task list. **/
-typedef struct crinitTaskListEntry_t {
+typedef struct crinitTaskListEntry {
     char *name;                  ///< Task name.
     pid_t pid;                   ///< PID of currently running process subordinate to the task, if any.
     crinitTaskState_t state;     ///< Task state.
@@ -37,13 +37,13 @@ typedef struct crinitTaskListEntry_t {
 } crinitTaskListEntry_t;
 
 /** Type to represent a list of tasks. **/
-typedef struct crinitTaskList_t {
+typedef struct crinitTaskList {
     size_t numTasks;               ///< Number of elements in the \a tasks array.
     crinitTaskListEntry_t *tasks;  ///< Array of task entries.
 } crinitTaskList_t;
 
 /** Type to represent the shutdown action crinit shall perform. **/
-typedef enum crinitShutdownCmd_t {
+typedef enum crinitShutdownCmd {
     CRINIT_SHD_UNDEF = 0,     ///< undefined/error value
     CRINIT_SHD_POWEROFF = 1,  ///< perform a graceful shutdown
     CRINIT_SHD_REBOOT = 2     ///< perform a graceful reboot

@@ -56,7 +56,7 @@ typedef uint32_t crinitElosEventQueueId_t;
 /**
  * Elos session type.
  */
-typedef struct crinitElosSession_t {
+typedef struct crinitElosSession {
     int fd;          ///< Connection socket file descriptor
     bool connected;  ///< Connection state
 } crinitElosSession_t;
@@ -64,7 +64,7 @@ typedef struct crinitElosSession_t {
 /**
  * Information of the sender sending an event to elos.
  */
-typedef struct crinitElosEventSource_t {
+typedef struct crinitElosEventSource {
     char *appName;   ///< Name of the application sending the event
     char *fileName;  ///< Filename sending the event
     pid_t pid;       ///< Id of the event sending process (0 for crinit)
@@ -73,7 +73,7 @@ typedef struct crinitElosEventSource_t {
 /**
  * Possible severities an elos event can have.
  */
-typedef enum crinitElosSeverityE_t {
+typedef enum crinitElosSeverityE {
     ELOS_SEVERITY_OFF = 0,
     ELOS_SEVERITY_FATAL,
     ELOS_SEVERITY_ERROR,
@@ -86,7 +86,7 @@ typedef enum crinitElosSeverityE_t {
 /**
  * Relevant elos message codes for crinit.
  */
-typedef enum crinitElosEventMessageCodeE_t {
+typedef enum crinitElosEventMessageCodeE {
     ELOS_MSG_CODE_INFO_LOG = 1102,            ///< General events, not related to other codes.
     ELOS_MSG_CODE_PROCESS_CREATED = 2001,     ///< When a task is started.
     ELOS_MSG_CODE_PROCESS_EXITED = 2002,      ///< When a task was successfully completed.
@@ -98,7 +98,7 @@ typedef enum crinitElosEventMessageCodeE_t {
 /**
  * Event send to elos.
  */
-typedef struct crinitElosEvent_t {
+typedef struct crinitElosEvent {
     struct timespec date;            ///< Unix timestamp in nano seconds resolution.
     crinitElosEventSource_t source;  ///< Struct containing informations about where the event originated from
     crinitElosSeverityE_t
@@ -113,7 +113,7 @@ typedef struct crinitElosEvent_t {
 /**
  * Elos event vector type.
  */
-typedef struct crinitElosEventVector_t {
+typedef struct crinitElosEventVector {
     size_t memorySize;      ///< Size of memory used
     size_t elementSize;     ///< Size of a single element
     uint32_t elementCount;  ///< Number of elements in the event vector
@@ -123,7 +123,7 @@ typedef struct crinitElosEventVector_t {
 /**
  * Elos virtual table and connection data.
  */
-typedef struct crinitElosVirtualTable_t {
+typedef struct crinitElosVirtualTable {
     char *elosServer;  ///< Elos server name or ip
     int elosPort;      ///< Elos server port
 

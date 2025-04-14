@@ -27,7 +27,7 @@ static pthread_mutex_t crinitElosActivatedLock = PTHREAD_MUTEX_INITIALIZER;  ///
 /**
  * Task that has unfulfilled filter dependencies.
  */
-typedef struct crinitElosdepFilterTask_t {
+typedef struct crinitElosdepFilterTask {
     crinitTask_t *task;          ///< The monitored task
     crinitList_t filterList;     ///< List unfulfilled filter dependencies
     pthread_mutex_t filterLock;  ///< Lock protecting the list of filters
@@ -37,7 +37,7 @@ typedef struct crinitElosdepFilterTask_t {
 /**
  * Definition of a single filter related to a task.
  */
-typedef struct crinitElosdepFilter_t {
+typedef struct crinitElosdepFilter {
     char *name;                             ///< Name of the filter
     char *filter;                           ///< The filter rule string
     crinitElosEventQueueId_t eventQueueId;  ///< ID of the elos event queue related to this filter
@@ -47,7 +47,7 @@ typedef struct crinitElosdepFilter_t {
 /**
  * Thread context of the elosdep main thread and elos vtable.
  */
-static struct crinitElosEventThread_t {
+static struct crinitElosEventThread {
     pthread_t threadId;            ///< Thread identifier
     bool elosStarted;              ///< Wether or not an initial conenction to elos has been established
     crinitTaskDB_t *taskDb;        ///< Pointer to crinit task database
@@ -418,7 +418,7 @@ static void *crinitElosdepEventListener(void *arg) {
     crinitElosdepFilterTask_t *filterTask;
     crinitElosEventVector_t *eventVector = NULL;
 
-    struct crinitElosEventThread_t *tinfo = arg;
+    struct crinitElosEventThread *tinfo = arg;
 
     tinfo->elosStarted = true;
 
@@ -535,7 +535,7 @@ err_session:
  * @param tinfo Elosdep thread context
  * @return Returns 0 on success, -1 otherwise.
  */
-static int crinitElosdepInitThreadContext(crinitTaskDB_t *taskDb, struct crinitElosEventThread_t *tinfo) {
+static int crinitElosdepInitThreadContext(crinitTaskDB_t *taskDb, struct crinitElosEventThread *tinfo) {
     tinfo->taskDb = taskDb;
 
     crinitElosInit();

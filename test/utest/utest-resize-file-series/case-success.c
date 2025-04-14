@@ -13,7 +13,7 @@
 
 static void crinitTestVariant(size_t initialSize, size_t numElements) {
     char *fnamesBuff[numElements + 1];
-    struct crinitFileSeries_t fse = {.size = initialSize};
+    crinitFileSeries_t fse = {.size = initialSize};
 
     if (initialSize > 0) {
         fse.fnames = fnamesBuff;

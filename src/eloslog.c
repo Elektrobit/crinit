@@ -30,7 +30,7 @@ static pthread_mutex_t crinitElosActivatedLock = PTHREAD_MUTEX_INITIALIZER;  ///
 /**
  * Thread context of the eloslog main thread.
  */
-static struct crinitElosEventThread_t {
+static struct crinitElosEventThread {
     pthread_t threadId;            ///< Thread identifier
     crinitElosSession_t *session;  ///< Elos session handle
 } crinitTinfo;

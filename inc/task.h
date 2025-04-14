@@ -33,7 +33,7 @@ typedef unsigned long crinitTaskOpts_t;
 /**
  * The type of the crinit task object.
  */
-typedef enum crinitTaskType_t {
+typedef enum crinitTaskType {
     CRINIT_TASK_TYPE_STANDARD,  ///< A standard in-memory representation of a task.
     CRINIT_TASK_TYPE_INCLUDE    ///< An in-memory representation of an include file after parsing.
 } crinitTaskType_t;
@@ -41,7 +41,7 @@ typedef enum crinitTaskType_t {
 /**
  * The type of a task timestamp.
  */
-typedef enum crinitTaskTimestampType_t {
+typedef enum crinitTaskTimestampType {
     CRINIT_TASK_TS_CREATION,  ///< Creation timestamp, i.e. when the task was done loading/parsing.
     CRINIT_TASK_TS_START,     ///< Start timestamp, i.e. when the first command of the task was last started.
     CRINIT_TASK_TS_END        ///< End timestamp, i.e. the last time the task either failed or was completed.
@@ -50,7 +50,7 @@ typedef enum crinitTaskTimestampType_t {
 /**
  * Type to store a single command within a task.
  */
-typedef struct crinitTaskCmd_t {
+typedef struct crinitTaskCmd {
     int argc;     ///< Number of arguments within argv.
     char **argv;  ///< String array containing the program arguments, argv[0] contains absolute path to executable.
 } crinitTaskCmd_t;
@@ -58,7 +58,7 @@ typedef struct crinitTaskCmd_t {
 /**
  * Type to store a single dependency within a task.
  */
-typedef struct crinitTaskDep_t {
+typedef struct crinitTaskDep {
     char *name;   ///< Dependency name.
     char *event;  ///< Dependency event.
 } crinitTaskDep_t;
@@ -66,7 +66,7 @@ typedef struct crinitTaskDep_t {
 /**
  * Type to store a single provided feature within a task.
  */
-typedef struct crinitTaskPrv_t {
+typedef struct crinitTaskPrv {
     char *name;                  ///< Name of the provided feature.
     crinitTaskState_t stateReq;  ///< The task state required to be reached to provide the feature.
 } crinitTaskPrv_t;
@@ -74,7 +74,7 @@ typedef struct crinitTaskPrv_t {
 /**
  * Type to store a single task.
  */
-typedef struct crinitTask_t {
+typedef struct crinitTask {
     char *name;                  ///< Name of the task, corresponds to NAME in the config file.
     crinitTaskCmd_t *cmds;       ///< Dynamic array of commands, corresponds to COMMAND[N] in the config file.
     size_t cmdsSize;             ///< Number of commands in cmds array.

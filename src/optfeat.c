@@ -18,7 +18,7 @@
 
 typedef int (*crinitFeatActivationFunc_t)(void *data);
 
-typedef struct crinitOptFeatMap_t {
+typedef struct crinitOptFeatMap {
     const char *name;
     const crinitHookType_t type;
     const crinitFeatActivationFunc_t af;

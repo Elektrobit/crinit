@@ -15,7 +15,7 @@
 /**
  * Structure definition for the global option storage.
  */
-typedef struct crinitGlobOptStore_t {
+typedef struct crinitGlobOptStore {
     bool debug;                                ///< Value for the DEBUG global option.
     bool useSyslog;                            ///< Value for the USE_SYSLOG global option.
     bool useElos;                              ///< Value for the USE_ELOS global option.

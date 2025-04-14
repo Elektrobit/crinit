@@ -20,7 +20,7 @@
 /**
  * Structure holding a command or response message with its crinitRtimOp_t opcode and arguments array.
  */
-typedef struct crinitRtimCmd_t {
+typedef struct crinitRtimCmd {
     crinitRtimOp_t op;  ///< The command or response opcode (see rtimopmap.h).
     size_t argc;        ///< The number of arguments.
     char **args;        ///< String array of arguments.

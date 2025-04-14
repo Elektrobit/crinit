@@ -9,7 +9,7 @@
 /**
  * Hook types.
  */
-typedef enum crinitHookType_t {
+typedef enum crinitHookType {
     CRINIT_HOOK_INIT,        ///< Initialization of the optional feature (eg. setup database).
     CRINIT_HOOK_EXIT,        ///< Cleanup of the optional feature (remove temporary files).
     CRINIT_HOOK_START,       ///< The optional feature is triggered by a specific event.

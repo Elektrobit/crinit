@@ -114,7 +114,7 @@
 #define CRINIT_CONFIG_STDIN_NAME "STDIN"
 
 /** Enumeration of all configuration keys. Goes together with crinitTaskCfgMap and crinitSeriesCfgMap. **/
-typedef enum crinitConfigs_t {
+typedef enum crinitConfigs {
     CRINIT_CONFIG_COMMAND = 0,
     CRINIT_CONFIG_DEBUG,
     CRINIT_CONFIG_DEPENDS,
@@ -148,7 +148,7 @@ typedef enum crinitConfigs_t {
 } crinitConfigs_t;
 
 /** Different types of configuration sources **/
-typedef enum crinitConfigType_t {
+typedef enum crinitConfigType {
     CRINIT_CONFIG_TYPE_SERIES,   ///< Configurations set from the series file.
     CRINIT_CONFIG_TYPE_TASK,     ///< Configurations set from a task file.
     CRINIT_CONFIG_TYPE_KCMDLINE  ///< Configurations set from the Kernel command line.
@@ -157,10 +157,10 @@ typedef enum crinitConfigType_t {
 /**
  * Linked list to hold key/value pairs read from the config file.
  */
-typedef struct crinitConfKvList_t {
-    struct crinitConfKvList_t *next;  ///< Pointer to next element
-    char *key;                        ///< string with "KEY"
-    char *val;                        ///< string with "VALUE"
+typedef struct crinitConfKvList {
+    struct crinitConfKvList *next;  ///< Pointer to next element
+    char *key;                      ///< string with "KEY"
+    char *val;                      ///< string with "VALUE"
 } crinitConfKvList_t;
 
 /**

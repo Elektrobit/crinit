@@ -16,7 +16,7 @@
 /**
  * Structure to hold version information for this software component.
  */
-typedef struct crinitVersion_t {
+typedef struct crinitVersion {
     uint8_t major;                          ///< Major version.
     uint8_t minor;                          ///< Minor version.
     uint8_t micro;                          ///< Micro/patch version.
