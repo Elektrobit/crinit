@@ -1,19 +1,26 @@
 #!/bin/bash
 # SPDX-License-Identifier: MIT
 #
-# Script linter tool for Python and sh/bash.
-#
-# Usage: ./ci/lint-scripts.sh
-#
-# The --check parameter causes the script to only do a dry-run and error out
-# if file changes would be necessary. This functionality is mainly meant for
-# the CI.
-#
-# Set FLAKE8_CMD and/or SHELLCHK_CMD env variables if your code linting tools
-# (flake8 and shellcheck) are called differently  or not available in ${PATH}.
-#
+print_info() {
+    echo "\
+Script linter tool for Python and sh/bash.
+
+Usage: $0
+
+The script will run shellcheck and flake8 to lint shell and python code in the
+project. It will return 1 if there are any linter complaints, 0 otherwise.
+
+Set FLAKE8_CMD and/or SHELLCHK_CMD env variables if your code linting tools
+(flake8 and shellcheck) are called differently  or not available in \${PATH}."
+}
 
 set -euo pipefail
+
+# Check if we've been given any arguments. If so, print usage info and exit.
+if [ $# -gt 0 ]; then
+    print_info
+    exit 1
+fi
 
 FLAKE8_CMD=${FLAKE8_CMD:-flake8}
 SHELLCHK_CMD=${SHELLCHK_CMD:-shellcheck}
