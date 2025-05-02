@@ -321,15 +321,19 @@ class CrinitLibrary(object):
 
         | task_name | The task name |
         """
-        pid = -1
         stdout, stderr, ret = self.__crinit_run("status", "Requesting task status failed", task=task_name)
-        if ret == 0:
-            match = re.search(r"(?i)\bstatus\b\s*:\s*(?P<state>\w+)\s*,\s*\bpid\b\s*:\s*(?P<pid>[\+-]?\d+)", stdout)
-            if match is not None:
-                pid = int(match.groupdict()['pid'])
-                logger.info(f"task pid is : {pid}")
-            else:
-                logger.error(f"Failed to parse crinit state for task {task_name}.")
+        if ret != 0:
+            logger.error(f"Failed requet status of task {task_name}")
+            return -1
+
+        match = re.search(r"(?i)\bstatus\b\s*:\s*(?P<state>\w+)\s*,\s*\bpid\b\s*:\s*(?P<pid>[\+-]?\d+)", stdout)
+        if match is None:
+            logger.error(f"Failed to parse crinit state for task {task_name}.")
+            return -1
+
+        pid = int(match.groupdict()['pid'])
+        logger.debug(f"pid of task {task_name}: {pid}")
+
         return pid
 
     @keyword("'${task}' User Is '${user}' And Group Is '${group}'")
