@@ -59,12 +59,15 @@ int main(int argc, char *argv[]) {
     } subReaper = SUBREAPER_FLAG_UNCHANGED;
     const int isPidOne = (getpid() == 1);
     int sysMounts = isPidOne;
+    int useKmsg = CRINIT_DEFAULT_USE_KMSG;
     const struct option optDef[] = {{"help", no_argument, 0, 'h'},
                                     {"version", no_argument, 0, 'V'},
                                     {"child-subreaper", no_argument, &subReaper, SUBREAPER_FLAG_SET},
                                     {"no-child-subreaper", no_argument, &subReaper, SUBREAPER_FLAG_RESET},
                                     {"sys-mounts", no_argument, &sysMounts, 1},
                                     {"no-sys-mounts", no_argument, &sysMounts, 0},
+                                    {"use-kmsg", no_argument, &useKmsg, 1},
+                                    {"no-use-kmsg", no_argument, &useKmsg, 0},
                                     {0, 0, 0, 0}};
     int opt;
     while (true) {
@@ -86,6 +89,11 @@ int main(int argc, char *argv[]) {
                 return EXIT_FAILURE;
         }
     }
+
+    if (useKmsg) {
+        crinitInitKmsgLogging();
+    }
+
     // Note: optind can be set to 0 if no arguments are given, so both checks below are needed.
     if (argc > 1 && optind < argc) {
         if (!crinitIsAbsPath(argv[optind])) {

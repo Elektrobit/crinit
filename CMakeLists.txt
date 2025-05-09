@@ -70,6 +70,11 @@ set(DEFAULT_CONFIG_SERIES_FILE
   "Default series file."
 )
 
+option(DEFAULT_USE_KMSG
+  "Default setting if kmsg shall be used for logging."
+  OFF
+)
+
 set(DEFAULT_CRINIT_SOCKFILE
   "${CMAKE_INSTALL_RUNSTATEDIR}/crinit/crinit.sock"
   CACHE PATH

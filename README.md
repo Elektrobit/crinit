@@ -172,6 +172,7 @@ Specifically, those are
     reaper" regardless of this setting.
     By default, Crinit will respect the attribute as it is set when Crinit is started and behave accordingly, i.e. if
     Crinit either is PID 1 or it has the CHILD_SUBREAPER process attribute, it will reap zombies of its descendants.
+* **--use-kmsg/--no-use-kmsg** - Depending on the setting, crinit will write its logs to kernel log where it can be read via e.g. dmesg. If opening /dev/kmsg fails, crinit will fall back to console output. If syslog usage is configured crinit will switch to syslog logging as soon as syslog is available.
 
 ## Environment Variables
 
@@ -820,6 +821,7 @@ The cmake setup supports some optional features:
   path `${CMAKE_INSTALL_LIBDIR}/test/crinit/utest`.
 * Elos event polling time (see global configuration example) `-DDEFAULT_ELOS_EVENT_POLLING_TIME=<usecs>`.
   Default is 500000.
+* Kernel logging can be activated at build time using `-DDEFAULT_USE_KMSG={On, Off}`. The behaviour can still be changed at runtime via the command line parameters.
 * Build and install API documentation in doxygen HTML format using `-DAPI_DOC={On, Off}`. Needs doxygen. Default is
   `On`.
 * Build and install an example generator for the machine id file (see above) using `-DMACHINE_ID_EXAMPLE={On, Off}`.

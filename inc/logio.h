@@ -149,4 +149,9 @@ void crinitErrPrintFFL(const char *file, const char *func, int line, const char 
 void crinitErrnoPrintFFL(const char *file, const char *func, int line, const char *format, ...)
     __attribute__((format(printf, 4, 5)));
 
+/**
+ * @brief Opens /dev/kmsg and set it as logging target for the logging functions.
+ */
+void crinitInitKmsgLogging(void);
+
 #endif /* __LOGIO_H__ */
