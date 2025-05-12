@@ -104,6 +104,17 @@ int main(int argc, char *argv[]) {
         seriesFname = argv[optind];
     }
 
+    if (sysMounts) {
+        if (crinitMountDevtmpfs() != 0) {
+            crinitErrPrint("Failed to mount devtmpfs on /dev.");
+            return EXIT_FAILURE;
+        }
+    }
+
+    if (useKmsg) {
+        crinitInitKmsgLogging();
+    }
+
     crinitInfoPrint("Crinit daemon version %s started.", crinitGetVersionString());
     if (subReaper != SUBREAPER_FLAG_UNCHANGED) {
         if (prctl(PR_SET_CHILD_SUBREAPER, subReaper) == -1) {

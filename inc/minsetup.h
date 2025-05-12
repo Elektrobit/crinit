@@ -7,7 +7,18 @@
 #define __MINSETUP_H__
 
 /**
- * Sets up devtmpfs, devpts, sysfs, procfs, and a tmpfs on /run
+ * Sets up devtmpfs
+ *
+ * Meant to be used during early startup, so that necessary dev interfaces are available.
+ * For kmsg logging the devtmpfs needs to be very early available, therefore it is separated
+ * from crinitSetupSystemFs().
+ *
+ * @return 0 on success, -1 on error
+ */
+int crinitMountDevtmpfs(void);
+
+/**
+ * Sets up devpts, sysfs, procfs, and a tmpfs on /run
  *
  * Meant to be used during early startup, so that necessary system interfaces are available.
  *
