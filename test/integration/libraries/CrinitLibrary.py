@@ -153,6 +153,7 @@ class CrinitLibrary(object):
             series_file = self.CRINIT_SERIES
         if ld_preload is not None:
             ldprld_cmd = f"export LD_PRELOAD=/etc/crinit/itest/ld_preload/{ld_preload};"
+        self.eff_series_file = series_file
 
         if self.crinit_is_running():
             return 0
@@ -161,7 +162,7 @@ class CrinitLibrary(object):
             f"sh -c \"export CRINIT_SOCK={self.CRINIT_SOCK}; {ldprld_cmd} {chroot_cmd} {strace_cmd} {self.CRINIT_BIN}"
         if crinit_args is not None:
             start_cmd = start_cmd + f" {crinit_args}"
-        start_cmd = start_cmd + f" {series_file}\""
+        start_cmd = start_cmd + f" {self.eff_series_file}\""
 
         self.ssh.start_command(start_cmd,
                                sudo=(not self.IS_ROOT),
@@ -180,10 +181,8 @@ class CrinitLibrary(object):
 
         return 0
 
-    def crinit_stop(self, series_file=None, crinit_args=None):
+    def crinit_stop(self, crinit_args=None):
         """ Stops all remaining crinit tasks and kills crinit. """
-        if series_file is None:
-            series_file = self.CRINIT_SERIES
 
         if not self.crinit_is_running():
             return 0
@@ -198,7 +197,7 @@ class CrinitLibrary(object):
         stop_cmd = f"sh -c \"pkill -f {self.CRINIT_BIN}"
         if crinit_args is not None:
             stop_cmd = stop_cmd + f"\\ {crinit_args}"
-        stop_cmd = stop_cmd + f"\\ {series_file} && rm -rf {self.CRINIT_SOCK}\""
+        stop_cmd = stop_cmd + f"\\ {self.eff_series_file} && rm -rf {self.CRINIT_SOCK}\""
 
         stdout, stderr, ret = self.ssh.execute_command(stop_cmd,
                                                        return_stdout=True,

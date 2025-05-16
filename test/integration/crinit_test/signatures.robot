@@ -13,7 +13,7 @@ Suite Setup       Prepare Target System
 Suite Teardown    Clean Up Target System
 
 Test Setup        Crinit Start    series_file=${SIG_TASK_DIR}/sigtest.series
-Test Teardown     Crinit Stop    series_file=${SIG_TASK_DIR}/sigtest.series
+Test Teardown     Crinit Stop
 
 *** Variables ***
 ${SIG_TASK_DIR}             /etc/crinit/itest/sigtest
