@@ -35,15 +35,27 @@ static void crinitPrintVersion(void) {
 static void crinitPrintUsage(void) {
     fprintf(
         stderr,
-        "USAGE: crinit-launch --cmd=/path/to/targetcmd [--user=UID --groups=GID[,SGID1,SGID2]] -- "
+        "USAGE: crinit-launch --cmd=/path/to/targetcmd [--user=UID --groups=GID[,SGID1,SGID2]] "
+#ifdef ENABLE_CAPABILITIES
+        "--cap_set=bitmask --cap_clear=bitmask -- "
+#endif
         "[TARGET_COMMAND_ARGUMENTS]\n"
         "  where ACTION must be exactly one of (including specific options/parameters):\n"
         "    cmd Path to the program to launch.\n"
-        "   user UID of the user to be used to start the specified command. If not given, the user of the crinit "
+        "    user UID of the user to be used to start the specified command. If not given, the user of the crinit "
         "process is used.\n"
-        " groups Comma separated list of GIDs that shall be used to start the specified command. The first one will\n"
+        "    groups Comma separated list of GIDs that shall be used to start the specified command. The first one "
+        "will\n"
         "       be used as the primary group, all others as suplimentary groups. If not given the group of the crinit "
         "process is used.\n"
+#ifdef ENABLE_CAPABILITIES
+        "    cap_set Bitmask in hexadecimal format that represents all capabilities that shall be added.\n"
+        "       Bit positions correspond to capability values that are defined by the kernel in <linux/capability.h>.\n"
+        "       E.g. setting capability CAP_SETGID which has a value 6) would require a bitmap with value 0x40.\n"
+        "    cap_clear Bitmask in hexadecimal format that represents all capabilities that shall be removed.\n"
+        "       Bit positions correspond to capability values that are defined by the kernel in <linux/capability.h>.\n"
+        "       E.g. clearing capability CAP_FSETID which has a value 4) would require a bitmap with value 0x10.\n"
+#endif
         "\n"
         " After the delimiter -- the arguments of the specifed command can be given, if there are any.\n"
         " General Options:\n"
@@ -101,10 +113,21 @@ int crinitExtractGroups(char *input, gid_t **groups, size_t *groupSize) {
 
 int main(int argc, char *argv[]) {
     int opt;
-    const struct option longOptions[] = {{"help", no_argument, 0, 'h'},         {"version", no_argument, 0, 'V'},
-                                         {"cmd", required_argument, 0, 'c'},    {"user", required_argument, 0, 'u'},
-                                         {"groups", required_argument, 0, 'g'}, {0, 0, 0, 0}};
+    const struct option longOptions[] = {{"help", no_argument, 0, 'h'},
+                                         {"version", no_argument, 0, 'V'},
+                                         {"cmd", required_argument, 0, 'c'},
+                                         {"user", required_argument, 0, 'u'},
+                                         {"groups", required_argument, 0, 'g'},
+#ifdef ENABLE_CAPABILITIES
+                                         {"cap_set", required_argument, 0, 'P'},
+                                         {"cap_clear", required_argument, 0, 'p'},
+#endif
+                                         {0, 0, 0, 0}};
 
+#ifdef ENABLE_CAPABILITIES
+    unsigned long capSet = 0;
+    unsigned long capClear = 0;
+#endif
     gid_t *groups = NULL;
     size_t groupSize = 0;
     uid_t user = -1;
@@ -112,9 +135,14 @@ int main(int argc, char *argv[]) {
     bool userFound = false;
     char *argvNewBuffer = NULL;
     char **argvNew = NULL;
+#ifdef ENABLE_CAPABILITIES
+    const char *opts = "hc:u:g:p:P:V";
+#else
+    const char *opts = "hc:u:g:V";
+#endif
 
     while (true) {
-        opt = getopt_long(argc, argv, "hc:u:g:V", longOptions, NULL);
+        opt = getopt_long(argc, argv, opts, longOptions, NULL);
         if (opt == -1) {
             break;
         }
@@ -148,6 +176,16 @@ int main(int argc, char *argv[]) {
                     goto failureExit;
                 }
                 break;
+#ifdef ENABLE_CAPABILITIES
+            case 'P':
+                capSet = strtoul(optarg, NULL, 16);
+                crinitInfoPrint("Provided capability set mask: %#lx (option --capSet: %s)", capSet, optarg);
+                break;
+            case 'p':
+                capClear = strtoul(optarg, NULL, 16);
+                crinitInfoPrint("Provided capability clear mask: %#lx (option --capClear: %s)", capClear, optarg);
+                break;
+#endif
             case 'V':
                 crinitPrintVersion();
                 free(groups);

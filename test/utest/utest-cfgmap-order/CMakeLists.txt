@@ -18,6 +18,7 @@ create_unit_test(
     ${PROJECT_SOURCE_DIR}/src/envset.c
     ${PROJECT_SOURCE_DIR}/src/sig.c
     ${PROJECT_SOURCE_DIR}/src/common.c
+    ${CAPABILITIES_SOURCES}
 LIBRARIES
     libmockfunctions
     inih-local

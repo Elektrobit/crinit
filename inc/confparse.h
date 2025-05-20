@@ -21,6 +21,10 @@
 #define CRINIT_CONFIG_KEYSTR_DEBUG "DEBUG"
 /**  Config file key for TASKDIR global option. **/
 #define CRINIT_CONFIG_KEYSTR_TASKDIR "TASKDIR"
+#ifdef ENABLE_CAPABILITIES
+/**  Config file key for DEFAULTCAPS global option. **/
+#define CRINIT_CONFIG_KEYSTR_DEFAULTCAPS "DEFAULTCAPS"
+#endif
 /**  Config file key for INCLUDEDIR global option. **/
 #define CRINIT_CONFIG_KEYSTR_INCLDIR "INCLUDEDIR"
 /**  Config file key for SHUTDOWN_GRACE_PERIOD_US global option **/
@@ -97,6 +101,13 @@
 #define CRINIT_CONFIG_DEFAULT_LAUNCHER_CMD CRINIT_LAUNCHER_COMMAND_DEFAULT
 #endif
 
+#ifdef ENABLE_CAPABILITIES
+/**  Default value for DEFAULTCAPS global option **/
+
+#ifndef CRINIT_CONFIG_DEFAULT_DEFAULTCAPS
+#define CRINIT_CONFIG_DEFAULT_DEFAULTCAPS ""
+#endif
+#endif
 /**  Default value for SHUTDOWN_GRACE_PERIOD_US global option **/
 #define CRINIT_CONFIG_DEFAULT_SHDGRACEP 100000uLL
 /**  Default value for USE_SYSLOG global option. **/
@@ -123,6 +134,9 @@
 typedef enum crinitConfigs {
     CRINIT_CONFIG_COMMAND = 0,
     CRINIT_CONFIG_DEBUG,
+#ifdef ENABLE_CAPABILITIES
+    CRINIT_CONFIG_DEFAULTCAPS,
+#endif
     CRINIT_CONFIG_DEPENDS,
     CRINIT_CONFIG_ELOS_EVENT_POLL_INTERVAL,
     CRINIT_CONFIG_ELOS_PORT,

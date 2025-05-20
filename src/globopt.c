@@ -48,6 +48,13 @@ int crinitGlobOptInitDefault(void) {
     crinitGlobOpts.shdGraceP = CRINIT_CONFIG_DEFAULT_SHDGRACEP;
     crinitGlobOpts.taskDirFollowSl = CRINIT_CONFIG_DEFAULT_TASKDIR_SYMLINKS;
     crinitGlobOpts.signatures = CRINIT_CONFIG_DEFAULT_SIGNATURES;
+#ifdef ENABLE_CAPABILITIES
+    crinitGlobOpts.defaultCaps = strdup(CRINIT_CONFIG_DEFAULT_DEFAULTCAPS);
+    if (crinitGlobOpts.defaultCaps == NULL) {
+        crinitGlobOptSetErrPrint(CRINIT_CONFIG_KEYSTR_DEFAULTCAPS);
+        goto fail;
+    }
+#endif
     crinitGlobOpts.tasks = NULL;
 
     crinitGlobOpts.inclDir = strdup(CRINIT_CONFIG_DEFAULT_INCLDIR);
@@ -288,6 +295,9 @@ void crinitGlobOptDestroy(void) {
     free(crinitGlobOpts.sigKeyDir);
     free(crinitGlobOpts.elosServer);
     free(crinitGlobOpts.launcherCmd);
+#ifdef ENABLE_CAPABILITIES
+    free(crinitGlobOpts.defaultCaps);
+#endif
     crinitEnvSetDestroy(&crinitGlobOpts.globEnv);
     crinitEnvSetDestroy(&crinitGlobOpts.globFilters);
     pthread_mutex_unlock(&crinitOptLock);

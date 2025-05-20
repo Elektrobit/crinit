@@ -71,6 +71,10 @@ int crinitCfgShdGpHandler(void *tgt, const char *val, crinitConfigType_t type);
 int crinitCfgTaskSuffixHandler(void *tgt, const char *val, crinitConfigType_t type);
 /** Handler for `TASKDIR` config directives. See crinitConfigHandler_t. **/
 int crinitCfgTaskDirHandler(void *tgt, const char *val, crinitConfigType_t type);
+#ifdef ENABLE_CAPABILITIES
+/** Handler for `DEFAULTCAPS` config directives. See crinitConfigHandler_t. **/
+int crinitCfgDefaultCapsHandler(void *tgt, const char *val, crinitConfigType_t type);
+#endif
 /** Handler for `TASKDIR_FOLLOW_SYMLINKS` config directives. See crinitConfigHandler_t. **/
 int crinitCfgTaskDirSlHandler(void *tgt, const char *val, crinitConfigType_t type);
 /** Handler for `TASKS` config directives. See crinitConfigHandler_t. **/

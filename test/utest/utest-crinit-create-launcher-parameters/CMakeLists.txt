@@ -19,6 +19,7 @@ create_unit_test(
     ${PROJECT_SOURCE_DIR}/src/ioredir.c
     ${PROJECT_SOURCE_DIR}/src/procdip.c
     ${PROJECT_SOURCE_DIR}/src/task.c
+    ${CAPABILITIES_SOURCES}
   LIBRARIES
     libmockfunctions
     inih-local

@@ -269,6 +269,7 @@ ENV_SET = GREETING "Good morning!"
   below). Default is 500000. Needs ELOS support included at build-time.
 - **ENV_SET** -- See section **Setting Environment Variables** below. (*array-like*)
 - **FILTER_DEFINE** -- See section **Defining Elos Filters** below. (*array-like*)
+- **DEFAULTCAPS** -- Whitespace separated list of capability definitions `/linux/capability.h`) that each task shall be equipped with by default.
 
 ### Example Task Configuration
 The `network-dhcp.crinit` from above could for example look like this:
@@ -328,11 +329,13 @@ IO_REDIRECT = STDERR STDOUT
   user ID can be used. If **USER** is not set, "root" is assumed.
     **NOTE**: Changing user names, UIDs, group names or GIDs on the system while a task using them has already been
     loaded may result in undefined behaviour.
+    **NOTE**: Setting a user ID 0 will disable the capability configuration. 
 - **GROUP** -- Name of the group used to run the commands specified in **COMMAND**. Either the group name or the numeric
   group ID can be used. If **GROUP** is not set, "root" is assumed. Supplementary groups can be added after the main group, space separated. GROUP can be an array, too. Similar to **COMMAND**.
     **Also see note on USER command.** This applies here, too.
-- **CAPABILITY_SET** -- List of capability defitions that a task shall be specifically equipped with.
-- **CAPABILITY_CLEAR** -- List of capability defitions that a task shall be stripped from.
+    **NOTE**: Setting a group ID 0 will disable the capability configuration. 
+- **CAPABILITY_SET** -- Whitespace separated list of capability definitions (as defined in `/linux/capability.h`) that a task shall be specifically equipped with.
+- **CAPABILITY_CLEAR** -- Whitespace separated list of capability definitions `/linux/capability.h`) that a task shall be stripped from.
 - **DEPENDS** -- A list of dependencies which need to be fulfilled before this task is considered "ready-to-start".
   Semantics are `<taskname>:{fail,wait,spawn}`, where `spawn` is fulfilled when (the first command of) a task has been
   started, `wait` if it has successfully completed, and `fail` if it has failed somewhere along the way. Here we can see

@@ -34,6 +34,9 @@ typedef struct crinitGlobOptStore {
     unsigned long long shdGraceP;              ///< Value for the SHUTDOWN_GRACE_PERIOD_US global option.
     crinitEnvSet_t globEnv;                    ///< Storage for global task environment variables.
     crinitEnvSet_t globFilters;                ///< Storage for global task filter variables.
+#ifdef ENABLE_CAPABILITIES
+    char *defaultCaps;  ///< Value for the DEFAULTCAPS global option.
+#endif
 } crinitGlobOptStore_t;
 
 #define CRINIT_GLOBOPT_DEBUG debug                                     ///< DEBUG global option
@@ -54,6 +57,9 @@ typedef struct crinitGlobOptStore {
 #define CRINIT_GLOBOPT_FILTERS globFilters                             ///< Reference to the global task filters
 #define CRINIT_GLOBOPT_SIGNATURES signatures  ///< Reference to global setting of signature checking.
 #define CRINIT_GLOBOPT_SIGKEYDIR sigKeyDir    ///< Reference to global setting for public key dir.
+#ifdef ENABLE_CAPABILITIES
+#define CRINIT_GLOBOPT_DEFAULTCAPS defaultCaps  ///< DEFAULTCAPS option
+#endif
 
 /** Dummy instance for Generic Selection of members to work (see type-generic macros below). **/
 static crinitGlobOptStore_t crinitGenericGlobOptHelper __attribute__((unused));

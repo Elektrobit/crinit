@@ -5,6 +5,8 @@ if(ENABLE_CAPABILITIES)
     find_package(PkgConfig REQUIRED)
     pkg_check_modules(LIBCAP REQUIRED libcap)
 
+    set(CAPABILITIES_SOURCES ${PROJECT_SOURCE_DIR}/src/capabilities.c)
+
     set(CAPABILITIES_DEFINES
         ENABLE_CAPABILITIES
     )

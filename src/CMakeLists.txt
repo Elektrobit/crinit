@@ -40,6 +40,8 @@ if(ENABLE_CAPABILITIES)
     find_package(PkgConfig REQUIRED)
     pkg_check_modules(LIBCAP REQUIRED libcap)
 
+    set(CAPABILITIES_SOURCES capabilities.c)
+    
     set(CAPABILITIES_DEFINES
         ENABLE_CAPABILITIES
     )
@@ -81,6 +83,7 @@ add_executable(
   optfeat.c
   fseries.c
   ioredir.c
+  ${CAPABILITIES_SOURCES}
   ${SIG_SOURCES}
   ${ELOS_SOURCES}
   ${CMAKE_CURRENT_BINARY_DIR}/crinit-version.c
