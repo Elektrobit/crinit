@@ -14,6 +14,10 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#ifdef ENABLE_CAPABILITIES
+#include "capabilities.h"
+#endif
+#include "confhdl.h"
 #include "envset.h"
 #include "globopt.h"
 #include "lexers.h"
@@ -233,8 +237,7 @@ int crinitCreateLauncherParameters(crinitTaskCmd_t *taskCmd, crinitTask_t *tCopy
     const char *const userParamFormatStr = "--user=%d";
     const char *const groupParamFormatStr = "--group=%d";
 #ifdef ENABLE_CAPABILITIES
-    const char *const capSetParamFormatStr = "--cap_set=%lx";
-    const char *const capClearParamFormatStr = "--cap_clear=%lx";
+    const char *const capParamFormatStr = "--caps=%lx";
 #endif
     const char *const delimiterEndOfOptionsStr = "--";
     const size_t doubleDashLength = strlen(delimiterEndOfOptionsStr) + 1;
@@ -242,8 +245,25 @@ int crinitCreateLauncherParameters(crinitTaskCmd_t *taskCmd, crinitTask_t *tCopy
     const size_t userParamLength = snprintf(NULL, 0, userParamFormatStr, tCopy->user) + 1;
     const size_t groupParamFixedPartLength = snprintf(NULL, 0, groupParamFormatStr, tCopy->group) + 1;
 #ifdef ENABLE_CAPABILITIES
-    const size_t capSetParamLength = snprintf(NULL, 0, capSetParamFormatStr, tCopy->capabilitiesSet) + 1;
-    const size_t capClearParamLength = snprintf(NULL, 0, capClearParamFormatStr, tCopy->capabilitiesClear) + 1;
+    char *defaultCaps = NULL;
+    if (crinitGlobOptGet(CRINIT_GLOBOPT_DEFAULTCAPS, &defaultCaps) == -1) {
+        defaultCaps = strdup(CRINIT_CONFIG_DEFAULT_DEFAULTCAPS);
+        crinitErrPrint("Could not retrieve global default capabilities. Will use %s", defaultCaps);
+    }
+
+    uint64_t defaultCapsMask = 0;
+    if (crinitCapConvertToBitmask(&defaultCapsMask, defaultCaps) != 0) {
+        free(defaultCaps);
+        return -1;
+    }
+    free(defaultCaps);
+    crinitDbgInfoPrint("Default capabilities: %#lx", defaultCapsMask);
+
+    uint64_t capEff = defaultCapsMask & ~tCopy->capabilitiesClear;
+    capEff |= tCopy->capabilitiesSet;
+    crinitInfoPrint("(Task %s) Calculated effective capabilities: %#lx", tCopy->name, capEff);
+
+    const size_t capParamLength = snprintf(NULL, 0, capParamFormatStr, capEff) + 1;
 #endif
 
     const int groupParamVarPartLength = crinitCalculateVariableGroupParamLength(tCopy->supGroupsSize, tCopy->supGroups);
@@ -257,7 +277,7 @@ int crinitCreateLauncherParameters(crinitTaskCmd_t *taskCmd, crinitTask_t *tCopy
     }
     const size_t totalLength = cmdParamLength + userParamLength + groupParamFixedPartLength + groupParamVarPartLength
 #ifdef ENABLE_CAPABILITIES
-                               + capSetParamLength + capClearParamLength
+                               + capParamLength
 #endif
                                + doubleDashLength + targetParamTotalLength;
 
@@ -273,7 +293,7 @@ int crinitCreateLauncherParameters(crinitTaskCmd_t *taskCmd, crinitTask_t *tCopy
 #ifndef ENABLE_CAPABILITIES
     const size_t launcherParamCount = 6;  // Including trailing null element
 #else
-    const size_t launcherParamCount = 8;  // Including trailing null element
+    const size_t launcherParamCount = 7;  // Including trailing null element
 #endif
     av = calloc(launcherParamCount + taskCmd->argc, sizeof(*av));
     if (av == NULL) {
@@ -313,12 +333,8 @@ int crinitCreateLauncherParameters(crinitTaskCmd_t *taskCmd, crinitTask_t *tCopy
 
 #ifdef ENABLE_CAPABILITIES
     av[argBufIdx++] = argBufCurr;
-    snprintf(argBufCurr, capSetParamLength, capSetParamFormatStr, tCopy->capabilitiesSet);
-    argBufCurr += capSetParamLength;
-
-    av[argBufIdx++] = argBufCurr;
-    snprintf(argBufCurr, capClearParamLength, capClearParamFormatStr, tCopy->capabilitiesClear);
-    argBufCurr += capClearParamLength;
+    snprintf(argBufCurr, capParamLength, capParamFormatStr, capEff);
+    argBufCurr += capParamLength;
 #endif
 
     av[argBufIdx++] = argBufCurr;

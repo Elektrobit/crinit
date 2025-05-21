@@ -189,6 +189,7 @@ target_link_libraries(
 add_executable(
     crinit-launch
     crinit-launch.c
+    ${CAPABILITIES_SOURCES}
     logio.c
     ${CMAKE_CURRENT_BINARY_DIR}/crinit-version.c
 )
@@ -198,10 +199,17 @@ target_include_directories(
   PRIVATE ${PROJECT_SOURCE_DIR}/inc/
 )
 
+target_compile_definitions(
+  crinit-launch
+    PRIVATE
+    ${CAPABILITIES_DEFINES}
+)
+
 target_link_libraries(
   crinit-launch
   PUBLIC
     crinit-client
+    $<IF:$<BOOL:${ENABLE_CAPABILITIES}>,${LIBCAP_LIBRARIES},>
 )
 
 # machine-id-gen

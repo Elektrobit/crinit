@@ -25,6 +25,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#ifdef ENABLE_CAPABILITIES
+#include "capabilities.h"
+#endif
 #include "crinit-version.h"
 #include "logio.h"
 
@@ -37,7 +40,7 @@ static void crinitPrintUsage(void) {
         stderr,
         "USAGE: crinit-launch --cmd=/path/to/targetcmd [--user=UID --groups=GID[,SGID1,SGID2]] "
 #ifdef ENABLE_CAPABILITIES
-        "--cap_set=bitmask --cap_clear=bitmask -- "
+        "--caps=bitmask -- "
 #endif
         "[TARGET_COMMAND_ARGUMENTS]\n"
         "  where ACTION must be exactly one of (including specific options/parameters):\n"
@@ -49,12 +52,9 @@ static void crinitPrintUsage(void) {
         "       be used as the primary group, all others as suplimentary groups. If not given the group of the crinit "
         "process is used.\n"
 #ifdef ENABLE_CAPABILITIES
-        "    cap_set Bitmask in hexadecimal format that represents all capabilities that shall be added.\n"
+        "    caps Bitmask in hexadecimal format that represents all capabilities that shall be added.\n"
         "       Bit positions correspond to capability values that are defined by the kernel in <linux/capability.h>.\n"
         "       E.g. setting capability CAP_SETGID which has a value 6) would require a bitmap with value 0x40.\n"
-        "    cap_clear Bitmask in hexadecimal format that represents all capabilities that shall be removed.\n"
-        "       Bit positions correspond to capability values that are defined by the kernel in <linux/capability.h>.\n"
-        "       E.g. clearing capability CAP_FSETID which has a value 4) would require a bitmap with value 0x10.\n"
 #endif
         "\n"
         " After the delimiter -- the arguments of the specifed command can be given, if there are any.\n"
@@ -119,14 +119,12 @@ int main(int argc, char *argv[]) {
                                          {"user", required_argument, 0, 'u'},
                                          {"groups", required_argument, 0, 'g'},
 #ifdef ENABLE_CAPABILITIES
-                                         {"cap_set", required_argument, 0, 'P'},
-                                         {"cap_clear", required_argument, 0, 'p'},
+                                         {"caps", required_argument, 0, 'p'},
 #endif
                                          {0, 0, 0, 0}};
 
 #ifdef ENABLE_CAPABILITIES
-    unsigned long capSet = 0;
-    unsigned long capClear = 0;
+    unsigned long caps = 0;
 #endif
     gid_t *groups = NULL;
     size_t groupSize = 0;
@@ -136,7 +134,7 @@ int main(int argc, char *argv[]) {
     char *argvNewBuffer = NULL;
     char **argvNew = NULL;
 #ifdef ENABLE_CAPABILITIES
-    const char *opts = "hc:u:g:p:P:V";
+    const char *opts = "hc:u:g:p:V";
 #else
     const char *opts = "hc:u:g:V";
 #endif
@@ -177,13 +175,9 @@ int main(int argc, char *argv[]) {
                 }
                 break;
 #ifdef ENABLE_CAPABILITIES
-            case 'P':
-                capSet = strtoul(optarg, NULL, 16);
-                crinitInfoPrint("Provided capability set mask: %#lx (option --capSet: %s)", capSet, optarg);
-                break;
             case 'p':
-                capClear = strtoul(optarg, NULL, 16);
-                crinitInfoPrint("Provided capability clear mask: %#lx (option --capClear: %s)", capClear, optarg);
+                caps = strtoul(optarg, NULL, 16);
+                crinitInfoPrint("Provided capability set mask: %#lx (option --caps: %s)", caps, optarg);
                 break;
 #endif
             case 'V':
@@ -232,6 +226,14 @@ int main(int argc, char *argv[]) {
         idx++;
     }
 
+#ifdef ENABLE_CAPABILITIES
+    crinitInfoPrint("Retain permitted capabilities to prevent its clearance by switching to non privileged UID.");
+    if (crinitCapRetainPermitted() == -1) {
+        goto failureExit;
+        return -1;
+    }
+#endif
+
     if (groupSize) {
         if (setgroups(0, NULL) != 0) {  // Drop all current supplementary groups
             crinitErrPrint("Failed to drop all initial supplementary groups.\n");
@@ -256,6 +258,17 @@ int main(int argc, char *argv[]) {
             goto failureExit;
         }
     }
+
+#ifdef ENABLE_CAPABILITIES
+    crinitInfoPrint("Prepare setting ambient capabilities: Set inheritable capabilities accordingly.");
+    if (crinitCapSetInheritable(caps) == -1) {
+        goto failureExit;
+    }
+
+    if (crinitCapSetAmbient(caps) == -1) {
+        goto failureExit;
+    }
+#endif
 
     execvp(cmd, argvNew);
 
