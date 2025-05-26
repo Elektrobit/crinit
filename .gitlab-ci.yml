@@ -82,3 +82,25 @@ Smoke Tests:
     paths:
       - result/amd64/smoketests
       - result/amd64-Debug/smoketests
+
+Integration Tests:
+  stage: test
+  needs:
+    - build-docker-image
+  services:
+    - name: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/docker:dind
+      variables:
+        DOCKER_TLS_CERTDIR: ""
+      # hostname of dind container inside the private network has to be "docker"
+      alias: docker
+  variables:
+    DOCKER_HOST: "tcp://docker:2375"
+  before_script:
+    - sudo apt-get update
+    - sudo apt-get install -y docker.io
+  script:
+    - ci/run-integration-tests.sh
+  artifacts:
+    when: always
+    paths:
+      - result/

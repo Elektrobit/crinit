@@ -55,10 +55,8 @@ rm -rf "$BUILD_DIR/test/integration"
 mkdir -p "$BUILD_DIR/test/integration"
 
 # shellcheck disable=SC2086 # Intended splitting of BUILD_ARG.
-DOCKER_BUILDKIT=1 \
-    docker build \
+docker build \
     $BUILD_ARG \
-    --progress=plain \
     --build-arg REPO="$REPO" \
     --build-arg UBUNTU_RELEASE="$UBUNTU_RELEASE" \
     --build-arg UID="$(id -u)" --build-arg GID="$(id -g)" \
