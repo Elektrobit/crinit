@@ -2,6 +2,8 @@ ARG REPO
 ARG UBUNTU_RELEASE
 FROM ${REPO}${REPO:+/}ubuntu:${UBUNTU_RELEASE}
 
+RUN groupdel -f ubuntu && userdel -r ubuntu || true
+
 ARG USER=ci
 ARG UID=1000
 ARG GID=1000
@@ -34,8 +36,8 @@ RUN apt-get update \
 
 RUN locale-gen en_US.UTF-8 \
  && locale-gen de_DE.UTF-8 \
- && groupadd -g $GID -o ci \
- && useradd -m -u $UID -g $GID -o -s /bin/bash $USER \
+ && groupadd -g $GID ci \
+ && useradd -m -u $UID -g $GID -s /bin/bash $USER \
  && echo "$USER ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 WORKDIR /home/crinit
