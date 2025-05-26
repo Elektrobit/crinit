@@ -236,6 +236,17 @@ int crinitTaskDBGetTaskPID(crinitTaskDB_t *ctx, pid_t *pid, const char *taskName
 int crinitTaskDBGetTaskStateAndPID(crinitTaskDB_t *ctx, crinitTaskState_t *s, pid_t *pid, const char *taskName);
 
 /**
+ * Sets the respawnInhibit flag.
+ *
+ * Prevents the respawning of a task that was configured with "RESPAWN = yes". Used in conjunction with crinit-ctl stop.
+ * @param ctx       The crinitTaskDB_t context in which the task is held.
+ * @param inhibit   If true, do not respawn the task. Otherwise continue with normal behaviour.
+ * @param taskName  The task's name.
+ * @return  0 on success, -1 otherwise.
+ */
+int crinitTaskDBSetTaskRespawnInhibit(crinitTaskDB_t *ctx, bool inhibit, const char *taskName);
+
+/**
  * Provide direct thread-safe access to a task within a task database
  *
  * If a task with the given name is found within the task database context, the calling thread will hold an exclusive

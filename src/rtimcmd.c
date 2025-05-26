@@ -827,6 +827,11 @@ static int crinitExecRtimCmdStop(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, cons
                                   "Could not inhibit waiting for processes.");
     }
 
+    if (crinitTaskDBSetTaskRespawnInhibit(ctx, true, cmd->args[0]) != 0) {
+        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR,
+                                  "Could not access task to set respawnInhibit.");
+    }
+
     crinitTask_t *pTask;
     if (crinitTaskDBGetTaskByName(ctx, &pTask, cmd->args[0]) != 0) {
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STOP, 2, CRINIT_RTIMCMD_RES_ERR, "Could not access task.");
@@ -913,6 +918,10 @@ static int crinitExecRtimCmdRestart(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, c
                                   "Task is not either DONE or FAILED.");
     }
 
+    if (crinitTaskDBSetTaskRespawnInhibit(ctx, false, cmd->args[0]) == -1) {
+        return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_RESTART, 2, CRINIT_RTIMCMD_RES_ERR,
+                                  "Failed to reset the task respawn inhibit flag.");
+    }
     if (crinitTaskDBSetTaskState(ctx, 0, cmd->args[0]) == -1) {
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_RESTART, 2, CRINIT_RTIMCMD_RES_ERR,
                                   "Could not reset task state.");

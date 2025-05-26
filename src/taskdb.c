@@ -389,6 +389,25 @@ int crinitTaskDBGetTaskStateAndPID(crinitTaskDB_t *ctx, crinitTaskState_t *s, pi
     return -1;
 }
 
+int crinitTaskDBSetTaskRespawnInhibit(crinitTaskDB_t *ctx, bool inhibit, const char *taskName) {
+    crinitNullCheck(-1, ctx, taskName);
+
+    if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
+        crinitErrnoPrint("Could not queue up for mutex lock.");
+        return -1;
+    }
+
+    crinitTask_t *pTask;
+    if (crinitFindTask(&pTask, taskName, ctx) == 0) {
+        pTask->inhibitRespawn = inhibit;
+        pthread_mutex_unlock(&ctx->lock);
+        return 0;
+    }
+    pthread_mutex_unlock(&ctx->lock);
+    crinitErrPrint("Could not set inhibitRespawn for Task \'%s\' as it does not exist in TaskDB.", taskName);
+    return -1;
+}
+
 crinitTask_t *crinitTaskDBBorrowTask(crinitTaskDB_t *ctx, const char *taskName) {
     crinitNullCheck(NULL, ctx, taskName);
 
@@ -637,6 +656,9 @@ static bool crinitTaskIsReady(const crinitTask_t *t) {
         return false;
     }
     if (t->state & (CRINIT_TASK_STATE_RUNNING | CRINIT_TASK_STATE_STARTING)) {
+        return false;
+    }
+    if ((t->opts & CRINIT_TASK_OPT_RESPAWN) && t->inhibitRespawn) {
         return false;
     }
     if (t->state & (CRINIT_TASK_STATE_FAILED | CRINIT_TASK_STATE_DONE)) {

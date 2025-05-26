@@ -96,6 +96,7 @@ typedef struct crinitTask {
                                  ///< maximum consecutive number of respawns after failure (default: -1 for infinite).
     int failCount;               ///< Counts consecutive respawns after failure (see crinitTaskOpts_t::maxRetries).
                                  ///< Resets on a successful completion (i.e. all COMMANDs in the task have returned 0).
+    bool inhibitRespawn;         ///< If task was stopped via user interaction, do not respawn it.
     struct timespec createTime;  ///< The time the task was created (i.e. has been loaded and parsed).
     struct timespec startTime;   ///< The time the task last became 'running'.
     struct timespec endTime;     ///< The time the task last became 'done' or 'failed.
