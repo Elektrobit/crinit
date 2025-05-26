@@ -4,13 +4,6 @@ FROM ${REPO}${REPO:+/}ubuntu:${UBUNTU_RELEASE}
 
 RUN groupdel -f ubuntu && userdel -r ubuntu || true
 
-ARG USER=ci
-ARG UID=1000
-ARG GID=1000
-
-ARG TARGET_USER_NAME=target
-ARG TARGET_PASSWORD=target123
-
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
  && apt-get install -y sudo vim locales uuid-runtime keyutils \
@@ -24,6 +17,10 @@ RUN apt-get update \
 RUN add-apt-repository -y ppa:elos-team/ppa \
     && apt-get install -y elos libelos-dev \
     && rm -rf /var/lib/apt/lists/*
+
+ARG USER=ci
+ARG UID=1000
+ARG GID=1000
 
 RUN locale-gen en_US.UTF-8 \
  && locale-gen de_DE.UTF-8 \
@@ -54,6 +51,9 @@ RUN cmake -B build . \
 RUN uuidgen > /etc/machine-id
 
 RUN sudo ldconfig
+
+ARG TARGET_USER_NAME=target
+ARG TARGET_PASSWORD=target123
 
 RUN sudo mkdir /var/run/sshd \
  && sudo chmod 0755 /var/run/sshd \

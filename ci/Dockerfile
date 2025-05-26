@@ -4,10 +4,6 @@ FROM ${REPO}${REPO:+/}ubuntu:${UBUNTU_RELEASE}
 
 RUN groupdel -f ubuntu && userdel -r ubuntu || true
 
-ARG USER=ci
-ARG UID=1000
-ARG GID=1000
-
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
     && apt-get install -y \
@@ -63,6 +59,33 @@ RUN add-apt-repository -y ppa:elos-team/ppa \
     && apt-get install -y libelos-dev \
     && rm -rf /var/lib/apt/lists/*
 
+# Install debbuild
+RUN wget 'https://github.com/debbuild/debbuild/releases/download/22.02.1/debbuild_22.02.1-0ubuntu20.04_all.deb' \
+    'https://github.com/debbuild/debbuild-macros/releases/download/0.0.6/debbuild-macros_0.0.6-0ubuntu20.04_all.deb' \
+    && apt-get update \
+    && apt-get install -y ./debbuild_*.deb ./debbuild-macros_*.deb \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -f debbuild_*.deb debbuild-macros_*.deb
+
+
+# Install commitlint too with conventional commit config and dependencies.
+RUN npm install n -g \
+    && n stable
+RUN npm install @commitlint/cli -g \
+    && npm install @commitlint/config-conventional -g
+
+# Install doctoc
+RUN npm install doctoc -g
+
+ARG USER=ci
+ARG UID=1000
+ARG GID=1000
+
+RUN locale-gen en_US.UTF-8 \
+    && groupadd -g $GID ci \
+    && useradd -m -u $UID -g $GID -s /bin/bash $USER \
+    && echo "$USER ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
 # set up sphinx
 RUN python -m venv /home/$USER/.venv \
     && . /home/$USER/.venv/bin/activate \
@@ -74,28 +97,6 @@ RUN python -m venv /home/$USER/.venv \
     sphinx-copybutton \
     sphinx-favicon \
     sphinxcontrib-programoutput
-
-# Install debbuild
-RUN wget 'https://github.com/debbuild/debbuild/releases/download/22.02.1/debbuild_22.02.1-0ubuntu20.04_all.deb' \
-    'https://github.com/debbuild/debbuild-macros/releases/download/0.0.6/debbuild-macros_0.0.6-0ubuntu20.04_all.deb' \
-    && apt-get update \
-    && apt-get install -y ./debbuild_*.deb ./debbuild-macros_*.deb \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -f debbuild_*.deb debbuild-macros_*.deb
-
-RUN locale-gen en_US.UTF-8 \
-    && groupadd -g $GID ci \
-    && useradd -m -u $UID -g $GID -s /bin/bash $USER \
-    && echo "$USER ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-
-# Install commitlint too with conventional commit config and dependencies.
-RUN npm install n -g \
-    && n stable
-RUN npm install @commitlint/cli -g \
-    && npm install @commitlint/config-conventional -g
-
-# Install doctoc
-RUN npm install doctoc -g
 
 USER $USER
 ENV LC_ALL=en_US.UTF-8
