@@ -3,6 +3,7 @@
 import io
 import os
 import re
+import time
 import traceback
 
 from robot.libraries.BuiltIn import BuiltIn
@@ -524,10 +525,44 @@ class CrinitLibrary(object):
         assert_equal(self.crinit_check_task_state(task_name, "failed"), 0,
                      f"The task {task_name} has not (yet) exited unsuccessfully.")
 
+    @keyword("Ensure The Task ${task_name} Is Running")
+    def crinit_ensure_task_running(self, task_name: str):
+        is_running = False
+        if self.crinit_check_task_state(task_name, "running") == 0:
+            return
+        start_time = time.time()
+        while self.crinit_check_task_state(task_name, "running") != 0:
+            if time.time() - start_time > 5:
+                break
+            time.sleep(0.2)
+        if self.crinit_check_task_state(task_name, "running") == 0:
+            is_running = True
+        assert_equal(is_running, True, f"The task ${task_name} is not running but should.")
+
+    @keyword("Ensure The Task ${task_name} Is Not Running")
+    def crinit_ensure_task_not_running(self, task_name: str):
+        is_running = True
+        if self.__crinit_get_task_pid(task_name) == -1:
+            is_running = False
+            assert_equal(is_running, False)
+        start_time = time.time()
+        while is_running:
+            if time.time() - start_time > 5:
+                break
+            time.sleep(0.2)
+            if self.__crinit_get_task_pid(task_name) == -1:
+                is_running = False
+
+        assert_equal(is_running, False, f"The task ${task_name} is running but shouldn't.")
+
     @keyword("The Task ${task_name} Is Currently Running")
     def crinit_task_running(self, task_name: str):
         assert_equal(self.crinit_check_task_state(task_name, "running"), 0,
                      f"The task {task_name} is not currently running")
+
+    @keyword("The Task ${task_name} Is Not Running")
+    def crinit_task_not_running(self, task_name: str):
+        assert_equal(self.__crinit_get_task_pid(task_name), -1, f"The task {task_name} is currently running")
 
     @keyword("Ensure Regular Files Exist")
     def reg_files_exist(self, *files: os.path):
