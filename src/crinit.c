@@ -86,7 +86,8 @@ int main(int argc, char *argv[]) {
                 return EXIT_FAILURE;
         }
     }
-    if (optind < argc) {
+    // Note: optind can be set to 0 if no arguments are given, so both checks below are needed.
+    if (argc > 1 && optind < argc) {
         if (!crinitIsAbsPath(argv[optind])) {
             crinitErrPrint("Program argument must be an absolute path.");
             crinitPrintUsage(argv[0]);
