@@ -820,6 +820,7 @@ The cmake setup supports some optional features:
    `${CMAKE_INSTALL_DATADIR/bash-completion/completions`.
 * Set the `SONAME` of libelos crinit will try to open at run-time. Default is auto-detection if elos is present in the
   build environment or `libelos.so.1` if it is not.
+* Enable (`ON`) or disable (`OFF`) Linux capabilities support. If set to `ON` crinit will have a dependency to libcap. Default is `ON`.
 
 ## Build Requirements
 
@@ -832,3 +833,4 @@ In order to build crinit, some prerequisites have to be installed.
 - optional, for signature support: [MbedTLS](https://github.com/Mbed-TLS/mbedtls) 2.28.x or 3.x
 - optional, for unit tests: cmocka >= 1.1.5
 - optional, for HTML API documentation: Doxygen
+- optional, for capabilities support: libcap
