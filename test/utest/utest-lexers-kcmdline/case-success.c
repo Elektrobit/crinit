@@ -18,6 +18,7 @@ void crinitKernelCmdlineLexTestSuccess(void **state) {
     const char *tokOptDq = "crinit.foo=\"bar baz\" other.var=val";
     const char *tokWspc = "   \t  ";
     const char *tokNothing = "notcrinit.nothing_to=\"see here\"";
+    const char *tokInitrd = "initrd=\\initramfs-linux.img";
     const char *tokEnd = "";
 
     const char *s = NULL;
@@ -54,6 +55,16 @@ void crinitKernelCmdlineLexTestSuccess(void **state) {
     assert_ptr_equal(valBegin, tokOptDq + strlen("crinit.foo=\""));
     assert_ptr_equal(valEnd, tokOptDq + strlen("crinit.foo=\"bar baz"));
     assert_ptr_equal(tokOptDq + strlen("crinit.foo=\"bar baz\""), s);
+
+    /* Should accept a backslash in the input without error. */
+    crinitTokenType_t tt;
+    s = tokInitrd;
+    do {
+        tt = crinitKernelCmdlineLex(&s, &keyBegin, &keyEnd, &valBegin, &valEnd);
+        if (tt != CRINIT_TK_CPY && tt != CRINIT_TK_END) {
+            fail_msg("failed to parse initrd parameter: '%s'", tokInitrd);
+        }
+    } while (tt != CRINIT_TK_END);
 
     /* Should match the end-of-string */
     s = tokEnd;
