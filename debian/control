@@ -13,6 +13,7 @@ Build-Depends:
  graphviz,
  libsafu-dev,
  pkg-config,
+ libcap-dev,
 Rules-Requires-Root: no
 Standards-Version: 4.6.0.1
 Homepage: https://github.com/Elektrobit/crinit
