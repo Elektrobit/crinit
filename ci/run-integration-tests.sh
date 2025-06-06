@@ -1,14 +1,14 @@
 #!/bin/bash
 # SPDX-License-Identifier: MIT
 #
-CMD_PATH=$(cd $(dirname $0) && pwd)
+CMD_PATH=$(cd "$(dirname "$0")" && pwd)
 BASE_DIR=${CMD_PATH%/*}
 
 BUILD_TYPE="${1:-Release}"
 
 # architecture name amd64, arm64, ...
 ARCH=$(dpkg --print-architecture)
-UBUNTU_RELEASE="jammy"
+UBUNTU_RELEASE="noble"
 
 case "$BUILD_TYPE" in
     Release)
@@ -51,54 +51,55 @@ if [ -n "${CI}" ]; then
     TEST_DOCKER_NAME="$(clean_tag "${TEST_DOCKER_NAME}${ARCH:+-}${ARCH}-${BUILD_ID}-${GIT_COMMIT}")"
 fi
 
-rm -rf $BUILD_DIR/test/integration
-mkdir -p $BUILD_DIR/test/integration
+rm -rf "$BUILD_DIR/test/integration"
+mkdir -p "$BUILD_DIR/test/integration"
 
-DOCKER_BUILDKIT=1 \
-    docker build \
-    $BUILD_ARG \
-    --progress=plain \
-    --build-arg REPO="$REPO" \
-    --build-arg UBUNTU_RELEASE="$UBUNTU_RELEASE" \
-    --build-arg UID=$(id -u) --build-arg GID=$(id -g) \
-    --tag ${CRINIT_IMAGE_NAME} -f $BASE_DIR/ci/Dockerfile.crinit .
-
+# shellcheck disable=SC2086 # Intended splitting of BUILD_ARG.
 docker build \
     $BUILD_ARG \
-    --build-arg UID=$(id -u) --build-arg GID=$(id -g) \
-    --tag ${TEST_IMAGE_NAME} -f $BASE_DIR/ci/Dockerfile.itest .
+    --build-arg REPO="$REPO" \
+    --build-arg UBUNTU_RELEASE="$UBUNTU_RELEASE" \
+    --build-arg UID="$(id -u)" --build-arg GID="$(id -g)" \
+    --tag "${CRINIT_IMAGE_NAME}" -f "$BASE_DIR/ci/Dockerfile.crinit" .
+
+# shellcheck disable=SC2086 # Intended splitting of BUILD_ARG.
+docker build \
+    $BUILD_ARG \
+    --build-arg UID="$(id -u)" --build-arg GID="$(id -g)" \
+    --tag "${TEST_IMAGE_NAME}" -f "$BASE_DIR/ci/Dockerfile.itest" .
 
 if [ "$SSH_AUTH_SOCK" ]; then
-    SSH_AGENT_SOCK=$(readlink -f $SSH_AUTH_SOCK)
+    SSH_AGENT_SOCK=$(readlink -f "$SSH_AUTH_SOCK")
     SSH_AGENT_OPTS="-v $SSH_AGENT_SOCK:/run/ssh-agent -e SSH_AUTH_SOCK=/run/ssh-agent"
 fi
 
+# shellcheck disable=SC2086 # Intended splitting of SSH_AGENT_OPTS.
 CRINIT_ID=$(docker run -d -ti --rm \
-    --name ${CRINIT_DOCKER_NAME} \
+    --name "${CRINIT_DOCKER_NAME}" \
     --cap-add=SYS_ADMIN \
     --security-opt apparmor=unconfined \
     $SSH_AGENT_OPTS \
     --privileged \
     -w / \
-    ${CRINIT_IMAGE_NAME})
+    "${CRINIT_IMAGE_NAME}")
 
 RUNNER_ID=$(docker run -d -ti --rm \
-    --name ${TEST_DOCKER_NAME} \
-    --link ${CRINIT_DOCKER_NAME} \
-    -v $BASE_DIR:/base \
+    --name "${TEST_DOCKER_NAME}" \
+    --link "${CRINIT_DOCKER_NAME}" \
+    -v "$BASE_DIR:/base" \
     -w /base \
     --env "PROJECT=${PROJECT}" \
     --env "TEST_OUTPUT=/base/build/${BUILD_SUBDIR}/test/integration" \
-    ${TEST_IMAGE_NAME})
+    "${TEST_IMAGE_NAME}")
 
-docker exec ${TEST_DOCKER_NAME} /base/test/integration/scripts/run-integration-tests.sh
+docker exec "${TEST_DOCKER_NAME}" "/base/test/integration/scripts/run-integration-tests.sh"
 
 ret=$?
 
-docker stop ${CRINIT_ID}
-docker stop ${RUNNER_ID}
+docker stop "${CRINIT_ID}"
+docker stop "${RUNNER_ID}"
 
 mkdir -p "${RESULT_DIR}"
 cp -vr "${BUILD_DIR}/test/integration" "${RESULT_DIR}/"
 
-exit $?
+exit ${ret}

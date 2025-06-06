@@ -30,7 +30,7 @@ static void crinitTestVariant(size_t numElements, const char *path, const char *
     }
     fnamesBuff[numElements] = NULL;
 
-    struct crinitFileSeries_t fse = {.size = numElements, .fnames = fnamesBuff};
+    crinitFileSeries_t fse = {.size = numElements, .fnames = fnamesBuff};
 
     if (followLinks) {
         print_message(

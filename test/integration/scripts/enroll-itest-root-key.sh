@@ -8,12 +8,13 @@ print_usage() {
 }
 
 if [ ! -f "$1" ]; then
-    print_usage() exit 1
+    print_usage
+    exit 1
 fi
 
 set -e
 
-KEY_ID=$(cat "$1" | keyctl padd user crinit-root @s)
+KEY_ID=$(keyctl padd user crinit-root @s <"$1")
 
 # As noted in the discussions of https://github.com/systemd/systemd/issues/5522, the Kernel user keyring seems to block
 # setting permissions for keys even if you own them. To counter this, systemd automatically links the session and user

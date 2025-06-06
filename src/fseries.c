@@ -228,8 +228,7 @@ static char **crinitStrArrDeepCopy(char **source, size_t *numElements) {
 
     char **ptr, **target;
 
-    for (ptr = source; *ptr; ptr++)
-        ;
+    for (ptr = source; *ptr; ptr++);
     *numElements = ptr - source;
 
     target = calloc(*numElements + 1, sizeof(target));

@@ -28,7 +28,7 @@
 /**
  * Argument structure for shdnThread().
  */
-typedef struct crinitShdnThrArgs_t {
+typedef struct crinitShdnThrArgs {
     crinitTaskDB_t *ctx;  ///< TaskDB which holds the tasks to be terminated/killed on shutdown.
     int shutdownCmd;      ///< The command for the reboot() syscall, see documentation of RB_* macros in man 7 reboot.
 } crinitShdnThrArgs_t;
@@ -36,9 +36,9 @@ typedef struct crinitShdnThrArgs_t {
 /**
  * A linked list to organize mount points that need to be handled before shutdown/reboot.
  */
-typedef struct crinitUnMountList_t {
-    struct crinitUnMountList_t *next;  ///< Pointer to next element.
-    char target[PATH_MAX];             ///< A mount point path.
+typedef struct crinitUnMountList {
+    struct crinitUnMountList *next;  ///< Pointer to next element.
+    char target[PATH_MAX];           ///< A mount point path.
 } crinitUnMountList_t;
 
 /**

@@ -28,12 +28,12 @@
 /**
  * Enum of the available opcodes, including commands and results/responses.
  */
-typedef enum crinitRtimOp_t { crinitGenOpMap(crinitGenOpEnum) } crinitRtimOp_t;
+typedef enum crinitRtimOp { crinitGenOpMap(crinitGenOpEnum) } crinitRtimOp_t;
 
 /**
  * Structure holding a single mapping between opcode and string representation.
  */
-typedef struct crinitRtimOpMap_t {
+typedef struct crinitRtimOpMap {
     crinitRtimOp_t opCode;  ///< opcode
     const char *opStr;      ///< equivalent string representation
 } crinitRtimOpMap_t;

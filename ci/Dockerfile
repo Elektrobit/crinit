@@ -2,6 +2,8 @@ ARG REPO
 ARG UBUNTU_RELEASE
 FROM ${REPO}${REPO:+/}ubuntu:${UBUNTU_RELEASE}
 
+RUN groupdel -f ubuntu && userdel -r ubuntu || true
+
 ARG USER=ci
 ARG UID=1000
 ARG GID=1000
@@ -25,11 +27,17 @@ RUN apt-get update \
     clang-format \
     clang-tidy \
     cmake \
+    debhelper \
+    devscripts \
     doxygen \
+    equivs \
+    fakeroot \
     flake8 \
     git \
+    git-buildpackage \
     graphviz \
     keyutils \
+    libcap-dev \
     libcmocka-dev \
     libiberty-dev \
     libjson-c-dev \
@@ -47,14 +55,19 @@ RUN apt-get update \
     re2c \
     rpm \
     screen \
+    shellcheck \
     shfmt \
+    software-properties-common \
     sudo \
     valgrind \
     vim \
     wget \
     npm \
     yapf3 \
-    && rm -rf /var/lib/apt/lists/*
+    && add-apt-repository -y ppa:elos-team/ppa \
+    && apt-get install -y libsafu-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && ln -fs /usr/share/zoneinfo/UTC /etc/localtime
 
 # Install safu
 RUN git clone ${SAFU_REPO_PATH} \
@@ -108,8 +121,8 @@ RUN wget 'https://github.com/debbuild/debbuild/releases/download/22.02.1/debbuil
     && rm -f debbuild_*.deb debbuild-macros_*.deb
 
 RUN locale-gen en_US.UTF-8 \
-    && groupadd -g $GID -o ci \
-    && useradd -m -u $UID -g $GID -o -s /bin/bash $USER \
+    && groupadd -g $GID ci \
+    && useradd -m -u $UID -g $GID -s /bin/bash $USER \
     && echo "$USER ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 # Install commitlint too with conventional commit config and dependencies.

@@ -22,7 +22,7 @@
 /**
  * Data type to hold a mutable environment set.
  */
-typedef struct crinitEnvSet_t {
+typedef struct crinitEnvSet {
     char **envp;      ///< Array of strings of the form "KEY=value" holding the environment variables. Each string is
                       ///< individually allocated. Terminated by a NULL-pointer after the last initialized element.
     size_t allocSz;   ///< Currently allocated size of envp, may be larger than the number of initialized elements.

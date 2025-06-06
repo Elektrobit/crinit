@@ -11,7 +11,7 @@
 /**
  * Type to store an IO redirection definition for a task.
  */
-typedef struct crinitIoRedir_t {
+typedef struct crinitIoRedir {
     int newFd;    ///< The file descriptor to redirect, called 'newFd' equivalent to the man page for dup2()
     int oldFd;    ///< The file descriptor to redirect to, called 'oldFd' equivalent to the man page for dup2()
     char *path;   ///< Path to the file to redirect crinitIoRedir_t newFd to, usage of crinitIoRedir_t::oldFd and

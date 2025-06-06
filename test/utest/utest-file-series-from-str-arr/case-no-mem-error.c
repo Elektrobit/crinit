@@ -11,7 +11,7 @@
 #include "unit_test.h"
 
 static void crinitTestVariant(size_t numElements) {
-    struct crinitFileSeries_t fse;
+    crinitFileSeries_t fse;
 
     char *baseDir = (void *)0xDEADB33F;
     char *fnamesCopy[numElements + 1];

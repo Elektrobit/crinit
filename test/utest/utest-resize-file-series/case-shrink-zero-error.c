@@ -14,7 +14,7 @@
 void crinitResizeFileSeriesTestShrinkZeroError(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
-    struct crinitFileSeries_t fse = {.size = 100};
+    crinitFileSeries_t fse = {.size = 100};
 
     expect_any(__wrap_crinitErrPrintFFL, format);
 

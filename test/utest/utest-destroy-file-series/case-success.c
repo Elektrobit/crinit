@@ -13,7 +13,7 @@
 
 static void crinitTestVariant(size_t numElements, const char *baseDir) {
     char *fnamesBuff[numElements + 1];
-    struct crinitFileSeries_t fse = {.baseDir = (char *)baseDir, .size = numElements};
+    crinitFileSeries_t fse = {.baseDir = (char *)baseDir, .size = numElements};
 
     if (baseDir) {
         print_message("Testing crinitDestroyFileSeriesTestSuccess with numElement = %ld and baseDir = %s.\n",

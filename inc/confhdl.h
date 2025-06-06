@@ -30,6 +30,12 @@ typedef int (*crinitConfigHandler_t)(void *tgt, const char *val, crinitConfigTyp
 
 /** Handler for `COMMAND` config directives. See crinitConfigHandler_t. **/
 int crinitCfgCmdHandler(void *tgt, const char *val, crinitConfigType_t type);
+#ifdef ENABLE_CAPABILITIES
+/** Handler for `CAPABILITY` config directives. See crinitConfigHandler_t. **/
+int crinitCfgCapSetHandler(void *tgt, const char *val, crinitConfigType_t type);
+/** Handler for `CAPABILITY` config directives. See crinitConfigHandler_t. **/
+int crinitCfgCapClearHandler(void *tgt, const char *val, crinitConfigType_t type);
+#endif
 /** Handler for `STOP_COMMAND` config directives. See crinitConfigHandler_t. **/
 int crinitCfgStopCmdHandler(void *tgt, const char *val, crinitConfigType_t type);
 /** Handler for `DEPENDS` config directives. See crinitConfigHandler_t. **/
@@ -65,6 +71,10 @@ int crinitCfgShdGpHandler(void *tgt, const char *val, crinitConfigType_t type);
 int crinitCfgTaskSuffixHandler(void *tgt, const char *val, crinitConfigType_t type);
 /** Handler for `TASKDIR` config directives. See crinitConfigHandler_t. **/
 int crinitCfgTaskDirHandler(void *tgt, const char *val, crinitConfigType_t type);
+#ifdef ENABLE_CAPABILITIES
+/** Handler for `DEFAULTCAPS` config directives. See crinitConfigHandler_t. **/
+int crinitCfgDefaultCapsHandler(void *tgt, const char *val, crinitConfigType_t type);
+#endif
 /** Handler for `TASKDIR_FOLLOW_SYMLINKS` config directives. See crinitConfigHandler_t. **/
 int crinitCfgTaskDirSlHandler(void *tgt, const char *val, crinitConfigType_t type);
 /** Handler for `TASKS` config directives. See crinitConfigHandler_t. **/

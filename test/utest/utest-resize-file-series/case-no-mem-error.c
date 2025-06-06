@@ -14,7 +14,7 @@
 void crinitResizeFileSeriesTestNoMemError(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
-    struct crinitFileSeries_t fse = {
+    crinitFileSeries_t fse = {
         .fnames = (void *)0xd3adda7a,
     };
 

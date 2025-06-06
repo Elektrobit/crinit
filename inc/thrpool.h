@@ -13,7 +13,7 @@
 /**
  * Structure holding a worker thread pool.
  */
-typedef struct crinitThreadPool_t {
+typedef struct crinitThreadPool {
     size_t poolSize;                    ///< Current size of the pool.
     size_t poolSizeIncrement;           ///< How many new threads to create if the pool runs dry.
     size_t threadAvail;                 ///< Number of available worker threads.

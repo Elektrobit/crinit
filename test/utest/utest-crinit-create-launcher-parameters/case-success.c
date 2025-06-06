@@ -4,9 +4,11 @@
  * @brief Unit test for crinitCreateLauncherParameters(), successful execution.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "capabilities.h"
 #include "common.h"
 #include "confhdl.h"
 #include "globopt.h"
@@ -14,6 +16,13 @@
 #include "utest-crinit-create-launcher-parameters.h"
 
 #define TRUE_CMD "/bin/true"
+
+#define BUF_LEN 32
+#ifdef ENABLE_CAPABILITIES
+static char crinitCapParam[BUF_LEN];
+static char *const crinitCapParamFormatStr = "--caps=%lx";
+static uint64_t crinitDefaultCaps = 0;
+#endif
 
 static crinitTask_t *crinitCreateTaskWithUserAndGroup(const char *taskname, size_t supGroupCount, gid_t *supGroups) {
     crinitTask_t *tgt = NULL;
@@ -72,14 +81,26 @@ void crinitCfgLauncherCmdHandlerTestWithOneGroupSuccess(void **state) {
         argvCounter++;
     }
 
+#ifndef ENABLE_CAPABILITIES
     assert_int_equal(argvCounter, 7);
+#endif
     assert_string_equal(argv[0], cmd);
     assert_string_equal(argv[1], "--cmd=/bin/echo");
     assert_string_equal(argv[2], "--user=65534");
     assert_string_equal(argv[3], "--group=65534");
+#ifndef ENABLE_CAPABILITIES
     assert_string_equal(argv[4], "--");
     assert_string_equal(argv[5], "-ne");
     assert_string_equal(argv[6], "This is a test.");
+#else
+    assert_int_equal(crinitCapConvertToBitmask(&(crinitDefaultCaps), CRINIT_CONFIG_DEFAULT_DEFAULTCAPS), 0);
+    const size_t capSetParamLength = snprintf(crinitCapParam, BUF_LEN, crinitCapParamFormatStr, crinitDefaultCaps);
+    assert_int_not_equal(capSetParamLength, 0);
+    assert_string_equal(argv[4], crinitCapParam);
+    assert_string_equal(argv[5], "--");
+    assert_string_equal(argv[6], "-ne");
+    assert_string_equal(argv[7], "This is a test.");
+#endif
 
     free(argv);
     free(argvBuffer);
@@ -114,14 +135,26 @@ void crinitCfgLauncherCmdHandlerTestWithTwoGroupsSuccess(void **state) {
         argvCounter++;
     }
 
+#ifndef ENABLE_CAPABILITIES
     assert_int_equal(argvCounter, 7);
+#endif
     assert_string_equal(argv[0], cmd);
     assert_string_equal(argv[1], "--cmd=/bin/echo");
     assert_string_equal(argv[2], "--user=65534");
     assert_string_equal(argv[3], "--group=65534,6");
+#ifndef ENABLE_CAPABILITIES
     assert_string_equal(argv[4], "--");
     assert_string_equal(argv[5], "-ne");
     assert_string_equal(argv[6], "This is a test.");
+#else
+    assert_int_equal(crinitCapConvertToBitmask(&(crinitDefaultCaps), CRINIT_CONFIG_DEFAULT_DEFAULTCAPS), 0);
+    const size_t capSetParamLength = snprintf(crinitCapParam, BUF_LEN, crinitCapParamFormatStr, crinitDefaultCaps);
+    assert_int_not_equal(capSetParamLength, 0);
+    assert_string_equal(argv[4], crinitCapParam);
+    assert_string_equal(argv[5], "--");
+    assert_string_equal(argv[6], "-ne");
+    assert_string_equal(argv[7], "This is a test.");
+#endif
 
     free(argv);
     free(argvBuffer);
@@ -157,15 +190,28 @@ void crinitCfgLauncherCmdHandlerTestWithThreeGroupsSuccess(void **state) {
         argvCounter++;
     }
 
+#ifndef ENABLE_CAPABILITIES
     assert_int_equal(argvCounter, 7);
+#else
+    assert_int_equal(argvCounter, 8);
+#endif
     assert_string_equal(argv[0], cmd);
     assert_string_equal(argv[1], "--cmd=/bin/echo");
     assert_string_equal(argv[2], "--user=65534");
     assert_string_equal(argv[3], "--group=65534,6,35");
+#ifndef ENABLE_CAPABILITIES
     assert_string_equal(argv[4], "--");
     assert_string_equal(argv[5], "-ne");
     assert_string_equal(argv[6], "This is a test.");
-
+#else
+    assert_int_equal(crinitCapConvertToBitmask(&(crinitDefaultCaps), CRINIT_CONFIG_DEFAULT_DEFAULTCAPS), 0);
+    const size_t capSetParamLength = snprintf(crinitCapParam, BUF_LEN, crinitCapParamFormatStr, crinitDefaultCaps);
+    assert_int_not_equal(capSetParamLength, 0);
+    assert_string_equal(argv[4], crinitCapParam);
+    assert_string_equal(argv[5], "--");
+    assert_string_equal(argv[6], "-ne");
+    assert_string_equal(argv[7], "This is a test.");
+#endif
     free(argv);
     free(argvBuffer);
     crinitDestroyTask(tgt);

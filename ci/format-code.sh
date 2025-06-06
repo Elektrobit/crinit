@@ -24,7 +24,7 @@ BASEDIR=${CMDPATH%/*}
 
 print_usage() {
     echo "Usage: $0 [--check]" 1>&2
-    echo "Formats shell and C code in this repo. If \'--check\' is specified," \
+    echo "Formats shell and C code in this repo. If '--check' is specified," \
         "it will only do a dry-run and report an error code if files would be" \
         "changed. This functionality is mainly meant for the CI." 1>&2
 }
@@ -41,7 +41,7 @@ CLANG_FORMAT_ACTION_ARGS="-i"
 YAPF_ACTION_ARGS="-i"
 
 # The directories we want to search in for both tools.
-C_CODE_DIRS="${BASEDIR}/inc ${BASEDIR}/src"
+C_CODE_DIRS="${BASEDIR}/inc ${BASEDIR}/src ${BASEDIR}/test"
 SH_CODE_DIRS="${BASEDIR}/ci ${BASEDIR}/scripts ${BASEDIR}/test"
 PY_CODE_DIRS="${BASEDIR}" # We have conf.py in the root dir.
 

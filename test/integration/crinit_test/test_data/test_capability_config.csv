@@ -1,0 +1,13 @@
+*** Test Cases ***,${cap_default_key},${cap_default_val},${cap_set_key},${cap_set_val},${cap_clear_key},${cap_clear_val},${exp_cap_proc},${exp_task_creation},${comment}
+Valid Capability Key,,,CAPABILITY_SET,CAP_KILL,CAPABILITY_CLEAR,CAP_NET_ADMIN,CAP_KILL,Successful,
+Valid Capability Set Key List ,,,CAPABILITY_SET,CAP_KILL,CAPABILITY_CLEAR,CAP_NET_ADMIN,CAP_KILL,Successful,
+Valid Capability Clear Key List,,,CAPABILITY_SET,CAP_KILL CAP_SYS_BOOT,CAPABILITY_CLEAR,CAP_NET_ADMIN CAP_NET_RAW,CAP_KILL CAP_SYS_BOOT,Successful,
+Valid Default Capability Key,DEFAULTCAPS,CAP_CHOWN,CAPABILITY_SET,CAP_KILL CAP_SYS_BOOT,CAPABILITY_CLEAR,CAP_NET_ADMIN CAP_NET_RAW,CAP_CHOWN CAP_KILL CAP_SYS_BOOT,Successful,
+Valid Default Capability Key With Remove Default Caps,DEFAULTCAPS,CAP_CHOWN,CAPABILITY_SET,CAP_KILL CAP_SYS_BOOT,CAPABILITY_CLEAR,CAP_CHOWN CAP_NET_ADMIN CAP_NET_RAW,CAP_KILL CAP_SYS_BOOT,Successful,
+Invalid Capability Set Key   ,,,CAPABILITY_SE,CAP_KILL,CAPABILITY_CLEAR,CAP_NET_ADMIN,,Successful,Should fail just like invalid value test
+Invalid Capability Set Value  ,,,CAPABILITY_SET,CA_KILL,CAPABILITY_CLEAR,CAP_NET_ADMIN,,Unsuccessful,
+Invalid Capability Clear Key   ,,,CAPABILITY_SET,CAP_KILL,CAPABILITY_CLEA,CAP_NET_ADMIN,CAP_KILL,Successful,Should fail just like invalid value test
+Invalid Capability Clear Value,,,CAPABILITY_SET,CA_KILL,CAPABILITY_CLEAR,CAP_NET_ADMI,,Unsuccessful,
+Empty Capability Set Value,,,CAPABILITY_SET,,CAPABILITY_CLEAR,CAP_NET_ADMIN,,Successful,
+Empty Capability Clear Value,,,CAPABILITY_SET,CAP_KILL,CAPABILITY_CLEAR,,CAP_KILL,Successful,
+Empty Capability Value,,,CAPABILITY_SET,,CAPABILITY_CLEAR,,,Successful,

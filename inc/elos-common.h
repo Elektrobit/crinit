@@ -73,7 +73,7 @@ typedef struct crinitElosEventSource {
 /**
  * Possible severities an elos event can have.
  */
-typedef enum crinitElosSeverityE_t {
+typedef enum crinitElosSeverityE {
     ELOS_SEVERITY_OFF = 0,
     ELOS_SEVERITY_FATAL,
     ELOS_SEVERITY_ERROR,
@@ -86,7 +86,7 @@ typedef enum crinitElosSeverityE_t {
 /**
  * Relevant elos message codes for crinit.
  */
-typedef enum crinitElosEventMessageCodeE_t {
+typedef enum crinitElosEventMessageCodeE {
     ELOS_MSG_CODE_INFO_LOG = 1102,            ///< General events, not related to other codes.
     ELOS_MSG_CODE_PROCESS_CREATED = 2001,     ///< When a task is started.
     ELOS_MSG_CODE_PROCESS_EXITED = 2002,      ///< When a task was successfully completed.

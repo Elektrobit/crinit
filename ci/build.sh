@@ -10,8 +10,6 @@ BASEDIR=${CMDPATH%/*}
 
 # architecture name amd64, arm64, ...
 ARCH=$(dpkg --print-architecture)
-# architecture name x86_64, aarch64, ...
-ARCH_ALT=$(uname -m)
 
 BUILD_TYPE="Release"
 if [ -n "$1" ]; then

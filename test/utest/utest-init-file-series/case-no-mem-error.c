@@ -13,7 +13,7 @@
 void crinitInitFileSeriesTestNoMemError(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
-    struct crinitFileSeries_t fse;
+    crinitFileSeries_t fse;
     char *baseDir = (void *)0xDEADB33F;
 
     expect_value(__wrap_strdup, s, baseDir);

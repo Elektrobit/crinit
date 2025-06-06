@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+OUTDIR=/base/debianbuild
+
 function print_help() {
     echo "$0 [-r|-p|-a|-h] <x.y.z>"
     echo -e "-r\tonly do the debian/main release"
@@ -8,37 +10,44 @@ function print_help() {
     echo -e "-a\tdo all (default)"
     echo -e "-h\tprint help"
     echo ""
-    echo "It is necessary to have a propper configured environment with:"
+    echo "It is necessary to have git's author information correctly set."
+    echo "Either set it with 'git config' or provide it via environment variables:"
     echo "* GIT_AUTHOR_NAME"
     echo "* GIT_AUTHOR_EMAIL"
 }
 
 function setup_env() {
-    export GIT_COMMITTER_NAME="${GIT_AUTHOR_NAME}"
-    export GIT_COMMITTER_EMAIL="${GIT_AUTHOR_EMAIL}"
+    GLOBMAIL=$(git config --global user.email || true)
+    GLOBNAME=$(git config --global user.name || true)
 
-    export NAME="${GIT_AUTHOR_NAME}"
-    export EMAIL="${GIT_AUTHOR_EMAIL}"
+    LOCMAIL=$(git config --local user.email || true)
+    LOCNAME=$(git config --local user.name || true)
 
-    export DEBNAME="${GIT_AUTHOR_NAME}"
-    export DEBMAIL="${GIT_AUTHOR_EMAIL}"
+    TMPNAME="${GIT_AUTHOR_NAME:-${LOCNAME:-${GLOBNAME:-}}}"
 
-    git config --local user.name "${GIT_AUTHOR_NAME}"
-    git config --local user.email "${GIT_AUTHOR_EMAIL}"
+    if [ -z "${TMPNAME}" ]; then
+        echo "Invalid environment. Could not determine author name for git"
+        exit 1
+    fi
+
+    TMPMAIL="${GIT_AUTHOR_EMAIL:-${LOCMAIL:-${GLOBMAIL:-}}}"
+
+    if [ -z "${TMPMAIL}" ]; then
+        echo "Invalid environment. Could not determine author e-mail for git"
+        exit 1
+    fi
+
+    export GIT_AUTHOR_EMAIL="${TMPMAIL}"
+    export GIT_COMMITTER_EMAIL="${TMPMAIL}"
+    export EMAIL="${TMPMAIL}"
+    export GIT_AUTHOR_NAME="${TMPNAME}"
+    export GIT_COMMITTER_NAME="${TMPNAME}"
+    export NAME="${TMPNAME}"
+
+    export DEBNAME="${NAME}"
+    export DEBMAIL="${EMAIL}"
 
     export DEBIAN_FRONTEND=noninteractive
-    sudo ln -fs /usr/share/zoneinfo/UTC /etc/localtime
-
-    sudo apt-get install -y \
-        debhelper \
-        devscripts \
-        equivs \
-        fakeroot \
-        git \
-        git-buildpackage \
-        software-properties-common
-    sudo add-apt-repository -y ppa:elos-team/ppa
-    sudo apt-get install -y libsafu-dev
 }
 
 function create_and_publish_debian_main() {
@@ -50,7 +59,7 @@ function create_and_publish_debian_main() {
 }
 
 function create_and_publish_pristine_tar() {
-    sudo gbp buildpackage --git-compression=xz -uc -us
+    gbp buildpackage --git-compression=xz -uc -us --git-export-dir="${OUTDIR}" --git-ignore-branch
 }
 
 UPDATE_RELEASE=0

@@ -18,7 +18,7 @@
 /**
  * Data type holding a series of files inside a specific directory.
  */
-typedef struct crinitFileSeries_t {
+typedef struct crinitFileSeries {
     char **fnames;  ///< Dynamic array of string pointers backed by a single continuous dynamically allocated string.
                     ///< Outer array is terminated by a NULL-pointer.
     size_t size;    ///< Number of valid (allocated and non-NULL) pointers in fnames.

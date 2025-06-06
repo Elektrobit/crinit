@@ -54,12 +54,12 @@ for ARG in "$@"; do
     esac
 done
 
-export BINDIR=$RESULTDIR/bin
-export SBINDIR=$RESULTDIR/bin
-export LIBDIR=$RESULTDIR/lib
-export CONFDIR=${BASEDIR}/config/test
+export BINDIR="$RESULTDIR/bin"
+export SBINDIR="$RESULTDIR/bin"
+export LIBDIR="$RESULTDIR/lib"
+export CONFDIR="${BASEDIR}/config/test"
 export LD_LIBRARY_PATH="${LIBDIR}"
-export SMOKETESTS_RESULTDIR=$RESULTDIR/smoketests
+export SMOKETESTS_RESULTDIR="$RESULTDIR/smoketests"
 
 # check if ci/build.sh has been run before
 if [ ! -d "$RESULTDIR" ]; then

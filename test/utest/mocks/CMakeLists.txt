@@ -59,6 +59,10 @@ create_mock_lib(
     mock-getpwuid_r.c
     mock-getgrnam_r.c
     mock-getgrgid_r.c
+    mock-prctl.c
+    mock-cap_set_proc.c
+    mock-cap_get_bound.c
+    mock-syscall.c
   INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}
 )

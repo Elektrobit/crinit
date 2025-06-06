@@ -14,6 +14,10 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#ifdef ENABLE_CAPABILITIES
+#include "capabilities.h"
+#endif
+#include "confhdl.h"
 #include "envset.h"
 #include "globopt.h"
 #include "lexers.h"
@@ -27,7 +31,7 @@
 #define crinitGettid() ((pid_t)syscall(SYS_gettid))
 
 /** Struct wrapper for arguments to dispatchThreadFunc **/
-typedef struct crinitDispThrArgs_t {
+typedef struct crinitDispThrArgs {
     crinitTaskDB_t *ctx;              ///< The TaskDB context to update on task state changes.
     const crinitTask_t *t;            ///< The task to run.
     crinitDispatchThreadMode_t mode;  ///< Select between start and stop commands
@@ -232,11 +236,35 @@ int crinitCreateLauncherParameters(crinitTaskCmd_t *taskCmd, crinitTask_t *tCopy
     const char *const cmdParamFormatStr = "--cmd=%s";
     const char *const userParamFormatStr = "--user=%d";
     const char *const groupParamFormatStr = "--group=%d";
+#ifdef ENABLE_CAPABILITIES
+    const char *const capParamFormatStr = "--caps=%lx";
+#endif
     const char *const delimiterEndOfOptionsStr = "--";
     const size_t doubleDashLength = strlen(delimiterEndOfOptionsStr) + 1;
     const size_t cmdParamLength = snprintf(NULL, 0, cmdParamFormatStr, taskCmd->argv[0]) + 1;
     const size_t userParamLength = snprintf(NULL, 0, userParamFormatStr, tCopy->user) + 1;
     const size_t groupParamFixedPartLength = snprintf(NULL, 0, groupParamFormatStr, tCopy->group) + 1;
+#ifdef ENABLE_CAPABILITIES
+    char *defaultCaps = NULL;
+    if (crinitGlobOptGet(CRINIT_GLOBOPT_DEFAULTCAPS, &defaultCaps) == -1) {
+        defaultCaps = strdup(CRINIT_CONFIG_DEFAULT_DEFAULTCAPS);
+        crinitErrPrint("Could not retrieve global default capabilities. Will use %s", defaultCaps);
+    }
+
+    uint64_t defaultCapsMask = 0;
+    if (crinitCapConvertToBitmask(&defaultCapsMask, defaultCaps) != 0) {
+        free(defaultCaps);
+        return -1;
+    }
+    free(defaultCaps);
+    crinitDbgInfoPrint("Default capabilities: %#lx", defaultCapsMask);
+
+    uint64_t capEff = defaultCapsMask & ~tCopy->capabilitiesClear;
+    capEff |= tCopy->capabilitiesSet;
+    crinitInfoPrint("(Task %s) Calculated effective capabilities: %#lx", tCopy->name, capEff);
+
+    const size_t capParamLength = snprintf(NULL, 0, capParamFormatStr, capEff) + 1;
+#endif
 
     const int groupParamVarPartLength = crinitCalculateVariableGroupParamLength(tCopy->supGroupsSize, tCopy->supGroups);
     if (groupParamVarPartLength == -1) {
@@ -247,8 +275,11 @@ int crinitCreateLauncherParameters(crinitTaskCmd_t *taskCmd, crinitTask_t *tCopy
     for (int i = 1; i < taskCmd->argc; i++) {
         targetParamTotalLength += strlen(taskCmd->argv[i]) + 1;
     }
-    const size_t totalLength = cmdParamLength + userParamLength + groupParamFixedPartLength + groupParamVarPartLength +
-                               doubleDashLength + targetParamTotalLength;
+    const size_t totalLength = cmdParamLength + userParamLength + groupParamFixedPartLength + groupParamVarPartLength
+#ifdef ENABLE_CAPABILITIES
+                               + capParamLength
+#endif
+                               + doubleDashLength + targetParamTotalLength;
 
     char *argBuf = NULL;
     char **av = NULL;
@@ -258,42 +289,62 @@ int crinitCreateLauncherParameters(crinitTaskCmd_t *taskCmd, crinitTask_t *tCopy
         crinitErrnoPrint("Failed to allocate memory for temporary argv to use with command launcher.\n");
         return -1;
     }
+
+#ifndef ENABLE_CAPABILITIES
     const size_t launcherParamCount = 6;  // Including trailing null element
+#else
+    const size_t launcherParamCount = 7;  // Including trailing null element
+#endif
     av = calloc(launcherParamCount + taskCmd->argc, sizeof(*av));
     if (av == NULL) {
         crinitErrnoPrint("Failed to allocate memory for temporary argv to use with command launcher.\n");
         free(argBuf);
         return -1;
     }
+    char *argBufCurr = argBuf;
+    int argBufIdx = 0;
 
-    snprintf(argBuf, cmdParamLength, cmdParamFormatStr, taskCmd->argv[0]);
-    snprintf(argBuf + cmdParamLength, userParamLength, userParamFormatStr, tCopy->user);
-    snprintf(argBuf + cmdParamLength + userParamLength, groupParamFixedPartLength, groupParamFormatStr, tCopy->group);
-    char *variableGroupParam = NULL;
+    av[argBufIdx++] = cmd;
+
+    av[argBufIdx++] = argBufCurr;
+    snprintf(argBufCurr, cmdParamLength, cmdParamFormatStr, taskCmd->argv[0]);
+    argBufCurr += cmdParamLength;
+
+    av[argBufIdx++] = argBufCurr;
+    snprintf(argBufCurr, userParamLength, userParamFormatStr, tCopy->user);
+    argBufCurr += userParamLength;
+
+    av[argBufIdx++] = argBufCurr;
+    snprintf(argBufCurr, groupParamFixedPartLength, groupParamFormatStr, tCopy->group);
+    argBufCurr += groupParamFixedPartLength;
+
     if (groupParamVarPartLength) {
-        variableGroupParam =
+        char *variableGroupParam =
             crinitCreateSupGroupsParamString(tCopy->supGroupsSize, tCopy->supGroups, groupParamVarPartLength);
         if (variableGroupParam == NULL) {
             free(av);
             free(argBuf);
             return -1;
         }
-        snprintf(argBuf + cmdParamLength + userParamLength + groupParamFixedPartLength - 1, groupParamVarPartLength,
-                 "%s", variableGroupParam);
+        snprintf(argBufCurr - 1, groupParamVarPartLength, "%s", variableGroupParam);
+        argBufCurr += groupParamVarPartLength;
         free(variableGroupParam);
     }
-    memcpy(argBuf + cmdParamLength + userParamLength + groupParamFixedPartLength + groupParamVarPartLength,
-           delimiterEndOfOptionsStr, doubleDashLength);
-    memcpy(argBuf + cmdParamLength + userParamLength + groupParamFixedPartLength + groupParamVarPartLength +
-               doubleDashLength,
-           taskCmd->argv, targetParamTotalLength);
 
-    av[0] = cmd;
-    av[1] = argBuf;
-    av[2] = argBuf + cmdParamLength;
-    av[3] = argBuf + cmdParamLength + userParamLength;
-    av[4] = argBuf + cmdParamLength + userParamLength + groupParamFixedPartLength + groupParamVarPartLength;
-    for (int argvIdx = 5, count = 1; count < taskCmd->argc; count++, argvIdx++) {
+#ifdef ENABLE_CAPABILITIES
+    av[argBufIdx++] = argBufCurr;
+    snprintf(argBufCurr, capParamLength, capParamFormatStr, capEff);
+    argBufCurr += capParamLength;
+#endif
+
+    av[argBufIdx++] = argBufCurr;
+    memcpy(argBufCurr, delimiterEndOfOptionsStr, doubleDashLength);
+    argBufCurr += doubleDashLength;
+
+    memcpy(argBufCurr, taskCmd->argv, targetParamTotalLength);
+    argBufCurr += targetParamTotalLength;
+
+    for (int argvIdx = argBufIdx, count = 1; count < taskCmd->argc; count++, argvIdx++) {
         av[argvIdx] = taskCmd->argv[count];
     }
 

@@ -8,8 +8,8 @@
 
 #include <stdbool.h>
 
-struct crinitTask_t;
-struct crinitTaskDB_t;
+struct crinitTask;
+struct crinitTaskDB;
 
 #define CRINIT_ELOSDEP_FEATURE_NAME "elos"
 
@@ -21,7 +21,7 @@ struct crinitTaskDB_t;
  *
  * @return Returns 0 on success, -1 otherwise.
  */
-int crinitElosdepTaskAdded(struct crinitTask_t *task);
+int crinitElosdepTaskAdded(struct crinitTask *task);
 
 /**
  * Specify if Elos should be used.
@@ -34,6 +34,6 @@ int crinitElosdepTaskAdded(struct crinitTask_t *task);
  *
  * @return Returns 0 on success, -1 otherwise.
  */
-int crinitElosdepActivate(struct crinitTaskDB_t *taskDb, bool e);
+int crinitElosdepActivate(struct crinitTaskDB *taskDb, bool e);
 
 #endif /* __ELOSDEP_H__ */

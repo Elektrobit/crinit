@@ -18,7 +18,7 @@
 /**
  * Type to describe wheter the spawn thread launches start or stop commands
  */
-typedef enum crinitDispatchThreadMode_t {
+typedef enum crinitDispatchThreadMode {
     CRINIT_DISPATCH_THREAD_MODE_START,
     CRINIT_DISPATCH_THREAD_MODE_STOP
 } crinitDispatchThreadMode_t;
@@ -26,13 +26,13 @@ typedef enum crinitDispatchThreadMode_t {
 /**
  * Type to store a task database.
  */
-typedef struct crinitTaskDB_t {
+typedef struct crinitTaskDB {
     crinitTask_t *taskSet;  ///< Dynamic array of tasks, corresponds to task configs specified in the series config.
     size_t taskSetSize;     ///< Current maximum size of the task array.
     size_t taskSetItems;    ///< Number of elements in the task array.
 
     /** Pointer specifying a function for spawning ready tasks, used by crinitTaskDBSpawnReady() **/
-    int (*spawnFunc)(struct crinitTaskDB_t *ctx, const crinitTask_t *, crinitDispatchThreadMode_t mode);
+    int (*spawnFunc)(struct crinitTaskDB *ctx, const crinitTask_t *, crinitDispatchThreadMode_t mode);
 
     bool
         spawnInhibit;  ///< Specifies if process spawning is currently inhibited, respected by crinitTaskDBSpawnReady().

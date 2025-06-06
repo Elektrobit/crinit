@@ -22,7 +22,13 @@ if [[ $# -ne 1 ]]; then
     exit 1
 fi
 
+if ! git show-ref --verify --quiet "refs/heads/$1" \
+    && ! git show-ref --verify --quiet "refs/remotes/$1"; then
+    git fetch --quiet "${1%%/*}" "${1#*/}" || exit 1
+fi
+
 cleanup() {
+    # shellcheck disable=SC2317 # False positive "unreachable statement" due to trap.
     popd >/dev/null
 }
 

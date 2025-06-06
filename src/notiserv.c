@@ -35,7 +35,7 @@
 #define MAX_CONN_BACKLOG 100
 
 /** Helper structure defining the arguments to connThread() **/
-typedef struct crinitConnThrArgs_t {
+typedef struct crinitConnThrArgs {
     int sockFd;                 ///< The socket to accept connections from.
     crinitThreadPool_t *tpRef;  ///< Pointer to the crinitThreadPool_t context, needed for
                                 ///< crinitThreadPoolThreadAvailCallback() and crinitThreadPoolThreadBusyCallback().

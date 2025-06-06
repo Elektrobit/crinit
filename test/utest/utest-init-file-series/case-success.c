@@ -12,7 +12,7 @@
 #include "unit_test.h"
 
 static void crinitTestVariant(size_t numElements, const char *baseDir) {
-    struct crinitFileSeries_t fse;
+    crinitFileSeries_t fse;
     char *fnamesBuff[numElements + 1];
 
     if (baseDir) {

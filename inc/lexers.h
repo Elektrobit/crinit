@@ -11,7 +11,7 @@
 /**
  * Enum data type for token types return by the lexers.
  */
-typedef enum crinitTokenType_t {
+typedef enum crinitTokenType {
     CRINIT_TK_ERR = -1,  ///< Lexer error.
     CRINIT_TK_END = 0,   ///< End-of-string encountered.
     CRINIT_TK_ENVKEY,    ///< Environment key encountered (crinitEnvVarOuterLex())

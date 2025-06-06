@@ -23,7 +23,7 @@
  * @param type   Type of the container wrapping the field.
  * @param member Name of the field the pointer points to.
  */
-#define container_of(ptr, type, member) ((type *)((char *)(ptr)-offsetof(type, member)))
+#define container_of(ptr, type, member) ((type *)((char *)(ptr) - offsetof(type, member)))
 
 /**
  * Simple intrusive list struct.

@@ -11,6 +11,10 @@
 #include "logio.h"
 
 const crinitConfigMapping_t crinitTaskCfgMap[] = {
+#ifdef ENABLE_CAPABILITIES
+    {CRINIT_CONFIG_CAP_CLEAR, CRINIT_CONFIG_KEYSTR_CAP_CLEAR, true, false, crinitCfgCapClearHandler},
+    {CRINIT_CONFIG_CAP_SET, CRINIT_CONFIG_KEYSTR_CAP_SET, true, false, crinitCfgCapSetHandler},
+#endif
     {CRINIT_CONFIG_COMMAND, CRINIT_CONFIG_KEYSTR_COMMAND, true, false, crinitCfgCmdHandler},
     {CRINIT_CONFIG_DEPENDS, CRINIT_CONFIG_KEYSTR_DEPENDS, true, true, crinitCfgDepHandler},
     {CRINIT_CONFIG_ENV_SET, CRINIT_CONFIG_KEYSTR_ENV_SET, true, true, crinitCfgEnvHandler},
@@ -28,6 +32,9 @@ const size_t crinitTaskCfgMapSize = crinitNumElements(crinitTaskCfgMap);
 
 const crinitConfigMapping_t crinitSeriesCfgMap[] = {
     {CRINIT_CONFIG_DEBUG, CRINIT_CONFIG_KEYSTR_DEBUG, false, false, crinitCfgDebugHandler},
+#ifdef ENABLE_CAPABILITIES
+    {CRINIT_CONFIG_DEFAULTCAPS, CRINIT_CONFIG_KEYSTR_DEFAULTCAPS, true, false, crinitCfgDefaultCapsHandler},
+#endif
     {CRINIT_CONFIG_ELOS_EVENT_POLL_INTERVAL, CRINIT_CONFIG_KEYSTR_ELOS_EVENT_POLL_INTERVAL, false, false,
      crinitCfgElosEventPollIntervalHandler},
     {CRINIT_CONFIG_ELOS_PORT, CRINIT_CONFIG_KEYSTR_ELOS_PORT, false, false, crinitCfgElosPortHandler},

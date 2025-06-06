@@ -36,6 +36,17 @@ if(ENABLE_ELOS)
     )
 endif()
 
+if(ENABLE_CAPABILITIES)
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(LIBCAP REQUIRED libcap)
+
+    set(CAPABILITIES_SOURCES capabilities.c)
+    
+    set(CAPABILITIES_DEFINES
+        ENABLE_CAPABILITIES
+    )
+endif()
+
 RE2C_TARGET(NAME lexers INPUT ${PROJECT_SOURCE_DIR}/src/lexers.re OUTPUT lexers.c OPTIONS ${RE2C_OPTIONS} -W DEPENDS ${PROJECT_SOURCE_DIR}/inc/lexers.h)
 
 # optional compile-time features
@@ -72,6 +83,7 @@ add_executable(
   optfeat.c
   fseries.c
   ioredir.c
+  ${CAPABILITIES_SOURCES}
   ${SIG_SOURCES}
   ${ELOS_SOURCES}
   ${CMAKE_CURRENT_BINARY_DIR}/crinit-version.c
@@ -84,12 +96,13 @@ target_include_directories(
   ${PROJECT_BINARY_DIR}/inc
 )
 target_link_libraries(
-  crinit
-  PRIVATE Threads::Threads
-  PRIVATE inih-local
-  PRIVATE ${ELOS_LIBRARIES}
-  PRIVATE ${MBEDTLS_CRYPTO_LIBRARY}
-  PRIVATE ${CMAKE_DL_LIBS}
+  crinit PRIVATE
+  Threads::Threads
+  inih-local
+  $<IF:$<BOOL:${ENABLE_ELOS}>,${ELOS_LIBRARIES},>
+  ${MBEDTLS_CRYPTO_LIBRARY}
+  ${CMAKE_DL_LIBS}
+  $<IF:$<BOOL:${ENABLE_CAPABILITIES}>,${LIBCAP_LIBRARIES},>
 )
 
 target_compile_definitions(
@@ -103,6 +116,7 @@ target_compile_definitions(
     CRINIT_CONFIG_DEFAULT_TASKDIR="${DEFAULT_TASK_DIR}"
     CRINIT_MACHINE_ID_FILE="${DEFAULT_MACHINE_ID_FILE}"
     ${ELOS_DEFINES}
+    ${CAPABILITIES_DEFINES}
 )
 
 # libcrinit-client
@@ -175,6 +189,7 @@ target_link_libraries(
 add_executable(
     crinit-launch
     crinit-launch.c
+    ${CAPABILITIES_SOURCES}
     logio.c
     ${CMAKE_CURRENT_BINARY_DIR}/crinit-version.c
 )
@@ -184,10 +199,17 @@ target_include_directories(
   PRIVATE ${PROJECT_SOURCE_DIR}/inc/
 )
 
+target_compile_definitions(
+  crinit-launch
+    PRIVATE
+    ${CAPABILITIES_DEFINES}
+)
+
 target_link_libraries(
   crinit-launch
   PUBLIC
     crinit-client
+    $<IF:$<BOOL:${ENABLE_CAPABILITIES}>,${LIBCAP_LIBRARIES},>
 )
 
 # machine-id-gen

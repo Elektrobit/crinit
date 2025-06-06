@@ -86,11 +86,12 @@ Crinit currently has the following features implemented:
     - emits appropriate events when a task is created, starts, exits, or fails
 * optional signature checking of Crinit's configuration files
 * setting of UID and GID a task should be run as
+* setting/clearing of specific capabilities that a task shall be (not) equipped with
 
 In the future we also plan to support:
 
 * fine-grained restriction of processes started/managed by Crinit
-    - capabilities, cgroups,...
+    - cgroups,...
 
 There are example configurations below which show how to use the currently implemented features.
 For detailed explanations of Crinit's inner workings please refer to the Doxygen documentation generated during build.
@@ -268,6 +269,7 @@ ENV_SET = GREETING "Good morning!"
   below). Default is 500000. Needs ELOS support included at build-time.
 - **ENV_SET** -- See section **Setting Environment Variables** below. (*array-like*)
 - **FILTER_DEFINE** -- See section **Defining Elos Filters** below. (*array-like*)
+- **DEFAULTCAPS** -- Whitespace separated list of capability definitions `/linux/capability.h`) that each task shall be equipped with by default.
 
 ### Example Task Configuration
 The `network-dhcp.crinit` from above could for example look like this:
@@ -290,6 +292,9 @@ STOP_COMMAND = /sbin/ifconfig eth0 down
 
 USER = root
 GROUP = root
+
+CAPABILITY_SET = CAP_NET_RAW
+CAPABILITY_CLEAR = CAP_SYS_ADMIN CAP_SYS_BOOT
 
 DEPENDS = check_qemu:fail earlysetup:wait @provided:writable_var
 
@@ -324,9 +329,13 @@ IO_REDIRECT = STDERR STDOUT
   user ID can be used. If **USER** is not set, "root" is assumed.
     **NOTE**: Changing user names, UIDs, group names or GIDs on the system while a task using them has already been
     loaded may result in undefined behaviour.
+    **NOTE**: Setting a user ID 0 will disable the capability configuration. 
 - **GROUP** -- Name of the group used to run the commands specified in **COMMAND**. Either the group name or the numeric
   group ID can be used. If **GROUP** is not set, "root" is assumed. Supplementary groups can be added after the main group, space separated. GROUP can be an array, too. Similar to **COMMAND**.
     **Also see note on USER command.** This applies here, too.
+    **NOTE**: Setting a group ID 0 will disable the capability configuration. 
+- **CAPABILITY_SET** -- Whitespace separated list of capability definitions (as defined in `/linux/capability.h`) that a task shall be specifically equipped with.
+- **CAPABILITY_CLEAR** -- Whitespace separated list of capability definitions `/linux/capability.h`) that a task shall be stripped from.
 - **DEPENDS** -- A list of dependencies which need to be fulfilled before this task is considered "ready-to-start".
   Semantics are `<taskname>:{fail,wait,spawn}`, where `spawn` is fulfilled when (the first command of) a task has been
   started, `wait` if it has successfully completed, and `fail` if it has failed somewhere along the way. Here we can see
@@ -653,11 +662,21 @@ USAGE: crinit-ctl <ACTION> [OPTIONS] <PARAMETER> [PARAMETERS...]
                represent the times the task was Created (loaded/parsed), last Started (became running), and
                last Ended (failed or is done). If the event has not occurred yet, the timestamp's value will
                be 'n/a'.
+               See "list" for a detailed description of different statuses.
       notify <TASK_NAME> <"SD_NOTIFY_STRING">
              - Will send an sd_notify-style status report to Crinit. Only MAINPID and READY are
                implemented. See the sd_notify documentation for their meaning.
         list
              - Print the list of loaded tasks and their status.
+               Following states can be reported:
+               - loaded: the task was loaded but never ran
+               - starting: the task currently spawns a new process
+               - running: the task has spawned a process and is currently running
+               - done: the task finished without an error
+               - failed: the task has finished with an error code
+
+               The states "running", "done" and "failed" can appear with the suffix "(notified)". That means that the information was transmitted
+               to crinit via the sd_notify API.
       reboot
              - Will request Crinit to perform a graceful system reboot. crinit-ctl can be symlinked to
                reboot as a shortcut which will invoke this command automatically.
@@ -709,10 +728,10 @@ All following commands to be run inside the container will be the same regardles
 ci/docker-run.sh arm64
 ```
 
-By default, `ci/docker-run.sh` will use a container based on Ubuntu Jammy. If another version is desired, it can be
-specified as a second parameter. For example, you can run a Lunar-based container using
+By default, `ci/docker-run.sh` will use a container based on Ubuntu Noble (24.04). If another version is desired, it
+can be specified as a second parameter. For example, you can run a 22.04-Jammy-based container using
 ```sh
-ci/docker-run.sh amd64 lunar
+ci/docker-run.sh amd64 jammy
 ```
 
 Inside the container, it is sufficient to run
@@ -801,6 +820,7 @@ The cmake setup supports some optional features:
    `${CMAKE_INSTALL_DATADIR/bash-completion/completions`.
 * Set the `SONAME` of libelos crinit will try to open at run-time. Default is auto-detection if elos is present in the
   build environment or `libelos.so.1` if it is not.
+* Enable (`ON`) or disable (`OFF`) Linux capabilities support. If set to `ON` crinit will have a dependency to libcap. Default is `ON`.
 
 ## Build Requirements
 
@@ -813,3 +833,4 @@ In order to build crinit, some prerequisites have to be installed.
 - optional, for signature support: [MbedTLS](https://github.com/Mbed-TLS/mbedtls) 2.28.x or 3.x
 - optional, for unit tests: cmocka >= 1.1.5
 - optional, for HTML API documentation: Doxygen
+- optional, for capabilities support: libcap

@@ -11,9 +11,9 @@ varnames="OVR_VAR LOC_VAR INCLUDED_ENV FAKE_ENV"
 
 setup() {
     crinit_config_setup
-    rm -f ${out}
-    rm -f ${task}
-    cat <<EOF >${task}
+    rm -f "${out}"
+    rm -f "${task}"
+    cat <<EOF >"${task}"
 # Config to show off environment settings.
 
 NAME = smoketest_incl
@@ -65,15 +65,17 @@ run() {
 
     sleep 1
 
-    . ${sample}
-    . ${out}
+    # shellcheck source=SCRIPTDIR/test-include-sample.env
+    . "${sample}"
+    # shellcheck disable=SC1090 # Cannot follow because file is created by the test.
+    . "${out}"
 
     for x in ${varnames}; do
         RESULT=$(eval echo "\${${x}}")
         EXPECTED=$(eval echo "\${EXPECTED_${x}}")
 
         if [ "${RESULT}" != "${EXPECTED}" ]; then
-            echo "Mismatch between actual and expected value for environment variable \'${x}\'."
+            echo "Mismatch between actual and expected value for environment variable '${x}'."
             echo "Expected result: ${EXPECTED}"
             echo "Actual result: ${RESULT}"
             return 1

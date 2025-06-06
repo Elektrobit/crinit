@@ -11,10 +11,16 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef ENABLE_CAPABILITIES
+#include <sys/capability.h>
+#endif
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 
+#ifdef ENABLE_CAPABILITIES
+#include "capabilities.h"
+#endif
 #include "common.h"
 #include "confconv.h"
 #include "globopt.h"
@@ -140,6 +146,51 @@ int crinitCfgCmdHandler(void *tgt, const char *val, crinitConfigType_t type) {
     }
     return 0;
 }
+
+#ifdef ENABLE_CAPABILITIES
+int crinitCfgCapClearHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    crinitNullCheck(-1, tgt, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
+
+    crinitTask_t *t = tgt;
+    crinitDbgInfoPrint("(Task %s) Configure capability clear '%s'.", t->name, val);
+
+    if (crinitCapConvertToBitmask(&(t->capabilitiesClear), val) != 0) {
+        return -1;
+    }
+
+    crinitDbgInfoPrint("(Task %s) Configured capabilities to be set: %#lx.", t->name, t->capabilitiesClear);
+    return 0;
+}
+
+int crinitCfgCapSetHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    crinitNullCheck(-1, tgt, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
+
+    crinitTask_t *t = tgt;
+    crinitDbgInfoPrint("(Task %s) Configure capability set '%s'.", t->name, val);
+
+    if (crinitCapConvertToBitmask(&(t->capabilitiesSet), val) != 0) {
+        return -1;
+    }
+
+    crinitDbgInfoPrint("(Task %s) Configured capabilities to be cleared: %#lx.", t->name, t->capabilitiesSet);
+    return 0;
+}
+
+int crinitCfgDefaultCapsHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    CRINIT_PARAM_UNUSED(tgt);
+    crinitNullCheck(-1, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
+
+    if (crinitGlobOptSet(CRINIT_GLOBOPT_DEFAULTCAPS, val) == -1) {
+        crinitErrPrint("Could not set global option '%s'.", CRINIT_CONFIG_KEYSTR_DEFAULTCAPS);
+        return -1;
+    }
+    crinitDbgInfoPrint("Configured default capabilities: %s.", val);
+    return 0;
+}
+#endif
 
 int crinitCfgStopCmdHandler(void *tgt, const char *val, crinitConfigType_t type) {
     crinitNullCheck(-1, tgt, val);

@@ -15,7 +15,7 @@ to be updated and published on github.
 3. ``./ci/docker-run.sh`` and check for clean workspace `git clean -dnx`,
    usually you have to delete at least `ci/sshconfig`.
 4. Run
-   ``GIT_AUTHOR_NAME="Your Name" EMAIL="your@mail.org" ./ci/create_debian_release.sh x.y.z``
+   ``GIT_AUTHOR_NAME="Your Name" GIT_AUTHOR_EMAIL="your@mail.org" ./ci/create_debian_release.sh x.y.z``
 5. Push the branches ``debian/main`` and ``pristine-tar`` to github. Not on
    *main* and not on *integration*!
 
@@ -132,9 +132,9 @@ distros. Alternatively, they are available n the build container as well.
 Script Linting
 ==============
 
-The script ``ci/lint-scripts.sh`` will use the ``flake8`` tool to lint the
-Python code in the project. Settings are aligned with the ``yapf3`` formatter
-mentioned above.
+The script ``ci/lint-scripts.sh`` will use the ``flake8`` and ``shellcheck``
+tools to lint python and shell scripts in the project. The ``flake8`` settings
+are aligned with the ``yapf3`` formatter mentioned above.
 
 An extension of the script with shellcheck is planned.
 

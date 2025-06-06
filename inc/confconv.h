@@ -76,18 +76,12 @@ int crinitConfConvToIntegerLL(long long *x, const char *confVal, int base);
  *
  * @return  0 on success, -1 on error
  */
-// clang-format off
-// Rationale: Used version of clang-format does not format _Generic macros correctly. This is a known bug and has been
-// fixed very recently. We may remove this exemption once we are on the new clang version as standard.
-// See: https://github.com/llvm/llvm-project/issues/18080
-#define crinitConfConvToInteger(out, confVal, base)           \
-    _Generic((*(out)),                                       \
-             int : crinitConfConvToIntegerI,                  \
-             unsigned int : crinitConfConvToIntegerUI,        \
-             long long : crinitConfConvToIntegerLL,           \
-             unsigned long long : crinitConfConvToIntegerULL) \
-             (out, confVal, base)
-// clang-format on
+#define crinitConfConvToInteger(out, confVal, base) \
+    _Generic((*(out)),                              \
+        int: crinitConfConvToIntegerI,              \
+        unsigned int: crinitConfConvToIntegerUI,    \
+        long long: crinitConfConvToIntegerLL,       \
+        unsigned long long: crinitConfConvToIntegerULL)(out, confVal, base)
 
 /**
  * Converts a string to bool.

@@ -22,7 +22,7 @@ static void crinitTestVariant(crinitFileSeries_t *fse, const char *baseDir, char
 void crinitFileSeriesFromStrArrTestNullParamError(void **state) {
     CRINIT_PARAM_UNUSED(state);
 
-    struct crinitFileSeries_t fse;
+    crinitFileSeries_t fse;
     const char *baseDir = (void *)0xdeadda7a;
     char **strArr = (void *)0xbaadda7a;
 

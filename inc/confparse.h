@@ -21,6 +21,10 @@
 #define CRINIT_CONFIG_KEYSTR_DEBUG "DEBUG"
 /**  Config file key for TASKDIR global option. **/
 #define CRINIT_CONFIG_KEYSTR_TASKDIR "TASKDIR"
+#ifdef ENABLE_CAPABILITIES
+/**  Config file key for DEFAULTCAPS global option. **/
+#define CRINIT_CONFIG_KEYSTR_DEFAULTCAPS "DEFAULTCAPS"
+#endif
 /**  Config file key for INCLUDEDIR global option. **/
 #define CRINIT_CONFIG_KEYSTR_INCLDIR "INCLUDEDIR"
 /**  Config file key for SHUTDOWN_GRACE_PERIOD_US global option **/
@@ -49,6 +53,12 @@
 
 /**  Config key to add a command to the task. **/
 #define CRINIT_CONFIG_KEYSTR_COMMAND "COMMAND"
+#ifdef ENABLE_CAPABILITIES
+/** Config key to clear a capability to the task. **/
+#define CRINIT_CONFIG_KEYSTR_CAP_CLEAR "CAPABILITY_CLEAR"
+/** Config key to add a capability to the task. **/
+#define CRINIT_CONFIG_KEYSTR_CAP_SET "CAPABILITY_SET"
+#endif
 /**  Config key to add dependencies to the task. **/
 #define CRINIT_CONFIG_KEYSTR_DEPENDS "DEPENDS"
 /**  Config key to set an environment variable with. **/
@@ -91,6 +101,13 @@
 #define CRINIT_CONFIG_DEFAULT_LAUNCHER_CMD CRINIT_LAUNCHER_COMMAND_DEFAULT
 #endif
 
+#ifdef ENABLE_CAPABILITIES
+/**  Default value for DEFAULTCAPS global option **/
+
+#ifndef CRINIT_CONFIG_DEFAULT_DEFAULTCAPS
+#define CRINIT_CONFIG_DEFAULT_DEFAULTCAPS ""
+#endif
+#endif
 /**  Default value for SHUTDOWN_GRACE_PERIOD_US global option **/
 #define CRINIT_CONFIG_DEFAULT_SHDGRACEP 100000uLL
 /**  Default value for USE_SYSLOG global option. **/
@@ -114,9 +131,12 @@
 #define CRINIT_CONFIG_STDIN_NAME "STDIN"
 
 /** Enumeration of all configuration keys. Goes together with crinitTaskCfgMap and crinitSeriesCfgMap. **/
-typedef enum crinitConfigs_t {
+typedef enum crinitConfigs {
     CRINIT_CONFIG_COMMAND = 0,
     CRINIT_CONFIG_DEBUG,
+#ifdef ENABLE_CAPABILITIES
+    CRINIT_CONFIG_DEFAULTCAPS,
+#endif
     CRINIT_CONFIG_DEPENDS,
     CRINIT_CONFIG_ELOS_EVENT_POLL_INTERVAL,
     CRINIT_CONFIG_ELOS_PORT,
@@ -144,11 +164,15 @@ typedef enum crinitConfigs_t {
     CRINIT_CONFIG_USE_ELOS,
     CRINIT_CONFIG_USER,
     CRINIT_CONFIG_LAUNCHER_CMD,
+#ifdef ENABLE_CAPABILITIES
+    CRINIT_CONFIG_CAP_CLEAR,
+    CRINIT_CONFIG_CAP_SET,
+#endif
     CRINIT_CONFIGS_SIZE
 } crinitConfigs_t;
 
 /** Different types of configuration sources **/
-typedef enum crinitConfigType_t {
+typedef enum crinitConfigType {
     CRINIT_CONFIG_TYPE_SERIES,   ///< Configurations set from the series file.
     CRINIT_CONFIG_TYPE_TASK,     ///< Configurations set from a task file.
     CRINIT_CONFIG_TYPE_KCMDLINE  ///< Configurations set from the Kernel command line.
@@ -157,10 +181,10 @@ typedef enum crinitConfigType_t {
 /**
  * Linked list to hold key/value pairs read from the config file.
  */
-typedef struct crinitConfKvList_t {
-    struct crinitConfKvList_t *next;  ///< Pointer to next element
-    char *key;                        ///< string with "KEY"
-    char *val;                        ///< string with "VALUE"
+typedef struct crinitConfKvList {
+    struct crinitConfKvList *next;  ///< Pointer to next element
+    char *key;                      ///< string with "KEY"
+    char *val;                      ///< string with "VALUE"
 } crinitConfKvList_t;
 
 /**

@@ -29,7 +29,7 @@ void crinitInihConfigurationRegressionTest(void **state) {
 
     // This should go through fine.
     assert_int_equal(ini_parse_string(valid, crinitIniHandler, NULL), 0);
- }
+}
 
 static int crinitIniHandler(void *userP, const char *section, const char *name, const char *value) {
     CRINIT_PARAM_UNUSED(userP);
@@ -41,4 +41,3 @@ static int crinitIniHandler(void *userP, const char *section, const char *name, 
     }
     return 0;
 }
-

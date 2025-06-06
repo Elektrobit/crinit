@@ -6,9 +6,10 @@ import re
 import traceback
 
 from robot.libraries.BuiltIn import BuiltIn
-from robot.utils.asserts import assert_equal
+from robot.utils.asserts import assert_equal, assert_not_equal
 from robot.api import logger
 from robot.api.deco import keyword
+from ctypes import cdll, c_char_p, c_int, POINTER
 
 
 class CrinitLibrary(object):
@@ -33,6 +34,9 @@ class CrinitLibrary(object):
         logger.error("-" * 60)
         logger.error(traceback.format_exc())
         logger.error("-" * 60)
+
+    def __local_path_service(self, file):
+        return os.path.normpath(os.path.join(os.path.dirname(os.path.realpath(__file__)) + "/../service", file))
 
     def __local_path(self, file):
         return os.path.normpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), file))
@@ -68,6 +72,43 @@ class CrinitLibrary(object):
 
         return (stdout, stderr, ret)
 
+    @keyword("A Task Config ${task_config}")
+    def crinit_create_task_config(self, task_config):
+        # conf = BuiltIn().get_variable_value("${task_config}")
+        task_config = task_config.replace('@@CAP_SET_KEY@@', BuiltIn().get_variable_value("${CAP_SET_KEY}"))
+        task_config = task_config.replace('@@CAP_SET_VAL@@', BuiltIn().get_variable_value("${CAP_SET_VAL}"))
+        task_config = task_config.replace('@@CAP_CLEAR_KEY@@', BuiltIn().get_variable_value("${CAP_CLEAR_KEY}"))
+        task_config = task_config.replace('@@CAP_CLEAR_VAL@@', BuiltIn().get_variable_value("${CAP_CLEAR_VAL}"))
+        logger.info(f"New task config:\n{task_config}")
+
+        BuiltIn().set_test_variable("${TASK_CONFIG}", task_config)
+
+    @keyword("Crinit Starts The ${task} With ${task_config}")
+    def crinit_starts_the_task_with_config(self, task, new_conf):
+        rc = self.crinit_add_task_config(task, new_conf)
+        assert_equal(rc, 0, "assert: failed to add task config")
+        if rc != 0:
+            logger.error(f"Failed to add crinit task config {new_conf}.")
+            return rc
+
+        rc = self.crinit_add_task(f"{task}.crinit")
+        assert_equal(rc, 0, "assert: failed to add task")
+        if rc != 0:
+            logger.error(f"Failed to add crinit task {task}.")
+            return rc
+
+        return 0
+
+    @keyword("Crinit Task Creation Was '${exp_task_creation}'")
+    def crinit_task_is_created_successfully(self, exp_task_creation):
+        task = BuiltIn().get_variable_value("${TASK}")
+        rc, task_state = self._crinit_get_task_state(task)
+
+        if (exp_task_creation == "Successful"):
+            assert_equal(task_state, "running", "Task is running")
+        else:
+            assert_not_equal(task_state, "running", "Task is not running")
+
     def crinit_add_task_config(self, task, config):
         """ Creates a new crinit task config on the target.
 
@@ -96,13 +137,35 @@ class CrinitLibrary(object):
 
         return ret == 0
 
+    def configure_default_capabilities(self, series_file, cap_default_val):
+        logger.info(f"Add default capability to .series config: {cap_default_val}")
+
+        local_path_series_config = self.__local_path_service(os.path.basename(series_file))
+        config_data = ""
+        with open(local_path_series_config, "r") as f:
+            config_data = f.read()
+        config_data = config_data + f"\nDEFAULTCAPS = {cap_default_val}\n"
+
+        target_path_series_config = self.__target_path(os.path.basename(series_file))
+        with open(target_path_series_config, "w") as f:
+            f.write(config_data)
+
+        try:
+            self.ssh.put_file(target_path_series_config, target_path_series_config, scp="ALL")
+        except Exception:
+            self.__print_traceback()
+            return -1
+
+        return target_path_series_config
+
     def crinit_start(self,
                      series_file=None,
                      chroot=None,
                      strace_output=None,
                      strace_filter=None,
                      ld_preload=None,
-                     crinit_args=None):
+                     crinit_args=None,
+                     cap_default_val=None):
         """ Starts crinit if it is not already running with the specified socket. """
         chroot_cmd = ""
         strace_cmd = ""
@@ -117,6 +180,9 @@ class CrinitLibrary(object):
             series_file = self.CRINIT_SERIES
         if ld_preload is not None:
             ldprld_cmd = f"export LD_PRELOAD=/etc/crinit/itest/ld_preload/{ld_preload};"
+        if cap_default_val is not None:
+            series_file = self.configure_default_capabilities(series_file, cap_default_val)
+        self.eff_series_file = series_file
 
         if self.crinit_is_running():
             return 0
@@ -125,7 +191,7 @@ class CrinitLibrary(object):
             f"sh -c \"export CRINIT_SOCK={self.CRINIT_SOCK}; {ldprld_cmd} {chroot_cmd} {strace_cmd} {self.CRINIT_BIN}"
         if crinit_args is not None:
             start_cmd = start_cmd + f" {crinit_args}"
-        start_cmd = start_cmd + f" {series_file}\""
+        start_cmd = start_cmd + f" {self.eff_series_file}\""
 
         self.ssh.start_command(start_cmd,
                                sudo=(not self.IS_ROOT),
@@ -144,10 +210,12 @@ class CrinitLibrary(object):
 
         return 0
 
-    def crinit_stop(self, series_file=None, crinit_args=None):
+    @keyword("Crint Start With Default Capabilities ${cap_default_val}")
+    def crinit_start_with_default_caps(self, cap_default_val):
+        return self.crinit_start(None, None, None, None, None, None, cap_default_val)
+
+    def crinit_stop(self, crinit_args=None):
         """ Stops all remaining crinit tasks and kills crinit. """
-        if series_file is None:
-            series_file = self.CRINIT_SERIES
 
         if not self.crinit_is_running():
             return 0
@@ -162,7 +230,7 @@ class CrinitLibrary(object):
         stop_cmd = f"sh -c \"pkill -f {self.CRINIT_BIN}"
         if crinit_args is not None:
             stop_cmd = stop_cmd + f"\\ {crinit_args}"
-        stop_cmd = stop_cmd + f"\\ {series_file} && rm -rf {self.CRINIT_SOCK}\""
+        stop_cmd = stop_cmd + f"\\ {self.eff_series_file} && rm -rf {self.CRINIT_SOCK}\""
 
         stdout, stderr, ret = self.ssh.execute_command(stop_cmd,
                                                        return_stdout=True,
@@ -231,20 +299,20 @@ class CrinitLibrary(object):
             if line.startswith("NAME"):
                 continue
 
-            fields = line.split()
+            task_name, task_pid = line.split()[:2]
 
             # Skip stopped processes
-            if fields[1] == "-1":
+            if task_pid == "-1":
                 continue
 
-            res = self.crinit_disable_task(fields[0])
+            res = self.crinit_disable_task(task_name)
             if res != 0:
-                logger.error(f"Failed to disable task {fields[0]}")
+                logger.error(f"Failed to disable task {task_name}")
                 return res
 
-            res = self.crinit_kill_task(fields[0])
+            res = self.crinit_kill_task(task_name)
             if res != 0:
-                logger.error(f"Failed to kill task {fields[0]}")
+                logger.error(f"Failed to kill task {task_name}")
                 return res
 
         return 0
@@ -256,38 +324,48 @@ class CrinitLibrary(object):
         """
         return self.__crinit_run("restart", "Restarting task failed", task=task_name)[2]
 
+    def _crinit_get_task_state(self, task_name):
+        stdout, stderr, ret = self.__crinit_run("status", "Requesting task status failed", task=task_name)
+        if ret != 0:
+            return -1, ""
+
+        match = re.search(r"(?i)\bstatus\b\s*:\s*(?P<state>\w+)\s*,\s*\bpid\b\s*:\s*(?P<pid>[\+-]?\d+)", stdout)
+        if match is None:
+            logger.error(f"Failed to parse crinit state for task {task_name}.")
+            return -1, ""
+
+        task_state = match.groupdict()
+        return 0, task_state['state']
+
     def crinit_check_task_state(self, task_name, state):
         """Queries status bits and PID of <task_name>.
 
         | task_name | The task name |
         """
-        stdout, stderr, ret = self.__crinit_run("status", "Requesting task status failed", task=task_name)
-        if ret == 0:
-            match = re.search(r"(?i)\bstatus\b\s*:\s*(?P<state>\w+)\s*,\s*\bpid\b\s*:\s*(?P<pid>[\+-]?\d+)", stdout)
-            if match is not None:
-                task_state = match.groupdict()
+        res, task_state = self._crinit_get_task_state(task_name)
+        if res != 0:
+            return res
 
-                return 0 if task_state['state'] == state else -1
-            else:
-                logger.error(f"Failed to parse crinit state for task {task_name}.")
-                return -1
+        return 0 if task_state == state else -1
 
-        return ret
-
-    def _crinit_get_task_pid(self, task_name):
+    def __crinit_get_task_pid(self, task_name):
         """Queries the  PID of <task_name>.
 
         | task_name | The task name |
         """
-        pid = -1
         stdout, stderr, ret = self.__crinit_run("status", "Requesting task status failed", task=task_name)
-        if ret == 0:
-            match = re.search(r"(?i)\bstatus\b\s*:\s*(?P<state>\w+)\s*,\s*\bpid\b\s*:\s*(?P<pid>[\+-]?\d+)", stdout)
-            if match is not None:
-                pid = int(match.groupdict()['pid'])
-                logger.info(f"task pid is : {pid}")
-            else:
-                logger.error(f"Failed to parse crinit state for task {task_name}.")
+        if ret != 0:
+            logger.error(f"Failed requet status of task {task_name}")
+            return -1
+
+        match = re.search(r"(?i)\bstatus\b\s*:\s*(?P<state>\w+)\s*,\s*\bpid\b\s*:\s*(?P<pid>[\+-]?\d+)", stdout)
+        if match is None:
+            logger.error(f"Failed to parse crinit state for task {task_name}.")
+            return -1
+
+        pid = int(match.groupdict()['pid'])
+        logger.debug(f"pid of task {task_name}: {pid}")
+
         return pid
 
     @keyword("'${task}' User Is '${user}' And Group Is '${group}'")
@@ -296,7 +374,7 @@ class CrinitLibrary(object):
         Check if task user is given user and group is given group
         """
 
-        pid = self._crinit_get_task_pid(task)
+        pid = self.__crinit_get_task_pid(task)
 
         stdout = None
         stderr = None
@@ -318,13 +396,75 @@ class CrinitLibrary(object):
 
         return -1
 
+    # int cap_from_name(const char* name , cap_value_t* cap_p);
+    def __c_wrapper_cap_from_name(self, cap_name):
+        libcap_hdl = cdll.LoadLibrary('libcap.so.2')
+        libcap_hdl.cap_from_name.argtypes = [c_char_p, POINTER(c_int)]
+        libcap_hdl.cap_from_name.restype = c_int
+
+        cap_val = c_int()
+
+        ret = libcap_hdl.cap_from_name(cap_name.encode('utf8'), cap_val)
+        assert_equal(ret, 0, msg=f"Failed to convert capability name ${cap_name}")
+
+        return 1 << cap_val.value
+
+    def __assemble_cap_bitmask(self, cap_names):
+        bitmask = 0
+
+        for cap in cap_names.split():
+            bitmask |= self.__c_wrapper_cap_from_name(cap)
+
+        logger.debug(f"Convert {cap_names} into bitmask {hex(bitmask)}.")
+
+        return bitmask
+
+    def __get_eff_cap_from_proc(self, pid):
+        stdout = None
+        stderr = None
+        ret = -1
+        cap_eff_line = 0
+
+        stdout, stderr, ret = self.ssh.execute_command(
+            f"cat /proc/{pid}/status",
+            return_stdout=True,
+            return_stderr=True,
+            return_rc=True,
+            sudo=False,
+            sudo_password=None,
+        )
+
+        for line in stdout.splitlines():
+            if "CapEff" in line:
+                # line looks like this: "CapEff:    0000000000001021"
+                cap_eff_line = line.partition(":")[2].strip()
+                break
+
+        logger.info(f"pid {pid}: Effective capabilities ({hex(int(cap_eff_line, 16))})")
+
+        return int(cap_eff_line, 16)
+
+    @keyword("The '${task}' Should Have The Capabilities '${exp_cap_proc}'")
+    def crinit_task_has_capabilities(self, task, exp_cap_proc):
+        pid = self.__crinit_get_task_pid(task)
+        if pid == -1:
+            logger.error(f"Task {task} does not exist.")
+            return -1
+
+        assert_equal(
+            hex(self.__get_eff_cap_from_proc(pid)),
+            hex(self.__assemble_cap_bitmask(exp_cap_proc)),
+            msg=f"""Failed to verify configured capabilities {hex(self.__assemble_cap_bitmask(exp_cap_proc))}. CapEff
+             from /proc: {hex(self.__get_eff_cap_from_proc(pid))}""",
+        )
+
     @keyword("'${task}' User Is '${user}' And Supplementary Groups Are '${multigroups}'")
     def task_user_and_supgroups_are(self, task, user, multigroups):
         """
         Check if task user is given user and supplementary groups are given groups
         """
 
-        pid = self._crinit_get_task_pid(task)
+        pid = self.__crinit_get_task_pid(task)
 
         stdout = None
         stderr = None
