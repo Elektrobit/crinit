@@ -28,6 +28,8 @@ List of ADRs
    :caption: Contents:
 
    ADR Template<./ADR_template.md>
+   ./adr-capability-library.md
+   ./adr-capability-setting.md
    ./adr-crypt-lib.md
    ./adr-pipe-redirection.md
    ./adr-pubkey-storage.md
