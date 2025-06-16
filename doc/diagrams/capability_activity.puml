@@ -1,0 +1,86 @@
+@startuml
+!pragma useverticalif on
+partition "process: crinit" {
+
+start
+if ((user ID || group ID) == 0) then (privileged user)
+  note right #LightGreen
+    <i>Design detail</i>
+    crinit-launch is only utilized when %newline()
+    a task shall run non privileged
+  end note
+  :posix spawn new task process;
+else (non-privilged user)
+  partition "process: crinit-launch (the only place where crinit configures capabilities)" {
+    start
+
+    :retain permitted capabilities;
+    note left #LightGreen
+      <i>Design detail</i>
+      prevent clearance due to UID degradation
+    end note
+    if (error?) then
+      -[#red]->
+      #ff6c6c:cleanup and exit crinit-launch\n(crinit task won't be executed);
+      stop
+    endif
+    
+    label next_label
+    :downgrade effective user ID from 0 to non zero;
+    note right
+      <i>Dataflow from .crinit task file:</i>
+      USER = nouser
+      GROUP = nogroup
+    end note
+
+
+    :set inheritable capabilities;
+    note right
+      <i>Dataflow from .crinit task file:</i>
+      CAPABILITY_SET = CAP_NET_RAW
+    end note
+    note left #LightGreen
+      <i>Design detail</i>
+      * inh. capabilities must be at least a superset of amb. capabilities
+      * we set them so that they exactly match
+    end note
+
+    if (error?) then
+      -[#red]->
+      #ff6c6c:cleanup and exit crinit-launch\n(crinit task won't be executed);
+      stop
+    endif
+
+    :set ambient capabilities;
+    note right
+      <i>Dataflow from .crinit task file:</i>
+      CAPABILITY_SET = CAP_NET_RAW
+    end note
+    if (error?) then
+      -[#red]->
+      #ff6c6c:cleanup and exit crinit-launch\n(crinit task won't be executed);
+      stop
+    endif
+
+    :exec task binary;
+    note right
+      <i>Dataflow from .crinit task file</i>
+      COMMAND = /bin/grep
+    end note
+
+    label target_label
+    ':running Task;
+
+    partition "process: crinit task" {
+
+    }
+  }
+endif
+stop
+}
+
+left footer
+  Note: Per implementation, there is only one single error state "cleanup and exit crinit-launch". We could manage to model that in this diagram (Plantuml might be limited here).
+end footer
+@enduml
+
