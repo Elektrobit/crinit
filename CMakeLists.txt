@@ -180,6 +180,8 @@ endif()
 
 add_subdirectory(deps/)
 add_subdirectory(src/)
+add_subdirectory(test/demo/)
+
 if(UNIT_TESTS)
   enable_testing()
   add_subdirectory(test/utest)
