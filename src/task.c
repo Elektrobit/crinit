@@ -51,6 +51,7 @@ int crinitTaskCreateFromConfKvList(crinitTask_t **out, const crinitConfKvList_t 
     crinitTask_t *pTask = *out;
     pTask->pid = -1;
     pTask->maxRetries = -1;
+    pTask->inhibitRespawn = false;
 
     if (crinitGlobOptGet(CRINIT_GLOBOPT_ENV, &pTask->taskEnv) == -1) {
         crinitErrPrint("Could not retrieve global environment set during Task creation.");

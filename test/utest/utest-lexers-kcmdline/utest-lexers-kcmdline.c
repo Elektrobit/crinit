@@ -15,7 +15,6 @@ int main(void) {
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(crinitKernelCmdlineLexTestSuccess),
         cmocka_unit_test(crinitKernelCmdlineLexTestNullInput),
-        cmocka_unit_test(crinitKernelCmdlineLexTestLexerError),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);

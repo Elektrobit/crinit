@@ -5,14 +5,14 @@
  */
 #include <string.h>
 
+#include "common.h"
 #include "lexers.h"
 #include "logio.h"
-#include "common.h"
 
 /*!conditions:re2c*/
 
 const char crinitEscMap[128] = {['n'] = '\n',  ['r'] = '\r', ['b'] = '\b', ['a'] = '\a', ['"'] = '"', ['\''] = '\'',
-                               ['\\'] = '\\', ['f'] = '\f', ['t'] = '\t', ['v'] = '\v', ['$'] = '$', [' '] = ' '};
+                                ['\\'] = '\\', ['f'] = '\f', ['t'] = '\t', ['v'] = '\v', ['$'] = '$', [' '] = ' '};
 
 crinitTokenType_t crinitArgvLex(const char **s, const char **mbegin, const char **mend, bool dq) {
     if (s == NULL || *s == NULL || mbegin == NULL || mend == NULL) {
@@ -153,7 +153,8 @@ crinitTokenType_t crinitEnvVarInnerLex(const char **s, const char **mbegin, cons
     */
 }
 
-crinitTokenType_t crinitKernelCmdlineLex(const char **s, const char **keyBegin, const char **keyEnd, const char **valBegin, const char **valEnd) {
+crinitTokenType_t crinitKernelCmdlineLex(const char **s, const char **keyBegin, const char **keyEnd,
+                                         const char **valBegin, const char **valEnd) {
     crinitNullCheck(CRINIT_TK_ERR, s, keyBegin, keyEnd, valBegin, valEnd);
     crinitNullCheck(CRINIT_TK_ERR, *s);
 
@@ -166,6 +167,7 @@ crinitTokenType_t crinitKernelCmdlineLex(const char **s, const char **keyBegin, 
         re2c:tags = 1;
 
         varprefix  = "crinit.";
+        all        = [^\x00];
         vardelim   = [=];
         uqcontent  = @t1 ([^ "\\\n\x00\t] | [\\][^\x00])+ @t2;
         dqcontent  = ["] @t1 ([^"\\\n\x00] | [\\][^\x00])* @t2 ["];
@@ -177,6 +179,6 @@ crinitTokenType_t crinitKernelCmdlineLex(const char **s, const char **keyBegin, 
         whitespace { *s = YYCURSOR; *keyBegin = anchor; *keyEnd = *s; return CRINIT_TK_WSPC; }
         uqvar      { *s = YYCURSOR; *keyBegin = t3; *keyEnd = t4; *valBegin = t1; *valEnd = t2; return CRINIT_TK_VAR; }
         dqvar      { *s = YYCURSOR; *keyBegin = t3; *keyEnd = t4; *valBegin = t1; *valEnd = t2; return CRINIT_TK_VAR; }
-        any        { *s = YYCURSOR; *keyBegin = anchor; *keyEnd = *s; return CRINIT_TK_CPY; }
+        all        { *s = YYCURSOR; *keyBegin = anchor; *keyEnd = *s; return CRINIT_TK_CPY; }
     */
 }

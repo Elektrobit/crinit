@@ -48,14 +48,6 @@
                         }
                     }
                 }
-            },
-            "Scanner": {
-                "Plugins": {
-                    "ScannerDummy": {
-                        "File": "scanner_dummy.so",
-                        "Run": "always"
-                    }
-                }
             }
         }
     }

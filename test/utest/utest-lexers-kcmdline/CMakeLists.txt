@@ -8,7 +8,6 @@ create_unit_test(
     utest-lexers-kcmdline.c
     case-success.c
     case-null-input.c
-    case-lexer-error.c
     lexers.c
     ${PROJECT_SOURCE_DIR}/src/logio.c
   LIBRARIES

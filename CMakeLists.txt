@@ -1,9 +1,12 @@
 # SPDX-License-Identifier: MIT
 cmake_minimum_required(VERSION 3.21)
+
+include(cmake/project.cmake)
+
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE AND DEFINED ENV{CMAKE_TOOLCHAIN_FILE})
   set(CMAKE_TOOLCHAIN_FILE $ENV{CMAKE_TOOLCHAIN_FILE})
 endif()
-project(crinit VERSION 0.18.2)
+project(crinit VERSION 0.19.1)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -137,6 +140,13 @@ else()
     set(CRINIT_VERSION_GIT "")
     message("version ${PKG_VERSION}")
 endif()
+
+project_add_documentation_target(
+  TITLE
+    "BaseOS Crinit Documentation"
+  MARKDOWN
+    ${CMAKE_SOURCE_DIR}/documentation/documentation.md
+)
 
 set(CMAKE_C_FLAGS_RELEASE "-O2 -DNODEBUG")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--gc-sections")

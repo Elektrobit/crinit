@@ -4,35 +4,23 @@ FROM ${REPO}${REPO:+/}ubuntu:${UBUNTU_RELEASE}
 
 RUN groupdel -f ubuntu && userdel -r ubuntu || true
 
-ARG USER=ci
-ARG UID=1000
-ARG GID=1000
-
-ARG TARGET_USER_NAME=target
-ARG TARGET_PASSWORD=target123
-
-ARG EB_GIT_SOURCES=https://github.com/Elektrobit/
-
-ARG SAMCONF_REPO_NAME=samconf.git
-ARG SAMCONF_REPO_PATH=${EB_GIT_SOURCES}/${SAMCONF_REPO_NAME}
-ARG SAMCONF_REPO_REF=main
-
-ARG SAFU_REPO_NAME=safu.git
-ARG SAFU_REPO_PATH=${EB_GIT_SOURCES}/${SAFU_REPO_NAME}
-ARG SAFU_REPO_REF=main
-
-ARG ELOS_REPO_NAME=elos.git
-ARG ELOS_REPO_PATH=${EB_GIT_SOURCES}/${ELOS_REPO_NAME}
-ARG ELOS_REPO_REF=main
-
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
  && apt-get install -y sudo vim locales uuid-runtime keyutils \
  build-essential binutils-dev pkg-config cmake valgrind strace \
  git wget curl netcat-traditional net-tools ssh libssl-dev openssl re2c \
  strace libjson-c-dev libmnl-dev libsqlite3-0 libsqlite3-dev libesmtp-dev \
- expat liblog4c-dev libmbedtls-dev libcap-dev \
+ expat liblog4c-dev libmbedtls-dev libcap-dev software-properties-common \
  && rm -rf /var/lib/apt/lists/*
+
+# Install all build dependencies on elos and elosd for testing
+RUN add-apt-repository -y ppa:elos-team/ppa \
+    && apt-get install -y elos libelos-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+ARG USER=ci
+ARG UID=1000
+ARG GID=1000
 
 RUN locale-gen en_US.UTF-8 \
  && locale-gen de_DE.UTF-8 \
@@ -44,40 +32,6 @@ WORKDIR /home/crinit
 COPY ./ /home/crinit
 
 RUN git clean -dfx /home/crinit
-
-# Install safu
-RUN git clone ${SAFU_REPO_PATH} \
- && cmake -B ${SAFU_REPO_NAME%.*}/build ./${SAFU_REPO_NAME%.*} \
- -DUNIT_TESTS=OFF \
- -DSAFU_MOCK_LIBRARY=Off \
- -DCMAKE_BUILD_TYPE=Release \
- -DENABLE_ANALYZER=Off \
- -DCMAKE_INSTALL_PREFIX=/usr \
- && make -C ${SAFU_REPO_NAME%.*}/build install
-
-# Install samconf
-RUN git clone ${SAMCONF_REPO_PATH} \
- && cmake -B ${SAMCONF_REPO_NAME%.*}/build ./${SAMCONF_REPO_NAME%.*} \
- -DUNIT_TESTS=OFF \
- -DSAMCONF_MOCK_LIBRARY=Off \
- -DCMAKE_BUILD_TYPE=Release \
- -DCMAKE_INSTALL_PREFIX=/usr \
- -DSAFU_URI=${SAFU_REPO_PATH} \
- -DSAFU_REF=${SAFU_REPO_REF} \
- && make -C ${SAMCONF_REPO_NAME%.*}/build install
-
-# Install elos
-RUN git clone ${ELOS_REPO_PATH} \
- && cmake -B ${ELOS_REPO_NAME%.*}/build ./${ELOS_REPO_NAME%.*} \
- -DUNIT_TESTS=OFF \
- -DCMAKE_BUILD_TYPE=Release \
- -DENABLE_ANALYZER=Off \
- -DCMAKE_INSTALL_PREFIX=/usr \
- -DSAMCONF_URI=${SAMCONF_REPO_PATH} \
- -DSAMCONF_REF=${SAMCONF_REPO_REF} \
- -DSAFU_URI=${SAFU_REPO_PATH} \
- -DSAFU_REF=${SAFU_REPO_REF} \
- && make -C ${ELOS_REPO_NAME%.*}/build install
 
 # Install crinit
 RUN cmake -B build . \
@@ -97,6 +51,9 @@ RUN cmake -B build . \
 RUN uuidgen > /etc/machine-id
 
 RUN sudo ldconfig
+
+ARG TARGET_USER_NAME=target
+ARG TARGET_PASSWORD=target123
 
 RUN sudo mkdir /var/run/sshd \
  && sudo chmod 0755 /var/run/sshd \
