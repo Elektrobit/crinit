@@ -77,6 +77,8 @@ static void crinitElosdepFilterDestroy(crinitElosdepFilter_t *filter) {
 /**
  * Inserts an elos filter into the list of filter subscriptions.
  *
+ * Modifies errno.
+ *
  * @param filterTask  Task to register the filter for.
  * @param filter      Filter to be registered.
  *
@@ -100,6 +102,8 @@ static int crinitElosdepFilterRegister(crinitElosdepFilterTask_t *filterTask, cr
 
 /**
  * Removes the given filter from the filter list.
+ *
+ * Modifies errno.
  *
  * @param filterTask  Task to remove the filter from.
  * @param filter      Filter to be destroyed.
@@ -125,6 +129,8 @@ static int crinitElosdepFilterUnregister(crinitElosdepFilterTask_t *filterTask, 
 
 /**
  * Free the complete list of subscribed filters.
+ *
+ * Modifies errno.
  *
  * @param filterTask The task owning this filter list.
  *
@@ -169,6 +175,8 @@ static int crinitElosdepFilterTaskDestroy(crinitElosdepFilterTask_t *filterTask)
 
 /**
  * Free the complete list of filter tasks.
+ *
+ * Modifies errno.
  *
  * @return Returns 0 on success, -1 otherwise.
  */
@@ -265,6 +273,8 @@ static inline int crinitElosdepFilterSubscribe(crinitElosdepFilter_t *filter) {
 
 /**
  * Subscribes all filters currently registered with elosdep.
+ *
+ * Modifies errno.
  *
  * @return Returns 0 on success, -1 otherwise.
  */

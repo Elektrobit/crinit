@@ -30,6 +30,8 @@ typedef struct crinitFileSeries {
  *
  * Uses scandir() with filters.
  *
+ * Modifies errno.
+ *
  * @param fse          Return pointer for the resulting file series, will contain allocated memory that can be freed
  *                     via crinitDestroyFileSeries().
  *

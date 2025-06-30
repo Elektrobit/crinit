@@ -22,6 +22,8 @@
  * return successfully if the thread has been created without error. The thread is created in a detached state so no
  * further management action is necessary.
  *
+ * Modifies errno.
+ *
  * @param ctx Pointer to context
  * @param t Pointer to task that needs spawning
  * @param mode Distinguishes between start and stop commands
@@ -35,6 +37,8 @@ int crinitProcDispatchSpawnFunc(crinitTaskDB_t *ctx, const crinitTask_t *t, crin
  *
  * If \a inh is set to true, the process dispatch threads will block before waiting for a child process until
  * waiting is reactivated, leaving terminated child processes as zombies for the time being.
+ *
+ * Modifies errno.
  *
  * @param inh  Set true to inhibit waiting or false to reactivate waiting.
  *

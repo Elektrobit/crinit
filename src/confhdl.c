@@ -100,6 +100,8 @@ static bool crinitUsernameToUid(const char *name, uid_t *uid);
 /**
  * Check if given UID exists and convert to username.
  *
+ * Modifies errno.
+ *
  * @param uid UID to query
  * @param name Pointer to result. Caller must free the pointer allocated by the function.
  * @return true if UID could be resolved and converted, false otherwise.
@@ -108,6 +110,8 @@ static bool crinitUidToUsername(uid_t uid, char **name);
 
 /**
  * Check if given groupname exists and convert into numeric ID.
+ *
+ * Modifies errno.
  *
  * @param name groupname
  * @param gid Pointer to gid_t object

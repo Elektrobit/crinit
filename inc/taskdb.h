@@ -60,6 +60,8 @@ typedef struct crinitTaskDB {
  * the task has been successfully inserted, the function will signal crinitTaskDB_t::changed. The function uses
  * crinitTaskDB_t::lock for synchronization and is thread-safe.
  *
+ * Modifies errno.
+ *
  * @param ctx        The crinitTaskDB_t context, into which task should be inserted.
  * @param t          The task to be inserted.
  * @param overwrite  Overwrite a colliding task with the same name (true) or return an error (false).
@@ -81,6 +83,8 @@ int crinitTaskDBInsert(crinitTaskDB_t *ctx, const crinitTask_t *t, bool overwrit
  * according to strcmp()) and, if found, remove the dependency from crinitTask_t::deps. Will signal
  * crinitTaskDB_t::changed on successful completion. The function uses crinitTaskDB_t::lock for synchronization and is
  * thread-safe.
+ *
+ * Modifies errno.
  *
  * @param ctx  The crinitTaskDB_t context in which to fulfill the dependency.
  * @param dep  The dependency to be fulfilled.
@@ -109,6 +113,8 @@ int crinitTaskDBProvideFeature(crinitTaskDB_t *ctx, const crinitTask_t *provider
  * Will search \a ctx for the provider task referenced by \a taskName and then call crinitTaskDBProvideFeature() on it
  * (see there for details).
  *
+ * Modifies errno.
+ *
  * @param ctx       The crinitTaskDB_t context in which to fulfill the feature dependency.
  * @param taskName  The name of the task providing the feature(s).
  * @param newState  The crinitTaskState_t which has been newly reached by the provider task.
@@ -121,6 +127,8 @@ int crinitTaskDBProvideFeatureByTaskName(crinitTaskDB_t *ctx, const char *taskNa
  *
  * Will search \a ctx for a task with name \a taskName and add \a dep to its crinitTask_t::deps and adjust
  * crinitTask_t::depsSize.
+ *
+ * Modifies errno.
  *
  * @param ctx       The crinitTaskDb context to work on.
  * @param dep       The dependency to be added.
@@ -137,6 +145,8 @@ int crinitTaskDBAddDepToTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep, co
  * between two crinitTaskDep_t instances is the same as in crinitTaskDBFulfillDep(), i.e. their contents are
  * lexicographically equal.
  *
+ * Modifies errno.
+ *
  * @param ctx       The crinitTaskDb context to work on.
  * @param dep       The dependency to be removed.
  * @param taskName  The name of the relevant task.
@@ -147,6 +157,8 @@ int crinitTaskDBRemoveDepFromTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *de
 
 /**
  * Find the task with the given name.
+ *
+ * Modifies errno.
  *
  * @param ctx       The crinitTaskDb context to work on.
  * @param task      Pointer to hold the task.
@@ -166,6 +178,8 @@ int crinitTaskDBGetTaskByName(crinitTaskDB_t *ctx, crinitTask_t **task, const ch
  * crinitTask_t::failCount will be reset to 0. The function uses crinitTaskDB_t::lock for synchronization and is
  * thread-safe.
  *
+ * Modifies errno.
+ *
  * @param ctx       The crinitTaskDB_t context in which the task is held.
  * @param s         The task's new state.
  * @param taskName  The task's name.
@@ -179,6 +193,8 @@ int crinitTaskDBSetTaskState(crinitTaskDB_t *ctx, crinitTaskState_t s, const cha
  * Will search \a ctx for an crinitTask_t with crinitTask_t::name lexicographically equal to \a taskName and write its
  * crinitTask_t::state to \a s. If such a task does not exist in \a ctx, an error is returned. The function uses
  * crinitTaskDB_t::lock for synchronization and is thread-safe.
+ *
+ * Modifies errno.
  *
  * @param ctx       The crinitTaskDB_t context in which the task is held.
  * @param s         Pointer to store the returned crinitTaskState_t.
@@ -195,6 +211,8 @@ int crinitTaskDBGetTaskState(crinitTaskDB_t *ctx, crinitTaskState_t *s, const ch
  * crinitTask_t::pid to \a pid. If such a task does not exit in \a ctx, an error is returned. The function uses
  * crinitTaskDB_t::lock for synchronization and is thread-safe.
  *
+ * Modifies errno.
+ *
  * @param ctx       The crinitTaskDB_t context in which the task is held.
  * @param pid       The task's new PID.
  * @param taskName  The task's name.
@@ -209,6 +227,8 @@ int crinitTaskDBSetTaskPID(crinitTaskDB_t *ctx, pid_t pid, const char *taskName)
  * PID to \a pid. If such a task does not exit in \a ctx, an error is returned. If the task does not currently have a
  * running process, \a pid will be -1 but the function will indicate success. The function uses crinitTaskDB_t::lock for
  * synchronization and is thread-safe.
+ *
+ * Modifies errno.
  *
  * @param ctx       The crinitTaskDB_t context in which the task is held.
  * @param pid       Pointer to store the returned PID.
@@ -226,6 +246,8 @@ int crinitTaskDBGetTaskPID(crinitTaskDB_t *ctx, pid_t *pid, const char *taskName
  * the task does not currently have a running process, \a pid will be -1 but the function will indicate success. The
  * function uses crinitTaskDB_t::lock for synchronization and is thread-safe.
  *
+ * Modifies errno.
+ *
  * @param ctx       The crinitTaskDB_t context in which the task is held.
  * @param s         Pointer to store the returned crinitTaskState_t.
  * @param pid       Pointer to store the returned PID.
@@ -239,6 +261,9 @@ int crinitTaskDBGetTaskStateAndPID(crinitTaskDB_t *ctx, crinitTaskState_t *s, pi
  * Sets the respawnInhibit flag.
  *
  * Prevents the respawning of a task that was configured with "RESPAWN = yes". Used in conjunction with crinit-ctl stop.
+ *
+ * Modifies errno.
+ *
  * @param ctx       The crinitTaskDB_t context in which the task is held.
  * @param inhibit   If true, do not respawn the task. Otherwise continue with normal behaviour.
  * @param taskName  The task's name.
@@ -258,6 +283,8 @@ int crinitTaskDBSetTaskRespawnInhibit(crinitTaskDB_t *ctx, bool inhibit, const c
  * As the lock is held on the whole task database, operations in the critical section between crinitTaskDBBorrowTask
  * and crinitTaskDBRemit() must be kept short to avoid performance issues.
  *
+ * Modifies errno.
+ *
  * @param ctx       The TaskDB containing the task to borrow.
  * @param taskName  The name of the task to borrow.
  *
@@ -267,6 +294,8 @@ crinitTask_t *crinitTaskDBBorrowTask(crinitTaskDB_t *ctx, const char *taskName);
 /**
  * Release the lock on the task database acquired via crinitTaskDBBorrowTask(). The borrowed task reference may not be
  * used anymore.
+ *
+ * Modifies errno.
  *
  * @param ctx  The TaskDB to release the lock from.
  *
@@ -286,6 +315,8 @@ int crinitTaskDBRemit(crinitTaskDB_t *ctx);
  * If crinitTaskDB::spawnInhibit is true, no tasks are considered startable and this function will return successfully
  * without starting anything.
  *
+ * Modifies errno.
+ *
  * @param ctx  The TaskDB context from which tasks will be started.
  * @param mode Distinguishes between start and stop commands
  *
@@ -297,6 +328,8 @@ int crinitTaskDBSpawnReady(crinitTaskDB_t *ctx, crinitDispatchThreadMode_t mode)
  *
  * The function uses crinitTaskDB_t::lock for synchronization and is thread-safe. It will also signal
  * crinitTaskDB_t::changed if crinitTaskDB_t::spawnInhibit was changed to false.
+ *
+ * Modifies errno.
  *
  * @param ctx  The TaskDB context in which to set the variable.
  * @param inh  The value which crinitTaskDB_t:spawnInhibit shall be set to.
@@ -310,6 +343,8 @@ int crinitTaskDBSetSpawnInhibit(crinitTaskDB_t *ctx, bool inh);
  *
  *  If the initialized TaskDB is no longer needed the internally held dynamic memory should be freed using
  *  crinitTaskDBDestroy().
+ *
+ *  Modifies errno.
  *
  *  @param ctx          The crinitTaskDB_t whose internal members should be initialized.
  *  @param spawnFunc    Pointer to the task spawn function to be used by crinitTaskDBSpawnReady()
@@ -333,6 +368,8 @@ int crinitTaskDBInitWithSize(crinitTaskDB_t *ctx,
  *
  * Afterwards \a ctx may not be used anymore until another call to crinitTaskDBInit() or crinitTaskDBInitWithSize().
  *
+ * Modifies errno.
+ *
  * @param ctx The crinitTaskDB_t context to be destroyed.
  *
  * @return 0 on success, -1 on error
@@ -344,6 +381,8 @@ int crinitTaskDBDestroy(crinitTaskDB_t *ctx);
  *
  * The function allocates an array of strings as \a tasks and returns the number of array elements in \a numTasks.
  * Each entry in the \a tasks array will be allocated separately and needs to be freed by the caller.
+ *
+ * Modifies errno.
  *
  * @param ctx       The TaskDB context from which to get the list of task names.
  * @param tasks     The return pointer for the array of task names.

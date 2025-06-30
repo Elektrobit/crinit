@@ -125,12 +125,16 @@ void crinitGlobOptDestroy(void);
  * Calling thread will hold an exclusive lock on the central instance of crinitGlobOptStore_t. After the calling thread
  * has finished its operations on the global option storage, it must release the lock using crinitGlobOptRemit().
  *
+ * Modifies errno.
+ *
  * @return  A pointer to the central instance of crinitGlobOptStore_t on success, a NULL pointer if the lock could not
  *          be acquired.
  */
 crinitGlobOptStore_t *crinitGlobOptBorrow(void);
 /**
  * Release the lock on the global option storage acquired via crinitGlobOptBorrow().
+ *
+ * Modifies errno.
  *
  * @return  0 on success, -1 if the lock could not be released.
  */
