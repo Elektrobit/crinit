@@ -15,8 +15,11 @@ The following constraints have to be taken into account for a suitable solution:
 ## Assumptions
 
 The following assumptions have been made in the decision process:
-* <first>
-* <second>
+* cgroups are created and allowed to be created on runtime
+* (or) cgroups are created once on startup
+* cgroups never disappear without restart
+* ... any other assumptions?
+
 
 
 
@@ -27,21 +30,22 @@ The following assumptions have been made in the decision process:
 Don't support hierarchical cgroups.
 
 *pros*
-* <first> Reduces complexity
+* Reduces complexity
+* each process has its own cgroup
 
 *cons*
-* <first> Maybe not capable to support complex scenarios or only very cumbersome.
+* Maybe not capable to support complex scenarios or only very cumbersome.
 
 ### 2) Support hierarchical cgroups
 
 Support hierarchical cgroups.
 
 *pros*
-* <first> Most flexible approach
+* Most flexible approach
 
 *cons*
-* <first> More room for errors. Processes may only be in the leave nodes of the cgroup tree, for example.
-** But: 
+* More room for errors. Processes may only be in the leave nodes of the cgroup tree, for example.
+* complex to deal with new cgroups on runtime
 
 ## Decision
 

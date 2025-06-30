@@ -27,34 +27,34 @@ The following assumptions have been made in the decision process:
 Cgroups can only be defined and created in the series file part of the configuration.
 
 *pros*
-* <first> All cgroups are defined in one place.
-* <second> All cgroups are created before they are used
-* <third> If multiple tasks use the same cgroup this approach is the more natural one to use a shared ressource in multiple places.
+* All cgroups are defined in one place.
+* All cgroups are created before they are used
+* If multiple tasks use the same cgroup this approach is the more natural one to use a shared ressource in multiple places.
 
 *cons*
-* <first> If a single task want its own very specific cgroup it has to relay on a proper modified series file.
+* If a single task want its own very specific cgroup it has to relay on a proper modified series file.
 
 ### 2) In task files only
 
 Cgroups can only be defined and created in task files.
 
 *pros*
-* <first> Every task creates the cgroups that it needs. This would allow for a nice atomic approach.
+* Every task creates the cgroups that it needs. This would allow for a nice atomic approach.
 
 *cons*
-* <first> If multiple tasks need to use the same cgroup they would have to wait on a setup task or other tasks to which they share no further mutuality.
+* If multiple tasks need to use the same cgroup they would have to wait on a setup task or other tasks to which they share no further mutuality.
 
 ### 3) Allow cgroup definition in series and task files
 
 Cgroups can be defined and created in series and task files.
 
 *pros*
-* <first> Commonly used cgroups can be defined in a common place
-* <second> Tasks don't need to wait for otherwise unrelated tasks.
-* <third> Tasks can create their own cgroups that are only relevant for themselves.
+* Commonly used cgroups can be defined in a common place
+* Tasks don't need to wait for otherwise unrelated tasks.
+* Tasks can create their own cgroups that are only relevant for themselves.
 
 *cons*
-* <first> It's the most complex approach.
+* It's the most complex approach.
 
 ## Decision
 

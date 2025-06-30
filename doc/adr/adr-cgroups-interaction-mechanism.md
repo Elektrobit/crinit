@@ -28,34 +28,35 @@ Change the crinit parser to support parsing cgroup configurations (e.g. in serie
 and / or task files) and interact with the cgroup filesystem directly.
 
 *pros*
-* <first> Homogenous handling of different configuration options. Crinit supports starting
+* Homogenous handling of different configuration options. Crinit supports starting
 tasks as a different user, too. This would be a similar use-case (in the meaning of process
-restrictions).
+restrictions) and could be implemented there quite naturally.
 
 *cons*
-* <first> This could lead to a quite drastic change in the configuration parser with all 
-the consequences.
+* This would require quite some changes in the series and task parseres. The task parser is considered rather easy as it can be handled completely with the existing meachanisms. The series parser would either need new meachnisms to parse different global cgroups or the configuration would deviate from the current scheme. See the implementation suggestion ADR for more information.
 
 ### 2) Use the tools of libcgroup
 
 There are tools in libcgroup to manage cgroups and start processes. This could be seamlessly
 integrated in the existing COMMAND parser.
+The libcgroup library can be found here: https://github.com/libcgroup/libcgroup
+According to the github page its license is LGPL-2.1.
 
 *pros*
-* <first> No changes in crinit itself, no risk of breaking something.
+* No changes in crinit itself, no risk of breaking something.
 
 *cons*
-* <first> This would be inconsistent in comparision with other supported process restriction mechanisms (e.g. user / group support).
+* This would be inconsistent in comparision with other supported process restriction mechanisms (e.g. user / group support).
 
-### 3) Use open3() and alike
+### 3) Use clone3() and alike
 
-Use syscalls like open3() and setns() etc. to manage processes with cgroups.
+Use syscalls like clone3() and setns() etc. to manage processes with cgroups. Those syscalls can have a target cgroup as a parameter. With this parameter clone3() will start the new process directly in the new cgroup, for example. They do not create cgroups, though.
 
 *pros*
-* <first> None.
+* None.
 
 *cons*
-* <first> Not a real solution, because it does not cover the creation of cgroups.
+* Not a real solution, because it does not cover the creation of cgroups.
 
 ## Decision
 

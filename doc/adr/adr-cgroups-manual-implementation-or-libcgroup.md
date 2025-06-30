@@ -10,10 +10,10 @@ The relevant parts ("50000 100000" and "hog_pen") are the same.
 
 If you write invalid data to the virtual file system you receive an error. At least I observed that behaviour when writing to the cpu.max virtual file without allowing the sub-cgroup to change that parameter in the parent cgroup (in this case the root cgroup).
 
-There is however a deamon supplied by libcgroup that could put processes into the configured cgroup automatically, depending on the user and group IDs. I'm not sure if this feature is relevant for our use case.
-If we don't use that daemon and would just use "cgcreate" and "cgexec" to create cgroups and start processes via cgroupexec we would have to store the same set of parameters in our configuration as for the manual approach.
+There is however a deamon supplied by libcgroup that could put processes into the configured cgroup automatically, depending on the user and group IDs. It is uncertain if this feature is relevant for the given use case.
+If the daemon is not used and only "cgcreate" and "cgexec" would be used to create cgroups and start processes via cgroupexec the same set of parameters have to be stored in the crinit configuration as for the manual approach.
 
-In any case we have to mount the virtual cgroup file system.
+In any case the virtual cgroup file system has to be mounted.
 
 
 ## Influencing factors
@@ -40,29 +40,30 @@ Use functions like "write()" to write directly to the relevant files in the virt
 
 *pros*
 * No further dependencies
-* <second>
-** But: 
 
 *cons*
-* <first>
-** But: <if applicable react to the above with a but...>
-* <second>
-** But: 
+* None
 
 ### 2) Use libcgroup tools
 
 Use cgcreate and cgexec.
 
 *pros*
-* <first>
-** But: <if applicable react to the above with a but...>
-* <second>
-** But: 
+* None compared to the manual approach.
 
 *cons*
 * External dependency
 * Possible license problem?
 
+### 3) Use libcgroup daemon
+
+Use the in libcgroup included daemon to move processes to cgroups
+
+*pros*
+* If used as only means to configure cgroups it would require the least change in crinit
+
+*cons*
+* It seems that the usage of the daemon would require that each process is started in a own user context. While this approach might work for daemons it seems quite arkward for other purposes.
 
 ## Decision
 
