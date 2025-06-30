@@ -45,9 +45,18 @@ Support hierarchical cgroups.
 
 ## Decision
 
-Alternative 42 is taken.
+Decision 1 "Don't support hierarchical cgroups" is taken
 
 ### Rationale
+
+The original ADR requests a "flat style". It states the following pros and cons:
+
+*pros*
+* integrator just needs to define cg/ns features he/she wants.
+    But only meaningful selected ones.
+
+*cons*
+* feature bloat of crinit?
 
 ### Open Points
 
