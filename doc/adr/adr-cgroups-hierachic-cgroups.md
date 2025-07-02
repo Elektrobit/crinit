@@ -2,7 +2,8 @@
 
 ## Problem
 
-Cgroups can be organized in some sort of tree. If so, they can "inherit" some specifications from their parents.
+Cgroups can be organized in some sort of tree. If so, they can "inherit" some specifications from their parents. The inheritation process is described here: https://docs.kernel.org/admin-guide/cgroup-v2.html#top-down-constraint. It is no inheritation like e.g. a C++ programmer would expect it.
+It seems that the way the resources are restricted or distributed is depending on the kind of resource. See here for more details: https://docs.kernel.org/admin-guide/cgroup-v2.html#resource-distribution-models
 
 ## Influencing factors
 
@@ -30,11 +31,10 @@ The following assumptions have been made in the decision process:
 Don't support hierarchical cgroups.
 
 *pros*
-* Reduces complexity
-* each process has its own cgroup
+* Reduces complexity in the parser and the implementation in crinit
 
 *cons*
-* Maybe not capable to support complex scenarios or only very cumbersome.
+* Maybe not capable to support complex scenarios or only very cumbersome. So the user would be restricted in some scenarios.
 
 ### 2) Support hierarchical cgroups
 
