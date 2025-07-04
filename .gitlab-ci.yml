@@ -98,7 +98,7 @@ Lint:
     - ci/lint-commits.sh origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-$CI_DEFAULT_BRANCH}
     - ci/readme-toc.sh
 
-Unit Tests-Release:
+Unit-Tests-Release:
   stage: test
   needs:
     - Build-Release
