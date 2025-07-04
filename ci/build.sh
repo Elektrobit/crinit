@@ -55,29 +55,29 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-set -- $PARAM
+set -- "$PARAM"
 
 BUILD_TYPE="${1}"
 if [ $# -eq 0 ]; then
     BUILD_TYPE="Debug"
 fi
 
-BUILDDIR="${BASEDIR}/build/${BUILD_TYPE}"
-CMAKE_BUILD_DIR="${BUILDDIR}/cmake"
-RESULTDIR="${BUILDDIR}/result/"
-DIST_DIR="${DIST_DIR:-"${BUILDDIR}/dist"}"
+BUILD_DIR="${BASEDIR}/build/${BUILD_TYPE}"
+CMAKE_BUILD_DIR="${BUILD_DIR}/cmake"
+RESULTDIR="${BUILD_DIR}/result/"
+DIST_DIR="${DIST_DIR:-"${BUILD_DIR}/dist"}"
 CMAKE_PARAM="${CMAKE_PARAM} -DCMAKE_INSTALL_PREFIX:PATH=${DIST_DIR}/usr/local/ -DDOC_BUILD_DIR=${BASEDIR}/build"
 
-if [ $OPTION_CLEAN -eq 1 ]; then
+if [ "$OPTION_CLEAN" -eq 1 ]; then
     if [ -e "$BUILD_DIR" ]; then
         echo "Removing $BUILD_DIR ..."
         rm -rf "$BUILD_DIR"
     fi
 fi
 
-mkdir -p ${RESULTDIR}/bin
-mkdir -p ${RESULTDIR}/lib
-mkdir -p ${RESULTDIR}/include
+mkdir -p "${RESULTDIR}"/bin
+mkdir -p "${RESULTDIR}"/lib
+mkdir -p "${RESULTDIR}"/include
 
 # build
 cd "$BASEDIR"
