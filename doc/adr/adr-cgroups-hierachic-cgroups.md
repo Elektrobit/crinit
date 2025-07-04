@@ -8,18 +8,20 @@ It seems that the way the resources are restricted or distributed is depending o
 ## Influencing factors
 
 The following constraints have to be taken into account for a suitable solution:
-* <first>
-* <second>
+
+* New tasks can be added during runtime, hence it is possible that also new
+  cgroup is added during runtime. As processes can only be assigned to
+  cgroup-leafs, adding new cgroups and process down in the hierarchy can lead
+  to complex cgroup/process reassignment tasks.
 
 
 
 ## Assumptions
 
 The following assumptions have been made in the decision process:
-* cgroups are created and allowed to be created on runtime
-* (or) cgroups are created once on startup
+* cgroups are created on startup
+* cgroups can be created on runtime
 * cgroups never disappear without restart
-* ... any other assumptions?
 
 
 
@@ -32,9 +34,11 @@ Don't support hierarchical cgroups.
 
 *pros*
 * Reduces complexity in the parser and the implementation in crinit
+* Easy to add new cgroups on runtime
 
 *cons*
 * Maybe not capable to support complex scenarios or only very cumbersome. So the user would be restricted in some scenarios.
+
 
 ### 2) Support hierarchical cgroups
 
@@ -45,7 +49,7 @@ Support hierarchical cgroups.
 
 *cons*
 * More room for errors. Processes may only be in the leave nodes of the cgroup tree, for example.
-* complex to deal with new cgroups on runtime
+* Complex to deal with new cgroups on runtime
 
 ## Decision
 

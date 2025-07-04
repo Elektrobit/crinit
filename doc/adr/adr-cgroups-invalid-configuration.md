@@ -39,10 +39,11 @@ If the start of a task inside a cgroup fails, set state to "error", log it and d
 If the creation of a cgroup fails, continue to boot. This will inevitable lead to failing tasks that want to use the faulty cgroup.
 
 *pros*
-* There is a chance to get a somewhat usable system at least without ignoring the errors alltogether.
+* There is a chance to get a somewhat usable system at least without ignoring the errors altogether.
+* Current behavior on failing task start
 
 *cons*
-* Considering that this will most likely happen during developement we would "waste" time on a system boot try that already is doomed.
+* Considering that this will most likely happen during development we would "waste" time on a system boot try that already is doomed.
 
 ## Decision
 
