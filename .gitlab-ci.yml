@@ -34,17 +34,50 @@ build-docker-image:
       --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
       -f ci/Dockerfile .
 
-Build:
+Build-Release:
   stage: build
   script:
     - env
-    - ci/build.sh
-    - ci/build.sh Debug --asan
+    - ci/build.sh --clean Release
+  artifacts:
+    paths:
+      - build/Release
+
+Build-Coverage:
+  stage: build
+  script:
+    - env
     - ci/build.sh Coverage
   artifacts:
     paths:
-      - build/
-      - result/
+      - build/Coverage
+
+#Build-Analyzer:
+#  stage: build
+#  script:
+#    - env
+#    - ci/build.sh --clean Analyzer
+#  artifacts:
+#    paths:
+#      - build/Analyzer
+      
+Build-Asan:
+  stage: build
+  script:
+    - env
+    - ci/build.sh --clean Asan
+  artifacts:
+    paths:
+      - build/Asan
+      
+Build-Ubsan:
+  stage: build
+  script:
+    - env
+    - ci/build.sh --clean Ubsan
+  artifacts:
+    paths:
+      - build/Ubsan
 
 Build Doc:
   stage: build
@@ -56,27 +89,58 @@ Build Doc:
 
 Lint:
   stage: test
+  needs:
+    - Build-Release
   script:
-    - ci/clang-tidy.sh
+    - ci/clang-tidy.sh Release
     - ci/lint-scripts.sh
     - ci/format-code.sh --check
     - ci/lint-commits.sh origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-$CI_DEFAULT_BRANCH}
     - ci/readme-toc.sh
 
-Unit Tests:
+Unit Tests-Release:
   stage: test
+  needs:
+    - Build-Release
   script:
-    - ci/run-utests.sh
-    - ci/run-utests.sh Debug
+    - ci/run-utests.sh Release
+  artifacts:
+    when: always
+    paths:
+      - build/Release/result
+      
+Unit-Tests-Asan:
+  stage: test
+  needs:
+    - Build-Asan
+  script:
+    - ci/run-utests.sh Asan
+  artifacts:
+    paths:
+      - build/Asan/result
+      
+Unit-Tests-Ubsan:
+  stage: test
+  needs:
+    - Build-Ubsan
+  script:
+    - ci/run-utests.sh Ubsan
+  artifacts:
+    paths:
+      - build/Ubsan/result
+
+Unit-Tests-Coverage:
+  stage: test
+  needs:
+    - Build-Coverage
+  script:
     - ci/run-utests.sh Coverage
   artifacts:
     when: always
     paths:
-      - result/amd64/utest_report.txt
-      - result/amd64-Debug/utest_report.txt
-      - result/amd64-coverage/utest_report.txt
-      - build/amd64-coverage/**/*.gcda
-      - build/amd64-coverage/**/*.gcno
+      - build/Coverage/result
+      - build/Coverage/**/*.gcda
+      - build/Coverage/**/*.gcno
 
 code-coverage:
   tags:
@@ -84,15 +148,16 @@ code-coverage:
     - "docker"
   stage: test
   needs:
-    - Build
-    - Unit Tests
+    - Build-Release
+    - Build-Coverage
+    - Unit-Tests-Coverage
   script:
       - ci/create_coverage.sh asmcov
       - ci/create_coverage.sh gcov
   artifacts:
     when: always
     paths:
-      - build/*/results/coverage
+      - build/Coverage/result/coverage
 
 Smoke Tests:
   stage: test
