@@ -40,7 +40,7 @@ Build:
     - env
     - ci/build.sh
     - ci/build.sh Debug --asan
-    - ci/build.sh coverage --gcov
+    - ci/build.sh Coverage
   artifacts:
     paths:
       - build/
@@ -68,7 +68,7 @@ Unit Tests:
   script:
     - ci/run-utests.sh
     - ci/run-utests.sh Debug
-    - ci/run-utests.sh coverage
+    - ci/run-utests.sh Coverage
   artifacts:
     when: always
     paths:

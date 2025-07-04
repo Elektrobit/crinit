@@ -22,9 +22,6 @@ option(UNIT_TESTS "Build unit tests" ON)
 set(UNIT_TEST_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/test/${PROJECT_NAME}/utest" CACHE PATH
   "Directory where the built unit tests will be installed.")
 option(API_DOC "Build API documentation" ON)
-option(ENABLE_ASAN "Build with -fsanitize=address" OFF)
-option(ENABLE_GCOV "Build with gcov support" OFF)
-option(ENABLE_ANALYZER "Build with -fanalyzer (disables -Werror)" OFF)
 option(ENABLE_WERROR "Build with -Werror" ON)
 set(LIBELOS_SO_FILENAME "" CACHE STRING
     "Name of the libelos shared object crinit will look for at run-time.")
@@ -102,8 +99,19 @@ set(DEFAULT_MACHINE_ID_FILE
   "Default path of the machine id file for the machine ID generator example."
 )
 
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE "Debug")
+if (CMAKE_BUILD_TYPE STREQUAL "Analyzer")
+  add_compile_options(-fanalyzer)
+elseif (CMAKE_BUILD_TYPE STREQUAL "Asan")
+  link_libraries(asan)
+  add_compile_options(-fsanitize=address)
+elseif(CMAKE_BUILD_TYPE STREQUAL "Ubsan")
+  link_libraries(ubsan)
+  add_compile_options(-fsanitize=undefined)
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+  add_compile_options(-O3 -DNDEBUG -g)
+elseif(CMAKE_BUILD_TYPE STREQUAL "Coverage")
+  add_compile_options(-O0 --coverage -g)
+  add_link_options(--coverage)
 endif()
 
 if(ENABLE_ANALYZER)
@@ -160,14 +168,6 @@ add_compile_options(
   -ffunction-sections -fdata-sections
   -D_DEFAULT_SOURCE
   -D_FORTIFY_SOURCE=2
-  $<IF:$<BOOL:${ENABLE_ANALYZER}>,-fanalyzer,>
-  $<IF:$<BOOL:${ENABLE_ASAN}>,-fsanitize=address,>
-  $<IF:$<BOOL:${ENABLE_GCOV}>,--coverage,>
-)
-
-add_link_options(
-  $<IF:$<BOOL:${ENABLE_ASAN}>,-fsanitize=address,>
-  $<IF:$<BOOL:${ENABLE_GCOV}>,--coverage,>
 )
 
 find_package(RE2C 3 REQUIRED)
