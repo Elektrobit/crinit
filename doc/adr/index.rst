@@ -43,3 +43,4 @@ List of ADRs
    ./adr-cgroups-management.md
    ./adr-cgroups-where-to-define-cgroups.md
    ./adr-cgroups-common-cgroup-for-unconfigured-tasks.md
+   ./adr-cgroups-own-cgroup-for-crinit-process.md
