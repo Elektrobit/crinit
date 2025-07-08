@@ -42,3 +42,4 @@ List of ADRs
    ./adr-cgroups-invalid-configuration.md
    ./adr-cgroups-management.md
    ./adr-cgroups-where-to-define-cgroups.md
+   ./adr-cgroups-common-cgroup-for-unconfigured-tasks.md
