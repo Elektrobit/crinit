@@ -49,7 +49,7 @@ According to the github page its license is LGPL-2.1.
 Use syscalls like clone3() and setns() etc. to manage processes with cgroups. Those syscalls can have a target cgroup as a parameter. With this parameter clone3() will start the new process directly in the new cgroup, for example.
 
 *pros*
-* process started right away in the correct cgroup
+* none
 
 *cons*
 * crinit use posix_spawn to create tasks
