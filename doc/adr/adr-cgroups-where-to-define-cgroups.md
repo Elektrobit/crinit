@@ -56,6 +56,18 @@ Cgroups can be defined and created in series and task files.
 *cons*
 * It's the most complex approach.
 
+### 4) In separate cgroup configuration files
+
+A completely separate configuration file structure is introduced. Under the crinit sysconfig directory there could be a sub-directory where *.crinit-cg files are stored that contain the cgroup configuration.
+
+*pros*
+* none
+
+*cons*
+* A separate parser is needed
+* The configuration of task-specific cgroups gets unintuitive
+* A format for those configuration files has to be defined
+
 ## Decision
 
 Alternative 42 is taken.
