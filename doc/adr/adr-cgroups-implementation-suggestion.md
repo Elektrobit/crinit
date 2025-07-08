@@ -20,11 +20,11 @@ The configuration in the series files could be like this:
 CGROUP_ROOT_NAME = crinit.cg
 CGROUP_ROOT_PARAMS = "memory.max=50M"   # array like, one key-value-pair per line
 
-CGROUP_GLOB_NAME = first_custom_cgroup  # array like, one name per line
-CGROUP_GLOB_PARAMS = "first_custom_cgroup: memory.max=25M"  # array like, one key-value-pair per line, prefixed by a valid and existing custom cgroup name followed by a ':'
+CGROUP_GLOBAL_NAME = first_custom_cgroup  # array like, one name per line
+CGROUP_GLOBAL_PARAMS = "first_custom_cgroup: memory.max=25M"  # array like, one key-value-pair per line, prefixed by a valid and existing custom cgroup name followed by a ':'
 ```
 
-While the CGROUP_GLOB_PARAMS may not be the niciest approach, in my understanding it needs the least modification in the existing parser.
+While the CGROUP_GLOBAL_PARAMS may not be the niciest approach, in my understanding it needs the least modification in the existing parser.
 
 The configuration in a task file is very similar:
 ```

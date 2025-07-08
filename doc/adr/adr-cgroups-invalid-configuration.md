@@ -4,7 +4,7 @@
 
 It shall be possible to run crinit without cgroup configuration. But if there is one, what is the proper way of handling an error that occures while starting a task with a cgroup configuration? (For example an invalid cgroup configuration.)
 
-In principal it is a decision between a "best-effort-approach" and a strict approach where cgroups are considered vital for the security and stability of the whole system.
+In principle it is a decision between a "best-effort-approach" and a strict approach where cgroups are considered vital for the security and stability of the whole system.
 
 
 ## Considered Alternatives

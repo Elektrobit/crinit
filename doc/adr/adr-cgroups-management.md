@@ -2,7 +2,7 @@
 
 ## Problem
 
-To use cgroups in crinit it is necessary to create and configure them. For cgroup management there is basically the virtual cgroup file system available, which can directly be used with basic file manipulation tools. A alternative a third party library like libcgroups could be used and especially its tools. This document compares current available options.
+To use cgroups in crinit it is necessary to create and configure them. For cgroup management there is basically the virtual cgroup file system available, which can directly be used with basic file manipulation tools. As alternative a third party library like libcgroups could be used and especially its tools. This document compares current available options.
 
 
 According to the cgroup tutorial found at https://labs.iximiuz.com/tutorials/controlling-process-resources-with-cgroups there is no difference for the parameter part of the calls. For example: to set a cgroup which limits the CPU usage to 50 % of the available CPU time the command to set this via cgroupfs would look like this:
@@ -11,7 +11,7 @@ If using libcgroup tools the same can be achieved with this command:
 ```cgset -r cpu.max="50000 100000" hog_pen```
 The relevant parts ("50000 100000" and "hog_pen") are the same.
 
-If you write invalid data to the virtual file system you receive an error. At least I observed that behaviour when writing to the cpu.max virtual file without allowing the sub-cgroup to change that parameter in the parent cgroup (in this case the root cgroup).
+If you write invalid data to the virtual file system you receive an error. At least that behaviour was observed when writing to the cpu.max virtual file without allowing the sub-cgroup to change that parameter in the parent cgroup (in this case the root cgroup).
 
 There is however a daemon supplied by libcgroup that could put processes into the configured cgroup automatically, depending on the user and group IDs. It is uncertain if this feature is relevant for the given use case.
 If the daemon is not used and only "cgcreate" and "cgexec" would be used to create cgroups and start processes via cgroupexec the same set of parameters have to be stored in the crinit configuration as for the manual approach.

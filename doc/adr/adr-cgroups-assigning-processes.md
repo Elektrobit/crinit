@@ -17,8 +17,6 @@ The following constraints have to be taken into account for a suitable solution:
 
 The following assumptions have been made in the decision process:
 * A process started by crinit get assigned only once to a cgroup, no live migration of processes to other cgroups
-* cgroups are made available by some other process
-
 
 
 ## Considered Alternatives
@@ -55,6 +53,7 @@ Use syscalls like clone3() and setns() etc. to manage processes with cgroups. Th
 
 *cons*
 * crinit use posix_spawn to create tasks
+* there is still the need to create the cgroups with other means
 
 ## Decision
 

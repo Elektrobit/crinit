@@ -2,16 +2,16 @@
 
 ## Problem
 
-Cgroups can be organized in some sort of tree. If so, they can "inherit" some specifications from their parents. The inheritation process is described here: https://docs.kernel.org/admin-guide/cgroup-v2.html#top-down-constraint. It is no inheritation like e.g. a C++ programmer would expect it.
+Cgroups can be organized in some sort of tree. If so, they can "inherit" some specifications from their parents. The inheritance process is described here: https://docs.kernel.org/admin-guide/cgroup-v2.html#top-down-constraint. It is no inheritance like e.g. a C++ programmer would expect it.
 It seems that the way the resources are restricted or distributed is depending on the kind of resource. See here for more details: https://docs.kernel.org/admin-guide/cgroup-v2.html#resource-distribution-models
 
 ## Influencing factors
 
 The following constraints have to be taken into account for a suitable solution:
 
-* New tasks can be added during runtime, hence it is possible that also new
+* New tasks can be added during runtime, hence it is possible that also a new
   cgroup is added during runtime. As processes can only be assigned to
-  cgroup-leafs, adding new cgroups and process down in the hierarchy can lead
+  cgroup-leafs, adding new cgroups and processes down in the hierarchy can lead
   to complex cgroup/process reassignment tasks.
 
 
