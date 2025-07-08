@@ -51,5 +51,5 @@ The key part of the parameters is the filename in the cgroup filesystem that is 
 
 The following constraints have to be taken into account for a suitable solution:
 * Should we make the crinit root cgroup configurable? Yes, of course. That way we can avoid name clashes and reduce the amount of available resources to child cgroups.
-* Should we have common cgroup for unconfigured tasks? Or should we create a cgroup for every unconfigured task?
-* Should we place the cgroup process itself in a cgroup below its crinit root cgroup? How would this interact with e.g. the OOM killer if the crinit root cgroup runs out of memory? How can we prevent the crinit process from beeing killed under any circumstances?
+* Should we have common cgroup for unconfigured tasks? Or should we create a cgroup for every unconfigured task? See adr/adr-cgroups-common-cgroup-for-unconfigured-tasks.md
+* Should we place the cgroup process itself in a cgroup below its crinit root cgroup? How would this interact with e.g. the OOM killer if the crinit root cgroup runs out of memory? How can we prevent the crinit process from beeing killed under any circumstances? See adr/adr-cgroups-own-cgroup-for-crinit-process.md
