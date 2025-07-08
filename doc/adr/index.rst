@@ -38,7 +38,6 @@ List of ADRs
    ./adr-signature-conf-interface.md
    ./adr-signature-storage.md
    ./adr-task-include-strategy.md
-   ./adr-cgroups-assigning-processes.md
    ./adr-cgroups-hierachic-cgroups.md
    ./adr-cgroups-invalid-configuration.md
    ./adr-cgroups-management.md

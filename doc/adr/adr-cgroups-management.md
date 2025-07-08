@@ -2,7 +2,7 @@
 
 ## Problem
 
-To use cgroups in crinit it is necessary to create and configure them. For cgroup management there is basically the virtual cgroup file system available, which can directly be used with basic file manipulation tools. As alternative a third party library like libcgroups could be used and especially its tools. This document compares current available options.
+To use cgroups in crinit it is necessary to create and configure them and to assign the tasks to the correct cgroup. For cgroup management there is basically the virtual cgroup file system available, which can directly be used with basic file manipulation tools. As alternative a third party library like libcgroups could be used and especially its tools. This document compares current available options.
 
 
 According to the cgroup tutorial found at https://labs.iximiuz.com/tutorials/controlling-process-resources-with-cgroups there is no difference for the parameter part of the calls. For example: to set a cgroup which limits the CPU usage to 50 % of the available CPU time the command to set this via cgroupfs would look like this:
@@ -22,8 +22,8 @@ In any case the virtual cgroup file system has to be mounted.
 ## Influencing factors
 
 The following constraints have to be taken into account for a suitable solution:
-* <first>
-* <second>
+* A task has to be started in the correct cgroup so it does not run unrestricted for any amount of time
+* The selected approach shall have minimal as possible effect on the startup behavior.
 
 
 
@@ -43,7 +43,7 @@ Change the crinit parser to support parsing cgroup configurations (e.g. in serie
 and / or task files) and interact with the cgroup filesystem directly.
 Use functions like "write()" to write directly to the relevant files in the
 virtual file system. Use the existing crinit-launcher to start a new process in
-the correct target cgroup.
+the correct target cgroup. This should be done by moving the crinit-launcher instance to the cgroup by writing its PID to cgroups.procs before starting the target process.
 
 *pros*
 * No further dependencies, basic syscalls like open, and write are enough
@@ -51,9 +51,11 @@ the correct target cgroup.
 * Homogenous handling of different configuration options. Crinit supports starting
 tasks as a different user, too. This would be a similar use-case (in the meaning of process
 restrictions) and could be implemented there quite naturally.
+* Creation of a cgroup is a mere directory creation
+* Assigning a process to a cgroup is just a write to a virtual file
 
 *cons*
-* This would require quite some changes in the series and task parseres. The task parser is considered rather easy as it can be handled completely with the existing meachanisms. The series parser would either need new meachnisms to parse different global cgroups or the configuration would deviate from the current scheme. See the implementation suggestion ADR for more information.
+* None compared to the other options. Usage of libcgroup tools would require the same amount of configuration data to be stored, error detection and handling would be similar if not better.
 
 ### 2) Use libcgroup tools
 
@@ -64,13 +66,13 @@ According to the github page its license is LGPL-2.1.
 Use cgcreate and cgexec.
 
 *pros*
-* None compared to the manual approach.
 * No changes in crinit itself, no risk of breaking something.
 
 *cons*
 * External dependency
 * Possible license problem?
 * Need of another intermediate binary to start a binary
+* Usage of cgexec would be inconsistent in comparision with other supported process restriction mechanisms (e.g. user / group support)
 
 ### 3) Use libcgroup daemon
 
@@ -81,6 +83,17 @@ Use the in libcgroup included daemon to move processes to cgroups
 
 *cons*
 * It seems that the usage of the daemon would require that each process is started in a own user context. While this approach might work for daemons it seems quite awkward for other purposes.
+
+### 4) Use clone3() and alike
+
+Use syscalls like clone3() and setns() etc. to manage processes with cgroups. Those syscalls can have a target cgroup as a parameter. With this parameter clone3() will start the new process directly in the new cgroup, for example.
+
+*pros*
+* none
+
+*cons*
+* crinit use posix_spawn to create tasks
+* This option does not solve the problem to create cgroups
 
 ## Decision
 
