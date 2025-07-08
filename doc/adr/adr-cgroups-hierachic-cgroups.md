@@ -68,4 +68,4 @@ The original ADR requests a "flat style". It states the following pros and cons:
 
 ### Open Points
 
-if something was left open after this decision
+None.
