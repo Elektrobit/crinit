@@ -69,7 +69,7 @@ A completely separate configuration file structure is introduced. Under the crin
 
 ## Decision
 
-Alternative 42 is taken.
+Alternative 3 is taken.
 
 ### Rationale
 
