@@ -5,7 +5,7 @@
 To use cgroups in crinit it is necessary to create and configure them and to assign the tasks to the correct cgroup. For cgroup management there is basically the virtual cgroup file system available, which can directly be used with basic file manipulation tools. As alternative a third party library like libcgroups could be used and especially its tools. This document compares current available options.
 
 
-According to the cgroup tutorial found at https://labs.iximiuz.com/tutorials/controlling-process-resources-with-cgroups there is no difference for the parameter part of the calls. For example: to set a cgroup which limits the CPU usage to 50 % of the available CPU time the command to set this via cgroupfs would look like this:
+According to the cgroup tutorial found at https://labs.iximiuz.com/tutorials/controlling-process-resources-with-cgroups there is no difference for the parameter part of the calls. For example, to set a cgroup which limits the CPU usage to 50% of the available CPU time, the command to set this via cgroupfs would look like this:
 ```echo "50000 100000" > /sys/fs/cgroup/hog_pen/cpu.max```
 If using libcgroup tools the same can be achieved with this command:
 ```cgset -r cpu.max="50000 100000" hog_pen```

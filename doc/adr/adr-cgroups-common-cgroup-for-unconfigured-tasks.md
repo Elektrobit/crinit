@@ -14,7 +14,7 @@ This common cgroup will get all tasks that do not have a cgroup configured in th
 * The system can reserve specific resources for unconfigured tasks and there is no guesswork what would be a sensible default for a task specific cgroup
 
 *cons*
-* That common cgroup must be configureable in the series file
+* That common cgroup must be configurable in the series file
 * Completely unrelated tasks start competing directly with each other in a more direct way than with no cgroups at all
 
 ### 2) Create a different cgroup for each unconfigured task

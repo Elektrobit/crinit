@@ -28,7 +28,7 @@ If the creation of a cgroup fails, stop the boot process.
 
 *pros*
 * Fail early, fail hard. Best possible solution to notice the problem early.
-* simple, no need to think of error handling
+* Simple, no need to think of error handling
 
 *cons*
 * A faulty cgroup configuration will stop the system from booting
