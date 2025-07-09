@@ -60,7 +60,8 @@ Cgroups can be defined and created in series and task files.
 A completely separate configuration file structure is introduced. Under the crinit sysconfig directory there could be a sub-directory where *.crinit-cg files are stored that contain the cgroup configuration.
 
 *pros*
-* none
+* The cgroup initialization is a separate phase in the crinit startup before and unrelated to task loading.
+* The parser is less complicated as the naming of cgroups is done through the file system and doesn't need to be merged somehow into the configurations keywords or values.
 
 *cons*
 * A separate parser is needed
