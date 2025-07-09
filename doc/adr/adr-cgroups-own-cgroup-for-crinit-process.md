@@ -14,8 +14,7 @@ The following constraints have to be taken into account for a suitable solution:
 ## Assumptions
 
 The following assumptions have been made in the decision process:
-* <first>
-* <second>
+* Crinit runs as first-init and not secondary-init process
 
 
 

@@ -7,8 +7,7 @@ If we decide to handle cgroups natively in crinit we have to decide where cgroup
 ## Influencing factors
 
 The following constraints have to be taken into account for a suitable solution:
-* <first>
-* <second>
+* Respect the capabilities of Crinit config files. (Key/Value-Pairs and lists)
 
 
 
@@ -33,17 +32,17 @@ Cgroups can only be defined and created in the series file part of the configura
 
 *cons*
 * If a single task want its own very specific cgroup it has to relay on a proper modified series file.
-
+* Increase complexity of configuration parser, considering the nature of crinit series files the cgroup identifier and properties assignments must be somehow encode in the key/value pairs.
 ### 2) In task files only
 
 Cgroups can only be defined and created in task files.
 
 *pros*
 * Every task creates the cgroups that it needs. This would allow for a nice atomic approach.
-
+* Easy to map the additional options to new config options (key/value pairs)
 *cons*
 * If multiple tasks need to use the same cgroup they would have to wait on a setup task or other tasks to which they share no further mutuality.
-
+* Probably not intuitive and error prone, leading to the question "which task file create is creating this cgroup?"
 ### 3) Allow cgroup definition in series and task files
 
 Cgroups can be defined and created in series and task files.
