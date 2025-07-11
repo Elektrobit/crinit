@@ -83,6 +83,10 @@
 #define CRINIT_CONFIG_KEYSTR_USER "USER"
 /**  Config key to set a specific group to run task's commands. **/
 #define CRINIT_CONFIG_KEYSTR_GROUP "GROUP"
+#ifdef ENABLE_CGROUP
+/**  Config key to set or reference a cgroup name. **/
+#define CRINIT_CONFIG_CGROUP_NAME "CGROUP_NAME"
+#endif
 
 /**  Default filename extension of task files. **/
 #define CRINIT_CONFIG_DEFAULT_TASK_FILE_SUFFIX ".crinit"

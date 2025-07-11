@@ -111,6 +111,7 @@ int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig) {
     out->groupname = NULL;
     out->supGroups = NULL;
     out->supGroupsSize = 0;
+    out->cgroupname = NULL;
 
     out->name = strdup(orig->name);
     if (out->name == NULL) {
@@ -229,6 +230,15 @@ int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig) {
         memcpy(out->supGroups, orig->supGroups, out->supGroupsSize * sizeof(*out->supGroups));
     }
 
+    if (orig->cgroupname) {
+        out->cgroupname = strdup(orig->cgroupname);
+        if (out->cgroupname == NULL) {
+            crinitErrnoPrint("Could not allocate memory for task cgroupname during copy of Task \'%s\'.",
+                             orig->cgroupname);
+            goto fail;
+        }
+    }
+
     return 0;
 
 fail:
@@ -299,6 +309,7 @@ void crinitDestroyTask(crinitTask_t *t) {
     free(t->username);
     free(t->groupname);
     free(t->supGroups);
+    free(t->cgroupname);
 }
 
 int crinitTaskMergeInclude(crinitTask_t *tgt, const char *src, char *importList) {

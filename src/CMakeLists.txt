@@ -47,6 +47,11 @@ if(ENABLE_CAPABILITIES)
     )
 endif()
 
+if(ENABLE_CGROUP)
+    set(CGROUP_DEFINES
+        ENABLE_CGROUP)
+endif()
+
 RE2C_TARGET(NAME lexers INPUT ${PROJECT_SOURCE_DIR}/src/lexers.re OUTPUT lexers.c OPTIONS ${RE2C_OPTIONS} -W DEPENDS ${PROJECT_SOURCE_DIR}/inc/lexers.h)
 
 # optional compile-time features
@@ -117,6 +122,7 @@ target_compile_definitions(
     CRINIT_MACHINE_ID_FILE="${DEFAULT_MACHINE_ID_FILE}"
     ${ELOS_DEFINES}
     ${CAPABILITIES_DEFINES}
+    ${CGROUP_DEFINES}
 )
 
 # libcrinit-client

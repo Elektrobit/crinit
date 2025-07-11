@@ -18,6 +18,7 @@ include(GNUInstallDirs)
 option(ENABLE_SIGNATURE_SUPPORT "Enable signature support using MbedTLS" ON)
 option(ENABLE_ELOS "Enable ELOS support" ON)
 option(ENABLE_CAPABILITIES "Enable capabilities support" ON)
+option(ENABLE_CGROUP "Enable cgroup support" ON)
 option(UNIT_TESTS "Build unit tests" ON)
 set(UNIT_TEST_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/test/${PROJECT_NAME}/utest" CACHE PATH
   "Directory where the built unit tests will be installed.")

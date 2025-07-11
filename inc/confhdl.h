@@ -56,6 +56,10 @@ int crinitTaskIncludeHandler(void *tgt, const char *val, crinitConfigType_t type
 int crinitCfgUserHandler(void *tgt, const char *val, crinitConfigType_t type);
 /** Handler for `GROUP` config directives. See crinitConfigHandler_t **/
 int crinitCfgGroupHandler(void *tgt, const char *val, crinitConfigType_t type);
+#ifdef ENABLE_CGROUP
+/** Handler for "CGROUP_NAME" config directives. See crinitConfigHandler_t **/
+int crinitCfgCGroupNameHandler(void *tgt, const char *val, crinitConfigType_t type);
+#endif
 
 /* Handlers for global options */
 

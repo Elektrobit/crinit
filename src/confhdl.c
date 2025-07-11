@@ -632,6 +632,26 @@ failInit:
     return -1;
 }
 
+#ifdef ENABLE_CGROUP
+int crinitCfgCGroupNameHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    crinitNullCheck(-1, tgt, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
+    crinitTask_t *t = tgt;
+
+    if (strlen(val) == 0) {
+        crinitErrPrint("Failed to parse CGROUP_NAME: must not be empty");
+        return -1;
+    }
+    t->cgroupname = strdup(val);
+    if (t->cgroupname == NULL) {
+        crinitErrPrint("Failed to allocate memory for cgroup name %s", val);
+        return -1;
+    }
+
+    return 0;
+}
+#endif
+
 int crinitCfgDebugHandler(void *tgt, const char *val, crinitConfigType_t type) {
     CRINIT_PARAM_UNUSED(tgt);
     crinitNullCheck(-1, val);
