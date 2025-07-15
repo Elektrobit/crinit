@@ -650,6 +650,61 @@ int crinitCfgCGroupNameHandler(void *tgt, const char *val, crinitConfigType_t ty
 
     return 0;
 }
+
+int crinitCfgCGroupParamsHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    crinitNullCheck(-1, tgt, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
+    crinitTask_t *t = tgt;
+
+    int confArrLen;
+    char **parsedVal = crinitConfConvToStrArr(&confArrLen, val, true);
+    if (parsedVal == NULL) {
+        crinitErrPrint("Could not convert group list '%s' to string array.", val);
+        return -1;
+    }
+
+    if (confArrLen > 0) {
+        t->cgroupParamsSize = confArrLen;
+        t->cgroupParams = calloc(t->cgroupParamsSize, sizeof(*t->cgroupParams));
+        if (t->cgroupParams == NULL) {
+            crinitErrPrint("Couldn not allocate memory for cgroup parameters.\n");
+            goto failInit;
+        }
+    }
+
+    for (int i = 0; i < confArrLen; i++) {
+        if (parsedVal[i]) {
+            t->cgroupParams[i] = strdup(parsedVal[i]);
+            if (t->cgroupParams[i] == NULL) {
+                goto failLoop;
+            }
+            if (strchr(t->cgroupParams[i], '=') == NULL) {
+                crinitErrPrint("Configuration for %s has invalid format.", CRINTI_CONFIG_CGROUP_PARAMS);
+                goto failLoop;
+            }
+        }
+    }
+
+    // If parameters are specified, we need a cgroup name, too.
+    if (t->cgroupname == NULL) {
+        crinitErrPrint("Configuration key %s is empty.", CRINIT_CONFIG_CGROUP_NAME);
+        goto failLoop;
+    }
+
+    crinitFreeArgvArray(parsedVal);
+    return 0;
+
+failLoop:
+    for (size_t i = 0; i < t->cgroupParamsSize; i++) {
+        free(t->cgroupParams[i]);
+    }
+    free(t->cgroupParams);
+    t->cgroupParams = NULL;
+    t->cgroupParamsSize = 0;
+failInit:
+    crinitFreeArgvArray(parsedVal);
+    return -1;
+}
 #endif
 
 int crinitCfgDebugHandler(void *tgt, const char *val, crinitConfigType_t type) {

@@ -86,6 +86,8 @@
 #ifdef ENABLE_CGROUP
 /**  Config key to set or reference a cgroup name. **/
 #define CRINIT_CONFIG_CGROUP_NAME "CGROUP_NAME"
+/**  Config key to set cgroup parameters. **/
+#define CRINIT_CONFIG_CGROUP_PARAMS "CGROUP_PARAMS"
 #endif
 
 /**  Default filename extension of task files. **/
@@ -171,6 +173,10 @@ typedef enum crinitConfigs {
 #ifdef ENABLE_CAPABILITIES
     CRINIT_CONFIG_CAP_CLEAR,
     CRINIT_CONFIG_CAP_SET,
+#endif
+#ifdef ENABLE_CGROUP
+    CRINIT_CONFIG_CGROUP_NAME,
+    CRINIT_CONFIG_CGROUP_PARAMS,
 #endif
     CRINIT_CONFIGS_SIZE
 } crinitConfigs_t;

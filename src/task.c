@@ -112,6 +112,8 @@ int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig) {
     out->supGroups = NULL;
     out->supGroupsSize = 0;
     out->cgroupname = NULL;
+    out->cgroupParams = NULL;
+    out->cgroupParamsSize = 0;
 
     out->name = strdup(orig->name);
     if (out->name == NULL) {
@@ -238,6 +240,19 @@ int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig) {
             goto fail;
         }
     }
+    if (orig->cgroupParams && orig->cgroupParamsSize > 0) {
+        out->cgroupParamsSize = orig->cgroupParamsSize;
+        out->cgroupParams = calloc(out->cgroupParamsSize, sizeof(*out->cgroupParams));
+        if (out->cgroupParams == NULL) {
+            goto fail;
+        }
+        for (size_t i = 0; i < out->cgroupParamsSize; i++) {
+            out->cgroupParams[i] = strdup(orig->cgroupParams[i]);
+            if (out->cgroupParams[i] == NULL) {
+                goto fail;
+            }
+        }
+    }
 
     return 0;
 
@@ -310,6 +325,12 @@ void crinitDestroyTask(crinitTask_t *t) {
     free(t->groupname);
     free(t->supGroups);
     free(t->cgroupname);
+    if (t->cgroupParams != NULL) {
+        for (size_t i = 0; i < t->cgroupParamsSize; i++) {
+            free(t->cgroupParams[i]);
+        }
+        free(t->cgroupParams);
+    }
 }
 
 int crinitTaskMergeInclude(crinitTask_t *tgt, const char *src, char *importList) {
