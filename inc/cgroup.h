@@ -14,37 +14,37 @@
 typedef struct {
     char *filename;         ///< target filename
     char *option;           ///< configuration to write to the target file
-} crinitCgroupParam;
+} crinitCgroupParam_t;
 
 /** Type to store a complete configuration for a single cgroup **/
 typedef struct {
-    crinitCgroupParam **param;      ///< array with configuration parameters
+    crinitCgroupParam_t **param;      ///< array with configuration parameters
     size_t paramCount;              ///< number of elements in param
-} crinitCgroupConfiguration;
+} crinitCgroupConfiguration_t;
 
 /** Type to store a single cgroup **/
 typedef struct {
     char *name;                             ///< cgroup name
-    crinitCgroupConfiguration *config;      ///< pointer to cgroup configuration
-} crinitCgroup;
+    crinitCgroupConfiguration_t *config;      ///< pointer to cgroup configuration
+} crinitCgroup_t;
 
 /**
  * @brief Releases the memory held by param
  * @param param Pointer to crinitCGroupParam struct
  * @return On sucess 0, otherwise -1
  */
-int crinitFreeCgroupParam(crinitCgroupParam *param);
+int crinitFreeCgroupParam(crinitCgroupParam_t *param);
 
 /**
  * @brief Releases the memory held by config
  * @param config Pointer to crinitCgroupConfiguration struct
  * @return On sucess 0, otherwise -1
  */
-int crinitFreeCgroupConfiguration(crinitCgroupConfiguration *config);
+int crinitFreeCgroupConfiguration(crinitCgroupConfiguration_t *config);
 
-int crinitCopyCgroupParam(crinitCgroupParam *orig, crinitCgroupParam *out);
+int crinitCopyCgroupParam(crinitCgroupParam_t *orig, crinitCgroupParam_t *out);
 
-int crinitCopyCgroupConfiguration(crinitCgroupConfiguration *orig, crinitCgroupConfiguration *out);
+int crinitCopyCgroupConfiguration(crinitCgroupConfiguration_t *orig, crinitCgroupConfiguration_t *out);
 
 /**
  * @brief Converts a configuration array as returned by crinitConfConvToStrArr() to crinitCgroupConfiguration structure.
@@ -58,7 +58,7 @@ int crinitCopyCgroupConfiguration(crinitCgroupConfiguration *orig, crinitCgroupC
  * @return On sucess 0, otherwise -1
  */
 int crinitConvertConfigArrayToCGroupConfiguration(char **confArray, const int confArraySize,
-                                                  crinitCgroupConfiguration *result);
+                                                  crinitCgroupConfiguration_t *result);
 
 #endif
 

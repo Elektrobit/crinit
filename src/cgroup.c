@@ -14,7 +14,7 @@
 #include "common.h"
 #include "logio.h"
 
-int crinitFreeCgroupParam(crinitCgroupParam *param) {
+int crinitFreeCgroupParam(crinitCgroupParam_t *param) {
     crinitNullCheck(-1, param);
 
     free(param->filename);
@@ -25,7 +25,7 @@ int crinitFreeCgroupParam(crinitCgroupParam *param) {
     return 0;
 }
 
-int crinitFreeCgroupConfiguration(crinitCgroupConfiguration *config) {
+int crinitFreeCgroupConfiguration(crinitCgroupConfiguration_t *config) {
     crinitNullCheck(-1, config);
 
     if (config->param) {
@@ -44,7 +44,7 @@ int crinitFreeCgroupConfiguration(crinitCgroupConfiguration *config) {
     return 0;
 }
 
-int crinitCopyCgroupParam(crinitCgroupParam *orig, crinitCgroupParam *out) {
+int crinitCopyCgroupParam(crinitCgroupParam_t *orig, crinitCgroupParam_t *out) {
     crinitNullCheck(-1, orig, out);
 
     out->filename = strdup(orig->filename);
@@ -58,7 +58,7 @@ int crinitCopyCgroupParam(crinitCgroupParam *orig, crinitCgroupParam *out) {
     return 0;
 }
 
-int crinitCopyCgroupConfiguration(crinitCgroupConfiguration *orig, crinitCgroupConfiguration *out) {
+int crinitCopyCgroupConfiguration(crinitCgroupConfiguration_t *orig, crinitCgroupConfiguration_t *out) {
     crinitNullCheck(-1, orig, out);
 
     out->paramCount = orig->paramCount;
@@ -88,7 +88,7 @@ fail:
 }
 
 int crinitConvertConfigArrayToCGroupConfiguration(char **confArray, const int confArraySize,
-                                                  crinitCgroupConfiguration *result) {
+                                                  crinitCgroupConfiguration_t *result) {
     crinitNullCheck(-1, confArray, result);
 
     memset(result, 0x00, sizeof(*result));

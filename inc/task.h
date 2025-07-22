@@ -116,7 +116,7 @@ typedef struct crinitTask {
 #endif
 #ifdef ENABLE_CGROUP
     char *cgroupname;            ///< Name of the cgroup that shall contain the task's processes.
-    crinitCgroupConfiguration *cgroupConfig;    ///< Configuration for cgroup
+    crinitCgroupConfiguration_t *cgroupConfig;    ///< Configuration for cgroup
 #endif
 } crinitTask_t;
 
