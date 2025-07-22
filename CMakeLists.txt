@@ -23,6 +23,7 @@ set(UNIT_TEST_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/test/${PROJECT_NAME}/utest" C
   "Directory where the built unit tests will be installed.")
 option(API_DOC "Build API documentation" ON)
 option(ENABLE_ASAN "Build with -fsanitize=address" OFF)
+option(ENABLE_GCOV "Build with gcov support" OFF)
 option(ENABLE_ANALYZER "Build with -fanalyzer (disables -Werror)" OFF)
 option(ENABLE_WERROR "Build with -Werror" ON)
 set(LIBELOS_SO_FILENAME "" CACHE STRING
@@ -161,10 +162,12 @@ add_compile_options(
   -D_FORTIFY_SOURCE=2
   $<IF:$<BOOL:${ENABLE_ANALYZER}>,-fanalyzer,>
   $<IF:$<BOOL:${ENABLE_ASAN}>,-fsanitize=address,>
+  $<IF:$<BOOL:${ENABLE_GCOV}>,--coverage,>
 )
 
 add_link_options(
   $<IF:$<BOOL:${ENABLE_ASAN}>,-fsanitize=address,>
+  $<IF:$<BOOL:${ENABLE_GCOV}>,--coverage,>
 )
 
 find_package(RE2C 3 REQUIRED)

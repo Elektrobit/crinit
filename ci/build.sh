@@ -31,6 +31,7 @@ esac
 ENABLE_ASAN=OFF
 ENABLE_ANALYZER=OFF
 ENABLE_WERROR=ON
+ENABLE_GCOV=OFF
 
 for ARG in "$@"; do
     case "$ARG" in
@@ -42,6 +43,9 @@ for ARG in "$@"; do
             ;;
         --no-werror)
             ENABLE_WERROR=OFF
+            ;;
+        --gcov)
+            ENABLE_GCOV=ON
             ;;
         *)
             echo "Unknown argument $ARG" >&2
@@ -69,6 +73,7 @@ cmake -B "$BUILDDIR" \
     -DENABLE_ASAN="$ENABLE_ASAN" \
     -DENABLE_ANALYZER="$ENABLE_ANALYZER" \
     -DENABLE_WERROR="$ENABLE_WERROR" \
+    -DENABLE_GCOV="$ENABLE_GCOV" \
     -DDEFAULT_CRINIT_SOCKFILE=/run/crinit/crinit.sock \
     "$BASEDIR"
 make -C "$BUILDDIR"

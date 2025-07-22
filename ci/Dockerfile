@@ -23,6 +23,7 @@ RUN apt-get update \
     flake8 \
     git \
     git-buildpackage \
+    gcovr \
     graphviz \
     keyutils \
     libcap-dev \
