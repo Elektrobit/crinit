@@ -29,6 +29,7 @@ build-docker-image:
       --build-arg BUILDKIT_INLINE_CACHE=1
       --build-arg REPO=amd64
       --build-arg UBUNTU_RELEASE=noble
+      --build-arg ASMCOV_URI="$ASMCOV_URI"
       --tag $CI_REGISTRY_IMAGE:buildcache
       --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
       -f ci/Dockerfile .
@@ -39,6 +40,7 @@ Build:
     - env
     - ci/build.sh
     - ci/build.sh Debug --asan
+    - ci/build.sh coverage --gcov
   artifacts:
     paths:
       - build/
@@ -66,11 +68,31 @@ Unit Tests:
   script:
     - ci/run-utests.sh
     - ci/run-utests.sh Debug
+    - ci/run-utests.sh coverage
   artifacts:
     when: always
     paths:
       - result/amd64/utest_report.txt
       - result/amd64-Debug/utest_report.txt
+      - result/amd64-coverage/utest_report.txt
+      - build/amd64-coverage/**/*.gcda
+      - build/amd64-coverage/**/*.gcno
+
+code-coverage:
+  tags:
+    - "intelpt"
+    - "docker"
+  stage: test
+  needs:
+    - Build
+    - Unit Tests
+  script:
+      - ci/create_coverage.sh asmcov
+      - ci/create_coverage.sh gcov
+  artifacts:
+    when: always
+    paths:
+      - build/*/results/coverage
 
 Smoke Tests:
   stage: test
