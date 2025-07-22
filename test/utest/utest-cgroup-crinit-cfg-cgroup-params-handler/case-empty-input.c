@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 /**
  * @file case-null-input.c
- * @brief Unit test for crinitCfgCGroupParamsHandler(), input parameter is empty.
+ * @brief Unit test for crinitCfgCgroupParamsHandler(), input parameter is empty.
  */
 
 #include <stdlib.h>
@@ -18,7 +18,7 @@ void crinitCfgCGroupParamsHandlerTestEmptyInput(void **state) {
     crinitTask_t tgt;
     memset(&tgt, 0x00, sizeof(tgt));
     const char *val = "";
-    assert_int_equal(crinitCfgCGroupParamsHandler(&tgt, val, CRINIT_CONFIG_TYPE_TASK), -1);
-    assert_null(tgt.cgroupParams);
-    assert_int_equal(tgt.cgroupParamsSize, 0);
+    assert_int_equal(crinitCfgCgroupParamsHandler(&tgt, val, CRINIT_CONFIG_TYPE_TASK), -1);
+    assert_null(tgt.cgroupConfig);
+    crinitDestroyTask(&tgt);
 }

@@ -21,6 +21,9 @@
 #ifdef ENABLE_CAPABILITIES
 #include "capabilities.h"
 #endif
+#ifdef ENABLE_CGROUP
+#include "cgroup.h"
+#endif
 #include "common.h"
 #include "confconv.h"
 #include "globopt.h"
@@ -633,7 +636,7 @@ failInit:
 }
 
 #ifdef ENABLE_CGROUP
-int crinitCfgCGroupNameHandler(void *tgt, const char *val, crinitConfigType_t type) {
+int crinitCfgCgroupNameHandler(void *tgt, const char *val, crinitConfigType_t type) {
     crinitNullCheck(-1, tgt, val);
     crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
     crinitTask_t *t = tgt;
@@ -651,7 +654,7 @@ int crinitCfgCGroupNameHandler(void *tgt, const char *val, crinitConfigType_t ty
     return 0;
 }
 
-int crinitCfgCGroupParamsHandler(void *tgt, const char *val, crinitConfigType_t type) {
+int crinitCfgCgroupParamsHandler(void *tgt, const char *val, crinitConfigType_t type) {
     crinitNullCheck(-1, tgt, val);
     crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
     crinitTask_t *t = tgt;
@@ -664,43 +667,28 @@ int crinitCfgCGroupParamsHandler(void *tgt, const char *val, crinitConfigType_t 
     }
 
     if (confArrLen > 0) {
-        t->cgroupParamsSize = confArrLen;
-        t->cgroupParams = calloc(t->cgroupParamsSize, sizeof(*t->cgroupParams));
-        if (t->cgroupParams == NULL) {
-            crinitErrPrint("Couldn not allocate memory for cgroup parameters.\n");
+        t->cgroupConfig = calloc(sizeof(*(t->cgroupConfig)), 1);
+        if (t->cgroupConfig == NULL) {
             goto failInit;
         }
-    }
-
-    for (int i = 0; i < confArrLen; i++) {
-        if (parsedVal[i]) {
-            t->cgroupParams[i] = strdup(parsedVal[i]);
-            if (t->cgroupParams[i] == NULL) {
-                goto failLoop;
-            }
-            if (strchr(t->cgroupParams[i], '=') == NULL) {
-                crinitErrPrint("Configuration for %s has invalid format.", CRINTI_CONFIG_CGROUP_PARAMS);
-                goto failLoop;
-            }
+        if (crinitConvertConfigArrayToCGroupConfiguration(parsedVal, confArrLen, t->cgroupConfig) != 0) {
+            goto fail;
         }
     }
 
     // If parameters are specified, we need a cgroup name, too.
     if (t->cgroupname == NULL) {
-        crinitErrPrint("Configuration key %s is empty.", CRINIT_CONFIG_CGROUP_NAME);
-        goto failLoop;
+        crinitErrPrint("Configuration key %s is empty.", CRINIT_CONFIG_KEYSTR_CGROUP_NAME);
+        goto fail;
     }
 
     crinitFreeArgvArray(parsedVal);
     return 0;
 
-failLoop:
-    for (size_t i = 0; i < t->cgroupParamsSize; i++) {
-        free(t->cgroupParams[i]);
-    }
-    free(t->cgroupParams);
-    t->cgroupParams = NULL;
-    t->cgroupParamsSize = 0;
+fail:
+    crinitFreeCgroupConfiguration(t->cgroupConfig);
+    free(t->cgroupConfig);
+    t->cgroupConfig = NULL;
 failInit:
     crinitFreeArgvArray(parsedVal);
     return -1;

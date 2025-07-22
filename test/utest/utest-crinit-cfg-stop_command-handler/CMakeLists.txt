@@ -11,6 +11,7 @@ create_unit_test(
     case-null-input.c
     lexers.c
     ${PROJECT_SOURCE_DIR}/src/logio.c
+    $<IF:$<BOOL:${ENABLE_CGROUP}>,${PROJECT_SOURCE_DIR}/src/cgroup.c,>
     ${PROJECT_SOURCE_DIR}/src/confconv.c
     ${PROJECT_SOURCE_DIR}/src/confhdl.c
     ${PROJECT_SOURCE_DIR}/src/confparse.c

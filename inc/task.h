@@ -15,6 +15,10 @@
 #include "envset.h"
 #include "ioredir.h"
 
+#ifdef ENABLE_CGROUP
+#include "cgroup.h"
+#endif
+
 /**  Type to store Task option bitmask. **/
 typedef unsigned long crinitTaskOpts_t;
 /** RESPAWN task option bitmask. **/
@@ -112,8 +116,7 @@ typedef struct crinitTask {
 #endif
 #ifdef ENABLE_CGROUP
     char *cgroupname;            ///< Name of the cgroup that shall contain the task's processes.
-    char **cgroupParams;         ///< List of parameters for a cgroup.
-    size_t cgroupParamsSize;     ///< Number of paramters for a cgroup.
+    crinitCgroupConfiguration *cgroupConfig;    ///< Configuration for cgroup
 #endif
 } crinitTask_t;
 

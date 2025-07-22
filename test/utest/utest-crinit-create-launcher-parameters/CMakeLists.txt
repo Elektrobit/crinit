@@ -11,6 +11,7 @@ create_unit_test(
     lexers.c
     ${PROJECT_SOURCE_DIR}/src/logio.c
     ${PROJECT_SOURCE_DIR}/src/envset.c
+    $<IF:$<BOOL:${ENABLE_CGROUP}>,${PROJECT_SOURCE_DIR}/src/cgroup.c,>
     ${PROJECT_SOURCE_DIR}/src/confconv.c
     ${PROJECT_SOURCE_DIR}/src/confhdl.c
     ${PROJECT_SOURCE_DIR}/src/confmap.c

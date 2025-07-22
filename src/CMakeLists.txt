@@ -48,6 +48,7 @@ if(ENABLE_CAPABILITIES)
 endif()
 
 if(ENABLE_CGROUP)
+    set(CGROUP_SOURCES cgroup.c)
     set(CGROUP_DEFINES
         ENABLE_CGROUP)
 endif()
@@ -92,6 +93,7 @@ add_executable(
   ${SIG_SOURCES}
   ${ELOS_SOURCES}
   ${CMAKE_CURRENT_BINARY_DIR}/crinit-version.c
+  ${CGROUP_SOURCES}
 )
 
 target_include_directories(

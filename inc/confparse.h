@@ -85,9 +85,9 @@
 #define CRINIT_CONFIG_KEYSTR_GROUP "GROUP"
 #ifdef ENABLE_CGROUP
 /**  Config key to set or reference a cgroup name. **/
-#define CRINIT_CONFIG_CGROUP_NAME "CGROUP_NAME"
+#define CRINIT_CONFIG_KEYSTR_CGROUP_NAME "CGROUP_NAME"
 /**  Config key to set cgroup parameters. **/
-#define CRINIT_CONFIG_CGROUP_PARAMS "CGROUP_PARAMS"
+#define CRINIT_CONFIG_KEYSTR_CGROUP_PARAMS "CGROUP_PARAMS"
 #endif
 
 /**  Default filename extension of task files. **/

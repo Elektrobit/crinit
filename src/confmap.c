@@ -15,6 +15,10 @@ const crinitConfigMapping_t crinitTaskCfgMap[] = {
     {CRINIT_CONFIG_CAP_CLEAR, CRINIT_CONFIG_KEYSTR_CAP_CLEAR, true, false, crinitCfgCapClearHandler},
     {CRINIT_CONFIG_CAP_SET, CRINIT_CONFIG_KEYSTR_CAP_SET, true, false, crinitCfgCapSetHandler},
 #endif
+#ifdef ENABLE_CGROUP
+    {CRINIT_CONFIG_CGROUP_NAME, CRINIT_CONFIG_KEYSTR_CGROUP_NAME, false, false, crinitCfgCgroupNameHandler},
+    {CRINIT_CONFIG_CGROUP_PARAMS, CRINIT_CONFIG_KEYSTR_CGROUP_PARAMS, true, false, crinitCfgCgroupParamsHandler},
+#endif
     {CRINIT_CONFIG_COMMAND, CRINIT_CONFIG_KEYSTR_COMMAND, true, false, crinitCfgCmdHandler},
     {CRINIT_CONFIG_DEPENDS, CRINIT_CONFIG_KEYSTR_DEPENDS, true, true, crinitCfgDepHandler},
     {CRINIT_CONFIG_ENV_SET, CRINIT_CONFIG_KEYSTR_ENV_SET, true, true, crinitCfgEnvHandler},
