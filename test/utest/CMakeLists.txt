@@ -12,6 +12,13 @@ if(ENABLE_CAPABILITIES)
     )
 endif()
 
+function(addFUT)
+    cmake_parse_arguments(PARSED_ARGS "" "FUNCTION_NAME;TEST_BINARY_PATH" "" ${ARGN})
+    set(fut_file "${PROJECT_BINARY_DIR}/test/functions_under_test.txt")
+    
+    file(APPEND ${fut_file} "${PARSED_ARGS_FUNCTION_NAME} ${PARSED_ARGS_TEST_BINARY_PATH}\n")
+endfunction()
+
 function(create_unit_test)
   cmake_parse_arguments(PARSED_ARGS "" "NAME" "SOURCES;INCLUDES;LIBRARIES;DEFINITIONS;WRAPS" ${ARGN})
   get_filename_component(UNIT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../.. ABSOLUTE)

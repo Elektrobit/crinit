@@ -14,3 +14,4 @@ create_unit_test(
     -Wl,--wrap=free
     -Wl,--wrap=crinitErrPrintFFL
 )
+addFUT(FUNCTION_NAME crinitEnvSetDestroy TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-envset-destroy")

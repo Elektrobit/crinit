@@ -24,3 +24,4 @@ create_unit_test(
     libmockfunctions
     inih-local
 )
+addFUT(FUNCTION_NAME crinitCreateLauncherParameters TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-crinit-create-launcher-parameters")

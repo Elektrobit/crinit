@@ -12,3 +12,4 @@ create_unit_test(
     libmockfunctions
   WRAPS
 )
+addFUT(FUNCTION_NAME crinitEnvSetSet TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-envset-set")

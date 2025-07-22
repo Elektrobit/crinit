@@ -20,3 +20,4 @@ create_unit_test(
   LIBRARIES
     libmockfunctions
 )
+addFUT(FUNCTION_NAME crinitCfgElosEventPollIntervalHandler TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-crinit-cfg-elos-poll-interval-handler")

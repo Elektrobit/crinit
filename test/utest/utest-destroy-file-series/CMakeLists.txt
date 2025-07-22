@@ -13,3 +13,4 @@ create_unit_test(
     -Wl,--wrap=free
     -Wl,--wrap=strdup
 )
+addFUT(FUNCTION_NAME crinitDestroyFileSeries TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-destroy-file-series")

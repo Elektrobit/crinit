@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 
-if (${ENABLE_CAPABILITIES})
+if(${ENABLE_CAPABILITIES})
     find_package(RE2C 3 REQUIRED)
     RE2C_TARGET(NAME lexers_ut_task_cap-convert-to-bitmask INPUT ${PROJECT_SOURCE_DIR}/src/lexers.re OUTPUT lexers.c OPTIONS ${RE2C_OPTIONS} -W DEPENDS ${PROJECT_SOURCE_DIR}/inc/lexers.h)
 
@@ -24,3 +24,4 @@ if (${ENABLE_CAPABILITIES})
         $<IF:$<BOOL:${ENABLE_CAPABILITIES}>,${LIBCAP_LIBRARIES},>
     )
 endif()
+addFUT(FUNCTION_NAME crinitCapConvertToBitmask TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-crinit-cap-convert-to-bitmask")

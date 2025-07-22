@@ -19,3 +19,4 @@ if (${ENABLE_CAPABILITIES})
         -Wl,--wrap=syscall
     )
 endif()
+addFUT(FUNCTION_NAME crinitCapIsCapsetEffective TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-crinit-cap-is-capset-effective")

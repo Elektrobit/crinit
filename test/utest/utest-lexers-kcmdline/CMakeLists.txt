@@ -14,4 +14,5 @@ create_unit_test(
     libmockfunctions
   WRAPS
 )
+addFUT(FUNCTION_NAME crinitKernelCmdlineLex TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-lexers-kcmdline")
 

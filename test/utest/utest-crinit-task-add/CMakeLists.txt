@@ -29,4 +29,4 @@ create_unit_test(
     -Wl,--wrap=crinitXfer
     -Wl,--wrap=crinitDestroyRtimCmd
 )
-
+addFUT(FUNCTION_NAME crinitClientTaskAdd TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-crinit-task-add")

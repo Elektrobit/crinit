@@ -32,3 +32,4 @@ create_unit_test(
     -Wl,--wrap=getpwuid_r
     -Wl,--wrap=getgrgid_r
 )
+addFUT(FUNCTION_NAME crinitTaskCreateFromConfKvList TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-crinit-task-create-from-conf-kvlist")

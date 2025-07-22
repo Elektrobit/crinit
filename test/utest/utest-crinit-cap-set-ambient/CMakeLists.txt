@@ -27,3 +27,4 @@ if (${ENABLE_CAPABILITIES})
         -Wl,--wrap=cap_get_bound
     )
 endif()
+addFUT(FUNCTION_NAME crinitCapSetAmbient TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-crinit-cap-set-ambient")

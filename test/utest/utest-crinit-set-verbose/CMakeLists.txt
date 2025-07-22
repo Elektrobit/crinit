@@ -17,3 +17,4 @@ create_unit_test(
   WRAPS
     -Wl,--wrap=crinitGlobOptSetBoolean
 )
+addFUT(FUNCTION_NAME crinitClientSetVerbose TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-crinit-set-verbose")

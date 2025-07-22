@@ -23,3 +23,4 @@ create_unit_test(
     -Wl,--wrap=getgrnam_r
     -Wl,--wrap=getgrgid_r
 )
+addFUT(FUNCTION_NAME crinitCfgGroupHandler TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-crinit-cfg-group-handler")

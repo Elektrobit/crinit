@@ -20,3 +20,4 @@ create_unit_test(
   LIBRARIES
     libmockfunctions
 )
+addFUT(FUNCTION_NAME crinitCfgLauncherCmdHandler TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-crinit-cfg-launch-cmd-handler")
