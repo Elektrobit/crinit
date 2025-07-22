@@ -12,20 +12,20 @@
 
 /** Type to store a single cgroup configuration value **/
 typedef struct {
-    char *filename;         ///< target filename
-    char *option;           ///< configuration to write to the target file
+    char *filename;  ///< target filename
+    char *option;    ///< configuration to write to the target file
 } crinitCgroupParam_t;
 
 /** Type to store a complete configuration for a single cgroup **/
 typedef struct {
-    crinitCgroupParam_t **param;      ///< array with configuration parameters
-    size_t paramCount;              ///< number of elements in param
+    crinitCgroupParam_t **param;  ///< array with configuration parameters
+    size_t paramCount;            ///< number of elements in param
 } crinitCgroupConfiguration_t;
 
 /** Type to store a single cgroup **/
 typedef struct {
-    char *name;                             ///< cgroup name
-    crinitCgroupConfiguration_t *config;      ///< pointer to cgroup configuration
+    char *name;                           ///< cgroup name
+    crinitCgroupConfiguration_t *config;  ///< pointer to cgroup configuration
 } crinitCgroup_t;
 
 /**
