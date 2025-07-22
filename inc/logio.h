@@ -35,7 +35,7 @@
  * a suitable compiler version, we'll use that, otherwise implement it manually by looking at the last slash in the
  * path. Note, that this precludes us from using escaped slashes in file names (which we should not do anyway).
  *
- * Using __builtin_strrchr() on a string constant should cause compile-time evaluation of the expressio.
+ * Using __builtin_strrchr() on a string constant should cause compile-time evaluation of the expression.
  */
 #if __GNUC__ >= 12 || __clang_major__ >= 9
 #define __FILE_BASENAME__ __FILE_NAME__
