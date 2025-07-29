@@ -7,9 +7,15 @@
 
 #include "unit_test.h"
 
+bool crinitMockStrlenEnabled = false;
+
 // Rationale: Naming scheme fixed due to linker wrapping.
 // NOLINTNEXTLINE(readability-identifier-naming)
 size_t __wrap_strlen(const char *s) {
-    check_expected_ptr(s);
-    return mock_type(size_t);
+    if (crinitMockStrlenEnabled) {
+        check_expected_ptr(s);
+        return mock_type(size_t);
+    } else {
+        return __real_strlen(s);
+    }
 }

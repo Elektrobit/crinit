@@ -8,6 +8,7 @@
 
 #include "common.h"
 #include "envset.h"
+#include "mock-free.h"
 #include "string.h"
 #include "unit_test.h"
 #include "utest-envset-destroy.h"
@@ -26,7 +27,9 @@ void crinitEnvSetDestroyTestSuccess(void **state) {
     expect_value_count(__wrap_free, ptr, (char *)0xdeadc0de, CRINIT_DUMMY_INITIALIZED_ELEMENTS);
     expect_value(__wrap_free, ptr, &envp[0]);
 
+    crinitMockFreeEnabled = true;
     assert_int_equal(crinitEnvSetDestroy(&e), 0);
+    crinitMockFreeEnabled = false;
 
     assert_ptr_equal(e.envp, NULL);
     assert_int_equal(e.allocSz, 0);

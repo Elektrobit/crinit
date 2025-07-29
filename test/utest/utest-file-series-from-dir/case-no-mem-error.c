@@ -12,6 +12,8 @@
 
 #include "common.h"
 #include "fseries.h"
+#include "mock-malloc.h"
+#include "mock-strlen.h"
 #include "unit_test.h"
 
 #define DUMMY_FILENAME "dummy.file"
@@ -50,7 +52,11 @@ void crinitFileSeriesFromDirNoMemError(void **state) {
 
     expect_any(__wrap_crinitErrnoPrintFFL, format);
 
+    crinitMockMallocEnabled = true;
+    crinitMockStrlenEnabled = true;
     assert_int_equal(crinitFileSeriesFromDir(&fse, path, NULL, false), -1);
+    crinitMockMallocEnabled = false;
+    crinitMockStrlenEnabled = false;
 }
 
 int crinitFileSeriesFromDirNoMemErrorSetup(void **state) {

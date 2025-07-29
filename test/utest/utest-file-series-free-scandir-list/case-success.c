@@ -8,6 +8,7 @@
 
 #include "common.h"
 #include "fseries.h"
+#include "mock-free.h"
 #include "unit_test.h"
 #include "utest-file-series-free-scandir-list.h"
 
@@ -35,7 +36,9 @@ static void crinitTestVariant(int size) {
         size = 0;
     }
 
+    crinitMockFreeEnabled = true;
     crinitFreeScandirList(scanList, size);
+    crinitMockFreeEnabled = false;
 }
 
 void crinitFreeScandirListTestSuccess(void **state) {
