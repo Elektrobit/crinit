@@ -14,6 +14,7 @@ create_unit_test(
     case-crinit-response-code-error.c
     case-crinit-response-cmd-error.c
     ${PROJECT_SOURCE_DIR}/src/crinit-client.c
+    $<IF:$<BOOL:${ENABLE_CGROUP}>,${PROJECT_SOURCE_DIR}/src/cgroup.c,>
     ${PROJECT_SOURCE_DIR}/src/globopt.c
     ${PROJECT_SOURCE_DIR}/src/logio.c
     ${PROJECT_SOURCE_DIR}/src/rtimcmd.c

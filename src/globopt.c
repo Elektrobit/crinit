@@ -55,6 +55,11 @@ int crinitGlobOptInitDefault(void) {
         goto fail;
     }
 #endif
+#ifdef ENABLE_CGROUP
+    crinitGlobOpts.rootCgroup = NULL;
+    crinitGlobOpts.globCgroups = NULL;
+    crinitGlobOpts.globCgroupsCount = 0;
+#endif
     crinitGlobOpts.tasks = NULL;
 
     crinitGlobOpts.inclDir = strdup(CRINIT_CONFIG_DEFAULT_INCLDIR);
@@ -297,6 +302,21 @@ void crinitGlobOptDestroy(void) {
     free(crinitGlobOpts.launcherCmd);
 #ifdef ENABLE_CAPABILITIES
     free(crinitGlobOpts.defaultCaps);
+#endif
+#ifdef ENABLE_CGROUP
+    if (crinitGlobOpts.rootCgroup) {
+        crinitFreeCgroup(crinitGlobOpts.rootCgroup);
+        free(crinitGlobOpts.rootCgroup->config);
+        free(crinitGlobOpts.rootCgroup->name);
+        free(crinitGlobOpts.rootCgroup);
+    }
+    if (crinitGlobOpts.globCgroups) {
+        for (size_t i = 0; i < crinitGlobOpts.globCgroupsCount; i++) {
+            crinitFreeCgroup(crinitGlobOpts.globCgroups[i]);
+            free(crinitGlobOpts.globCgroups[i]);
+        }
+        free(crinitGlobOpts.globCgroups);
+    }
 #endif
     crinitEnvSetDestroy(&crinitGlobOpts.globEnv);
     crinitEnvSetDestroy(&crinitGlobOpts.globFilters);

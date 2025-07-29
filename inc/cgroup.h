@@ -53,18 +53,33 @@ int crinitFreeCgroupParam(crinitCgroupParam_t *param);
 int crinitFreeCgroupConfiguration(crinitCgroupConfiguration_t *config);
 
 /**
- * @brief Copy an object of type crinitCgroupParam_t
- * @param orig Pointer to object to copy
- * @param out Pointer to target object
- * @return On sucess 0, otherwise -1
+ * @brief Releases the memory held by cgroup
+ * @param cgroup Pointer to crinitCgroup_t struct
+ * @return  On success 0, otherwise -1
+ */
+int crinitFreeCgroup(crinitCgroup_t *cgroup);
+
+/**
+ * @brief Copy one cgroup param structure to another
+ * @param orig Pointer to original struct
+ * @param out Pointer to target struct
+ * @return On success 0, otherwise -1
  */
 int crinitCopyCgroupParam(crinitCgroupParam_t *orig, crinitCgroupParam_t *out);
 
 /**
- * @brief Copy an object of type crinitCgroupConfiguration_t
- * @param orig Pointer to object to copy
- * @param out Pointer to target object
- * @return On sucess 0, otherwise -1
+ * @brief Convert string of the form "key=value" to a cgroup parameter struct.
+ * @param in Pointer to source string
+ * @param out Pointer to target struct
+ * @return On success 0, otherwise -1
+ */
+int crinitCgroupConvertSingleParamToObject(char *in, crinitCgroupParam_t *out);
+
+/**
+ * @brief Copy a cgroup configuration object
+ * @param orig Pointer to orignal struct
+ * @param out Pointer to target struct
+ * @return On success 0, otherwise -1
  */
 int crinitCopyCgroupConfiguration(crinitCgroupConfiguration_t *orig, crinitCgroupConfiguration_t *out);
 
@@ -81,6 +96,14 @@ int crinitCopyCgroupConfiguration(crinitCgroupConfiguration_t *orig, crinitCgrou
  */
 int crinitConvertConfigArrayToCGroupConfiguration(char **confArray, const int confArraySize,
                                                   crinitCgroupConfiguration_t *result);
+
+/** @brief Finds the cgroup configuration object by the cgroup's name
+ * @param cgroups Pointer to cgroup storage
+ * @param cgroupsCount Number of elements in cgroups
+ * @param name Search string
+ * @return If found, a pointer to the configuration element is returned, otherwise NULL.
+ */
+crinitCgroupConfiguration_t *crinitFindCgroupByName(crinitCgroup_t **cgroups, size_t cgroupsCount, char *name);
 
 /**
  * @brief Configure a cgroup directory by applying a list of settings.

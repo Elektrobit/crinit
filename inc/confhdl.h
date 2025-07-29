@@ -97,6 +97,16 @@ int crinitCfgElosPortHandler(void *tgt, const char *val, crinitConfigType_t type
 int crinitCfgElosEventPollIntervalHandler(void *tgt, const char *val, crinitConfigType_t type);
 /** Handler for `LAUNCHER_CMD` config directive. See crinitConfigHandler_t. **/
 int crinitCfgLauncherCmdHandler(void *tgt, const char *val, crinitConfigType_t type);
+#ifdef ENABLE_CGROUP
+/** Handler for "CGROUP_ROOT_NAME" config directives. See crinitConfigHandler_t **/
+int crinitCfgCgroupRootNameHandler(void *tgt, const char *val, crinitConfigType_t type);
+/** Handler for "CGROUP_ROOT_PARAMS" config directives. See crinitConfigHandler_t **/
+int crinitCfgCgroupRootParamsHandler(void *tgt, const char *val, crinitConfigType_t type);
+/** Handler for "CGROUP_GLOBAL_NAME" config directives. See crinitConfigHandler_t **/
+int crinitCfgCgroupGlobalNameHandler(void *tgt, const char *val, crinitConfigType_t type);
+/** Handler for "CGROUP_GLOBAL_PARAMS" config directives. See crinitConfigHandler_t **/
+int crinitCfgCgroupGlobalParamsHandler(void *tgt, const char *val, crinitConfigType_t type);
+#endif
 
 /* Handlers working in both cases */
 

@@ -47,6 +47,20 @@ int crinitFreeCgroupConfiguration(crinitCgroupConfiguration_t *config) {
     return 0;
 }
 
+int crinitFreeCgroup(crinitCgroup_t *cgroup) {
+    crinitNullCheck(-1, cgroup);
+
+    free(cgroup->name);
+    cgroup->name = NULL;
+
+    if (cgroup->config) {
+        crinitFreeCgroupConfiguration(cgroup->config);
+        free(cgroup->config);
+        cgroup->config = NULL;
+    }
+    return 0;
+}
+
 int crinitCopyCgroupParam(crinitCgroupParam_t *orig, crinitCgroupParam_t *out) {
     crinitNullCheck(-1, orig, out);
 
@@ -90,6 +104,21 @@ fail:
     return -1;
 }
 
+int crinitCgroupConvertSingleParamToObject(char *in, crinitCgroupParam_t *out) {
+    crinitNullCheck(-1, in, out);
+
+    char *delim = NULL;
+    if ((delim = strchr(in, '=')) == NULL) {
+        crinitErrPrint("Config line '%s' has invalid format. Missing delimiter '='.", in);
+        return -1;
+    }
+
+    out->filename = strndup(in, delim - in);
+    out->option = strdup(delim + 1);
+
+    return 0;
+}
+
 int crinitConvertConfigArrayToCGroupConfiguration(char **confArray, const int confArraySize,
                                                   crinitCgroupConfiguration_t *result) {
     crinitNullCheck(-1, confArray, result);
@@ -104,36 +133,50 @@ int crinitConvertConfigArrayToCGroupConfiguration(char **confArray, const int co
     result->paramCount = confArraySize;
 
     for (int i = 0; i < confArraySize; i++) {
-        char *delim = NULL;
-        if ((delim = strchr(confArray[i], '=')) == NULL) {
-            crinitErrPrint("Config line '%s' has invalid format. Missing delimiter '='.", confArray[i]);
-            goto failloop;
-        }
         result->param[i] = calloc(sizeof(**(result->param)), 1);
         if (result->param[i] == NULL) {
             crinitErrPrint("Failed to allocate memory for cgroup parameter");
             goto failloop;
         }
-        result->param[i]->filename = strndup(confArray[i], delim - confArray[i]);
-        result->param[i]->option = strdup(delim + 1);
+        if (crinitCgroupConvertSingleParamToObject(confArray[i], result->param[i]) != 0) {
+            crinitErrPrint("Failed to convert single parameter line to object: %s", confArray[i]);
+            goto failloop;
+        }
     }
 
     return 0;
 
 failloop:
-    if (result->param) {
-        for (int i = 0; i < confArraySize; i++) {
-            if (result->param[i]) {
-                free(result->param[i]->filename);
-                free(result->param[i]->option);
-                free(result->param[i]);
-                result->param[i] = NULL;
-            }
+    for (int i = 0; i < confArraySize; i++) {
+        if (result->param[i]) {
+            free(result->param[i]->filename);
+            free(result->param[i]->option);
+            free(result->param[i]);
+            result->param[i] = NULL;
         }
-        free(result->param);
-        result->param = NULL;
     }
+    free(result->param);
+    result->param = NULL;
     return -1;
+}
+
+crinitCgroupConfiguration_t *crinitFindCgroupByName(crinitCgroup_t **cgroups, size_t cgroupsCount, char *name) {
+    crinitNullCheck(NULL, cgroups, name);
+
+    for (size_t i = 0; i < cgroupsCount; i++) {
+        if (cgroups[i] == NULL) {
+            crinitErrPrint("Missmatch between cgroup array and its supplied count.");
+            return NULL;
+        }
+        if (strcmp(cgroups[i]->name, name) == 0) {
+            if (cgroups[i]->config == NULL) {
+                cgroups[i]->config = calloc(sizeof(*cgroups[i]->config), 1);
+            }
+            return cgroups[i]->config;
+        }
+    }
+
+    return NULL;
 }
 
 /**

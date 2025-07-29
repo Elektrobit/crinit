@@ -693,6 +693,356 @@ failInit:
     crinitFreeArgvArray(parsedVal);
     return -1;
 }
+
+int crinitCfgCgroupRootNameHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    CRINIT_PARAM_UNUSED(tgt);
+    crinitNullCheck(-1, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
+
+    if (strlen(val) == 0) {
+        crinitErrPrint("Failed to parse CGROUP_ROOT_NAME: must not be empty");
+        return -1;
+    }
+
+    crinitGlobOptStore_t *globOpts = crinitGlobOptBorrow();
+    if (globOpts == NULL) {
+        crinitErrPrint("Could not get exclusive access to global option storage.");
+        return -1;
+    }
+
+    if (globOpts->rootCgroup == NULL) {
+        globOpts->rootCgroup = calloc(sizeof(*(globOpts->rootCgroup)), 1);
+        if (globOpts->rootCgroup == NULL) {
+            crinitErrPrint("Failed to allocate memory for root cgroup configuration");
+            crinitGlobOptRemit();
+            return -1;
+        }
+    }
+
+    crinitCgroup_t *rootConfig = globOpts->rootCgroup;
+
+    rootConfig->name = strdup(val);
+    if (rootConfig->name == NULL) {
+        crinitErrPrint("Failed to allocate memory for root cgroup name %s", val);
+        crinitGlobOptRemit();
+        return -1;
+    }
+
+    crinitGlobOptRemit();
+    return 0;
+}
+
+int crinitCfgCgroupRootParamsHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    CRINIT_PARAM_UNUSED(tgt);
+    crinitNullCheck(-1, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
+
+    int confArrLen;
+    char **parsedVal = crinitConfConvToStrArr(&confArrLen, val, true);
+    if (parsedVal == NULL) {
+        crinitErrPrint("Could not convert group list '%s' to string array.", val);
+        return -1;
+    }
+
+    if (confArrLen <= 0) {
+        crinitErrPrint("Input values may not be empty");
+        crinitFreeArgvArray(parsedVal);
+        return -1;
+    }
+
+    crinitGlobOptStore_t *globOpts = crinitGlobOptBorrow();
+    if (globOpts == NULL) {
+        crinitErrPrint("Could not get exclusive access to global option storage.");
+        crinitFreeArgvArray(parsedVal);
+        return -1;
+    }
+
+    if (globOpts->rootCgroup == NULL) {
+        globOpts->rootCgroup = calloc(sizeof(*(globOpts->rootCgroup)), 1);
+        if (globOpts->rootCgroup == NULL) {
+            crinitErrPrint("Failed to allocate memory for root cgroup configuration");
+            goto failInit;
+        }
+    }
+
+    crinitCgroup_t *rootConfig = globOpts->rootCgroup;
+
+    if (confArrLen > 0) {
+        rootConfig->config = calloc(sizeof(*(rootConfig->config)), 1);
+        if (rootConfig->config == NULL) {
+            goto failInit;
+        }
+        if (crinitConvertConfigArrayToCGroupConfiguration(parsedVal, confArrLen, rootConfig->config) != 0) {
+            goto fail;
+        }
+    }
+
+    crinitFreeArgvArray(parsedVal);
+    crinitGlobOptRemit();
+    return 0;
+
+fail:
+    crinitFreeCgroupConfiguration(rootConfig->config);
+    free(rootConfig->config);
+    rootConfig->config = NULL;
+failInit:
+    crinitFreeArgvArray(parsedVal);
+    crinitGlobOptRemit();
+    return -1;
+}
+
+int crinitCfgCgroupGlobalNameHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    CRINIT_PARAM_UNUSED(tgt);
+    crinitNullCheck(-1, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
+
+    int confArrLen;
+    char **parsedVal = crinitConfConvToStrArr(&confArrLen, val, true);
+    if (parsedVal == NULL) {
+        crinitErrPrint("Could not convert group list '%s' to string array.", val);
+        return -1;
+    }
+    if (*parsedVal == NULL) {
+        crinitErrPrint("Input value may not be empty.");
+        crinitFreeArgvArray(parsedVal);
+        return -1;
+    }
+
+    crinitGlobOptStore_t *globOpts = crinitGlobOptBorrow();
+    if (globOpts == NULL) {
+        crinitErrPrint("Could not get exclusive access to global option storage.");
+        crinitFreeArgvArray(parsedVal);
+        return -1;
+    }
+
+    globOpts->globCgroupsCount = confArrLen;
+    if (globOpts->globCgroupsCount == 0) {
+        crinitErrPrint("Input values may not be empty");
+        goto failInit;
+    }
+    if (globOpts->globCgroups == NULL) {
+        globOpts->globCgroups = calloc(sizeof(*(globOpts->globCgroups)), confArrLen);
+        if (globOpts->globCgroups == NULL) {
+            crinitErrPrint("Failed to allocate memory for global cgroup configurations.");
+            goto failInit;
+        }
+    }
+
+    crinitCgroup_t **globConfigs = globOpts->globCgroups;
+
+    for (int i = 0; i < confArrLen; i++) {
+        globConfigs[i] = calloc(sizeof(**globConfigs), 1);
+        if (globConfigs[i] == NULL) {
+            crinitErrPrint("Failed to allocate memory for global cgroup configuration objects.");
+            goto fail;
+        }
+        globConfigs[i]->name = strdup(parsedVal[i]);
+        if (globConfigs[i]->name == NULL) {
+            crinitErrPrint("Failed to copy global cgroup name '%s'.", parsedVal[i]);
+            goto fail;
+        }
+    }
+
+    crinitFreeArgvArray(parsedVal);
+    crinitGlobOptRemit();
+    return 0;
+
+fail:
+    for (int i = 0; i < confArrLen; i++) {
+        crinitFreeCgroup(globConfigs[i]);
+    }
+    free(*globConfigs);
+    free(globOpts->globCgroups);
+    globOpts->globCgroups = NULL;
+    globOpts->globCgroupsCount = 0;
+failInit:
+    crinitFreeArgvArray(parsedVal);
+    crinitGlobOptRemit();
+    return -1;
+}
+
+typedef struct {
+    char *name;
+    crinitCgroupParam_t **params;
+    size_t numParams;
+} crinitCgroupsGlobalParamArray_t;
+
+static crinitCgroupsGlobalParamArray_t *crinitFindElementInCGroupsGlobalParamByName(
+    char *name, crinitCgroupsGlobalParamArray_t **array, size_t arrayCount) {
+    // While the input from the configuration file does not need to be ordered it is the most likely case that
+    // entries for the same global cgroup configuration are in subsequent order. To optimize for this case
+    // the entries of the temporary storage is checked from the back as that's the most likely position where
+    // the element refered to by the param "name" can be found.
+    // At least it should be more performant than to sort the array after each insertion with qsort() and then
+    // search for the key "name" with bsearch.
+
+    crinitNullCheck(NULL, name, array);
+
+    for (size_t i = arrayCount; i > 0; i--) {
+        if (array[i - 1]->name && strcmp(name, array[i - 1]->name) == 0) {
+            return array[i - 1];
+        }
+    }
+
+    return NULL;
+}
+
+/**
+ * @brief Store all global cgroup parameters temporarily ordered by cgroup name
+ *
+ * The maximum number of elements in outCount is already known and the memory for out should be allocated
+ * completely before calling this function.
+ *
+ * @param in Pointer to raw values from the configuration file
+ * @param inCount Number of elements in parameter "in"
+ * @param out Pointer to temporary array
+ * @param outCount Number of elements in parameter "out"
+ * @return On success 0, otherwise -1.
+ */
+static int crinitFillCgroupsGlobalParamTempArray(char **in, int inCount, crinitCgroupsGlobalParamArray_t **out,
+                                                 size_t outCount) {
+    crinitNullCheck(-1, in, out);
+
+    for (int i = 0; i < inCount; i++) {
+        char *delim = strchr(in[i], ':');
+        if (delim == NULL) {
+            crinitErrPrint("Invalid config entry for %s: %s", CRINIT_CONFIG_KEYSTR_CGROUP_GLOBAL_PARAMS, in[i]);
+            return -1;
+        }
+        char *cgroupName = strndup(in[i], delim - in[i]);
+        if (cgroupName == NULL) {
+            crinitErrPrint("Failed to copy cgroup name into temporary memory.");
+            return -1;
+        }
+        crinitCgroupsGlobalParamArray_t *elem = crinitFindElementInCGroupsGlobalParamByName(cgroupName, out, outCount);
+
+        if (elem == NULL) {
+            // overwrite pre-allocated blank element
+            for (size_t j = 0; j < outCount; j++) {
+                if (out[j]->name == NULL) {
+                    elem = out[j];
+                }
+            }
+            elem->name = cgroupName;
+
+        } else {
+            free(cgroupName);
+            cgroupName = NULL;
+        }
+        // append config option
+        if (elem->params == NULL) {
+            elem->numParams = 1;
+            elem->params = calloc(sizeof(*elem->params), elem->numParams);
+        } else {
+            elem->numParams++;
+            elem->params = reallocarray(elem->params, elem->numParams, sizeof(*elem->params));
+        }
+
+        if (elem->params == NULL) {
+            crinitErrPrint("Failed to allocate memory for cgroup params.");
+            return -1;
+        }
+
+        elem->params[elem->numParams - 1] = calloc(sizeof(**elem->params), 1);
+        if (elem->params[elem->numParams - 1] == NULL) {
+            crinitErrPrint("Failed to allocate memory for temporary config element.");
+            return -1;
+        }
+
+        if (crinitCgroupConvertSingleParamToObject(delim + 1, elem->params[elem->numParams - 1]) != 0) {
+            crinitErrPrint("Failed to convert cgroup param to internal object.");
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
+int crinitCfgCgroupGlobalParamsHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    CRINIT_PARAM_UNUSED(tgt);
+    crinitNullCheck(-1, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
+
+    int confArrLen;
+    char **parsedVal = crinitConfConvToStrArr(&confArrLen, val, true);
+    if (parsedVal == NULL) {
+        crinitErrPrint("Could not convert group list '%s' to string array.", val);
+        goto fail;
+    }
+
+    crinitGlobOptStore_t *globOpts = crinitGlobOptBorrow();
+    if (globOpts == NULL) {
+        crinitErrPrint("Could not get exclusive access to global option storage.");
+        goto fail;
+    }
+
+    // We expect to parsed the names before, therefore globCgroups may not be NULL
+    if (globOpts->globCgroups == NULL) {
+        crinitErrPrint("The names of the global cgroups need to be defined first.");
+        goto failInit;
+    }
+
+    crinitCgroup_t **globConfigs = globOpts->globCgroups;
+
+    crinitCgroupsGlobalParamArray_t **temp = NULL;
+    temp = calloc(sizeof(*temp),
+                  globOpts->globCgroupsCount);  // globCgroupsCount must hold the number of different global cgroups
+    if (temp == NULL) {
+        crinitErrPrint("Failed to allocate temporary memory.");
+        goto failInit;
+    }
+
+    // create a temporary object for every known global cgroup (their names need to be defined first)
+    for (size_t i = 0; i < globOpts->globCgroupsCount; i++) {
+        temp[i] = calloc(sizeof(*temp[i]), 1);
+        if (temp[i] == NULL) {
+            crinitErrPrint("Failed to allocate temp memory for global cgroup options.");
+            goto failLoop;
+        }
+        temp[i]->name = globOpts->globCgroups[i]->name;
+    }
+
+    if (crinitFillCgroupsGlobalParamTempArray(parsedVal, confArrLen, temp, globOpts->globCgroupsCount) != 0) {
+        crinitErrPrint("Failed to store global cgroup parameters temporarily.");
+        goto failLoop;
+    }
+
+    for (size_t i = 0; i < globOpts->globCgroupsCount; i++) {
+        globConfigs[i]->config = calloc(sizeof(*globConfigs[i]->config), 1);
+        globConfigs[i]->config->param = temp[i]->params;
+        globConfigs[i]->config->paramCount = temp[i]->numParams;
+        free(temp[i]);
+    }
+    free(temp);
+
+    crinitFreeArgvArray(parsedVal);
+    crinitGlobOptRemit();
+    return 0;
+
+failLoop:
+    for (size_t i = 0; i < globOpts->globCgroupsCount; i++) {
+        for (size_t j = 0; j < temp[i]->numParams; j++) {
+            free(temp[i]->params[j]);
+        }
+        free(temp[i]->params);
+        free(temp[i]);
+    }
+    free(temp);
+    temp = NULL;
+
+    for (int i = 0; i < confArrLen; i++) {
+        crinitFreeCgroup(globConfigs[i]);
+    }
+    free(*globConfigs);
+    free(globOpts->globCgroups);
+    globOpts->globCgroups = NULL;
+    globOpts->globCgroupsCount = 0;
+failInit:
+    crinitFreeArgvArray(parsedVal);
+fail:
+    crinitGlobOptRemit();
+    return -1;
+}
 #endif
 
 int crinitCfgDebugHandler(void *tgt, const char *val, crinitConfigType_t type) {

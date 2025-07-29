@@ -9,6 +9,7 @@ create_unit_test(
     ${PROJECT_SOURCE_DIR}/src/envset.c
     ${PROJECT_SOURCE_DIR}/src/common.c
     ${PROJECT_SOURCE_DIR}/src/globopt.c
+    $<IF:$<BOOL:${ENABLE_CGROUP}>,${PROJECT_SOURCE_DIR}/src/cgroup.c,>
     ${PROJECT_SOURCE_DIR}/src/logio.c
   LIBRARIES
     libmockfunctions

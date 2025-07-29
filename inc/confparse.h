@@ -88,6 +88,14 @@
 #define CRINIT_CONFIG_KEYSTR_CGROUP_NAME "CGROUP_NAME"
 /**  Config key to set cgroup parameters. **/
 #define CRINIT_CONFIG_KEYSTR_CGROUP_PARAMS "CGROUP_PARAMS"
+/**  Config key to set cgroup root name. **/
+#define CRINIT_CONFIG_KEYSTR_CGROUP_ROOT_NAME "CGROUP_ROOT_NAME"
+/**  Config key to set cgroup root params. **/
+#define CRINIT_CONFIG_KEYSTR_CGROUP_ROOT_PARAMS "CGROUP_ROOT_PARAMS"
+/**  Config key to set cgroup global name. **/
+#define CRINIT_CONFIG_KEYSTR_CGROUP_GLOBAL_NAME "CGROUP_GLOBAL_NAME"
+/**  Config key to set cgroup global params. **/
+#define CRINIT_CONFIG_KEYSTR_CGROUP_GLOBAL_PARAMS "CGROUP_GLOBAL_PARAMS"
 #endif
 
 /**  Default filename extension of task files. **/
@@ -177,6 +185,10 @@ typedef enum crinitConfigs {
 #ifdef ENABLE_CGROUP
     CRINIT_CONFIG_CGROUP_NAME,
     CRINIT_CONFIG_CGROUP_PARAMS,
+    CRINIT_CONFIG_CGROUP_ROOT_NAME,
+    CRINIT_CONFIG_CGROUP_ROOT_PARAMS,
+    CRINIT_CONFIG_CGROUP_GLOBAL_NAME,
+    CRINIT_CONFIG_CGROUP_GLOBAL_PARAMS,
 #endif
     CRINIT_CONFIGS_SIZE
 } crinitConfigs_t;

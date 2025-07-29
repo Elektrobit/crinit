@@ -17,6 +17,7 @@ create_unit_test(
     ${PROJECT_SOURCE_DIR}/src/confconv.c
     ${PROJECT_SOURCE_DIR}/src/confhdl.c
     ${PROJECT_SOURCE_DIR}/src/globopt.c
+    $<IF:$<BOOL:${ENABLE_CGROUP}>,${PROJECT_SOURCE_DIR}/src/cgroup.c,>
   LIBRARIES
     libmockfunctions
 )
