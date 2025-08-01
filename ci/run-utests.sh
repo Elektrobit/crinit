@@ -26,8 +26,8 @@ UTEST_REPORT="$RESULTDIR"/utest_report.txt
 UTEST_LOG="$RESULTDIR"/LastTest.log
 
 # check if ci/build.sh has been run before
-if [ ! -d "$RESULTDIR" ]; then
-    echo Build environment \""${RESULTDIR}"\" not set up. Please run ci/build.sh first!
+if [ ! -d "$CMAKE_BUILD_DIR" ]; then
+    echo Build environment \""${CMAKE_BUILD_DIR}"\" not set up. Please run ci/build.sh first!
     exit 1
 fi
 
