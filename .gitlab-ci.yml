@@ -52,14 +52,14 @@ Build-Coverage:
     paths:
       - build/Coverage
 
-#Build-Analyzer:
-#  stage: build
-#  script:
-#    - env
-#    - ci/build.sh --clean Analyzer
-#  artifacts:
-#    paths:
-#      - build/Analyzer
+Build-Analyzer:
+ stage: build
+ script:
+   - env
+   - ci/build.sh --clean Analyzer
+ artifacts:
+   paths:
+     - build/Analyzer
       
 Build-Asan:
   stage: build
@@ -161,9 +161,12 @@ code-coverage:
 
 Smoke Tests:
   stage: test
+  needs:
+    - Build-Release
+    - Build-Asan
   script:
-    - ci/run-smoketests.sh
-    - ci/run-smoketests.sh Debug
+    - ci/run-smoketests.sh Release
+    - ci/run-smoketests.sh Asan
   artifacts:
     when: always
     paths:

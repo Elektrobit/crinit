@@ -1,43 +1,47 @@
 #!/bin/sh -e
 # SPDX-License-Identifier: MIT
-#
-# script to run smoketests for integration
-#
-# Usage: ci/run-smoketests.sh [Debug]
-# Dependency: ci/build.sh needs to be run before
-#
+###############################################################################
+print_info() {
+    SCRIPT_NAME=${0##*/}
+    echo "
+    Run the smoketest test suite or parts of it against actual build. Default
+    is to run all smoketest tests.
+
+    Usage: ${SCRIPT_NAME} [option] [build type]
+
+    Options:
+
+    -h|--help:                  print this help
+    --debug:                    enable debug messages
+    --valgrind:                 enabel valgrind during run
+    --stop-on-failure:          stop on first failing test
+    -i|--interactive:           run a prepared shell environment
+
+    Build Type:
+
+    Debug   - Run smoketest or interactive shell against the Debug Build
+    Release - Run smoketest or interactive shell against the Debug Build
+    ...     - Any build type located in build/ can be provided
+
+    <Debug> is the default build type, if nothing is specified.
+
+    Examples:
+
+    $>${SCRIPT_NAME} # run all smoke tests on Debug build
+
+    $>${SCRIPT_NAME} Release # run all smoke tests on Release build
+    "
+}
+###############################################################################
 CMDPATH=$(cd "$(dirname "$0")" && pwd)
 BASEDIR=${CMDPATH%/*}
-
-# architecture name amd64, arm64, ...
-ARCH=$(dpkg --print-architecture)
-
-BUILD_TYPE="Release"
-if [ -n "$1" ]; then
-    BUILD_TYPE="$1"
-    shift
-fi
-
-case "$BUILD_TYPE" in
-    Release)
-        RESULTDIR="$BASEDIR/result/$ARCH"
-        ;;
-    *)
-        RESULTDIR="$BASEDIR/result/$ARCH-$BUILD_TYPE"
-        ;;
-esac
-
-if [ "$ARCH" != "amd64" ]; then
-    # disable LeakSanitizer as it does not work in qemu-user emulation
-    export ASAN_OPTIONS="${ASAN_OPTIONS}:detect_leaks=0"
-fi
 
 export SMOKETESTS_VALGRIND=0
 export SMOKETESTS_DEBUG=0
 export SMOKETESTS_FAILSTOP=0
-
-for ARG in "$@"; do
-    case "$ARG" in
+PARAM=""
+while [ $# -gt 0 ]; do
+    case ${1} in
         --valgrind)
             SMOKETESTS_VALGRIND=1
             ;;
@@ -47,22 +51,39 @@ for ARG in "$@"; do
         --stop-on-failure)
             SMOKETESTS_FAILSTOP=1
             ;;
-        *)
-            echo "Unknown argument $ARG" >&2
+        -h | --help)
+            print_info
+            exit 0
+            ;;
+        -*)
+            echo "error: unknown option: $1"
+            print_info
             exit 1
             ;;
+        *)
+            PARAM="$PARAM ${1}"
+            ;;
     esac
+    shift
 done
+# shellcheck disable=SC2086 # Intended splitting of PARAM.
+set -- $PARAM
 
-export BINDIR="$RESULTDIR/bin"
-export SBINDIR="$RESULTDIR/bin"
-export LIBDIR="$RESULTDIR/lib"
+BUILD_TYPE="${1:-Debug}"
+BUILD_DIR="${BASEDIR}/build/${BUILD_TYPE}"
+CMAKE_BUILD_DIR="${BUILD_DIR}/cmake"
+RESULT_DIR="${BUILD_DIR}/result/"
+
+export PREFIX_PATH="${BUILD_DIR}/dist/usr/local"
+export BINDIR="${PREFIX_PATH}/bin"
+export SBINDIR="${PREFIX_PATH}/bin"
+export LIBDIR="${PREFIX_PATH}/lib"
 export CONFDIR="${BASEDIR}/config/test"
 export LD_LIBRARY_PATH="${LIBDIR}"
-export SMOKETESTS_RESULTDIR="$RESULTDIR/smoketests"
+export SMOKETEST_RESULTDIR="${SMOKETEST_RESULTDIR-${RESULT_DIR}/smoketest}"
 
 # check if ci/build.sh has been run before
-if [ ! -d "$RESULTDIR" ]; then
+if [ ! -d "$CMAKE_BUILD_DIR" ]; then
     echo Build environment not set up. Please run ci/build.sh for this build type first!
     exit 1
 fi
