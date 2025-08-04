@@ -27,6 +27,7 @@ set -euo pipefail
 CMDPATH=$(cd "$(dirname "$0")" && pwd)
 BASEDIR=${CMDPATH%/*}
 CMAKE_PARAM=${CMAKE_PARAM:-""}
+MAKE_PARAM=${MAKE_PARAM:-"-j$(nproc)"}
 
 PARAM=""
 OPTION_CLEAN=0
@@ -85,7 +86,7 @@ fi
 
 # shellcheck disable=SC2086 # Intended splitting of CMAKE_PARAM.
 cmake -B "$CMAKE_BUILD_DIR" ${CMAKE_PARAM} "$BASEDIR"
-make -C "$CMAKE_BUILD_DIR" all install
+make -C "$CMAKE_BUILD_DIR" "${MAKE_PARAM}" all install
 
 # copy documentation
 cp -a doc "${BUILD_DIR}/"
