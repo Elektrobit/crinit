@@ -12,7 +12,7 @@ TEXT_YELLOW="\033[33m"
 TEXT_RESET="\033[m"
 
 export COVERAGE_DIR=${COVERAGE_DIR-"$(dirname "$0")"}
-export COVERAGE_RESULT_DIR=${COVERAGE_RESULT_DIR-"${BUILD_DIR}/results/coverage/asmcov"}
+export COVERAGE_RESULT_DIR=${COVERAGE_RESULT_DIR-"${BUILD_DIR}/result/coverage/asmcov"}
 
 function is_build_with_asan {
     test x != x"$(ldd "$1" | grep libasan)"
@@ -50,7 +50,7 @@ function run_test {
 function print_function_coverage {
     FUNCTION_SYMBOLS_LOG="${COVERAGE_RESULT_DIR}/symbols.log"
     FUNCTION_COVERAGE_LOG="${COVERAGE_RESULT_DIR}/function_coverage.log"
-    find "$BUILD_DIR/src" -type f -executable -exec objdump -t {} \; >"${FUNCTION_SYMBOLS_LOG}"
+    find "$BUILD_DIR/cmake/src" -type f -executable -exec objdump -t {} \; >"${FUNCTION_SYMBOLS_LOG}"
 
     PUBLIC_FUNCTIONS=$(grep "g[ ]*F .text" "${FUNCTION_SYMBOLS_LOG}" | grep -oE "[^ ]+$")
     PUBLIC_FUNCTION_COUNT=$(echo "${PUBLIC_FUNCTIONS}" | sort -u | wc -w)
@@ -93,7 +93,7 @@ function print_function_coverage {
 
     echo "tested coverage: ${TESTED_COVERAGE}%"
     echo "total coverage: ${TOTAL_COVERAGE}%"
-    echo "elos.coverage" "build/Release/result" "public_functions=${PUBLIC_FUNCTION_COUNT},tested_public_functions=${TESTED_PUBLIC_FUNCTION_COUNT},local_functions=${LOCAL_FUNCTION_COUNT},average_coverage=${TOTAL_COVERAGE},average_tested_coverage=${TESTED_COVERAGE}"
+    echo "crinit.coverage" "build/Release/result" "public_functions=${PUBLIC_FUNCTION_COUNT},tested_public_functions=${TESTED_PUBLIC_FUNCTION_COUNT},local_functions=${LOCAL_FUNCTION_COUNT},average_coverage=${TOTAL_COVERAGE},average_tested_coverage=${TESTED_COVERAGE}"
 
     rm "${FUNCTION_SYMBOLS_LOG}"
 }
@@ -147,15 +147,15 @@ create_coverage_reports() {
     done <"$1/functions_under_test.txt"
 }
 
-if [ ! -d "${BUILD_DIR}/test" ]; then
-    echo "No test directory found in ${BUILD_DIR}. Run ${BASE_DIR}/elos/ci/build.sh or set BUILD_DIR."
+if [ ! -d "${BUILD_DIR}/cmake/test" ]; then
+    echo "No test directory found in ${BUILD_DIR}. Run ${BASE_DIR}/ci/build.sh or set BUILD_DIR."
     exit 1
 fi
 
 rm -rf "${COVERAGE_RESULT_DIR}"
 mkdir -p "${COVERAGE_RESULT_DIR}"
 
-create_coverage_reports "${BUILD_DIR}/test/"
+create_coverage_reports "${BUILD_DIR}/cmake/test/"
 
 print_short_report | tee -a "${COVERAGE_RESULT_DIR}/asmcov_short_report.log"
 print_function_coverage | tee -a "${COVERAGE_RESULT_DIR}/asmcov_short_report.log"

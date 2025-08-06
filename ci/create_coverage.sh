@@ -21,9 +21,6 @@ set -e -u -o pipefail
 
 CMD_PATH="$(realpath "$(dirname "$0")")"
 BASE_DIR="$(realpath "$CMD_PATH/..")"
-export BUILD_TYPE=amd64
-export BUILD_DIR="${BASE_DIR}/build/${BUILD_TYPE}"
-export RESULT_DIR="${BUILD_DIR}/results"
 
 PARAM=""
 while [ $# -gt 0 ]; do
@@ -46,20 +43,28 @@ done
 # shellcheck disable=SC2086 # Intended splitting of PARAM
 set -- $PARAM
 
-mkdir -p "${RESULT_DIR}"
 COVERAGE_TYPE=${1:-"asmcov"}
 
 case "${COVERAGE_TYPE}" in
     gcov)
-        if [ ! -d "${BUILD_DIR}-coverage/" ]; then
-            echo "Fail, assumed coverage build in ${BUILD_DIR}-coverage/"
+        export BUILD_DIR="${BASE_DIR}/build/Coverage"
+        export RESULT_DIR="${BUILD_DIR}/result"
+        if [ ! -d "${BUILD_DIR}" ]; then
+            echo "Fail, assumed coverage build in ${BUILD_DIR}"
             exit 1
         fi
-        mkdir -p "${BUILD_DIR}-coverage/results/coverage"
-        gcovr --output "${BUILD_DIR}-coverage/results/coverage/gcov_report.html"
+        mkdir -p "${RESULT_DIR}/coverage"
+        gcovr --output "${RESULT_DIR}/coverage/gcov_report.html"
         STATUS=$?
         ;;
     *)
+        export BUILD_DIR="${BASE_DIR}/build/Release"
+        export RESULT_DIR="${BUILD_DIR}/result"
+        if [ ! -d "${BUILD_DIR}" ]; then
+            echo "Fail, assumed Release build in ${BUILD_DIR}"
+            exit 1
+        fi
+        mkdir -p "${RESULT_DIR}/coverage"
         "${BASE_DIR}/test/coverage/run_asmcov.sh"
         STATUS=$?
         find "${RESULT_DIR}/coverage/asmcov" -name "*.trace" -delete
