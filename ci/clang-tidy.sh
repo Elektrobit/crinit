@@ -20,7 +20,7 @@ fi
 
 BUILDDIR="${BASEDIR}/build/${BUILD_TYPE}"
 CMAKE_BUILD_DIR="${BUILDDIR}/cmake"
-RESULTDIR="${BUILDDIR}/result/"
+RESULTDIR="${BUILDDIR}/result"
 
 if [ ! -f "${CMAKE_BUILD_DIR}"/compile_commands.json ]; then
     echo "Build environment \"${CMAKE_BUILD_DIR}\" not set up. Please run ci/build.sh first!" >&2
@@ -32,10 +32,9 @@ CLANG_TIDY_FLAGS=(-p "${CMAKE_BUILD_DIR}")
 sed -i -e 's/\-fanalyzer//g' "${CMAKE_BUILD_DIR}"/compile_commands.json
 
 rm -rf "$RESULTDIR"/clang-tidy
-mkdir "$RESULTDIR"/clang-tidy
+mkdir -p "$RESULTDIR"/clang-tidy
 
 cd "$BASEDIR"
-
 
 # run clang-tidy for crinit
 clang-tidy "${CLANG_TIDY_FLAGS[@]}" -dump-config inc/*.h src/*.c "$CMAKE_BUILD_DIR"/src/crinit-version.c \
