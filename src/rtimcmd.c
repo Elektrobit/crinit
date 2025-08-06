@@ -1068,6 +1068,8 @@ static int crinitExecRtimCmdStatus(crinitTaskDB_t *ctx, crinitRtimCmd_t *res, co
                                     start.tv_nsec, end.tv_sec, end.tv_nsec, user, group, username, groupname);
     char *resStr = malloc(resStrLen);
     if (resStr == NULL) {
+        free(username);
+        free(groupname);
         return crinitBuildRtimCmd(res, CRINIT_RTIMCMD_R_STATUS, 2, CRINIT_RTIMCMD_RES_ERR, "Memory allocation error.");
     }
     snprintf(resStr, resStrLen, resFmt, s, pid, creation.tv_sec, creation.tv_nsec, start.tv_sec, start.tv_nsec,

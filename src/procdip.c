@@ -542,6 +542,7 @@ int crinitExpandPIDVariablesInSingleCommand(char *input, const pid_t pid, char *
                         if (!tmp2) {
                             crinitErrPrint("Error allocating memory for result string.\n");
                             tt = CRINIT_TK_ERR;
+                            free(tmp);
                             break;
                         }
                         strcat(tmp2, *result);
@@ -584,6 +585,7 @@ int crinitExpandPIDVariablesInSingleCommand(char *input, const pid_t pid, char *
         if (!tmp) {
             crinitErrPrint("Error allocating memory for result string.\n");
             tt = CRINIT_TK_ERR;
+            free(*result);
             return -1;
         }
         strcat(tmp, *result);
