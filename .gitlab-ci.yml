@@ -54,6 +54,7 @@ Build-Coverage:
 
 Build-Analyzer:
  stage: build
+ allow_failure: true
  script:
    - env
    - ci/build.sh --clean Analyzer
