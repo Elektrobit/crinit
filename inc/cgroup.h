@@ -8,7 +8,12 @@
 
 #ifdef ENABLE_CGROUP
 
+#include <fcntl.h>
 #include <stddef.h>
+
+#ifndef CRINIT_CGROUP_PATH
+#define CRINIT_CGROUP_PATH "/sys/fs/cgroup"
+#endif
 
 /** Type to store a single cgroup configuration value **/
 typedef struct {
@@ -23,10 +28,15 @@ typedef struct {
 } crinitCgroupConfiguration_t;
 
 /** Type to store a single cgroup **/
-typedef struct {
+struct crinitCgroup;
+typedef struct crinitCgroup crinitCgroup_t;
+
+struct crinitCgroup {
     char *name;                           ///< cgroup name
+    int groupFd;                          ///< fd for /sys/fs/cgroup/<group>
+    crinitCgroup_t *parent;               ///< parent cgroup in /sys/fs/cgroup/
     crinitCgroupConfiguration_t *config;  ///< pointer to cgroup configuration
-} crinitCgroup_t;
+};
 
 /**
  * @brief Releases the memory held by param
@@ -71,6 +81,43 @@ int crinitCopyCgroupConfiguration(crinitCgroupConfiguration_t *orig, crinitCgrou
  */
 int crinitConvertConfigArrayToCGroupConfiguration(char **confArray, const int confArraySize,
                                                   crinitCgroupConfiguration_t *result);
+
+/**
+ * @brief Configure a cgroup directory by applying a list of settings.
+ *
+ * Opens (and, if necessary, creates) the cgroup named by @p cgroup->name,
+ * then iterates over @p cgroup->config.param (with @p cgroup->config.paramCount
+ * elements) and writes each <filename,option> pair into the corresponding file
+ * within that cgroup. All opened descriptors
+ * are closed before return.
+ *
+ * @param[in] cgroup        Pointer to a crinitCgroupParam_t that holds a valid, non-empty name
+ *                          and config.
+ *                          Must not be NULL.
+ *
+ * @return On sucess 0, otherwise -1
+ */
+int crinitCGroupConfigure(crinitCgroup_t *cgroup);
+
+/**
+ * @brief Assign a process to a cgroup by writing its PID to @c cgroup.procs.
+ *
+ * Opens (but does not create) the cgroup directory named by @p cgroup->name
+ * and writes the ASCII PID @p pid to its @c cgroup.procs file. This moves the
+ * entire process into the target cgroup. All opened descriptors
+ * are closed before return.
+ *
+ * Intended usage:  call only from crinit launcher after the process
+ *                  and the cgroup exists.
+ *
+ * @param[in] cgroup    Pointer to a crinitCgroupParam_t that holds a valid, non-empty name
+ *  *                   Must not be NULL.
+ *
+ * @param[in] pid       ID of a running process.
+ *
+ * @return On sucess 0, otherwise -1
+ */
+int crinitCGroupAssignPID(crinitCgroup_t *cgroup, pid_t pid);
 
 #endif
 

@@ -100,6 +100,12 @@ set(DEFAULT_MACHINE_ID_FILE
   "Default path of the machine id file for the machine ID generator example."
 )
 
+set(CGROUP_MOUNT_PATH
+  "/sys/fs/cgroup"
+  CACHE PATH
+  "cgroup v2 mount path"
+)
+
 if (CMAKE_BUILD_TYPE STREQUAL "Analyzer")
   add_compile_options(-fanalyzer)
 elseif (CMAKE_BUILD_TYPE STREQUAL "Asan")
