@@ -1,2 +1,5 @@
-add_subdirectory(cpu_hog/)
-add_subdirectory(memory_hog/)
+if(ENABLE_CGROUP)
+    add_subdirectory(cgroup/)
+    add_subdirectory(cpu_hog/)
+    add_subdirectory(memory_hog/)
+endif()
