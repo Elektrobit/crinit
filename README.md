@@ -303,6 +303,9 @@ PROVIDES = ipv4_dhcp:wait resolvconf:wait
 RESPAWN = NO
 RESPAWN_RETRIES = -1
 
+CGROUP_NAME = dhcp
+CGROUP_PARAMS = memory.max=100M
+
 ENV_SET = FOO_BAR "${FOO} bar"
           ESCAPED_VAR "Global variable name: \${FOO}"
           VAR_WITH_ESC_SEQUENCES "hex\t\x68\x65\x78"
@@ -357,6 +360,11 @@ IO_REDIRECT = STDERR STDOUT
   Default: `NO`
 - **RESPAWN_RETRIES** -- Number of times a respawned task may fail *in a row* before it is not started again. The
   special value `-1` is interpreted as "unlimited". Default: -1
+  **CGROUP_NAME** -- Name of a cgroup only used by this task.
+  **CGROUP_PARAMS** -- Space-separated list of options that shall be set for the cgroup. Each parameter consists of the file name and the parameter value to set.  
+  For example:  
+  ```memory.max=100M memory.min=5M```  
+  See cgroup v2 documentation for more details: https://docs.kernel.org/admin-guide/cgroup-v2.html
 - **ENV_SET** -- See section **Setting Environment Variables** below. (*array-like*)
 - **FILTER_DEFINE** -- See section **Defining Elos Filters** below. (*array-like*)
 - **IO_REDIRECT** -- See section **IO Redirections** below. (*array-like*)
