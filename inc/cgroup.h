@@ -42,8 +42,20 @@ int crinitFreeCgroupParam(crinitCgroupParam_t *param);
  */
 int crinitFreeCgroupConfiguration(crinitCgroupConfiguration_t *config);
 
+/**
+ * @brief Copy an object of type crinitCgroupParam_t
+ * @param orig Pointer to object to copy
+ * @param out Pointer to target object
+ * @return On sucess 0, otherwise -1
+ */
 int crinitCopyCgroupParam(crinitCgroupParam_t *orig, crinitCgroupParam_t *out);
 
+/**
+ * @brief Copy an object of type crinitCgroupConfiguration_t
+ * @param orig Pointer to object to copy
+ * @param out Pointer to target object
+ * @return On sucess 0, otherwise -1
+ */
 int crinitCopyCgroupConfiguration(crinitCgroupConfiguration_t *orig, crinitCgroupConfiguration_t *out);
 
 /**
