@@ -235,6 +235,13 @@ ELOS_EVENT_POLL_INTERVAL = 250000
 ENV_SET = FOO "foo"
 ENV_SET = FOO_BAZ "${FOO} baz"
 ENV_SET = GREETING "Good morning!"
+
+CGROUP_ROOT_NAME = crinit.cg
+CGROUP_ROOT_PARAMS = memory.max=500M
+
+CGROUP_GLOBAL_NAME = "mem_restricted cpu_restricted"
+CGROUP_GLOBAL_PARAMS = "cpu_restricted:cpu.max=50000 100000"
+                     = "mem_restricted:memory.max=100M"
 ```
 #### Explanation
 - **TASKS** -- The task configurations to load. This is an optional setting. If not set, **TASKDIR** will be scanned for
@@ -270,6 +277,10 @@ ENV_SET = GREETING "Good morning!"
 - **ENV_SET** -- See section **Setting Environment Variables** below. (*array-like*)
 - **FILTER_DEFINE** -- See section **Defining Elos Filters** below. (*array-like*)
 - **DEFAULTCAPS** -- Whitespace separated list of capability definitions `/linux/capability.h`) that each task shall be equipped with by default.
+- **CGROUP_ROOT_NAME** -- Name of the containing cgroup that will contain all in crinit defined cgroups.
+- **CGROUP_ROOT_PARAMS** -- Parameters for the root cgroup (if any). See CGROUP_PARAMS in the task configuration for details.
+- **CGROUP_GLOBAL_NAME** -- List of global cgroup names available to all tasks.
+- **CGROUP_GLOBAL_PARAMS** -- List of parameters for the global cgroups. One entry (see CGROUP_PARAMS in task configuration section for details) per line. Each line has to be prefixed with the name of the corresponding global cgroup and a colon (e.g. "mygroup:").
 
 ### Example Task Configuration
 The `network-dhcp.crinit` from above could for example look like this:
