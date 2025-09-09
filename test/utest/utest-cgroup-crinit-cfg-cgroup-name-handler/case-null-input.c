@@ -19,5 +19,5 @@ void crinitCfgGroupHandlerTestNullInput(void **state) {
     memset(&tgt, 0x00, sizeof(tgt));
     const char *val = NULL;
     assert_int_equal(crinitCfgCgroupNameHandler(&tgt, val, CRINIT_CONFIG_TYPE_TASK), -1);
-    assert_null(tgt.cgroupname);
+    assert_null(tgt.cgroup);
 }

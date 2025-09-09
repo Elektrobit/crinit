@@ -84,6 +84,14 @@ int crinitCgroupConvertSingleParamToObject(char *in, crinitCgroupParam_t *out);
 int crinitCopyCgroupConfiguration(crinitCgroupConfiguration_t *orig, crinitCgroupConfiguration_t *out);
 
 /**
+ * @brief Copy a cgroup definition
+ * @param orig Pointer to input
+ * @param out Pointer to target
+ * @return On success 0, otherwise -1
+ */
+int crinitCopyCgroup(crinitCgroup_t *orig, crinitCgroup_t *out);
+
+/**
  * @brief Converts a configuration array as returned by crinitConfConvToStrArr() to crinitCgroupConfiguration structure.
  *
  * The function will allocate memory for the sub structures in crinitCgroupConfiguration. It is the oblication of

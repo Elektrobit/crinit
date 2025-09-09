@@ -111,8 +111,7 @@ int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig) {
     out->groupname = NULL;
     out->supGroups = NULL;
     out->supGroupsSize = 0;
-    out->cgroupname = NULL;
-    out->cgroupConfig = NULL;
+    out->cgroup = NULL;
 
     out->name = strdup(orig->name);
     if (out->name == NULL) {
@@ -232,20 +231,12 @@ int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig) {
     }
 
 #ifdef ENABLE_CGROUP
-    if (orig->cgroupname) {
-        out->cgroupname = strdup(orig->cgroupname);
-        if (out->cgroupname == NULL) {
-            crinitErrnoPrint("Could not allocate memory for task cgroupname during copy of Task \'%s\'.",
-                             orig->cgroupname);
+    if (orig->cgroup) {
+        out->cgroup = calloc(sizeof(*out->cgroup), 1);
+        if (out->cgroup == NULL) {
             goto fail;
         }
-    }
-    if (orig->cgroupConfig) {
-        out->cgroupConfig = calloc(sizeof(out->cgroupConfig), 1);
-        if (out->cgroupConfig == NULL) {
-            goto fail;
-        }
-        if (crinitCopyCgroupConfiguration(orig->cgroupConfig, out->cgroupConfig) != 0) {
+        if (crinitCopyCgroup(orig->cgroup, out->cgroup)) {
             goto fail;
         }
     }
@@ -322,12 +313,10 @@ void crinitDestroyTask(crinitTask_t *t) {
     free(t->groupname);
     free(t->supGroups);
 #ifdef ENABLE_CGROUP
-    free(t->cgroupname);
-    t->cgroupname = NULL;
-    if (t->cgroupConfig != NULL) {
-        crinitFreeCgroupConfiguration(t->cgroupConfig);
-        free(t->cgroupConfig);
-        t->cgroupConfig = NULL;
+    if (t->cgroup) {
+        crinitFreeCgroup(t->cgroup);
+        free(t->cgroup);
+        t->cgroup = NULL;
     }
 #endif
 }

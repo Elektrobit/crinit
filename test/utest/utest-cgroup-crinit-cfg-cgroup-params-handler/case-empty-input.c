@@ -19,6 +19,6 @@ void crinitCfgCGroupParamsHandlerTestEmptyInput(void **state) {
     memset(&tgt, 0x00, sizeof(tgt));
     const char *val = "";
     assert_int_equal(crinitCfgCgroupParamsHandler(&tgt, val, CRINIT_CONFIG_TYPE_TASK), -1);
-    assert_null(tgt.cgroupConfig);
+    assert_null(tgt.cgroup);
     crinitDestroyTask(&tgt);
 }

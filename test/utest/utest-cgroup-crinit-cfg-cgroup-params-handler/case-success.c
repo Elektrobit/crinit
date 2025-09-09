@@ -18,12 +18,14 @@ void crinitCfgCGroupParamsHandlerTestSingleKeyValueSuccess(void **state) {
     crinitTask_t tgt;
     memset(&tgt, 0x00, sizeof(tgt));
     const char *val = "key=value";
-    tgt.cgroupname = strdup("test.cg");
+    tgt.cgroup = calloc(sizeof(*tgt.cgroup), 1);
+    assert_non_null(tgt.cgroup);
+    tgt.cgroup->name = strdup("test.cg");
     assert_int_equal(crinitCfgCgroupParamsHandler(&tgt, val, CRINIT_CONFIG_TYPE_TASK), 0);
-    assert_non_null(tgt.cgroupConfig);
-    assert_int_equal(tgt.cgroupConfig->paramCount, 1);
-    assert_string_equal(tgt.cgroupConfig->param[0]->filename, "key");
-    assert_string_equal(tgt.cgroupConfig->param[0]->option, "value");
+    assert_non_null(tgt.cgroup->config);
+    assert_int_equal(tgt.cgroup->config->paramCount, 1);
+    assert_string_equal(tgt.cgroup->config->param[0]->filename, "key");
+    assert_string_equal(tgt.cgroup->config->param[0]->option, "value");
     crinitDestroyTask(&tgt);
 }
 
@@ -33,13 +35,15 @@ void crinitCfgCGroupParamsHandlerTestTwoKeyValueSuccess(void **state) {
     crinitTask_t tgt;
     memset(&tgt, 0x00, sizeof(tgt));
     const char *val = "key=value \"anotherkey=another value\"";
-    tgt.cgroupname = strdup("test.cg");
+    tgt.cgroup = calloc(sizeof(*tgt.cgroup), 1);
+    assert_non_null(tgt.cgroup);
+    tgt.cgroup->name = strdup("test.cg");
     assert_int_equal(crinitCfgCgroupParamsHandler(&tgt, val, CRINIT_CONFIG_TYPE_TASK), 0);
-    assert_non_null(tgt.cgroupConfig);
-    assert_int_equal(tgt.cgroupConfig->paramCount, 2);
-    assert_string_equal(tgt.cgroupConfig->param[0]->filename, "key");
-    assert_string_equal(tgt.cgroupConfig->param[0]->option, "value");
-    assert_string_equal(tgt.cgroupConfig->param[1]->filename, "anotherkey");
-    assert_string_equal(tgt.cgroupConfig->param[1]->option, "another value");
+    assert_non_null(tgt.cgroup->config);
+    assert_int_equal(tgt.cgroup->config->paramCount, 2);
+    assert_string_equal(tgt.cgroup->config->param[0]->filename, "key");
+    assert_string_equal(tgt.cgroup->config->param[0]->option, "value");
+    assert_string_equal(tgt.cgroup->config->param[1]->filename, "anotherkey");
+    assert_string_equal(tgt.cgroup->config->param[1]->option, "another value");
     crinitDestroyTask(&tgt);
 }

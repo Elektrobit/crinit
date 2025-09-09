@@ -17,6 +17,10 @@ if (${ENABLE_CGROUP})
         ${PROJECT_SOURCE_DIR}/src/confconv.c
         ${PROJECT_SOURCE_DIR}/src/confhdl.c
         ${PROJECT_SOURCE_DIR}/src/confparse.c
+        ${PROJECT_SOURCE_DIR}/src/cgroup.c
+        ${PROJECT_SOURCE_DIR}/src/task.c
+        ${PROJECT_SOURCE_DIR}/src/ioredir.c
+        ${PROJECT_SOURCE_DIR}/src/envset.c
       LIBRARIES
         libmockfunctions
         inih-local

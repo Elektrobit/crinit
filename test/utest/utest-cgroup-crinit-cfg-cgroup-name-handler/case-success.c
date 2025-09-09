@@ -4,6 +4,7 @@
  * @brief Unit test for crinitCfgCgroupNameHandler(), successful execution.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -18,7 +19,10 @@ void crinitCfgGroupHandlerTestAlphaInputSuccess(void **state) {
     crinitTask_t tgt;
     memset(&tgt, 0x00, sizeof(tgt));
     const char *val = "test.cg";
+    tgt.cgroup = calloc(sizeof(*tgt.cgroup), 1);
+    fprintf(stderr, "sizeof(*tgt.cgroup): %lu\n", sizeof(*tgt.cgroup));
+    assert_non_null(tgt.cgroup);
     assert_int_equal(crinitCfgCgroupNameHandler(&tgt, val, CRINIT_CONFIG_TYPE_TASK), 0);
-    assert_string_equal(tgt.cgroupname, "test.cg");
-    free(tgt.cgroupname);
+    assert_string_equal(tgt.cgroup->name, "test.cg");
+    crinitDestroyTask(&tgt);
 }

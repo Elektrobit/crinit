@@ -104,6 +104,30 @@ fail:
     return -1;
 }
 
+int crinitCopyCgroup(crinitCgroup_t *orig, crinitCgroup_t *out) {
+    crinitNullCheck(-1, orig, out);
+
+    out->config = calloc(sizeof(*out->config), 1);
+    if (out->config == NULL) {
+        crinitErrPrint("Failed to allocate memory for cgroup configuration while copying cgroup.");
+        return -1;
+    }
+    if (crinitCopyCgroupConfiguration(orig->config, out->config) == -1) {
+        crinitErrPrint("Failed to copy configuration part while copying cgroup.");
+        return -1;
+    }
+    out->groupFd = orig->groupFd;
+    out->parent = orig->parent;
+    out->name = strdup(orig->name);
+    if (out->name == NULL) {
+        crinitErrPrint("Failed to copy name while copying cgroup.");
+        crinitFreeCgroupConfiguration(out->config);
+        return -1;
+    }
+
+    return 0;
+}
+
 int crinitCgroupConvertSingleParamToObject(char *in, crinitCgroupParam_t *out) {
     crinitNullCheck(-1, in, out);
 

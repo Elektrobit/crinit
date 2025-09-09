@@ -16,6 +16,7 @@ if (${ENABLE_CGROUP})
         lexers.c
         ${PROJECT_SOURCE_DIR}/src/logio.c
         ${PROJECT_SOURCE_DIR}/src/envset.c
+        ${PROJECT_SOURCE_DIR}/src/globopt.c
         ${PROJECT_SOURCE_DIR}/src/ioredir.c
         ${PROJECT_SOURCE_DIR}/src/cgroup.c
         ${PROJECT_SOURCE_DIR}/src/confconv.c
