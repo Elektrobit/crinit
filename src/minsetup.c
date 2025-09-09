@@ -107,6 +107,16 @@ int crinitSetupSystemFs(void) {
         crinitInfoPrint("/run is already mounted. Skipping.");
     }
 
+#ifdef ENABLE_CGROUP
+    if (mount("none", CRINIT_CGROUP_PATH, "cgroup2", MS_NODEV | MS_NOEXEC | MS_NOSUID, NULL) == -1) {
+        if (errno != EBUSY) {
+            crinitErrnoPrint("Could not mount cgroupfs.");
+            return -1;
+        }
+        crinitInfoPrint("%s is already mounted. Skipping.", CRINIT_CGROUP_PATH);
+    }
+#endif
+
     umask(0022);
     return 0;
 }
