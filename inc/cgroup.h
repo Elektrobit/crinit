@@ -150,6 +150,12 @@ int crinitCGroupConfigure(crinitCgroup_t *cgroup);
  */
 int crinitCGroupAssignPID(crinitCgroup_t *cgroup, pid_t pid);
 
+/**
+ * @brief Create all global cgroups (includes root cgroup if configured)
+ * @return On sucess 0, otherwise -1
+ */
+int crinitCreateGlobalCGroups(void);
+
 #endif
 
 #endif

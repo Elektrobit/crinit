@@ -15,6 +15,7 @@
 #include <unistd.h>
 
 #include "common.h"
+#include "globopt.h"
 #include "logio.h"
 
 int crinitFreeCgroupParam(crinitCgroupParam_t *param) {
@@ -371,6 +372,37 @@ int crinitCGroupAssignPID(crinitCgroup_t *cgroup, pid_t pid) {
     crinitCgroupClose(cgroup);
 
     return result;
+}
+
+int crinitCreateGlobalCGroups(void) {
+    crinitGlobOptStore_t *globOpts = crinitGlobOptBorrow();
+    if (globOpts == NULL) {
+        crinitErrPrint("Could not get exclusive access to global option storage.");
+        goto fail;
+    }
+
+    crinitCgroup_t *rootCgroup = globOpts->rootCgroup;
+    if (globOpts->rootCgroup) {
+        if (crinitCGroupConfigure(rootCgroup) != 0) {
+            crinitErrPrint("Failed to create crinit root cgroup '%s'.", rootCgroup->name);
+            goto fail;
+        }
+    }
+
+    for (size_t i = 0; i < globOpts->globCgroupsCount; i++) {
+        globOpts->globCgroups[i]->parent = rootCgroup;
+        if (crinitCGroupConfigure(globOpts->globCgroups[i]) != 0) {
+            crinitErrPrint("Failed to create global cgroup '%s'.", globOpts->globCgroups[i]->name);
+            goto fail;
+        }
+    }
+
+    crinitGlobOptRemit();
+    return 0;
+
+fail:
+    crinitGlobOptRemit();
+    return -1;
 }
 
 #endif
