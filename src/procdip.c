@@ -239,6 +239,9 @@ int crinitCreateLauncherParameters(crinitTaskCmd_t *taskCmd, crinitTask_t *tCopy
 #ifdef ENABLE_CAPABILITIES
     const char *const capParamFormatStr = "--caps=%lx";
 #endif
+#ifdef ENABLE_CGROUP
+    const char *const cgroupParamFormatStr = "--cgroup=%s";
+#endif
     const char *const delimiterEndOfOptionsStr = "--";
     const size_t doubleDashLength = strlen(delimiterEndOfOptionsStr) + 1;
     const size_t cmdParamLength = snprintf(NULL, 0, cmdParamFormatStr, taskCmd->argv[0]) + 1;
@@ -266,6 +269,27 @@ int crinitCreateLauncherParameters(crinitTaskCmd_t *taskCmd, crinitTask_t *tCopy
     const size_t capParamLength = snprintf(NULL, 0, capParamFormatStr, capEff) + 1;
 #endif
 
+#ifdef ENABLE_CGROUP
+    size_t cgroupParamLength = 0;
+    char *cgroupParam = NULL;
+    if (tCopy->cgroup && tCopy->cgroup->name) {
+        if (tCopy->cgroup->parent && tCopy->cgroup->parent->name) {
+            cgroupParamLength += strlen(tCopy->cgroup->parent->name) + 1;  // Account for '/' as delimiter
+        }
+        cgroupParamLength += strlen(tCopy->cgroup->name) + 1;  // Account for '\0'
+        cgroupParam = calloc(sizeof(char), cgroupParamLength);
+        if (cgroupParam == NULL) {
+            crinitErrPrint("Failed to allocate memory for cgroup parameter string.");
+            return -1;
+        }
+        if (tCopy->cgroup->parent && tCopy->cgroup->parent->name) {
+            snprintf(cgroupParam, cgroupParamLength, "%s/%s", tCopy->cgroup->parent->name, tCopy->cgroup->name);
+        } else {
+            snprintf(cgroupParam, cgroupParamLength, "%s", tCopy->cgroup->name);
+        }
+    }
+#endif
+
     const int groupParamVarPartLength = crinitCalculateVariableGroupParamLength(tCopy->supGroupsSize, tCopy->supGroups);
     if (groupParamVarPartLength == -1) {
         crinitErrPrint("Failed to calculate the size of the supplementary groups parmaeter string.\n");
@@ -279,6 +303,9 @@ int crinitCreateLauncherParameters(crinitTaskCmd_t *taskCmd, crinitTask_t *tCopy
 #ifdef ENABLE_CAPABILITIES
                                + capParamLength
 #endif
+#ifdef ENABLE_CGROUP
+                               + cgroupParamLength
+#endif
                                + doubleDashLength + targetParamTotalLength;
 
     char *argBuf = NULL;
@@ -290,10 +317,12 @@ int crinitCreateLauncherParameters(crinitTaskCmd_t *taskCmd, crinitTask_t *tCopy
         return -1;
     }
 
-#ifndef ENABLE_CAPABILITIES
-    const size_t launcherParamCount = 6;  // Including trailing null element
-#else
-    const size_t launcherParamCount = 7;  // Including trailing null element
+    size_t launcherParamCount = 6;  // Including trailing null element
+#ifdef ENABLE_CAPABILITIES
+    launcherParamCount++;
+#endif
+#ifdef ENABLE_CGROUP
+    launcherParamCount++;
 #endif
     av = calloc(launcherParamCount + taskCmd->argc, sizeof(*av));
     if (av == NULL) {
@@ -337,6 +366,14 @@ int crinitCreateLauncherParameters(crinitTaskCmd_t *taskCmd, crinitTask_t *tCopy
     argBufCurr += capParamLength;
 #endif
 
+#ifdef ENABLE_CGROUP
+    if (tCopy->cgroup) {
+        av[argBufIdx++] = argBufCurr;
+        snprintf(argBufCurr, cgroupParamLength, cgroupParamFormatStr, cgroupParam);
+        argBufCurr += cgroupParamLength;
+    }
+#endif
+
     av[argBufIdx++] = argBufCurr;
     memcpy(argBufCurr, delimiterEndOfOptionsStr, doubleDashLength);
     argBufCurr += doubleDashLength;
@@ -366,10 +403,23 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char *name, crinit
         return -1;
     }
 
-    if (tCopy->user != 0 || tCopy->group != 0) {
+    if (tCopy->user != 0 || tCopy->group != 0
+#ifdef ENABLE_CGROUP
+        || tCopy->cgroup != NULL
+#endif
+    ) {
         cmd = crinitLauncherCommand;
         useLauncher = true;
     }
+
+#ifdef ENABLE_CGROUP
+    if (tCopy->cgroup && tCopy->cgroup->config) {
+        if (crinitCGroupConfigure(tCopy->cgroup) != 0) {
+            crinitErrPrint("Failed to configure task cgroup '%s'.", tCopy->cgroup->name);
+            return -1;
+        }
+    }
+#endif
 
     for (size_t i = 0; i < cmdsSize; i++) {
         posix_spawn_file_actions_t fileact;

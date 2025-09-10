@@ -28,6 +28,9 @@
 #ifdef ENABLE_CAPABILITIES
 #include "capabilities.h"
 #endif
+#ifdef ENABLE_CGROUP
+#include "cgroup.h"
+#endif
 #include "crinit-version.h"
 #include "logio.h"
 
@@ -39,6 +42,9 @@ static void crinitPrintUsage(void) {
     fprintf(
         stderr,
         "USAGE: crinit-launch --cmd=/path/to/targetcmd [--user=UID --groups=GID[,SGID1,SGID2]] "
+#ifdef ENABLE_CGROUPS
+        "--cgroup=<cgroup> "
+#endif
 #ifdef ENABLE_CAPABILITIES
         "--caps=bitmask -- "
 #endif
@@ -51,6 +57,11 @@ static void crinitPrintUsage(void) {
         "will\n"
         "       be used as the primary group, all others as suplimentary groups. If not given the group of the crinit "
         "process is used.\n"
+#ifdef enable_CGROUPS
+        "    cgroup Name of the cgroup that shall be used to start the target process in. If the cgroup has a parent "
+        "cgroup, \n"
+        "that cgroup has to be given as well. Example: \"crinit.cg/my.cg\"\n"
+#endif
 #ifdef ENABLE_CAPABILITIES
         "    caps Bitmask in hexadecimal format that represents all capabilities that shall be added.\n"
         "       Bit positions correspond to capability values that are defined by the kernel in <linux/capability.h>.\n"
@@ -121,10 +132,16 @@ int main(int argc, char *argv[]) {
 #ifdef ENABLE_CAPABILITIES
                                          {"caps", required_argument, 0, 'p'},
 #endif
+#ifdef ENABLE_CGROUP
+                                         {"cgroup", optional_argument, 0, 'r'},
+#endif
                                          {0, 0, 0, 0}};
 
 #ifdef ENABLE_CAPABILITIES
     unsigned long caps = 0;
+#endif
+#ifdef ENABLE_CGROUP
+    char *targetCgroup = NULL;
 #endif
     gid_t *groups = NULL;
     size_t groupSize = 0;
@@ -133,11 +150,18 @@ int main(int argc, char *argv[]) {
     bool userFound = false;
     char *argvNewBuffer = NULL;
     char **argvNew = NULL;
+
 #ifdef ENABLE_CAPABILITIES
-    const char *opts = "hc:u:g:p:V";
+#define CAPOPTS ":p"
 #else
-    const char *opts = "hc:u:g:V";
+#define CAPOPTS ""
 #endif
+#ifdef ENABLE_CGROUP
+#define CGROUPOPTS ":r"
+#else
+#define CGROUPOPTS ""
+#endif
+    const char *opts = "hc:u:g:V" CAPOPTS CGROUPOPTS;
 
     while (true) {
         opt = getopt_long(argc, argv, opts, longOptions, NULL);
@@ -178,6 +202,16 @@ int main(int argc, char *argv[]) {
             case 'p':
                 caps = strtoul(optarg, NULL, 16);
                 crinitInfoPrint("Provided capability set mask: %#lx (option --caps: %s)", caps, optarg);
+                break;
+#endif
+#ifdef ENABLE_CGROUP
+            case 'r':
+                if (targetCgroup) {
+                    crinitErrPrint("Parameter --cgroup may only be given once.\n");
+                    crinitPrintUsage();
+                    goto failureExit;
+                }
+                targetCgroup = strdup(optarg);
                 break;
 #endif
             case 'V':
@@ -270,11 +304,27 @@ int main(int argc, char *argv[]) {
     }
 #endif
 
+#ifdef ENABLE_CGROUP
+    if (targetCgroup) {
+        const pid_t pid = getpid();
+        crinitCgroup_t cgroup;
+        cgroup.config = NULL;
+        cgroup.groupFd = -1;
+        cgroup.parent = NULL;
+        cgroup.name = targetCgroup;
+        if (crinitCGroupAssignPID(&cgroup, pid) != 0) {
+            crinitErrPrint("Failed to switch to target cgroup '%s'.", cgroup.name);
+            goto failureExit;
+        }
+    }
+#endif
+
     execvp(cmd, argvNew);
 
     crinitErrnoPrint("Failed to execvp().\n");
 
 failureExit:
+    free(targetCgroup);
     free(groups);
     free(cmd);
     free(argvNewBuffer);

@@ -199,6 +199,7 @@ add_executable(
     crinit-launch
     crinit-launch.c
     ${CAPABILITIES_SOURCES}
+    ${CGROUP_SOURCES}
     logio.c
     ${CMAKE_CURRENT_BINARY_DIR}/crinit-version.c
 )
@@ -212,6 +213,7 @@ target_compile_definitions(
   crinit-launch
     PRIVATE
     ${CAPABILITIES_DEFINES}
+    ${CGROUP_DEFINES}
 )
 
 target_link_libraries(

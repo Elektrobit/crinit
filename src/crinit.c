@@ -175,11 +175,13 @@ int main(int argc, char *argv[]) {
         goto failFreeSigs;
     }
 
+#ifdef ENABLE_CGROUP
     crinitInfoPrint("Create crinit root cgroup.");
     if (crinitCreateGlobalCGroups() != 0) {
         crinitErrPrint("Failed to create crinit root / global cgroups.");
         goto failFreeSigs;
     }
+#endif
 
     crinitFileSeries_t taskSeries;
     if (crinitLoadTasks(&taskSeries) == -1) {
