@@ -176,7 +176,6 @@ int main(int argc, char *argv[]) {
     }
 
 #ifdef ENABLE_CGROUP
-    crinitInfoPrint("Create crinit root cgroup.");
     if (crinitCreateGlobalCGroups() != 0) {
         crinitErrPrint("Failed to create crinit root / global cgroups.");
         goto failFreeSigs;

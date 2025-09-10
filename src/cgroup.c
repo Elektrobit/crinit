@@ -383,10 +383,15 @@ int crinitCreateGlobalCGroups(void) {
 
     crinitCgroup_t *rootCgroup = globOpts->rootCgroup;
     if (globOpts->rootCgroup) {
+        crinitInfoPrint("Create crinit root cgroup.");
         if (crinitCGroupConfigure(rootCgroup) != 0) {
             crinitErrPrint("Failed to create crinit root cgroup '%s'.", rootCgroup->name);
             goto fail;
         }
+    }
+
+    if (globOpts->globCgroupsCount) {
+        crinitInfoPrint("Create crinit global cgroups.");
     }
 
     for (size_t i = 0; i < globOpts->globCgroupsCount; i++) {
