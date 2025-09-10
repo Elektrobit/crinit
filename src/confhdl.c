@@ -668,12 +668,8 @@ int crinitCfgCgroupParamsHandler(void *tgt, const char *val, crinitConfigType_t 
     crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
     crinitTask_t *t = tgt;
 
-    int confArrLen;
-    char **parsedVal = crinitConfConvToStrArr(&confArrLen, val, true);
-    if (parsedVal == NULL) {
-        crinitErrPrint("Could not convert group list '%s' to string array.", val);
-        return -1;
-    }
+    int confArrLen = 1;
+    char *tmp = strdup(val);
 
     // If parameters are specified, we need a cgroup name, too.
     if (t->cgroup == NULL || t->cgroup->name == NULL) {
@@ -683,33 +679,30 @@ int crinitCfgCgroupParamsHandler(void *tgt, const char *val, crinitConfigType_t 
 
     crinitCgroupConfiguration_t *cgroupConfig = NULL;
 
-    if (confArrLen > 0) {
-        cgroupConfig = calloc(sizeof(*(cgroupConfig)), 1);
-        if (cgroupConfig == NULL) {
-            goto failInit;
-        }
-        if (crinitConvertConfigArrayToCGroupConfiguration(parsedVal, confArrLen, cgroupConfig) != 0) {
-            goto fail;
-        }
-        crinitGlobOptStore_t *globOpts = crinitGlobOptBorrow();
-        if (globOpts == NULL) {
-            crinitErrPrint("Could not get exclusive access to global option storage.");
-            crinitGlobOptRemit();
-            goto fail;
-        }
-        t->cgroup->parent = globOpts->rootCgroup;
-        t->cgroup->config = cgroupConfig;
-        crinitGlobOptRemit();
+    cgroupConfig = calloc(sizeof(*(cgroupConfig)), 1);
+    if (cgroupConfig == NULL) {
+        goto failInit;
     }
+    if (crinitConvertConfigArrayToCGroupConfiguration(&tmp, confArrLen, cgroupConfig) != 0) {
+        goto fail;
+    }
+    crinitGlobOptStore_t *globOpts = crinitGlobOptBorrow();
+    if (globOpts == NULL) {
+        crinitErrPrint("Could not get exclusive access to global option storage.");
+        crinitGlobOptRemit();
+        goto fail;
+    }
+    t->cgroup->parent = globOpts->rootCgroup;
+    t->cgroup->config = cgroupConfig;
+    crinitGlobOptRemit();
 
-    crinitFreeArgvArray(parsedVal);
     return 0;
 
 fail:
     crinitFreeCgroupConfiguration(cgroupConfig);
     free(cgroupConfig);
 failInit:
-    crinitFreeArgvArray(parsedVal);
+    free(tmp);
     return -1;
 }
 
