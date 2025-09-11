@@ -446,8 +446,15 @@ int crinitCreateGlobalCGroups(void) {
         goto fail;
     }
     char *controllers = NULL;
+    crinitInfoPrint("Try to read available cgroup controllers...");
     if (crinitReadAvailableCgroupControllers("cgroup.controllers", cgroupBaseFd, &controllers) != 0) {
+        crinitErrPrint("Failed to read available cgroup controllers.");
         goto failCtrlRead;
+    }
+    if (controllers == NULL) {
+        crinitErrPrint("Failed to read cgroup controllers. Got empty result.");
+    } else {
+        crinitInfoPrint("Available cgroup controllers: %s", controllers);
     }
     int writeFd = openat(cgroupBaseFd, "cgroup.subtree_control", O_WRONLY);
     if (writeFd < 0) {
