@@ -759,56 +759,47 @@ int crinitCfgCgroupRootParamsHandler(void *tgt, const char *val, crinitConfigTyp
     crinitNullCheck(-1, val);
     crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
 
-    int confArrLen;
-    char **parsedVal = crinitConfConvToStrArr(&confArrLen, val, true);
-    if (parsedVal == NULL) {
-        crinitErrPrint("Could not convert group list '%s' to string array.", val);
-        return -1;
-    }
-
-    if (confArrLen <= 0) {
-        crinitErrPrint("Input values may not be empty");
-        crinitFreeArgvArray(parsedVal);
-        return -1;
-    }
-
     crinitGlobOptStore_t *globOpts = crinitGlobOptBorrow();
     if (globOpts == NULL) {
         crinitErrPrint("Could not get exclusive access to global option storage.");
-        crinitFreeArgvArray(parsedVal);
         return -1;
     }
 
-    if (globOpts->rootCgroup == NULL) {
-        globOpts->rootCgroup = calloc(sizeof(*(globOpts->rootCgroup)), 1);
-        if (globOpts->rootCgroup == NULL) {
-            crinitErrPrint("Failed to allocate memory for root cgroup configuration");
-            goto failInit;
-        }
+    // If parameters are specified, we need a cgroup name, too.
+    if (globOpts->rootCgroup == NULL || globOpts->rootCgroup->name == NULL) {
+        crinitErrPrint("Configuration key %s is empty.", CRINIT_CONFIG_KEYSTR_CGROUP_ROOT_NAME);
+        goto failInit;
     }
 
-    crinitCgroup_t *rootConfig = globOpts->rootCgroup;
+    crinitCgroupConfiguration_t *cgroupConfig = globOpts->rootCgroup->config;
 
-    if (confArrLen > 0) {
-        rootConfig->config = calloc(sizeof(*(rootConfig->config)), 1);
-        if (rootConfig->config == NULL) {
+    if (cgroupConfig == NULL) {
+        cgroupConfig = calloc(sizeof(*(cgroupConfig)), 1);
+        if (cgroupConfig == NULL) {
+            crinitErrPrint("Failed to allocate memory for cgroup configuration.");
             goto failInit;
         }
-        if (crinitConvertConfigArrayToCGroupConfiguration(parsedVal, confArrLen, rootConfig->config) != 0) {
-            goto fail;
-        }
+        globOpts->rootCgroup->config = cgroupConfig;
     }
 
-    crinitFreeArgvArray(parsedVal);
+    crinitCgroupParam_t **tmpParams = crinitCfgHandlerManageArrayMem(
+        cgroupConfig->param, sizeof(*cgroupConfig->param), cgroupConfig->paramCount, cgroupConfig->paramCount + 1);
+    if (tmpParams == NULL) {
+        crinitErrPrint("Failed to (re)allocate memory for cgroup configuration parameters.");
+        goto failInit;
+    }
+    cgroupConfig->param = tmpParams;
+    cgroupConfig->paramCount++;
+    cgroupConfig->param[cgroupConfig->paramCount - 1] = calloc(sizeof(*cgroupConfig->param), 1);
+
+    if (crinitCgroupConvertSingleParamToObject(val, cgroupConfig->param[cgroupConfig->paramCount - 1]) != 0) {
+        goto fail;
+    }
+
     crinitGlobOptRemit();
     return 0;
 
-fail:
-    crinitFreeCgroupConfiguration(rootConfig->config);
-    free(rootConfig->config);
-    rootConfig->config = NULL;
 failInit:
-    crinitFreeArgvArray(parsedVal);
     crinitGlobOptRemit();
     return -1;
 }
@@ -985,13 +976,6 @@ int crinitCfgCgroupGlobalParamsHandler(void *tgt, const char *val, crinitConfigT
     crinitNullCheck(-1, val);
     crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_SERIES);
 
-    int confArrLen;
-    char **parsedVal = crinitConfConvToStrArr(&confArrLen, val, true);
-    if (parsedVal == NULL) {
-        crinitErrPrint("Could not convert group list '%s' to string array.", val);
-        goto fail;
-    }
-
     crinitGlobOptStore_t *globOpts = crinitGlobOptBorrow();
     if (globOpts == NULL) {
         crinitErrPrint("Could not get exclusive access to global option storage.");
@@ -1038,7 +1022,6 @@ int crinitCfgCgroupGlobalParamsHandler(void *tgt, const char *val, crinitConfigT
     }
     free(temp);
 
-    crinitFreeArgvArray(parsedVal);
     crinitGlobOptRemit();
     return 0;
 
@@ -1060,8 +1043,7 @@ failLoop:
     free(globOpts->globCgroups);
     globOpts->globCgroups = NULL;
     globOpts->globCgroupsCount = 0;
-failInit:
-    crinitFreeArgvArray(parsedVal);
+
 fail:
     crinitGlobOptRemit();
     return -1;
