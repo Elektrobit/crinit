@@ -42,7 +42,7 @@ static void crinitPrintUsage(void) {
     fprintf(
         stderr,
         "USAGE: crinit-launch --cmd=/path/to/targetcmd [--user=UID --groups=GID[,SGID1,SGID2]] "
-#ifdef ENABLE_CGROUPS
+#ifdef ENABLE_CGROUP
         "--cgroup=<cgroup> "
 #endif
 #ifdef ENABLE_CAPABILITIES
@@ -57,7 +57,7 @@ static void crinitPrintUsage(void) {
         "will\n"
         "       be used as the primary group, all others as suplimentary groups. If not given the group of the crinit "
         "process is used.\n"
-#ifdef enable_CGROUPS
+#ifdef ENABLE_CGROUP
         "    cgroup Name of the cgroup that shall be used to start the target process in. If the cgroup has a parent "
         "cgroup, \n"
         "that cgroup has to be given as well. Example: \"crinit.cg/my.cg\"\n"
