@@ -406,13 +406,13 @@ static int crinitReadAvailableCgroupControllers(const char *infile, int relfd, c
     ctrlstr[ctrlStrSize] = '\0';
     close(fd);
 
-    char *tokState = NULL;
+    char *tokState = ctrlstr;
     char *token = NULL;
     size_t numOfControllers = 0;
     char *outstr = NULL;
     size_t outstrSize = 1;  // for terminating '\0';
 
-    while ((token = strtok_r(ctrlstr, " ", &tokState)) != NULL) {
+    while ((token = strtok_r(tokState, " ", &tokState)) != NULL) {
         numOfControllers++;
         const size_t tokenLen = strlen(token) + 2;  // add 1 byte for leading '+' and ' ' needed later
         outstrSize += tokenLen;
