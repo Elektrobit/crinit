@@ -309,9 +309,9 @@ static int crinitCgroupSetParam(crinitCgroupParam_t *param, int cgroupFd) {
     } else {
         struct iovec iov[2] = {{.iov_base = (void *)param->option, .iov_len = strlen(param->option)},
                                {.iov_base = (void *)"\n", .iov_len = 1}};
-        size_t written = writev(cgroupOptionFd, iov, 2);
+        ssize_t written = writev(cgroupOptionFd, iov, 2);
         size_t want = iov[0].iov_len + iov[1].iov_len;
-        if (written != want) {
+        if (written != (ssize_t)want) {
             crinitErrnoPrint("Could not write value %s to option %s.", param->option, param->filename);
         } else {
             result = 0;
