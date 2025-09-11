@@ -287,6 +287,7 @@ int crinitCreateLauncherParameters(crinitTaskCmd_t *taskCmd, crinitTask_t *tCopy
         } else {
             snprintf(cgroupParam, cgroupParamLength, "%s", tCopy->cgroup->name);
         }
+        cgroupParamLength = snprintf(NULL, 0, cgroupParamFormatStr, cgroupParam) + 1;
     }
 #endif
 
