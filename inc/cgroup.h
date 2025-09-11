@@ -73,7 +73,7 @@ int crinitCopyCgroupParam(crinitCgroupParam_t *orig, crinitCgroupParam_t *out);
  * @param out Pointer to target struct
  * @return On success 0, otherwise -1
  */
-int crinitCgroupConvertSingleParamToObject(char *in, crinitCgroupParam_t *out);
+int crinitCgroupConvertSingleParamToObject(const char *in, crinitCgroupParam_t *out);
 
 /**
  * @brief Copy a cgroup configuration object

@@ -129,7 +129,7 @@ int crinitCopyCgroup(crinitCgroup_t *orig, crinitCgroup_t *out) {
     return 0;
 }
 
-int crinitCgroupConvertSingleParamToObject(char *in, crinitCgroupParam_t *out) {
+int crinitCgroupConvertSingleParamToObject(const char *in, crinitCgroupParam_t *out) {
     crinitNullCheck(-1, in, out);
 
     char *delim = NULL;
