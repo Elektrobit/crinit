@@ -692,6 +692,7 @@ int crinitCfgCgroupParamsHandler(void *tgt, const char *val, crinitConfigType_t 
     }
     cgroupConfig->param = tmpParams;
     cgroupConfig->paramCount++;
+    cgroupConfig->param[cgroupConfig->paramCount - 1] = calloc(sizeof(*cgroupConfig->param), 1);
 
     if (crinitCgroupConvertSingleParamToObject(val, cgroupConfig->param[cgroupConfig->paramCount - 1]) != 0) {
         goto fail;
