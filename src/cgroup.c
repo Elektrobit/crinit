@@ -391,11 +391,14 @@ static int crinitReadAvailableCgroupControllers(const char *infile, int relfd, c
     size_t ctrlStrSize = 1;  // for terminating '\0'
     while ((bytesRead = read(fd, buffer, bufSize)) > 0) {
         ctrlStrSize += bytesRead;
-        char *tmp = realloc(ctrlstr, bytesRead);
+        char *tmp = realloc(ctrlstr, ctrlStrSize);
         if (tmp == NULL) {
             crinitErrnoPrint("Failed to allocate temporary memory to read cgroup controllers.");
             free(ctrlstr);
             return -1;
+        }
+        if (ctrlstr == NULL) {
+            memset(tmp, 0x00, ctrlStrSize);
         }
         ctrlstr = tmp;
         strncat(ctrlstr, buffer, bytesRead);
