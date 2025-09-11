@@ -374,6 +374,65 @@ int crinitCGroupAssignPID(crinitCgroup_t *cgroup, pid_t pid) {
     return result;
 }
 
+static int crinitReadAvailableCgroupControllers(const char *infile, int relfd, char **controllers) {
+    crinitNullCheck(-1, infile, controllers);
+
+    int fd = openat(relfd, infile, O_RDONLY);
+    if (fd == -1) {
+        crinitErrnoPrint("Failed to open %s to read cgroup controllers.", infile);
+        return -1;
+    }
+
+    int bytesRead = 0;
+    const size_t bufSize = 80;
+    char buffer[bufSize];
+    memset(buffer, 0x00, bufSize);
+    char *ctrlstr = NULL;
+    size_t ctrlStrSize = 1;  // for terminating '\0'
+    while ((bytesRead = read(fd, buffer, bufSize)) > 0) {
+        ctrlStrSize += bytesRead;
+        char *tmp = realloc(ctrlstr, bytesRead);
+        if (tmp == NULL) {
+            crinitErrnoPrint("Failed to allocate temporary memory to read cgroup controllers.");
+            free(ctrlstr);
+            return -1;
+        }
+        ctrlstr = tmp;
+    }
+    ctrlstr[ctrlStrSize] = '\0';
+    close(fd);
+
+    char *tokState = NULL;
+    char *token = NULL;
+    size_t numOfControllers = 0;
+    char *outstr = NULL;
+    size_t outstrSize = 1;  // for terminating '\0';
+
+    while ((token = strtok_r(ctrlstr, " ", &tokState)) != NULL) {
+        numOfControllers++;
+        const size_t tokenLen = strlen(token) + 2;  // add 1 byte for leading '+' and ' ' needed later
+        outstrSize += tokenLen;
+        char *tmp = realloc(outstr, outstrSize);
+        if (tmp == NULL) {
+            crinitErrnoPrint("Failed to allocate memory for output string of cgroup controllers.");
+            free(ctrlstr);
+            free(outstr);
+            return -1;
+        }
+        if (outstr == NULL) {
+            memset(tmp, 0x00, outstrSize);
+        }
+        outstr = tmp;
+        strcat(outstr, "+");
+        strcat(outstr, token);
+        strcat(outstr, " ");
+    }
+
+    free(ctrlstr);
+    *controllers = outstr;
+    return 0;
+}
+
 int crinitCreateGlobalCGroups(void) {
     crinitGlobOptStore_t *globOpts = crinitGlobOptBorrow();
     if (globOpts == NULL) {
@@ -381,14 +440,58 @@ int crinitCreateGlobalCGroups(void) {
         goto fail;
     }
 
+    int cgroupBaseFd = open(CRINIT_CGROUP_PATH, O_DIRECTORY | O_CLOEXEC);
+    if (cgroupBaseFd < 0) {
+        crinitErrnoPrint("Could not open cgroup base dir.");
+        goto fail;
+    }
+    char *controllers = NULL;
+    if (crinitReadAvailableCgroupControllers("cgroup.controllers", cgroupBaseFd, &controllers) != 0) {
+        goto failCtrlRead;
+    }
+    int writeFd = openat(cgroupBaseFd, "cgroup.subtree_control", O_WRONLY);
+    if (writeFd < 0) {
+        crinitErrnoPrint("Could not open cgroup subtree_controll file.");
+        goto failCtrlRead;
+    }
+    ssize_t written = write(writeFd, controllers, strlen(controllers));
+    if (written < 0 || written != (ssize_t)strlen(controllers)) {
+        crinitErrnoPrint("Failed to write controllers to subtree_controll file correctly.");
+        goto failCtrlWrite;
+    }
+    close(writeFd);
+    writeFd = 0;
+
     crinitCgroup_t *rootCgroup = globOpts->rootCgroup;
-    if (globOpts->rootCgroup) {
+    if (rootCgroup) {
         crinitInfoPrint("Create crinit root cgroup.");
+
         if (crinitCGroupConfigure(rootCgroup) != 0) {
             crinitErrPrint("Failed to create crinit root cgroup '%s'.", rootCgroup->name);
-            goto fail;
+            goto failCtrlRead;
         }
+
+        if (crinitCgroupOpen(rootCgroup, false) != 0) {
+            crinitErrPrint("Failed to open root cgroup '%s' for subtree_control manipulation.", rootCgroup->name);
+            goto failCtrlRead;
+        }
+        int writeFd = openat(rootCgroup->groupFd, "cgroup.subtree_control", O_WRONLY);
+        if (writeFd < 0) {
+            crinitErrnoPrint("Could not open cgroup subtree_controll file.");
+            goto failCtrlRead;
+        }
+        ssize_t written = write(writeFd, controllers, strlen(controllers));
+        if (written < 0 || written != (ssize_t)strlen(controllers)) {
+            crinitErrnoPrint("Failed to write controllers to subtree_controll file correctly.");
+            crinitCgroupClose(rootCgroup);
+            goto failCtrlWrite;
+        }
+        close(writeFd);
+        writeFd = 0;
+        crinitCgroupClose(rootCgroup);
     }
+
+    close(cgroupBaseFd);
 
     if (globOpts->globCgroupsCount) {
         crinitInfoPrint("Create crinit global cgroups.");
@@ -405,6 +508,10 @@ int crinitCreateGlobalCGroups(void) {
     crinitGlobOptRemit();
     return 0;
 
+failCtrlWrite:
+    close(writeFd);
+failCtrlRead:
+    close(cgroupBaseFd);
 fail:
     crinitGlobOptRemit();
     return -1;
