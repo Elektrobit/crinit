@@ -239,9 +239,9 @@ ENV_SET = GREETING "Good morning!"
 CGROUP_ROOT_NAME = crinit.cg
 CGROUP_ROOT_PARAMS = memory.max=500M
 
-CGROUP_GLOBAL_NAME = "mem_restricted cpu_restricted"
-CGROUP_GLOBAL_PARAMS = "cpu_restricted:cpu.max=50000 100000"
-                     = "mem_restricted:memory.max=100M"
+CGROUP_GLOBAL_NAME = mem_restricted cpu_restricted
+CGROUP_GLOBAL_PARAMS = cpu_restricted:cpu.max=50000 100000
+                     = mem_restricted:memory.max=100M
 ```
 #### Explanation
 - **TASKS** -- The task configurations to load. This is an optional setting. If not set, **TASKDIR** will be scanned for
@@ -372,7 +372,7 @@ IO_REDIRECT = STDERR STDOUT
 - **RESPAWN_RETRIES** -- Number of times a respawned task may fail *in a row* before it is not started again. The
   special value `-1` is interpreted as "unlimited". Default: -1
   **CGROUP_NAME** -- Name of a cgroup only used by this task.
-  **CGROUP_PARAMS** -- Space-separated list of options that shall be set for the cgroup. Each parameter consists of the file name and the parameter value to set.  
+  **CGROUP_PARAMS** -- Line-separated list of options that shall be set for the cgroup. Each parameter consists of the file name and the parameter value to set.  Only one parameter pair per line.
   For example:  
   ```memory.max=100M memory.min=5M```  
   See cgroup v2 documentation for more details: https://docs.kernel.org/admin-guide/cgroup-v2.html
