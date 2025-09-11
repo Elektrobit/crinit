@@ -398,6 +398,7 @@ static int crinitReadAvailableCgroupControllers(const char *infile, int relfd, c
             return -1;
         }
         ctrlstr = tmp;
+        strncat(ctrlstr, buffer, bytesRead);
     }
     ctrlstr[ctrlStrSize] = '\0';
     close(fd);
