@@ -530,7 +530,7 @@ fail:
     return -1;
 }
 
-int crinitCgroupsGlobalParamSplitNameAndParam(const char *val, char **name, char **param) {
+int crinitCgroupGlobalParamSplitNameAndParam(const char *val, char **name, char **param) {
     crinitNullCheck(-1, val, name, param);
 
     char *delim = strchr(val, ':');

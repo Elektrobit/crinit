@@ -163,7 +163,7 @@ int crinitCreateGlobalCGroups(void);
  * @param param Output pointer with the parameter string. Caller needs to free the memory.
  * @return On sucess 0, otherwise -1
  */
-int crinitCgroupsGlobalParamSplitNameAndParam(const char *val, char **name, char **param);
+int crinitCgroupGlobalParamSplitNameAndParam(const char *val, char **name, char **param);
 
 #endif
 
