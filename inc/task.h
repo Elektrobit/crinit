@@ -115,7 +115,7 @@ typedef struct crinitTask {
     uint64_t capabilitiesClear;  ///< Bitmask to hold the capabilities that shall be cleared from a task.
 #endif
 #ifdef ENABLE_CGROUP
-    crinitCgroup_t *cgroup;      ///< Object that holds an optional cgroup for the task.
+    crinitCgroup_t *cgroup;  ///< Object that holds an optional cgroup for the task.
 #endif
 } crinitTask_t;
 

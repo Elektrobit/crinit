@@ -171,7 +171,7 @@ int crinitCgroupGlobalParamSplitNameAndParam(const char *val, char **name, char 
  * @param isGlobal Pointer to answer. If not global answer is 0. All other values indicate a global cgroup.
  * @return On sucess 0, otherwise -1
  */
-int crinitCgroupNameIsGlobalCgroup(const char *name, int* isGlobal);
+int crinitCgroupNameIsGlobalCgroup(const char *name, int *isGlobal);
 
 #endif
 
