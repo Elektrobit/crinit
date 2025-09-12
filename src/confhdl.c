@@ -646,6 +646,20 @@ int crinitCfgCgroupNameHandler(void *tgt, const char *val, crinitConfigType_t ty
         return -1;
     }
 
+    crinitGlobOptStore_t *globOpts = crinitGlobOptBorrow();
+    if (globOpts == NULL) {
+        crinitErrPrint("Could not get exclusive access to global option storage.");
+        crinitGlobOptRemit();
+        return -1;
+    }
+    crinitCgroup_t *globalCgroup = crinitFindCgroupByName(globOpts->globCgroups, globOpts->globCgroupsCount, val);
+    if (globalCgroup) {
+        t->cgroup = globalCgroup;
+        crinitGlobOptRemit();
+        return 0;
+    }
+    crinitGlobOptRemit();
+
     if (t->cgroup == NULL) {
         t->cgroup = calloc(sizeof(*(t->cgroup)), 1);
         if (t->cgroup == NULL) {
@@ -893,7 +907,7 @@ int crinitCfgCgroupGlobalParamsHandler(void *tgt, const char *val, crinitConfigT
 
     char *name = NULL;
     char *param = NULL;
-    if (crinitCgroupsGlobalParamSplitNameAndParam(val, &name, &param) != 0) {
+    if (crinitCgroupGlobalParamSplitNameAndParam(val, &name, &param) != 0) {
         crinitErrPrint("Failed to split name and param from global cgroup configuration line '%s'.", val);
         goto failSplitted;
     }

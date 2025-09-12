@@ -187,7 +187,7 @@ failloop:
     return -1;
 }
 
-crinitCgroup_t *crinitFindCgroupByName(crinitCgroup_t **cgroups, size_t cgroupsCount, char *name) {
+crinitCgroup_t *crinitFindCgroupByName(crinitCgroup_t **cgroups, size_t cgroupsCount, const char *name) {
     crinitNullCheck(NULL, cgroups, name);
 
     for (size_t i = 0; i < cgroupsCount; i++) {
@@ -551,6 +551,24 @@ int crinitCgroupGlobalParamSplitNameAndParam(const char *val, char **name, char 
         return -1;
     }
 
+    return 0;
+}
+
+int crinitCgroupNameIsGlobalCgroup(const char *name, int *isGlobal) {
+    crinitGlobOptStore_t *globOpts = crinitGlobOptBorrow();
+    if (globOpts == NULL) {
+        crinitErrPrint("Could not get exclusive access to global option storage.");
+        crinitGlobOptRemit();
+        return -1;
+    }
+
+    crinitCgroup_t *globalCgroup = crinitFindCgroupByName(globOpts->globCgroups, globOpts->globCgroupsCount, name);
+    if (globalCgroup) {
+        *isGlobal = 1;
+    } else {
+        *isGlobal = 0;
+    }
+    crinitGlobOptRemit();
     return 0;
 }
 

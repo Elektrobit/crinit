@@ -18,6 +18,7 @@ create_unit_test(
     ${PROJECT_SOURCE_DIR}/src/envset.c
     ${PROJECT_SOURCE_DIR}/src/ioredir.c
     ${PROJECT_SOURCE_DIR}/src/task.c
+    ${PROJECT_SOURCE_DIR}/src/globopt.c
   LIBRARIES
     libmockfunctions
     inih-local

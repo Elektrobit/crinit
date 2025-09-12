@@ -111,7 +111,7 @@ int crinitConvertConfigArrayToCGroupConfiguration(char **confArray, const int co
  * @param name Search string
  * @return If found, a pointer to the configuration element is returned, otherwise NULL.
  */
-crinitCgroup_t *crinitFindCgroupByName(crinitCgroup_t **cgroups, size_t cgroupsCount, char *name);
+crinitCgroup_t *crinitFindCgroupByName(crinitCgroup_t **cgroups, size_t cgroupsCount, const char *name);
 
 /**
  * @brief Configure a cgroup directory by applying a list of settings.
@@ -164,6 +164,14 @@ int crinitCreateGlobalCGroups(void);
  * @return On sucess 0, otherwise -1
  */
 int crinitCgroupGlobalParamSplitNameAndParam(const char *val, char **name, char **param);
+
+/**
+ * @brief Tests if the given cgroup name is the name of a global cgroup
+ * @param name Name to check
+ * @param isGlobal Pointer to answer. If not global answer is 0. All other values indicate a global cgroup.
+ * @return On sucess 0, otherwise -1
+ */
+int crinitCgroupNameIsGlobalCgroup(const char *name, int* isGlobal);
 
 #endif
 
