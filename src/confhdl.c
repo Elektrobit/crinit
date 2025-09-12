@@ -685,7 +685,7 @@ int crinitCfgCgroupParamsHandler(void *tgt, const char *val, crinitConfigType_t 
     // If parameters are specified, we need a cgroup name, too.
     if (t->cgroup == NULL || t->cgroup->name == NULL) {
         crinitErrPrint("Configuration key %s is empty.", CRINIT_CONFIG_KEYSTR_CGROUP_NAME);
-        goto failInit;
+        return -1;
     }
 
     crinitCgroupConfiguration_t *cgroupConfig = t->cgroup->config;
@@ -694,7 +694,7 @@ int crinitCfgCgroupParamsHandler(void *tgt, const char *val, crinitConfigType_t 
         cgroupConfig = calloc(sizeof(*(cgroupConfig)), 1);
         if (cgroupConfig == NULL) {
             crinitErrPrint("Failed to allocate memory for cgroup configuration.");
-            goto failInit;
+            return -1;
         }
     }
 
@@ -725,8 +725,8 @@ int crinitCfgCgroupParamsHandler(void *tgt, const char *val, crinitConfigType_t 
 
 fail:
     crinitFreeCgroupConfiguration(cgroupConfig);
-    free(cgroupConfig);
 failInit:
+    free(cgroupConfig);
     return -1;
 }
 
