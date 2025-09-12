@@ -108,14 +108,16 @@ fail:
 int crinitCopyCgroup(crinitCgroup_t *orig, crinitCgroup_t *out) {
     crinitNullCheck(-1, orig, out);
 
-    out->config = calloc(sizeof(*out->config), 1);
-    if (out->config == NULL) {
-        crinitErrPrint("Failed to allocate memory for cgroup configuration while copying cgroup.");
-        return -1;
-    }
-    if (crinitCopyCgroupConfiguration(orig->config, out->config) == -1) {
-        crinitErrPrint("Failed to copy configuration part while copying cgroup.");
-        return -1;
+    if (orig->config) {  // empty configuration is valid if a global configuration is refered
+        out->config = calloc(sizeof(*out->config), 1);
+        if (out->config == NULL) {
+            crinitErrPrint("Failed to allocate memory for cgroup configuration while copying cgroup.");
+            return -1;
+        }
+        if (crinitCopyCgroupConfiguration(orig->config, out->config) == -1) {
+            crinitErrPrint("Failed to copy configuration part while copying cgroup.");
+            return -1;
+        }
     }
     out->groupFd = orig->groupFd;
     out->parent = orig->parent;
