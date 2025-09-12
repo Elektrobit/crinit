@@ -929,6 +929,8 @@ int crinitCfgCgroupGlobalParamsHandler(void *tgt, const char *val, crinitConfigT
         goto failSplitted;
     }
 
+    free(name);
+    free(param);
     crinitGlobOptRemit();
     return 0;
 
