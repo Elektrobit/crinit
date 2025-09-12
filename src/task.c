@@ -111,7 +111,9 @@ int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig) {
     out->groupname = NULL;
     out->supGroups = NULL;
     out->supGroupsSize = 0;
+#ifdef ENABLE_CGROUP
     out->cgroup = NULL;
+#endif
 
     out->name = strdup(orig->name);
     if (out->name == NULL) {

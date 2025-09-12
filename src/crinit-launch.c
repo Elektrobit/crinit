@@ -314,7 +314,7 @@ int main(int argc, char *argv[]) {
         cgroup.name = targetCgroup;
         if (crinitCGroupAssignPID(&cgroup, pid) != 0) {
             crinitErrPrint("Failed to switch to target cgroup '%s'.", cgroup.name);
-            goto failureExit;
+            goto failureCgroup;
         }
     }
 #endif
@@ -323,8 +323,11 @@ int main(int argc, char *argv[]) {
 
     crinitErrnoPrint("Failed to execvp().\n");
 
-failureExit:
+#ifdef ENABLE_CGROUP
+failureCgroup:
     free(targetCgroup);
+#endif
+failureExit:
     free(groups);
     free(cmd);
     free(argvNewBuffer);
