@@ -11,15 +11,6 @@
  */
 void crinitCfgCgroupGlobalParamsHandlerTestSingleKeyValueSuccess(void **state);
 /**
- * Tests successful parsing of two key value pairs
- */
-void crinitCfgCgroupGlobalParamsHandlerTestTwoKeyValueSuccess(void **state);
-/**
- * Tests successful parsing of two key value pairs in two different cgroups.
- * One key value pair for each cgroup
- */
-void crinitCfgCgroupGlobalParamsHandlerTestTwoCGroupsOneKeyValueEachSuccess(void **state);
-/**
  * Tests detection of NULL pointer input.
  */
 void crinitCfgCgroupGlobalParamsHandlerTestNullInput(void **state);

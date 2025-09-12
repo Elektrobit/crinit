@@ -105,13 +105,13 @@ int crinitCopyCgroup(crinitCgroup_t *orig, crinitCgroup_t *out);
 int crinitConvertConfigArrayToCGroupConfiguration(char **confArray, const int confArraySize,
                                                   crinitCgroupConfiguration_t *result);
 
-/** @brief Finds the cgroup configuration object by the cgroup's name
+/** @brief Finds the cgroup object by the cgroup's name
  * @param cgroups Pointer to cgroup storage
  * @param cgroupsCount Number of elements in cgroups
  * @param name Search string
  * @return If found, a pointer to the configuration element is returned, otherwise NULL.
  */
-crinitCgroupConfiguration_t *crinitFindCgroupByName(crinitCgroup_t **cgroups, size_t cgroupsCount, char *name);
+crinitCgroup_t *crinitFindCgroupByName(crinitCgroup_t **cgroups, size_t cgroupsCount, char *name);
 
 /**
  * @brief Configure a cgroup directory by applying a list of settings.
@@ -155,6 +155,15 @@ int crinitCGroupAssignPID(crinitCgroup_t *cgroup, pid_t pid);
  * @return On sucess 0, otherwise -1
  */
 int crinitCreateGlobalCGroups(void);
+
+/**
+ * @brief Splits a configuration line for global cgroup parameters into cgroup name and the parameter string itself
+ * @param val Pointer to input line
+ * @param name Output pointer with the cgroup's name. Caller needs to free the memory.
+ * @param param Output pointer with the parameter string. Caller needs to free the memory.
+ * @return On sucess 0, otherwise -1
+ */
+int crinitCgroupsGlobalParamSplitNameAndParam(const char *val, char **name, char **param);
 
 #endif
 

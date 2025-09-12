@@ -185,7 +185,7 @@ failloop:
     return -1;
 }
 
-crinitCgroupConfiguration_t *crinitFindCgroupByName(crinitCgroup_t **cgroups, size_t cgroupsCount, char *name) {
+crinitCgroup_t *crinitFindCgroupByName(crinitCgroup_t **cgroups, size_t cgroupsCount, char *name) {
     crinitNullCheck(NULL, cgroups, name);
 
     for (size_t i = 0; i < cgroupsCount; i++) {
@@ -197,7 +197,7 @@ crinitCgroupConfiguration_t *crinitFindCgroupByName(crinitCgroup_t **cgroups, si
             if (cgroups[i]->config == NULL) {
                 cgroups[i]->config = calloc(sizeof(*cgroups[i]->config), 1);
             }
-            return cgroups[i]->config;
+            return cgroups[i];
         }
     }
 
@@ -526,6 +526,30 @@ failCtrlRead:
 fail:
     crinitGlobOptRemit();
     return -1;
+}
+
+int crinitCgroupsGlobalParamSplitNameAndParam(const char *val, char **name, char **param) {
+    crinitNullCheck(-1, val, name, param);
+
+    char *delim = strchr(val, ':');
+    if (delim == NULL) {
+        crinitErrPrint("Invalid config entry for %s: %s", CRINIT_CONFIG_KEYSTR_CGROUP_GLOBAL_PARAMS, val);
+        return -1;
+    }
+    *name = strndup(val, delim - val);
+    if (*name == NULL) {
+        crinitErrPrint("Failed to copy cgroup name into temporary memory.");
+        return -1;
+    }
+    *param = strdup(delim + 1);
+    if (*param == NULL) {
+        crinitErrPrint("Failed to copy cgroup param into temporary memory.");
+        free(*name);
+        *name = NULL;
+        return -1;
+    }
+
+    return 0;
 }
 
 #endif

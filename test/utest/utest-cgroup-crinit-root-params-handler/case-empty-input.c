@@ -18,10 +18,19 @@ void crinitCfgCgroupRootParamsHandlerTestEmptyInput(void **state) {
 
     const char *val = "";
     assert_int_equal(crinitGlobOptInitDefault(), 0);
-    assert_int_equal(crinitCfgCgroupRootParamsHandler(NULL, val, CRINIT_CONFIG_TYPE_SERIES), -1);
     crinitGlobOptStore_t *globOpts = crinitGlobOptBorrow();
     assert_non_null(globOpts);
-    assert_null(globOpts->rootCgroup);
+    globOpts->rootCgroup = calloc(sizeof(*globOpts->rootCgroup), 1);
+    assert_non_null(globOpts->rootCgroup);
+    globOpts->rootCgroup->name = strdup("root.cg");
+    assert_non_null(globOpts->rootCgroup->name);
+    crinitGlobOptRemit();
+    globOpts = NULL;
+    assert_int_equal(crinitCfgCgroupRootParamsHandler(NULL, val, CRINIT_CONFIG_TYPE_SERIES), -1);
+    globOpts = crinitGlobOptBorrow();
+    assert_non_null(globOpts);
+    assert_null(globOpts->rootCgroup->config->param[0]->filename);
+    assert_null(globOpts->rootCgroup->config->param[0]->option);
     crinitGlobOptRemit();
     crinitGlobOptDestroy();
 }
