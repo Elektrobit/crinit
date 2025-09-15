@@ -459,6 +459,7 @@ int crinitCreateGlobalCGroups(void) {
     }
     if (controllers == NULL) {
         crinitErrPrint("Failed to read cgroup controllers. Got empty result.");
+        goto failCtrlRead;
     } else {
         crinitInfoPrint("Available cgroup controllers: %s", controllers);
     }
@@ -511,9 +512,15 @@ int crinitCreateGlobalCGroups(void) {
     }
 
     for (size_t i = 0; i < globOpts->globCgroupsCount; i++) {
-        globOpts->globCgroups[i]->parent = rootCgroup;
-        if (crinitCGroupConfigure(globOpts->globCgroups[i]) != 0) {
-            crinitErrPrint("Failed to create global cgroup '%s'.", globOpts->globCgroups[i]->name);
+        if (globOpts->globCgroups[i] != NULL) {
+            globOpts->globCgroups[i]->parent = rootCgroup;
+            if (crinitCGroupConfigure(globOpts->globCgroups[i]) != 0) {
+                crinitErrPrint("Failed to create global cgroup '%s'.", globOpts->globCgroups[i]->name);
+                goto fail;
+            }
+        } else {
+            crinitErrPrint("globCgroups[%lu] == NULL. But globCgroupsCount (%lu) claims it valid. Exiting.", i,
+                           globOpts->globCgroupsCount);
             goto fail;
         }
     }
