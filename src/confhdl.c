@@ -706,7 +706,7 @@ int crinitCfgCgroupParamsHandler(void *tgt, const char *val, crinitConfigType_t 
     }
     cgroupConfig->param = tmpParams;
     cgroupConfig->paramCount++;
-    cgroupConfig->param[cgroupConfig->paramCount - 1] = calloc(sizeof(*cgroupConfig->param), 1);
+    cgroupConfig->param[cgroupConfig->paramCount - 1] = calloc(sizeof(**cgroupConfig->param), 1);
 
     if (crinitCgroupConvertSingleParamToObject(val, cgroupConfig->param[cgroupConfig->paramCount - 1]) != 0) {
         goto fail;
@@ -804,7 +804,7 @@ int crinitCfgCgroupRootParamsHandler(void *tgt, const char *val, crinitConfigTyp
     }
     cgroupConfig->param = tmpParams;
     cgroupConfig->paramCount++;
-    cgroupConfig->param[cgroupConfig->paramCount - 1] = calloc(sizeof(*cgroupConfig->param), 1);
+    cgroupConfig->param[cgroupConfig->paramCount - 1] = calloc(sizeof(**cgroupConfig->param), 1);
 
     if (crinitCgroupConvertSingleParamToObject(val, cgroupConfig->param[cgroupConfig->paramCount - 1]) != 0) {
         goto failInit;
@@ -937,7 +937,7 @@ int crinitCfgCgroupGlobalParamsHandler(void *tgt, const char *val, crinitConfigT
     }
     cgroupConfig->param = tmpParams;
     cgroupConfig->paramCount++;
-    cgroupConfig->param[cgroupConfig->paramCount - 1] = calloc(sizeof(*cgroupConfig->param), 1);
+    cgroupConfig->param[cgroupConfig->paramCount - 1] = calloc(sizeof(**cgroupConfig->param), 1);
 
     if (crinitCgroupConvertSingleParamToObject(param, cgroupConfig->param[cgroupConfig->paramCount - 1]) != 0) {
         goto failSplitted;

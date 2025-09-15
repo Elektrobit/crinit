@@ -216,6 +216,9 @@ int main(int argc, char *argv[]) {
 #endif
             case 'V':
                 crinitPrintVersion();
+#ifdef ENABLE_CGROUP
+                free(targetCgroup);
+#endif
                 free(groups);
                 free(cmd);
                 return EXIT_SUCCESS;
@@ -314,8 +317,9 @@ int main(int argc, char *argv[]) {
         cgroup.name = targetCgroup;
         if (crinitCGroupAssignPID(&cgroup, pid) != 0) {
             crinitErrPrint("Failed to switch to target cgroup '%s'.", cgroup.name);
-            goto failureCgroup;
+            goto failureExit;
         }
+        free(cgroup.name);
     }
 #endif
 
@@ -323,11 +327,10 @@ int main(int argc, char *argv[]) {
 
     crinitErrnoPrint("Failed to execvp().\n");
 
+failureExit:
 #ifdef ENABLE_CGROUP
-failureCgroup:
     free(targetCgroup);
 #endif
-failureExit:
     free(groups);
     free(cmd);
     free(argvNewBuffer);

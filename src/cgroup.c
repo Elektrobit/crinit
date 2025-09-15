@@ -376,6 +376,11 @@ int crinitCGroupAssignPID(crinitCgroup_t *cgroup, pid_t pid) {
     return result;
 }
 
+/** Read buffer size to read controllers.
+ *
+ *  Should be sufficent for most cases to read all available controllers in one go.
+ */
+#define CRINIT_CGROUP_CONTROLLER_BUFSIZE 80
 static int crinitReadAvailableCgroupControllers(const char *infile, int relfd, char **controllers) {
     crinitNullCheck(-1, infile, controllers);
 
@@ -386,12 +391,10 @@ static int crinitReadAvailableCgroupControllers(const char *infile, int relfd, c
     }
 
     int bytesRead = 0;
-    const size_t bufSize = 80;
-    char buffer[bufSize];
-    memset(buffer, 0x00, bufSize);
+    char buffer[CRINIT_CGROUP_CONTROLLER_BUFSIZE] = {0};
     char *ctrlstr = NULL;
     size_t ctrlStrSize = 1;  // for terminating '\0'
-    while ((bytesRead = read(fd, buffer, bufSize)) > 0) {
+    while ((bytesRead = read(fd, buffer, CRINIT_CGROUP_CONTROLLER_BUFSIZE)) > 0) {
         ctrlStrSize += bytesRead;
         char *tmp = realloc(ctrlstr, ctrlStrSize);
         if (tmp == NULL) {
@@ -405,7 +408,11 @@ static int crinitReadAvailableCgroupControllers(const char *infile, int relfd, c
         ctrlstr = tmp;
         strncat(ctrlstr, buffer, bytesRead);
     }
-    ctrlstr[ctrlStrSize] = '\0';
+    if (ctrlstr == NULL) {
+        crinitErrPrint("Failed to read cgroup controllers.");
+        return -1;
+    }
+    ctrlstr[ctrlStrSize - 1] = '\0';
     close(fd);
 
     char *tokState = ctrlstr;
