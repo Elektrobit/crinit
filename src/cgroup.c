@@ -472,12 +472,12 @@ int crinitCreateGlobalCGroups(void) {
     }
     int writeFd = openat(cgroupBaseFd, "cgroup.subtree_control", O_WRONLY);
     if (writeFd < 0) {
-        crinitErrnoPrint("Could not open cgroup subtree_controll file.");
+        crinitErrnoPrint("Could not open cgroup subtree_control file.");
         goto failCtrlRead;
     }
     ssize_t written = write(writeFd, controllers, strlen(controllers));
     if (written < 0 || written != (ssize_t)strlen(controllers)) {
-        crinitErrnoPrint("Failed to write controllers to subtree_controll file correctly.");
+        crinitErrnoPrint("Failed to write controllers to subtree_control file correctly.");
         goto failCtrlWrite;
     }
     close(writeFd);
@@ -498,12 +498,12 @@ int crinitCreateGlobalCGroups(void) {
         }
         int writeFd = openat(rootCgroup->groupFd, "cgroup.subtree_control", O_WRONLY);
         if (writeFd < 0) {
-            crinitErrnoPrint("Could not open cgroup subtree_controll file.");
+            crinitErrnoPrint("Could not open cgroup subtree_control file.");
             goto failCtrlRead;
         }
         ssize_t written = write(writeFd, controllers, strlen(controllers));
         if (written < 0 || written != (ssize_t)strlen(controllers)) {
-            crinitErrnoPrint("Failed to write controllers to subtree_controll file correctly.");
+            crinitErrnoPrint("Failed to write controllers to subtree_control file correctly.");
             crinitCgroupClose(rootCgroup);
             goto failCtrlWrite;
         }
