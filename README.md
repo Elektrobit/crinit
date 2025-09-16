@@ -372,6 +372,10 @@ IO_REDIRECT = STDERR STDOUT
 - **RESPAWN_RETRIES** -- Number of times a respawned task may fail *in a row* before it is not started again. The
   special value `-1` is interpreted as "unlimited". Default: -1
   **CGROUP_NAME** -- Name of a cgroup only used by this task.
+  If this parameter is absent, the task won't be placed in a cgroup.
+  If the name of a global cgroup (configured in the series file) is used here, the task is placed in that global cgroup. That is the preferred way to have multiple tasks in the same cgroup.
+  It is possible to have more than one task with the same CGROUP_NAME which is not a global cgroup, but that is highly discouraged. In that case both tasks would be placed in the same cgroup but the later started task will alter the cgroup configuration done by the first task with the later started task's configuration.
+  It is possible to create a cgroup outside of crinit (e.g. via an early started task) and use the name of that cgroup as value for CGROUP_NAME. Attention: That makes the configuration of the cgroup dependent on the task execution order.
   **CGROUP_PARAMS** -- Line-separated list of options that shall be set for the cgroup. Each parameter consists of the file name and the parameter value to set.  Only one parameter pair per line.
   For example:  
   ```memory.max=100M memory.min=5M```  
