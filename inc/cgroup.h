@@ -9,6 +9,7 @@
 #ifdef ENABLE_CGROUP
 
 #include <fcntl.h>
+#include <stdbool.h>
 #include <stddef.h>
 
 #ifndef CRINIT_CGROUP_PATH
@@ -168,10 +169,10 @@ int crinitCgroupGlobalParamSplitNameAndParam(const char *val, char **name, char 
 /**
  * @brief Tests if the given cgroup name is the name of a global cgroup
  * @param name Name to check
- * @param isGlobal Pointer to answer. If not global answer is 0. All other values indicate a global cgroup.
+ * @param isGlobal Pointer to answer.
  * @return On sucess 0, otherwise -1
  */
-int crinitCgroupNameIsGlobalCgroup(const char *name, int *isGlobal);
+int crinitCgroupNameIsGlobalCgroup(const char *name, bool *isGlobal);
 
 #endif
 

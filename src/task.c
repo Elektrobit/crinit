@@ -234,7 +234,7 @@ int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig) {
 
 #ifdef ENABLE_CGROUP
     if (orig->cgroup) {
-        int isGlobal = 0;
+        bool isGlobal = false;
         if (crinitCgroupNameIsGlobalCgroup(orig->cgroup->name, &isGlobal) != 0) {
             goto fail;
         }
@@ -324,7 +324,7 @@ void crinitDestroyTask(crinitTask_t *t) {
     free(t->supGroups);
 #ifdef ENABLE_CGROUP
     if (t->cgroup) {
-        int isGlobal = 0;
+        bool isGlobal = false;
         if (crinitCgroupNameIsGlobalCgroup(t->cgroup->name, &isGlobal) != 0) {
             crinitErrPrint("Failed to check if '%s' is a global cgroup name.", t->cgroup->name);
             return;

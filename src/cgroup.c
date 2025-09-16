@@ -548,7 +548,7 @@ int crinitCgroupGlobalParamSplitNameAndParam(const char *val, char **name, char 
     return 0;
 }
 
-int crinitCgroupNameIsGlobalCgroup(const char *name, int *isGlobal) {
+int crinitCgroupNameIsGlobalCgroup(const char *name, bool *isGlobal) {
     crinitGlobOptStore_t *globOpts = crinitGlobOptBorrow();
     if (globOpts == NULL) {
         crinitErrPrint("Could not get exclusive access to global option storage.");
@@ -558,9 +558,9 @@ int crinitCgroupNameIsGlobalCgroup(const char *name, int *isGlobal) {
 
     crinitCgroup_t *globalCgroup = crinitFindCgroupByName(globOpts->globCgroups, globOpts->globCgroupsCount, name);
     if (globalCgroup) {
-        *isGlobal = 1;
+        *isGlobal = true;
     } else {
-        *isGlobal = 0;
+        *isGlobal = false;
     }
     crinitGlobOptRemit();
     return 0;
