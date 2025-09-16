@@ -87,11 +87,8 @@ Crinit currently has the following features implemented:
 * optional signature checking of Crinit's configuration files
 * setting of UID and GID a task should be run as
 * setting/clearing of specific capabilities that a task shall be (not) equipped with
-
-In the future we also plan to support:
-
 * fine-grained restriction of processes started/managed by Crinit
-    - cgroups,...
+    - cgroups
 
 There are example configurations below which show how to use the currently implemented features.
 For detailed explanations of Crinit's inner workings please refer to the Doxygen documentation generated during build.
