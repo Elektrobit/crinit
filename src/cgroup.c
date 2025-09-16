@@ -34,11 +34,7 @@ int crinitFreeCgroupConfiguration(crinitCgroupConfiguration_t *config) {
 
     if (config->param) {
         for (size_t i = 0; i < config->paramCount; i++) {
-            if (config->param[i]) {
-                crinitFreeCgroupParam(config->param[i]);
-                free(config->param[i]);
-                config->param[i] = NULL;
-            }
+            crinitFreeCgroupParam(&config->param[i]);
         }
     }
     free(config->param);
@@ -81,18 +77,13 @@ int crinitCopyCgroupConfiguration(crinitCgroupConfiguration_t *orig, crinitCgrou
 
     out->paramCount = orig->paramCount;
     if (out->paramCount > 0) {
-        out->param = calloc(sizeof(orig->param), orig->paramCount);
+        out->param = calloc(sizeof(*orig->param), orig->paramCount);
         if (out->param == NULL) {
             crinitErrPrint("Failed to allocate memory for config params.");
             return -1;
         }
         for (size_t i = 0; i < out->paramCount; i++) {
-            out->param[i] = calloc(sizeof(*(orig->param)), 1);
-            if (out->param[i] == NULL) {
-                crinitErrPrint("Failed to allocate memory for single param.");
-                goto fail;
-            }
-            if (crinitCopyCgroupParam(orig->param[i], out->param[i]) != 0) {
+            if (crinitCopyCgroupParam(&orig->param[i], &out->param[i]) != 0) {
                 goto fail;
             }
         }
@@ -160,12 +151,7 @@ int crinitConvertConfigArrayToCGroupConfiguration(char **confArray, const int co
     result->paramCount = confArraySize;
 
     for (int i = 0; i < confArraySize; i++) {
-        result->param[i] = calloc(sizeof(**(result->param)), 1);
-        if (result->param[i] == NULL) {
-            crinitErrPrint("Failed to allocate memory for cgroup parameter");
-            goto failloop;
-        }
-        if (crinitCgroupConvertSingleParamToObject(confArray[i], result->param[i]) != 0) {
+        if (crinitCgroupConvertSingleParamToObject(confArray[i], &result->param[i]) != 0) {
             crinitErrPrint("Failed to convert single parameter line to object: %s", confArray[i]);
             goto failloop;
         }
@@ -175,12 +161,7 @@ int crinitConvertConfigArrayToCGroupConfiguration(char **confArray, const int co
 
 failloop:
     for (int i = 0; i < confArraySize; i++) {
-        if (result->param[i]) {
-            free(result->param[i]->filename);
-            free(result->param[i]->option);
-            free(result->param[i]);
-            result->param[i] = NULL;
-        }
+        crinitFreeCgroupParam(&result->param[i]);
     }
     free(result->param);
     result->param = NULL;
@@ -338,8 +319,7 @@ int crinitCGroupConfigure(crinitCgroup_t *cgroup) {
         crinitCgroupConfiguration_t *config = cgroup->config;
         result = 0;
         for (size_t index = 0; index < config->paramCount; index++) {
-            crinitCgroupParam_t *param = config->param[index];
-            if (crinitCgroupSetParam(param, cgroup->groupFd) == -1) {
+            if (crinitCgroupSetParam(&config->param[index], cgroup->groupFd) == -1) {
                 result = -1;
                 break;
             }

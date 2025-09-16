@@ -29,8 +29,8 @@ void crinitCfgCgroupRootParamsHandlerTestEmptyInput(void **state) {
     assert_int_equal(crinitCfgCgroupRootParamsHandler(NULL, val, CRINIT_CONFIG_TYPE_SERIES), -1);
     globOpts = crinitGlobOptBorrow();
     assert_non_null(globOpts);
-    assert_null(globOpts->rootCgroup->config->param[0]->filename);
-    assert_null(globOpts->rootCgroup->config->param[0]->option);
+    assert_null(globOpts->rootCgroup->config->param[0].filename);
+    assert_null(globOpts->rootCgroup->config->param[0].option);
     crinitGlobOptRemit();
     crinitGlobOptDestroy();
 }

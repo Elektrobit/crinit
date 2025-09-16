@@ -24,16 +24,15 @@ int main(int argc, char **argv) {
 
     crinitCgroup_t cgroupParent = {0};
     cgroupParent.name = "myGlobalCgroup";
-    crinitCgroupParam_t *parentParam[] = {NULL};
+    crinitCgroupParam_t *parentParam = NULL;
     crinitCgroupConfiguration_t parentConfig = {.param = parentParam, .paramCount = 0};
     cgroupParent.config = &parentConfig;
 
     crinitCgroup_t cgroup = {0};
     cgroup.name = "myCgroup";
     cgroup.parent = &cgroupParent;
-    crinitCgroupParam_t param1 = {"cgroup.freeze", "0"};
-    crinitCgroupParam_t *param[] = {&param1};
-    crinitCgroupConfiguration_t config = {.param = param, .paramCount = sizeof(param) / sizeof(param[0])};
+    crinitCgroupParam_t param = {"cgroup.freeze", "0"};
+    crinitCgroupConfiguration_t config = {.param = &param, .paramCount = 1};
     cgroup.config = &config;
 
     pid_t pid = getpid();
@@ -51,8 +50,8 @@ int main(int argc, char **argv) {
     printFirstLine(path, "cgroup.procs");
 
     snprintf(path, sizeof(path), "%s/%s/%s/%s", (char *)CRINIT_CGROUP_PATH, cgroupParent.name, cgroup.name,
-             param1.filename);
-    printFirstLine(path, param1.filename);
+             param.filename);
+    printFirstLine(path, param.filename);
 
     return 0;
 }

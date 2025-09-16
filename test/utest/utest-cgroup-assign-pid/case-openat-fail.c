@@ -16,7 +16,7 @@ void crinitCgroupAssignPIDTestOpenatFailFirst(void **state) {
 
     crinitCgroup_t cgroupParent = {0};
     cgroupParent.name = "myGlobalCgroup";
-    crinitCgroupParam_t *parentParam[] = {NULL};
+    crinitCgroupParam_t *parentParam = NULL;
     crinitCgroupConfiguration_t parentConfig = {.param = parentParam, .paramCount = 0};
     cgroupParent.config = &parentConfig;
 

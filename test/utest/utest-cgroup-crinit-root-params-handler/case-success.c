@@ -31,8 +31,8 @@ void crinitCfgCgroupRootParamsHandlerTestSingleKeyValueSuccess(void **state) {
     assert_non_null(globOpts);
     assert_non_null(globOpts->rootCgroup->config);
     assert_int_equal(globOpts->rootCgroup->config->paramCount, 1);
-    assert_string_equal(globOpts->rootCgroup->config->param[0]->filename, "key");
-    assert_string_equal(globOpts->rootCgroup->config->param[0]->option, "value");
+    assert_string_equal(globOpts->rootCgroup->config->param[0].filename, "key");
+    assert_string_equal(globOpts->rootCgroup->config->param[0].option, "value");
     crinitGlobOptRemit();
     crinitGlobOptDestroy();
 }

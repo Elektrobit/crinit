@@ -11,6 +11,10 @@
  */
 void crinitCfgCGroupParamsHandlerTestSingleKeyValueSuccess(void **state);
 /**
+ * Tests successful parsing of two value pairs (e.g. "key=value"). Calls function under test twice.
+ */
+void crinitCfgCGroupParamsHandlerTestTwoKeyValuesSuccess(void **state);
+/**
  * Tests detection of NULL pointer input.
  */
 void crinitCfgCGroupParamsHandlerTestNullInput(void **state);

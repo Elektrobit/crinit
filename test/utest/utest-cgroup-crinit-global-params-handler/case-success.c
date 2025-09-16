@@ -27,8 +27,8 @@ void crinitCfgCgroupGlobalParamsHandlerTestSingleKeyValueSuccess(void **state) {
     assert_int_equal(globOpts->globCgroupsCount, 1);
     assert_non_null(globOpts->globCgroups[0]->config);
     assert_int_equal(globOpts->globCgroups[0]->config->paramCount, 1);
-    assert_string_equal(globOpts->globCgroups[0]->config->param[0]->filename, "key");
-    assert_string_equal(globOpts->globCgroups[0]->config->param[0]->option, "value");
+    assert_string_equal(globOpts->globCgroups[0]->config->param[0].filename, "key");
+    assert_string_equal(globOpts->globCgroups[0]->config->param[0].option, "value");
     crinitGlobOptRemit();
     crinitGlobOptDestroy();
 }

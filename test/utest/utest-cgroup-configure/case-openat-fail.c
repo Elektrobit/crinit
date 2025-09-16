@@ -16,7 +16,7 @@ void crinitCGroupConfigureTestOpenatFailFirst(void **state) {
 
     crinitCgroup_t cgroupParent = {0};
     cgroupParent.name = "myGlobalCgroup";
-    crinitCgroupParam_t *parentParam[] = {NULL};
+    crinitCgroupParam_t *parentParam = NULL;
     crinitCgroupConfiguration_t parentConfig = {.param = parentParam, .paramCount = 0};
     cgroupParent.config = &parentConfig;
 
@@ -27,7 +27,7 @@ void crinitCGroupConfigureTestOpenatFailFirst(void **state) {
     crinitCgroupParam_t param1 = {"memory.max", "536870912"};
     crinitCgroupParam_t param2 = {"pids.max", "100"};
 
-    crinitCgroupParam_t *param[] = {&param1, &param2};
+    crinitCgroupParam_t param[] = {param1, param2};
 
     crinitCgroupConfiguration_t config = {.param = param, .paramCount = sizeof(param) / sizeof(param[0])};
     cgroup.config = &config;
@@ -58,7 +58,7 @@ void crinitCGroupConfigureTestOpenatFailSecond(void **state) {
     crinitCgroupParam_t param1 = {"memory.max", "536870912"};
     crinitCgroupParam_t param2 = {"pids.max", "100"};
 
-    crinitCgroupParam_t *param[] = {&param1, &param2};
+    crinitCgroupParam_t param[] = {param1, param2};
 
     crinitCgroupConfiguration_t config = {.param = param, .paramCount = sizeof(param) / sizeof(param[0])};
     cgroup.config = &config;
@@ -94,7 +94,7 @@ void crinitCGroupConfigureTestOpenatFailThird(void **state) {
     crinitCgroupParam_t param1 = {"memory.max", "536870912"};
     crinitCgroupParam_t param2 = {"pids.max", "100"};
 
-    crinitCgroupParam_t *param[] = {&param1, &param2};
+    crinitCgroupParam_t param[] = {param1, param2};
 
     crinitCgroupConfiguration_t config = {.param = param, .paramCount = sizeof(param) / sizeof(param[0])};
     cgroup.config = &config;

@@ -20,7 +20,7 @@ void crinitCGroupConfigureTestWritevFail(void **state) {
     crinitCgroupParam_t param1 = {"memory.max", "536870912"};
     crinitCgroupParam_t param2 = {"pids.max", "100"};
 
-    crinitCgroupParam_t *param[] = {&param1, &param2};
+    crinitCgroupParam_t param[] = {param1, param2};
 
     crinitCgroupConfiguration_t config = {.param = param, .paramCount = sizeof(param) / sizeof(param[0])};
     cgroup.config = &config;

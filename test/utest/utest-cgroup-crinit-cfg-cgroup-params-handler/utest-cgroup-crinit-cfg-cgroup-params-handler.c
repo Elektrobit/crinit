@@ -14,6 +14,7 @@
 int main(void) {
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(crinitCfgCGroupParamsHandlerTestSingleKeyValueSuccess),
+        cmocka_unit_test(crinitCfgCGroupParamsHandlerTestTwoKeyValuesSuccess),
         cmocka_unit_test(crinitCfgCGroupParamsHandlerTestNullInput),
         cmocka_unit_test(crinitCfgCGroupParamsHandlerTestEmptyInput),
         cmocka_unit_test(crinitCfgCGroupParamsHandlerTestInvalidInputMissingDelimiter),

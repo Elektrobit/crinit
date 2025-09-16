@@ -698,7 +698,7 @@ int crinitCfgCgroupParamsHandler(void *tgt, const char *val, crinitConfigType_t 
         }
     }
 
-    crinitCgroupParam_t **tmpParams = crinitCfgHandlerManageArrayMem(
+    crinitCgroupParam_t *tmpParams = crinitCfgHandlerManageArrayMem(
         cgroupConfig->param, sizeof(*cgroupConfig->param), cgroupConfig->paramCount, cgroupConfig->paramCount + 1);
     if (tmpParams == NULL) {
         crinitErrPrint("Failed to (re)allocate memory for cgroup configuration parameters.");
@@ -706,9 +706,8 @@ int crinitCfgCgroupParamsHandler(void *tgt, const char *val, crinitConfigType_t 
     }
     cgroupConfig->param = tmpParams;
     cgroupConfig->paramCount++;
-    cgroupConfig->param[cgroupConfig->paramCount - 1] = calloc(sizeof(**cgroupConfig->param), 1);
 
-    if (crinitCgroupConvertSingleParamToObject(val, cgroupConfig->param[cgroupConfig->paramCount - 1]) != 0) {
+    if (crinitCgroupConvertSingleParamToObject(val, &cgroupConfig->param[cgroupConfig->paramCount - 1]) != 0) {
         goto fail;
     }
     crinitGlobOptStore_t *globOpts = crinitGlobOptBorrow();
@@ -796,7 +795,7 @@ int crinitCfgCgroupRootParamsHandler(void *tgt, const char *val, crinitConfigTyp
         globOpts->rootCgroup->config = cgroupConfig;
     }
 
-    crinitCgroupParam_t **tmpParams = crinitCfgHandlerManageArrayMem(
+    crinitCgroupParam_t *tmpParams = crinitCfgHandlerManageArrayMem(
         cgroupConfig->param, sizeof(*cgroupConfig->param), cgroupConfig->paramCount, cgroupConfig->paramCount + 1);
     if (tmpParams == NULL) {
         crinitErrPrint("Failed to (re)allocate memory for cgroup configuration parameters.");
@@ -804,9 +803,8 @@ int crinitCfgCgroupRootParamsHandler(void *tgt, const char *val, crinitConfigTyp
     }
     cgroupConfig->param = tmpParams;
     cgroupConfig->paramCount++;
-    cgroupConfig->param[cgroupConfig->paramCount - 1] = calloc(sizeof(**cgroupConfig->param), 1);
 
-    if (crinitCgroupConvertSingleParamToObject(val, cgroupConfig->param[cgroupConfig->paramCount - 1]) != 0) {
+    if (crinitCgroupConvertSingleParamToObject(val, &cgroupConfig->param[cgroupConfig->paramCount - 1]) != 0) {
         goto failInit;
     }
 
@@ -929,7 +927,7 @@ int crinitCfgCgroupGlobalParamsHandler(void *tgt, const char *val, crinitConfigT
         cgroup->config = cgroupConfig;
     }
 
-    crinitCgroupParam_t **tmpParams = crinitCfgHandlerManageArrayMem(
+    crinitCgroupParam_t *tmpParams = crinitCfgHandlerManageArrayMem(
         cgroupConfig->param, sizeof(*cgroupConfig->param), cgroupConfig->paramCount, cgroupConfig->paramCount + 1);
     if (tmpParams == NULL) {
         crinitErrPrint("Failed to (re)allocate memory for cgroup configuration parameters.");
@@ -937,9 +935,8 @@ int crinitCfgCgroupGlobalParamsHandler(void *tgt, const char *val, crinitConfigT
     }
     cgroupConfig->param = tmpParams;
     cgroupConfig->paramCount++;
-    cgroupConfig->param[cgroupConfig->paramCount - 1] = calloc(sizeof(**cgroupConfig->param), 1);
 
-    if (crinitCgroupConvertSingleParamToObject(param, cgroupConfig->param[cgroupConfig->paramCount - 1]) != 0) {
+    if (crinitCgroupConvertSingleParamToObject(param, &cgroupConfig->param[cgroupConfig->paramCount - 1]) != 0) {
         goto failSplitted;
     }
 
