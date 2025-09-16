@@ -108,12 +108,26 @@ int crinitSetupSystemFs(void) {
     }
 
 #ifdef ENABLE_CGROUP
-    if (mount("none", CRINIT_CGROUP_PATH, "cgroup2", MS_NODEV | MS_NOEXEC | MS_NOSUID, NULL) == -1) {
+    errno = 0;
+    if (mount("none", CRINIT_CGROUP_PATH, "cgroup2", MS_NODEV | MS_NOEXEC | MS_NOSUID,
+              "nsdelegate,memory_recursiveprot") == -1) {
         if (errno != EBUSY) {
-            crinitErrnoPrint("Could not mount cgroupfs.");
-            return -1;
+            if (mount("none", CRINIT_CGROUP_PATH, "cgroup2", MS_NODEV | MS_NOEXEC | MS_NOSUID, "nsdelegate") == -1) {
+                if (errno != EBUSY) {
+                    if (mount("none", CRINIT_CGROUP_PATH, "cgroup2", MS_NODEV | MS_NOEXEC | MS_NOSUID, NULL) == -1) {
+                        if (errno != EBUSY) {
+                            crinitErrnoPrint("Could not mount cgroupfs.");
+                            return -1;
+                        }
+                    } 
+                }
+            }
         }
+    }
+    if (errno == EBUSY) {
         crinitInfoPrint("%s is already mounted. Skipping.", CRINIT_CGROUP_PATH);
+    } else {
+        crinitInfoPrint("cgroup2 fs available.");
     }
 #endif
 
