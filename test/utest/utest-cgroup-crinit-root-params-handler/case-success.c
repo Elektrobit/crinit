@@ -3,7 +3,7 @@
  * @file case-success.c
  * @brief Unit test for crinitCfgCgroupRootParamsHandler(), successful execution.
  */
-
+#ifdef ENABLE_CGROUP
 #include <stdlib.h>
 #include <string.h>
 
@@ -36,3 +36,4 @@ void crinitCfgCgroupRootParamsHandlerTestSingleKeyValueSuccess(void **state) {
     crinitGlobOptRemit();
     crinitGlobOptDestroy();
 }
+#endif

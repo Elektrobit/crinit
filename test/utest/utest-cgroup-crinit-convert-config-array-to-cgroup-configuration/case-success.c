@@ -3,7 +3,7 @@
  * @file case-success.c
  * @brief Unit test for crinitConvertConfigArrayToCGroupConfiguration(), successful execution.
  */
-
+#ifdef ENABLE_CGROUP
 #include <stdlib.h>
 #include <string.h>
 
@@ -25,3 +25,4 @@ void crinitCfgCGroupParamsHandlerTestSingleKeyValueSuccess(void **state) {
     free(tgt.cgroupParams[0]);
     free(tgt.cgroupParams);*/
 }
+#endif

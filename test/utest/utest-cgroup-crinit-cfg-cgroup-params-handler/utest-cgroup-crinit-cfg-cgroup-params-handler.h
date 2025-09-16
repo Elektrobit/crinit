@@ -3,6 +3,7 @@
  * @file utest-cgroup-crinit-cfg-cgroup-params-handler.h
  * @brief Header declaring the unit tests for crinitCfgCGroupParamsHandler().
  */
+#ifdef ENABLE_CGROUP
 #ifndef __UTEST_CGROUP_CRINIT_CFG_CGROUP_PARAMS_HANDLER_H__
 #define __UTEST_CGROUP_CRINIT_CFG_CGROUP_PARAMS_HANDLER_H__
 
@@ -31,3 +32,4 @@ void crinitCfgCGroupParamsHandlerTestInvalidInputMissingDelimiter(void **state);
  */
 void crinitCfgCGroupParamsHandlerTestInvalidInputMissingCGroupName(void **state);
 #endif /* __UTEST_CGROUP_CRINIT_CFG_CGROUP_NAME_HANDLER_H__ */
+#endif

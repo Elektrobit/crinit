@@ -3,6 +3,7 @@
  * @file utest-cgroup-crinit-convert-config-array-to-cgroup-configuration.h
  * @brief Header declaring the unit tests for crinitConvertConfigArrayToCGroupConfiguration().
  */
+#ifdef ENABLE_CGROUP
 #ifndef __UTEST_CGROUP_CRINIT_CONVERT_CONFIG_ARRAY_TO_CGROUP_CONFIGURATION_H__
 #define __UTEST_CGROUP_CRINIT_CONVERT_CONFIG_ARRAY_TO_CGROUP_CONFIGURATION_H__
 
@@ -31,3 +32,4 @@ void crinitCfgCGroupParamsHandlerTestInvalidInputMissingDelimiter(void **state);
  */
 void crinitCfgCGroupParamsHandlerTestInvalidInputMissingCGroupName(void **state);
 #endif /* __UTEST_CGROUP_CRINIT_CONVERT_CONFIG_ARRAY_TO_CGROUP_CONFIGURATION_H__ */
+#endif

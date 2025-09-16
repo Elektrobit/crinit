@@ -3,7 +3,7 @@
  * @file utest-cgroup-crinit-convert-config-array-to-cgroup-configuration.c
  * @brief Implementation of the crinitConvertConfigArrayToCGroupConfiguration() unit test group.
  */
-
+#ifdef ENABLE_CGROUP
 #include "utest-cgroup-crinit-convert-config-array-to-cgroup-configuration.h"
 
 #include "unit_test.h"
@@ -19,3 +19,4 @@ int main(void) {
 
     return cmocka_run_group_tests(tests, NULL, NULL);
 }
+#endif

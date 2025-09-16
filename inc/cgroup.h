@@ -24,8 +24,8 @@ typedef struct {
 
 /** Type to store a complete configuration for a single cgroup **/
 typedef struct {
-    crinitCgroupParam_t *param;   ///< array with configuration parameters
-    size_t paramCount;            ///< number of elements in param
+    crinitCgroupParam_t *param;  ///< array with configuration parameters
+    size_t paramCount;           ///< number of elements in param
 } crinitCgroupConfiguration_t;
 
 /** Type to store a single cgroup **/

@@ -3,7 +3,7 @@
  * @file case-null-input.c
  * @brief Unit test for crinitCfgCgroupGlobalNameHandler(), input parameter is empty.
  */
-
+#ifdef ENABLE_CGROUP
 #include <stdlib.h>
 #include <string.h>
 
@@ -26,3 +26,4 @@ void crinitCfgCgroupGlobalNameHandlerTestEmptyInput(void **state) {
     crinitGlobOptRemit();
     crinitGlobOptDestroy();
 }
+#endif

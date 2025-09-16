@@ -4,6 +4,7 @@
  * @brief Implementation of the crinitCgroupAssignPID() unit test group.
  */
 
+#ifdef ENABLE_CGROUP
 #include "utest-cgroup-assign-pid.h"
 
 #include <sys/types.h>
@@ -31,3 +32,4 @@ int main(void) {
 
     return cmocka_run_group_tests(tests, NULL, NULL);
 }
+#endif

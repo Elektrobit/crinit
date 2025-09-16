@@ -4,6 +4,7 @@
  * @brief Unit test for crinitConfConvToEnvSetMember(), handling of invalid string input.
  */
 
+#ifdef ENABLE_CGROUP
 #include "cgroup.h"
 #include "common.h"
 #include "unit_test.h"
@@ -21,3 +22,4 @@ void crinitCgroupAssignPIDTestWrongInput(void **state) {
     assert_int_equal(crinitCGroupAssignPID(&validCgroup, invalidPID), -1);
     assert_int_equal(crinitCGroupAssignPID(&invalidCgroup, validPID), -1);
 }
+#endif

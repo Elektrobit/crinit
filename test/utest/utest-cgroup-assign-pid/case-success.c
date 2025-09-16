@@ -4,6 +4,7 @@
  * @brief Unit test for crinitFileSeriesFromDir(), successful execution.
  */
 
+#ifdef ENABLE_CGROUP
 #include <stdio.h>
 #include <sys/types.h>
 
@@ -112,3 +113,4 @@ void crinitCgroupAssignPIDTestSuccessParent(void **state) {
 
     assert_int_equal(crinitCGroupAssignPID(&cgroup, pidTest), 0);
 }
+#endif

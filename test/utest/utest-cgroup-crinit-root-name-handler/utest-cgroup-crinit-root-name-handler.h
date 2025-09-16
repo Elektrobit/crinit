@@ -3,6 +3,7 @@
  * @file utest-cgroup-crinit-root-name-handler.h
  * @brief Header declaring the unit tests for crinitCfgCgroupRootNameHandler(().
  */
+#ifdef ENABLE_CGROUP
 #ifndef __UTEST_CGROUP_CRINIT_CFG_CGROUP_ROOT_NAME_HANDLER_H__
 #define __UTEST_CGROUP_CRINIT_CFG_CGROUP_ROOT_NAME_HANDLER_H__
 
@@ -19,3 +20,4 @@ void crinitCfgCgroupRootNameHandlerTestNullInput(void **state);
  */
 void crinitCfgCgroupRootNameHandlerTestEmptyInput(void **state);
 #endif /* __UTEST_CGROUP_CRINIT_CFG_CGROUP_ROOT_NAME_HANDLER_H__ */
+#endif

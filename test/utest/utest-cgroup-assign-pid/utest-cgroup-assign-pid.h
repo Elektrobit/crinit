@@ -3,6 +3,7 @@
  * @file utest-cgroup-assign-pid.h
  * @brief Header declaring the unit tests for crinitCGroupAssignPID().
  */
+#ifdef ENABLE_CGROUP
 #ifndef __UTEST_CGROUP_ASSIGN_PID_H__
 #define __UTEST_CGROUP_ASSIGN_PID_H__
 
@@ -35,3 +36,4 @@ void crinitCgroupAssignPIDTestOpenatFailThird(void **state);
 void crinitCgroupAssignPIDTestWritevFail(void **state);
 
 #endif /* __UTEST_CGROUP_ASSIGN_PID_H__ */
+#endif

@@ -3,7 +3,7 @@
  * @file case-success.c
  * @brief Unit test for crinitCfgCgroupGlobalNameHandler(), successful execution.
  */
-
+#ifdef ENABLE_CGROUP
 #include <stdlib.h>
 #include <string.h>
 
@@ -41,3 +41,4 @@ void crinitCfgCgroupGlobalNameHandlerTestAlphaInputTwoValuesSuccess(void **state
     crinitGlobOptRemit();
     crinitGlobOptDestroy();
 }
+#endif

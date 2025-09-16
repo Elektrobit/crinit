@@ -3,6 +3,7 @@
  * @file utest-cgroup-crinit-root-params-handler.h
  * @brief Header declaring the unit tests for crinitCfgCgroupRootParamsHandler(().
  */
+#ifdef ENABLE_CGROUP
 #ifndef __UTEST_CGROUP_CRINIT_CFG_CGROUP_ROOT_PARAMS_HANDLER_H__
 #define __UTEST_CGROUP_CRINIT_CFG_CGROUP_ROOT_PARAMS_HANDLER_H__
 
@@ -19,3 +20,4 @@ void crinitCfgCgroupRootParamsHandlerTestNullInput(void **state);
  */
 void crinitCfgCgroupRootParamsHandlerTestEmptyInput(void **state);
 #endif /* __UTEST_CGROUP_CRINIT_CFG_CGROUP_ROOT_PARAMS_HANDLER_H__ */
+#endif

@@ -3,7 +3,7 @@
  * @file case-success.c
  * @brief Unit test for crinitCfgCgroupParamsHandler(), successful execution.
  */
-
+#ifdef ENABLE_CGROUP
 #include <stdlib.h>
 #include <string.h>
 
@@ -51,3 +51,4 @@ void crinitCfgCGroupParamsHandlerTestTwoKeyValuesSuccess(void **state) {
     assert_string_equal(tgt.cgroup->config->param[1].option, "value2");
     crinitDestroyTask(&tgt);
 }
+#endif

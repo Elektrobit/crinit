@@ -3,7 +3,7 @@
  * @file case-null-input.c
  * @brief Unit test for crinitCfgCgroupRootParamsHandler(), input parameter is empty.
  */
-
+#ifdef ENABLE_CGROUP
 #include <stdlib.h>
 #include <string.h>
 
@@ -34,3 +34,4 @@ void crinitCfgCgroupRootParamsHandlerTestEmptyInput(void **state) {
     crinitGlobOptRemit();
     crinitGlobOptDestroy();
 }
+#endif

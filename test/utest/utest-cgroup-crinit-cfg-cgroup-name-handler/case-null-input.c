@@ -3,7 +3,7 @@
  * @file case-null-input.c
  * @brief Unit test for crinitCfgCgroupNameHandler(), input parameter is NULL.
  */
-
+#ifdef ENABLE_CGROUP
 #include <stdlib.h>
 #include <string.h>
 
@@ -21,3 +21,4 @@ void crinitCfgGroupHandlerTestNullInput(void **state) {
     assert_int_equal(crinitCfgCgroupNameHandler(&tgt, val, CRINIT_CONFIG_TYPE_TASK), -1);
     assert_null(tgt.cgroup);
 }
+#endif

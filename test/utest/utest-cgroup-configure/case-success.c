@@ -3,7 +3,7 @@
  * @file case-success.c
  * @brief Unit test for crinitFileSeriesFromDir(), successful execution.
  */
-
+#ifdef ENABLE_CGROUP
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
@@ -160,3 +160,4 @@ void crinitCGroupConfigureTestSuccessParent(void **state) {
 
     assert_int_equal(crinitCGroupConfigure(&cgroup), 0);
 }
+#endif

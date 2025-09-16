@@ -45,6 +45,7 @@ RUN cmake -B build . \
  -DENABLE_ASAN=OFF \
  -DENABLE_ANALYZER=OFF \
  -DENABLE_WERROR=OFF \
+ -DENABLE_CGROUP=OFF \
  . \
  && make -C build install
 

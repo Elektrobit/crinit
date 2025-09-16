@@ -75,6 +75,7 @@ CMAKE_PARAM="${CMAKE_PARAM} \
     -DMACHINE_ID_EXAMPLE=On \
     -DENABLE_WERROR=${ENABLE_WERROR} \
     -DDEFAULT_CRINIT_SOCKFILE=/run/crinit/crinit.sock \
+    -DENABLE_CGROUP=Off \
 "
 
 if [ "$OPTION_CLEAN" -eq 1 ]; then

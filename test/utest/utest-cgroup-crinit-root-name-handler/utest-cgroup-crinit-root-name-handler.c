@@ -3,7 +3,7 @@
  * @file utest-cgroup-crinit-root-name-handler.c
  * @brief Implementation of the crinitCfgCgroupRootNameHandler(() unit test group.
  */
-
+#ifdef ENABLE_CGROUP
 #include "utest-cgroup-crinit-root-name-handler.h"
 
 #include "unit_test.h"
@@ -20,3 +20,4 @@ int main(void) {
 
     return cmocka_run_group_tests(tests, NULL, NULL);
 }
+#endif

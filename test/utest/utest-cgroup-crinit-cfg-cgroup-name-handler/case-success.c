@@ -3,7 +3,7 @@
  * @file case-success.c
  * @brief Unit test for crinitCfgCgroupNameHandler(), successful execution.
  */
-
+#ifdef ENABLE_CGROUP
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -26,3 +26,4 @@ void crinitCfgGroupHandlerTestAlphaInputSuccess(void **state) {
     assert_string_equal(tgt.cgroup->name, "test.cg");
     crinitDestroyTask(&tgt);
 }
+#endif

@@ -3,7 +3,7 @@
  * @file case-wrong-input.c
  * @brief Unit test for crinitConfConvToEnvSetMember(), handling of invalid string input.
  */
-
+#ifdef ENABLE_CGROUP
 #include "cgroup.h"
 #include "common.h"
 #include "unit_test.h"
@@ -46,3 +46,4 @@ void crinitCGroupConfigureTestWrongInput(void **state) {
 
     assert_int_equal(crinitCGroupConfigure(&invalidParam2Cgroup), -1);
 }
+#endif

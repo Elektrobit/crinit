@@ -3,6 +3,7 @@
  * @file utest-cgroup-crinit-global-name-handler.h
  * @brief Header declaring the unit tests for crinitCfgCgroupGlobalNameHandler(().
  */
+#ifdef ENABLE_CGROUP
 #ifndef __UTEST_CGROUP_CRINIT_CFG_CGROUP_GLOBAL_NAME_HANDLER_H__
 #define __UTEST_CGROUP_CRINIT_CFG_CGROUP_GLOBAL_NAME_HANDLER_H__
 
@@ -23,3 +24,4 @@ void crinitCfgCgroupGlobalNameHandlerTestNullInput(void **state);
  */
 void crinitCfgCgroupGlobalNameHandlerTestEmptyInput(void **state);
 #endif /* __UTEST_CGROUP_CRINIT_CFG_CGROUP_GLOBAL_NAME_HANDLER_H__ */
+#endif

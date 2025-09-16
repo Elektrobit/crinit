@@ -3,7 +3,7 @@
  * @file case-invalid-input.c
  * @brief Unit test for crinitCfgCgroupParamsHandler(), input parameter is invalid.
  */
-
+#ifdef ENABLE_CGROUP
 #include <stdlib.h>
 #include <string.h>
 
@@ -38,3 +38,4 @@ void crinitCfgCGroupParamsHandlerTestInvalidInputMissingCGroupName(void **state)
     assert_null(tgt.cgroup->config);
     crinitDestroyTask(&tgt);
 }
+#endif

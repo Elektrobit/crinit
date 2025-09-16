@@ -3,7 +3,7 @@
  * @file case-success.c
  * @brief Unit test for crinitCfgCgroupRootNameHandler(), successful execution.
  */
-
+#ifdef ENABLE_CGROUP
 #include <stdlib.h>
 #include <string.h>
 
@@ -25,3 +25,4 @@ void crinitCfgCgroupRootNameHandlerTestAlphaInputSuccess(void **state) {
     crinitGlobOptRemit();
     crinitGlobOptDestroy();
 }
+#endif

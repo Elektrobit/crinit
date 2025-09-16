@@ -119,7 +119,7 @@ int crinitSetupSystemFs(void) {
                             crinitErrnoPrint("Could not mount cgroupfs.");
                             return -1;
                         }
-                    } 
+                    }
                 }
             }
         }

@@ -3,7 +3,7 @@
  * @file utest-cgroup-configure.c
  * @brief Implementation of the crinitCGroupConfigure() unit test group.
  */
-
+#ifdef ENABLE_CGROUP
 #include "utest-cgroup-configure.h"
 
 #include <sys/types.h>
@@ -32,3 +32,4 @@ int main(void) {
 
     return cmocka_run_group_tests(tests, NULL, NULL);
 }
+#endif
