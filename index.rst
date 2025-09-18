@@ -11,4 +11,3 @@ Crinit -- Configurable Rootfs Init
    CI/CD Tooling <ci/index>
    ADRs <doc/adr/index>
    Developers <src/index>
-   ./doc/cgroup-implementation-suggestion.md
