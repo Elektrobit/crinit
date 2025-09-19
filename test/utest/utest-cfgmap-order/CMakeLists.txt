@@ -8,6 +8,7 @@ create_unit_test(
     utest-cfgmap-order.c
     regression-test.c
     lexers.c
+    $<IF:$<BOOL:${ENABLE_CGROUP}>,${PROJECT_SOURCE_DIR}/src/cgroup.c,>
     ${PROJECT_SOURCE_DIR}/src/confmap.c
     ${PROJECT_SOURCE_DIR}/src/confhdl.c
     ${PROJECT_SOURCE_DIR}/src/task.c

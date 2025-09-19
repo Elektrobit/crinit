@@ -18,3 +18,4 @@ create_unit_test(
 )
 
 target_compile_options(utest-envset-init PRIVATE "-fno-builtin-malloc") 
+addFUT(FUNCTION_NAME crinitEnvSetInit TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-envset-init")

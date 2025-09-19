@@ -9,6 +9,7 @@ RUN apt-get update \
     && apt-get install -y \
     bash-completion \
     bc \
+    binutils-dev \
     build-essential \
     clang \
     clang-format \
@@ -22,9 +23,11 @@ RUN apt-get update \
     flake8 \
     git \
     git-buildpackage \
+    gcovr \
     graphviz \
     keyutils \
     libcap-dev \
+    libcsv-dev \
     libcmocka-dev \
     libiberty-dev \
     libjson-c-dev \
@@ -33,6 +36,7 @@ RUN apt-get update \
     libncurses-dev \
     libssl-dev \
     llvm \
+    linux-tools-generic \
     locales \
     pkg-config \
     plantuml \
@@ -52,7 +56,9 @@ RUN apt-get update \
     npm \
     yapf3 \
     && rm -rf /var/lib/apt/lists/* \
-    && ln -fs /usr/share/zoneinfo/UTC /etc/localtime
+    && ln -fs /usr/share/zoneinfo/UTC /etc/localtime \
+    && rm /usr/bin/perf \
+    && find /usr/lib/linux-tools -name "perf" -executable -exec ln -s {} /usr/bin/perf \;
 
 # Install all build dependencies on elos
 RUN add-apt-repository -y ppa:elos-team/ppa \
@@ -66,6 +72,20 @@ RUN wget 'https://github.com/debbuild/debbuild/releases/download/22.02.1/debbuil
     && apt-get install -y ./debbuild_*.deb ./debbuild-macros_*.deb \
     && rm -rf /var/lib/apt/lists/* \
     && rm -f debbuild_*.deb debbuild-macros_*.deb
+
+
+ARG CAPSTONE_VERSION=4.0.2
+RUN git clone --depth 1 --branch $CAPSTONE_VERSION https://github.com/aquynh/capstone.git
+RUN cd capstone/ \
+ && ./make.sh \
+ &&  sudo ./make.sh install
+
+ARG ASMCOV_URI="not available"
+RUN if [ "${ASMCOV_URI}" != "not available" ]; then git clone --depth 1 ${ASMCOV_URI} -b 'integration' \
+ && cmake -B build asmcov \
+ && make -C build \
+ && make -C build install; \
+ fi
 
 
 # Install commitlint too with conventional commit config and dependencies.

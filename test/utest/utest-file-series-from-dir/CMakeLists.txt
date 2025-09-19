@@ -29,3 +29,4 @@ create_unit_test(
     -Wl,--wrap=crinitErrPrintFFL
     -Wl,--wrap=crinitErrnoPrintFFL
 )
+addFUT(FUNCTION_NAME crinitFileSeriesFromDir TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-file-series-from-dir")

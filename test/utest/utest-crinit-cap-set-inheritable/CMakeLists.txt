@@ -22,3 +22,4 @@ if (${ENABLE_CAPABILITIES})
         -Wl,--wrap=syscall
     )
 endif()
+addFUT(FUNCTION_NAME crinitCapSetInheritable TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-crinit-cap-set-inheritable")

@@ -29,20 +29,56 @@ build-docker-image:
       --build-arg BUILDKIT_INLINE_CACHE=1
       --build-arg REPO=amd64
       --build-arg UBUNTU_RELEASE=noble
+      --build-arg ASMCOV_URI="$ASMCOV_URI"
       --tag $CI_REGISTRY_IMAGE:buildcache
       --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
       -f ci/Dockerfile .
 
-Build:
+Build-Release:
   stage: build
   script:
     - env
-    - ci/build.sh
-    - ci/build.sh Debug --asan
+    - ci/build.sh --clean Release
   artifacts:
     paths:
-      - build/
-      - result/
+      - build/Release
+
+Build-Coverage:
+  stage: build
+  script:
+    - env
+    - ci/build.sh Coverage
+  artifacts:
+    paths:
+      - build/Coverage
+
+Build-Analyzer:
+ stage: build
+ allow_failure: true
+ script:
+   - env
+   - ci/build.sh --clean Analyzer
+ artifacts:
+   paths:
+     - build/Analyzer
+      
+Build-Asan:
+  stage: build
+  script:
+    - env
+    - ci/build.sh --clean Asan
+  artifacts:
+    paths:
+      - build/Asan
+      
+Build-Ubsan:
+  stage: build
+  script:
+    - env
+    - ci/build.sh --clean Ubsan
+  artifacts:
+    paths:
+      - build/Ubsan
 
 Build Doc:
   stage: build
@@ -54,29 +90,84 @@ Build Doc:
 
 Lint:
   stage: test
+  needs:
+    - Build-Release
   script:
-    - ci/clang-tidy.sh
+    - ci/clang-tidy.sh Release
     - ci/lint-scripts.sh
     - ci/format-code.sh --check
     - ci/lint-commits.sh origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-$CI_DEFAULT_BRANCH}
     - ci/readme-toc.sh
 
-Unit Tests:
+Unit-Tests-Release:
   stage: test
+  needs:
+    - Build-Release
   script:
-    - ci/run-utests.sh
-    - ci/run-utests.sh Debug
+    - ci/run-utests.sh Release
   artifacts:
     when: always
     paths:
-      - result/amd64/utest_report.txt
-      - result/amd64-Debug/utest_report.txt
+      - build/Release/result
+      
+Unit-Tests-Asan:
+  stage: test
+  needs:
+    - Build-Asan
+  script:
+    - ci/run-utests.sh Asan
+  artifacts:
+    paths:
+      - build/Asan/result
+      
+Unit-Tests-Ubsan:
+  stage: test
+  needs:
+    - Build-Ubsan
+  script:
+    - ci/run-utests.sh Ubsan
+  artifacts:
+    paths:
+      - build/Ubsan/result
+
+Unit-Tests-Coverage:
+  stage: test
+  needs:
+    - Build-Coverage
+  script:
+    - ci/run-utests.sh Coverage
+  artifacts:
+    when: always
+    paths:
+      - build/Coverage/result
+      - build/Coverage/**/*.gcda
+      - build/Coverage/**/*.gcno
+
+code-coverage:
+  tags:
+    - "intelpt"
+    - "docker"
+  stage: test
+  needs:
+    - Build-Release
+    - Build-Coverage
+    - Unit-Tests-Coverage
+  script:
+      - ci/create_coverage.sh asmcov
+      - ci/create_coverage.sh gcov
+  artifacts:
+    when: always
+    paths:
+      - build/Coverage/result/coverage
 
 Smoke Tests:
   stage: test
+  needs:
+    - Build-Release
+    - Build-Asan
   script:
-    - ci/run-smoketests.sh
-    - ci/run-smoketests.sh Debug
+    - ci/run-smoketests.sh Release
+    - ci/run-smoketests.sh Asan
   artifacts:
     when: always
     paths:

@@ -17,6 +17,8 @@ create_unit_test(
     ${PROJECT_SOURCE_DIR}/src/confconv.c
     ${PROJECT_SOURCE_DIR}/src/confhdl.c
     ${PROJECT_SOURCE_DIR}/src/globopt.c
+    $<IF:$<BOOL:${ENABLE_CGROUP}>,${PROJECT_SOURCE_DIR}/src/cgroup.c,>
   LIBRARIES
     libmockfunctions
 )
+addFUT(FUNCTION_NAME crinitCfgLauncherCmdHandler TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-crinit-cfg-launch-cmd-handler")

@@ -17,3 +17,4 @@ create_unit_test(
     -Wl,--wrap=crinitErrPrintFFL
     -Wl,--wrap=crinitErrnoPrintFFL
 )
+addFUT(FUNCTION_NAME crinitInitFileSeries TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-init-file-series")

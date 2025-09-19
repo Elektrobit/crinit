@@ -38,6 +38,8 @@ typedef struct crinitThreadPool {
 /**
  * Initialize an crinitThreadPool_t.
  *
+ * Modifies errno.
+ *
  * @param ctx          The crinitThreadPool_t to initialize.
  * @param initialSize  Initial size (in number of threads) of the pool.
  * @param threadFunc   Worker thread function to use.
@@ -53,6 +55,8 @@ int crinitThreadPoolInit(crinitThreadPool_t *ctx, size_t initialSize, void *(*th
 /**
  * Callback to be used by the worker thread function signalling it is busy/unavailable.
  *
+ * Modifies errno.
+ *
  * @param ctx  The crinitThreadPool_t context.
  *
  * @return 0 on success, -1 otherwise
@@ -60,6 +64,8 @@ int crinitThreadPoolInit(crinitThreadPool_t *ctx, size_t initialSize, void *(*th
 int crinitThreadPoolThreadBusyCallback(crinitThreadPool_t *ctx);
 /**
  * Callback to be used by the worker thread function signalling it is idle/available.
+ *
+ * Modifies errno.
  *
  * @param ctx  The crinitThreadPool_t context.
  *

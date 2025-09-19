@@ -12,3 +12,4 @@ create_unit_test(
   DEFINITIONS
     CRINIT_FSERIES_TESTING
 )
+addFUT(FUNCTION_NAME crinitSuffixFilter TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-file-series-suffix-filter")

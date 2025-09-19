@@ -22,3 +22,4 @@ create_unit_test(
     inih-local
   WRAPS
 )
+addFUT(FUNCTION_NAME crinitExpandPIDVariablesInCommands TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-crinit-expand-pid-variables")

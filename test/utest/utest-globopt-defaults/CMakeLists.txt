@@ -9,6 +9,7 @@ create_unit_test(
     ${PROJECT_SOURCE_DIR}/src/envset.c
     ${PROJECT_SOURCE_DIR}/src/common.c
     ${PROJECT_SOURCE_DIR}/src/globopt.c
+    $<IF:$<BOOL:${ENABLE_CGROUP}>,${PROJECT_SOURCE_DIR}/src/cgroup.c,>
     ${PROJECT_SOURCE_DIR}/src/logio.c
   LIBRARIES
     libmockfunctions
@@ -19,3 +20,4 @@ create_unit_test(
 # It is necessary to enable struct packing for this test to work, so that we can pre-init the whole struct with a known
 # value to track uninitialized fields.
 target_compile_options(utest-globopt-defaults PRIVATE -fpack-struct)
+addFUT(FUNCTION_NAME crinitGlobalOptBorrow TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-globopt-defaults")

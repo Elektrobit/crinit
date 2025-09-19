@@ -19,3 +19,4 @@ if (${ENABLE_CAPABILITIES})
         -Wl,--wrap=syscall
     )
 endif()
+addFUT(FUNCTION_NAME crinitCapGetInheritable TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-crinit-cap-get-inheritable")

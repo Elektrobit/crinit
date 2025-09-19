@@ -8,6 +8,7 @@
 
 #include "common.h"
 #include "fseries.h"
+#include "mock-free.h"
 #include "string.h"
 #include "unit_test.h"
 
@@ -33,7 +34,9 @@ static void crinitTestVariant(size_t numElements, const char *baseDir) {
 
     expect_value(__wrap_free, ptr, baseDir);
 
+    crinitMockFreeEnabled = true;
     crinitDestroyFileSeries(&fse);
+    crinitMockFreeEnabled = false;
 
     if (numElements > 0) {
         assert_ptr_equal(fse.fnames, NULL);

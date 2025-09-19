@@ -12,6 +12,18 @@ if(ENABLE_CAPABILITIES)
     )
 endif()
 
+function(addFUT)
+    cmake_parse_arguments(PARSED_ARGS "" "FUNCTION_NAME;TEST_BINARY_PATH" "" ${ARGN})
+    set(fut_file "${PROJECT_BINARY_DIR}/test/functions_under_test.txt")
+    
+    file(APPEND ${fut_file} "${PARSED_ARGS_FUNCTION_NAME} ${PARSED_ARGS_TEST_BINARY_PATH}\n")
+endfunction()
+
+if(ENABLE_CGROUP)
+    set(CGROUP_DEFINES
+        ENABLE_CGROUP)
+endif()
+
 function(create_unit_test)
   cmake_parse_arguments(PARSED_ARGS "" "NAME" "SOURCES;INCLUDES;LIBRARIES;DEFINITIONS;WRAPS" ${ARGN})
   get_filename_component(UNIT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../.. ABSOLUTE)
@@ -53,6 +65,7 @@ function(create_unit_test)
     CRINIT_CONFIG_DEFAULT_TASKDIR="${DEFAULT_TASK_DIR}"
     CRINIT_MACHINE_ID_FILE="${DEFAULT_MACHINE_ID_FILE}"
     ${CAPABILITIES_DEFINES}
+    ${CGROUP_DEFINES}
   )
 
   if(PARSED_ARGS_DEFINITIONS)

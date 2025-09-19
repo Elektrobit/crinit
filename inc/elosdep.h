@@ -17,6 +17,8 @@ struct crinitTaskDB;
  * Hook which will be invoked if a new task has been added and
  * will register the elos filters for this task.
  *
+ * Modifies errno.
+ *
  * @param task Task that has been added to elos.
  *
  * @return Returns 0 on success, -1 otherwise.

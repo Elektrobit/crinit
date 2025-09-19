@@ -23,6 +23,8 @@
  *
  * This function must be called once before any other function from this header file is used.
  *
+ * Modifies errno.
+ *
  * @param rootKeyDesc  The key description value to search for the root key in the user keyring.
  *
  * @return  0 on success, -1 otherwise.
@@ -45,6 +47,8 @@ void crinitSigSubsysDestroy(void);
  * Keys may be in DER (.der) or PEM (.pem) format and must each have a signature file (e.g. `<keyfile>.pem.sig`) in the
  * same directory.
  *
+ * Modifies errno.
+ *
  * @param sigKeyDir  The path to the directory from where to load/verify the keys.
  *
  * @return  0 on success, -1 otherwise
@@ -57,6 +61,8 @@ int crinitLoadAndVerifySignedKeys(char *sigKeyDir);
  *
  * Verification uses the RSA-PSS algorithm with SHA256 hashes. It will check the hashed data against all loaded keys. If
  * one matches, verification is passed.
+ *
+ * Modifies errno.
  *
  * @param data       The data array to check against the signature.
  * @param dataSz     The number of elements in the data array.

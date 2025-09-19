@@ -87,11 +87,8 @@ Crinit currently has the following features implemented:
 * optional signature checking of Crinit's configuration files
 * setting of UID and GID a task should be run as
 * setting/clearing of specific capabilities that a task shall be (not) equipped with
-
-In the future we also plan to support:
-
 * fine-grained restriction of processes started/managed by Crinit
-    - cgroups,...
+    - cgroups
 
 There are example configurations below which show how to use the currently implemented features.
 For detailed explanations of Crinit's inner workings please refer to the Doxygen documentation generated during build.
@@ -235,6 +232,13 @@ ELOS_EVENT_POLL_INTERVAL = 250000
 ENV_SET = FOO "foo"
 ENV_SET = FOO_BAZ "${FOO} baz"
 ENV_SET = GREETING "Good morning!"
+
+CGROUP_ROOT_NAME = crinit.cg
+CGROUP_ROOT_PARAMS = memory.max=500M
+
+CGROUP_GLOBAL_NAME = mem_restricted cpu_restricted
+CGROUP_GLOBAL_PARAMS = cpu_restricted:cpu.max=50000 100000
+                     = mem_restricted:memory.max=100M
 ```
 #### Explanation
 - **TASKS** -- The task configurations to load. This is an optional setting. If not set, **TASKDIR** will be scanned for
@@ -270,6 +274,10 @@ ENV_SET = GREETING "Good morning!"
 - **ENV_SET** -- See section **Setting Environment Variables** below. (*array-like*)
 - **FILTER_DEFINE** -- See section **Defining Elos Filters** below. (*array-like*)
 - **DEFAULTCAPS** -- Whitespace separated list of capability definitions `/linux/capability.h`) that each task shall be equipped with by default.
+- **CGROUP_ROOT_NAME** -- Name of the containing cgroup that will contain all in crinit defined cgroups.
+- **CGROUP_ROOT_PARAMS** -- Parameters for the root cgroup (if any). See CGROUP_PARAMS in the task configuration for details.
+- **CGROUP_GLOBAL_NAME** -- List of global cgroup names available to all tasks.
+- **CGROUP_GLOBAL_PARAMS** -- List of parameters for the global cgroups. One entry (see CGROUP_PARAMS in task configuration section for details) per line. Each line has to be prefixed with the name of the corresponding global cgroup and a colon (e.g. "mygroup:").
 
 ### Example Task Configuration
 The `network-dhcp.crinit` from above could for example look like this:
@@ -302,6 +310,9 @@ PROVIDES = ipv4_dhcp:wait resolvconf:wait
 
 RESPAWN = NO
 RESPAWN_RETRIES = -1
+
+CGROUP_NAME = dhcp
+CGROUP_PARAMS = memory.max=100M
 
 ENV_SET = FOO_BAR "${FOO} bar"
           ESCAPED_VAR "Global variable name: \${FOO}"
@@ -357,6 +368,15 @@ IO_REDIRECT = STDERR STDOUT
   Default: `NO`
 - **RESPAWN_RETRIES** -- Number of times a respawned task may fail *in a row* before it is not started again. The
   special value `-1` is interpreted as "unlimited". Default: -1
+  **CGROUP_NAME** -- Name of a cgroup only used by this task.
+  If this parameter is absent, the task won't be placed in a cgroup.
+  If the name of a global cgroup (configured in the series file) is used here, the task is placed in that global cgroup. That is the preferred way to have multiple tasks in the same cgroup.
+  It is possible to have more than one task with the same CGROUP_NAME which is not a global cgroup, but that is highly discouraged. In that case both tasks would be placed in the same cgroup but the later started task will alter the cgroup configuration done by the first task with the later started task's configuration.
+  It is possible to create a cgroup outside of crinit (e.g. via an early started task) and use the name of that cgroup as value for CGROUP_NAME. Attention: That makes the configuration of the cgroup dependent on the task execution order.
+  **CGROUP_PARAMS** -- Line-separated list of options that shall be set for the cgroup. Each parameter consists of the file name and the parameter value to set.  Only one parameter pair per line.
+  For example:  
+  ```memory.max=100M memory.min=5M```  
+  See cgroup v2 documentation for more details: https://docs.kernel.org/admin-guide/cgroup-v2.html
 - **ENV_SET** -- See section **Setting Environment Variables** below. (*array-like*)
 - **FILTER_DEFINE** -- See section **Defining Elos Filters** below. (*array-like*)
 - **IO_REDIRECT** -- See section **IO Redirections** below. (*array-like*)

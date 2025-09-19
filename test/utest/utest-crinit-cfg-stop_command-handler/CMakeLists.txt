@@ -11,14 +11,17 @@ create_unit_test(
     case-null-input.c
     lexers.c
     ${PROJECT_SOURCE_DIR}/src/logio.c
+    $<IF:$<BOOL:${ENABLE_CGROUP}>,${PROJECT_SOURCE_DIR}/src/cgroup.c,>
     ${PROJECT_SOURCE_DIR}/src/confconv.c
     ${PROJECT_SOURCE_DIR}/src/confhdl.c
     ${PROJECT_SOURCE_DIR}/src/confparse.c
     ${PROJECT_SOURCE_DIR}/src/envset.c
     ${PROJECT_SOURCE_DIR}/src/ioredir.c
     ${PROJECT_SOURCE_DIR}/src/task.c
+    ${PROJECT_SOURCE_DIR}/src/globopt.c
   LIBRARIES
     libmockfunctions
     inih-local
   WRAPS
 )
+addFUT(FUNCTION_NAME crinitCfgStopCmdHandler TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-crinit-cfg-stop_command-handler")

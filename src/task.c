@@ -111,6 +111,9 @@ int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig) {
     out->groupname = NULL;
     out->supGroups = NULL;
     out->supGroupsSize = 0;
+#ifdef ENABLE_CGROUP
+    out->cgroup = NULL;
+#endif
 
     out->name = strdup(orig->name);
     if (out->name == NULL) {
@@ -229,6 +232,26 @@ int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig) {
         memcpy(out->supGroups, orig->supGroups, out->supGroupsSize * sizeof(*out->supGroups));
     }
 
+#ifdef ENABLE_CGROUP
+    if (orig->cgroup) {
+        bool isGlobal = false;
+        if (crinitCgroupNameIsGlobalCgroup(orig->cgroup->name, &isGlobal) != 0) {
+            goto fail;
+        }
+        if (isGlobal == 0) {
+            out->cgroup = calloc(sizeof(*out->cgroup), 1);
+            if (out->cgroup == NULL) {
+                goto fail;
+            }
+            if (crinitCopyCgroup(orig->cgroup, out->cgroup)) {
+                goto fail;
+            }
+        } else {
+            out->cgroup = orig->cgroup;
+        }
+    }
+#endif
+
     return 0;
 
 fail:
@@ -299,6 +322,20 @@ void crinitDestroyTask(crinitTask_t *t) {
     free(t->username);
     free(t->groupname);
     free(t->supGroups);
+#ifdef ENABLE_CGROUP
+    if (t->cgroup) {
+        bool isGlobal = false;
+        if (crinitCgroupNameIsGlobalCgroup(t->cgroup->name, &isGlobal) != 0) {
+            crinitErrPrint("Failed to check if '%s' is a global cgroup name.", t->cgroup->name);
+            return;
+        }
+        if (isGlobal == 0) {
+            crinitFreeCgroup(t->cgroup);
+            free(t->cgroup);
+        }
+        t->cgroup = NULL;
+    }
+#endif
 }
 
 int crinitTaskMergeInclude(crinitTask_t *tgt, const char *src, char *importList) {

@@ -16,3 +16,4 @@ create_unit_test(
   WRAPS
     -Wl,--wrap=crinitSetInfoStream
 )
+addFUT(FUNCTION_NAME crinitClientSetInfoStream TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-crinit-set-info-stream")

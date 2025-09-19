@@ -6,7 +6,7 @@ include(cmake/project.cmake)
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE AND DEFINED ENV{CMAKE_TOOLCHAIN_FILE})
   set(CMAKE_TOOLCHAIN_FILE $ENV{CMAKE_TOOLCHAIN_FILE})
 endif()
-project(crinit VERSION 0.19.1)
+project(crinit VERSION 0.22.0)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -18,12 +18,11 @@ include(GNUInstallDirs)
 option(ENABLE_SIGNATURE_SUPPORT "Enable signature support using MbedTLS" ON)
 option(ENABLE_ELOS "Enable ELOS support" ON)
 option(ENABLE_CAPABILITIES "Enable capabilities support" ON)
+option(ENABLE_CGROUP "Enable cgroup support" ON)
 option(UNIT_TESTS "Build unit tests" ON)
 set(UNIT_TEST_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/test/${PROJECT_NAME}/utest" CACHE PATH
   "Directory where the built unit tests will be installed.")
 option(API_DOC "Build API documentation" ON)
-option(ENABLE_ASAN "Build with -fsanitize=address" OFF)
-option(ENABLE_ANALYZER "Build with -fanalyzer (disables -Werror)" OFF)
 option(ENABLE_WERROR "Build with -Werror" ON)
 set(LIBELOS_SO_FILENAME "" CACHE STRING
     "Name of the libelos shared object crinit will look for at run-time.")
@@ -101,8 +100,25 @@ set(DEFAULT_MACHINE_ID_FILE
   "Default path of the machine id file for the machine ID generator example."
 )
 
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE "Debug")
+set(CGROUP_MOUNT_PATH
+  "/sys/fs/cgroup"
+  CACHE PATH
+  "cgroup v2 mount path"
+)
+
+if (CMAKE_BUILD_TYPE STREQUAL "Analyzer")
+  add_compile_options(-fanalyzer)
+elseif (CMAKE_BUILD_TYPE STREQUAL "Asan")
+  link_libraries(asan)
+  add_compile_options(-fsanitize=address)
+elseif(CMAKE_BUILD_TYPE STREQUAL "Ubsan")
+  link_libraries(ubsan)
+  add_compile_options(-fsanitize=undefined)
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+  add_compile_options(-O3 -DNDEBUG -g)
+elseif(CMAKE_BUILD_TYPE STREQUAL "Coverage")
+  add_compile_options(-O0 --coverage -g)
+  add_link_options(--coverage)
 endif()
 
 if(ENABLE_ANALYZER)
@@ -159,12 +175,6 @@ add_compile_options(
   -ffunction-sections -fdata-sections
   -D_DEFAULT_SOURCE
   -D_FORTIFY_SOURCE=2
-  $<IF:$<BOOL:${ENABLE_ANALYZER}>,-fanalyzer,>
-  $<IF:$<BOOL:${ENABLE_ASAN}>,-fsanitize=address,>
-)
-
-add_link_options(
-  $<IF:$<BOOL:${ENABLE_ASAN}>,-fsanitize=address,>
 )
 
 find_package(RE2C 3 REQUIRED)
@@ -177,6 +187,8 @@ endif()
 
 add_subdirectory(deps/)
 add_subdirectory(src/)
+add_subdirectory(test/demo/)
+
 if(UNIT_TESTS)
   enable_testing()
   add_subdirectory(test/utest)

@@ -16,3 +16,4 @@ create_unit_test(
   WRAPS
     -Wl,--wrap=crinitSetErrStream
 )
+addFUT(FUNCTION_NAME crinitClientSetErrStream TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-crinit-set-err-stream")

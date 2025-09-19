@@ -47,6 +47,12 @@ if(ENABLE_CAPABILITIES)
     )
 endif()
 
+if(ENABLE_CGROUP)
+    set(CGROUP_SOURCES cgroup.c)
+    set(CGROUP_DEFINES
+        ENABLE_CGROUP)
+endif()
+
 RE2C_TARGET(NAME lexers INPUT ${PROJECT_SOURCE_DIR}/src/lexers.re OUTPUT lexers.c OPTIONS ${RE2C_OPTIONS} -W DEPENDS ${PROJECT_SOURCE_DIR}/inc/lexers.h)
 
 # optional compile-time features
@@ -87,6 +93,7 @@ add_executable(
   ${SIG_SOURCES}
   ${ELOS_SOURCES}
   ${CMAKE_CURRENT_BINARY_DIR}/crinit-version.c
+  ${CGROUP_SOURCES}
 )
 
 target_include_directories(
@@ -115,8 +122,10 @@ target_compile_definitions(
     CRINIT_CONFIG_DEFAULT_INCLDIR="${DEFAULT_INCL_DIR}"
     CRINIT_CONFIG_DEFAULT_TASKDIR="${DEFAULT_TASK_DIR}"
     CRINIT_MACHINE_ID_FILE="${DEFAULT_MACHINE_ID_FILE}"
+    CRINIT_CGROUP_PATH="${CGROUP_MOUNT_PATH}"
     ${ELOS_DEFINES}
     ${CAPABILITIES_DEFINES}
+    ${CGROUP_DEFINES}
 )
 
 # libcrinit-client
@@ -190,6 +199,7 @@ add_executable(
     crinit-launch
     crinit-launch.c
     ${CAPABILITIES_SOURCES}
+    ${CGROUP_SOURCES}
     logio.c
     ${CMAKE_CURRENT_BINARY_DIR}/crinit-version.c
 )
@@ -203,6 +213,7 @@ target_compile_definitions(
   crinit-launch
     PRIVATE
     ${CAPABILITIES_DEFINES}
+    ${CGROUP_DEFINES}
 )
 
 target_link_libraries(

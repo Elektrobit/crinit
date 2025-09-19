@@ -14,3 +14,4 @@ create_unit_test(
   WRAPS
     -Wl,--wrap=free
 )
+addFUT(FUNCTION_NAME crinitFreeScandirList TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-file-series-free-scandir-list")

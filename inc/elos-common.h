@@ -149,6 +149,8 @@ typedef struct crinitElosVirtualTable {
 /**
  * Initializes the elos vtable.
  *
+ * Modifies errno.
+ *
  * @return Returns 0 on success, -1 otherwise.
  */
 int crinitElosInit(void);
@@ -160,6 +162,8 @@ crinitElosVirtualTable_t *crinitElosGetVTable(void);
 
 /**
  * Disconnect from elos daemon.
+ *
+ *  Modifies errno.
  *
  * @param session      Session to disconnect.
  * @param sessionLock  The session lock.

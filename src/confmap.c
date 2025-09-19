@@ -15,6 +15,10 @@ const crinitConfigMapping_t crinitTaskCfgMap[] = {
     {CRINIT_CONFIG_CAP_CLEAR, CRINIT_CONFIG_KEYSTR_CAP_CLEAR, true, false, crinitCfgCapClearHandler},
     {CRINIT_CONFIG_CAP_SET, CRINIT_CONFIG_KEYSTR_CAP_SET, true, false, crinitCfgCapSetHandler},
 #endif
+#ifdef ENABLE_CGROUP
+    {CRINIT_CONFIG_CGROUP_NAME, CRINIT_CONFIG_KEYSTR_CGROUP_NAME, false, false, crinitCfgCgroupNameHandler},
+    {CRINIT_CONFIG_CGROUP_PARAMS, CRINIT_CONFIG_KEYSTR_CGROUP_PARAMS, true, false, crinitCfgCgroupParamsHandler},
+#endif
     {CRINIT_CONFIG_COMMAND, CRINIT_CONFIG_KEYSTR_COMMAND, true, false, crinitCfgCmdHandler},
     {CRINIT_CONFIG_DEPENDS, CRINIT_CONFIG_KEYSTR_DEPENDS, true, true, crinitCfgDepHandler},
     {CRINIT_CONFIG_ENV_SET, CRINIT_CONFIG_KEYSTR_ENV_SET, true, true, crinitCfgEnvHandler},
@@ -31,6 +35,16 @@ const crinitConfigMapping_t crinitTaskCfgMap[] = {
 const size_t crinitTaskCfgMapSize = crinitNumElements(crinitTaskCfgMap);
 
 const crinitConfigMapping_t crinitSeriesCfgMap[] = {
+#ifdef ENABLE_CGROUP
+    {CRINIT_CONFIG_CGROUP_GLOBAL_NAME, CRINIT_CONFIG_KEYSTR_CGROUP_GLOBAL_NAME, true, false,
+     crinitCfgCgroupGlobalNameHandler},
+    {CRINIT_CONFIG_CGROUP_GLOBAL_PARAMS, CRINIT_CONFIG_KEYSTR_CGROUP_GLOBAL_PARAMS, true, false,
+     crinitCfgCgroupGlobalParamsHandler},
+    {CRINIT_CONFIG_CGROUP_ROOT_NAME, CRINIT_CONFIG_KEYSTR_CGROUP_ROOT_NAME, false, false,
+     crinitCfgCgroupRootNameHandler},
+    {CRINIT_CONFIG_CGROUP_ROOT_PARAMS, CRINIT_CONFIG_KEYSTR_CGROUP_ROOT_PARAMS, true, false,
+     crinitCfgCgroupRootParamsHandler},
+#endif
     {CRINIT_CONFIG_DEBUG, CRINIT_CONFIG_KEYSTR_DEBUG, false, false, crinitCfgDebugHandler},
 #ifdef ENABLE_CAPABILITIES
     {CRINIT_CONFIG_DEFAULTCAPS, CRINIT_CONFIG_KEYSTR_DEFAULTCAPS, true, false, crinitCfgDefaultCapsHandler},

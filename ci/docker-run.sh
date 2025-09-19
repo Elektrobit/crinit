@@ -42,6 +42,7 @@ DOCKER_BUILDKIT=1 \
     --build-arg REPO="$REPO" \
     --build-arg UBUNTU_RELEASE="$UBUNTU_RELEASE" \
     --build-arg UID="$(id -u)" --build-arg GID="$(id -g)" \
+    --build-arg ASMCOV_URI="${ASMCOV_URI-not available}" \
     --tag "${IMAGE}" .
 
 if ! [ -e "$BASEDIR/ci/sshconfig" ]; then

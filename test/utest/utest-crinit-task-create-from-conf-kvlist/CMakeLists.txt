@@ -15,6 +15,7 @@ create_unit_test(
     ${CAPABILITIES_TEST_SOURCES}
     lexers.c
     ${PROJECT_SOURCE_DIR}/src/logio.c
+    $<IF:$<BOOL:${ENABLE_CGROUP}>,${PROJECT_SOURCE_DIR}/src/cgroup.c,>
     ${PROJECT_SOURCE_DIR}/src/confconv.c
     ${PROJECT_SOURCE_DIR}/src/confhdl.c
     ${PROJECT_SOURCE_DIR}/src/confmap.c
@@ -32,3 +33,4 @@ create_unit_test(
     -Wl,--wrap=getpwuid_r
     -Wl,--wrap=getgrgid_r
 )
+addFUT(FUNCTION_NAME crinitTaskCreateFromConfKvList TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-crinit-task-create-from-conf-kvlist")

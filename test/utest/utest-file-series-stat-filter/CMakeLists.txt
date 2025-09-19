@@ -16,3 +16,4 @@ create_unit_test(
   WRAPS
     -Wl,--wrap=fstatat
 )
+addFUT(FUNCTION_NAME crinitStatFilter TEST_BINARY_PATH "${CMAKE_CURRENT_BINARY_DIR}/utest-file-series-stat-filter")

@@ -500,6 +500,8 @@ CRINIT_LIB_EXPORTED int crinitClientGetTaskList(crinitTaskList_t **tlptr) {
     }
 
     int ret = 0;
+    char *username = NULL;
+    char *groupname = NULL;
 
     *tlptr = malloc(sizeof(crinitTaskList_t));
     if (*tlptr == NULL) {
@@ -516,8 +518,6 @@ CRINIT_LIB_EXPORTED int crinitClientGetTaskList(crinitTaskList_t **tlptr) {
         goto fail_status;
     }
 
-    char *username = NULL;
-    char *groupname = NULL;
     for (size_t i = 0; i < res.argc - 1; i++) {
         const char *name = res.args[i + 1];
         pid_t pid = -1;

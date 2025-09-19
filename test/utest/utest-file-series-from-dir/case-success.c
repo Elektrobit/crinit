@@ -10,6 +10,8 @@
 
 #include "common.h"
 #include "fseries.h"
+#include "mock-malloc.h"
+#include "mock-strlen.h"
 #include "string.h"
 #include "unit_test.h"
 
@@ -71,7 +73,11 @@ static void crinitTestVariant(size_t numElements, const char *path, const char *
         expect_any_count(__wrap_stpcpy, src, numElements);
         will_return_count(__wrap_stpcpy, runnerPtr, numElements);
     }
+    crinitMockMallocEnabled = true;
+    crinitMockStrlenEnabled = true;
     assert_int_equal(crinitFileSeriesFromDir(&fse, path, fileSuffix, followLinks), 0);
+    crinitMockMallocEnabled = false;
+    crinitMockStrlenEnabled = false;
 }
 
 void crinitFileSeriesFromDirTestSuccess(void **state) {
