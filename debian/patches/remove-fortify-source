@@ -1,17 +1,25 @@
-Description: Remove _FORTIFY_SOURCE from the compile options
- This symbol can conflict with the default build flags, resulting in 
- 'error: "_FORTIFY_SOURCE" redefined' error messages which cause the build to 
- fail.
-Author: Isaac True <isaac.true@emlix.com>
-Last-Update: 2024-10-14
-Forwarded: not-needed
+From 511fd20fae25eef1f3fe6f595e01775700c96147 Mon Sep 17 00:00:00 2001
+From: Armin Butscher <armin.butscher@emlix.com>
+Date: Fri, 19 Sep 2025 13:54:11 +0200
+Subject: [PATCH] fix: update patch to remove flag _FORTIFY_SOURCE
+
+---
+ CMakeLists.txt | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 96db248a..0173dac9 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -99,7 +99,6 @@
+@@ -174,7 +174,6 @@ add_compile_options(
    -fstack-protector-strong
    -ffunction-sections -fdata-sections
    -D_DEFAULT_SOURCE
 -  -D_FORTIFY_SOURCE=2
-   $<IF:$<BOOL:${ENABLE_ANALYZER}>,-fanalyzer,>
-   $<IF:$<BOOL:${ENABLE_ASAN}>,-fsanitize=address,>
  )
+ 
+ find_package(RE2C 3 REQUIRED)
+--
+2.43.0
+
+
