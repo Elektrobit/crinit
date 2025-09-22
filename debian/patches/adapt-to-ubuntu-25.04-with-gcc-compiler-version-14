@@ -1,0 +1,258 @@
+From 73bc99e5b34ac4a89e44bfd582bd2ea3378a3ba9 Mon Sep 17 00:00:00 2001
+From: Armin Butscher <armin.butscher@emlix.com>
+Date: Mon, 22 Sep 2025 11:50:31 +0200
+Subject: [PATCH] adapt to ubuntu 25.04 with gcc compiler version 14
+
+---
+ src/cgroup.c                                       |  9 ++++-----
+ src/confhdl.c                                      | 14 +++++++-------
+ src/procdip.c                                      |  2 +-
+ src/task.c                                         |  2 +-
+ .../case-success.c                                 |  2 +-
+ .../case-invalid-input.c                           |  4 ++--
+ .../case-success.c                                 |  4 ++--
+ .../case-empty-input.c                             |  2 +-
+ .../case-null-input.c                              |  2 +-
+ .../case-success.c                                 |  2 +-
+ 10 files changed, 21 insertions(+), 22 deletions(-)
+
+diff --git a/src/cgroup.c b/src/cgroup.c
+index 17c6d245..553c5ace 100644
+--- a/src/cgroup.c
++++ b/src/cgroup.c
+@@ -3,7 +3,6 @@
+  * @file cgroup.c
+  * @brief Support function for cgroup support
+  */
+-
+ #ifdef ENABLE_CGROUP
+ 
+ #include "cgroup.h"
+@@ -77,7 +76,7 @@ int crinitCopyCgroupConfiguration(crinitCgroupConfiguration_t *orig, crinitCgrou
+ 
+     out->paramCount = orig->paramCount;
+     if (out->paramCount > 0) {
+-        out->param = calloc(sizeof(*orig->param), orig->paramCount);
++        out->param = calloc(orig->paramCount, sizeof(*orig->param));
+         if (out->param == NULL) {
+             crinitErrPrint("Failed to allocate memory for config params.");
+             return -1;
+@@ -100,7 +99,7 @@ int crinitCopyCgroup(crinitCgroup_t *orig, crinitCgroup_t *out) {
+     crinitNullCheck(-1, orig, out);
+ 
+     if (orig->config) {  // empty configuration is valid if a global configuration is refered
+-        out->config = calloc(sizeof(*out->config), 1);
++        out->config = calloc(1, sizeof(*out->config));
+         if (out->config == NULL) {
+             crinitErrPrint("Failed to allocate memory for cgroup configuration while copying cgroup.");
+             return -1;
+@@ -143,7 +142,7 @@ int crinitConvertConfigArrayToCGroupConfiguration(char **confArray, const int co
+ 
+     memset(result, 0x00, sizeof(*result));
+ 
+-    result->param = calloc(sizeof(result->param), confArraySize);
++    result->param = calloc(confArraySize, sizeof(result->param));
+     if (result->param == NULL) {
+         crinitErrPrint("Failed to allocate memory for config target.");
+         return -1;
+@@ -178,7 +177,7 @@ crinitCgroup_t *crinitFindCgroupByName(crinitCgroup_t **cgroups, size_t cgroupsC
+         }
+         if (strcmp(cgroups[i]->name, name) == 0) {
+             if (cgroups[i]->config == NULL) {
+-                cgroups[i]->config = calloc(sizeof(*cgroups[i]->config), 1);
++                cgroups[i]->config = calloc(1, sizeof(*cgroups[i]->config));
+             }
+             return cgroups[i];
+         }
+diff --git a/src/confhdl.c b/src/confhdl.c
+index eb852c1a..b33f3819 100644
+--- a/src/confhdl.c
++++ b/src/confhdl.c
+@@ -661,7 +661,7 @@ int crinitCfgCgroupNameHandler(void *tgt, const char *val, crinitConfigType_t ty
+     crinitGlobOptRemit();
+ 
+     if (t->cgroup == NULL) {
+-        t->cgroup = calloc(sizeof(*(t->cgroup)), 1);
++        t->cgroup = calloc(1, sizeof(*(t->cgroup)));
+         if (t->cgroup == NULL) {
+             crinitErrPrint("Failed to allocate memory for task cgroup structure.");
+             return -1;
+@@ -691,7 +691,7 @@ int crinitCfgCgroupParamsHandler(void *tgt, const char *val, crinitConfigType_t
+     crinitCgroupConfiguration_t *cgroupConfig = t->cgroup->config;
+ 
+     if (cgroupConfig == NULL) {
+-        cgroupConfig = calloc(sizeof(*(cgroupConfig)), 1);
++        cgroupConfig = calloc(1, sizeof(*(cgroupConfig)));
+         if (cgroupConfig == NULL) {
+             crinitErrPrint("Failed to allocate memory for cgroup configuration.");
+             return -1;
+@@ -746,7 +746,7 @@ int crinitCfgCgroupRootNameHandler(void *tgt, const char *val, crinitConfigType_
+     }
+ 
+     if (globOpts->rootCgroup == NULL) {
+-        globOpts->rootCgroup = calloc(sizeof(*(globOpts->rootCgroup)), 1);
++        globOpts->rootCgroup = calloc(1, sizeof(*(globOpts->rootCgroup)));
+         if (globOpts->rootCgroup == NULL) {
+             crinitErrPrint("Failed to allocate memory for root cgroup configuration");
+             crinitGlobOptRemit();
+@@ -787,7 +787,7 @@ int crinitCfgCgroupRootParamsHandler(void *tgt, const char *val, crinitConfigTyp
+     crinitCgroupConfiguration_t *cgroupConfig = globOpts->rootCgroup->config;
+ 
+     if (cgroupConfig == NULL) {
+-        cgroupConfig = calloc(sizeof(*(cgroupConfig)), 1);
++        cgroupConfig = calloc(1, sizeof(*(cgroupConfig)));
+         if (cgroupConfig == NULL) {
+             crinitErrPrint("Failed to allocate memory for cgroup configuration.");
+             goto failInit;
+@@ -846,7 +846,7 @@ int crinitCfgCgroupGlobalNameHandler(void *tgt, const char *val, crinitConfigTyp
+         goto failInit;
+     }
+     if (globOpts->globCgroups == NULL) {
+-        globOpts->globCgroups = calloc(sizeof(*(globOpts->globCgroups)), confArrLen);
++        globOpts->globCgroups = calloc(confArrLen, sizeof(*(globOpts->globCgroups)));
+         if (globOpts->globCgroups == NULL) {
+             crinitErrPrint("Failed to allocate memory for global cgroup configurations.");
+             goto failInit;
+@@ -856,7 +856,7 @@ int crinitCfgCgroupGlobalNameHandler(void *tgt, const char *val, crinitConfigTyp
+     crinitCgroup_t **globConfigs = globOpts->globCgroups;
+ 
+     for (int i = 0; i < confArrLen; i++) {
+-        globConfigs[i] = calloc(sizeof(**globConfigs), 1);
++        globConfigs[i] = calloc(1, sizeof(**globConfigs));
+         if (globConfigs[i] == NULL) {
+             crinitErrPrint("Failed to allocate memory for global cgroup configuration objects.");
+             goto fail;
+@@ -919,7 +919,7 @@ int crinitCfgCgroupGlobalParamsHandler(void *tgt, const char *val, crinitConfigT
+     crinitCgroupConfiguration_t *cgroupConfig = cgroup->config;
+ 
+     if (cgroupConfig == NULL) {
+-        cgroupConfig = calloc(sizeof(*(cgroupConfig)), 1);
++        cgroupConfig = calloc(1, sizeof(*(cgroupConfig)));
+         if (cgroupConfig == NULL) {
+             crinitErrPrint("Failed to allocate memory for cgroup configuration.");
+             goto failSplitted;
+diff --git a/src/procdip.c b/src/procdip.c
+index 941c883d..4a34e948 100644
+--- a/src/procdip.c
++++ b/src/procdip.c
+@@ -277,7 +277,7 @@ int crinitCreateLauncherParameters(crinitTaskCmd_t *taskCmd, crinitTask_t *tCopy
+             cgroupParamLength += strlen(tCopy->cgroup->parent->name) + 1;  // Account for '/' as delimiter
+         }
+         cgroupParamLength += strlen(tCopy->cgroup->name) + 1;  // Account for '\0'
+-        cgroupParam = calloc(sizeof(char), cgroupParamLength);
++        cgroupParam = calloc(cgroupParamLength, sizeof(char));
+         if (cgroupParam == NULL) {
+             crinitErrPrint("Failed to allocate memory for cgroup parameter string.");
+             return -1;
+diff --git a/src/task.c b/src/task.c
+index 979d2e22..9006ba34 100644
+--- a/src/task.c
++++ b/src/task.c
+@@ -239,7 +239,7 @@ int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig) {
+             goto fail;
+         }
+         if (isGlobal == 0) {
+-            out->cgroup = calloc(sizeof(*out->cgroup), 1);
++            out->cgroup = calloc(1, sizeof(*out->cgroup));
+             if (out->cgroup == NULL) {
+                 goto fail;
+             }
+diff --git a/test/utest/utest-cgroup-crinit-cfg-cgroup-name-handler/case-success.c b/test/utest/utest-cgroup-crinit-cfg-cgroup-name-handler/case-success.c
+index 853e82d1..670f527f 100644
+--- a/test/utest/utest-cgroup-crinit-cfg-cgroup-name-handler/case-success.c
++++ b/test/utest/utest-cgroup-crinit-cfg-cgroup-name-handler/case-success.c
+@@ -19,7 +19,7 @@ void crinitCfgGroupHandlerTestAlphaInputSuccess(void **state) {
+     crinitTask_t tgt;
+     memset(&tgt, 0x00, sizeof(tgt));
+     const char *val = "test.cg";
+-    tgt.cgroup = calloc(sizeof(*tgt.cgroup), 1);
++    tgt.cgroup = calloc(1, sizeof(*tgt.cgroup));
+     fprintf(stderr, "sizeof(*tgt.cgroup): %lu\n", sizeof(*tgt.cgroup));
+     assert_non_null(tgt.cgroup);
+     assert_int_equal(crinitCfgCgroupNameHandler(&tgt, val, CRINIT_CONFIG_TYPE_TASK), 0);
+diff --git a/test/utest/utest-cgroup-crinit-cfg-cgroup-params-handler/case-invalid-input.c b/test/utest/utest-cgroup-crinit-cfg-cgroup-params-handler/case-invalid-input.c
+index eeb60db0..f96ee985 100644
+--- a/test/utest/utest-cgroup-crinit-cfg-cgroup-params-handler/case-invalid-input.c
++++ b/test/utest/utest-cgroup-crinit-cfg-cgroup-params-handler/case-invalid-input.c
+@@ -18,7 +18,7 @@ void crinitCfgCGroupParamsHandlerTestInvalidInputMissingDelimiter(void **state)
+     crinitTask_t tgt;
+     memset(&tgt, 0x00, sizeof(tgt));
+     const char *val = "key value";
+-    tgt.cgroup = calloc(sizeof(*tgt.cgroup), 1);
++    tgt.cgroup = calloc(1, sizeof(*tgt.cgroup));
+     assert_non_null(tgt.cgroup);
+     tgt.cgroup->name = strdup("test.cg");
+     assert_int_equal(crinitCfgCgroupParamsHandler(&tgt, val, CRINIT_CONFIG_TYPE_TASK), -1);
+@@ -32,7 +32,7 @@ void crinitCfgCGroupParamsHandlerTestInvalidInputMissingCGroupName(void **state)
+     crinitTask_t tgt;
+     memset(&tgt, 0x00, sizeof(tgt));
+     const char *val = "key=value";
+-    tgt.cgroup = calloc(sizeof(*tgt.cgroup), 1);
++    tgt.cgroup = calloc(1, sizeof(*tgt.cgroup));
+     assert_non_null(tgt.cgroup);
+     assert_int_equal(crinitCfgCgroupParamsHandler(&tgt, val, CRINIT_CONFIG_TYPE_TASK), -1);
+     assert_null(tgt.cgroup->config);
+diff --git a/test/utest/utest-cgroup-crinit-cfg-cgroup-params-handler/case-success.c b/test/utest/utest-cgroup-crinit-cfg-cgroup-params-handler/case-success.c
+index cee32f12..f68db1b8 100644
+--- a/test/utest/utest-cgroup-crinit-cfg-cgroup-params-handler/case-success.c
++++ b/test/utest/utest-cgroup-crinit-cfg-cgroup-params-handler/case-success.c
+@@ -18,7 +18,7 @@ void crinitCfgCGroupParamsHandlerTestSingleKeyValueSuccess(void **state) {
+     crinitTask_t tgt;
+     memset(&tgt, 0x00, sizeof(tgt));
+     const char *val = "key=value";
+-    tgt.cgroup = calloc(sizeof(*tgt.cgroup), 1);
++    tgt.cgroup = calloc(1, sizeof(*tgt.cgroup));
+     assert_non_null(tgt.cgroup);
+     tgt.cgroup->name = strdup("test.cg");
+     assert_int_equal(crinitCfgCgroupParamsHandler(&tgt, val, CRINIT_CONFIG_TYPE_TASK), 0);
+@@ -36,7 +36,7 @@ void crinitCfgCGroupParamsHandlerTestTwoKeyValuesSuccess(void **state) {
+     memset(&tgt, 0x00, sizeof(tgt));
+     const char *val1 = "key1=value1";
+     const char *val2 = "key2=value2";
+-    tgt.cgroup = calloc(sizeof(*tgt.cgroup), 1);
++    tgt.cgroup = calloc(1, sizeof(*tgt.cgroup));
+     assert_non_null(tgt.cgroup);
+     tgt.cgroup->name = strdup("test.cg");
+     assert_int_equal(crinitCfgCgroupParamsHandler(&tgt, val1, CRINIT_CONFIG_TYPE_TASK), 0);
+diff --git a/test/utest/utest-cgroup-crinit-root-params-handler/case-empty-input.c b/test/utest/utest-cgroup-crinit-root-params-handler/case-empty-input.c
+index c3a3b0d5..03228828 100644
+--- a/test/utest/utest-cgroup-crinit-root-params-handler/case-empty-input.c
++++ b/test/utest/utest-cgroup-crinit-root-params-handler/case-empty-input.c
+@@ -20,7 +20,7 @@ void crinitCfgCgroupRootParamsHandlerTestEmptyInput(void **state) {
+     assert_int_equal(crinitGlobOptInitDefault(), 0);
+     crinitGlobOptStore_t *globOpts = crinitGlobOptBorrow();
+     assert_non_null(globOpts);
+-    globOpts->rootCgroup = calloc(sizeof(*globOpts->rootCgroup), 1);
++    globOpts->rootCgroup = calloc(1, sizeof(*globOpts->rootCgroup));
+     assert_non_null(globOpts->rootCgroup);
+     globOpts->rootCgroup->name = strdup("root.cg");
+     assert_non_null(globOpts->rootCgroup->name);
+diff --git a/test/utest/utest-cgroup-crinit-root-params-handler/case-null-input.c b/test/utest/utest-cgroup-crinit-root-params-handler/case-null-input.c
+index 91efab56..f3915bf1 100644
+--- a/test/utest/utest-cgroup-crinit-root-params-handler/case-null-input.c
++++ b/test/utest/utest-cgroup-crinit-root-params-handler/case-null-input.c
+@@ -20,7 +20,7 @@ void crinitCfgCgroupRootParamsHandlerTestNullInput(void **state) {
+     assert_int_equal(crinitGlobOptInitDefault(), 0);
+     crinitGlobOptStore_t *globOpts = crinitGlobOptBorrow();
+     assert_non_null(globOpts);
+-    globOpts->rootCgroup = calloc(sizeof(*globOpts->rootCgroup), 1);
++    globOpts->rootCgroup = calloc(1, sizeof(*globOpts->rootCgroup));
+     assert_non_null(globOpts->rootCgroup);
+     globOpts->rootCgroup->name = strdup("root.cg");
+     assert_non_null(globOpts->rootCgroup->name);
+diff --git a/test/utest/utest-cgroup-crinit-root-params-handler/case-success.c b/test/utest/utest-cgroup-crinit-root-params-handler/case-success.c
+index 2d200c6f..c3858e24 100644
+--- a/test/utest/utest-cgroup-crinit-root-params-handler/case-success.c
++++ b/test/utest/utest-cgroup-crinit-root-params-handler/case-success.c
+@@ -20,7 +20,7 @@ void crinitCfgCgroupRootParamsHandlerTestSingleKeyValueSuccess(void **state) {
+     assert_int_equal(crinitGlobOptInitDefault(), 0);
+     crinitGlobOptStore_t *globOpts = crinitGlobOptBorrow();
+     assert_non_null(globOpts);
+-    globOpts->rootCgroup = calloc(sizeof(*globOpts->rootCgroup), 1);
++    globOpts->rootCgroup = calloc(1, sizeof(*globOpts->rootCgroup));
+     assert_non_null(globOpts->rootCgroup);
+     globOpts->rootCgroup->name = strdup("root.cg");
+     assert_non_null(globOpts->rootCgroup->name);
+-- 
+2.43.0
+
