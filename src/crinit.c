@@ -356,6 +356,10 @@ static void crinitTaskPrint(const crinitTask_t *t) {
     for (size_t i = 0; i < t->depsSize; i++) {
         crinitDbgInfoPrint("deps[%zu]: name=\'%s\' event=\'%s\'", i, t->deps[i].name, t->deps[i].event);
     }
+    crinitDbgInfoPrint("Number of trigger: %zu, triggered: %s", t->trigSize, t->triggered ? "true" : "false");
+    for (size_t i = 0; i < t->trigSize; i++) {
+        crinitDbgInfoPrint("trig[%zu]: name=\'%s\' event=\'%s\'", i, t->trig[i].name, t->trig[i].event);
+    }
 
     crinitDbgInfoPrint("Number of provided features: %zu", t->prvSize);
     for (size_t i = 0; i < t->prvSize; i++) {
@@ -364,4 +368,6 @@ static void crinitTaskPrint(const crinitTask_t *t) {
 
     crinitDbgInfoPrint("TaskOpts:");
     crinitDbgInfoPrint("    CRINIT_TASK_OPT_RESPAWN = %s", (t->opts & CRINIT_TASK_OPT_RESPAWN) ? "true" : "false");
+    crinitDbgInfoPrint("    CRINIT_TASK_OPT_TRIGGER_REARM = %s",
+                       (t->opts & CRINIT_TASK_OPT_TRIGGER_REARM) ? "true" : "false");
 }

@@ -25,6 +25,10 @@ typedef unsigned long crinitTaskOpts_t;
 #define CRINIT_TASK_OPT_RESPAWN (1 << 0)
 /** Default value for RESPAWN option. **/
 #define CRINIT_TASK_OPT_RESPAWN_DEFAULT false
+/** TRIGGER_REARM task option bitmask. **/
+#define CRINIT_TASK_OPT_TRIGGER_REARM (1 << 1)
+/** Default value for TRIGGER_REARM option. **/
+#define CRINIT_TASK_OPT_TRIGGER_REARM_DEFAULT false
 
 /** Dependency event that fires when a task reaches the RUNNING state. **/
 #define CRINIT_TASK_EVENT_RUNNING "spawn"
@@ -89,6 +93,9 @@ typedef struct crinitTask {
     crinitEnvSet_t elosFilters;  ///< Elos filter definitions valid for use in dependencies of this task.
     crinitTaskDep_t *deps;       ///< Dynamic array of dependencies, corresponds to DEPENDS in the config file.
     size_t depsSize;             ///< Number of dependencies in deps array.
+    crinitTaskDep_t *trig;       ///< Dynamic array of trigger, corresponds to TRIGGER in the config file.
+    size_t trigSize;             ///< Number of trigger in trig array.
+    bool triggered;              ///< Task was triggered (or no trigger where set) and can be run
     crinitTaskPrv_t *prv;        ///< Dynamic array of provided features, corresponds to PROVIDES in the config file.
     size_t prvSize;              ///< Number of provided features in prv array.
     crinitTaskOpts_t opts;       ///< Task options.
