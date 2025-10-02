@@ -541,6 +541,12 @@ int crinitTaskDBFulfillDep(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep, cons
                 pTask->depsSize--;
             }
         }
+        for (size_t j = 0; j < pTask->trigSize; j++) {
+            if ((strcmp(pTask->trig[j].name, dep->name) == 0) && (strcmp(pTask->trig[j].event, dep->event) == 0)) {
+                crinitDbgInfoPrint("Trigger \'%s:%s\' in \'%s\' is fullfilled.", dep->name, dep->event, pTask->name);
+                pTask->triggered = true;
+            }
+        }
     }
     pthread_cond_broadcast(&ctx->changed);
     pthread_mutex_unlock(&ctx->lock);
@@ -653,6 +659,9 @@ static bool crinitTaskIsReady(const crinitTask_t *t) {
     crinitNullCheck(false, t);
 
     if (t->depsSize != 0) {
+        return false;
+    }
+    if (!t->triggered) {
         return false;
     }
     if (t->state & (CRINIT_TASK_STATE_RUNNING | CRINIT_TASK_STATE_STARTING)) {
