@@ -135,6 +135,14 @@ typedef struct crinitTask {
 #define crinitTaskForEachDep(task, dep) for ((dep) = (task)->deps; (dep) != (task)->deps + (task)->depsSize; (dep)++)
 
 /**
+ * Given a crinitTask_t, iterate over all trigger of this task.
+ *
+ * @param task  Pointer to the task.
+ * @param trg   Pointer to the current trigger.
+ */
+#define crinitTaskForEachTrig(task, trg) for ((trg) = (task)->trig; (trg) != (task)->trig + (task)->trigSize; (trg)++)
+
+/**
  * Given an crinitConfKvList_t created from a task config, build an equivalent crinitTask.
  *
  * The crinitTask returned via \a out is dynamically allocated and should be freed using crinitFreeTask if no longer

@@ -352,68 +352,92 @@ err:
     return res;
 }
 
+/**
+ * Will register a single elos filter for this task.
+ *
+ * Modifies errno.
+ *
+ * @param task        Task that has been added to elos.
+ * @param dep         pointer to the depenency to register
+ * @param filterTask  struct to handle all filters for a task
+ *
+ * @return Returns 0 on success, -1 otherwise.
+ */
+static int crinitElosdepRegisterFilterDep(crinitTask_t *task, crinitTaskDep_t *dep,
+                                          crinitElosdepFilterTask_t **filterTask) {
+    crinitNullCheck(-1, filterTask);
+    crinitElosdepFilter_t *filter = NULL;
+    int res = 0;
+    if (strcmp(dep->name, CRINIT_ELOS_DEPENDENCY) != 0) {
+        return 0;
+    }
+
+    crinitDbgInfoPrint("Found elos dependency %s:%s in task %s.", dep->name, dep->event, task->name);
+    if (*filterTask == NULL) {
+        *filterTask = malloc(sizeof(crinitElosdepFilterTask_t));
+        if (*filterTask == NULL) {
+            crinitErrPrint("Failed to allocate memory for the elos filter task.");
+            return -1;
+        }
+
+        (*filterTask)->task = task;
+        if (pthread_mutex_init(&((*filterTask)->filterLock), NULL) != 0) {
+            crinitErrnoPrint("Failed to initialize filter list lock.");
+            return -1;
+        }
+
+        crinitListInit(&(*filterTask)->filterList);
+
+        if ((errno = pthread_mutex_lock(&crinitElosdepFilterTaskLock)) != 0) {
+            crinitErrnoPrint("Failed to lock elos filter task list.");
+            return -1;
+        }
+
+        crinitListAppend(&crinitFilterTasks, &(*filterTask)->list);
+
+        if ((errno = pthread_mutex_unlock(&crinitElosdepFilterTaskLock)) != 0) {
+            crinitErrnoPrint("Failed to unlock elos filter task list.");
+            return -1;
+        }
+    }
+
+    crinitDbgInfoPrint("Searching for filter for dependency %s:%s.", dep->name, dep->event);
+    if ((res = crinitElosdepFilterFromEnvSet(task, dep->event, &filter)) != 0) {
+        crinitErrPrint("Failed to find filter for dependency %s:%s.", dep->name, dep->event);
+        return res;
+    }
+
+    if ((res = crinitElosdepFilterRegister(*filterTask, filter)) != 0) {
+        crinitErrPrint("Failed to register filter for dependency %s:%s.", dep->name, dep->event);
+        crinitElosdepFilterDestroy(filter);
+        return res;
+    }
+
+    /* Subscribing the filter might fail if elos is not started yet */
+    if (crinitTinfo.elosStarted && (res = crinitElosdepFilterSubscribe(filter)) != 0) {
+        crinitErrPrint("Failed to subscribe filter for dependency %s:%s.", dep->name, dep->event);
+        return res;
+    }
+    return res;
+}
+
 int crinitElosdepTaskAdded(crinitTask_t *task) {
     int res = 0;
-    crinitTaskDep_t *dep;
-    crinitElosdepFilter_t *filter = NULL;
+    crinitTaskDep_t *ptr;
     crinitElosdepFilterTask_t *filterTask = NULL;
 
     crinitNullCheck(-1, task);
 
     crinitDbgInfoPrint("Scanning task %s for elos dependencies.", task->name);
-    crinitTaskForEachDep(task, dep) {
-        if (strcmp(dep->name, CRINIT_ELOS_DEPENDENCY) != 0) {
-            continue;
-        }
-
-        crinitDbgInfoPrint("Found elos dependency %s:%s in task %s.", dep->name, dep->event, task->name);
-        if (filterTask == NULL) {
-            filterTask = malloc(sizeof(*filterTask));
-            if (filterTask == NULL) {
-                crinitErrPrint("Failed to allocate memory for the elos filter task.");
-                res = -1;
-                break;
-            }
-
-            filterTask->task = task;
-            if (pthread_mutex_init(&filterTask->filterLock, NULL) != 0) {
-                crinitErrnoPrint("Failed to initialize filter list lock.");
-                res = -1;
-                break;
-            }
-
-            crinitListInit(&filterTask->filterList);
-
-            if ((errno = pthread_mutex_lock(&crinitElosdepFilterTaskLock)) != 0) {
-                crinitErrnoPrint("Failed to lock elos filter task list.");
-                res = -1;
-                break;
-            }
-
-            crinitListAppend(&crinitFilterTasks, &filterTask->list);
-
-            if ((errno = pthread_mutex_unlock(&crinitElosdepFilterTaskLock)) != 0) {
-                crinitErrnoPrint("Failed to unlock elos filter task list.");
-                res = -1;
-                break;
-            }
-        }
-
-        crinitDbgInfoPrint("Searching for filter for dependency %s:%s.", dep->name, dep->event);
-        if ((res = crinitElosdepFilterFromEnvSet(task, dep->event, &filter)) != 0) {
-            crinitErrPrint("Failed to find filter for dependency %s:%s.", dep->name, dep->event);
+    crinitTaskForEachDep(task, ptr) {
+        res = crinitElosdepRegisterFilterDep(task, ptr, &filterTask);
+        if (res != 0) {
             break;
         }
-
-        if ((res = crinitElosdepFilterRegister(filterTask, filter)) != 0) {
-            crinitErrPrint("Failed to register filter for dependency %s:%s.", dep->name, dep->event);
-            crinitElosdepFilterDestroy(filter);
-            break;
-        }
-
-        /* Subscribing the filter might fail if elos is not started yet */
-        if (crinitTinfo.elosStarted && (res = crinitElosdepFilterSubscribe(filter)) != 0) {
-            crinitErrPrint("Failed to subscribe filter for dependency %s:%s.", dep->name, dep->event);
+    }
+    crinitTaskForEachTrig(task, ptr) {
+        res = crinitElosdepRegisterFilterDep(task, ptr, &filterTask);
+        if (res != 0) {
             break;
         }
     }
