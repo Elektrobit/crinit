@@ -92,7 +92,7 @@ int crinitTaskDBInsert(crinitTaskDB_t *ctx, const crinitTask_t *t, bool overwrit
  *
  * @return 0 on success, -1 otherwise
  */
-int crinitTaskDBFulfillDep(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep, const crinitTask_t *target);
+int crinitTaskDBFulfillDep(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep, crinitTask_t *target);
 /**
  * Fulfill feature dependencies implemented by a provider task.
  *
