@@ -135,7 +135,7 @@ typedef struct crinitTask {
 #define crinitTaskForEachDep(task, dep) for ((dep) = (task)->deps; (dep) != (task)->deps + (task)->depsSize; (dep)++)
 
 /**
- * Given a crinitTask_t, iterate over all trigger of this task.
+ * Given a crinitTask_t, iterate over all triggers of this task.
  *
  * @param task  Pointer to the task.
  * @param trg   Pointer to the current trigger.

@@ -506,7 +506,9 @@ static void *crinitElosdepEventListener(void *arg) {
                         goto err_session;
                     }
 
-                    if ((err = crinitElosdepFilterUnregister(filterTask, filter)) != 0) {
+                    // only remove elos filter when task will not be rearmed
+                    if (!(filterTask->task->opts & CRINIT_TASK_OPT_TRIGGER_REARM) &&
+                        (err = crinitElosdepFilterUnregister(filterTask, filter)) != 0) {
                         crinitErrnoPrint("Failed to remove filter from dependency list.");
                         goto err_session;
                     }

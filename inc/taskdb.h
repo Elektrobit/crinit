@@ -170,6 +170,23 @@ int crinitTaskDBRemoveDepFromTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *de
 int crinitTaskDBGetTaskByName(crinitTaskDB_t *ctx, crinitTask_t **task, const char *taskName);
 
 /**
+ * Rearm the triggeer of a task in a task database
+ *
+ * Will search \a ctx for a crinitTask_t with crinitTask_t::name lexicographically equal to \a taskName,
+ * set its crinitTask_t::state to #CRINIT_TASK_STATE_LOADED and reset all the trigger that require resetting.
+ * If such a task does not exist in \a ctx, an error is returned.
+ * The function uses crinitTaskDB_t::lock for synchronization and is thread-safe.
+ *
+ * Modifies errno.
+ *
+ * @param ctx       The crinitTaskDB_t context in which the task is held.
+ * @param taskName  The task's name.
+ *
+ * @return 0 on success, -1 otherwise.
+ */
+int crinitTaskRearmTrigger(crinitTaskDB_t *ctx, const char *taskName);
+
+/**
  * Set the crinitTaskState_t of a task in a task database
  *
  * Will search \a ctx for an crinitTask_t with crinitTask_t::name lexicographically equal to \a taskName and set its

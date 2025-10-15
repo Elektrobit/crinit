@@ -10,6 +10,7 @@
 #include <string.h>
 
 #include "common.h"
+#include "crinit-sdefs.h"
 #ifdef ENABLE_ELOS
 #include "elos-common.h"
 #include "eloslog.h"
@@ -42,7 +43,8 @@ static bool crinitTaskIsReady(const crinitTask_t *t);
  * Remove dependency and check trigger for a task.
  * Doesn't lock the TaskDB!
  *
- * @param pTask  The task to remove the dependency/check the trigger.
+ * @param pTask  The task to remove the dependency/check the trigger for.
+ * @param dep    The dependency/tirgger to remove/check.
  *
  * @return 0 on success and -1 if pTask or dep where not valid.
  */
@@ -245,6 +247,24 @@ int crinitTaskDBGetTaskByName(crinitTaskDB_t *ctx, crinitTask_t **task, const ch
 failFindTaskByName:
     pthread_mutex_unlock(&ctx->lock);
     return -1;
+}
+
+int crinitTaskRearmTrigger(crinitTaskDB_t *ctx, const char *taskName) {
+    crinitNullCheck(-1, ctx, taskName);
+
+    if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
+        crinitErrnoPrint("Could not queue up for mutex lock.");
+        return -1;
+    }
+    crinitTask_t *pTask;
+    int res = crinitFindTask(&pTask, taskName, ctx);
+    if (res == 0) {
+        pTask->triggered = pTask->trigSize == 0;
+        pTask->state = CRINIT_TASK_STATE_LOADED;
+    }
+    pthread_cond_broadcast(&ctx->changed);
+    pthread_mutex_unlock(&ctx->lock);
+    return res;
 }
 
 int crinitTaskDBSetTaskState(crinitTaskDB_t *ctx, crinitTaskState_t s, const char *taskName) {

@@ -790,10 +790,7 @@ static void *crinitDispatchThreadFunc(void *args) {
     }
     crinitDbgInfoPrint("(TID: %d) Features of finished task \'%s\' fulfilled.", threadId, tCopy->name);
 
-threadExit:
-    crinitFreeTask(tCopy);
-    free(args);
-    return NULL;
+    goto threadExit;
 
 threadExitFail:
     if (crinitTaskDBSetTaskState(ctx, CRINIT_TASK_STATE_FAILED, tCopy->name) == -1) {
@@ -820,6 +817,15 @@ threadExitFail:
         crinitDbgInfoPrint("(TID: %d) Features of failed task \'%s\' fulfilled.", threadId, tCopy->name);
     }
 
+threadExit:
+    crinitDbgInfoPrint("(TID: %d) exiting thread for \'%s\'.", threadId, tCopy->name);
+    if (tCopy->opts & CRINIT_TASK_OPT_TRIGGER_REARM) {
+        // NOTE:  all trigger sources that need reenabling/rearming (elos filter(?), timer(?), ..)
+        // should be reenable/rearmed here
+        if (crinitTaskRearmTrigger(ctx, tCopy->name) == -1) {
+            crinitErrPrint("(TID: %d) failed to rearm taks \'%s\'.", threadId, tCopy->name);
+        }
+    }
     crinitFreeTask(tCopy);
     free(args);
     return NULL;
