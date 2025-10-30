@@ -361,10 +361,16 @@ IO_REDIRECT = STDERR STDOUT
   Additionally there is an optional feature that allows tasks to be started based on system events issued by elos.
   Tasks depending on an elos event can use the `@elos:<filter_name>` syntax to specify a task dependency that is fullfilled
   as soon as the specified elos filter triggers. The filters themself can be specified using the **FILTER_DEFINE** keyword.
+- **TRIGGER** -- A list of dependencies which trigger the task if one of them is fulfilled.
+  If both **DEPENDS** and **TRIGGER** are provided then the task starts as soon as all **DEPENDS** and at least one **TRIGGER**
+  are fulfilled. The same semantics as with **DEPENDS** can be used. An empty trigger list is always considered fulfilled.
 - **PROVIDES** -- As we have seen above, a task may depend on features and also provide them. In this case we advertise
   that after completion of this task (`wait`), the features `ipv4_dhcp` and `resolvconf` are provided. Another task may
   then depend e.g. on `@provided:resolvconf`. While the feature names chosen here reflect the functional intention, they
   can be chosen arbitrarily. (*array-like*)
+- **TRIGGER_REARM** -- If set to `YES`, the task will revert its state to `loaded` after it has finished
+  and thus can be triggered again.
+  Default: `NO`
 - **RESPAWN** -- If set to `YES`, the task will be restarted on failure or completion. Useful for daemons like `getty`.
   Default: `NO`
 - **RESPAWN_RETRIES** -- Number of times a respawned task may fail *in a row* before it is not started again. The
