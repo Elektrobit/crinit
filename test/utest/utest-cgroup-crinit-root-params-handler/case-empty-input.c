@@ -20,7 +20,7 @@ void crinitCfgCgroupRootParamsHandlerTestEmptyInput(void **state) {
     assert_int_equal(crinitGlobOptInitDefault(), 0);
     crinitGlobOptStore_t *globOpts = crinitGlobOptBorrow();
     assert_non_null(globOpts);
-    globOpts->rootCgroup = calloc(sizeof(*globOpts->rootCgroup), 1);
+    globOpts->rootCgroup = calloc(1, sizeof(*globOpts->rootCgroup));
     assert_non_null(globOpts->rootCgroup);
     globOpts->rootCgroup->name = strdup("root.cg");
     assert_non_null(globOpts->rootCgroup->name);

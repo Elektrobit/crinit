@@ -266,7 +266,7 @@ int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig) {
             goto fail;
         }
         if (isGlobal == 0) {
-            out->cgroup = calloc(sizeof(*out->cgroup), 1);
+            out->cgroup = calloc(1, sizeof(*out->cgroup));
             if (out->cgroup == NULL) {
                 goto fail;
             }

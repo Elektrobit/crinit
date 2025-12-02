@@ -707,7 +707,7 @@ int crinitCfgCgroupNameHandler(void *tgt, const char *val, crinitConfigType_t ty
     crinitGlobOptRemit();
 
     if (t->cgroup == NULL) {
-        t->cgroup = calloc(sizeof(*(t->cgroup)), 1);
+        t->cgroup = calloc(1, sizeof(*(t->cgroup)));
         if (t->cgroup == NULL) {
             crinitErrPrint("Failed to allocate memory for task cgroup structure.");
             return -1;
@@ -737,7 +737,7 @@ int crinitCfgCgroupParamsHandler(void *tgt, const char *val, crinitConfigType_t 
     crinitCgroupConfiguration_t *cgroupConfig = t->cgroup->config;
 
     if (cgroupConfig == NULL) {
-        cgroupConfig = calloc(sizeof(*(cgroupConfig)), 1);
+        cgroupConfig = calloc(1, sizeof(*(cgroupConfig)));
         if (cgroupConfig == NULL) {
             crinitErrPrint("Failed to allocate memory for cgroup configuration.");
             return -1;
@@ -792,7 +792,7 @@ int crinitCfgCgroupRootNameHandler(void *tgt, const char *val, crinitConfigType_
     }
 
     if (globOpts->rootCgroup == NULL) {
-        globOpts->rootCgroup = calloc(sizeof(*(globOpts->rootCgroup)), 1);
+        globOpts->rootCgroup = calloc(1, sizeof(*(globOpts->rootCgroup)));
         if (globOpts->rootCgroup == NULL) {
             crinitErrPrint("Failed to allocate memory for root cgroup configuration");
             crinitGlobOptRemit();
@@ -833,7 +833,7 @@ int crinitCfgCgroupRootParamsHandler(void *tgt, const char *val, crinitConfigTyp
     crinitCgroupConfiguration_t *cgroupConfig = globOpts->rootCgroup->config;
 
     if (cgroupConfig == NULL) {
-        cgroupConfig = calloc(sizeof(*(cgroupConfig)), 1);
+        cgroupConfig = calloc(1, sizeof(*(cgroupConfig)));
         if (cgroupConfig == NULL) {
             crinitErrPrint("Failed to allocate memory for cgroup configuration.");
             goto failInit;
@@ -892,7 +892,7 @@ int crinitCfgCgroupGlobalNameHandler(void *tgt, const char *val, crinitConfigTyp
         goto failInit;
     }
     if (globOpts->globCgroups == NULL) {
-        globOpts->globCgroups = calloc(sizeof(*(globOpts->globCgroups)), confArrLen);
+        globOpts->globCgroups = calloc(confArrLen, sizeof(*(globOpts->globCgroups)));
         if (globOpts->globCgroups == NULL) {
             crinitErrPrint("Failed to allocate memory for global cgroup configurations.");
             goto failInit;
@@ -902,7 +902,7 @@ int crinitCfgCgroupGlobalNameHandler(void *tgt, const char *val, crinitConfigTyp
     crinitCgroup_t **globConfigs = globOpts->globCgroups;
 
     for (int i = 0; i < confArrLen; i++) {
-        globConfigs[i] = calloc(sizeof(**globConfigs), 1);
+        globConfigs[i] = calloc(1, sizeof(**globConfigs));
         if (globConfigs[i] == NULL) {
             crinitErrPrint("Failed to allocate memory for global cgroup configuration objects.");
             goto fail;
@@ -965,7 +965,7 @@ int crinitCfgCgroupGlobalParamsHandler(void *tgt, const char *val, crinitConfigT
     crinitCgroupConfiguration_t *cgroupConfig = cgroup->config;
 
     if (cgroupConfig == NULL) {
-        cgroupConfig = calloc(sizeof(*(cgroupConfig)), 1);
+        cgroupConfig = calloc(1, sizeof(*(cgroupConfig)));
         if (cgroupConfig == NULL) {
             crinitErrPrint("Failed to allocate memory for cgroup configuration.");
             goto failSplitted;

@@ -279,7 +279,7 @@ int crinitCreateLauncherParameters(crinitTaskCmd_t *taskCmd, crinitTask_t *tCopy
             cgroupParamLength += strlen(tCopy->cgroup->parent->name) + 1;  // Account for '/' as delimiter
         }
         cgroupParamLength += strlen(tCopy->cgroup->name) + 1;  // Account for '\0'
-        cgroupParam = calloc(sizeof(char), cgroupParamLength);
+        cgroupParam = calloc(cgroupParamLength, sizeof(char));
         if (cgroupParam == NULL) {
             crinitErrPrint("Failed to allocate memory for cgroup parameter string.");
             return -1;

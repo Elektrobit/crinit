@@ -18,7 +18,7 @@ void crinitCfgCGroupParamsHandlerTestInvalidInputMissingDelimiter(void **state) 
     crinitTask_t tgt;
     memset(&tgt, 0x00, sizeof(tgt));
     const char *val = "key value";
-    tgt.cgroup = calloc(sizeof(*tgt.cgroup), 1);
+    tgt.cgroup = calloc(1, sizeof(*tgt.cgroup));
     assert_non_null(tgt.cgroup);
     tgt.cgroup->name = strdup("test.cg");
     assert_int_equal(crinitCfgCgroupParamsHandler(&tgt, val, CRINIT_CONFIG_TYPE_TASK), -1);
@@ -32,7 +32,7 @@ void crinitCfgCGroupParamsHandlerTestInvalidInputMissingCGroupName(void **state)
     crinitTask_t tgt;
     memset(&tgt, 0x00, sizeof(tgt));
     const char *val = "key=value";
-    tgt.cgroup = calloc(sizeof(*tgt.cgroup), 1);
+    tgt.cgroup = calloc(1, sizeof(*tgt.cgroup));
     assert_non_null(tgt.cgroup);
     assert_int_equal(crinitCfgCgroupParamsHandler(&tgt, val, CRINIT_CONFIG_TYPE_TASK), -1);
     assert_null(tgt.cgroup->config);

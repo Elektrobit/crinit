@@ -18,7 +18,7 @@ void crinitCfgCGroupParamsHandlerTestSingleKeyValueSuccess(void **state) {
     crinitTask_t tgt;
     memset(&tgt, 0x00, sizeof(tgt));
     const char *val = "key=value";
-    tgt.cgroup = calloc(sizeof(*tgt.cgroup), 1);
+    tgt.cgroup = calloc(1, sizeof(*tgt.cgroup));
     assert_non_null(tgt.cgroup);
     tgt.cgroup->name = strdup("test.cg");
     assert_int_equal(crinitCfgCgroupParamsHandler(&tgt, val, CRINIT_CONFIG_TYPE_TASK), 0);
@@ -36,7 +36,7 @@ void crinitCfgCGroupParamsHandlerTestTwoKeyValuesSuccess(void **state) {
     memset(&tgt, 0x00, sizeof(tgt));
     const char *val1 = "key1=value1";
     const char *val2 = "key2=value2";
-    tgt.cgroup = calloc(sizeof(*tgt.cgroup), 1);
+    tgt.cgroup = calloc(1, sizeof(*tgt.cgroup));
     assert_non_null(tgt.cgroup);
     tgt.cgroup->name = strdup("test.cg");
     assert_int_equal(crinitCfgCgroupParamsHandler(&tgt, val1, CRINIT_CONFIG_TYPE_TASK), 0);

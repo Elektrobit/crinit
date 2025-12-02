@@ -19,7 +19,7 @@ void crinitCfgGroupHandlerTestAlphaInputSuccess(void **state) {
     crinitTask_t tgt;
     memset(&tgt, 0x00, sizeof(tgt));
     const char *val = "test.cg";
-    tgt.cgroup = calloc(sizeof(*tgt.cgroup), 1);
+    tgt.cgroup = calloc(1, sizeof(*tgt.cgroup));
     fprintf(stderr, "sizeof(*tgt.cgroup): %lu\n", sizeof(*tgt.cgroup));
     assert_non_null(tgt.cgroup);
     assert_int_equal(crinitCfgCgroupNameHandler(&tgt, val, CRINIT_CONFIG_TYPE_TASK), 0);

@@ -77,7 +77,7 @@ int crinitCopyCgroupConfiguration(crinitCgroupConfiguration_t *orig, crinitCgrou
 
     out->paramCount = orig->paramCount;
     if (out->paramCount > 0) {
-        out->param = calloc(sizeof(*orig->param), orig->paramCount);
+        out->param = calloc(orig->paramCount, sizeof(*orig->param));
         if (out->param == NULL) {
             crinitErrPrint("Failed to allocate memory for config params.");
             return -1;
@@ -100,7 +100,7 @@ int crinitCopyCgroup(crinitCgroup_t *orig, crinitCgroup_t *out) {
     crinitNullCheck(-1, orig, out);
 
     if (orig->config) {  // empty configuration is valid if a global configuration is refered
-        out->config = calloc(sizeof(*out->config), 1);
+        out->config = calloc(1, sizeof(*out->config));
         if (out->config == NULL) {
             crinitErrPrint("Failed to allocate memory for cgroup configuration while copying cgroup.");
             return -1;
@@ -143,7 +143,7 @@ int crinitConvertConfigArrayToCGroupConfiguration(char **confArray, const int co
 
     memset(result, 0x00, sizeof(*result));
 
-    result->param = calloc(sizeof(result->param), confArraySize);
+    result->param = calloc(confArraySize, sizeof(result->param));
     if (result->param == NULL) {
         crinitErrPrint("Failed to allocate memory for config target.");
         return -1;
@@ -178,7 +178,7 @@ crinitCgroup_t *crinitFindCgroupByName(crinitCgroup_t **cgroups, size_t cgroupsC
         }
         if (strcmp(cgroups[i]->name, name) == 0) {
             if (cgroups[i]->config == NULL) {
-                cgroups[i]->config = calloc(sizeof(*cgroups[i]->config), 1);
+                cgroups[i]->config = calloc(1, sizeof(*cgroups[i]->config));
             }
             return cgroups[i];
         }
