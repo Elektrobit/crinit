@@ -1,3 +1,9 @@
+crinit (0.25.0-1) unstable; urgency=medium
+
+  * New upstream tag 0.25.0
+
+ -- Armin Butscher <armin.butscher@emlix.com>  Fri, 05 Dec 2025 10:43:56 +0000
+
 crinit (0.22.1-1) unstable; urgency=medium
 
   * New upstream tag 0.22.1
