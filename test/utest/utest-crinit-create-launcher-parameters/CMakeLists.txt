@@ -2,6 +2,8 @@
 find_package(RE2C 3 REQUIRED)
 RE2C_TARGET(NAME lexers_ut_create_launcher_parameters INPUT ${PROJECT_SOURCE_DIR}/src/lexers.re OUTPUT lexers.c OPTIONS ${RE2C_OPTIONS} -W DEPENDS ${PROJECT_SOURCE_DIR}/inc/lexers.h)
 
+RE2C_TARGET(NAME timer_parser_ut_create_launch_parameters INPUT ${PROJECT_SOURCE_DIR}/src/timer_parser.re OUTPUT timer_parser.c OPTIONS ${RE2C_OPTIONS} -W DEPENDS ${PROJECT_SOURCE_DIR}/inc/timer.h)
+
 create_unit_test(
   NAME
     utest-crinit-create-launcher-parameters
@@ -9,6 +11,7 @@ create_unit_test(
     utest-crinit-create-launcher-parameters.c
     case-success.c
     lexers.c
+    timer_parser.c
     ${PROJECT_SOURCE_DIR}/src/logio.c
     ${PROJECT_SOURCE_DIR}/src/envset.c
     $<IF:$<BOOL:${ENABLE_CGROUP}>,${PROJECT_SOURCE_DIR}/src/cgroup.c,>
@@ -20,6 +23,8 @@ create_unit_test(
     ${PROJECT_SOURCE_DIR}/src/ioredir.c
     ${PROJECT_SOURCE_DIR}/src/procdip.c
     ${PROJECT_SOURCE_DIR}/src/task.c
+    ${PROJECT_SOURCE_DIR}/src/timer.c
+    ${PROJECT_SOURCE_DIR}/src/timerdb.c
     ${CAPABILITIES_SOURCES}
   LIBRARIES
     libmockfunctions

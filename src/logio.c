@@ -176,6 +176,23 @@ void crinitErrnoPrintFFL(const char *file, const char *func, int line, const cha
     pthread_mutex_unlock(&crinitLogLock);
 }
 
+void crinitInitKmsgLogging(void) {
+    FILE *kmsg = fopen("/dev/kmsg", "w");
+    if (kmsg == NULL) {
+        pthread_mutex_lock(&crinitLogLock);
+        crinitInfoStream = stdout;
+        crinitErrStream = stderr;
+        pthread_mutex_unlock(&crinitLogLock);
+        crinitErrnoPrint("Error openeing /dev/kmsg.");
+        return;
+    }
+    setvbuf(kmsg, NULL, _IOLBF, 128);
+    pthread_mutex_lock(&crinitLogLock);
+    crinitInfoStream = kmsg;
+    crinitErrStream = kmsg;
+    pthread_mutex_unlock(&crinitLogLock);
+}
+
 static char *crinitThreadSafeStrerror(int errNum) {
     char *ret = NULL;
     locale_t errLoc = newlocale(LC_ALL_MASK, "POSIX", (locale_t)0);

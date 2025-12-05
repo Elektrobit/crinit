@@ -23,6 +23,8 @@
   - [Example Task Configuration](#example-task-configuration)
     - [Explanation](#explanation-1)
   - [Setting Environment Variables](#setting-environment-variables)
+  - [Defining timers](#defining-timers)
+    - [Examples](#examples)
   - [Defining Elos Filters](#defining-elos-filters)
     - [Ruleset](#ruleset)
   - [Include files](#include-files)
@@ -172,6 +174,7 @@ Specifically, those are
     reaper" regardless of this setting.
     By default, Crinit will respect the attribute as it is set when Crinit is started and behave accordingly, i.e. if
     Crinit either is PID 1 or it has the CHILD_SUBREAPER process attribute, it will reap zombies of its descendants.
+* **--use-kmsg/--no-use-kmsg** - Depending on the setting, crinit will write its logs to kernel log where it can be read via e.g. dmesg. If opening /dev/kmsg fails, crinit will fall back to console output. If syslog usage is configured crinit will switch to syslog logging as soon as syslog is available.
 
 ## Environment Variables
 
@@ -360,10 +363,16 @@ IO_REDIRECT = STDERR STDOUT
   Additionally there is an optional feature that allows tasks to be started based on system events issued by elos.
   Tasks depending on an elos event can use the `@elos:<filter_name>` syntax to specify a task dependency that is fullfilled
   as soon as the specified elos filter triggers. The filters themself can be specified using the **FILTER_DEFINE** keyword.
+- **TRIGGER** -- A list of dependencies which trigger the task if one of them is fulfilled.
+  If both **DEPENDS** and **TRIGGER** are provided then the task starts as soon as all **DEPENDS** and at least one **TRIGGER**
+  are fulfilled. The same semantics as with **DEPENDS** can be used. An empty trigger list is always considered fulfilled.
 - **PROVIDES** -- As we have seen above, a task may depend on features and also provide them. In this case we advertise
   that after completion of this task (`wait`), the features `ipv4_dhcp` and `resolvconf` are provided. Another task may
   then depend e.g. on `@provided:resolvconf`. While the feature names chosen here reflect the functional intention, they
   can be chosen arbitrarily. (*array-like*)
+- **TRIGGER_REARM** -- If set to `YES`, the task will revert its state to `loaded` after it has finished
+  and thus can be triggered again.
+  Default: `NO`
 - **RESPAWN** -- If set to `YES`, the task will be restarted on failure or completion. Useful for daemons like `getty`.
   Default: `NO`
 - **RESPAWN_RETRIES** -- Number of times a respawned task may fail *in a row* before it is not started again. The
@@ -395,6 +404,93 @@ GREETING=Good evening!                     # Override of global variable.
 ESCAPED_VAR=Global variable name: ${FOO}   # Avoid variable expansion through escaping.
 VAR_WITH_ESC_SEQUENCES=hex  hex            # Support for escape sequences including hexadecimal bytes.
 ```
+
+### Defining timers
+
+```
+Weekday-Year-Month-Day-Hour:Minute:Second+Timezone
+```
+
+All parts can be either a single entry.
+
+Or a range separated by `<start>..<end>`, start and end of a range can be left blank (except for the weekday) and will default to the lowest or highest possible value (00:..04 -> 00:00..04, 00:20.. -> 00:20..59).
+
+`*` can be used as a shorthand to specify the whole range.
+
+A range starting higher than the end wraps around, and includes all values from start to maximum and mimimum to the end (ie for month: 11..2 -> Nov, Dec, Jan, Feb).
+
+**Weekday:** is either the full weekday (Monday, Tuesday, ...) or the first 3 letters (Mon, Tue, ...) case insensitive.
+
+**Year:** is a year between 0 and 65535 or a range. Default is the range 0..65535.
+**Month:** is a number between 1 and 12 or a range. Default is the range 1..12.
+**Day:** is a number between 1 and 31 or a range. Default is the range 1..31.
+
+**Hour:** is in 24-hour format a number between 0 and 23 or a range. Default is midnight/00.
+**Minute:** is a minute between 0 and 59 or a range. Default is 00 the first minute of a matching hour.
+**Second:** is a second between 0 and 59 or a range. Default is 00 the first second of a matching minute. Can be left out when specifying the time.
+**Timezone:** is an offset of hours between -13 and +15 and minutes between 0 and 59. Default +0000. Can be left out when specifying the time.
+
+
+#### Examples
+
+- `*`
+  `daily`
+  `midnight`
+  `*-*-*-*-00:00:00`
+  `Mon..Sun-0..65535-1..12-1..31-00:00:00`
+    - compared to crontab: `0 0 * * *`
+    - compared to systemd onCalandar: `* *-*-* 00:00:00`
+- `Mon`
+  `weekly`
+  `Mon-*-*-*-00:00:00`
+    - compared to crontab: `0 0 * * 1`
+    - compared to systemd onCalandar: `Mon *-*-* 00:00:00`
+- `Sat-23:45:00`
+  `Sat-*-*-*-23:45:00`
+    - crontab: `45 23 * * 6`
+    - systemd onCalandar: `Sat *-*-* 23:45:00`
+- `Mon..Fri-12..14:15..45:00`
+  `Mon..Fri-*-*-*-12..14:15..45:00`
+    - compared to crontab: `15-45 12-14 * * 1-5`
+    - compared to systemd onCalandar: `Mon..Fri *-*-* 12..14:15..45:00`
+- `*-2..11-12`
+  `*-*-2..11-12-00:00:00`
+  `Mon..Sun-0..65535-2..11-12-00:00:00`
+    - compared to crontab: `0 0 12 2-11 *`
+    - compared to systemd onCalandar: `Mon..Fri *-2..11-12 00:00:00`
+- `Sat..Thu`
+  `Sat..Thu-*-*-*-00:00:00:`
+    - compared to systemd onCalandar: `Mon..Thu,Sat,Sun *-*-* 00:00:00`
+- `minutely`
+  `*-*-*-*-*:*:00`
+    - compared to crontab: `* * * * *`
+    - compared to systemd onCalandar: `*-*-* *:00:00`
+- `hourly`
+  `*-*-*-*-*:00:00`
+    - compared to crontab: `0 * * * *`
+    - compared to systemd onCalandar: `*-*-* *:00:00`
+- `monthly`
+  `*-*-*-01-00:00:00`
+    - compared to crontab: `0 0 1 * *`
+    - compared to systemd onCalandar: `*-*-1 00:00:00`
+- `yearly`
+  `annually`
+  `*-01-01`
+  `*-*-01-01-00:00:00`
+    - compared to crontab: `0 0 1 1 *`
+    - compared to systemd onCalandar: `*-01-01 00:00:00`
+- `2030-*-30..01-12:2..58`
+    - compared to systemd onCalandar: `2030-*-01,30,31 01..12:01,02,58,59:00`
+
+```ini
+DEPENDS = @timer:Mon..Sun-0000..65535-01..12-01..31-00:00:00+0000
+DEPENDS = @timer:Wednsday-2030-10-25-00..23:00..59:00
+TRIGGER = @timer:Fri..Tue-12:30
+TRIGGER = @timer:yearly
+TRIGGER = @timer:anually
+TRIGGER = @timer:daily
+```
+
 
 ### Defining Elos Filters
 
@@ -820,6 +916,7 @@ The cmake setup supports some optional features:
   path `${CMAKE_INSTALL_LIBDIR}/test/crinit/utest`.
 * Elos event polling time (see global configuration example) `-DDEFAULT_ELOS_EVENT_POLLING_TIME=<usecs>`.
   Default is 500000.
+* Kernel logging can be activated at build time using `-DDEFAULT_USE_KMSG={On, Off}`. The behaviour can still be changed at runtime via the command line parameters.
 * Build and install API documentation in doxygen HTML format using `-DAPI_DOC={On, Off}`. Needs doxygen. Default is
   `On`.
 * Build and install an example generator for the machine id file (see above) using `-DMACHINE_ID_EXAMPLE={On, Off}`.

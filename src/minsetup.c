@@ -34,7 +34,7 @@ int crinitForkZombieReaper(void) {
     return 0;
 }
 
-int crinitSetupSystemFs(void) {
+int crinitMountDevtmpfs(void) {
     umask(0);
 
     if (mkdir("/dev", 0755) == -1) {
@@ -50,6 +50,13 @@ int crinitSetupSystemFs(void) {
         }
         crinitInfoPrint("/dev is already mounted. Skipping.");
     }
+
+    umask(0022);
+    return 0;
+}
+
+int crinitSetupSystemFs(void) {
+    umask(0);
 
     if (mkdir("/proc", 0555) == -1) {
         if (errno != EEXIST) {

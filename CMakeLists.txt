@@ -6,7 +6,7 @@ include(cmake/project.cmake)
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE AND DEFINED ENV{CMAKE_TOOLCHAIN_FILE})
   set(CMAKE_TOOLCHAIN_FILE $ENV{CMAKE_TOOLCHAIN_FILE})
 endif()
-project(crinit VERSION 0.22.1)
+project(crinit VERSION 0.25.0)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -68,6 +68,11 @@ set(DEFAULT_CONFIG_SERIES_FILE
   "${CMAKE_INSTALL_SYSCONFDIR}/crinit/default.series"
   CACHE PATH
   "Default series file."
+)
+
+option(DEFAULT_USE_KMSG
+  "Default setting if kmsg shall be used for logging."
+  OFF
 )
 
 set(DEFAULT_CRINIT_SOCKFILE

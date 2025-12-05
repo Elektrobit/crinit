@@ -79,6 +79,9 @@ int crinitTaskCreateFromConfKvList(crinitTask_t **out, const crinitConfKvList_t 
         goto fail;
     }
 
+    // an empty trigger list means the task doesn't have to wait for any trigger
+    pTask->triggered = pTask->trigSize == 0;
+
     // Initialize timestamps and set creation time.
     if (clock_gettime(CLOCK_MONOTONIC, &pTask->createTime) == -1) {
         crinitErrnoPrint("Could not measure creation time of task '%s'. Will set to 0 (undefined) and continue.",
@@ -100,6 +103,7 @@ int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig) {
     memcpy(out, orig, sizeof(*out));
     out->name = NULL;
     out->deps = NULL;
+    out->trig = NULL;
     out->cmds = NULL;
     out->taskEnv.envp = NULL;
     out->elosFilters.envp = NULL;
@@ -163,7 +167,30 @@ int crinitTaskCopy(crinitTask_t *out, const crinitTask_t *orig) {
     } else {
         out->deps = NULL;
     }
+    if (out->trigSize > 0) {
+        out->trig = calloc(out->trigSize, sizeof(*out->trig));
+        if (out->trig == NULL) {
+            crinitErrnoPrint("Could not allocate memory for %zu TaskTrig during copy of Task \'%s\'.", out->trigSize,
+                             orig->name);
+            goto fail;
+        }
 
+        for (size_t i = 0; i < out->trigSize; i++) {
+            size_t depNameLen = strlen(orig->trig[i].name) + 1;
+            size_t depEventLen = strlen(orig->trig[i].event) + 1;
+            out->trig[i].name = malloc(depNameLen + depEventLen);
+            if (out->trig[i].name == NULL) {
+                crinitErrnoPrint(
+                    "Could not allocate memory for backing string in trig[%zu] during copy of Task \'%s\'.", i,
+                    orig->name);
+                goto fail;
+            }
+            memcpy(out->trig[i].name, orig->trig[i].name, depNameLen + depEventLen);
+            out->trig[i].event = out->trig[i].name + depNameLen;
+        }
+    } else {
+        out->trig = NULL;
+    }
     if (out->prvSize > 0) {
         out->prv = calloc(out->prvSize, sizeof(*out->prv));
         if (out->prv == NULL) {
@@ -305,6 +332,12 @@ void crinitDestroyTask(crinitTask_t *t) {
         }
     }
     free(t->deps);
+    if (t->trig != NULL) {
+        for (size_t i = 0; i < t->trigSize; i++) {
+            free(t->trig[i].name);
+        }
+    }
+    free(t->trig);
     if (t->prv != NULL) {
         for (size_t i = 0; i < t->prvSize; i++) {
             free(t->prv[i].name);

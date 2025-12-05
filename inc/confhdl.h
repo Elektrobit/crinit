@@ -40,6 +40,10 @@ int crinitCfgCapClearHandler(void *tgt, const char *val, crinitConfigType_t type
 int crinitCfgStopCmdHandler(void *tgt, const char *val, crinitConfigType_t type);
 /** Handler for `DEPENDS` config directives. See crinitConfigHandler_t. **/
 int crinitCfgDepHandler(void *tgt, const char *val, crinitConfigType_t type);
+/** Handler for `TRIGGER` config directives. See crinitConfigHandler_t. **/
+int crinitCfgTrigHandler(void *tgt, const char *val, crinitConfigType_t type);
+/** Handler for `TRIGGER_REARM` config directives. See crinitConfigHandler_t. **/
+int crinitCfgTrigRearmHandler(void *tgt, const char *val, crinitConfigType_t type);
 /** Handler for `IO_REDIRECT` config directives. See crinitConfigHandler_t. **/
 int crinitCfgIoRedirHandler(void *tgt, const char *val, crinitConfigType_t type);
 /** Handler for `NAME` config directives. See crinitConfigHandler_t. **/

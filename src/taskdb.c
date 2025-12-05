@@ -10,6 +10,8 @@
 #include <string.h>
 
 #include "common.h"
+#include "crinit-sdefs.h"
+#include "timerdb.h"
 #ifdef ENABLE_ELOS
 #include "elos-common.h"
 #include "eloslog.h"
@@ -38,6 +40,16 @@ static int crinitFindTask(crinitTask_t **task, const char *taskName, const crini
  * @return true if \a t is ready, false otherwise
  */
 static bool crinitTaskIsReady(const crinitTask_t *t);
+/**
+ * Remove dependency and check trigger for a task.
+ * Doesn't lock the TaskDB!
+ *
+ * @param pTask  The task to remove the dependency/check the trigger for.
+ * @param dep    The dependency/tirgger to remove/check.
+ *
+ * @return 0 on success and -1 if pTask or dep where not valid.
+ */
+static int crinitTaskDBRemoveDepFromTaskStruct(crinitTask_t *pTask, const crinitTaskDep_t *dep);
 
 int crinitTaskDBInitWithSize(crinitTaskDB_t *ctx,
                              int (*spawnFunc)(crinitTaskDB_t *ctx, const crinitTask_t *,
@@ -236,6 +248,24 @@ int crinitTaskDBGetTaskByName(crinitTaskDB_t *ctx, crinitTask_t **task, const ch
 failFindTaskByName:
     pthread_mutex_unlock(&ctx->lock);
     return -1;
+}
+
+int crinitTaskRearmTrigger(crinitTaskDB_t *ctx, const char *taskName) {
+    crinitNullCheck(-1, ctx, taskName);
+
+    if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
+        crinitErrnoPrint("Could not queue up for mutex lock.");
+        return -1;
+    }
+    crinitTask_t *pTask;
+    int res = crinitFindTask(&pTask, taskName, ctx);
+    if (res == 0) {
+        pTask->triggered = pTask->trigSize == 0;
+        pTask->state = CRINIT_TASK_STATE_LOADED;
+    }
+    pthread_cond_broadcast(&ctx->changed);
+    pthread_mutex_unlock(&ctx->lock);
+    return res;
 }
 
 int crinitTaskDBSetTaskState(crinitTaskDB_t *ctx, crinitTaskState_t s, const char *taskName) {
@@ -487,6 +517,30 @@ int crinitTaskDBAddDepToTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep, co
     return -1;
 }
 
+static int crinitTaskDBRemoveDepFromTaskStruct(crinitTask_t *pTask, const crinitTaskDep_t *dep) {
+    crinitNullCheck(-1, pTask, dep);
+    for (size_t j = 0; j < pTask->depsSize; j++) {
+        if ((strcmp(pTask->deps[j].name, dep->name) == 0) && (strcmp(pTask->deps[j].event, dep->event) == 0)) {
+            crinitDbgInfoPrint("Removing dependency \'%s:%s\' in \'%s\'.", dep->name, dep->event, pTask->name);
+            if (0 == strcmp(dep->name, "@timer")) {
+                crinitTimerDBRemoveTimer(dep->event);
+            }
+            free(pTask->deps[j].name);
+            if (j < pTask->depsSize - 1) {
+                pTask->deps[j] = pTask->deps[pTask->depsSize - 1];
+            }
+            pTask->depsSize--;
+        }
+    }
+    for (size_t j = 0; j < pTask->trigSize; j++) {
+        if ((strcmp(pTask->trig[j].name, dep->name) == 0) && (strcmp(pTask->trig[j].event, dep->event) == 0)) {
+            crinitDbgInfoPrint("Trigger \'%s:%s\' in \'%s\'.", dep->name, dep->event, pTask->name);
+            pTask->triggered = true;
+        }
+    }
+    return 0;
+}
+
 int crinitTaskDBRemoveDepFromTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep, const char *taskName) {
     crinitNullCheck(-1, ctx, dep, taskName);
 
@@ -497,16 +551,7 @@ int crinitTaskDBRemoveDepFromTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *de
 
     crinitTask_t *pTask;
     if (crinitFindTask(&pTask, taskName, ctx) == 0) {
-        for (size_t j = 0; j < pTask->depsSize; j++) {
-            if ((strcmp(pTask->deps[j].name, dep->name) == 0) && (strcmp(pTask->deps[j].event, dep->event) == 0)) {
-                crinitDbgInfoPrint("Removing dependency \'%s:%s\' in \'%s\'.", dep->name, dep->event, pTask->name);
-                free(pTask->deps[j].name);
-                if (j < pTask->depsSize - 1) {
-                    pTask->deps[j] = pTask->deps[pTask->depsSize - 1];
-                }
-                pTask->depsSize--;
-            }
-        }
+        crinitTaskDBRemoveDepFromTaskStruct(pTask, dep);
         pthread_cond_broadcast(&ctx->changed);
         pthread_mutex_unlock(&ctx->lock);
         return 0;
@@ -516,7 +561,7 @@ int crinitTaskDBRemoveDepFromTask(crinitTaskDB_t *ctx, const crinitTaskDep_t *de
     return -1;
 }
 
-int crinitTaskDBFulfillDep(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep, const crinitTask_t *target) {
+int crinitTaskDBFulfillDep(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep, crinitTask_t *target) {
     crinitNullCheck(-1, ctx, dep);
 
     if ((errno = pthread_mutex_lock(&ctx->lock)) != 0) {
@@ -524,22 +569,12 @@ int crinitTaskDBFulfillDep(crinitTaskDB_t *ctx, const crinitTaskDep_t *dep, cons
         return -1;
     }
 
-    crinitTask_t *pTask;
-    crinitTaskDbForEach(ctx, pTask) {
-        if (target != NULL && pTask != target) {
-            continue;
-        }
-
-        for (size_t j = 0; j < pTask->depsSize; j++) {
-            if ((strcmp(pTask->deps[j].name, dep->name) == 0) && (strcmp(pTask->deps[j].event, dep->event) == 0)) {
-                crinitDbgInfoPrint("Removing fulfilled dependency \'%s:%s\' in \'%s\'.", dep->name, dep->event,
-                                   pTask->name);
-                free(pTask->deps[j].name);
-                if (j < pTask->depsSize - 1) {
-                    pTask->deps[j] = pTask->deps[pTask->depsSize - 1];
-                }
-                pTask->depsSize--;
-            }
+    if (target != NULL) {
+        crinitTaskDBRemoveDepFromTaskStruct(target, dep);
+    } else {
+        crinitTask_t *pTask;
+        crinitTaskDbForEach(ctx, pTask) {
+            crinitTaskDBRemoveDepFromTaskStruct(pTask, dep);
         }
     }
     pthread_cond_broadcast(&ctx->changed);
@@ -653,6 +688,9 @@ static bool crinitTaskIsReady(const crinitTask_t *t) {
     crinitNullCheck(false, t);
 
     if (t->depsSize != 0) {
+        return false;
+    }
+    if (!t->triggered) {
         return false;
     }
     if (t->state & (CRINIT_TASK_STATE_RUNNING | CRINIT_TASK_STATE_STARTING)) {

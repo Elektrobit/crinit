@@ -20,6 +20,7 @@
 #include "optfeat.h"
 #include "procdip.h"
 #include "rtimopmap.h"
+#include "timerdb.h"
 
 #ifdef SIGNATURE_SUPPORT
 #include "sig.h"
@@ -59,12 +60,15 @@ int main(int argc, char *argv[]) {
     } subReaper = SUBREAPER_FLAG_UNCHANGED;
     const int isPidOne = (getpid() == 1);
     int sysMounts = isPidOne;
+    int useKmsg = CRINIT_DEFAULT_USE_KMSG;
     const struct option optDef[] = {{"help", no_argument, 0, 'h'},
                                     {"version", no_argument, 0, 'V'},
                                     {"child-subreaper", no_argument, &subReaper, SUBREAPER_FLAG_SET},
                                     {"no-child-subreaper", no_argument, &subReaper, SUBREAPER_FLAG_RESET},
                                     {"sys-mounts", no_argument, &sysMounts, 1},
                                     {"no-sys-mounts", no_argument, &sysMounts, 0},
+                                    {"use-kmsg", no_argument, &useKmsg, 1},
+                                    {"no-use-kmsg", no_argument, &useKmsg, 0},
                                     {0, 0, 0, 0}};
     int opt;
     while (true) {
@@ -86,6 +90,11 @@ int main(int argc, char *argv[]) {
                 return EXIT_FAILURE;
         }
     }
+
+    if (useKmsg) {
+        crinitInitKmsgLogging();
+    }
+
     // Note: optind can be set to 0 if no arguments are given, so both checks below are needed.
     if (argc > 1 && optind < argc) {
         if (!crinitIsAbsPath(argv[optind])) {
@@ -94,6 +103,17 @@ int main(int argc, char *argv[]) {
             return EXIT_FAILURE;
         }
         seriesFname = argv[optind];
+    }
+
+    if (sysMounts) {
+        if (crinitMountDevtmpfs() != 0) {
+            crinitErrPrint("Failed to mount devtmpfs on /dev.");
+            return EXIT_FAILURE;
+        }
+    }
+
+    if (useKmsg) {
+        crinitInitKmsgLogging();
     }
 
     crinitInfoPrint("Crinit daemon version %s started.", crinitGetVersionString());
@@ -192,6 +212,7 @@ int main(int argc, char *argv[]) {
 
     crinitTaskDB_t tdb;
     crinitTaskDBInit(&tdb, crinitProcDispatchSpawnFunc);
+    crinitTimerDBInit(&tdb);
 
     for (size_t n = 0; n < taskSeries.size; n++) {
         char *confFn = taskSeries.fnames[n];
@@ -247,6 +268,10 @@ int main(int argc, char *argv[]) {
     }
     crinitDestroyFileSeries(&taskSeries);
     crinitDbgInfoPrint("Done parsing.");
+    if (crinitTimerDBSpawn()) {
+        crinitErrPrint("Could not start timer pool.");
+        goto failFreeTaskDB;
+    }
 
     char *sockFile = getenv("CRINIT_SOCK");
     if (sockFile == NULL) {
@@ -337,6 +362,10 @@ static void crinitTaskPrint(const crinitTask_t *t) {
     for (size_t i = 0; i < t->depsSize; i++) {
         crinitDbgInfoPrint("deps[%zu]: name=\'%s\' event=\'%s\'", i, t->deps[i].name, t->deps[i].event);
     }
+    crinitDbgInfoPrint("Number of trigger: %zu, triggered: %s", t->trigSize, t->triggered ? "true" : "false");
+    for (size_t i = 0; i < t->trigSize; i++) {
+        crinitDbgInfoPrint("trig[%zu]: name=\'%s\' event=\'%s\'", i, t->trig[i].name, t->trig[i].event);
+    }
 
     crinitDbgInfoPrint("Number of provided features: %zu", t->prvSize);
     for (size_t i = 0; i < t->prvSize; i++) {
@@ -345,4 +374,6 @@ static void crinitTaskPrint(const crinitTask_t *t) {
 
     crinitDbgInfoPrint("TaskOpts:");
     crinitDbgInfoPrint("    CRINIT_TASK_OPT_RESPAWN = %s", (t->opts & CRINIT_TASK_OPT_RESPAWN) ? "true" : "false");
+    crinitDbgInfoPrint("    CRINIT_TASK_OPT_TRIGGER_REARM = %s",
+                       (t->opts & CRINIT_TASK_OPT_TRIGGER_REARM) ? "true" : "false");
 }

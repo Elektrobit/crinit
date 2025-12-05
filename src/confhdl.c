@@ -11,6 +11,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "task.h"
 #ifdef ENABLE_CAPABILITIES
 #include <sys/capability.h>
 #endif
@@ -29,6 +31,7 @@
 #include "globopt.h"
 #include "lexers.h"
 #include "logio.h"
+#include "timerdb.h"
 
 /**
  * Macro to assert that the given crinitConfigType_t in a crinitConfigHandler_t has a specific value.
@@ -43,6 +46,18 @@
             return -1;                                                                                    \
         }                                                                                                 \
     } while (0)
+
+/**
+ * Helper function to get a crinitTaskDep_t list for deps and trig.
+ *
+ * @param list      pointer to the crinitTaskDep_t list.
+ * @param listSize  pointer to the size of the list
+ * @param val       The string value configuring the dependencies/trigger.
+ * @param keystr    the key under wich the list is configured.
+ *
+ * @return  0 on success, -1 on error
+ */
+static int crinitDepListHandler(crinitTaskDep_t **list, size_t *listSize, const char *val, const char *keystr);
 
 /**
  * Helper function to set a bitmask value in crinitTask_t::opts.
@@ -222,16 +237,11 @@ int crinitCfgStopCmdHandler(void *tgt, const char *val, crinitConfigType_t type)
     return 0;
 }
 
-int crinitCfgDepHandler(void *tgt, const char *val, crinitConfigType_t type) {
-    crinitNullCheck(-1, tgt, val);
-    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
-    crinitTask_t *t = tgt;
-
+static int crinitDepListHandler(crinitTaskDep_t **list, size_t *listSize, const char *val, const char *keystr) {
     int tempDepsSize = 0;
     char **tempDeps = crinitConfConvToStrArr(&tempDepsSize, val, false);
     if (tempDeps == NULL) {
-        crinitErrPrint("Could not extract string array from '%s' parameter, value: '%s'", CRINIT_CONFIG_KEYSTR_DEPENDS,
-                       val);
+        crinitErrPrint("Could not extract string array from '%s' parameter, value: '%s'", keystr, val);
         return -1;
     }
 
@@ -241,37 +251,45 @@ int crinitCfgDepHandler(void *tgt, const char *val, crinitConfigType_t type) {
         return 0;
     }
 
-    size_t oldSz = t->depsSize, newSz = (size_t)(oldSz + tempDepsSize);
-    crinitTaskDep_t *newArr = crinitCfgHandlerManageArrayMem(t->deps, sizeof(*t->deps), oldSz, newSz);
+    size_t oldSz = *listSize, newSz = (size_t)(oldSz + tempDepsSize);
+    crinitTaskDep_t *newArr = crinitCfgHandlerManageArrayMem(*list, sizeof(**list), oldSz, newSz);
     if (newArr == NULL) {
         crinitErrPrint("Could not perform memory allocation during handler for configuration key '%s'.",
                        CRINIT_CONFIG_KEYSTR_DEPENDS);
         crinitFreeArgvArray(tempDeps);
         return -1;
     }
-    t->deps = newArr;
-    t->depsSize = newSz;
+    *list = newArr;
+    *listSize = newSz;
 
-    for (size_t i = oldSz; i < t->depsSize; i++) {
-        t->deps[i].name = strdup(tempDeps[i - oldSz]);
-        if (t->deps[i].name == NULL) {
+    for (size_t i = oldSz; i < *listSize; i++) {
+        (*list)[i].name = strdup(tempDeps[i - oldSz]);
+        if ((*list)[i].name == NULL) {
             crinitErrnoPrint("Could not duplicate string for dependency '%s'.", tempDeps[i - oldSz]);
+            *listSize = i;
             crinitFreeArgvArray(tempDeps);
             return -1;
         }
 
         char *strtokState = NULL;
-        t->deps[i].name = strtok_r(t->deps[i].name, ":", &strtokState);
-        t->deps[i].event = strtok_r(NULL, ":", &strtokState);
+        (*list)[i].name = strtok_r((*list)[i].name, ":", &strtokState);
+        (*list)[i].event = strtok_r(NULL, " ", &strtokState);
 
-        if (t->deps[i].name == NULL || t->deps[i].event == NULL) {
+        if ((*list)[i].name == NULL || (*list)[i].event == NULL) {
             crinitErrPrint("Could not parse dependency '%s'.", tempDeps[i - oldSz]);
+            *listSize = i;
+            free((*list)[i].name);
             crinitFreeArgvArray(tempDeps);
             return -1;
         }
+        if (strcmp((*list)[i].name, "@timer") == 0) {
+            crinitTimerDBAddTimer((*list)[i].event);
+        }
 #ifndef ENABLE_ELOS
-        if (strcmp(t->deps[i].name, "@elos") == 0) {
+        if (strcmp((*list)[i].name, "@elos") == 0) {
             crinitErrPrint("To depend on an ELOS filter ELOS support must be enabled at compile time.");
+            *listSize = i;
+            free((*list)[i].name);
             crinitFreeArgvArray(tempDeps);
             return -1;
         }
@@ -279,6 +297,34 @@ int crinitCfgDepHandler(void *tgt, const char *val, crinitConfigType_t type) {
     }
 
     crinitFreeArgvArray(tempDeps);
+    return 0;
+}
+
+int crinitCfgDepHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    crinitNullCheck(-1, tgt, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
+    crinitTask_t *t = tgt;
+
+    return crinitDepListHandler(&t->deps, &t->depsSize, val, CRINIT_CONFIG_KEYSTR_DEPENDS);
+}
+
+int crinitCfgTrigHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    crinitNullCheck(-1, tgt, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
+    crinitTask_t *t = tgt;
+
+    return crinitDepListHandler(&t->trig, &t->trigSize, val, CRINIT_CONFIG_KEYSTR_TRIGGER);
+}
+
+int crinitCfgTrigRearmHandler(void *tgt, const char *val, crinitConfigType_t type) {
+    crinitNullCheck(-1, tgt, val);
+    crinitCfgHandlerTypeCheck(CRINIT_CONFIG_TYPE_TASK);
+    crinitInfoPrint("Parsing value of boolean option '%s'.", CRINIT_CONFIG_KEYSTR_TRIGGER_REARM);
+    crinitTask_t *t = tgt;
+    if (crinitCfgHandlerSetTaskOptFromStr(&t->opts, CRINIT_TASK_OPT_TRIGGER_REARM, val) == -1) {
+        crinitErrPrint("Could not parse value of boolean option '%s'.", CRINIT_CONFIG_KEYSTR_TRIGGER_REARM);
+        return -1;
+    }
     return 0;
 }
 

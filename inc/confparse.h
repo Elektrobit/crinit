@@ -61,6 +61,10 @@
 #endif
 /**  Config key to add dependencies to the task. **/
 #define CRINIT_CONFIG_KEYSTR_DEPENDS "DEPENDS"
+/**  Config key to add trigger to the task. **/
+#define CRINIT_CONFIG_KEYSTR_TRIGGER "TRIGGER"
+/**  Config key to set a task to rearm its trigger. **/
+#define CRINIT_CONFIG_KEYSTR_TRIGGER_REARM "TRIGGER_REARM"
 /**  Config key to set an environment variable with. **/
 #define CRINIT_CONFIG_KEYSTR_ENV_SET "ENV_SET"
 /**  Config key to define an elos filter. **/
@@ -174,6 +178,8 @@ typedef enum crinitConfigs {
     CRINIT_CONFIG_TASKDIR,
     CRINIT_CONFIG_TASKDIR_FOLLOW_SYMLINKS,
     CRINIT_CONFIG_TASKS,
+    CRINIT_CONFIG_TRIGGER,
+    CRINIT_CONFIG_TRIGGER_REARM,
     CRINIT_CONFIG_USE_SYSLOG,
     CRINIT_CONFIG_USE_ELOS,
     CRINIT_CONFIG_USER,

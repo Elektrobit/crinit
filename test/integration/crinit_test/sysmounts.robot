@@ -95,7 +95,9 @@ Do Chroot Cleanup
     Execute And Log Based On User Permissions  umount -l "${TEST_CHROOT}/run"
     Execute And Log Based On User Permissions  umount -l "${TEST_CHROOT}/systest/fs/cgroup"
     Execute And Log Based On User Permissions  umount -l "${TEST_CHROOT}/systest"
+    Execute And Log Based On User Permissions  umount -l "${TEST_CHROOT}/devtest"
     Execute And Log Based On User Permissions  rm -rf "${TEST_CHROOT}/systest"
+    Execute And Log Based On User Permissions  rm -rf "${TEST_CHROOT}/devtest"
 
 Set Up A Test Case With Sysmount Option Activated
     Do Chroot Preparations
@@ -116,11 +118,17 @@ Set Up A Test Case With Sysmount Option Deactivated
     Should Be Equal As Numbers    ${rc}    0
     ${rc}  Execute And Log Based On User Permissions  mkdir -p "${TEST_CHROOT}/systest"  ${RETURN_RC}
     Should Be Equal As Numbers    ${rc}    0
+    ${rc}  Execute And Log Based On User Permissions  mkdir -p "${TEST_CHROOT}/dev"  ${RETURN_RC}
+    Should Be Equal As Numbers    ${rc}    0
+    ${rc}  Execute And Log Based On User Permissions  mkdir -p "${TEST_CHROOT}/devtest"  ${RETURN_RC}
+    Should Be Equal As Numbers    ${rc}    0
     ${rc}  Execute And Log Based On User Permissions  mount --bind "/sys" "${TEST_CHROOT}/systest"  ${RETURN_RC}
     Should Be Equal As Numbers    ${rc}    0
     ${rc}  Execute And Log Based On User Permissions  mount --bind "/sys/fs/cgroup" "${TEST_CHROOT}/systest/fs/cgroup"  ${RETURN_RC}
     Should Be Equal As Numbers    ${rc}    0
     ${rc}  Execute And Log Based On User Permissions  ln -s "/systest/fs/cgroup" "${TEST_CHROOT}/sys/fs/"  ${RETURN_RC}
+    ${rc}  Execute And Log Based On User Permissions  mount --bind "/dev" "${TEST_CHROOT}/devtest"  ${RETURN_RC}
+    ${rc}  Execute And Log Based On User Permissions  ln -s "/devtest/kmsg" "${TEST_CHROOT}/dev/kmsg"  ${RETURN_RC}
     Should Be Equal As Numbers    ${rc}    0
     Crinit Start  chroot=${TEST_CHROOT}  crinit_args=--no-sys-mounts
 

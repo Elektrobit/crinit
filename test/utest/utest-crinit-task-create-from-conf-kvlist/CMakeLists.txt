@@ -2,6 +2,8 @@
 find_package(RE2C 3 REQUIRED)
 RE2C_TARGET(NAME lexers_ut_task_create_from_conf_kvlist INPUT ${PROJECT_SOURCE_DIR}/src/lexers.re OUTPUT lexers.c OPTIONS ${RE2C_OPTIONS} -W DEPENDS ${PROJECT_SOURCE_DIR}/inc/lexers.h)
 
+RE2C_TARGET(NAME timer_parser_ut_task_create_from_conf_kvlist INPUT ${PROJECT_SOURCE_DIR}/src/timer_parser.re OUTPUT timer_parser.c OPTIONS ${RE2C_OPTIONS} -W DEPENDS ${PROJECT_SOURCE_DIR}/inc/timer.h)
+
 if(ENABLE_CAPABILITIES)
   set(CAPABILITIES_TEST_SOURCES case-invalid-cap-names.c case-invalid-cap-directive.c)
 endif()
@@ -14,6 +16,7 @@ create_unit_test(
     case-success.c
     ${CAPABILITIES_TEST_SOURCES}
     lexers.c
+    timer_parser.c
     ${PROJECT_SOURCE_DIR}/src/logio.c
     $<IF:$<BOOL:${ENABLE_CGROUP}>,${PROJECT_SOURCE_DIR}/src/cgroup.c,>
     ${PROJECT_SOURCE_DIR}/src/confconv.c
@@ -24,6 +27,8 @@ create_unit_test(
     ${PROJECT_SOURCE_DIR}/src/globopt.c
     ${PROJECT_SOURCE_DIR}/src/ioredir.c
     ${PROJECT_SOURCE_DIR}/src/task.c
+    ${PROJECT_SOURCE_DIR}/src/timer.c
+    ${PROJECT_SOURCE_DIR}/src/timerdb.c
     ${CAPABILITIES_SOURCES}
   LIBRARIES
     libmockfunctions
