@@ -47,7 +47,7 @@ static int crinitMonthLength(uint8_t month, uint16_t year);
  * @param limit     the highest possible value
  *
  * @param res: next value after last
- * @param off: the offset to the last value
+ * @param offs: the offset to the last value
  *
  * @return true if the res is after last and false if the next interval needs to be updated as well
  */
