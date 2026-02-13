@@ -112,6 +112,7 @@ RUN python -m venv /home/$USER/.venv \
     && python -m pip install \
     beautifulsoup4  \
     myst-parser \
+    "clang==20.1" \
     sphinx \
     sphinx-c-autodoc \
     sphinx-copybutton \
