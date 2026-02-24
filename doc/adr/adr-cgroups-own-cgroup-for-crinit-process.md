@@ -45,10 +45,10 @@ Create a cgroup under the crinit root cgroup and move the crinit process there.
 
 ## Decision
 
-Alternative 42 is taken.
+Alternative 1 is taken.
 
 ### Rationale
 
 ### Open Points
 
-if something was left open after this decision
+None.

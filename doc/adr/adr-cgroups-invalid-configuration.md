@@ -47,11 +47,11 @@ If the creation of a cgroup fails, continue to boot. This will inevitable lead t
 
 ## Decision
 
-Alternative 42 is taken.
+A mix between 2 and 3 was taken. If creation of the crinit root cgroup or a global cgroup fails, the boot process is stopped. If a cgroup configured in a task file fails to be created, the task is set to failed but other tasks are processed as normally.
 
 ### Rationale
 
 ### Open Points
 
-if something was left open after this decision
+None.
     

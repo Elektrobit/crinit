@@ -39,10 +39,10 @@ The "real" root cgroup (that's the parent of the crinit created root cgroup) can
 
 ## Decision
 
-Alternative 42 is taken.
+Alternative 3 is taken.
 
 ### Rationale
 
 ### Open Points
 
-if something was left open after this decision
+None.

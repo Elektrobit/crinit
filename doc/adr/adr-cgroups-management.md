@@ -97,10 +97,10 @@ Use syscalls like clone3() and setns() etc. to manage processes with cgroups. Th
 
 ## Decision
 
-Alternative 42 is taken.
+Alternative 1 is taken.
 
 ### Rationale
 
 ### Open Points
 
-if something was left open after this decision
+None.
