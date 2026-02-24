@@ -160,4 +160,37 @@ void crinitCGroupConfigureTestSuccessParent(void **state) {
 
     assert_int_equal(crinitCGroupConfigure(&cgroup), 0);
 }
+
+void crinitCgroupConfigureTestEmptyConfigSuccess(void **state) {
+    CRINIT_PARAM_UNUSED(state);
+
+    char validName[] = "myCgroup";
+    crinitCgroupConfiguration_t *invalidConfig = NULL;
+
+    crinitCgroup_t emptyConfigCgroup = {0};
+    emptyConfigCgroup.name = validName;
+    emptyConfigCgroup.config = invalidConfig;
+
+    int cgroupBaseFdTest = 42;
+    int cgroupFdTest = 4711;
+    expect_string(__wrap_open, pathname, CRINIT_CGROUP_PATH);
+    expect_any(__wrap_open, flags);
+    will_return(__wrap_open, cgroupBaseFdTest);
+
+    expect_value(__wrap_mkdirat, dirfd, cgroupBaseFdTest);
+    expect_value(__wrap_mkdirat, pathname, emptyConfigCgroup.name);
+    expect_any(__wrap_mkdirat, mode);
+    will_return(__wrap_mkdirat, 0);
+
+    expect_value(__wrap_openat, dirfd, cgroupBaseFdTest);
+    expect_string(__wrap_openat, pathname, emptyConfigCgroup.name);
+    expect_any(__wrap_openat, flags);
+    will_return(__wrap_openat, cgroupFdTest);
+
+    expect_value(__wrap_close, fd, cgroupBaseFdTest);
+    will_return(__wrap_close, 0);
+    expect_value(__wrap_close, fd, cgroupFdTest);
+    will_return(__wrap_close, 0);
+    assert_int_equal(crinitCGroupConfigure(&emptyConfigCgroup), 0);
+}
 #endif

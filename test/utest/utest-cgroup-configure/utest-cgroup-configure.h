@@ -12,6 +12,7 @@
  */
 void crinitCGroupConfigureTestSuccess(void **state);
 void crinitCGroupConfigureTestSuccessParent(void **state);
+void crinitCgroupConfigureTestEmptyConfigSuccess(void **state);
 
 /**
  * Unit test for crinitCGroupAssignPID(), parameter error.

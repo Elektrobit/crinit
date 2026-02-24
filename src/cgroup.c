@@ -313,18 +313,27 @@ static int crinitCgroupSetParam(crinitCgroupParam_t *param, int cgroupFd) {
 int crinitCGroupConfigure(crinitCgroup_t *cgroup) {
     int result = -1;
     crinitNullCheck(result, cgroup);
-    crinitNullCheck(result, cgroup->name, cgroup->config);
-    crinitNullCheck(result, cgroup->config->param);
+    crinitNullCheck(result, cgroup->name);
+
+    crinitCgroupConfiguration_t *config = cgroup->config;
+    // Empty configuration is valid but broken configuration is not.
+    if (config) {
+        if ((config->paramCount != 0 && config->param == NULL) || (config->paramCount == 0 && config->param != NULL)) {
+            crinitErrPrint("Non-empty but invalid cgroup configuration found.");
+            return result;
+        }
+    }
 
     if (crinitCgroupOpen(cgroup, true) == -1) {
         crinitErrPrint("Could not open cgroup.");
     } else {
-        crinitCgroupConfiguration_t *config = cgroup->config;
         result = 0;
-        for (size_t index = 0; index < config->paramCount; index++) {
-            if (crinitCgroupSetParam(&config->param[index], cgroup->groupFd) == -1) {
-                result = -1;
-                break;
+        if (config && config->param) {
+            for (size_t index = 0; index < config->paramCount; index++) {
+                if (crinitCgroupSetParam(&config->param[index], cgroup->groupFd) == -1) {
+                    result = -1;
+                    break;
+                }
             }
         }
     }

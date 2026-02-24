@@ -17,7 +17,6 @@ void crinitCGroupConfigureTestWrongInput(void **state) {
     char validName[] = "myCgroup";
 
     /* invalid Parameters*/
-    crinitCgroupConfiguration_t *invalidConfig = NULL;
     crinitCgroupParam_t *invalidParam = NULL;
     crinitCgroupConfiguration_t configWithInvalidParam1 = {.param = NULL, 2};
     crinitCgroupConfiguration_t configWithInvalidParam2 = {.param = invalidParam, 2};
@@ -26,10 +25,6 @@ void crinitCGroupConfigureTestWrongInput(void **state) {
     crinitCgroup_t invalidNameCgroup = {0};
     invalidNameCgroup.name = invalidName;
     invalidNameCgroup.config = &validConfig;
-
-    crinitCgroup_t invalidConfigCgroup = {0};
-    invalidConfigCgroup.name = validName;
-    invalidConfigCgroup.config = invalidConfig;
 
     crinitCgroup_t invalidParam1Cgroup = {0};
     invalidParam1Cgroup.name = validName;
@@ -41,7 +36,7 @@ void crinitCGroupConfigureTestWrongInput(void **state) {
 
     assert_int_equal(crinitCGroupConfigure(NULL), -1);
     assert_int_equal(crinitCGroupConfigure(&invalidNameCgroup), -1);
-    assert_int_equal(crinitCGroupConfigure(&invalidConfigCgroup), -1);
+
     assert_int_equal(crinitCGroupConfigure(&invalidParam1Cgroup), -1);
 
     assert_int_equal(crinitCGroupConfigure(&invalidParam2Cgroup), -1);

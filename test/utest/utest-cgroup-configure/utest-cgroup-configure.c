@@ -20,6 +20,7 @@ int main(void) {
         // Rationale: unreadable output of clang-format
         cmocka_unit_test(crinitCGroupConfigureTestSuccess),
         cmocka_unit_test(crinitCGroupConfigureTestSuccessParent),
+        cmocka_unit_test(crinitCgroupConfigureTestEmptyConfigSuccess),
         cmocka_unit_test(crinitCGroupConfigureTestWrongInput),
         cmocka_unit_test(crinitCGroupConfigureTestOpenFail),
         cmocka_unit_test(crinitCGroupConfigureTestOpenatFailFirst),

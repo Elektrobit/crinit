@@ -416,7 +416,7 @@ int crinitHandleCommands(crinitTaskDB_t *ctx, pid_t threadId, char *name, crinit
     }
 
 #ifdef ENABLE_CGROUP
-    if (tCopy->cgroup && tCopy->cgroup->config) {
+    if (tCopy->cgroup) {
         if (crinitCGroupConfigure(tCopy->cgroup) != 0) {
             crinitErrPrint("Failed to configure task cgroup '%s'.", tCopy->cgroup->name);
             return -1;
