@@ -241,7 +241,7 @@ CGROUP_ROOT_PARAMS = memory.max=500M
 
 CGROUP_GLOBAL_NAME = mem_restricted cpu_restricted
 CGROUP_GLOBAL_PARAMS = cpu_restricted:cpu.max=50000 100000
-                     = mem_restricted:memory.max=100M
+                       mem_restricted:memory.max=100M
 ```
 #### Explanation
 - **TASKS** -- The task configurations to load. This is an optional setting. If not set, **TASKDIR** will be scanned for
@@ -377,14 +377,17 @@ IO_REDIRECT = STDERR STDOUT
   Default: `NO`
 - **RESPAWN_RETRIES** -- Number of times a respawned task may fail *in a row* before it is not started again. The
   special value `-1` is interpreted as "unlimited". Default: -1
-  **CGROUP_NAME** -- Name of a cgroup only used by this task.
+- **CGROUP_NAME** -- Name of a cgroup only used by this task.
   If this parameter is absent, the task won't be placed in a cgroup.
   If the name of a global cgroup (configured in the series file) is used here, the task is placed in that global cgroup. That is the preferred way to have multiple tasks in the same cgroup.
   It is possible to have more than one task with the same CGROUP_NAME which is not a global cgroup, but that is highly discouraged. In that case both tasks would be placed in the same cgroup but the later started task will alter the cgroup configuration done by the first task with the later started task's configuration.
   It is possible to create a cgroup outside of crinit (e.g. via an early started task) and use the name of that cgroup as value for CGROUP_NAME. Attention: That makes the configuration of the cgroup dependent on the task execution order.
-  **CGROUP_PARAMS** -- Line-separated list of options that shall be set for the cgroup. Each parameter consists of the file name and the parameter value to set.  Only one parameter pair per line.
+- **CGROUP_PARAMS** -- Line-separated list of options that shall be set for the cgroup. Each parameter consists of the file name and the parameter value to set.  Only one parameter pair per line.
   For example:  
-  ```memory.max=100M memory.min=5M```  
+  ```
+  memory.max=100M
+  memory.min=5M
+  ```
   See cgroup v2 documentation for more details: https://docs.kernel.org/admin-guide/cgroup-v2.html
 - **ENV_SET** -- See section **Setting Environment Variables** below. (*array-like*)
 - **FILTER_DEFINE** -- See section **Defining Elos Filters** below. (*array-like*)
