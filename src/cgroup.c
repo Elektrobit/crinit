@@ -169,6 +169,9 @@ failloop:
 }
 
 crinitCgroup_t *crinitFindCgroupByName(crinitCgroup_t **cgroups, size_t cgroupsCount, const char *name) {
+    if (cgroupsCount == 0) {
+        return NULL;
+    }
     crinitNullCheck(NULL, cgroups, name);
 
     for (size_t i = 0; i < cgroupsCount; i++) {
