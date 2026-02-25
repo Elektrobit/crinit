@@ -698,6 +698,7 @@ int crinitCfgCgroupNameHandler(void *tgt, const char *val, crinitConfigType_t ty
         crinitGlobOptRemit();
         return -1;
     }
+
     crinitCgroup_t *globalCgroup = crinitFindCgroupByName(globOpts->globCgroups, globOpts->globCgroupsCount, val);
     if (globalCgroup) {
         t->cgroup = globalCgroup;
@@ -719,6 +720,7 @@ int crinitCfgCgroupNameHandler(void *tgt, const char *val, crinitConfigType_t ty
         crinitErrPrint("Failed to allocate memory for cgroup name %s", val);
         return -1;
     }
+    t->cgroup->parent = globOpts->rootCgroup;
 
     return 0;
 }
@@ -762,7 +764,6 @@ int crinitCfgCgroupParamsHandler(void *tgt, const char *val, crinitConfigType_t 
         crinitGlobOptRemit();
         goto fail;
     }
-    t->cgroup->parent = globOpts->rootCgroup;
     t->cgroup->config = cgroupConfig;
     crinitGlobOptRemit();
 
