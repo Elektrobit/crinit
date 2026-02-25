@@ -271,6 +271,22 @@ int main(int argc, char *argv[]) {
     }
 #endif
 
+#ifdef ENABLE_CGROUP
+    if (targetCgroup) {
+        const pid_t pid = getpid();
+        crinitCgroup_t cgroup;
+        cgroup.config = NULL;
+        cgroup.groupFd = -1;
+        cgroup.parent = NULL;
+        cgroup.name = targetCgroup;
+        if (crinitCGroupAssignPID(&cgroup, pid) != 0) {
+            crinitErrPrint("Failed to switch to target cgroup '%s'.", cgroup.name);
+            goto failureExit;
+        }
+        free(cgroup.name);
+    }
+#endif
+
     if (groupSize) {
         if (setgroups(0, NULL) != 0) {  // Drop all current supplementary groups
             crinitErrPrint("Failed to drop all initial supplementary groups.\n");
@@ -304,22 +320,6 @@ int main(int argc, char *argv[]) {
 
     if (crinitCapSetAmbient(caps) == -1) {
         goto failureExit;
-    }
-#endif
-
-#ifdef ENABLE_CGROUP
-    if (targetCgroup) {
-        const pid_t pid = getpid();
-        crinitCgroup_t cgroup;
-        cgroup.config = NULL;
-        cgroup.groupFd = -1;
-        cgroup.parent = NULL;
-        cgroup.name = targetCgroup;
-        if (crinitCGroupAssignPID(&cgroup, pid) != 0) {
-            crinitErrPrint("Failed to switch to target cgroup '%s'.", cgroup.name);
-            goto failureExit;
-        }
-        free(cgroup.name);
     }
 #endif
 
