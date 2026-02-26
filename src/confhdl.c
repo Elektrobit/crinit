@@ -705,22 +705,24 @@ int crinitCfgCgroupNameHandler(void *tgt, const char *val, crinitConfigType_t ty
         crinitGlobOptRemit();
         return 0;
     }
-    crinitGlobOptRemit();
 
     if (t->cgroup == NULL) {
         t->cgroup = calloc(1, sizeof(*(t->cgroup)));
         if (t->cgroup == NULL) {
             crinitErrPrint("Failed to allocate memory for task cgroup structure.");
+            crinitGlobOptRemit();
             return -1;
         }
     }
+
+    t->cgroup->parent = globOpts->rootCgroup;
+    crinitGlobOptRemit();
 
     t->cgroup->name = strdup(val);
     if (t->cgroup->name == NULL) {
         crinitErrPrint("Failed to allocate memory for cgroup name %s", val);
         return -1;
     }
-    t->cgroup->parent = globOpts->rootCgroup;
 
     return 0;
 }
