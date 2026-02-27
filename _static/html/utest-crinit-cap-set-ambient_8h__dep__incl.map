@@ -1,0 +1,9 @@
+<map id="test/utest/utest&#45;crinit&#45;cap&#45;set&#45;ambient/utest&#45;crinit&#45;cap&#45;set&#45;ambient.h" name="test/utest/utest&#45;crinit&#45;cap&#45;set&#45;ambient/utest&#45;crinit&#45;cap&#45;set&#45;ambient.h">
+<area shape="rect" id="Node000001" title="Header declaring the unit tests for crinitCapSetAmbient()." alt="" coords="189,5,373,60"/>
+<area shape="rect" id="Node000002" href="$utest-crinit-cap-set-ambient_2case-invalid-capability_8c.html" title="Unit test for crinitCapSetAmbient(), failing execution, invalid capabilities." alt="" coords="5,108,173,163"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="221,69,141,110,138,106,218,64"/>
+<area shape="rect" id="Node000003" href="$utest-crinit-cap-set-ambient_2case-success_8c.html" title="Unit test for crinitCapSetAmbient(), successful execution." alt="" coords="197,108,365,163"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="284,74,284,108,279,108,279,74"/>
+<area shape="rect" id="Node000004" href="$utest-crinit-cap-set-ambient_8c.html" title="Implementation of the crinitCapSetAmbient() unit test group." alt="" coords="390,108,573,163"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="347,64,430,106,428,110,344,68"/>
+</map>

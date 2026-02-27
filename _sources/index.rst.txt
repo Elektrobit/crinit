@@ -10,3 +10,4 @@ Crinit -- Configurable Rootfs Init
    Helper Scripts <scripts/README>
    CI/CD Tooling <ci/index>
    ADRs <doc/adr/index>
+   Developers <src/index>

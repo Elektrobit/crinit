@@ -1,5 +1,9 @@
 <map id="test/utest/mocks/mock&#45;strlen.h" name="test/utest/mocks/mock&#45;strlen.h">
-<area shape="rect" id="Node000001" title="Header declaring a mock function for strlen()." alt="" coords="5,5,176,45"/>
-<area shape="rect" id="Node000002" href="$mock-strlen_8c.html" title="Implementation of a mock function for strlen()." alt="" coords="5,93,176,133"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="93,59,93,93,88,93,88,59"/>
+<area shape="rect" id="Node000001" title="Header declaring a mock function for strlen()." alt="" coords="195,5,365,45"/>
+<area shape="rect" id="Node000002" href="$mock-strlen_8c.html" title="Implementation of a mock function for strlen()." alt="" coords="5,101,176,141"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="231,54,130,103,128,98,228,49"/>
+<area shape="rect" id="Node000003" href="$utest-file-series-from-dir_2case-no-mem-error_8c.html" title="Unit test for crinitFileSeriesFromDir(), given malloc fails." alt="" coords="201,93,359,148"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="283,59,283,93,277,93,277,59"/>
+<area shape="rect" id="Node000004" href="$utest-file-series-from-dir_2case-success_8c.html" title="Unit test for crinitFileSeriesFromDir(), successful execution." alt="" coords="383,93,542,148"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="330,49,412,91,410,96,328,54"/>
 </map>

@@ -1,0 +1,41 @@
+<map id="test/utest/utest&#45;crinit&#45;cap&#45;set&#45;ambient/case&#45;success.c" name="test/utest/utest&#45;crinit&#45;cap&#45;set&#45;ambient/case&#45;success.c">
+<area shape="rect" id="Node000001" title="Unit test for crinitCapSetAmbient(), successful execution." alt="" coords="516,5,684,60"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="194,115,283,141"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="516,55,297,111,286,114,285,109,295,105,515,50"/>
+<area shape="rect" id="Node000003" href="$capabilities_8h.html" title="Header defining functions to modify capabilities." alt="" coords="308,115,417,141"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="534,63,405,113,404,108,532,58"/>
+<area shape="rect" id="Node000008" href="$common_8h.html" title="Header for common definitions/functions not related to other specific features." alt="" coords="648,115,739,141"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="628,58,674,103,670,107,625,62"/>
+<area shape="rect" id="Node000010" href="$logio_8h.html" title="Header related to debug/log output." alt="" coords="481,115,548,141"/>
+<area shape="poly" id="edge10_Node000001_Node000010" title=" " alt="" coords="578,62,537,107,533,103,574,59"/>
+<area shape="rect" id="Node000014" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="763,115,853,141"/>
+<area shape="poly" id="edge15_Node000001_Node000014" title=" " alt="" coords="660,58,771,107,769,112,657,62"/>
+<area shape="rect" id="Node000018" href="$utest-crinit-cap-set-ambient_8h.html" title="Header declaring the unit tests for crinitCapSetAmbient()." alt="" coords="877,108,1024,148"/>
+<area shape="poly" id="edge21_Node000001_Node000018" title=" " alt="" coords="685,54,868,102,866,107,684,59"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="281,196,364,221"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="359,142,337,185,332,183,354,140"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="667,196,738,221"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="414,138,655,193,653,198,413,143"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="5,196,128,221"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="322,143,295,151,125,195,124,190,294,145,321,138"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="153,196,258,221"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="341,143,242,192,239,188,339,138"/>
+<area shape="poly" id="edge9_Node000008_Node000005" title=" " alt="" coords="697,141,702,182,697,182,692,141"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="763,196,837,221"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="711,139,775,186,772,190,707,143"/>
+<area shape="poly" id="edge12_Node000010_Node000004" title=" " alt="" coords="488,143,364,193,362,188,486,138"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="389,196,457,221"/>
+<area shape="poly" id="edge11_Node000010_Node000011" title=" " alt="" coords="503,143,448,189,445,185,499,139"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="481,196,548,221"/>
+<area shape="poly" id="edge13_Node000010_Node000012" title=" " alt="" coords="517,141,517,182,512,182,512,141"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="573,196,643,221"/>
+<area shape="poly" id="edge14_Node000010_Node000013" title=" " alt="" coords="530,139,585,185,582,189,527,143"/>
+<area shape="poly" id="edge19_Node000014_Node000005" title=" " alt="" coords="794,143,731,190,728,186,791,139"/>
+<area shape="poly" id="edge18_Node000014_Node000009" title=" " alt="" coords="809,141,805,182,800,182,804,141"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="970,196,1049,221"/>
+<area shape="poly" id="edge16_Node000014_Node000015" title=" " alt="" coords="838,138,969,189,967,194,836,143"/>
+<area shape="rect" id="Node000016" title=" " alt="" coords="1073,196,1148,221"/>
+<area shape="poly" id="edge17_Node000014_Node000016" title=" " alt="" coords="843,138,866,145,1061,193,1059,198,865,151,841,143"/>
+<area shape="rect" id="Node000017" title=" " alt="" coords="862,196,946,221"/>
+<area shape="poly" id="edge20_Node000014_Node000017" title=" " alt="" coords="824,139,881,185,878,189,820,143"/>
+</map>

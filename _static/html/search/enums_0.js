@@ -1,14 +1,14 @@
 var searchData=
 [
-  ['crinitconfigs_5ft_0',['crinitConfigs_t',['../confparse_8h.html#a936cd324126cd12b4969bc947f6eaaa8',1,'confparse.h']]],
-  ['crinitconfigtype_5ft_1',['crinitConfigType_t',['../confparse_8h.html#a7793448e050054862afe5a2fdcb72cfe',1,'confparse.h']]],
-  ['crinitdispatchthreadmode_5ft_2',['crinitDispatchThreadMode_t',['../taskdb_8h.html#aab695fef1dbffc6da1cc2c76c2680c63',1,'taskdb.h']]],
-  ['criniteloseventmessagecodee_5ft_3',['crinitElosEventMessageCodeE_t',['../elos-common_8h.html#a68b7f067a9a49a9b4430b047fe60e382',1,'elos-common.h']]],
-  ['crinitelosseveritye_5ft_4',['crinitElosSeverityE_t',['../elos-common_8h.html#ad7cf4ddf69fbd31c7161454ba2ee2865',1,'elos-common.h']]],
-  ['crinithooktype_5ft_5',['crinitHookType_t',['../optfeat_8h.html#ab0cf1d73dc1e3b58cb38f281d13d6bde',1,'optfeat.h']]],
-  ['crinitrtimop_5ft_6',['crinitRtimOp_t',['../rtimopmap_8h.html#a6d4799b1d4518c83bc4b049ccf0aaedc',1,'rtimopmap.h']]],
-  ['crinitshutdowncmd_5ft_7',['crinitShutdownCmd_t',['../crinit-sdefs_8h.html#a06e6d55c070ebd32aabe402362e845be',1,'crinit-sdefs.h']]],
-  ['crinittasktimestamptype_5ft_8',['crinitTaskTimestampType_t',['../task_8h.html#a494295a84a109a9829682690d9a4db74',1,'task.h']]],
-  ['crinittasktype_5ft_9',['crinitTaskType_t',['../task_8h.html#a67fde6c95021664845e40db3d2f53c3d',1,'task.h']]],
-  ['crinittokentype_5ft_10',['crinitTokenType_t',['../lexers_8h.html#a58891ae2883b5947f9827fba7d85e754',1,'lexers.h']]]
+  ['crinitconfigs_0',['crinitConfigs',['../confparse_8h.html#a82d90e31a966df9733ee12649dc41842',1,'confparse.h']]],
+  ['crinitconfigtype_1',['crinitConfigType',['../confparse_8h.html#a40a9b83810223da25f0f69c95800cc13',1,'confparse.h']]],
+  ['crinitdispatchthreadmode_2',['crinitDispatchThreadMode',['../taskdb_8h.html#a93e23d26909cb4b1aa605c1acdbcf8f6',1,'taskdb.h']]],
+  ['criniteloseventmessagecodee_3',['crinitElosEventMessageCodeE',['../elos-common_8h.html#ad8bf60e0e5d5fb2537844575da4ebb55',1,'elos-common.h']]],
+  ['crinitelosseveritye_4',['crinitElosSeverityE',['../elos-common_8h.html#a8c96d6b304fae74bb1642893cc9780ce',1,'elos-common.h']]],
+  ['crinithooktype_5',['crinitHookType',['../optfeat_8h.html#af63154b34de5ca594d42bbcc3b7273a8',1,'optfeat.h']]],
+  ['crinitrtimop_6',['crinitRtimOp',['../rtimopmap_8h.html#af0933696926b9d0e3fb36a9000ce0a99',1,'rtimopmap.h']]],
+  ['crinitshutdowncmd_7',['crinitShutdownCmd',['../crinit-sdefs_8h.html#a9341180923869243353c2648b86963b8',1,'crinit-sdefs.h']]],
+  ['crinittasktimestamptype_8',['crinitTaskTimestampType',['../task_8h.html#ae2c6cc69821da30b8a64c550521ce9af',1,'task.h']]],
+  ['crinittasktype_9',['crinitTaskType',['../task_8h.html#ad42ed04c4bcaff16df1c10a6f722ec35',1,'task.h']]],
+  ['crinittokentype_10',['crinitTokenType',['../lexers_8h.html#afc36c2ed727e8b0556477d567ef5e4ed',1,'lexers.h']]]
 ];

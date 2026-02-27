@@ -97,7 +97,7 @@ $(document).ready(function(){initNavTree('sig_8c.html',''); initResizable(); });
 </div><!--header-->
 <div class="contents">
 <h3 class="version">(/usr/bin/git
-2025-02-03, commit: cb6bc27)</h3>
+2025-02-03, commit: cb6bc278)</h3>
 <p>Implementation of signature checking.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="sig_8h_source.html">sig.h</a>&quot;</code><br />
@@ -190,7 +190,7 @@ Macros</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:a37b6409e3831b761f784f73293696705" id="r_a37b6409e3831b761f784f73293696705"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sig_8c.html#a37b6409e3831b761f784f73293696705">crinitGenerateHash</a> (uint8_t *dataHash, const uint8_t *data, size_t dataSz)</td></tr>
 <tr class="separator:a37b6409e3831b761f784f73293696705"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a563444845397061f2fb62f955069d2f7" id="r_a563444845397061f2fb62f955069d2f7"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sig_8c.html#a563444845397061f2fb62f955069d2f7">crinitLoadAndVerifySignedKeysFromFileSeries</a> (mbedtls_pk_context *tgt, const <a class="el" href="structcrinitFileSeries__t.html">crinitFileSeries_t</a> *src, bool pemFmt)</td></tr>
+<tr class="memitem:a563444845397061f2fb62f955069d2f7" id="r_a563444845397061f2fb62f955069d2f7"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sig_8c.html#a563444845397061f2fb62f955069d2f7">crinitLoadAndVerifySignedKeysFromFileSeries</a> (mbedtls_pk_context *tgt, const <a class="el" href="fseries_8h.html#a972c71d1b1c6d9cde19e608ec85f8918">crinitFileSeries_t</a> *src, bool pemFmt)</td></tr>
 <tr class="separator:a563444845397061f2fb62f955069d2f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4ef25cac26ba3598e15dc6a6090fab6" id="r_af4ef25cac26ba3598e15dc6a6090fab6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sig_8c.html#af4ef25cac26ba3598e15dc6a6090fab6">crinitSigSubsysInit</a> (char *rootKeyDesc)</td></tr>
 <tr class="separator:af4ef25cac26ba3598e15dc6a6090fab6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -465,6 +465,7 @@ Variables</h2></td></tr>
 <p>Signatures of the loaded keys must match the root key.</p>
 <p>If the signed downstream public keys should be used to verify configuration files, this function must be called before parsing them.</p>
 <p>Keys may be in DER (.der) or PEM (.pem) format and must each have a signature file (e.g. <code>&lt;keyfile&gt;.pem.sig</code>) in the same directory.</p>
+<p>Modifies errno.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">sigKeyDir</td><td>The path to the directory from where to load/verify the keys.</td></tr>
@@ -493,7 +494,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="structcrinitFileSeries__t.html">crinitFileSeries_t</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="fseries_8h.html#a972c71d1b1c6d9cde19e608ec85f8918">crinitFileSeries_t</a> *&#160;</td>
           <td class="paramname"><em>src</em>, </td>
         </tr>
         <tr>
@@ -518,7 +519,7 @@ Variables</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">tgt</td><td>The array of MbedTLS contexts to be initialized with the public keys, memory will be allocated. </td></tr>
-    <tr><td class="paramname">src</td><td>The <a class="el" href="structcrinitFileSeries__t.html">crinitFileSeries_t</a> containing the set of signed public key files. </td></tr>
+    <tr><td class="paramname">src</td><td>The crinitFileSeries_t containing the set of signed public key files. </td></tr>
     <tr><td class="paramname">pemFmt</td><td>If the key files are in PEM (true) or DER (false) format.</td></tr>
   </table>
   </dd>
@@ -565,6 +566,7 @@ Variables</h2></td></tr>
 <p>Initializes the Crinit signature subsystem.</p>
 <p>Will read the root key from Kernel user keyring.</p>
 <p>This function must be called once before any other function from this header file is used.</p>
+<p>Modifies errno.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">rootKeyDesc</td><td>The key description value to search for the root key in the user keyring.</td></tr>
@@ -609,6 +611,7 @@ Variables</h2></td></tr>
 <p>Verify the signature of arbitrary data using the keys loaded to the signature subsystem.</p>
 <p>See <a class="el" href="sig_8h.html#af4ef25cac26ba3598e15dc6a6090fab6">crinitSigSubsysInit()</a> and <a class="el" href="sig_8h.html#aa1665c0d2a37d87cb691f810e0755c90">crinitLoadAndVerifySignedKeys()</a> for information on prior subsytem setup.</p>
 <p>Verification uses the RSA-PSS algorithm with SHA256 hashes. It will check the hashed data against all loaded keys. If one matches, verification is passed.</p>
+<p>Modifies errno.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">data</td><td>The data array to check against the signature. </td></tr>

@@ -1,0 +1,9 @@
+<map id="test/utest/utest&#45;crinit&#45;cap&#45;retain&#45;permitted/utest&#45;crinit&#45;cap&#45;retain&#45;permitted.h" name="test/utest/utest&#45;crinit&#45;cap&#45;retain&#45;permitted/utest&#45;crinit&#45;cap&#45;retain&#45;permitted.h">
+<area shape="rect" id="Node000001" title="Header declaring the unit tests for crinitCapRetainPermitted()." alt="" coords="189,5,357,75"/>
+<area shape="rect" id="Node000002" href="$utest-crinit-cap-retain-permitted_2case-fail_8c.html" title=" " alt="" coords="5,130,168,185"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="209,84,130,132,128,128,206,80"/>
+<area shape="rect" id="Node000003" href="$utest-crinit-cap-retain-permitted_2case-success_8c.html" title="Unit test for crinitCapRetainPermitted(), failing execution." alt="" coords="192,130,355,185"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="276,89,276,130,271,130,271,89"/>
+<area shape="rect" id="Node000004" href="$utest-crinit-cap-retain-permitted_8c.html" title="Implementation of the crinitCapRetainPermitted() unit test group." alt="" coords="379,123,547,192"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="342,80,408,120,406,125,339,84"/>
+</map>

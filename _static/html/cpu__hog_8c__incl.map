@@ -1,0 +1,7 @@
+<map id="test/demo/cpu_hog/cpu_hog.c" name="test/demo/cpu_hog/cpu_hog.c">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,179,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="7,93,81,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="83,47,61,83,56,80,78,44"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="105,93,175,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="106,44,128,80,123,83,101,47"/>
+</map>

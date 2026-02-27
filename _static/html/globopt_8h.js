@@ -1,6 +1,6 @@
 var globopt_8h =
 [
-    [ "crinitGlobOptStore_t", "structcrinitGlobOptStore__t.html", "structcrinitGlobOptStore__t" ],
+    [ "crinitGlobOptStore", "structcrinitGlobOptStore.html", "structcrinitGlobOptStore" ],
     [ "CRINIT_GLOBOPT_DEBUG", "globopt_8h.html#aea9ef9edc8d0d975b33fea05d55448f1", null ],
     [ "CRINIT_GLOBOPT_ELOS_EVENT_POLL_INTERVAL", "globopt_8h.html#a6b07c9253e24962d2f20b5d02283d11e", null ],
     [ "CRINIT_GLOBOPT_ELOS_PORT", "globopt_8h.html#ab83113d5acd4f46f064e12ff55a01b3b", null ],
@@ -21,7 +21,7 @@ var globopt_8h =
     [ "CRINIT_GLOBOPT_USE_SYSLOG", "globopt_8h.html#ab57ce40128c4dea70299bce12d717b17", null ],
     [ "crinitGlobOptGet", "globopt_8h.html#a178bcd110a1dad6f936113174b0338e9", null ],
     [ "crinitGlobOptSet", "globopt_8h.html#a4e9558f156a754c58a46c0f890e807a1", null ],
-    [ "crinitGlobOptStore_t", "globopt_8h.html#a5539a9f96bc0db7f85499b76223e343e", null ],
+    [ "crinitGlobOptStore_t", "globopt_8h.html#a818c27d867a4bb0c82ddf8d36d384cf2", null ],
     [ "__attribute__", "globopt_8h.html#ae2f56eddaae92fcd90a2b689709bf421", null ],
     [ "crinitGlobOptBorrow", "globopt_8h.html#a6d45883a63a3b431aa0a8fcc1efd0a08", null ],
     [ "crinitGlobOptDestroy", "globopt_8h.html#adeb2381abb03eba8cbf630908d68d9cc", null ],

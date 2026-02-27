@@ -1,0 +1,21 @@
+<map id="crinitTimerDB" name="crinitTimerDB">
+<area shape="rect" id="Node000001" title=" " alt="" coords="205,284,317,309"/>
+<area shape="rect" id="Node000002" href="$structcrinitTimer.html" title=" " alt="" coords="153,196,247,221"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="211,233,225,258,248,282,244,286,221,262,206,235"/>
+<area shape="rect" id="Node000003" href="$structcrinitTimerDef.html" title=" " alt="" coords="142,108,258,133"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="203,147,203,195,197,195,197,147"/>
+<area shape="rect" id="Node000004" href="$structcrinitTaskDB.html" title=" " alt="" coords="271,196,374,221"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="308,234,272,285,268,282,304,231"/>
+<area shape="rect" id="Node000005" href="$structcrinitTask.html" title=" " alt="" coords="282,108,366,133"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="326,147,326,196,320,195,321,147"/>
+<area shape="rect" id="Node000006" href="$structcrinitTaskCmd.html" title=" " alt="" coords="5,5,120,31"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="86,38,115,61,149,82,182,93,208,98,271,105,282,108,281,113,270,111,208,103,180,98,147,86,112,66,83,42"/>
+<area shape="rect" id="Node000007" href="$structcrinitEnvSet.html" title=" " alt="" coords="145,5,245,31"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="211,40,228,62,248,82,291,106,289,110,245,86,224,66,207,44"/>
+<area shape="rect" id="Node000008" href="$structcrinitTaskDep.html" title=" " alt="" coords="269,5,379,31"/>
+<area shape="poly" id="edge7_Node000005_Node000008" title=" " alt="" coords="327,45,327,108,321,108,321,45"/>
+<area shape="rect" id="Node000009" href="$structcrinitTaskPrv.html" title=" " alt="" coords="403,5,509,31"/>
+<area shape="poly" id="edge8_Node000005_Node000009" title=" " alt="" coords="432,41,341,110,337,106,429,37"/>
+<area shape="rect" id="Node000010" href="$structcrinitIoRedir.html" title=" " alt="" coords="533,5,635,31"/>
+<area shape="poly" id="edge9_Node000005_Node000010" title=" " alt="" coords="549,39,437,86,365,110,363,105,435,82,546,34"/>
+</map>

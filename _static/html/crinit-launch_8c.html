@@ -90,20 +90,21 @@ $(document).ready(function(){initNavTree('crinit-launch_8c.html',''); initResiza
 
 <div class="header">
   <div class="summary">
+<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">crinit-launch.c File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <h3 class="version">(/usr/bin/git
-2025-03-27, commit: a9d45a5)</h3>
+2026-02-27, commit: f9938d00)</h3>
 <p>Launcher helper needed to start programs with different user / group permissions.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;getopt.h&gt;</code><br />
 <code>#include &lt;grp.h&gt;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &lt;unistd.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="crinit-version_8h_source.html">crinit-version.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="logio_8h_source.html">logio.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="version_8h_source.html">version.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for crinit-launch.c:</div>
 <div class="dyncontent">
@@ -118,23 +119,30 @@ Include dependency graph for crinit-launch.c:</div>
 <area shape="poly" title=" " alt="" coords="262,33,237,69,232,66,257,30"/>
 <area shape="rect" title=" " alt="" coords="279,79,354,104"/>
 <area shape="poly" title=" " alt="" coords="278,29,303,66,299,69,273,33"/>
-<area shape="rect" href="logio_8h.html" title="Header related to debug/log output." alt="" coords="378,79,445,104"/>
-<area shape="poly" title=" " alt="" coords="292,28,377,70,374,75,289,33"/>
-<area shape="rect" href="version_8h.html" title="Header definitions related to component versioning." alt="" coords="514,79,597,104"/>
-<area shape="poly" title=" " alt="" coords="314,28,501,74,500,79,313,33"/>
-<area shape="rect" title=" " alt="" coords="179,152,247,177"/>
-<area shape="poly" title=" " alt="" coords="380,107,259,150,257,145,379,102"/>
-<area shape="rect" title=" " alt="" coords="271,152,354,177"/>
-<area shape="poly" title=" " alt="" coords="397,106,341,146,338,142,394,102"/>
-<area shape="rect" title=" " alt="" coords="378,152,445,177"/>
-<area shape="poly" title=" " alt="" coords="414,104,414,138,409,138,409,104"/>
-<area shape="rect" title=" " alt="" coords="469,152,540,177"/>
-<area shape="poly" title=" " alt="" coords="428,102,480,141,477,146,425,106"/>
-<area shape="rect" title=" " alt="" coords="564,152,635,177"/>
-<area shape="poly" title=" " alt="" coords="565,103,587,139,583,142,560,106"/>
+<area shape="rect" href="crinit-version_8h.html" title="Header definitions related to component versioning." alt="" coords="379,79,497,104"/>
+<area shape="poly" title=" " alt="" coords="296,28,399,71,397,76,294,33"/>
+<area shape="rect" href="logio_8h.html" title="Header related to debug/log output." alt="" coords="559,79,626,104"/>
+<area shape="poly" title=" " alt="" coords="320,28,546,77,545,82,319,33"/>
+<area shape="rect" title=" " alt="" coords="364,152,435,177"/>
+<area shape="poly" title=" " alt="" coords="434,106,414,141,410,139,429,103"/>
+<area shape="rect" title=" " alt="" coords="459,152,527,177"/>
+<area shape="poly" title=" " alt="" coords="578,106,522,146,519,142,575,102"/>
+<area shape="rect" title=" " alt="" coords="551,152,634,177"/>
+<area shape="poly" title=" " alt="" coords="595,104,595,138,590,138,590,104"/>
+<area shape="rect" title=" " alt="" coords="658,152,725,177"/>
+<area shape="poly" title=" " alt="" coords="610,102,666,142,663,146,607,106"/>
+<area shape="rect" title=" " alt="" coords="749,152,820,177"/>
+<area shape="poly" title=" " alt="" coords="624,102,741,144,739,149,623,107"/>
 </map>
 </div>
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a21ad5cacd2c6dda0d612024cc379e817" id="r_a21ad5cacd2c6dda0d612024cc379e817"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="crinit-launch_8c.html#a21ad5cacd2c6dda0d612024cc379e817">CAPOPTS</a>&#160;&#160;&#160;&quot;&quot;</td></tr>
+<tr class="separator:a21ad5cacd2c6dda0d612024cc379e817"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3cafe4948f65dd81aed2dd329f7c796" id="r_aa3cafe4948f65dd81aed2dd329f7c796"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="crinit-launch_8c.html#aa3cafe4948f65dd81aed2dd329f7c796">CGROUPOPTS</a>&#160;&#160;&#160;&quot;&quot;</td></tr>
+<tr class="separator:aa3cafe4948f65dd81aed2dd329f7c796"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ad8bb2fe364f5b38ad455323bd80a2c05" id="r_ad8bb2fe364f5b38ad455323bd80a2c05"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="crinit-launch_8c.html#ad8bb2fe364f5b38ad455323bd80a2c05">crinitPrintVersion</a> (void)</td></tr>
@@ -160,7 +168,36 @@ Functions</h2></td></tr>
 <div class="line">General Options:</div>
 <div class="line">      --help/-h    - Print this help.</div>
 <div class="line">      --version/-V - Print version information about crinit-launch.</div>
-</div><!-- fragment --> </div><h2 class="groupheader">Function Documentation</h2>
+</div><!-- fragment --> </div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a21ad5cacd2c6dda0d612024cc379e817" name="a21ad5cacd2c6dda0d612024cc379e817"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a21ad5cacd2c6dda0d612024cc379e817">&#9670;&#160;</a></span>CAPOPTS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CAPOPTS&#160;&#160;&#160;&quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa3cafe4948f65dd81aed2dd329f7c796" name="aa3cafe4948f65dd81aed2dd329f7c796"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3cafe4948f65dd81aed2dd329f7c796">&#9670;&#160;</a></span>CGROUPOPTS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CGROUPOPTS&#160;&#160;&#160;&quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
 <a id="a8bb8cef27223b739b0704e5e6ae5f062" name="a8bb8cef27223b739b0704e5e6ae5f062"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8bb8cef27223b739b0704e5e6ae5f062">&#9670;&#160;</a></span>crinitExtractGroups()</h2>
 

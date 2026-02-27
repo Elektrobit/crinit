@@ -1,12 +1,12 @@
 var elosdep_8c =
 [
-    [ "crinitElosdepFilterTask_t", "structcrinitElosdepFilterTask__t.html", "structcrinitElosdepFilterTask__t" ],
-    [ "crinitElosdepFilter_t", "structcrinitElosdepFilter__t.html", "structcrinitElosdepFilter__t" ],
-    [ "crinitElosEventThread_t", "structcrinitElosEventThread__t.html", "structcrinitElosEventThread__t" ],
+    [ "crinitElosdepFilterTask", "structcrinitElosdepFilterTask.html", "structcrinitElosdepFilterTask" ],
+    [ "crinitElosdepFilter", "structcrinitElosdepFilter.html", "structcrinitElosdepFilter" ],
+    [ "crinitElosEventThread", "structcrinitElosEventThread.html", "structcrinitElosEventThread" ],
     [ "CRINIT_ELOS_DEPENDENCY", "elosdep_8c.html#a55fc39808628965f7c72154baf993eb5", null ],
     [ "CRINIT_ELOS_IDENT", "elosdep_8c.html#a6874d5db7a30e5e11f1a0cc866078dde", null ],
-    [ "crinitElosdepFilter_t", "elosdep_8c.html#ab8cdb9bbf3310c64fdeb903f99f17f56", null ],
-    [ "crinitElosdepFilterTask_t", "elosdep_8c.html#ae9eb7041458ec824635d23f1a5b07318", null ],
+    [ "crinitElosdepFilter_t", "elosdep_8c.html#a2b5589e9a8c2a93b58816c24e8a94240", null ],
+    [ "crinitElosdepFilterTask_t", "elosdep_8c.html#a6d82039afdd4862e6e6614a44ddb5d36", null ],
     [ "crinitElosdepActivate", "elosdep_8c.html#a9f75bc3a003a894f6628b19bbec5dc21", null ],
     [ "crinitElosdepEventListener", "elosdep_8c.html#ac63c5953b1a0be9c9328ade305011d88", null ],
     [ "crinitElosdepFilterDestroy", "elosdep_8c.html#a3cfa2d260e08deb55143eb4fe388abf7", null ],
@@ -20,12 +20,13 @@ var elosdep_8c =
     [ "crinitElosdepFilterTaskListClear", "elosdep_8c.html#a498f98b1e5fd42d15aef92d86e713c10", null ],
     [ "crinitElosdepFilterUnregister", "elosdep_8c.html#ad9e34cc7ed8bf9ab88019eb922f1dc37", null ],
     [ "crinitElosdepFilterUnsubscribe", "elosdep_8c.html#af19d6c887f13f1a7bef59a2c0413310a", null ],
-    [ "crinitElosdepInitThreadContext", "elosdep_8c.html#af6f3d62e9c051a2c1612157645cb9058", null ],
+    [ "crinitElosdepInitThreadContext", "elosdep_8c.html#a252d3b14a76e01b8a03b1a83afb5e09b", null ],
+    [ "crinitElosdepRegisterFilterDep", "elosdep_8c.html#a8709d0a91a9f9b56235f12fef256d3ee", null ],
     [ "crinitElosdepTaskAdded", "elosdep_8c.html#a10fce84f80d9c7a0a5ac6a2a79d8cacc", null ],
     [ "crinitElosActivated", "elosdep_8c.html#a3b14e451067507c7aa348712d1fbd64b", null ],
     [ "crinitElosActivatedLock", "elosdep_8c.html#aa02a0bb19f36a2362d6055e6e00ed88e", null ],
     [ "crinitElosdepFilterTaskLock", "elosdep_8c.html#a4f787feb2f6849a7625aad29380b1f7e", null ],
     [ "crinitElosdepSessionLock", "elosdep_8c.html#a4943710f53ef87a5831c9e4a0a367536", null ],
     [ "crinitFilterTasks", "elosdep_8c.html#ac3b41ae46a9003209e710832dc4cfd97", null ],
-    [ "crinitTinfo", "elosdep_8c.html#aa4e6919dc284417ea59342d18161f62f", null ]
+    [ "crinitTinfo", "elosdep_8c.html#a0f839cca1fd1ec015c266960a956abdd", null ]
 ];

@@ -97,8 +97,7 @@ $(document).ready(function(){initNavTree('thrpool_8h.html',''); initResizable();
   <div class="headertitle"><div class="title">thrpool.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<h3 class="version">(/usr/bin/git
-2025-02-19, commit: 5f1bbfa)</h3>
+<h3 class="version">(/usr/bin/git)</h3>
 <p>Header defining a generic worker thread pool. Used by the notification/service interface to handle socket communication.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;limits.h&gt;</code><br />
@@ -142,7 +141,7 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Structures</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcrinitThreadPool.html">crinitThreadPool</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
@@ -154,16 +153,16 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:a40649503ab6649e87bd48e3341ca4ccc" id="r_a40649503ab6649e87bd48e3341ca4ccc"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="thrpool_8h.html#a40649503ab6649e87bd48e3341ca4ccc">crinitThreadPool_t</a></td></tr>
-<tr class="separator:a40649503ab6649e87bd48e3341ca4ccc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43fb0a310fa80caa3ccd36067e306d57" id="r_a43fb0a310fa80caa3ccd36067e306d57"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structcrinitThreadPool.html">crinitThreadPool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="thrpool_8h.html#a43fb0a310fa80caa3ccd36067e306d57">crinitThreadPool_t</a></td></tr>
+<tr class="separator:a43fb0a310fa80caa3ccd36067e306d57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aaa446aa579c653413de2e5a5ce2084f2" id="r_aaa446aa579c653413de2e5a5ce2084f2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="thrpool_8h.html#aaa446aa579c653413de2e5a5ce2084f2">crinitThreadPoolInit</a> (<a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a> *ctx, size_t initialSize, void *(*threadFunc)(void *), const void *thrArgs, size_t thrArgsSize)</td></tr>
+<tr class="memitem:aaa446aa579c653413de2e5a5ce2084f2" id="r_aaa446aa579c653413de2e5a5ce2084f2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="thrpool_8h.html#aaa446aa579c653413de2e5a5ce2084f2">crinitThreadPoolInit</a> (<a class="el" href="thrpool_8h.html#a43fb0a310fa80caa3ccd36067e306d57">crinitThreadPool_t</a> *ctx, size_t initialSize, void *(*threadFunc)(void *), const void *thrArgs, size_t thrArgsSize)</td></tr>
 <tr class="separator:aaa446aa579c653413de2e5a5ce2084f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4fea0a1e12854f0bd741406731d91ee0" id="r_a4fea0a1e12854f0bd741406731d91ee0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="thrpool_8h.html#a4fea0a1e12854f0bd741406731d91ee0">crinitThreadPoolThreadBusyCallback</a> (<a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a> *ctx)</td></tr>
+<tr class="memitem:a4fea0a1e12854f0bd741406731d91ee0" id="r_a4fea0a1e12854f0bd741406731d91ee0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="thrpool_8h.html#a4fea0a1e12854f0bd741406731d91ee0">crinitThreadPoolThreadBusyCallback</a> (<a class="el" href="thrpool_8h.html#a43fb0a310fa80caa3ccd36067e306d57">crinitThreadPool_t</a> *ctx)</td></tr>
 <tr class="separator:a4fea0a1e12854f0bd741406731d91ee0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a06469c1419d25ad5b883bd2dcbfe9a22" id="r_a06469c1419d25ad5b883bd2dcbfe9a22"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="thrpool_8h.html#a06469c1419d25ad5b883bd2dcbfe9a22">crinitThreadPoolThreadAvailCallback</a> (<a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a> *ctx)</td></tr>
+<tr class="memitem:a06469c1419d25ad5b883bd2dcbfe9a22" id="r_a06469c1419d25ad5b883bd2dcbfe9a22"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="thrpool_8h.html#a06469c1419d25ad5b883bd2dcbfe9a22">crinitThreadPoolThreadAvailCallback</a> (<a class="el" href="thrpool_8h.html#a43fb0a310fa80caa3ccd36067e306d57">crinitThreadPool_t</a> *ctx)</td></tr>
 <tr class="separator:a06469c1419d25ad5b883bd2dcbfe9a22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -200,14 +199,14 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Typedef Documentation</h2>
-<a id="a40649503ab6649e87bd48e3341ca4ccc" name="a40649503ab6649e87bd48e3341ca4ccc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a40649503ab6649e87bd48e3341ca4ccc">&#9670;&#160;</a></span>crinitThreadPool_t</h2>
+<a id="a43fb0a310fa80caa3ccd36067e306d57" name="a43fb0a310fa80caa3ccd36067e306d57"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43fb0a310fa80caa3ccd36067e306d57">&#9670;&#160;</a></span>crinitThreadPool_t</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef struct <a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a> <a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a></td>
+          <td class="memname">typedef struct <a class="el" href="structcrinitThreadPool.html">crinitThreadPool</a> <a class="el" href="thrpool_8h.html#a43fb0a310fa80caa3ccd36067e306d57">crinitThreadPool_t</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -225,7 +224,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int crinitThreadPoolInit </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="thrpool_8h.html#a43fb0a310fa80caa3ccd36067e306d57">crinitThreadPool_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
@@ -259,10 +258,11 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Initialize an <a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a>.</p>
+<p>Initialize an crinitThreadPool_t.</p>
+<p>Modifies errno.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">ctx</td><td>The <a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a> to initialize. </td></tr>
+    <tr><td class="paramname">ctx</td><td>The crinitThreadPool_t to initialize. </td></tr>
     <tr><td class="paramname">initialSize</td><td>Initial size (in number of threads) of the pool. </td></tr>
     <tr><td class="paramname">threadFunc</td><td>Worker thread function to use. </td></tr>
     <tr><td class="paramname">thrArgs</td><td>Arguments to the worker thread function. Will be copied and saved in case more threads need to be started by dryPoolWatchdog. </td></tr>
@@ -283,16 +283,17 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int crinitThreadPoolThreadAvailCallback </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="thrpool_8h.html#a43fb0a310fa80caa3ccd36067e306d57">crinitThreadPool_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Callback to be used by the worker thread function signalling it is idle/available.</p>
+<p>Modifies errno.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">ctx</td><td>The <a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a> context.</td></tr>
+    <tr><td class="paramname">ctx</td><td>The crinitThreadPool_t context.</td></tr>
   </table>
   </dd>
 </dl>
@@ -309,16 +310,17 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int crinitThreadPoolThreadBusyCallback </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="thrpool_8h.html#a43fb0a310fa80caa3ccd36067e306d57">crinitThreadPool_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Callback to be used by the worker thread function signalling it is busy/unavailable.</p>
+<p>Modifies errno.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">ctx</td><td>The <a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a> context.</td></tr>
+    <tr><td class="paramname">ctx</td><td>The crinitThreadPool_t context.</td></tr>
   </table>
   </dd>
 </dl>
@@ -331,7 +333,7 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_bfccd401955b95cf8c75461437045ac0.html">inc</a></li><li class="navelem"><a class="el" href="thrpool_8h.html">thrpool.h</a></li>
+    <li class="navelem"><a class="el" href="dir_929990cc644a2057c712409e82a24c70.html">inc</a></li><li class="navelem"><a class="el" href="thrpool_8h.html">thrpool.h</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>

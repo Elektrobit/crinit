@@ -1,7 +1,7 @@
 var confmap_8h =
 [
-    [ "crinitConfigMapping_t", "structcrinitConfigMapping__t.html", "structcrinitConfigMapping__t" ],
-    [ "crinitConfigMapping_t", "confmap_8h.html#a5b1c57872cd66ce342eaf470d4b375dc", null ],
+    [ "crinitConfigMapping", "structcrinitConfigMapping.html", "structcrinitConfigMapping" ],
+    [ "crinitConfigMapping_t", "confmap_8h.html#a65c1b1cd0f31cfe3d46eac27ea0547cf", null ],
     [ "crinitFindConfigMapping", "confmap_8h.html#ad9f7117e70f406f91036f293e9a423a5", null ],
     [ "crinitKCmdlineCfgMap", "confmap_8h.html#a8433dc25f558eb1eaa1b5869de71d7e6", null ],
     [ "crinitKCmdlineCfgMapSize", "confmap_8h.html#a1c70c9edfc097d8381bff86fdb1c4443", null ],

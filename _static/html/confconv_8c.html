@@ -96,7 +96,7 @@ $(document).ready(function(){initNavTree('confconv_8c.html',''); initResizable()
 </div><!--header-->
 <div class="contents">
 <h3 class="version">(/usr/bin/git
-2025-03-11, commit: 0a85ce9)</h3>
+2025-03-11, commit: 0a85ce97)</h3>
 <p>Implementations of conversion operations from configuration values to structured data.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="confconv_8h_source.html">confconv.h</a>&quot;</code><br />
@@ -179,9 +179,9 @@ Functions</h2></td></tr>
 <tr class="separator:aa1c6c712faedb66304576c93bcd91616"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a52b44414f2b31f95eb59e093f380988a" id="r_a52b44414f2b31f95eb59e093f380988a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="confconv_8c.html#a52b44414f2b31f95eb59e093f380988a">crinitConfConvToBool</a> (bool *b, const char *confVal)</td></tr>
 <tr class="separator:a52b44414f2b31f95eb59e093f380988a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa2b34cddc65db3c9f2c592f44ee66d4f" id="r_aa2b34cddc65db3c9f2c592f44ee66d4f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="confconv_8c.html#aa2b34cddc65db3c9f2c592f44ee66d4f">crinitConfConvToIoRedir</a> (<a class="el" href="structcrinitIoRedir__t.html">crinitIoRedir_t</a> *ior, const char *confVal)</td></tr>
+<tr class="memitem:aa2b34cddc65db3c9f2c592f44ee66d4f" id="r_aa2b34cddc65db3c9f2c592f44ee66d4f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="confconv_8c.html#aa2b34cddc65db3c9f2c592f44ee66d4f">crinitConfConvToIoRedir</a> (<a class="el" href="ioredir_8h.html#a9b01591d275c0d908c3e9b5582636343">crinitIoRedir_t</a> *ior, const char *confVal)</td></tr>
 <tr class="separator:aa2b34cddc65db3c9f2c592f44ee66d4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa6e6022326bd6d79c781821b3dfe055b" id="r_aa6e6022326bd6d79c781821b3dfe055b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="confconv_8c.html#aa6e6022326bd6d79c781821b3dfe055b">crinitConfConvToEnvSetMember</a> (<a class="el" href="structcrinitEnvSet__t.html">crinitEnvSet_t</a> *es, const char *confVal)</td></tr>
+<tr class="memitem:aa6e6022326bd6d79c781821b3dfe055b" id="r_aa6e6022326bd6d79c781821b3dfe055b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="confconv_8c.html#aa6e6022326bd6d79c781821b3dfe055b">crinitConfConvToEnvSetMember</a> (<a class="el" href="envset_8h.html#a7aef24e5902b2edbc33e7e886f8c4be5">crinitEnvSet_t</a> *es, const char *confVal)</td></tr>
 <tr class="separator:aa6e6022326bd6d79c781821b3dfe055b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -229,7 +229,7 @@ Functions</h2></td></tr>
 <div class="line">            <span class="keywordflow">return</span> -1;                                                                                    \</div>
 <div class="line">        }                                                                                                 \</div>
 <div class="line">    } <span class="keywordflow">while</span> (0)</div>
-<div class="ttc" id="acommon_8h_html_aa22b17c78eea06dd907877af4babc006"><div class="ttname"><a href="common_8h.html#aa22b17c78eea06dd907877af4babc006">crinitStrtoGenericInteger</a></div><div class="ttdeci">#define crinitStrtoGenericInteger(resType, str, endptr, base)</div><div class="ttdef"><b>Definition</b> common.h:90</div></div>
+<div class="ttc" id="acommon_8h_html_aa22b17c78eea06dd907877af4babc006"><div class="ttname"><a href="common_8h.html#aa22b17c78eea06dd907877af4babc006">crinitStrtoGenericInteger</a></div><div class="ttdeci">#define crinitStrtoGenericInteger(resType, str, endptr, base)</div><div class="ttdef"><b>Definition</b> common.h:86</div></div>
 </div><!-- fragment --><p>Function body for type-generic string-to-integer functions, used internally to deduplicate code. </p>
 
 </div>
@@ -282,7 +282,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int crinitConfConvToEnvSetMember </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structcrinitEnvSet__t.html">crinitEnvSet_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="envset_8h.html#a7aef24e5902b2edbc33e7e886f8c4be5">crinitEnvSet_t</a> *&#160;</td>
           <td class="paramname"><em>es</em>, </td>
         </tr>
         <tr>
@@ -460,7 +460,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int crinitConfConvToIoRedir </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structcrinitIoRedir__t.html">crinitIoRedir_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="ioredir_8h.html#a9b01591d275c0d908c3e9b5582636343">crinitIoRedir_t</a> *&#160;</td>
           <td class="paramname"><em>ior</em>, </td>
         </tr>
         <tr>
@@ -476,13 +476,13 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Initializes an instance of <a class="el" href="structcrinitIoRedir__t.html">crinitIoRedir_t</a> from an IO redirection statement in a string.</p>
+<p>Initializes an instance of crinitIoRedir_t from an IO redirection statement in a string.</p>
 <p>The string must be of the form </p><div class="fragment"><div class="line">&lt;REDIRECT_FROM&gt; &lt;REDIRECT_TO&gt; [ APPEND | TRUNCATE ] [ OCTAL MODE ]</div>
 </div><!-- fragment --><p> Where REDIRECT_FROM is one of STDOUT, STDERR, STDIN and REDIRECT_TO may either also be one of those streams or an absolute path to a file. APPEND or TRUNCATE signify whether an existing file at that location should be appended to or truncated. Default ist TRUNCATE. OCTAL MODE sets the permission bits if the file is newly created. Default is 0644.</p>
-<p>The function may allocate memory inside the <a class="el" href="structcrinitIoRedir__t.html">crinitIoRedir_t</a> struct which must be freed using <a class="el" href="ioredir_8c.html#aae927cb62d074884dba601f0eed8b466">crinitDestroyIoRedir()</a>.</p>
+<p>The function may allocate memory inside the crinitIoRedir_t struct which must be freed using <a class="el" href="ioredir_8c.html#aae927cb62d074884dba601f0eed8b466">crinitDestroyIoRedir()</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">ior</td><td>The <a class="el" href="structcrinitIoRedir__t.html">crinitIoRedir_t</a> instance to initialize. </td></tr>
+    <tr><td class="paramname">ior</td><td>The crinitIoRedir_t instance to initialize. </td></tr>
     <tr><td class="paramname">confVal</td><td>The string with the statement to parse.</td></tr>
   </table>
   </dd>
@@ -522,7 +522,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Extract an array of strings from the value mapped to an indexed key in an <a class="el" href="structcrinitConfKvList__t.html">crinitConfKvList_t</a>.</p>
+<p>Extract an array of strings from the value mapped to an indexed key in an crinitConfKvList_t.</p>
 <p>Will split <em>confVal</em> along spaces. Will optionally respect quoting using double quotes if <em>doubleQuoting</em> is set to true. A dynamically-allocated array-of-strings is returned. If no longer needed it should be freed using <a class="el" href="confparse_8c.html#a7415ca70f1caefa102a12cc172794ef8">crinitFreeArgvArray()</a>. <em>numElements</em> will contain the number of strings inside the output array and the output array will be additionally NULL-terminated, same as argc/argv in <code><a class="el" href="utest-cfgmap-order_8c.html#a840291bc02cba5474a4cb46a9b9566fe">main()</a></code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">

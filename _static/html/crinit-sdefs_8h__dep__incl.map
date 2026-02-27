@@ -1,163 +1,220 @@
 <map id="inc/crinit&#45;sdefs.h" name="inc/crinit&#45;sdefs.h">
-<area shape="rect" id="Node000001" title="Definitions shared between crinit&#39;s public and internal APIs." alt="" coords="1339,5,1470,31"/>
-<area shape="rect" id="Node000002" href="$crinit-client_8h.html" title="Public definitions/declarations for using the crinit&#45;client shared library." alt="" coords="4035,372,4166,397"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1326,22,1200,24,1040,30,865,44,695,68,618,84,550,104,493,127,450,154,434,169,423,185,417,203,415,221,418,240,427,261,442,284,462,307,496,315,579,323,860,335,1250,343,1696,349,2535,353,2946,355,4035,379,4035,384,2946,360,2535,359,1696,354,1250,348,860,340,578,328,495,321,459,312,437,287,422,264,413,242,409,221,411,201,418,183,430,166,447,150,490,122,548,99,617,79,694,63,864,39,1040,25,1200,18,1326,16"/>
-<area shape="rect" id="Node000018" href="$task_8h.html" title="Header defining the data structures belonging to a single task and related functions." alt="" coords="2481,79,2566,104"/>
-<area shape="poly" id="edge17_Node000001_Node000018" title=" " alt="" coords="1484,22,2481,85,2480,90,1484,27"/>
-<area shape="rect" id="Node000003" href="$crinit-client_8c.html" title="Implementation of the crinit&#45;client shared library." alt="" coords="2811,475,2942,500"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="4022,391,3789,400,3481,414,3176,435,3050,448,2955,463,2906,477,2904,472,2953,457,3049,443,3176,430,3480,409,3789,394,4021,386"/>
-<area shape="rect" id="Node000004" href="$crinit-ctl_8c.html" title="Implementation of the crinit&#45;ctl service program using the crinit&#45;client library." alt="" coords="3389,475,3500,500"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="4022,393,3919,400,3792,413,3652,434,3513,463,3471,477,3469,472,3512,457,3651,429,3791,408,3919,395,4021,387"/>
-<area shape="rect" id="Node000005" href="$utest-crinit-set-err-stream_2case-set_8c.html" title="Implementation of a unit test for crinitClientSetErrStream()." alt="" coords="3736,467,3927,507"/>
-<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="4058,405,3883,470,3881,465,4056,400"/>
-<area shape="rect" id="Node000006" href="$utest-crinit-set-info-stream_2case-set_8c.html" title="Implementation of a unit test for crinitClientSetInfoStream()." alt="" coords="3951,467,4149,507"/>
-<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="4091,411,4062,468,4057,466,4086,408"/>
-<area shape="rect" id="Node000007" href="$case-glob-opt-error_8c.html" title="Implementation of a unit test for crinitClientSetVerbose() with the assumption crinitGlobOptSet() fai..." alt="" coords="2966,460,3137,515"/>
-<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="4021,390,3861,395,3644,407,3398,429,3150,463,3137,465,3136,460,3150,457,3398,424,3644,402,3861,390,4021,385"/>
-<area shape="rect" id="Node000008" href="$utest-crinit-set-verbose_2case-success_8c.html" title="Implementation of a unit test for crinitClientSetVerbose(), under the assumption no internal function..." alt="" coords="3161,467,3365,507"/>
-<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="4022,394,3737,417,3558,437,3378,463,3341,470,3340,465,3378,457,3557,432,3737,412,4021,388"/>
-<area shape="rect" id="Node000009" href="$case-build-rtim-cmd-error_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for crinitBuildRtimCmd()." alt="" coords="3525,460,3711,515"/>
-<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="4025,403,3725,463,3712,466,3711,460,3724,457,4024,397"/>
-<area shape="rect" id="Node000010" href="$case-confpath-null_8c.html" title="Unit test for crinitClientTaskAdd() with confFilePath as NULL." alt="" coords="4737,460,4917,515"/>
-<area shape="poly" id="edge9_Node000002_Node000010" title=" " alt="" coords="4180,389,4425,413,4576,433,4726,457,4737,460,4736,465,4726,463,4575,438,4424,419,4180,395"/>
-<area shape="rect" id="Node000011" href="$case-crinit-response-cmd-error_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for wrong command in response." alt="" coords="4173,460,4338,515"/>
-<area shape="poly" id="edge10_Node000002_Node000011" title=" " alt="" coords="4131,403,4216,457,4213,462,4128,407"/>
-<area shape="rect" id="Node000012" href="$case-crinit-response-code-error_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for error code response." alt="" coords="4362,460,4530,515"/>
-<area shape="poly" id="edge11_Node000002_Node000012" title=" " alt="" coords="4154,399,4363,459,4361,464,4152,404"/>
-<area shape="rect" id="Node000013" href="$case-crinit-xfer-error_8c.html" title=" " alt="" coords="4555,460,4713,515"/>
-<area shape="poly" id="edge12_Node000002_Node000013" title=" " alt="" coords="4180,394,4348,420,4543,457,4555,460,4554,466,4541,463,4347,425,4179,399"/>
-<area shape="rect" id="Node000014" href="$case-forcedeps-empty_8c.html" title="Unit test for crinitClientTaskAdd() with forceDeps as empty string." alt="" coords="4942,460,5129,515"/>
-<area shape="poly" id="edge13_Node000002_Node000014" title=" " alt="" coords="4180,386,4508,407,4719,428,4930,457,4942,460,4941,465,4930,463,4718,433,4507,412,4179,392"/>
-<area shape="rect" id="Node000015" href="$case-forcedeps-null_8c.html" title="Unit test for crinitClientTaskAdd() with forceDeps as NULL." alt="" coords="5153,460,5339,515"/>
-<area shape="poly" id="edge14_Node000002_Node000015" title=" " alt="" coords="4180,384,4354,389,4593,401,4865,423,5005,438,5141,457,5153,459,5152,465,5140,463,5004,444,4865,428,4592,406,4353,395,4180,390"/>
-<area shape="rect" id="Node000016" href="$case-overwrite-bool-to-string_8c.html" title="Unit test for crinitClientTaskAdd() testing overwrite is passed on correctly." alt="" coords="5364,460,5549,515"/>
-<area shape="poly" id="edge15_Node000002_Node000016" title=" " alt="" coords="4180,387,4819,420,5156,441,5352,457,5364,459,5363,465,5351,463,5156,446,4818,426,4180,392"/>
-<area shape="rect" id="Node000017" href="$utest-crinit-task-add_2case-success_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for crinitXfer()." alt="" coords="5573,467,5759,507"/>
-<area shape="poly" id="edge16_Node000002_Node000017" title=" " alt="" coords="4180,387,4955,423,5358,444,5562,457,5600,465,5599,470,5562,463,5358,449,4955,429,4179,392"/>
-<area shape="rect" id="Node000019" href="$confhdl_8h.html" title="Header defining type&#45; and target&#45;specific handler functions for configuration parsing." alt="" coords="2425,167,2531,192"/>
-<area shape="poly" id="edge18_Node000018_Node000019" title=" " alt="" coords="2513,118,2487,167,2482,165,2508,115"/>
-<area shape="rect" id="Node000024" href="$task_8c.html" title="Implementation of functions related to a single task." alt="" coords="5,372,89,397"/>
-<area shape="poly" id="edge91_Node000018_Node000024" title=" " alt="" coords="2467,96,2055,105,1751,114,1415,129,1074,150,752,177,607,194,477,213,364,234,272,257,208,283,149,315,63,374,60,370,146,311,206,278,271,252,363,229,476,208,607,189,752,172,1073,144,1415,124,1751,109,2055,99,2467,91"/>
-<area shape="rect" id="Node000048" href="$taskdb_8h.html" title="Header defining the central Task Data Structure and related types/functions." alt="" coords="5169,167,5270,192"/>
-<area shape="poly" id="edge47_Node000018_Node000048" title=" " alt="" coords="2580,92,5168,174,5168,179,2580,97"/>
-<area shape="rect" id="Node000066" href="$elosdep_8c.html" title="Implementation of elos connection." alt="" coords="4763,269,4870,295"/>
-<area shape="poly" id="edge90_Node000018_Node000066" title=" " alt="" coords="2533,116,2555,163,2573,186,2595,204,2635,214,2712,222,2959,233,3291,239,3668,241,4379,243,4629,246,4752,252,4795,267,4793,272,4751,257,4629,251,4379,248,3668,247,3291,244,2958,239,2712,227,2634,219,2593,209,2569,190,2551,166,2528,118"/>
-<area shape="rect" id="Node000069" href="$utest-crinit-task-create-from-conf-kvlist_2case-success_8c.html" title="Unit test for crinitCfgUserHandler(), successful execution." alt="" coords="2606,152,2777,207"/>
-<area shape="poly" id="edge92_Node000018_Node000069" title=" " alt="" coords="2559,108,2641,150,2639,154,2557,113"/>
-<area shape="rect" id="Node000020" href="$confmap_8h.html" title="Definitions related to mapping configuration options and their string representations." alt="" coords="283,269,398,295"/>
-<area shape="poly" id="edge19_Node000019_Node000020" title=" " alt="" coords="2411,184,2033,190,1468,204,887,226,644,240,461,257,385,272,384,267,460,252,644,235,887,220,1468,199,2033,185,2411,179"/>
-<area shape="rect" id="Node000027" href="$confhdl_8c.html" title="Implementation of type&#45; and target&#45;specific handler functions for configuration parsing." alt="" coords="473,269,577,295"/>
-<area shape="poly" id="edge26_Node000019_Node000027" title=" " alt="" coords="2412,183,2054,183,1525,190,1246,199,984,213,758,232,665,244,589,257,548,272,546,267,588,252,665,238,758,227,983,208,1246,194,1525,185,2054,178,2412,178"/>
-<area shape="rect" id="Node000028" href="$utest-crinit-cfg-elos-poll-interval-handler_2case-empty-input_8c.html" title="Unit test for crinitCfgElosEventPollIntervalHandler(), handling of empty input." alt="" coords="601,255,808,309"/>
-<area shape="poly" id="edge27_Node000019_Node000028" title=" " alt="" coords="2411,185,1634,207,1165,229,969,242,821,257,809,259,808,254,820,252,968,237,1164,224,1633,202,2411,179"/>
-<area shape="rect" id="Node000029" href="$utest-crinit-cfg-elos-poll-interval-handler_2case-invalid-input_8c.html" title="Unit test for crinitCfgElosEventPollIntervalHandler(), handling of invalid input." alt="" coords="833,255,1041,309"/>
-<area shape="poly" id="edge28_Node000019_Node000029" title=" " alt="" coords="2412,183,2187,184,1851,193,1456,216,1252,234,1053,257,1041,259,1040,254,1052,252,1252,228,1456,210,1851,188,2187,179,2412,177"/>
-<area shape="rect" id="Node000030" href="$utest-crinit-cfg-elos-poll-interval-handler_2case-null-input_8c.html" title="Unit test for crinitCfgElosEventPollIntervalHandler(), handling of null pointer input." alt="" coords="1065,255,1253,309"/>
-<area shape="poly" id="edge29_Node000019_Node000030" title=" " alt="" coords="2411,183,2216,186,1932,196,1601,218,1431,235,1265,257,1254,259,1253,254,1264,252,1431,230,1601,213,1932,190,2216,180,2411,178"/>
-<area shape="rect" id="Node000031" href="$utest-crinit-cfg-elos-poll-interval-handler_2case-success_8c.html" title="Unit test for crinitCfgElosEventPollIntervalHandler(), successful execution." alt="" coords="1277,255,1455,309"/>
-<area shape="poly" id="edge30_Node000019_Node000031" title=" " alt="" coords="2411,184,2245,188,2010,200,1740,222,1602,238,1466,257,1455,259,1454,254,1466,252,1601,232,1740,216,2010,194,2245,183,2411,179"/>
-<area shape="rect" id="Node000032" href="$utest-crinit-cfg-group-handler_2case-empty-input_8c.html" title="Unit test for crinitCfgGroupHandler(), handling of empty input." alt="" coords="1479,255,1656,309"/>
-<area shape="poly" id="edge31_Node000019_Node000032" title=" " alt="" coords="2411,186,2275,193,2090,206,1880,227,1668,257,1657,259,1656,254,1667,252,1879,222,2089,200,2275,187,2411,180"/>
-<area shape="rect" id="Node000033" href="$utest-crinit-cfg-group-handler_2case-negative-input_8c.html" title="Unit test for crinitCfgGroupHandler(), handling of negative input." alt="" coords="1680,255,1857,309"/>
-<area shape="poly" id="edge32_Node000019_Node000033" title=" " alt="" coords="2412,188,2172,212,2021,232,1869,257,1858,260,1857,254,1868,252,2020,227,2171,207,2411,183"/>
-<area shape="rect" id="Node000034" href="$utest-crinit-cfg-group-handler_2case-null-input_8c.html" title="Unit test for crinitCfgGroupHandler(), handling of null pointer input." alt="" coords="1881,255,2059,309"/>
-<area shape="poly" id="edge33_Node000019_Node000034" title=" " alt="" coords="2412,194,2256,221,2071,257,2059,260,2058,255,2069,252,2255,215,2411,189"/>
-<area shape="rect" id="Node000035" href="$utest-crinit-cfg-group-handler_2case-success_8c.html" title="Unit test for crinitCfgGroupHandler(), successful execution." alt="" coords="2083,255,2260,309"/>
-<area shape="poly" id="edge34_Node000019_Node000035" title=" " alt="" coords="2431,199,2252,257,2250,252,2429,194"/>
-<area shape="rect" id="Node000036" href="$utest-crinit-cfg-launch-cmd-handler_2case-empty-input_8c.html" title="Unit test for crinitCfgLauncherCmdHandler(), handling of empty input." alt="" coords="2284,255,2467,309"/>
-<area shape="poly" id="edge35_Node000019_Node000036" title=" " alt="" coords="2458,204,2404,256,2400,252,2454,200"/>
-<area shape="rect" id="Node000037" href="$utest-crinit-cfg-launch-cmd-handler_2case-invalid-input_8c.html" title="Unit test for crinitCfgLauncherCmdHandler(), handling of invalid input." alt="" coords="2491,255,2673,309"/>
-<area shape="poly" id="edge36_Node000019_Node000037" title=" " alt="" coords="2502,200,2557,252,2553,256,2498,204"/>
-<area shape="rect" id="Node000038" href="$utest-crinit-cfg-launch-cmd-handler_2case-null-input_8c.html" title="Unit test for crinitCfgLauncherCmdHandler(), handling of null pointer input." alt="" coords="2697,255,2880,309"/>
-<area shape="poly" id="edge37_Node000019_Node000038" title=" " alt="" coords="2523,194,2551,204,2702,252,2700,257,2549,209,2521,199"/>
-<area shape="rect" id="Node000039" href="$utest-crinit-cfg-launch-cmd-handler_2case-success_8c.html" title="Unit test for crinitCfgLauncherCmdHandler(), successful execution." alt="" coords="2904,255,3087,309"/>
-<area shape="poly" id="edge38_Node000019_Node000039" title=" " alt="" coords="2519,194,2551,204,2646,223,2721,231,2797,237,2893,252,2904,254,2903,260,2892,257,2796,243,2720,236,2645,228,2549,209,2517,199"/>
-<area shape="rect" id="Node000040" href="$utest-crinit-cfg-stop__command-handler_2case-null-input_8c.html" title="Unit test for crinitCfgStopCmdHandler(), handling of null pointer input." alt="" coords="3111,255,3317,309"/>
-<area shape="poly" id="edge39_Node000019_Node000040" title=" " alt="" coords="2518,194,2551,204,2633,220,2703,228,2824,234,2945,236,3016,241,3100,252,3111,254,3110,259,3099,257,3016,247,2945,241,2824,239,2703,234,2632,225,2549,209,2516,199"/>
-<area shape="rect" id="Node000041" href="$utest-crinit-cfg-stop__command-handler_2case-success_8c.html" title="Unit test for crinitCfgStopCmdHandler(), successful execution." alt="" coords="3341,255,3548,309"/>
-<area shape="poly" id="edge40_Node000019_Node000041" title=" " alt="" coords="2518,194,2551,204,2667,224,2767,234,2856,237,2939,236,3111,234,3212,239,3330,252,3341,254,3341,259,3330,257,3212,244,3111,239,2939,241,2856,242,2767,240,2667,230,2549,209,2516,200"/>
-<area shape="rect" id="Node000042" href="$utest-crinit-cfg-user-handler_2case-empty-input_8c.html" title="Unit test for crinitCfgUserHandler(), handling of empty input." alt="" coords="3573,255,3741,309"/>
-<area shape="poly" id="edge41_Node000019_Node000042" title=" " alt="" coords="2518,195,2551,204,2702,228,2832,239,2946,239,3054,235,3162,229,3277,227,3408,234,3561,252,3573,254,3572,259,3560,257,3408,239,3277,233,3162,235,3054,240,2946,245,2831,244,2702,234,2549,209,2516,200"/>
-<area shape="rect" id="Node000043" href="$utest-crinit-cfg-user-handler_2case-negative-input_8c.html" title="Unit test for crinitCfgUserHandler(), handling of negative input." alt="" coords="3765,255,3933,309"/>
-<area shape="poly" id="edge42_Node000019_Node000043" title=" " alt="" coords="2517,194,2551,204,2731,232,2885,243,3022,243,3150,236,3278,228,3416,225,3571,231,3753,252,3765,254,3764,259,3752,257,3571,236,3415,230,3278,234,3150,241,3022,248,2885,249,2730,238,2549,209,2515,199"/>
-<area shape="rect" id="Node000044" href="$utest-crinit-cfg-user-handler_2case-null-input_8c.html" title="Unit test for crinitCfgUserHandler(), handling of null pointer input." alt="" coords="3957,255,4125,309"/>
-<area shape="poly" id="edge43_Node000019_Node000044" title=" " alt="" coords="2517,194,2551,204,2660,223,2760,236,2939,248,3097,246,3246,237,3394,227,3554,222,3734,228,3835,238,3945,252,3957,254,3956,259,3944,257,3834,243,3733,234,3554,227,3395,233,3246,243,3097,252,2939,253,2759,241,2659,228,2549,209,2515,199"/>
-<area shape="rect" id="Node000045" href="$utest-crinit-cfg-user-handler_2case-success_8c.html" title="Unit test for crinitCfgUserHandler(), successful execution." alt="" coords="4149,255,4317,309"/>
-<area shape="poly" id="edge44_Node000019_Node000045" title=" " alt="" coords="2517,194,2551,204,2621,215,2704,223,2895,232,3112,235,3342,233,3790,232,3983,238,4137,252,4149,254,4148,259,4136,257,3982,243,3790,237,3342,239,3112,240,2895,237,2703,228,2621,220,2549,209,2515,199"/>
-<area shape="rect" id="Node000046" href="$utest-crinit-create-launcher-parameters_2case-success_8c.html" title="Unit test for crinitCreateLauncherParameters(), successful execution." alt="" coords="4341,255,4551,309"/>
-<area shape="poly" id="edge45_Node000019_Node000046" title=" " alt="" coords="2517,194,2551,204,2630,216,2722,225,2937,236,3180,239,3438,237,3940,234,4156,239,4329,252,4342,254,4341,259,4328,257,4155,244,3940,240,3438,243,3180,244,2937,241,2722,230,2629,221,2549,209,2515,199"/>
-<area shape="rect" id="Node000047" href="$utest-crinit-expand-pid-variables_2case-success_8c.html" title="Unit test for crinitExpandPIDVariablesInSingleCommand(), successful execution." alt="" coords="4575,255,4739,309"/>
-<area shape="poly" id="edge46_Node000019_Node000047" title=" " alt="" coords="2517,194,2551,204,2641,217,2745,227,2988,237,3264,238,3556,234,3848,230,4124,228,4368,234,4473,242,4564,252,4575,254,4574,259,4563,257,4472,247,4368,240,4124,234,3848,235,3556,240,3264,243,2988,242,2744,232,2640,223,2549,209,2515,200"/>
-<area shape="rect" id="Node000021" href="$confmap_8c.html" title="Implementation file related to mapping configuration options and their string representations." alt="" coords="669,372,783,397"/>
-<area shape="poly" id="edge20_Node000020_Node000021" title=" " alt="" coords="385,297,417,307,484,322,537,330,590,339,657,355,700,369,698,374,656,360,589,344,536,335,483,327,416,312,383,302"/>
-<area shape="rect" id="Node000022" href="$confparse_8c.html" title="Implementation of the Config Parser." alt="" coords="807,372,927,397"/>
-<area shape="poly" id="edge21_Node000020_Node000022" title=" " alt="" coords="383,297,417,307,522,325,606,330,689,336,795,355,840,369,839,374,793,360,688,341,605,336,522,330,416,312,382,302"/>
-<area shape="rect" id="Node000023" href="$kcmdline_8c.html" title="Implementation of functions related to working with the Kernel command line." alt="" coords="113,372,229,397"/>
-<area shape="poly" id="edge22_Node000020_Node000023" title=" " alt="" coords="311,304,192,374,189,370,308,299"/>
-<area shape="poly" id="edge23_Node000020_Node000024" title=" " alt="" coords="284,301,197,326,102,360,70,374,68,370,100,355,196,321,283,296"/>
-<area shape="rect" id="Node000025" href="$utest-cfgmap-order_2regression-test_8c.html" title="Implementation of a regression test for the order and completeness of crinit{Task,..." alt="" coords="253,365,428,405"/>
-<area shape="poly" id="edge24_Node000020_Node000025" title=" " alt="" coords="343,308,343,365,338,365,338,308"/>
-<area shape="rect" id="Node000026" href="$utest-globopt-defaults_2regression-test_8c.html" title="Implementation of a regression test if default values for all global options are present and intializ..." alt="" coords="452,365,645,405"/>
-<area shape="poly" id="edge25_Node000020_Node000026" title=" " alt="" coords="378,298,511,362,508,367,376,303"/>
-<area shape="rect" id="Node000049" href="$notiserv_8h.html" title="Header related to the notification and service interface." alt="" coords="5165,269,5274,295"/>
-<area shape="poly" id="edge48_Node000048_Node000049" title=" " alt="" coords="5222,206,5222,269,5217,269,5217,206"/>
-<area shape="rect" id="Node000052" href="$procdip_8h.html" title="Header related to the Process Dispatcher." alt="" coords="5300,269,5405,295"/>
-<area shape="poly" id="edge51_Node000048_Node000052" title=" " alt="" coords="5247,198,5339,267,5336,271,5244,202"/>
-<area shape="rect" id="Node000055" href="$rtimcmd_8h.html" title="Header related to handling of runtime commands received via the notification/service interface." alt="" coords="4894,269,5006,295"/>
-<area shape="poly" id="edge55_Node000048_Node000055" title=" " alt="" coords="5177,199,4981,272,4980,267,5175,194"/>
-<area shape="poly" id="edge87_Node000048_Node000066" title=" " alt="" coords="5155,194,5028,220,4883,257,4843,272,4841,267,4881,252,5027,214,5154,189"/>
-<area shape="rect" id="Node000067" href="$optfeat_8c.html" title="Implementation of optional behavior dependent on available system features." alt="" coords="5429,269,5532,295"/>
-<area shape="poly" id="edge88_Node000048_Node000067" title=" " alt="" coords="5265,194,5419,252,5455,267,5453,272,5417,257,5263,199"/>
-<area shape="rect" id="Node000068" href="$taskdb_8c.html" title="Implementation of the central Task Database and related functions." alt="" coords="5556,269,5656,295"/>
-<area shape="poly" id="edge89_Node000048_Node000068" title=" " alt="" coords="5284,189,5406,215,5546,252,5583,267,5581,272,5544,257,5405,220,5283,194"/>
-<area shape="rect" id="Node000050" href="$crinit_8c.html" title="Implementation of the Crinit main program." alt="" coords="5432,372,5521,397"/>
-<area shape="poly" id="edge49_Node000049_Node000050" title=" " alt="" coords="5264,297,5290,307,5356,330,5422,355,5454,369,5452,374,5420,360,5354,335,5288,312,5262,302"/>
-<area shape="rect" id="Node000051" href="$notiserv_8c.html" title="Implementation of the notification and service interface." alt="" coords="5165,372,5273,397"/>
-<area shape="poly" id="edge50_Node000049_Node000051" title=" " alt="" coords="5222,309,5222,372,5217,372,5217,309"/>
-<area shape="poly" id="edge52_Node000052_Node000050" title=" " alt="" coords="5379,301,5464,370,5461,374,5376,306"/>
-<area shape="rect" id="Node000053" href="$procdip_8c.html" title="Implementation of the Process Dispatcher." alt="" coords="5546,372,5650,397"/>
-<area shape="poly" id="edge53_Node000052_Node000053" title=" " alt="" coords="5394,297,5571,370,5569,374,5392,302"/>
-<area shape="rect" id="Node000054" href="$rtimcmd_8c.html" title="Implementation of runtime commands to be triggered by the notification/service interface." alt="" coords="5297,372,5408,397"/>
-<area shape="poly" id="edge54_Node000052_Node000054" title=" " alt="" coords="5355,309,5355,372,5350,372,5350,309"/>
-<area shape="poly" id="edge67_Node000055_Node000009" title=" " alt="" coords="4913,303,4883,312,4754,334,4643,343,4545,344,4453,340,4362,336,4264,335,4153,341,4024,360,3930,381,3837,408,3684,462,3682,457,3836,403,3928,376,4023,355,4153,336,4263,329,4362,330,4454,335,4545,339,4643,338,4753,329,4881,307,4912,297"/>
-<area shape="poly" id="edge68_Node000055_Node000011" title=" " alt="" coords="4912,302,4883,312,4791,330,4718,335,4645,341,4555,360,4486,383,4418,410,4306,462,4304,457,4416,405,4484,378,4553,355,4645,335,4717,330,4790,324,4881,307,4910,297"/>
-<area shape="poly" id="edge69_Node000055_Node000012" title=" " alt="" coords="4911,302,4883,312,4822,326,4773,333,4725,341,4666,360,4614,383,4565,410,4484,462,4481,458,4562,406,4612,378,4664,355,4724,336,4772,328,4821,321,4881,307,4909,297"/>
-<area shape="poly" id="edge70_Node000055_Node000013" title=" " alt="" coords="4910,302,4883,312,4835,323,4796,328,4759,336,4718,359,4694,382,4674,409,4646,461,4642,459,4670,406,4690,379,4715,355,4757,331,4795,323,4834,318,4881,307,4908,297"/>
-<area shape="poly" id="edge71_Node000055_Node000014" title=" " alt="" coords="4949,308,4947,357,4951,385,4959,411,4976,437,4998,458,4995,462,4972,440,4954,413,4945,386,4942,358,4943,308"/>
-<area shape="poly" id="edge72_Node000055_Node000015" title=" " alt="" coords="4957,307,4974,360,4989,387,5009,410,5062,431,5153,458,5152,464,5060,436,5006,414,4985,390,4969,362,4952,309"/>
-<area shape="poly" id="edge73_Node000055_Node000016" title=" " alt="" coords="4969,304,5020,368,5060,410,5099,429,5135,441,5167,446,5199,448,5267,448,5307,450,5352,457,5364,460,5363,465,5351,463,5306,456,5267,453,5199,453,5167,452,5133,446,5097,434,5056,414,5016,371,4965,307"/>
-<area shape="poly" id="edge74_Node000055_Node000017" title=" " alt="" coords="4980,300,5053,355,5080,386,5092,398,5110,410,5174,435,5229,448,5280,453,5329,452,5433,447,5493,449,5562,457,5597,465,5596,470,5562,463,5493,454,5433,452,5330,457,5280,458,5229,453,5172,440,5107,414,5088,402,5076,389,5050,359,4977,305"/>
-<area shape="poly" id="edge59_Node000055_Node000051" title=" " alt="" coords="4995,297,5190,369,5188,374,4993,302"/>
-<area shape="poly" id="edge60_Node000055_Node000054" title=" " alt="" coords="5020,293,5145,318,5287,355,5327,369,5325,374,5285,360,5144,323,5019,298"/>
-<area shape="rect" id="Node000056" href="$sockcom_8h.html" title="Header defining Crinit socket communication functions used internally by the crinit&#45;client library." alt="" coords="2819,372,2934,397"/>
-<area shape="poly" id="edge56_Node000055_Node000056" title=" " alt="" coords="4914,302,4883,312,4783,320,4581,330,3991,352,2934,384,2934,379,3990,347,4581,325,4783,315,4881,307,4913,297"/>
-<area shape="rect" id="Node000058" href="$mock-build-rtim-cmd_8h.html" title="Header declaring a mock function for crinitBuildRtimCmd()." alt="" coords="2125,365,2295,405"/>
-<area shape="poly" id="edge61_Node000055_Node000058" title=" " alt="" coords="4914,302,4883,312,4812,321,4708,328,4415,339,4044,344,3633,347,2850,350,2557,353,2381,360,2296,371,2295,365,2380,355,2556,348,2850,345,3633,342,4044,339,4415,333,4707,323,4812,316,4881,307,4913,297"/>
-<area shape="rect" id="Node000060" href="$mock-crinit-xfer_8h.html" title="Implementation of a mock function for crinitXfer()." alt="" coords="2393,365,2563,405"/>
-<area shape="poly" id="edge63_Node000055_Node000060" title=" " alt="" coords="4914,302,4883,312,4780,328,4661,340,4385,352,4072,354,3740,350,3094,340,2817,344,2698,350,2594,360,2552,367,2551,362,2594,355,2697,345,2817,339,3094,335,3740,344,4072,349,4385,347,4661,334,4779,323,4881,307,4913,297"/>
-<area shape="rect" id="Node000062" href="$mock-destroy-rtim-cmd_8h.html" title="Header declaring a mock function for crinitDestroyRtimCmd()." alt="" coords="2606,365,2777,405"/>
-<area shape="poly" id="edge65_Node000055_Node000062" title=" " alt="" coords="4914,302,4883,312,4790,327,4682,337,4431,349,4147,352,3847,348,3261,341,3009,345,2901,351,2808,360,2765,367,2764,362,2807,355,2901,346,3009,340,3261,336,3847,343,4147,346,4431,344,4682,332,4789,321,4881,307,4913,297"/>
-<area shape="rect" id="Node000064" href="$utest-crinit-task-add_8c.html" title="Implementation of the crinitClientTaskAdd() unit test group." alt="" coords="5783,460,5941,515"/>
-<area shape="poly" id="edge75_Node000055_Node000064" title=" " alt="" coords="4993,298,5045,322,5100,355,5116,371,5127,385,5138,398,5155,410,5212,427,5285,437,5369,443,5459,445,5635,448,5711,451,5772,457,5783,460,5782,465,5771,463,5711,456,5635,453,5459,451,5369,448,5284,443,5210,432,5153,414,5134,402,5123,388,5112,374,5096,359,5043,327,4991,302"/>
-<area shape="rect" id="Node000065" href="$utest-crinit-task-add_8h.html" title="Header declaring the unit tests for crinitClientTaskAdd()." alt="" coords="4728,357,4887,412"/>
-<area shape="poly" id="edge76_Node000055_Node000065" title=" " alt="" coords="4924,305,4846,359,4843,355,4921,300"/>
-<area shape="poly" id="edge57_Node000056_Node000003" title=" " alt="" coords="2879,411,2879,475,2874,475,2874,411"/>
-<area shape="rect" id="Node000057" href="$sockcom_8c.html" title="Implementation of socket communication functions for the crinit&#45;client library." alt="" coords="2673,475,2787,500"/>
-<area shape="poly" id="edge58_Node000056_Node000057" title=" " alt="" coords="2850,407,2748,477,2745,472,2847,403"/>
-<area shape="rect" id="Node000059" href="$mock-build-rtim-cmd_8c.html" title="Implementation of a mock function for crinitBuildRtimCmd()." alt="" coords="2089,467,2259,507"/>
-<area shape="poly" id="edge62_Node000058_Node000059" title=" " alt="" coords="2201,419,2183,468,2178,466,2196,417"/>
-<area shape="rect" id="Node000061" href="$mock-crinit-xfer_8c.html" title="Implementation of a mock function for crinitXfer()." alt="" coords="2283,467,2454,507"/>
-<area shape="poly" id="edge64_Node000060_Node000061" title=" " alt="" coords="2449,416,2391,469,2387,465,2445,412"/>
-<area shape="rect" id="Node000063" href="$mock-destroy-rtim-cmd_8c.html" title="Implementation of a mock function for crinitGlobOptSet()." alt="" coords="2478,467,2649,507"/>
-<area shape="poly" id="edge66_Node000062_Node000063" title=" " alt="" coords="2658,415,2589,469,2586,465,2655,411"/>
-<area shape="poly" id="edge77_Node000065_Node000009" title=" " alt="" coords="4715,393,4206,421,3928,441,3725,463,3712,465,3711,460,3724,457,3927,436,4206,416,4714,388"/>
-<area shape="poly" id="edge78_Node000065_Node000010" title=" " alt="" coords="4818,425,4825,459,4819,460,4813,426"/>
-<area shape="poly" id="edge79_Node000065_Node000011" title=" " alt="" coords="4715,401,4545,426,4351,463,4339,465,4338,460,4349,457,4544,421,4714,395"/>
-<area shape="poly" id="edge80_Node000065_Node000012" title=" " alt="" coords="4715,414,4531,465,4530,460,4714,409"/>
-<area shape="poly" id="edge81_Node000065_Node000013" title=" " alt="" coords="4752,421,4681,462,4678,457,4749,416"/>
-<area shape="poly" id="edge82_Node000065_Node000014" title=" " alt="" coords="4880,415,4977,458,4975,462,4878,420"/>
-<area shape="poly" id="edge83_Node000065_Node000015" title=" " alt="" coords="4901,403,5141,457,5153,460,5152,465,5140,463,4899,409"/>
-<area shape="poly" id="edge84_Node000065_Node000016" title=" " alt="" coords="4901,396,5352,457,5364,460,5363,465,5351,463,4900,401"/>
-<area shape="poly" id="edge85_Node000065_Node000017" title=" " alt="" coords="4901,393,5058,409,5200,421,5311,427,5421,437,5562,457,5598,465,5597,470,5562,463,5421,442,5311,433,5200,426,5058,415,4900,399"/>
-<area shape="poly" id="edge86_Node000065_Node000064" title=" " alt="" coords="4901,392,5109,409,5296,419,5441,423,5587,431,5772,457,5783,460,5782,465,5771,463,5586,437,5441,428,5295,425,5108,415,4901,397"/>
+<area shape="rect" id="Node000001" title="Definitions shared between crinit&#39;s public and internal APIs." alt="" coords="3295,5,3425,31"/>
+<area shape="rect" id="Node000002" href="$crinit-client_8h.html" title="Public definitions/declarations for using the crinit&#45;client shared library." alt="" coords="2048,387,2179,412"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="3281,24,3093,38,2970,54,2835,76,2694,108,2550,150,2410,204,2343,236,2279,272,2233,302,2190,335,2127,388,2124,384,2187,330,2230,297,2276,267,2341,231,2408,199,2548,145,2692,103,2834,71,2969,48,3092,33,3281,19"/>
+<area shape="rect" id="Node000018" href="$task_8h.html" title="Header defining the data structures belonging to a single task and related functions." alt="" coords="4221,79,4307,104"/>
+<area shape="poly" id="edge17_Node000001_Node000018" title=" " alt="" coords="3439,23,4222,84,4221,89,3439,28"/>
+<area shape="rect" id="Node000061" href="$crinit_8c.html" title="Implementation of the Crinit main program." alt="" coords="2659,387,2749,412"/>
+<area shape="poly" id="edge130_Node000001_Node000061" title=" " alt="" coords="3281,32,3088,62,2970,84,2848,112,2732,144,2629,182,2586,202,2548,224,2519,247,2498,271,2491,285,2488,297,2491,309,2498,322,2514,339,2529,350,2563,357,2603,359,2649,369,2682,384,2680,389,2647,375,2602,364,2563,362,2527,354,2510,343,2494,326,2486,311,2483,297,2486,283,2494,268,2515,243,2546,220,2583,198,2627,177,2730,139,2847,107,2969,79,3087,57,3280,27"/>
+<area shape="rect" id="Node000077" href="$taskdb_8c.html" title="Implementation of the central Task Database and related functions." alt="" coords="6138,387,6238,412"/>
+<area shape="poly" id="edge131_Node000001_Node000077" title=" " alt="" coords="3439,17,4678,22,5658,32,6727,52,7773,82,8253,102,8684,126,9053,154,9346,187,9460,205,9549,224,9613,245,9634,256,9649,268,9658,282,9662,297,9659,312,9648,326,9633,332,9603,338,9500,348,9147,365,8652,378,8078,387,6940,398,6239,401,6239,395,6940,392,8078,382,8652,372,9147,360,9499,343,9602,333,9632,327,9645,322,9654,310,9657,297,9654,284,9645,271,9631,260,9611,250,9548,229,9459,210,9346,192,9053,160,8684,131,8253,107,7773,87,6727,57,5658,38,4678,27,3439,22"/>
+<area shape="rect" id="Node000003" href="$crinit-client_8c.html" title="Implementation of the crinit&#45;client shared library." alt="" coords="3592,489,3723,515"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="2174,412,2242,424,2445,442,2618,446,2770,442,2913,434,3055,428,3207,429,3379,442,3581,472,3631,487,3629,492,3579,477,3378,448,3207,435,3055,434,2913,440,2770,447,2618,451,2444,447,2241,429,2173,418"/>
+<area shape="rect" id="Node000004" href="$crinit-ctl_8c.html" title="Implementation of the crinit&#45;ctl service program using the crinit&#45;client library." alt="" coords="2413,489,2523,515"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="2162,414,2198,424,2300,447,2401,472,2441,487,2440,492,2399,477,2298,452,2197,429,2160,419"/>
+<area shape="rect" id="Node000005" href="$utest-crinit-set-err-stream_2case-set_8c.html" title="Implementation of a unit test for crinitClientSetErrStream()." alt="" coords="2730,482,2921,522"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="2177,412,2242,424,2376,440,2480,446,2585,454,2719,472,2755,479,2754,485,2718,477,2585,459,2480,452,2375,445,2241,429,2176,417"/>
+<area shape="rect" id="Node000006" href="$utest-crinit-set-info-stream_2case-set_8c.html" title="Implementation of a unit test for crinitClientSetInfoStream()." alt="" coords="2945,482,3143,522"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="2176,412,2242,424,2347,436,2436,443,2588,446,2740,451,2829,458,2934,472,2972,479,2971,485,2933,477,2828,464,2739,456,2588,452,2435,448,2346,441,2241,429,2175,418"/>
+<area shape="rect" id="Node000007" href="$case-glob-opt-error_8c.html" title="Implementation of a unit test for crinitClientSetVerbose() with the assumption crinitGlobOptSet() fai..." alt="" coords="3168,475,3339,529"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="2175,412,2242,424,2380,438,2498,444,2699,443,2796,442,2900,445,3018,454,3156,472,3168,474,3167,479,3156,477,3018,459,2900,450,2796,448,2699,449,2498,450,2380,444,2241,429,2174,418"/>
+<area shape="rect" id="Node000008" href="$utest-crinit-set-verbose_2case-success_8c.html" title="Implementation of a unit test for crinitClientSetVerbose(), under the assumption no internal function..." alt="" coords="3363,482,3567,522"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="2174,412,2242,424,2410,441,2553,448,2679,448,2796,446,2914,444,3040,445,3183,454,3351,472,3392,479,3391,485,3350,477,3182,459,3040,451,2914,449,2796,451,2679,454,2552,453,2409,446,2241,429,2173,418"/>
+<area shape="rect" id="Node000009" href="$case-build-rtim-cmd-error_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for crinitBuildRtimCmd()." alt="" coords="1615,475,1801,529"/>
+<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="2055,418,1802,480,1801,475,2054,413"/>
+<area shape="rect" id="Node000010" href="$case-confpath-null_8c.html" title="Unit test for crinitClientTaskAdd() with confFilePath as NULL." alt="" coords="1826,475,2006,529"/>
+<area shape="poly" id="edge9_Node000002_Node000010" title=" " alt="" coords="2080,421,1969,477,1966,472,2077,416"/>
+<area shape="rect" id="Node000011" href="$case-crinit-response-cmd-error_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for wrong command in response." alt="" coords="2031,475,2196,529"/>
+<area shape="poly" id="edge10_Node000002_Node000011" title=" " alt="" coords="2116,426,2116,474,2111,474,2111,426"/>
+<area shape="rect" id="Node000012" href="$case-crinit-response-code-error_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for error code response." alt="" coords="2220,475,2388,529"/>
+<area shape="poly" id="edge11_Node000002_Node000012" title=" " alt="" coords="2148,416,2256,472,2253,477,2146,421"/>
+<area shape="rect" id="Node000013" href="$case-crinit-xfer-error_8c.html" title=" " alt="" coords="2547,475,2706,529"/>
+<area shape="poly" id="edge12_Node000002_Node000013" title=" " alt="" coords="2159,414,2198,424,2292,441,2367,449,2442,456,2537,472,2548,475,2547,480,2535,477,2441,461,2366,454,2292,446,2197,429,2158,419"/>
+<area shape="rect" id="Node000014" href="$case-forcedeps-empty_8c.html" title="Unit test for crinitClientTaskAdd() with forceDeps as empty string." alt="" coords="773,475,960,529"/>
+<area shape="poly" id="edge13_Node000002_Node000014" title=" " alt="" coords="2034,408,972,477,961,479,960,474,972,472,2034,403"/>
+<area shape="rect" id="Node000015" href="$case-forcedeps-null_8c.html" title="Unit test for crinitClientTaskAdd() with forceDeps as NULL." alt="" coords="984,475,1171,529"/>
+<area shape="poly" id="edge14_Node000002_Node000015" title=" " alt="" coords="2035,408,1598,437,1359,457,1184,477,1171,480,1170,474,1184,472,1358,452,1598,432,2034,403"/>
+<area shape="rect" id="Node000016" href="$case-overwrite-bool-to-string_8c.html" title="Unit test for crinitClientTaskAdd() testing overwrite is passed on correctly." alt="" coords="1195,475,1381,529"/>
+<area shape="poly" id="edge15_Node000002_Node000016" title=" " alt="" coords="2035,408,1751,431,1573,451,1394,477,1381,480,1380,474,1393,472,1572,445,1750,425,2034,403"/>
+<area shape="rect" id="Node000017" href="$utest-crinit-task-add_2case-success_8c.html" title="Unit test for crinitClientTaskAdd() testing error handling for crinitXfer()." alt="" coords="1405,482,1590,522"/>
+<area shape="poly" id="edge16_Node000002_Node000017" title=" " alt="" coords="2034,412,1838,438,1603,477,1570,485,1569,479,1602,472,1837,433,2034,407"/>
+<area shape="rect" id="Node000019" href="$confhdl_8h.html" title="Header defining type&#45; and target&#45;specific handler functions for configuration parsing." alt="" coords="6611,174,6717,199"/>
+<area shape="poly" id="edge18_Node000018_Node000019" title=" " alt="" coords="4320,92,6611,181,6611,186,4320,98"/>
+<area shape="rect" id="Node000024" href="$task_8c.html" title="Implementation of functions related to a single task." alt="" coords="10078,387,10162,412"/>
+<area shape="poly" id="edge112_Node000018_Node000024" title=" " alt="" coords="4320,90,6177,107,7419,125,7943,136,8337,149,8575,155,8778,153,8957,148,9124,145,9290,150,9465,169,9560,185,9661,206,9771,233,9890,267,9956,293,10018,326,10106,384,10103,389,10016,330,9954,298,9888,272,9770,238,9660,211,9559,190,9464,174,9289,156,9124,150,8957,153,8778,158,8575,160,8337,155,7943,141,7419,130,6177,112,4320,96"/>
+<area shape="rect" id="Node000027" href="$confhdl_8c.html" title="Implementation of type&#45; and target&#45;specific handler functions for configuration parsing." alt="" coords="6009,387,6113,412"/>
+<area shape="poly" id="edge110_Node000018_Node000027" title=" " alt="" coords="4320,91,5374,107,7148,144,8052,169,8833,198,9146,214,9390,230,9554,248,9601,257,9624,267,9635,282,9638,297,9635,312,9624,326,9608,333,9574,338,9457,348,9061,361,8512,367,7885,369,6704,369,6301,370,6127,375,6085,389,6083,384,6126,369,6301,365,6704,364,7885,364,8512,362,9061,355,9457,342,9573,333,9606,328,9621,322,9630,310,9633,297,9630,284,9621,271,9600,263,9553,253,9390,236,9146,219,8833,203,8052,174,7148,149,5374,113,4320,96"/>
+<area shape="rect" id="Node000029" href="$utest-crinit-cfg-dep-handler_2case-empty-input_8c.html" title=" " alt="" coords="4833,269,4997,324"/>
+<area shape="poly" id="edge113_Node000018_Node000029" title=" " alt="" coords="4320,90,4442,91,4592,99,4667,107,4735,117,4792,131,4833,150,4862,175,4884,207,4900,239,4910,268,4905,270,4895,242,4879,210,4858,179,4831,154,4790,136,4734,122,4666,112,4592,104,4442,97,4320,95"/>
+<area shape="rect" id="Node000030" href="$utest-crinit-cfg-dep-handler_2case-err-config-type_8c.html" title=" " alt="" coords="5021,269,5185,324"/>
+<area shape="poly" id="edge114_Node000018_Node000030" title=" " alt="" coords="4321,92,4610,110,4766,126,4830,137,4878,149,4936,174,4990,206,5074,267,5071,271,4987,210,4933,179,4876,155,4829,142,4765,132,4610,115,4320,97"/>
+<area shape="rect" id="Node000031" href="$utest-crinit-cfg-dep-handler_2case-invalid-value_8c.html" title=" " alt="" coords="5209,269,5373,324"/>
+<area shape="poly" id="edge115_Node000018_Node000031" title=" " alt="" coords="4321,92,4648,112,4829,129,4903,138,4959,149,5040,174,5118,206,5245,267,5242,272,5116,210,5038,179,4958,155,4902,144,4828,134,4648,117,4320,98"/>
+<area shape="rect" id="Node000032" href="$utest-crinit-cfg-dep-handler_2case-null-input_8c.html" title=" " alt="" coords="3522,269,3686,324"/>
+<area shape="poly" id="edge116_Node000018_Node000032" title=" " alt="" coords="4208,95,4088,98,3939,106,3799,124,3743,138,3703,154,3673,179,3648,209,3629,242,3616,270,3611,268,3625,239,3644,206,3669,175,3700,150,3741,132,3798,119,3939,101,4087,93,4208,90"/>
+<area shape="rect" id="Node000033" href="$utest-crinit-cfg-dep-handler_2case-success_8c.html" title="Unit test for crinitCfgDepHandler(), successful execution." alt="" coords="3710,269,3874,324"/>
+<area shape="poly" id="edge117_Node000018_Node000033" title=" " alt="" coords="4208,97,4080,103,3926,114,3792,131,3746,142,3722,154,3712,169,3711,184,3722,220,3738,246,3758,267,3755,271,3734,249,3718,222,3705,185,3707,168,3718,150,3744,137,3791,126,3926,109,4080,98,4207,92"/>
+<area shape="rect" id="Node000048" href="$utest-crinit-cfg-trig-handler_2case-empty-input_8c.html" title=" " alt="" coords="3899,269,4061,324"/>
+<area shape="poly" id="edge119_Node000018_Node000048" title=" " alt="" coords="4208,98,4085,104,3937,115,3808,132,3765,142,3742,154,3731,170,3728,186,3732,202,3742,219,3797,240,3899,270,3898,275,3795,245,3738,223,3727,204,3723,186,3726,168,3738,150,3763,137,3807,127,3937,110,4084,99,4208,92"/>
+<area shape="rect" id="Node000049" href="$utest-crinit-cfg-trig-handler_2case-err-config-type_8c.html" title=" " alt="" coords="4085,269,4248,324"/>
+<area shape="poly" id="edge120_Node000018_Node000049" title=" " alt="" coords="4208,98,4089,105,3949,116,3826,133,3785,143,3763,154,3752,170,3749,187,3752,203,3763,219,3786,236,3820,247,3862,253,3909,257,4002,260,4074,267,4085,269,4084,275,4073,272,4002,266,3909,262,3862,259,3819,252,3784,240,3759,223,3748,205,3743,187,3747,168,3760,150,3783,138,3825,127,3948,111,4089,99,4207,93"/>
+<area shape="rect" id="Node000050" href="$utest-crinit-cfg-trig-handler_2case-invalid-value_8c.html" title=" " alt="" coords="4272,269,4435,324"/>
+<area shape="poly" id="edge121_Node000018_Node000050" title=" " alt="" coords="4320,93,4437,100,4575,111,4695,128,4736,138,4759,150,4771,168,4775,187,4771,205,4759,223,4735,240,4700,252,4657,259,4611,262,4518,266,4447,272,4436,275,4435,269,4446,267,4517,260,4610,257,4657,253,4699,247,4733,236,4755,219,4766,203,4770,187,4766,170,4756,154,4734,143,4694,133,4574,117,4436,105,4320,98"/>
+<area shape="rect" id="Node000051" href="$utest-crinit-cfg-trig-handler_2case-null-input_8c.html" title=" " alt="" coords="4459,269,4621,324"/>
+<area shape="poly" id="edge122_Node000018_Node000051" title=" " alt="" coords="4321,92,4443,99,4588,110,4716,127,4760,138,4784,150,4796,168,4800,186,4796,204,4784,223,4622,274,4621,269,4781,219,4791,202,4795,186,4791,170,4781,154,4758,143,4715,132,4588,116,4442,104,4320,98"/>
+<area shape="rect" id="Node000052" href="$utest-crinit-cfg-trig-handler_2case-success_8c.html" title="Unit test for crinitCfgTrigHandler(), successful execution." alt="" coords="4645,269,4808,324"/>
+<area shape="poly" id="edge123_Node000018_Node000052" title=" " alt="" coords="4321,92,4448,98,4602,109,4737,126,4784,137,4810,150,4821,168,4823,185,4810,223,4793,250,4769,271,4766,267,4788,246,4806,220,4818,184,4816,169,4806,154,4782,142,4736,131,4602,114,4448,103,4320,97"/>
+<area shape="rect" id="Node000059" href="$taskdb_8h.html" title="Header defining the central Task Data Structure and related types/functions." alt="" coords="2784,174,2885,199"/>
+<area shape="poly" id="edge58_Node000018_Node000059" title=" " alt="" coords="4208,96,3734,110,3400,128,3059,155,2886,179,2885,174,3058,149,3400,122,3734,105,4207,91"/>
+<area shape="rect" id="Node000079" href="$elosdep_8c.html" title="Implementation of elos connection." alt="" coords="2964,284,3071,309"/>
+<area shape="poly" id="edge111_Node000018_Node000079" title=" " alt="" coords="4207,96,4018,100,3760,110,3504,127,3399,140,3319,155,3234,184,3152,221,3084,258,3037,286,3034,281,3081,253,3150,216,3232,179,3318,149,3398,134,3504,122,3760,105,4017,95,4207,91"/>
+<area shape="rect" id="Node000081" href="$case-failure_8c.html" title="Unit test for crinitTaskDBSetTaskRespawnInhibit(), failure execution." alt="" coords="3095,269,3284,324"/>
+<area shape="poly" id="edge128_Node000018_Node000081" title=" " alt="" coords="4207,97,3845,115,3643,131,3559,142,3497,155,3422,179,3350,210,3233,272,3231,267,3347,205,3420,174,3495,149,3558,137,3642,126,3844,109,4207,92"/>
+<area shape="rect" id="Node000082" href="$utest-crinit-taskdb-set-task-respawn-inhibit_2case-success_8c.html" title="Unit test for crinitTaskDBSetTaskRespawnInhibit(), successful execution." alt="" coords="3308,269,3497,324"/>
+<area shape="poly" id="edge129_Node000018_Node000082" title=" " alt="" coords="4208,97,3909,114,3748,131,3682,142,3633,155,3575,179,3521,210,3435,271,3432,267,3518,206,3573,174,3631,149,3681,137,3747,126,3909,109,4208,92"/>
+<area shape="rect" id="Node000083" href="$utest-crinit-cfg-dep-handler_8c.html" title=" " alt="" coords="3773,159,3952,214"/>
+<area shape="poly" id="edge118_Node000018_Node000083" title=" " alt="" coords="4208,104,4095,125,3965,155,3939,162,3938,157,3963,149,4094,120,4207,99"/>
+<area shape="rect" id="Node000084" href="$utest-crinit-cfg-trig-handler_8c.html" title=" " alt="" coords="3976,159,4152,214"/>
+<area shape="poly" id="edge124_Node000018_Node000084" title=" " alt="" coords="4228,112,4121,162,4119,157,4226,107"/>
+<area shape="rect" id="Node000085" href="$case-invalid-cap-directive_8c.html" title=" " alt="" coords="4177,152,4351,221"/>
+<area shape="poly" id="edge125_Node000018_Node000085" title=" " alt="" coords="4267,117,4267,152,4261,152,4261,117"/>
+<area shape="rect" id="Node000086" href="$case-invalid-cap-names_8c.html" title=" " alt="" coords="4375,152,4550,221"/>
+<area shape="poly" id="edge126_Node000018_Node000086" title=" " alt="" coords="4302,107,4392,150,4390,154,4300,112"/>
+<area shape="rect" id="Node000087" href="$utest-crinit-task-create-from-conf-kvlist_2case-success_8c.html" title="Unit test for crinitCfgUserHandler(), successful execution." alt="" coords="4575,159,4745,214"/>
+<area shape="poly" id="edge127_Node000018_Node000087" title=" " alt="" coords="4321,99,4433,120,4563,149,4588,157,4587,162,4562,155,4432,125,4320,104"/>
+<area shape="rect" id="Node000020" href="$confmap_8h.html" title="Definitions related to mapping configuration options and their string representations." alt="" coords="9763,284,9877,309"/>
+<area shape="poly" id="edge19_Node000019_Node000020" title=" " alt="" coords="6730,186,7263,193,8108,209,8991,233,9363,249,9643,267,9763,282,9762,288,9642,272,9363,254,8991,238,8107,214,7263,199,6730,191"/>
+<area shape="poly" id="edge26_Node000019_Node000027" title=" " alt="" coords="6730,186,7353,193,8307,208,8782,219,9189,232,9478,248,9563,257,9600,267,9611,282,9614,297,9611,312,9600,326,9584,333,9550,338,9434,348,9041,360,8495,367,7873,369,6700,369,6300,370,6127,375,6085,389,6083,384,6126,369,6300,365,6700,364,7873,364,8495,362,9041,355,9434,342,9549,333,9582,328,9597,322,9606,310,9609,297,9606,284,9597,272,9562,262,9478,253,9189,237,8782,224,8307,213,7353,198,6730,191"/>
+<area shape="rect" id="Node000028" href="$procdip_8c.html" title="Implementation of the Process Dispatcher." alt="" coords="2904,387,3008,412"/>
+<area shape="poly" id="edge27_Node000019_Node000028" title=" " alt="" coords="6731,186,7308,194,8181,210,8615,221,8986,234,9249,249,9326,258,9360,267,9371,282,9374,297,9371,312,9360,326,9107,334,8446,344,6407,367,3008,400,3008,395,6406,362,8446,338,9106,329,9357,322,9366,310,9369,297,9366,284,9357,272,9325,263,9249,255,8986,240,8615,226,8181,215,7308,199,6731,191"/>
+<area shape="poly" id="edge28_Node000019_Node000029" title=" " alt="" coords="6597,192,6280,200,5820,215,5352,239,5157,254,5010,272,4998,274,4997,269,5009,267,5156,249,5352,234,5820,210,6280,194,6597,187"/>
+<area shape="poly" id="edge29_Node000019_Node000030" title=" " alt="" coords="6598,192,6313,202,5908,218,5498,242,5327,256,5198,272,5186,274,5185,269,5197,267,5326,251,5497,236,5908,213,6313,196,6598,187"/>
+<area shape="poly" id="edge30_Node000019_Node000031" title=" " alt="" coords="6598,190,6393,192,6092,202,5921,212,5742,227,5562,246,5386,272,5374,274,5373,269,5385,267,5561,241,5741,221,5920,207,6092,197,6392,187,6598,185"/>
+<area shape="poly" id="edge31_Node000019_Node000032" title=" " alt="" coords="6597,192,6012,200,5104,217,4218,242,3891,256,3699,272,3687,274,3686,269,3698,267,3891,251,4218,236,5104,212,6012,195,6597,186"/>
+<area shape="poly" id="edge32_Node000019_Node000033" title=" " alt="" coords="6598,192,6046,201,5197,219,4371,243,4066,257,3887,272,3875,274,3874,269,3886,267,4066,252,4371,238,5197,213,6046,196,6598,186"/>
+<area shape="rect" id="Node000034" href="$utest-crinit-cfg-elos-poll-interval-handler_2case-empty-input_8c.html" title="Unit test for crinitCfgElosEventPollIntervalHandler(), handling of empty input." alt="" coords="5397,269,5603,324"/>
+<area shape="poly" id="edge33_Node000019_Node000034" title=" " alt="" coords="6598,193,6426,199,6183,214,5902,237,5616,272,5604,274,5603,269,5616,267,5901,232,6182,208,6426,194,6597,187"/>
+<area shape="rect" id="Node000035" href="$utest-crinit-cfg-elos-poll-interval-handler_2case-invalid-input_8c.html" title="Unit test for crinitCfgElosEventPollIntervalHandler(), handling of invalid input." alt="" coords="5628,269,5836,324"/>
+<area shape="poly" id="edge34_Node000019_Node000035" title=" " alt="" coords="6598,195,6275,220,6063,242,5850,272,5837,274,5836,269,5849,267,6063,237,6275,215,6597,189"/>
+<area shape="rect" id="Node000036" href="$utest-crinit-cfg-elos-poll-interval-handler_2case-null-input_8c.html" title="Unit test for crinitCfgElosEventPollIntervalHandler(), handling of null pointer input." alt="" coords="5861,269,6049,324"/>
+<area shape="poly" id="edge35_Node000019_Node000036" title=" " alt="" coords="6598,197,6361,225,6212,247,6062,272,6049,274,6048,269,6061,267,6211,241,6360,220,6598,192"/>
+<area shape="rect" id="Node000037" href="$utest-crinit-cfg-elos-poll-interval-handler_2case-success_8c.html" title="Unit test for crinitCfgElosEventPollIntervalHandler(), successful execution." alt="" coords="6073,269,6250,324"/>
+<area shape="poly" id="edge36_Node000019_Node000037" title=" " alt="" coords="6599,203,6445,233,6263,272,6251,275,6250,270,6262,267,6444,228,6597,198"/>
+<area shape="rect" id="Node000038" href="$utest-crinit-cfg-group-handler_2case-empty-input_8c.html" title="Unit test for crinitCfgGroupHandler(), handling of empty input." alt="" coords="6274,269,6451,324"/>
+<area shape="poly" id="edge37_Node000019_Node000038" title=" " alt="" coords="6620,207,6437,272,6435,267,6618,202"/>
+<area shape="rect" id="Node000039" href="$utest-crinit-cfg-group-handler_2case-negative-input_8c.html" title="Unit test for crinitCfgGroupHandler(), handling of negative input." alt="" coords="6475,269,6653,324"/>
+<area shape="poly" id="edge38_Node000019_Node000039" title=" " alt="" coords="6646,211,6590,271,6586,267,6642,208"/>
+<area shape="rect" id="Node000040" href="$utest-crinit-cfg-group-handler_2case-null-input_8c.html" title="Unit test for crinitCfgGroupHandler(), handling of null pointer input." alt="" coords="6677,269,6854,324"/>
+<area shape="poly" id="edge39_Node000019_Node000040" title=" " alt="" coords="6686,207,6743,267,6739,271,6682,211"/>
+<area shape="rect" id="Node000041" href="$utest-crinit-cfg-group-handler_2case-success_8c.html" title="Unit test for crinitCfgGroupHandler(), successful execution." alt="" coords="6878,269,7055,324"/>
+<area shape="poly" id="edge40_Node000019_Node000041" title=" " alt="" coords="6710,202,6894,267,6892,272,6708,207"/>
+<area shape="rect" id="Node000042" href="$utest-crinit-cfg-launch-cmd-handler_2case-empty-input_8c.html" title="Unit test for crinitCfgLauncherCmdHandler(), handling of empty input." alt="" coords="7079,269,7262,324"/>
+<area shape="poly" id="edge41_Node000019_Node000042" title=" " alt="" coords="6731,198,7069,267,7080,269,7078,274,7067,272,6730,203"/>
+<area shape="rect" id="Node000043" href="$utest-crinit-cfg-launch-cmd-handler_2case-invalid-input_8c.html" title="Unit test for crinitCfgLauncherCmdHandler(), handling of invalid input." alt="" coords="7286,269,7469,324"/>
+<area shape="poly" id="edge42_Node000019_Node000043" title=" " alt="" coords="6731,192,6972,219,7123,241,7275,267,7286,269,7285,274,7274,272,7122,246,6971,225,6730,197"/>
+<area shape="rect" id="Node000044" href="$utest-crinit-cfg-launch-cmd-handler_2case-null-input_8c.html" title="Unit test for crinitCfgLauncherCmdHandler(), handling of null pointer input." alt="" coords="7493,269,7675,324"/>
+<area shape="poly" id="edge43_Node000019_Node000044" title=" " alt="" coords="6731,189,7055,212,7267,235,7482,267,7493,269,7492,274,7481,272,7267,240,7055,218,6730,194"/>
+<area shape="rect" id="Node000045" href="$utest-crinit-cfg-launch-cmd-handler_2case-success_8c.html" title="Unit test for crinitCfgLauncherCmdHandler(), successful execution." alt="" coords="7699,269,7882,324"/>
+<area shape="poly" id="edge44_Node000019_Node000045" title=" " alt="" coords="6731,187,6899,193,7137,206,7411,230,7551,246,7688,267,7700,269,7699,274,7688,272,7551,252,7410,235,7137,211,6899,198,6731,192"/>
+<area shape="rect" id="Node000046" href="$utest-crinit-cfg-stop__command-handler_2case-null-input_8c.html" title="Unit test for crinitCfgStopCmdHandler(), handling of null pointer input." alt="" coords="7906,269,8113,324"/>
+<area shape="poly" id="edge45_Node000019_Node000046" title=" " alt="" coords="6731,186,6929,191,7217,203,7553,227,7726,245,7895,267,7906,268,7905,274,7894,272,7725,250,7553,233,7217,209,6929,196,6731,191"/>
+<area shape="rect" id="Node000047" href="$utest-crinit-cfg-stop__command-handler_2case-success_8c.html" title="Unit test for crinitCfgStopCmdHandler(), successful execution." alt="" coords="8137,269,8343,324"/>
+<area shape="poly" id="edge46_Node000019_Node000047" title=" " alt="" coords="6730,185,6961,187,7305,198,7504,208,7711,222,7921,242,8126,267,8137,268,8136,274,8125,272,7920,247,7711,228,7504,213,7305,203,6960,193,6730,190"/>
+<area shape="poly" id="edge47_Node000019_Node000048" title=" " alt="" coords="6598,192,5290,220,4523,244,4240,258,4074,272,4062,274,4061,269,4073,267,4240,252,4522,239,5289,214,6598,186"/>
+<area shape="poly" id="edge48_Node000019_Node000049" title=" " alt="" coords="6598,191,6156,194,5478,205,5117,215,4776,229,4481,248,4260,272,4249,274,4248,269,4260,267,4481,242,4775,224,5116,209,5478,199,6156,188,6597,185"/>
+<area shape="poly" id="edge49_Node000019_Node000050" title=" " alt="" coords="6598,191,6186,195,5563,207,5232,218,4919,231,4650,249,4447,272,4436,274,4435,269,4446,267,4649,244,4919,226,5231,212,5563,202,6186,190,6598,186"/>
+<area shape="poly" id="edge50_Node000019_Node000051" title=" " alt="" coords="6598,191,6217,197,5648,210,5347,220,5063,234,4818,251,4634,272,4622,274,4621,269,4633,267,4817,246,5062,229,5347,215,5648,204,6217,191,6598,186"/>
+<area shape="poly" id="edge51_Node000019_Node000052" title=" " alt="" coords="6598,192,6248,198,5734,213,5207,237,4987,253,4822,272,4808,274,4808,269,4821,267,4987,247,5207,231,5734,207,6248,193,6597,186"/>
+<area shape="rect" id="Node000053" href="$utest-crinit-cfg-user-handler_2case-empty-input_8c.html" title="Unit test for crinitCfgUserHandler(), handling of empty input." alt="" coords="8368,269,8536,324"/>
+<area shape="poly" id="edge52_Node000019_Node000053" title=" " alt="" coords="6730,187,7054,194,7525,210,8005,234,8205,249,8356,267,8368,269,8367,274,8356,272,8205,254,8004,239,7524,215,7054,200,6730,192"/>
+<area shape="rect" id="Node000054" href="$utest-crinit-cfg-user-handler_2case-negative-input_8c.html" title="Unit test for crinitCfgUserHandler(), handling of negative input." alt="" coords="8560,269,8728,324"/>
+<area shape="poly" id="edge53_Node000019_Node000054" title=" " alt="" coords="6731,186,7087,193,7613,207,8153,231,8378,247,8548,267,8560,269,8559,274,8548,272,8378,253,8152,236,7613,212,7087,198,6730,192"/>
+<area shape="rect" id="Node000055" href="$utest-crinit-cfg-user-handler_2case-null-input_8c.html" title="Unit test for crinitCfgUserHandler(), handling of null pointer input." alt="" coords="8752,269,8920,324"/>
+<area shape="poly" id="edge54_Node000019_Node000055" title=" " alt="" coords="6731,186,7119,191,7701,204,8010,215,8301,229,8551,246,8740,267,8752,269,8751,274,8740,272,8551,251,8300,234,8010,220,7701,210,7119,197,6731,191"/>
+<area shape="rect" id="Node000056" href="$utest-crinit-cfg-user-handler_2case-success_8c.html" title="Unit test for crinitCfgUserHandler(), successful execution." alt="" coords="8944,269,9112,324"/>
+<area shape="poly" id="edge55_Node000019_Node000056" title=" " alt="" coords="6730,186,7150,190,7788,202,8128,212,8448,226,8724,244,8932,267,8944,269,8943,274,8932,272,8724,249,8448,231,8128,218,7788,207,7150,195,6730,191"/>
+<area shape="rect" id="Node000057" href="$utest-crinit-create-launcher-parameters_2case-success_8c.html" title="Unit test for crinitCreateLauncherParameters(), successful execution." alt="" coords="9137,269,9346,324"/>
+<area shape="poly" id="edge56_Node000019_Node000057" title=" " alt="" coords="6730,186,7181,191,7875,205,8245,215,8595,229,8897,246,9124,267,9137,268,9136,274,9124,272,8896,251,8594,234,8245,220,7875,210,7181,197,6730,191"/>
+<area shape="rect" id="Node000058" href="$utest-crinit-expand-pid-variables_2case-success_8c.html" title="Unit test for crinitExpandPIDVariablesInSingleCommand(), successful execution." alt="" coords="9422,269,9586,324"/>
+<area shape="poly" id="edge57_Node000019_Node000058" title=" " alt="" coords="6730,185,7226,187,8001,197,8416,207,8809,222,9148,241,9288,253,9403,267,9422,270,9421,275,9402,272,9287,259,9148,247,8809,227,8416,213,8001,203,7226,193,6730,191"/>
+<area shape="rect" id="Node000021" href="$confmap_8c.html" title="Implementation file related to mapping configuration options and their string representations." alt="" coords="9941,387,10054,412"/>
+<area shape="poly" id="edge20_Node000020_Node000021" title=" " alt="" coords="9854,314,9979,384,9976,389,9851,318"/>
+<area shape="rect" id="Node000022" href="$confparse_8c.html" title="Implementation of the Config Parser." alt="" coords="9240,387,9360,412"/>
+<area shape="poly" id="edge21_Node000020_Node000022" title=" " alt="" coords="9779,317,9745,327,9641,345,9559,350,9477,356,9374,375,9329,389,9327,384,9373,369,9476,351,9558,345,9640,339,9743,321,9778,311"/>
+<area shape="rect" id="Node000023" href="$kcmdline_8c.html" title="Implementation of functions related to working with the Kernel command line." alt="" coords="9385,387,9501,412"/>
+<area shape="poly" id="edge22_Node000020_Node000023" title=" " alt="" coords="9777,316,9745,327,9680,342,9629,350,9578,359,9514,375,9471,389,9470,384,9513,369,9577,354,9628,345,9679,337,9743,321,9776,311"/>
+<area shape="poly" id="edge23_Node000020_Node000024" title=" " alt="" coords="9879,310,9969,336,10068,370,10100,384,10097,389,10066,374,9967,341,9878,315"/>
+<area shape="rect" id="Node000025" href="$utest-cfgmap-order_2regression-test_8c.html" title="Implementation of a regression test for the order and completeness of crinit{Task,..." alt="" coords="9525,379,9699,419"/>
+<area shape="poly" id="edge24_Node000020_Node000025" title=" " alt="" coords="9785,318,9652,382,9650,377,9783,313"/>
+<area shape="rect" id="Node000026" href="$utest-globopt-defaults_2regression-test_8c.html" title="Implementation of a regression test if default values for all global options are present and intializ..." alt="" coords="9723,379,9917,419"/>
+<area shape="poly" id="edge25_Node000020_Node000026" title=" " alt="" coords="9823,323,9823,379,9817,379,9817,323"/>
+<area shape="rect" id="Node000060" href="$notiserv_8h.html" title="Header related to the notification and service interface." alt="" coords="2289,284,2399,309"/>
+<area shape="poly" id="edge59_Node000059_Node000060" title=" " alt="" coords="2771,205,2397,287,2396,281,2770,199"/>
+<area shape="rect" id="Node000063" href="$procdip_8h.html" title="Header related to the Process Dispatcher." alt="" coords="2651,284,2757,309"/>
+<area shape="poly" id="edge62_Node000059_Node000063" title=" " alt="" coords="2812,210,2720,286,2716,282,2808,206"/>
+<area shape="rect" id="Node000065" href="$rtimcmd_8h.html" title="Header related to handling of runtime commands received via the notification/service interface." alt="" coords="1556,284,1668,309"/>
+<area shape="poly" id="edge66_Node000059_Node000065" title=" " alt="" coords="2771,196,1668,293,1668,288,2770,191"/>
+<area shape="rect" id="Node000076" href="$timerdb_8h.html" title=" " alt="" coords="2781,284,2889,309"/>
+<area shape="poly" id="edge98_Node000059_Node000076" title=" " alt="" coords="2837,213,2837,284,2832,284,2832,213"/>
+<area shape="poly" id="edge106_Node000059_Node000077" title=" " alt="" coords="2855,208,2914,278,2953,322,3012,334,3127,343,3491,355,3981,360,4534,360,5579,357,5946,360,6063,364,6126,369,6167,384,6165,389,6125,375,6063,369,5946,365,5579,363,4534,365,3981,365,3491,361,3127,349,3012,339,2951,326,2910,282,2851,212"/>
+<area shape="rect" id="Node000078" href="$timerdb_8c.html" title="Implementation of functions related managing the pool of all timers." alt="" coords="2773,387,2880,412"/>
+<area shape="poly" id="edge107_Node000059_Node000078" title=" " alt="" coords="2771,198,2699,208,2622,224,2556,245,2531,257,2515,271,2507,284,2505,297,2507,309,2515,322,2542,347,2568,361,2595,366,2624,366,2687,361,2723,362,2762,369,2802,384,2800,389,2761,375,2722,367,2687,366,2624,371,2595,372,2566,366,2539,352,2511,326,2502,311,2499,297,2502,282,2511,268,2528,253,2554,240,2621,219,2698,203,2770,192"/>
+<area shape="poly" id="edge104_Node000059_Node000079" title=" " alt="" coords="2867,204,2999,282,2997,286,2865,209"/>
+<area shape="rect" id="Node000080" href="$optfeat_8c.html" title="Implementation of optional behavior dependent on available system features." alt="" coords="2525,284,2627,309"/>
+<area shape="poly" id="edge105_Node000059_Node000080" title=" " alt="" coords="2795,207,2605,286,2602,281,2793,202"/>
+<area shape="poly" id="edge108_Node000059_Node000081" title=" " alt="" coords="2886,201,3104,267,3103,272,2885,206"/>
+<area shape="poly" id="edge109_Node000059_Node000082" title=" " alt="" coords="2899,195,3079,225,3297,267,3309,269,3307,275,3295,272,3078,231,2899,201"/>
+<area shape="poly" id="edge60_Node000060_Node000061" title=" " alt="" coords="2387,311,2418,321,2482,336,2534,344,2585,352,2649,369,2683,384,2681,389,2647,375,2584,357,2533,349,2481,341,2417,327,2385,317"/>
+<area shape="rect" id="Node000062" href="$notiserv_8c.html" title="Implementation of the notification and service interface." alt="" coords="2393,387,2501,412"/>
+<area shape="poly" id="edge61_Node000060_Node000062" title=" " alt="" coords="2368,317,2437,385,2433,389,2364,321"/>
+<area shape="poly" id="edge64_Node000063_Node000028" title=" " alt="" coords="2746,312,2770,322,2893,370,2929,384,2927,389,2891,374,2768,326,2745,317"/>
+<area shape="poly" id="edge63_Node000063_Node000061" title=" " alt="" coords="2707,323,2707,387,2701,387,2701,323"/>
+<area shape="rect" id="Node000064" href="$rtimcmd_8c.html" title="Implementation of runtime commands to be triggered by the notification/service interface." alt="" coords="2525,387,2635,412"/>
+<area shape="poly" id="edge65_Node000063_Node000064" title=" " alt="" coords="2681,320,2596,389,2592,385,2677,316"/>
+<area shape="poly" id="edge78_Node000065_Node000009" title=" " alt="" coords="1649,314,1681,338,1695,353,1706,371,1715,397,1719,425,1716,475,1711,474,1714,425,1710,398,1702,373,1691,356,1677,342,1646,318"/>
+<area shape="poly" id="edge79_Node000065_Node000011" title=" " alt="" coords="1654,312,2050,472,2048,477,1652,317"/>
+<area shape="poly" id="edge80_Node000065_Node000012" title=" " alt="" coords="1671,310,1882,369,2037,424,2220,475,2219,480,2035,429,1881,375,1670,315"/>
+<area shape="poly" id="edge81_Node000065_Node000013" title=" " alt="" coords="1682,298,1806,306,1954,319,2094,340,2150,354,2192,370,2209,383,2218,398,2227,412,2243,424,2283,443,2319,454,2352,459,2384,461,2452,461,2491,464,2537,472,2548,475,2547,480,2535,477,2491,469,2452,466,2384,466,2352,464,2318,459,2281,448,2240,429,2223,415,2214,401,2205,387,2189,374,2148,359,2093,345,1953,325,1805,311,1682,304"/>
+<area shape="poly" id="edge82_Node000065_Node000014" title=" " alt="" coords="1543,313,1439,337,1381,354,1325,374,1298,388,1279,402,1259,416,1232,429,1161,451,1103,459,1046,465,973,477,961,480,960,475,971,472,1045,460,1103,454,1160,445,1230,424,1257,411,1276,398,1296,384,1323,370,1379,349,1437,332,1542,308"/>
+<area shape="poly" id="edge83_Node000065_Node000015" title=" " alt="" coords="1559,316,1485,341,1407,374,1383,388,1367,402,1349,415,1325,429,1260,453,1172,478,1170,473,1258,448,1323,424,1346,411,1363,398,1380,384,1404,370,1483,336,1557,311"/>
+<area shape="poly" id="edge84_Node000065_Node000016" title=" " alt="" coords="1583,319,1331,477,1329,472,1581,314"/>
+<area shape="poly" id="edge85_Node000065_Node000017" title=" " alt="" coords="1581,319,1550,342,1524,373,1511,401,1504,430,1500,482,1494,482,1499,430,1506,399,1519,371,1546,339,1577,315"/>
+<area shape="poly" id="edge70_Node000065_Node000062" title=" " alt="" coords="1682,296,1813,300,1988,311,2184,333,2284,349,2381,369,2423,384,2421,389,2379,375,2283,354,2183,338,1987,316,1813,305,1682,301"/>
+<area shape="poly" id="edge71_Node000065_Node000064" title=" " alt="" coords="1682,294,1834,296,2041,305,2277,328,2397,346,2514,369,2557,384,2555,389,2513,375,2396,351,2276,333,2041,310,1834,301,1682,300"/>
+<area shape="rect" id="Node000066" href="$sockcom_8h.html" title="Header defining Crinit socket communication functions used internally by the crinit&#45;client library." alt="" coords="2253,387,2368,412"/>
+<area shape="poly" id="edge67_Node000065_Node000066" title=" " alt="" coords="1682,299,1789,306,1928,320,2082,340,2235,369,2283,384,2281,389,2234,375,2081,346,1927,325,1789,312,1681,304"/>
+<area shape="rect" id="Node000068" href="$mock-build-rtim-cmd_8h.html" title="Header declaring a mock function for crinitBuildRtimCmd()." alt="" coords="9,379,180,419"/>
+<area shape="poly" id="edge72_Node000065_Node000068" title=" " alt="" coords="1542,305,180,395,180,390,1542,300"/>
+<area shape="rect" id="Node000070" href="$mock-crinit-xfer_8h.html" title="Implementation of a mock function for crinitXfer()." alt="" coords="549,379,720,419"/>
+<area shape="poly" id="edge74_Node000065_Node000070" title=" " alt="" coords="1543,308,721,392,720,387,1542,302"/>
+<area shape="rect" id="Node000072" href="$mock-destroy-rtim-cmd_8h.html" title="Header declaring a mock function for crinitDestroyRtimCmd()." alt="" coords="917,379,1088,419"/>
+<area shape="poly" id="edge76_Node000065_Node000072" title=" " alt="" coords="1543,312,1089,387,1088,381,1542,307"/>
+<area shape="rect" id="Node000074" href="$utest-crinit-task-add_8c.html" title="Implementation of the crinitClientTaskAdd() unit test group." alt="" coords="590,475,749,529"/>
+<area shape="poly" id="edge86_Node000065_Node000074" title=" " alt="" coords="1543,310,1398,334,1314,352,1231,375,1194,388,1167,402,1139,416,1101,429,1007,449,932,457,857,462,762,477,750,480,748,475,761,472,856,457,931,451,1006,444,1099,424,1137,411,1164,398,1192,383,1230,369,1313,347,1397,329,1542,305"/>
+<area shape="rect" id="Node000075" href="$utest-crinit-task-add_8h.html" title="Header declaring the unit tests for crinitClientTaskAdd()." alt="" coords="1533,372,1691,427"/>
+<area shape="poly" id="edge87_Node000065_Node000075" title=" " alt="" coords="1615,323,1615,372,1609,372,1609,323"/>
+<area shape="poly" id="edge68_Node000066_Node000003" title=" " alt="" coords="2349,414,2382,424,2476,441,2562,452,2716,462,2852,459,2980,451,3108,442,3245,438,3400,446,3486,457,3581,472,3631,487,3629,492,3579,477,3486,462,3399,452,3245,444,3108,447,2980,456,2852,465,2715,467,2561,457,2475,446,2381,429,2348,420"/>
+<area shape="rect" id="Node000067" href="$sockcom_8c.html" title="Implementation of socket communication functions for the crinit&#45;client library." alt="" coords="3747,489,3861,515"/>
+<area shape="poly" id="edge69_Node000066_Node000067" title=" " alt="" coords="2349,414,2382,424,2488,442,2585,455,2675,461,2759,464,2913,459,3058,447,3203,436,3357,431,3441,434,3532,441,3629,453,3735,472,3780,487,3779,492,3734,477,3628,459,3531,446,3441,439,3357,436,3203,441,3058,453,2914,464,2759,469,2675,467,2585,460,2487,448,2381,429,2348,420"/>
+<area shape="rect" id="Node000069" href="$mock-build-rtim-cmd_8c.html" title="Implementation of a mock function for crinitBuildRtimCmd()." alt="" coords="5,482,176,522"/>
+<area shape="poly" id="edge73_Node000068_Node000069" title=" " alt="" coords="96,433,94,482,89,482,91,433"/>
+<area shape="rect" id="Node000071" href="$mock-crinit-xfer_8c.html" title="Implementation of a mock function for crinitXfer()." alt="" coords="200,482,371,522"/>
+<area shape="poly" id="edge75_Node000070_Node000071" title=" " alt="" coords="557,426,352,484,350,479,556,420"/>
+<area shape="rect" id="Node000073" href="$mock-destroy-rtim-cmd_8c.html" title="Implementation of a mock function for crinitGlobOptSet()." alt="" coords="395,482,565,522"/>
+<area shape="poly" id="edge77_Node000072_Node000073" title=" " alt="" coords="904,418,751,444,579,477,549,484,548,479,578,472,750,438,903,413"/>
+<area shape="poly" id="edge88_Node000075_Node000009" title=" " alt="" coords="1648,435,1685,473,1681,476,1645,438"/>
+<area shape="poly" id="edge89_Node000075_Node000010" title=" " alt="" coords="1705,428,1838,472,1836,477,1703,433"/>
+<area shape="poly" id="edge90_Node000075_Node000011" title=" " alt="" coords="1705,413,1853,438,2019,472,2031,475,2030,480,2018,477,1852,443,1704,418"/>
+<area shape="poly" id="edge91_Node000075_Node000012" title=" " alt="" coords="1705,405,1935,430,2072,448,2209,472,2220,475,2219,480,2207,477,2071,454,1934,435,1705,411"/>
+<area shape="poly" id="edge92_Node000075_Node000013" title=" " alt="" coords="1706,404,2173,438,2403,457,2536,472,2548,474,2547,480,2536,477,2403,463,2172,444,1705,410"/>
+<area shape="poly" id="edge93_Node000075_Node000014" title=" " alt="" coords="1519,413,1228,444,972,477,961,480,960,474,972,472,1227,438,1519,407"/>
+<area shape="poly" id="edge94_Node000075_Node000015" title=" " alt="" coords="1519,418,1362,444,1185,477,1171,480,1170,475,1183,472,1361,438,1518,412"/>
+<area shape="poly" id="edge95_Node000075_Node000016" title=" " alt="" coords="1520,432,1373,477,1372,472,1519,427"/>
+<area shape="poly" id="edge96_Node000075_Node000017" title=" " alt="" coords="1573,438,1521,484,1517,480,1570,434"/>
+<area shape="poly" id="edge97_Node000075_Node000074" title=" " alt="" coords="1519,409,1123,438,914,457,762,477,749,480,748,475,761,472,913,452,1122,433,1518,404"/>
+<area shape="poly" id="edge99_Node000076_Node000027" title=" " alt="" coords="2874,312,2909,321,2991,332,3116,341,3472,357,3926,370,4432,379,5406,391,6009,395,6009,400,5406,396,4432,385,3926,375,3472,363,3116,347,2991,337,2907,327,2873,317"/>
+<area shape="poly" id="edge101_Node000076_Node000028" title=" " alt="" coords="2861,316,2944,385,2941,389,2857,320"/>
+<area shape="poly" id="edge100_Node000076_Node000061" title=" " alt="" coords="2810,320,2720,389,2717,385,2807,316"/>
+<area shape="poly" id="edge102_Node000076_Node000077" title=" " alt="" coords="2874,312,2909,321,2998,332,3133,339,3510,345,3988,345,4517,342,5046,339,5524,340,5901,349,6036,358,6126,369,6167,384,6165,389,6125,375,6035,363,5901,354,5524,345,5046,344,4517,347,3988,351,3510,351,3133,344,2998,337,2907,327,2872,317"/>
+<area shape="poly" id="edge103_Node000076_Node000078" title=" " alt="" coords="2835,324,2830,387,2825,386,2830,323"/>
 </map>

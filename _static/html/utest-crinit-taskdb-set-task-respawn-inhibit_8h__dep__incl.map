@@ -1,0 +1,9 @@
+<map id="test/utest/utest&#45;crinit&#45;taskdb&#45;set&#45;task&#45;respawn&#45;inhibit/utest&#45;crinit&#45;taskdb&#45;set&#45;task&#45;respawn&#45;inhibit.h" name="test/utest/utest&#45;crinit&#45;taskdb&#45;set&#45;task&#45;respawn&#45;inhibit/utest&#45;crinit&#45;taskdb&#45;set&#45;task&#45;respawn&#45;inhibit.h">
+<area shape="rect" id="Node000001" title="Header declaring the unit tests for crinitTaskDBSetTaskRespawnInhibit()." alt="" coords="214,5,413,75"/>
+<area shape="rect" id="Node000002" href="$case-failure_8c.html" title="Unit test for crinitTaskDBSetTaskRespawnInhibit(), failure execution." alt="" coords="5,130,195,185"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="241,83,150,132,147,128,238,79"/>
+<area shape="rect" id="Node000003" href="$utest-crinit-taskdb-set-task-respawn-inhibit_2case-success_8c.html" title="Unit test for crinitTaskDBSetTaskRespawnInhibit(), successful execution." alt="" coords="219,130,408,185"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="316,89,316,130,311,130,311,89"/>
+<area shape="rect" id="Node000004" href="$utest-crinit-taskdb-set-task-respawn-inhibit_8c.html" title="Implementation of crinitTaskDBSetTaskRespawnInhibit()" alt="" coords="432,123,629,192"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="390,79,468,120,466,125,387,83"/>
+</map>

@@ -95,7 +95,7 @@ $(document).ready(function(){initNavTree('crinit_8c.html',''); initResizable(); 
 </div><!--header-->
 <div class="contents">
 <h3 class="version">(/usr/bin/git
-2025-03-11, commit: 9ee3a45)</h3>
+2025-12-03, commit: 9942456c)</h3>
 <p>Implementation of the Crinit main program.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;getopt.h&gt;</code><br />
@@ -104,6 +104,8 @@ $(document).ready(function(){initNavTree('crinit_8c.html',''); initResizable(); 
 <code>#include &lt;sys/prctl.h&gt;</code><br />
 <code>#include &lt;unistd.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="common_8h_source.html">common.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="crinit-sdefs_8h_source.html">crinit-sdefs.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="crinit-version_8h_source.html">crinit-version.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="globopt_8h_source.html">globopt.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="kcmdline_8h_source.html">kcmdline.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="logio_8h_source.html">logio.h</a>&quot;</code><br />
@@ -112,91 +114,107 @@ $(document).ready(function(){initNavTree('crinit_8c.html',''); initResizable(); 
 <code>#include &quot;<a class="el" href="optfeat_8h_source.html">optfeat.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="procdip_8h_source.html">procdip.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="rtimopmap_8h_source.html">rtimopmap.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="version_8h_source.html">version.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="timerdb_8h_source.html">timerdb.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for crinit.c:</div>
 <div class="dyncontent">
 <div class="center"><img src="crinit_8c__incl.png" border="0" usemap="#asrc_2crinit_8c" alt=""/></div>
 <map name="asrc_2crinit_8c" id="asrc_2crinit_8c">
-<area shape="rect" title="Implementation of the Crinit main program." alt="" coords="757,5,847,31"/>
+<area shape="rect" title="Implementation of the Crinit main program." alt="" coords="657,5,747,31"/>
 <area shape="rect" title=" " alt="" coords="5,79,81,104"/>
-<area shape="poly" title=" " alt="" coords="757,24,482,40,292,57,95,82,95,76,291,51,481,34,757,18"/>
+<area shape="poly" title=" " alt="" coords="657,24,421,42,261,59,95,81,95,76,261,54,421,37,657,19"/>
 <area shape="rect" title=" " alt="" coords="106,79,205,104"/>
-<area shape="poly" title=" " alt="" coords="757,25,530,45,219,81,218,76,530,40,757,20"/>
+<area shape="poly" title=" " alt="" coords="657,27,470,47,218,81,218,76,470,42,657,21"/>
 <area shape="rect" title=" " alt="" coords="229,79,300,104"/>
-<area shape="poly" title=" " alt="" coords="757,26,568,45,443,61,314,81,313,76,443,55,567,39,757,20"/>
+<area shape="poly" title=" " alt="" coords="658,27,509,48,314,81,313,76,508,43,657,22"/>
 <area shape="rect" title=" " alt="" coords="324,79,413,104"/>
-<area shape="poly" title=" " alt="" coords="757,29,428,81,427,76,756,23"/>
+<area shape="poly" title=" " alt="" coords="658,31,427,80,426,75,656,26"/>
 <area shape="rect" title=" " alt="" coords="438,79,513,104"/>
-<area shape="poly" title=" " alt="" coords="758,31,527,81,526,76,757,26"/>
-<area shape="rect" href="common_8h.html" title="Header for common definitions/functions not related to other specific features." alt="" coords="537,79,627,104"/>
-<area shape="poly" title=" " alt="" coords="767,33,631,77,630,72,766,28"/>
-<area shape="rect" href="globopt_8h.html" title="Header related to global option storage." alt="" coords="987,225,1070,251"/>
-<area shape="poly" title=" " alt="" coords="848,23,908,41,939,56,967,77,991,109,1009,145,1028,211,1022,212,1004,147,987,111,963,81,936,61,906,46,846,28"/>
-<area shape="rect" href="kcmdline_8h.html" title="Header related to working with the Kernel command line." alt="" coords="1079,79,1173,104"/>
-<area shape="poly" title=" " alt="" coords="847,26,1066,74,1065,79,846,32"/>
-<area shape="rect" href="logio_8h.html" title="Header related to debug/log output." alt="" coords="1199,225,1266,251"/>
-<area shape="poly" title=" " alt="" coords="848,27,918,47,994,76,1057,110,1117,148,1209,215,1206,219,1114,153,1054,115,992,81,916,52,846,32"/>
-<area shape="rect" href="minsetup_8h.html" title="Header related to minimal early system setup." alt="" coords="1197,79,1292,104"/>
-<area shape="poly" title=" " alt="" coords="847,23,1184,76,1184,81,847,28"/>
-<area shape="rect" href="notiserv_8h.html" title="Header related to the notification and service interface." alt="" coords="759,79,845,104"/>
-<area shape="poly" title=" " alt="" coords="805,31,805,65,799,65,799,31"/>
-<area shape="rect" href="optfeat_8h.html" title="Header related to optional behavior dependent on available system features." alt="" coords="1316,79,1397,104"/>
-<area shape="poly" title=" " alt="" coords="847,21,1041,40,1303,76,1302,81,1041,46,847,26"/>
-<area shape="rect" href="procdip_8h.html" title="Header related to the Process Dispatcher." alt="" coords="870,79,953,104"/>
-<area shape="poly" title=" " alt="" coords="821,28,883,69,880,73,818,33"/>
-<area shape="rect" href="rtimopmap_8h.html" title="Header defining the runtime commands available through the notification/service interface." alt="" coords="1422,79,1529,104"/>
-<area shape="poly" title=" " alt="" coords="847,20,1083,40,1409,76,1408,81,1082,45,847,25"/>
-<area shape="rect" href="version_8h.html" title="Header definitions related to component versioning." alt="" coords="651,79,734,104"/>
-<area shape="poly" title=" " alt="" coords="786,33,724,73,721,69,783,28"/>
-<area shape="rect" title=" " alt="" coords="709,519,783,544"/>
-<area shape="poly" title=" " alt="" coords="579,105,558,161,548,198,545,237,545,386,549,412,560,434,577,454,598,471,647,498,696,516,695,521,645,503,595,476,573,458,555,437,544,413,539,386,539,237,543,197,553,160,574,103"/>
-<area shape="rect" title=" " alt="" coords="619,152,689,177"/>
-<area shape="poly" title=" " alt="" coords="596,102,634,140,631,144,592,106"/>
-<area shape="rect" title=" " alt="" coords="1019,519,1102,544"/>
-<area shape="poly" title=" " alt="" coords="1039,249,1053,271,1063,298,1073,355,1074,413,1067,505,1062,504,1069,413,1067,356,1058,299,1048,274,1035,252"/>
-<area shape="rect" title=" " alt="" coords="1124,299,1195,324"/>
-<area shape="poly" title=" " alt="" coords="1051,248,1127,290,1125,294,1048,253"/>
-<area shape="rect" href="envset_8h.html" title="Header defining data types and functions to work with sets of environment variables." alt="" coords="969,299,1048,324"/>
-<area shape="poly" title=" " alt="" coords="1028,252,1018,286,1013,285,1023,250"/>
-<area shape="poly" title=" " alt="" coords="1010,324,1006,354,997,394,980,436,952,473,916,498,876,515,835,525,797,530,797,525,834,520,874,509,914,493,948,469,975,433,992,392,1001,353,1005,324"/>
-<area shape="rect" href="confparse_8h.html" title="Header related to the Config Parser." alt="" coords="849,372,947,397"/>
-<area shape="poly" title=" " alt="" coords="992,326,929,367,926,362,989,322"/>
-<area shape="poly" title=" " alt="" coords="913,396,1039,508,1036,512,910,400"/>
-<area shape="rect" title=" " alt="" coords="686,445,782,471"/>
-<area shape="poly" title=" " alt="" coords="873,400,774,442,772,437,871,395"/>
-<area shape="rect" href="fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="859,445,937,471"/>
-<area shape="poly" title=" " alt="" coords="901,398,901,432,895,432,895,398"/>
-<area shape="poly" title=" " alt="" coords="875,473,784,515,782,510,872,468"/>
-<area shape="poly" title=" " alt="" coords="925,468,1023,511,1020,515,923,473"/>
-<area shape="poly" title=" " alt="" coords="1233,251,1225,285,1210,325,1179,380,1144,431,1082,510,1078,506,1140,428,1174,377,1205,323,1220,284,1228,250"/>
-<area shape="poly" title=" " alt="" coords="1222,253,1183,291,1179,287,1219,249"/>
-<area shape="rect" title=" " alt="" coords="1271,299,1339,324"/>
-<area shape="poly" title=" " alt="" coords="1246,249,1285,287,1281,291,1243,253"/>
-<area shape="rect" title=" " alt="" coords="1363,299,1430,324"/>
-<area shape="poly" title=" " alt="" coords="1260,248,1359,291,1356,296,1258,253"/>
-<area shape="rect" href="taskdb_8h.html" title="Header defining the central Task Data Structure and related types/functions." alt="" coords="763,152,841,177"/>
-<area shape="poly" title=" " alt="" coords="805,104,805,138,799,138,799,104"/>
-<area shape="poly" title=" " alt="" coords="763,177,711,193,656,220,632,237,613,258,600,282,595,310,595,386,598,408,606,428,634,463,670,490,707,511,704,515,667,495,630,466,602,430,593,409,590,386,590,310,595,281,609,255,629,233,654,215,710,188,762,172"/>
-<area shape="rect" title=" " alt="" coords="837,225,921,251"/>
-<area shape="poly" title=" " alt="" coords="816,175,858,214,855,218,813,179"/>
-<area shape="rect" href="task_8h.html" title="Header defining the data structures belonging to a single task and related functions." alt="" coords="751,225,813,251"/>
-<area shape="poly" title=" " alt="" coords="801,178,791,213,786,211,796,177"/>
-<area shape="poly" title=" " alt="" coords="814,247,960,292,958,297,813,252"/>
-<area shape="poly" title=" " alt="" coords="815,248,870,270,893,284,908,297,914,313,916,329,910,360,905,359,911,329,909,314,904,300,890,288,867,275,813,253"/>
-<area shape="poly" title=" " alt="" coords="766,253,739,274,712,300,686,334,671,373,669,385,671,396,685,418,704,435,701,439,681,421,666,398,663,385,666,371,682,331,708,297,736,270,763,249"/>
-<area shape="rect" title=" " alt="" coords="731,299,795,324"/>
-<area shape="poly" title=" " alt="" coords="781,252,772,286,767,285,776,250"/>
-<area shape="rect" href="crinit-sdefs_8h.html" title="Definitions shared between crinit&#39;s public and internal APIs." alt="" coords="681,372,787,397"/>
-<area shape="poly" title=" " alt="" coords="765,253,741,273,722,300,718,314,718,330,725,359,720,360,713,330,713,314,717,298,737,269,762,249"/>
-<area shape="rect" href="ioredir_8h.html" title="Header related to IO redirection types and functions." alt="" coords="819,299,894,324"/>
-<area shape="poly" title=" " alt="" coords="796,249,836,287,833,291,792,253"/>
-<area shape="poly" title=" " alt="" coords="737,398,737,432,731,432,731,398"/>
-<area shape="poly" title=" " alt="" coords="866,323,887,359,882,361,861,326"/>
-<area shape="poly" title=" " alt="" coords="895,106,833,147,830,142,892,102"/>
-<area shape="rect" title=" " alt="" coords="876,152,947,177"/>
-<area shape="poly" title=" " alt="" coords="914,104,914,138,909,138,909,104"/>
-<area shape="poly" title=" " alt="" coords="689,106,669,141,664,139,684,103"/>
+<area shape="poly" title=" " alt="" coords="666,33,526,77,524,72,665,28"/>
+<area shape="rect" href="common_8h.html" title="Header for common definitions/functions not related to other specific features." alt="" coords="666,225,757,251"/>
+<area shape="poly" title=" " alt="" coords="700,32,686,79,684,115,689,151,705,212,699,213,683,152,679,115,681,78,695,30"/>
+<area shape="rect" href="crinit-sdefs_8h.html" title="Definitions shared between crinit&#39;s public and internal APIs." alt="" coords="986,299,1093,324"/>
+<area shape="poly" title=" " alt="" coords="706,30,712,65,719,84,730,102,759,137,792,168,865,222,938,263,998,291,996,296,935,268,862,226,788,172,755,140,725,106,714,87,707,66,700,31"/>
+<area shape="rect" href="crinit-version_8h.html" title="Header definitions related to component versioning." alt="" coords="1192,152,1311,177"/>
+<area shape="poly" title=" " alt="" coords="747,18,882,23,1054,33,1209,51,1262,62,1292,77,1299,93,1296,111,1276,143,1271,140,1292,109,1294,94,1288,81,1261,67,1208,56,1054,39,882,28,747,23"/>
+<area shape="rect" href="globopt_8h.html" title="Header related to global option storage." alt="" coords="559,225,642,251"/>
+<area shape="poly" title=" " alt="" coords="699,32,614,213,610,211,694,30"/>
+<area shape="rect" href="kcmdline_8h.html" title="Header related to working with the Kernel command line." alt="" coords="740,79,835,104"/>
+<area shape="poly" title=" " alt="" coords="717,29,765,68,761,72,714,33"/>
+<area shape="rect" href="logio_8h.html" title="Header related to debug/log output." alt="" coords="469,225,535,251"/>
+<area shape="poly" title=" " alt="" coords="693,33,524,216,520,213,689,29"/>
+<area shape="rect" href="minsetup_8h.html" title="Header related to minimal early system setup." alt="" coords="967,79,1061,104"/>
+<area shape="poly" title=" " alt="" coords="747,27,954,74,953,79,746,32"/>
+<area shape="rect" href="notiserv_8h.html" title="Header related to the notification and service interface." alt="" coords="1085,79,1172,104"/>
+<area shape="poly" title=" " alt="" coords="747,23,1072,76,1071,81,746,28"/>
+<area shape="rect" href="optfeat_8h.html" title="Header related to optional behavior dependent on available system features." alt="" coords="1196,79,1277,104"/>
+<area shape="poly" title=" " alt="" coords="747,21,933,41,1183,76,1182,81,932,46,747,26"/>
+<area shape="rect" href="procdip_8h.html" title="Header related to the Process Dispatcher." alt="" coords="859,79,942,104"/>
+<area shape="poly" title=" " alt="" coords="735,28,856,71,854,76,733,33"/>
+<area shape="rect" href="rtimopmap_8h.html" title="Header defining the runtime commands available through the notification/service interface." alt="" coords="1353,79,1459,104"/>
+<area shape="poly" title=" " alt="" coords="747,20,997,41,1334,76,1339,77,1339,82,1334,81,997,46,747,25"/>
+<area shape="rect" href="timerdb_8h.html" title=" " alt="" coords="1483,79,1569,104"/>
+<area shape="poly" title=" " alt="" coords="747,18,1046,34,1254,51,1470,76,1469,81,1254,56,1046,39,747,23"/>
+<area shape="rect" title=" " alt="" coords="782,519,857,544"/>
+<area shape="poly" title=" " alt="" coords="716,250,734,344,753,407,778,469,802,507,798,510,773,472,748,409,729,345,710,251"/>
+<area shape="rect" title=" " alt="" coords="1267,299,1337,324"/>
+<area shape="poly" title=" " alt="" coords="757,242,1253,301,1253,307,756,247"/>
+<area shape="rect" title=" " alt="" coords="1087,445,1183,471"/>
+<area shape="poly" title=" " alt="" coords="1049,323,1122,432,1118,435,1045,326"/>
+<area shape="poly" title=" " alt="" coords="1255,178,1259,211,1268,250,1288,286,1283,288,1264,252,1253,212,1249,178"/>
+<area shape="rect" title=" " alt="" coords="983,519,1066,544"/>
+<area shape="poly" title=" " alt="" coords="626,248,807,338,907,395,947,421,976,443,1000,474,1017,505,1012,507,995,477,972,447,944,425,905,399,805,343,624,253"/>
+<area shape="rect" title=" " alt="" coords="559,299,629,324"/>
+<area shape="poly" title=" " alt="" coords="602,251,599,285,594,285,597,251"/>
+<area shape="rect" href="envset_8h.html" title="Header defining data types and functions to work with sets of environment variables." alt="" coords="832,299,911,324"/>
+<area shape="poly" title=" " alt="" coords="643,248,819,294,818,299,642,253"/>
+<area shape="poly" title=" " alt="" coords="871,325,828,506,823,504,866,324"/>
+<area shape="rect" href="confparse_8h.html" title="Header related to the Config Parser." alt="" coords="925,372,1023,397"/>
+<area shape="poly" title=" " alt="" coords="889,322,947,362,944,366,886,326"/>
+<area shape="poly" title=" " alt="" coords="1001,395,1098,437,1095,442,999,400"/>
+<area shape="poly" title=" " alt="" coords="988,396,1005,417,1020,444,1028,476,1029,505,1024,505,1022,476,1016,446,1001,420,984,399"/>
+<area shape="rect" href="fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="883,445,961,471"/>
+<area shape="poly" title=" " alt="" coords="968,399,941,436,936,433,963,396"/>
+<area shape="poly" title=" " alt="" coords="907,473,849,513,846,508,904,468"/>
+<area shape="poly" title=" " alt="" coords="940,468,998,508,995,513,937,473"/>
+<area shape="poly" title=" " alt="" coords="508,250,522,285,533,305,548,322,598,363,652,399,710,430,769,455,881,494,970,517,969,522,879,499,767,460,708,434,650,404,594,368,544,326,529,308,517,287,503,252"/>
+<area shape="poly" title=" " alt="" coords="518,249,570,288,567,292,515,253"/>
+<area shape="rect" title=" " alt="" coords="324,299,392,324"/>
+<area shape="poly" title=" " alt="" coords="480,253,395,295,393,290,478,248"/>
+<area shape="rect" title=" " alt="" coords="417,299,483,324"/>
+<area shape="poly" title=" " alt="" coords="496,253,469,289,464,286,491,249"/>
+<area shape="rect" href="taskdb_8h.html" title="Header defining the central Task Data Structure and related types/functions." alt="" coords="1089,152,1168,177"/>
+<area shape="poly" title=" " alt="" coords="1131,104,1131,138,1126,138,1126,104"/>
+<area shape="poly" title=" " alt="" coords="1089,168,1006,173,957,181,909,193,865,211,829,236,816,251,805,268,799,288,797,310,797,386,803,451,815,505,810,506,798,452,791,386,791,310,794,287,801,266,811,248,826,232,863,206,907,188,956,176,1005,168,1089,163"/>
+<area shape="rect" title=" " alt="" coords="1277,225,1361,251"/>
+<area shape="poly" title=" " alt="" coords="1160,175,1276,218,1274,223,1158,180"/>
+<area shape="rect" href="task_8h.html" title="Header defining the data structures belonging to a single task and related functions." alt="" coords="1111,225,1173,251"/>
+<area shape="poly" title=" " alt="" coords="1133,177,1140,211,1135,212,1128,178"/>
+<area shape="poly" title=" " alt="" coords="1169,248,1264,291,1262,295,1167,253"/>
+<area shape="poly" title=" " alt="" coords="1127,253,1069,293,1066,288,1124,248"/>
+<area shape="poly" title=" " alt="" coords="1162,249,1186,269,1206,298,1209,311,1206,325,1196,356,1182,386,1154,435,1149,432,1178,384,1191,354,1201,323,1203,311,1201,300,1182,273,1159,253"/>
+<area shape="poly" title=" " alt="" coords="1111,250,925,299,923,294,1110,245"/>
+<area shape="poly" title=" " alt="" coords="1111,243,1077,247,1040,257,1004,274,976,300,970,314,967,328,970,358,964,359,962,328,965,312,972,297,1001,269,1038,252,1076,242,1110,238"/>
+<area shape="rect" title=" " alt="" coords="1478,299,1542,324"/>
+<area shape="poly" title=" " alt="" coords="1174,243,1465,299,1464,304,1173,248"/>
+<area shape="rect" href="ioredir_8h.html" title="Header related to IO redirection types and functions." alt="" coords="1117,299,1191,324"/>
+<area shape="poly" title=" " alt="" coords="1147,251,1152,285,1147,286,1141,251"/>
+<area shape="poly" title=" " alt="" coords="1126,327,1017,369,1015,364,1124,322"/>
+<area shape="poly" title=" " alt="" coords="938,101,1079,145,1078,150,937,107"/>
+<area shape="rect" title=" " alt="" coords="865,152,936,177"/>
+<area shape="poly" title=" " alt="" coords="903,104,903,138,898,138,898,104"/>
+<area shape="poly" title=" " alt="" coords="1502,106,1468,126,1433,154,1414,179,1404,202,1394,225,1376,252,1332,292,1329,288,1372,249,1390,223,1399,199,1410,176,1429,150,1465,122,1500,102"/>
+<area shape="poly" title=" " alt="" coords="1522,106,1482,170,1411,270,1365,325,1314,380,1258,430,1197,473,1138,501,1080,520,1079,515,1136,496,1194,468,1254,426,1310,376,1362,322,1407,267,1478,167,1517,103"/>
+<area shape="poly" title=" " alt="" coords="1484,104,1472,107,1329,130,1182,155,1181,149,1328,125,1471,101,1483,99"/>
+<area shape="poly" title=" " alt="" coords="1484,106,1433,125,1382,154,1354,183,1334,215,1329,212,1350,180,1379,150,1431,120,1482,101"/>
+<area shape="poly" title=" " alt="" coords="1528,105,1515,285,1509,284,1522,104"/>
+<area shape="rect" href="timer_8h.html" title=" " alt="" coords="1548,225,1616,251"/>
+<area shape="poly" title=" " alt="" coords="1533,103,1575,212,1570,213,1528,105"/>
+<area shape="poly" title=" " alt="" coords="1548,251,1351,300,1350,295,1547,245"/>
+<area shape="poly" title=" " alt="" coords="1617,238,1680,243,1748,256,1776,267,1796,282,1804,302,1796,325,1762,369,1728,400,1691,421,1653,434,1566,451,1515,460,1460,473,1356,497,1251,514,1080,530,1080,525,1251,509,1355,492,1459,468,1514,455,1565,446,1651,429,1689,416,1725,396,1759,366,1792,323,1799,302,1792,285,1774,272,1747,261,1679,248,1616,243"/>
+<area shape="poly" title=" " alt="" coords="1572,253,1533,291,1530,287,1568,249"/>
+<area shape="rect" title=" " alt="" coords="1567,299,1781,324"/>
+<area shape="poly" title=" " alt="" coords="1598,249,1650,288,1647,292,1595,253"/>
 </map>
 </div>
 </div><table class="memberdecls">
@@ -206,7 +224,7 @@ Functions</h2></td></tr>
 <tr class="separator:ad8bb2fe364f5b38ad455323bd80a2c05"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca4c16a62c360bcab2de806889bc5c30" id="r_aca4c16a62c360bcab2de806889bc5c30"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="crinit_8c.html#aca4c16a62c360bcab2de806889bc5c30">crinitPrintUsage</a> (const char *basename)</td></tr>
 <tr class="separator:aca4c16a62c360bcab2de806889bc5c30"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0478eea3502a113f65abaaf4bd35f22a" id="r_a0478eea3502a113f65abaaf4bd35f22a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="crinit_8c.html#a0478eea3502a113f65abaaf4bd35f22a">crinitTaskPrint</a> (const <a class="el" href="structcrinitTask__t.html">crinitTask_t</a> *t)</td></tr>
+<tr class="memitem:a0478eea3502a113f65abaaf4bd35f22a" id="r_a0478eea3502a113f65abaaf4bd35f22a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="crinit_8c.html#a0478eea3502a113f65abaaf4bd35f22a">crinitTaskPrint</a> (const <a class="el" href="task_8h.html#a62fa2b7f0a54e7fb12d0b2dccf8e15e8">crinitTask_t</a> *t)</td></tr>
 <tr class="separator:a0478eea3502a113f65abaaf4bd35f22a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ddf1224851353fc92bfbff6f499fa97" id="r_a0ddf1224851353fc92bfbff6f499fa97"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="crinit_8c.html#a0ddf1224851353fc92bfbff6f499fa97">main</a> (int argc, char *argv[])</td></tr>
 <tr class="separator:a0ddf1224851353fc92bfbff6f499fa97"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -287,7 +305,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">static void crinitTaskPrint </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structcrinitTask__t.html">crinitTask_t</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="task_8h.html#a62fa2b7f0a54e7fb12d0b2dccf8e15e8">crinitTask_t</a> *&#160;</td>
           <td class="paramname"><em>t</em></td><td>)</td>
           <td></td>
         </tr>
@@ -298,7 +316,7 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Print out the contents of an <a class="el" href="structcrinitTask__t.html">crinitTask_t</a> structure in a readable format using <a class="el" href="logio_8c.html#aef90288d34c7d8190cac39636523bc66">crinitDbgInfoPrint()</a>.</p>
+<p>Print out the contents of an crinitTask_t structure in a readable format using <a class="el" href="logio_8c.html#aef90288d34c7d8190cac39636523bc66">crinitDbgInfoPrint()</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">t</td><td>The task to be printed. </td></tr>

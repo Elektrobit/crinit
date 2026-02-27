@@ -23,6 +23,8 @@
   - [Example Task Configuration](#example-task-configuration)
     - [Explanation](#explanation-1)
   - [Setting Environment Variables](#setting-environment-variables)
+  - [Defining timers](#defining-timers)
+    - [Examples](#examples)
   - [Defining Elos Filters](#defining-elos-filters)
     - [Ruleset](#ruleset)
   - [Include files](#include-files)
@@ -86,11 +88,9 @@ Crinit currently has the following features implemented:
     - emits appropriate events when a task is created, starts, exits, or fails
 * optional signature checking of Crinit's configuration files
 * setting of UID and GID a task should be run as
-
-In the future we also plan to support:
-
+* setting/clearing of specific capabilities that a task shall be (not) equipped with
 * fine-grained restriction of processes started/managed by Crinit
-    - capabilities, cgroups,...
+    - cgroups
 
 There are example configurations below which show how to use the currently implemented features.
 For detailed explanations of Crinit's inner workings please refer to the Doxygen documentation generated during build.
@@ -174,6 +174,7 @@ Specifically, those are
     reaper" regardless of this setting.
     By default, Crinit will respect the attribute as it is set when Crinit is started and behave accordingly, i.e. if
     Crinit either is PID 1 or it has the CHILD_SUBREAPER process attribute, it will reap zombies of its descendants.
+* **--use-kmsg/--no-use-kmsg** - Depending on the setting, crinit will write its logs to kernel log where it can be read via e.g. dmesg. If opening /dev/kmsg fails, crinit will fall back to console output. If syslog usage is configured crinit will switch to syslog logging as soon as syslog is available.
 
 ## Environment Variables
 
@@ -234,6 +235,13 @@ ELOS_EVENT_POLL_INTERVAL = 250000
 ENV_SET = FOO "foo"
 ENV_SET = FOO_BAZ "${FOO} baz"
 ENV_SET = GREETING "Good morning!"
+
+CGROUP_ROOT_NAME = crinit.cg
+CGROUP_ROOT_PARAMS = memory.max=500M
+
+CGROUP_GLOBAL_NAME = mem_restricted cpu_restricted
+CGROUP_GLOBAL_PARAMS = cpu_restricted:cpu.max=50000 100000
+                       mem_restricted:memory.max=100M
 ```
 #### Explanation
 - **TASKS** -- The task configurations to load. This is an optional setting. If not set, **TASKDIR** will be scanned for
@@ -268,6 +276,11 @@ ENV_SET = GREETING "Good morning!"
   below). Default is 500000. Needs ELOS support included at build-time.
 - **ENV_SET** -- See section **Setting Environment Variables** below. (*array-like*)
 - **FILTER_DEFINE** -- See section **Defining Elos Filters** below. (*array-like*)
+- **DEFAULTCAPS** -- Whitespace separated list of capability definitions `/linux/capability.h`) that each task shall be equipped with by default.
+- **CGROUP_ROOT_NAME** -- Name of the containing cgroup that will contain all in crinit defined cgroups.
+- **CGROUP_ROOT_PARAMS** -- Parameters for the root cgroup (if any). See CGROUP_PARAMS in the task configuration for details.
+- **CGROUP_GLOBAL_NAME** -- List of global cgroup names available to all tasks.
+- **CGROUP_GLOBAL_PARAMS** -- List of parameters for the global cgroups. One entry (see CGROUP_PARAMS in task configuration section for details) per line. Each line has to be prefixed with the name of the corresponding global cgroup and a colon (e.g. "mygroup:").
 
 ### Example Task Configuration
 The `network-dhcp.crinit` from above could for example look like this:
@@ -291,12 +304,18 @@ STOP_COMMAND = /sbin/ifconfig eth0 down
 USER = root
 GROUP = root
 
+CAPABILITY_SET = CAP_NET_RAW
+CAPABILITY_CLEAR = CAP_SYS_ADMIN CAP_SYS_BOOT
+
 DEPENDS = check_qemu:fail earlysetup:wait @provided:writable_var
 
 PROVIDES = ipv4_dhcp:wait resolvconf:wait
 
 RESPAWN = NO
 RESPAWN_RETRIES = -1
+
+CGROUP_NAME = dhcp
+CGROUP_PARAMS = memory.max=100M
 
 ENV_SET = FOO_BAR "${FOO} bar"
           ESCAPED_VAR "Global variable name: \${FOO}"
@@ -324,9 +343,13 @@ IO_REDIRECT = STDERR STDOUT
   user ID can be used. If **USER** is not set, "root" is assumed.
     **NOTE**: Changing user names, UIDs, group names or GIDs on the system while a task using them has already been
     loaded may result in undefined behaviour.
+    **NOTE**: Setting a user ID 0 will disable the capability configuration. 
 - **GROUP** -- Name of the group used to run the commands specified in **COMMAND**. Either the group name or the numeric
   group ID can be used. If **GROUP** is not set, "root" is assumed. Supplementary groups can be added after the main group, space separated. GROUP can be an array, too. Similar to **COMMAND**.
     **Also see note on USER command.** This applies here, too.
+    **NOTE**: Setting a group ID 0 will disable the capability configuration. 
+- **CAPABILITY_SET** -- Whitespace separated list of capability definitions (as defined in `/linux/capability.h`) that a task shall be specifically equipped with.
+- **CAPABILITY_CLEAR** -- Whitespace separated list of capability definitions `/linux/capability.h`) that a task shall be stripped from.
 - **DEPENDS** -- A list of dependencies which need to be fulfilled before this task is considered "ready-to-start".
   Semantics are `<taskname>:{fail,wait,spawn}`, where `spawn` is fulfilled when (the first command of) a task has been
   started, `wait` if it has successfully completed, and `fail` if it has failed somewhere along the way. Here we can see
@@ -340,14 +363,32 @@ IO_REDIRECT = STDERR STDOUT
   Additionally there is an optional feature that allows tasks to be started based on system events issued by elos.
   Tasks depending on an elos event can use the `@elos:<filter_name>` syntax to specify a task dependency that is fullfilled
   as soon as the specified elos filter triggers. The filters themself can be specified using the **FILTER_DEFINE** keyword.
+- **TRIGGER** -- A list of dependencies which trigger the task if one of them is fulfilled.
+  If both **DEPENDS** and **TRIGGER** are provided then the task starts as soon as all **DEPENDS** and at least one **TRIGGER**
+  are fulfilled. The same semantics as with **DEPENDS** can be used. An empty trigger list is always considered fulfilled.
 - **PROVIDES** -- As we have seen above, a task may depend on features and also provide them. In this case we advertise
   that after completion of this task (`wait`), the features `ipv4_dhcp` and `resolvconf` are provided. Another task may
   then depend e.g. on `@provided:resolvconf`. While the feature names chosen here reflect the functional intention, they
   can be chosen arbitrarily. (*array-like*)
+- **TRIGGER_REARM** -- If set to `YES`, the task will revert its state to `loaded` after it has finished
+  and thus can be triggered again.
+  Default: `NO`
 - **RESPAWN** -- If set to `YES`, the task will be restarted on failure or completion. Useful for daemons like `getty`.
   Default: `NO`
 - **RESPAWN_RETRIES** -- Number of times a respawned task may fail *in a row* before it is not started again. The
   special value `-1` is interpreted as "unlimited". Default: -1
+- **CGROUP_NAME** -- Name of a cgroup only used by this task.
+  If this parameter is absent, the task won't be placed in a cgroup.
+  If the name of a global cgroup (configured in the series file) is used here, the task is placed in that global cgroup. That is the preferred way to have multiple tasks in the same cgroup.
+  It is possible to have more than one task with the same CGROUP_NAME which is not a global cgroup, but that is highly discouraged. In that case both tasks would be placed in the same cgroup but the later started task will alter the cgroup configuration done by the first task with the later started task's configuration.
+  It is possible to create a cgroup outside of crinit (e.g. via an early started task) and use the name of that cgroup as value for CGROUP_NAME. Attention: That makes the configuration of the cgroup dependent on the task execution order.
+- **CGROUP_PARAMS** -- Line-separated list of options that shall be set for the cgroup. Each parameter consists of the file name and the parameter value to set.  Only one parameter pair per line.
+  For example:  
+  ```
+  memory.max=100M
+  memory.min=5M
+  ```
+  See cgroup v2 documentation for more details: https://docs.kernel.org/admin-guide/cgroup-v2.html
 - **ENV_SET** -- See section **Setting Environment Variables** below. (*array-like*)
 - **FILTER_DEFINE** -- See section **Defining Elos Filters** below. (*array-like*)
 - **IO_REDIRECT** -- See section **IO Redirections** below. (*array-like*)
@@ -366,6 +407,93 @@ GREETING=Good evening!                     # Override of global variable.
 ESCAPED_VAR=Global variable name: ${FOO}   # Avoid variable expansion through escaping.
 VAR_WITH_ESC_SEQUENCES=hex  hex            # Support for escape sequences including hexadecimal bytes.
 ```
+
+### Defining timers
+
+```
+Weekday-Year-Month-Day-Hour:Minute:Second+Timezone
+```
+
+All parts can be either a single entry.
+
+Or a range separated by `<start>..<end>`, start and end of a range can be left blank (except for the weekday) and will default to the lowest or highest possible value (00:..04 -> 00:00..04, 00:20.. -> 00:20..59).
+
+`*` can be used as a shorthand to specify the whole range.
+
+A range starting higher than the end wraps around, and includes all values from start to maximum and mimimum to the end (ie for month: 11..2 -> Nov, Dec, Jan, Feb).
+
+**Weekday:** is either the full weekday (Monday, Tuesday, ...) or the first 3 letters (Mon, Tue, ...) case insensitive.
+
+**Year:** is a year between 0 and 65535 or a range. Default is the range 0..65535.
+**Month:** is a number between 1 and 12 or a range. Default is the range 1..12.
+**Day:** is a number between 1 and 31 or a range. Default is the range 1..31.
+
+**Hour:** is in 24-hour format a number between 0 and 23 or a range. Default is midnight/00.
+**Minute:** is a minute between 0 and 59 or a range. Default is 00 the first minute of a matching hour.
+**Second:** is a second between 0 and 59 or a range. Default is 00 the first second of a matching minute. Can be left out when specifying the time.
+**Timezone:** is an offset of hours between -13 and +15 and minutes between 0 and 59. Default +0000. Can be left out when specifying the time.
+
+
+#### Examples
+
+- `*`
+  `daily`
+  `midnight`
+  `*-*-*-*-00:00:00`
+  `Mon..Sun-0..65535-1..12-1..31-00:00:00`
+    - compared to crontab: `0 0 * * *`
+    - compared to systemd onCalandar: `* *-*-* 00:00:00`
+- `Mon`
+  `weekly`
+  `Mon-*-*-*-00:00:00`
+    - compared to crontab: `0 0 * * 1`
+    - compared to systemd onCalandar: `Mon *-*-* 00:00:00`
+- `Sat-23:45:00`
+  `Sat-*-*-*-23:45:00`
+    - crontab: `45 23 * * 6`
+    - systemd onCalandar: `Sat *-*-* 23:45:00`
+- `Mon..Fri-12..14:15..45:00`
+  `Mon..Fri-*-*-*-12..14:15..45:00`
+    - compared to crontab: `15-45 12-14 * * 1-5`
+    - compared to systemd onCalandar: `Mon..Fri *-*-* 12..14:15..45:00`
+- `*-2..11-12`
+  `*-*-2..11-12-00:00:00`
+  `Mon..Sun-0..65535-2..11-12-00:00:00`
+    - compared to crontab: `0 0 12 2-11 *`
+    - compared to systemd onCalandar: `Mon..Fri *-2..11-12 00:00:00`
+- `Sat..Thu`
+  `Sat..Thu-*-*-*-00:00:00:`
+    - compared to systemd onCalandar: `Mon..Thu,Sat,Sun *-*-* 00:00:00`
+- `minutely`
+  `*-*-*-*-*:*:00`
+    - compared to crontab: `* * * * *`
+    - compared to systemd onCalandar: `*-*-* *:00:00`
+- `hourly`
+  `*-*-*-*-*:00:00`
+    - compared to crontab: `0 * * * *`
+    - compared to systemd onCalandar: `*-*-* *:00:00`
+- `monthly`
+  `*-*-*-01-00:00:00`
+    - compared to crontab: `0 0 1 * *`
+    - compared to systemd onCalandar: `*-*-1 00:00:00`
+- `yearly`
+  `annually`
+  `*-01-01`
+  `*-*-01-01-00:00:00`
+    - compared to crontab: `0 0 1 1 *`
+    - compared to systemd onCalandar: `*-01-01 00:00:00`
+- `2030-*-30..01-12:2..58`
+    - compared to systemd onCalandar: `2030-*-01,30,31 01..12:01,02,58,59:00`
+
+```ini
+DEPENDS = @timer:Mon..Sun-0000..65535-01..12-01..31-00:00:00+0000
+DEPENDS = @timer:Wednsday-2030-10-25-00..23:00..59:00
+TRIGGER = @timer:Fri..Tue-12:30
+TRIGGER = @timer:yearly
+TRIGGER = @timer:anually
+TRIGGER = @timer:daily
+```
+
 
 ### Defining Elos Filters
 
@@ -653,11 +781,21 @@ USAGE: crinit-ctl <ACTION> [OPTIONS] <PARAMETER> [PARAMETERS...]
                represent the times the task was Created (loaded/parsed), last Started (became running), and
                last Ended (failed or is done). If the event has not occurred yet, the timestamp's value will
                be 'n/a'.
+               See "list" for a detailed description of different statuses.
       notify <TASK_NAME> <"SD_NOTIFY_STRING">
              - Will send an sd_notify-style status report to Crinit. Only MAINPID and READY are
                implemented. See the sd_notify documentation for their meaning.
         list
              - Print the list of loaded tasks and their status.
+               Following states can be reported:
+               - loaded: the task was loaded but never ran
+               - starting: the task currently spawns a new process
+               - running: the task has spawned a process and is currently running
+               - done: the task finished without an error
+               - failed: the task has finished with an error code
+
+               The states "running", "done" and "failed" can appear with the suffix "(notified)". That means that the information was transmitted
+               to crinit via the sd_notify API.
       reboot
              - Will request Crinit to perform a graceful system reboot. crinit-ctl can be symlinked to
                reboot as a shortcut which will invoke this command automatically.
@@ -709,10 +847,10 @@ All following commands to be run inside the container will be the same regardles
 ci/docker-run.sh arm64
 ```
 
-By default, `ci/docker-run.sh` will use a container based on Ubuntu Jammy. If another version is desired, it can be
-specified as a second parameter. For example, you can run a Lunar-based container using
+By default, `ci/docker-run.sh` will use a container based on Ubuntu Noble (24.04). If another version is desired, it
+can be specified as a second parameter. For example, you can run a 22.04-Jammy-based container using
 ```sh
-ci/docker-run.sh amd64 lunar
+ci/docker-run.sh amd64 jammy
 ```
 
 Inside the container, it is sufficient to run
@@ -781,6 +919,7 @@ The cmake setup supports some optional features:
   path `${CMAKE_INSTALL_LIBDIR}/test/crinit/utest`.
 * Elos event polling time (see global configuration example) `-DDEFAULT_ELOS_EVENT_POLLING_TIME=<usecs>`.
   Default is 500000.
+* Kernel logging can be activated at build time using `-DDEFAULT_USE_KMSG={On, Off}`. The behaviour can still be changed at runtime via the command line parameters.
 * Build and install API documentation in doxygen HTML format using `-DAPI_DOC={On, Off}`. Needs doxygen. Default is
   `On`.
 * Build and install an example generator for the machine id file (see above) using `-DMACHINE_ID_EXAMPLE={On, Off}`.
@@ -801,6 +940,7 @@ The cmake setup supports some optional features:
    `${CMAKE_INSTALL_DATADIR/bash-completion/completions`.
 * Set the `SONAME` of libelos crinit will try to open at run-time. Default is auto-detection if elos is present in the
   build environment or `libelos.so.1` if it is not.
+* Enable (`ON`) or disable (`OFF`) Linux capabilities support. If set to `ON` crinit will have a dependency to libcap. Default is `ON`.
 
 ## Build Requirements
 
@@ -813,3 +953,4 @@ In order to build crinit, some prerequisites have to be installed.
 - optional, for signature support: [MbedTLS](https://github.com/Mbed-TLS/mbedtls) 2.28.x or 3.x
 - optional, for unit tests: cmocka >= 1.1.5
 - optional, for HTML API documentation: Doxygen
+- optional, for capabilities support: libcap

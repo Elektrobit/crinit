@@ -1,9 +1,9 @@
 var searchData=
 [
-  ['oflags_0',['oflags',['../structcrinitIoRedir__t.html#ab013b6259dfef62cb92fbdb3c45a56b8',1,'crinitIoRedir_t']]],
-  ['oldfd_1',['oldFd',['../structcrinitIoRedir__t.html#a0b8a8892c14c42f3aef845a34ef233e7',1,'crinitIoRedir_t']]],
-  ['op_2',['op',['../structcrinitRtimCmd__t.html#a467f90753710b3f3f14627e0d8d279d9',1,'crinitRtimCmd_t']]],
-  ['opcode_3',['opCode',['../structcrinitRtimOpMap__t.html#ae7262597d795225937b641cb96bc060d',1,'crinitRtimOpMap_t']]],
-  ['opstr_4',['opStr',['../structcrinitRtimOpMap__t.html#a0f1c151cb8884071406e817fe7c8e069',1,'crinitRtimOpMap_t']]],
-  ['opts_5',['opts',['../structcrinitTask__t.html#aa85b90bb84717368e4c4fd54ab4a797d',1,'crinitTask_t']]]
+  ['oflags_0',['oflags',['../structcrinitIoRedir.html#a400f3a7fae0a28c862b581b1b0a63881',1,'crinitIoRedir']]],
+  ['oldfd_1',['oldFd',['../structcrinitIoRedir.html#aeddd9d31d5a8ee92c8f891b782509eb8',1,'crinitIoRedir']]],
+  ['op_2',['op',['../structcrinitRtimCmd.html#a7b84dcb7c3be628781b1162825b4a842',1,'crinitRtimCmd']]],
+  ['opcode_3',['opCode',['../structcrinitRtimOpMap.html#ade85f881623b33f9fda3562bffc02962',1,'crinitRtimOpMap']]],
+  ['opstr_4',['opStr',['../structcrinitRtimOpMap.html#a2c0d0ae339288cefb0b040a17cfab724',1,'crinitRtimOpMap']]],
+  ['opts_5',['opts',['../structcrinitTask.html#affb097732cca6cfa07048430ac746557',1,'crinitTask']]]
 ];

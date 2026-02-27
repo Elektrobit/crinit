@@ -12,8 +12,8 @@
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <script src="../_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -51,7 +51,7 @@ available</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">./ci/docker-run.sh</span></code> and check for clean workspace <cite>git clean -dnx</cite>,
 usually you have to delete at least <cite>ci/sshconfig</cite>.</p></li>
 <li><p>Run
-<code class="docutils literal notranslate"><span class="pre">GIT_AUTHOR_NAME=&quot;Your</span> <span class="pre">Name&quot;</span> <span class="pre">EMAIL=&quot;your&#64;mail.org&quot;</span> <span class="pre">./ci/create_debian_release.sh</span> <span class="pre">x.y.z</span></code></p></li>
+<code class="docutils literal notranslate"><span class="pre">GIT_AUTHOR_NAME=&quot;Your</span> <span class="pre">Name&quot;</span> <span class="pre">GIT_AUTHOR_EMAIL=&quot;your&#64;mail.org&quot;</span> <span class="pre">./ci/create_debian_release.sh</span> <span class="pre">x.y.z</span></code></p></li>
 <li><p>Push the branches <code class="docutils literal notranslate"><span class="pre">debian/main</span></code> and <code class="docutils literal notranslate"><span class="pre">pristine-tar</span></code> to github. Not on
 <em>main</em> and not on <em>integration</em>!</p></li>
 </ol>
@@ -135,13 +135,20 @@ in need of an update. For development the return code can be ignored.</p>
 </section>
 <section id="code-formatting">
 <h2>Code-Formatting<a class="headerlink" href="#code-formatting" title="Link to this heading">¶</a></h2>
-<p>The code formatter script <code class="docutils literal notranslate"><span class="pre">ci/format-code.sh</span></code> will use <code class="docutils literal notranslate"><span class="pre">clang-format</span></code> and
-<code class="docutils literal notranslate"><span class="pre">shfmt</span></code> with the correct settings to format C code, header files and shell
-scripts within the project.</p>
+<p>The code formatter script <code class="docutils literal notranslate"><span class="pre">ci/format-code.sh</span></code> will use <code class="docutils literal notranslate"><span class="pre">clang-format</span></code>,
+<code class="docutils literal notranslate"><span class="pre">shfmt</span></code> and <code class="docutils literal notranslate"><span class="pre">yapf3</span></code> with the correct settings to format C code, header
+files, shell, and Python scripts within the project.</p>
 <p>Optionally, the <code class="docutils literal notranslate"><span class="pre">--check</span></code> parameter does a dry run, reporting errors if any
 files do not conform to formatting rules.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">clang-format</span></code> and <code class="docutils literal notranslate"><span class="pre">shfmt</span></code> tools should be available in most distros.
-Alternatively, they are available n the build container as well.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">clang-format</span></code>, <code class="docutils literal notranslate"><span class="pre">shfmt</span></code> and <code class="docutils literal notranslate"><span class="pre">yapf3</span></code> tools should be available in most
+distros. Alternatively, they are available n the build container as well.</p>
+</section>
+<section id="script-linting">
+<h2>Script Linting<a class="headerlink" href="#script-linting" title="Link to this heading">¶</a></h2>
+<p>The script <code class="docutils literal notranslate"><span class="pre">ci/lint-scripts.sh</span></code> will use the <code class="docutils literal notranslate"><span class="pre">flake8</span></code> and <code class="docutils literal notranslate"><span class="pre">shellcheck</span></code>
+tools to lint python and shell scripts in the project. The <code class="docutils literal notranslate"><span class="pre">flake8</span></code> settings
+are aligned with the <code class="docutils literal notranslate"><span class="pre">yapf3</span></code> formatter mentioned above.</p>
+<p>An extension of the script with shellcheck is planned.</p>
 </section>
 <section id="github-pages">
 <h2>Github Pages<a class="headerlink" href="#github-pages" title="Link to this heading">¶</a></h2>
@@ -208,10 +215,12 @@ and creating a pull request.</p>
 <li class="toctree-l2"><a class="reference internal" href="#commit-message-linting">Commit Message Linting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#readme-table-of-contents-generation">README Table-of-Contents Generation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#code-formatting">Code-Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#script-linting">Script Linting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#github-pages">Github Pages</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../doc/adr/index.html">ADRs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../src/index.html">Developers</a></li>
 </ul>
 
 <div class="relations">
@@ -239,7 +248,7 @@ and creating a pull request.</p>
       &#169;2023, emlix GmbH/Elektrobit Automotive GmbH.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |

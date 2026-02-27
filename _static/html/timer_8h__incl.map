@@ -1,0 +1,11 @@
+<map id="inc/timer.h" name="inc/timer.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="291,5,382,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,220,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="301,33,163,77,161,72,300,28"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="245,79,327,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="330,33,304,69,300,66,326,29"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="352,79,423,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="347,29,373,66,369,69,343,33"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="447,79,511,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="361,28,445,70,443,75,358,33"/>
+</map>

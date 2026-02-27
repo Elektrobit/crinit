@@ -99,7 +99,7 @@ $(document).ready(function(){initNavTree('procdip_8c.html',''); initResizable();
 </div><!--header-->
 <div class="contents">
 <h3 class="version">(/usr/bin/git
-2025-03-27, commit: ffe114c)</h3>
+2026-02-27, commit: 34429d97)</h3>
 <p>Implementation of the Process Dispatcher.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="procdip_8h_source.html">procdip.h</a>&quot;</code><br />
@@ -111,6 +111,8 @@ $(document).ready(function(){initNavTree('procdip_8c.html',''); initResizable();
 <code>#include &lt;sys/types.h&gt;</code><br />
 <code>#include &lt;sys/wait.h&gt;</code><br />
 <code>#include &lt;unistd.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="timerdb_8h_source.html">timerdb.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="confhdl_8h_source.html">confhdl.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="envset_8h_source.html">envset.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="globopt_8h_source.html">globopt.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="lexers_8h_source.html">lexers.h</a>&quot;</code><br />
@@ -120,80 +122,99 @@ Include dependency graph for procdip.c:</div>
 <div class="dyncontent">
 <div class="center"><img src="procdip_8c__incl.png" border="0" usemap="#asrc_2procdip_8c" alt=""/></div>
 <map name="asrc_2procdip_8c" id="asrc_2procdip_8c">
-<area shape="rect" title="Implementation of the Process Dispatcher." alt="" coords="672,5,776,31"/>
-<area shape="rect" href="procdip_8h.html" title="Header related to the Process Dispatcher." alt="" coords="169,79,252,104"/>
-<area shape="poly" title=" " alt="" coords="672,29,266,85,265,80,672,24"/>
-<area shape="rect" title=" " alt="" coords="155,445,251,471"/>
-<area shape="poly" title=" " alt="" coords="672,21,498,25,388,31,277,42,173,60,87,86,54,102,29,120,13,140,8,164,8,239,13,273,25,305,44,334,67,361,120,405,169,436,166,441,117,410,63,365,40,338,20,308,7,275,3,240,3,163,9,138,25,116,51,97,85,81,172,55,276,37,388,26,498,19,672,16"/>
-<area shape="rect" href="envset_8h.html" title="Header defining data types and functions to work with sets of environment variables." alt="" coords="433,299,511,324"/>
-<area shape="poly" title=" " alt="" coords="672,27,616,34,556,45,504,61,485,70,473,80,458,104,450,131,446,159,446,187,453,242,465,285,460,286,448,243,440,188,440,158,444,129,454,102,469,77,482,65,502,56,555,40,615,29,672,21"/>
-<area shape="rect" title=" " alt="" coords="782,79,858,104"/>
-<area shape="poly" title=" " alt="" coords="741,29,795,68,792,72,738,33"/>
-<area shape="rect" title=" " alt="" coords="882,79,953,104"/>
-<area shape="poly" title=" " alt="" coords="756,28,874,71,872,76,754,33"/>
-<area shape="rect" title=" " alt="" coords="641,152,711,177"/>
-<area shape="poly" title=" " alt="" coords="714,32,696,53,681,80,675,110,676,139,670,139,670,109,676,78,691,50,710,29"/>
-<area shape="rect" title=" " alt="" coords="977,79,1063,104"/>
-<area shape="poly" title=" " alt="" coords="772,28,964,74,963,79,771,33"/>
-<area shape="rect" title=" " alt="" coords="1087,79,1193,104"/>
-<area shape="poly" title=" " alt="" coords="777,25,1074,76,1074,81,776,31"/>
-<area shape="rect" title=" " alt="" coords="1217,79,1305,104"/>
-<area shape="poly" title=" " alt="" coords="776,22,961,42,1204,76,1203,81,961,48,776,27"/>
-<area shape="rect" title=" " alt="" coords="1329,79,1404,104"/>
-<area shape="poly" title=" " alt="" coords="776,20,1007,38,1159,54,1316,76,1315,81,1158,59,1006,43,776,25"/>
-<area shape="rect" href="globopt_8h.html" title="Header related to global option storage." alt="" coords="483,79,565,104"/>
-<area shape="poly" title=" " alt="" coords="693,33,571,76,569,71,691,28"/>
-<area shape="rect" href="lexers_8h.html" title="Header related to lexers built with re2c, used in the config/envset parser." alt="" coords="590,372,663,397"/>
-<area shape="poly" title=" " alt="" coords="705,33,675,54,642,83,616,121,608,141,605,164,605,239,611,304,623,358,617,359,606,305,600,239,600,163,603,140,611,118,638,80,672,50,702,29"/>
-<area shape="rect" href="logio_8h.html" title="Header related to debug/log output." alt="" coords="691,79,757,104"/>
-<area shape="poly" title=" " alt="" coords="727,31,727,65,721,65,721,31"/>
-<area shape="rect" title=" " alt="" coords="77,152,147,177"/>
-<area shape="poly" title=" " alt="" coords="196,106,141,146,138,142,193,102"/>
-<area shape="rect" href="taskdb_8h.html" title="Header defining the central Task Data Structure and related types/functions." alt="" coords="171,152,250,177"/>
-<area shape="poly" title=" " alt="" coords="213,104,213,138,208,138,208,104"/>
-<area shape="rect" title=" " alt="" coords="131,225,215,251"/>
-<area shape="poly" title=" " alt="" coords="207,179,188,215,183,212,202,176"/>
-<area shape="rect" title=" " alt="" coords="337,519,412,544"/>
-<area shape="poly" title=" " alt="" coords="183,180,144,199,104,228,86,245,72,265,62,286,59,310,59,386,61,406,66,424,87,455,118,479,157,497,200,510,244,519,323,527,323,532,243,524,198,515,155,502,115,483,83,458,61,426,55,407,53,386,53,310,57,285,67,262,82,242,100,224,142,195,180,175"/>
-<area shape="rect" href="task_8h.html" title="Header defining the data structures belonging to a single task and related functions." alt="" coords="239,225,302,251"/>
-<area shape="poly" title=" " alt="" coords="223,176,254,213,250,217,219,179"/>
-<area shape="poly" title=" " alt="" coords="262,253,221,302,201,336,185,373,183,388,184,403,193,432,188,434,179,404,178,388,180,371,196,334,217,299,257,249"/>
-<area shape="rect" title=" " alt="" coords="93,299,157,324"/>
-<area shape="poly" title=" " alt="" coords="248,253,162,295,160,290,246,248"/>
-<area shape="rect" href="confparse_8h.html" title="Header related to the Config Parser." alt="" coords="325,372,424,397"/>
-<area shape="poly" title=" " alt="" coords="279,249,298,283,323,322,356,360,351,364,319,326,293,286,274,252"/>
-<area shape="rect" href="crinit-sdefs_8h.html" title="Definitions shared between crinit&#39;s public and internal APIs." alt="" coords="195,372,301,397"/>
-<area shape="poly" title=" " alt="" coords="271,252,255,359,249,358,266,251"/>
-<area shape="poly" title=" " alt="" coords="303,248,428,292,426,297,301,253"/>
-<area shape="rect" href="ioredir_8h.html" title="Header related to IO redirection types and functions." alt="" coords="333,299,408,324"/>
-<area shape="poly" title=" " alt="" coords="288,249,345,288,342,293,285,253"/>
-<area shape="poly" title=" " alt="" coords="348,400,244,442,242,438,346,395"/>
-<area shape="rect" title=" " alt="" coords="512,519,595,544"/>
-<area shape="poly" title=" " alt="" coords="391,396,530,508,527,512,388,400"/>
-<area shape="rect" href="fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="335,445,414,471"/>
-<area shape="poly" title=" " alt="" coords="377,398,377,432,372,432,372,398"/>
-<area shape="poly" title=" " alt="" coords="377,471,377,505,372,505,372,471"/>
-<area shape="poly" title=" " alt="" coords="404,468,513,511,511,516,402,473"/>
-<area shape="poly" title=" " alt="" coords="243,399,220,435,215,432,238,396"/>
-<area shape="poly" title=" " alt="" coords="473,325,459,389,446,431,428,472,399,510,394,507,423,469,441,429,454,388,468,323"/>
-<area shape="poly" title=" " alt="" coords="458,326,403,366,400,361,455,322"/>
-<area shape="poly" title=" " alt="" coords="374,324,376,358,371,359,369,324"/>
-<area shape="poly" title=" " alt="" coords="530,103,545,160,552,198,555,237,555,313,556,505,550,505,549,313,549,237,547,199,540,161,525,105"/>
-<area shape="poly" title=" " alt="" coords="524,105,481,286,475,284,519,104"/>
-<area shape="poly" title=" " alt="" coords="550,102,640,144,638,149,547,106"/>
-<area shape="poly" title=" " alt="" coords="623,399,568,507,563,505,618,397"/>
-<area shape="poly" title=" " alt="" coords="730,103,744,160,750,198,752,237,752,386,748,412,738,435,722,455,702,472,656,499,609,518,607,513,653,495,699,468,718,451,733,432,743,410,747,386,747,237,744,199,738,161,725,105"/>
-<area shape="poly" title=" " alt="" coords="718,106,694,142,689,139,714,103"/>
-<area shape="rect" title=" " alt="" coords="787,152,855,177"/>
-<area shape="poly" title=" " alt="" coords="741,102,796,141,793,146,738,106"/>
-<area shape="rect" title=" " alt="" coords="880,152,947,177"/>
-<area shape="poly" title=" " alt="" coords="755,102,870,144,869,149,753,107"/>
+<area shape="rect" title="Implementation of the Process Dispatcher." alt="" coords="971,5,1075,31"/>
+<area shape="rect" href="procdip_8h.html" title="Header related to the Process Dispatcher." alt="" coords="263,79,345,104"/>
+<area shape="poly" title=" " alt="" coords="971,27,359,87,359,82,970,22"/>
+<area shape="rect" title=" " alt="" coords="175,445,271,471"/>
+<area shape="poly" title=" " alt="" coords="970,23,787,29,544,40,321,57,241,68,196,81,158,104,124,128,96,155,74,183,60,214,54,247,57,283,70,323,94,360,125,391,158,417,189,436,186,441,155,421,121,395,90,363,66,325,52,284,48,247,55,212,69,180,92,151,121,124,155,99,194,76,240,63,320,52,544,35,786,24,970,18"/>
+<area shape="rect" href="envset_8h.html" title="Header defining data types and functions to work with sets of environment variables." alt="" coords="81,299,159,324"/>
+<area shape="poly" title=" " alt="" coords="970,22,812,25,603,33,398,51,314,64,252,81,221,94,198,108,179,126,160,153,143,187,133,222,124,285,118,284,127,221,138,185,155,151,175,123,195,104,218,90,250,76,313,59,397,45,603,27,812,19,970,17"/>
+<area shape="rect" title=" " alt="" coords="1131,79,1207,104"/>
+<area shape="poly" title=" " alt="" coords="1047,28,1134,70,1132,75,1045,33"/>
+<area shape="rect" title=" " alt="" coords="1231,79,1302,104"/>
+<area shape="poly" title=" " alt="" coords="1063,28,1219,73,1218,79,1061,33"/>
+<area shape="rect" title=" " alt="" coords="914,152,985,177"/>
+<area shape="poly" title=" " alt="" coords="1014,32,997,54,980,80,967,110,958,139,953,138,962,108,975,77,992,51,1010,29"/>
+<area shape="rect" title=" " alt="" coords="1327,79,1412,104"/>
+<area shape="poly" title=" " alt="" coords="1075,27,1313,76,1312,81,1074,32"/>
+<area shape="rect" title=" " alt="" coords="1437,79,1542,104"/>
+<area shape="poly" title=" " alt="" coords="1075,24,1424,76,1423,81,1074,29"/>
+<area shape="rect" title=" " alt="" coords="1567,79,1655,104"/>
+<area shape="poly" title=" " alt="" coords="1075,21,1280,41,1553,76,1552,81,1280,46,1075,26"/>
+<area shape="rect" title=" " alt="" coords="1679,79,1753,104"/>
+<area shape="poly" title=" " alt="" coords="1075,19,1326,36,1493,53,1666,76,1665,81,1492,58,1325,42,1075,24"/>
+<area shape="rect" href="timerdb_8h.html" title=" " alt="" coords="547,79,632,104"/>
+<area shape="poly" title=" " alt="" coords="971,30,646,83,645,78,970,25"/>
+<area shape="rect" href="confhdl_8h.html" title="Header defining type&#45; and target&#45;specific handler functions for configuration parsing." alt="" coords="368,152,451,177"/>
+<area shape="poly" title=" " alt="" coords="971,25,742,45,621,61,572,71,536,81,507,94,479,111,434,145,430,141,476,107,504,90,534,76,571,65,620,56,741,40,970,20"/>
+<area shape="rect" href="globopt_8h.html" title="Header related to global option storage." alt="" coords="832,79,915,104"/>
+<area shape="poly" title=" " alt="" coords="1000,33,911,75,909,70,998,28"/>
+<area shape="rect" href="lexers_8h.html" title="Header related to lexers built with re2c, used in the config/envset parser." alt="" coords="1141,372,1214,397"/>
+<area shape="poly" title=" " alt="" coords="1036,29,1072,64,1121,102,1153,115,1183,119,1210,127,1222,136,1234,151,1247,177,1251,206,1249,236,1243,265,1220,320,1196,362,1191,359,1216,317,1238,264,1244,235,1246,207,1242,179,1230,153,1219,140,1207,132,1181,124,1152,120,1119,106,1069,68,1032,33"/>
+<area shape="rect" href="logio_8h.html" title="Header related to debug/log output." alt="" coords="989,79,1056,104"/>
+<area shape="poly" title=" " alt="" coords="1025,31,1025,65,1020,65,1020,31"/>
+<area shape="rect" title=" " alt="" coords="170,152,241,177"/>
+<area shape="poly" title=" " alt="" coords="290,106,234,146,231,142,287,102"/>
+<area shape="rect" href="taskdb_8h.html" title="Header defining the central Task Data Structure and related types/functions." alt="" coords="265,152,343,177"/>
+<area shape="poly" title=" " alt="" coords="307,104,307,138,301,138,301,104"/>
+<area shape="rect" title=" " alt="" coords="239,225,323,251"/>
+<area shape="poly" title=" " alt="" coords="303,178,292,213,287,211,298,177"/>
+<area shape="rect" title=" " alt="" coords="5,519,80,544"/>
+<area shape="poly" title=" " alt="" coords="265,179,218,195,164,219,112,254,89,276,70,300,57,325,47,352,38,409,37,462,41,505,36,505,32,463,32,409,42,351,52,323,66,297,85,272,109,250,162,215,216,190,264,173"/>
+<area shape="rect" href="task_8h.html" title="Header defining the data structures belonging to a single task and related functions." alt="" coords="399,225,462,251"/>
+<area shape="poly" title=" " alt="" coords="326,175,399,216,397,221,323,180"/>
+<area shape="rect" title=" " alt="" coords="523,299,594,324"/>
+<area shape="poly" title=" " alt="" coords="453,248,527,289,524,294,450,253"/>
+<area shape="poly" title=" " alt="" coords="400,248,352,263,296,287,268,303,243,323,222,346,205,373,201,388,202,403,212,433,207,434,197,404,196,387,200,371,217,343,239,319,265,299,293,282,350,258,398,243"/>
+<area shape="rect" title=" " alt="" coords="435,299,499,324"/>
+<area shape="poly" title=" " alt="" coords="439,250,457,285,452,288,434,252"/>
+<area shape="rect" href="confparse_8h.html" title="Header related to the Config Parser." alt="" coords="345,372,444,397"/>
+<area shape="poly" title=" " alt="" coords="400,250,360,268,341,282,326,300,323,317,330,334,345,349,363,363,360,367,341,353,326,336,318,318,322,298,337,278,357,264,398,245"/>
+<area shape="rect" href="crinit-sdefs_8h.html" title="Definitions shared between crinit&#39;s public and internal APIs." alt="" coords="215,372,321,397"/>
+<area shape="poly" title=" " alt="" coords="400,252,358,271,317,301,294,330,279,360,274,358,290,327,313,297,355,267,398,247"/>
+<area shape="poly" title=" " alt="" coords="400,249,173,301,172,295,399,244"/>
+<area shape="rect" href="ioredir_8h.html" title="Header related to IO redirection types and functions." alt="" coords="336,299,411,324"/>
+<area shape="poly" title=" " alt="" coords="423,253,393,290,389,286,419,249"/>
+<area shape="poly" title=" " alt="" coords="368,400,264,442,262,438,366,395"/>
+<area shape="rect" title=" " alt="" coords="880,519,963,544"/>
+<area shape="poly" title=" " alt="" coords="437,395,867,512,866,518,436,400"/>
+<area shape="rect" href="fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="355,445,434,471"/>
+<area shape="poly" title=" " alt="" coords="397,398,397,432,392,432,392,398"/>
+<area shape="poly" title=" " alt="" coords="356,470,94,522,93,517,355,465"/>
+<area shape="poly" title=" " alt="" coords="435,462,867,520,866,525,434,467"/>
+<area shape="poly" title=" " alt="" coords="263,399,240,435,235,432,258,396"/>
+<area shape="poly" title=" " alt="" coords="118,325,54,507,49,505,113,323"/>
+<area shape="poly" title=" " alt="" coords="160,320,338,366,337,371,159,325"/>
+<area shape="poly" title=" " alt="" coords="379,324,390,358,385,360,374,325"/>
+<area shape="poly" title=" " alt="" coords="547,106,358,153,356,148,546,101"/>
+<area shape="poly" title=" " alt="" coords="576,106,528,142,464,180,399,206,337,225,336,220,397,201,461,175,525,137,573,102"/>
+<area shape="poly" title=" " alt="" coords="590,105,565,285,560,285,585,104"/>
+<area shape="poly" title=" " alt="" coords="585,106,482,288,478,285,580,103"/>
+<area shape="poly" title=" " alt="" coords="615,102,667,130,736,173,807,229,841,262,870,297,886,323,898,350,915,408,922,462,924,505,919,505,917,462,910,409,893,352,881,325,866,300,837,265,804,233,732,177,664,134,612,106"/>
+<area shape="rect" href="timer_8h.html" title=" " alt="" coords="627,225,695,251"/>
+<area shape="poly" title=" " alt="" coords="598,103,652,212,647,214,593,106"/>
+<area shape="poly" title=" " alt="" coords="646,253,588,293,585,288,643,248"/>
+<area shape="poly" title=" " alt="" coords="631,253,512,296,510,291,629,248"/>
+<area shape="poly" title=" " alt="" coords="696,239,731,244,771,254,812,271,847,297,916,505,911,506,843,300,809,276,770,259,730,249,695,244"/>
+<area shape="rect" title=" " alt="" coords="618,299,833,324"/>
+<area shape="poly" title=" " alt="" coords="674,249,708,287,704,290,670,253"/>
+<area shape="poly" title=" " alt="" coords="415,177,426,211,421,213,410,178"/>
+<area shape="poly" title=" " alt="" coords="880,103,915,208,943,298,951,385,943,471,933,506,928,505,937,470,946,385,937,299,910,210,875,105"/>
+<area shape="poly" title=" " alt="" coords="832,104,638,150,513,186,388,228,336,253,251,281,174,301,172,296,249,276,334,248,386,223,511,181,637,145,831,99"/>
+<area shape="poly" title=" " alt="" coords="887,102,929,141,925,144,884,106"/>
+<area shape="poly" title=" " alt="" coords="1161,400,1043,473,960,515,957,510,1040,468,1159,395"/>
+<area shape="poly" title=" " alt="" coords="1025,104,1025,237,1025,386,1018,425,999,459,974,489,950,512,946,508,970,485,994,456,1013,423,1020,386,1020,237,1020,104"/>
+<area shape="poly" title=" " alt="" coords="1012,106,973,144,969,140,1009,102"/>
+<area shape="rect" title=" " alt="" coords="1061,152,1129,177"/>
+<area shape="poly" title=" " alt="" coords="1036,102,1075,140,1071,144,1033,106"/>
+<area shape="rect" title=" " alt="" coords="1153,152,1220,177"/>
+<area shape="poly" title=" " alt="" coords="1050,102,1149,144,1146,149,1048,106"/>
 </map>
 </div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Structures</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcrinitDispThrArgs__t.html">crinitDispThrArgs_t</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcrinitDispThrArgs.html">crinitDispThrArgs</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
@@ -203,8 +224,8 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:a46be8635d52e8cbd7f37e545a3a96a67" id="r_a46be8635d52e8cbd7f37e545a3a96a67"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structcrinitDispThrArgs__t.html">crinitDispThrArgs_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#a46be8635d52e8cbd7f37e545a3a96a67">crinitDispThrArgs_t</a></td></tr>
-<tr class="separator:a46be8635d52e8cbd7f37e545a3a96a67"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26cbee5ddf25ded3f54df4abc9917209" id="r_a26cbee5ddf25ded3f54df4abc9917209"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structcrinitDispThrArgs.html">crinitDispThrArgs</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#a26cbee5ddf25ded3f54df4abc9917209">crinitDispThrArgs_t</a></td></tr>
+<tr class="separator:a26cbee5ddf25ded3f54df4abc9917209"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -214,27 +235,27 @@ Functions</h2></td></tr>
 <tr class="separator:acf6228099fdcd841bdca607417386db3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0317883c565431e2013fd719d9da6105" id="r_a0317883c565431e2013fd719d9da6105"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#a0317883c565431e2013fd719d9da6105">crinitReapPid</a> (pid_t pid)</td></tr>
 <tr class="separator:a0317883c565431e2013fd719d9da6105"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a334c2346e3a7ee21323fbce5c3562832" id="r_a334c2346e3a7ee21323fbce5c3562832"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#a334c2346e3a7ee21323fbce5c3562832">crinitPosixSpawnAddIOFileAction</a> (posix_spawn_file_actions_t *fileact, const <a class="el" href="structcrinitIoRedir__t.html">crinitIoRedir_t</a> *ior)</td></tr>
+<tr class="memitem:a334c2346e3a7ee21323fbce5c3562832" id="r_a334c2346e3a7ee21323fbce5c3562832"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#a334c2346e3a7ee21323fbce5c3562832">crinitPosixSpawnAddIOFileAction</a> (posix_spawn_file_actions_t *fileact, const <a class="el" href="ioredir_8h.html#a9b01591d275c0d908c3e9b5582636343">crinitIoRedir_t</a> *ior)</td></tr>
 <tr class="separator:a334c2346e3a7ee21323fbce5c3562832"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0dc83648ca90f172cd04922b1ae9206c" id="r_a0dc83648ca90f172cd04922b1ae9206c"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#a0dc83648ca90f172cd04922b1ae9206c">crinitEnsureFifo</a> (const char *path, mode_t mode)</td></tr>
 <tr class="separator:a0dc83648ca90f172cd04922b1ae9206c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abb4c6232311ae1e0f75945ebf8cfb176" id="r_abb4c6232311ae1e0f75945ebf8cfb176"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#abb4c6232311ae1e0f75945ebf8cfb176">crinitProcDispatchSpawnFunc</a> (<a class="el" href="structcrinitTaskDB__t.html">crinitTaskDB_t</a> *ctx, const <a class="el" href="structcrinitTask__t.html">crinitTask_t</a> *t, <a class="el" href="taskdb_8h.html#aab695fef1dbffc6da1cc2c76c2680c63">crinitDispatchThreadMode_t</a> mode)</td></tr>
+<tr class="memitem:abb4c6232311ae1e0f75945ebf8cfb176" id="r_abb4c6232311ae1e0f75945ebf8cfb176"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#abb4c6232311ae1e0f75945ebf8cfb176">crinitProcDispatchSpawnFunc</a> (<a class="el" href="taskdb_8h.html#a870184f1437e454d8bf44d9976a9ea6c">crinitTaskDB_t</a> *ctx, const <a class="el" href="task_8h.html#a62fa2b7f0a54e7fb12d0b2dccf8e15e8">crinitTask_t</a> *t, <a class="el" href="taskdb_8h.html#a247cdb105710b11295e33c1667c9c304">crinitDispatchThreadMode_t</a> mode)</td></tr>
 <tr class="separator:abb4c6232311ae1e0f75945ebf8cfb176"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53e91c9086d3f3c60365e5535a33dff9" id="r_a53e91c9086d3f3c60365e5535a33dff9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#a53e91c9086d3f3c60365e5535a33dff9">crinitSpawnSingleCommand</a> (const char *cmd, char *const argv[], char *const envp[], posix_spawn_file_actions_t *fileact, const char *name, size_t cmdIdx, pid_t threadId, pid_t *pid)</td></tr>
 <tr class="separator:a53e91c9086d3f3c60365e5535a33dff9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae6e71a9cc7e9e8f1d21a345048274b4a" id="r_ae6e71a9cc7e9e8f1d21a345048274b4a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#ae6e71a9cc7e9e8f1d21a345048274b4a">crinitPrepareIoRedirectionsForSpawn</a> (size_t cmdIdx, <a class="el" href="structcrinitIoRedir__t.html">crinitIoRedir_t</a> *redirs, size_t redirsSize, pid_t threadId, const char *name, posix_spawn_file_actions_t *fileact)</td></tr>
+<tr class="memitem:ae6e71a9cc7e9e8f1d21a345048274b4a" id="r_ae6e71a9cc7e9e8f1d21a345048274b4a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#ae6e71a9cc7e9e8f1d21a345048274b4a">crinitPrepareIoRedirectionsForSpawn</a> (size_t cmdIdx, <a class="el" href="ioredir_8h.html#a9b01591d275c0d908c3e9b5582636343">crinitIoRedir_t</a> *redirs, size_t redirsSize, pid_t threadId, const char *name, posix_spawn_file_actions_t *fileact)</td></tr>
 <tr class="separator:ae6e71a9cc7e9e8f1d21a345048274b4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a065363cd4fd4202ea289d23257f26873" id="r_a065363cd4fd4202ea289d23257f26873"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#a065363cd4fd4202ea289d23257f26873">crinitCalculateVariableGroupParamLength</a> (size_t supGroupsSize, gid_t *supGroups)</td></tr>
 <tr class="separator:a065363cd4fd4202ea289d23257f26873"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acad477cb1b2964cdbb45be8c74dd054c" id="r_acad477cb1b2964cdbb45be8c74dd054c"><td class="memItemLeft" align="right" valign="top">static char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#acad477cb1b2964cdbb45be8c74dd054c">crinitCreateSupGroupsParamString</a> (size_t supGroupsSize, gid_t *supGroups, int expOutSize)</td></tr>
 <tr class="separator:acad477cb1b2964cdbb45be8c74dd054c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac6e0ead4979b999295a3aa4b1b3b5701" id="r_ac6e0ead4979b999295a3aa4b1b3b5701"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#ac6e0ead4979b999295a3aa4b1b3b5701">crinitCreateLauncherParameters</a> (<a class="el" href="structcrinitTaskCmd__t.html">crinitTaskCmd_t</a> *taskCmd, <a class="el" href="structcrinitTask__t.html">crinitTask_t</a> *tCopy, char *cmd, char ***argv, char **argBuffer)</td></tr>
+<tr class="memitem:ac6e0ead4979b999295a3aa4b1b3b5701" id="r_ac6e0ead4979b999295a3aa4b1b3b5701"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#ac6e0ead4979b999295a3aa4b1b3b5701">crinitCreateLauncherParameters</a> (<a class="el" href="task_8h.html#a0864288a298b75c8ed501d50019294e4">crinitTaskCmd_t</a> *taskCmd, <a class="el" href="task_8h.html#a62fa2b7f0a54e7fb12d0b2dccf8e15e8">crinitTask_t</a> *tCopy, char *cmd, char ***argv, char **argBuffer)</td></tr>
 <tr class="separator:ac6e0ead4979b999295a3aa4b1b3b5701"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aead13491b6b2ac0c0dfd4e77b74aa30a" id="r_aead13491b6b2ac0c0dfd4e77b74aa30a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#aead13491b6b2ac0c0dfd4e77b74aa30a">crinitHandleCommands</a> (<a class="el" href="structcrinitTaskDB__t.html">crinitTaskDB_t</a> *ctx, pid_t threadId, char *name, <a class="el" href="structcrinitTaskCmd__t.html">crinitTaskCmd_t</a> *cmds, size_t cmdsSize, <a class="el" href="structcrinitTask__t.html">crinitTask_t</a> *tCopy, pid_t *pid, bool deactivateFileactions)</td></tr>
+<tr class="memitem:aead13491b6b2ac0c0dfd4e77b74aa30a" id="r_aead13491b6b2ac0c0dfd4e77b74aa30a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#aead13491b6b2ac0c0dfd4e77b74aa30a">crinitHandleCommands</a> (<a class="el" href="taskdb_8h.html#a870184f1437e454d8bf44d9976a9ea6c">crinitTaskDB_t</a> *ctx, pid_t threadId, char *name, <a class="el" href="task_8h.html#a0864288a298b75c8ed501d50019294e4">crinitTaskCmd_t</a> *cmds, size_t cmdsSize, <a class="el" href="task_8h.html#a62fa2b7f0a54e7fb12d0b2dccf8e15e8">crinitTask_t</a> *tCopy, pid_t *pid, bool deactivateFileactions)</td></tr>
 <tr class="separator:aead13491b6b2ac0c0dfd4e77b74aa30a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a29fcb0967a7d51060c74a6a1417a620e" id="r_a29fcb0967a7d51060c74a6a1417a620e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#a29fcb0967a7d51060c74a6a1417a620e">crinitExpandPIDVariablesInSingleCommand</a> (char *input, const pid_t pid, char **result)</td></tr>
 <tr class="separator:a29fcb0967a7d51060c74a6a1417a620e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a185e822a722f44757c474a77701f4dd6" id="r_a185e822a722f44757c474a77701f4dd6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#a185e822a722f44757c474a77701f4dd6">crinitExpandPIDVariablesInCommands</a> (<a class="el" href="structcrinitTaskCmd__t.html">crinitTaskCmd_t</a> *commands, size_t cmdsSize, const pid_t pid)</td></tr>
+<tr class="memitem:a185e822a722f44757c474a77701f4dd6" id="r_a185e822a722f44757c474a77701f4dd6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#a185e822a722f44757c474a77701f4dd6">crinitExpandPIDVariablesInCommands</a> (<a class="el" href="task_8h.html#a0864288a298b75c8ed501d50019294e4">crinitTaskCmd_t</a> *commands, size_t cmdsSize, const pid_t pid)</td></tr>
 <tr class="memdesc:a185e822a722f44757c474a77701f4dd6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Expands variable ${TASK_PID} in a command with the task's PID.  <br /></td></tr>
 <tr class="separator:a185e822a722f44757c474a77701f4dd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3bb1096c7600bd3aa82fb808f88d11d9" id="r_a3bb1096c7600bd3aa82fb808f88d11d9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="procdip_8c.html#a3bb1096c7600bd3aa82fb808f88d11d9">crinitSetInhibitWait</a> (bool inh)</td></tr>
@@ -271,14 +292,14 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Typedef Documentation</h2>
-<a id="a46be8635d52e8cbd7f37e545a3a96a67" name="a46be8635d52e8cbd7f37e545a3a96a67"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a46be8635d52e8cbd7f37e545a3a96a67">&#9670;&#160;</a></span>crinitDispThrArgs_t</h2>
+<a id="a26cbee5ddf25ded3f54df4abc9917209" name="a26cbee5ddf25ded3f54df4abc9917209"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a26cbee5ddf25ded3f54df4abc9917209">&#9670;&#160;</a></span>crinitDispThrArgs_t</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef struct <a class="el" href="structcrinitDispThrArgs__t.html">crinitDispThrArgs_t</a> <a class="el" href="structcrinitDispThrArgs__t.html">crinitDispThrArgs_t</a></td>
+          <td class="memname">typedef struct <a class="el" href="structcrinitDispThrArgs.html">crinitDispThrArgs</a> <a class="el" href="procdip_8c.html#a26cbee5ddf25ded3f54df4abc9917209">crinitDispThrArgs_t</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -361,13 +382,13 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">int crinitCreateLauncherParameters </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structcrinitTaskCmd__t.html">crinitTaskCmd_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="task_8h.html#a0864288a298b75c8ed501d50019294e4">crinitTaskCmd_t</a> *&#160;</td>
           <td class="paramname"><em>taskCmd</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structcrinitTask__t.html">crinitTask_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="task_8h.html#a62fa2b7f0a54e7fb12d0b2dccf8e15e8">crinitTask_t</a> *&#160;</td>
           <td class="paramname"><em>tCopy</em>, </td>
         </tr>
         <tr>
@@ -464,10 +485,10 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>Function to be started as a pthread from crinitProcDispatchThread().</p>
-<p>Takes care of process spawning/waiting and <a class="el" href="structcrinitTaskDB__t.html">crinitTaskDB_t</a> status updates.</p>
+<p>Takes care of process spawning/waiting and crinitTaskDB_t status updates.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">args</td><td>See <a class="el" href="structcrinitDispThrArgs__t.html">crinitDispThrArgs_t</a>. </td></tr>
+    <tr><td class="paramname">args</td><td>See crinitDispThrArgs_t. </td></tr>
   </table>
   </dd>
 </dl>
@@ -529,7 +550,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">void crinitExpandPIDVariablesInCommands </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structcrinitTaskCmd__t.html">crinitTaskCmd_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="task_8h.html#a0864288a298b75c8ed501d50019294e4">crinitTaskCmd_t</a> *&#160;</td>
           <td class="paramname"><em>commands</em>, </td>
         </tr>
         <tr>
@@ -608,7 +629,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">int crinitHandleCommands </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structcrinitTaskDB__t.html">crinitTaskDB_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="taskdb_8h.html#a870184f1437e454d8bf44d9976a9ea6c">crinitTaskDB_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
@@ -626,7 +647,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structcrinitTaskCmd__t.html">crinitTaskCmd_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="task_8h.html#a0864288a298b75c8ed501d50019294e4">crinitTaskCmd_t</a> *&#160;</td>
           <td class="paramname"><em>cmds</em>, </td>
         </tr>
         <tr>
@@ -638,7 +659,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structcrinitTask__t.html">crinitTask_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="task_8h.html#a62fa2b7f0a54e7fb12d0b2dccf8e15e8">crinitTask_t</a> *&#160;</td>
           <td class="paramname"><em>tCopy</em>, </td>
         </tr>
         <tr>
@@ -681,7 +702,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="structcrinitIoRedir__t.html">crinitIoRedir_t</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="ioredir_8h.html#a9b01591d275c0d908c3e9b5582636343">crinitIoRedir_t</a> *&#160;</td>
           <td class="paramname"><em>ior</em>&#160;</td>
         </tr>
         <tr>
@@ -696,13 +717,13 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Adds an action to a posix_spawn_file_actions_t instance as defined by an <a class="el" href="structcrinitIoRedir__t.html">crinitIoRedir_t</a> instance.</p>
-<p>The file action will either be a call to open() including an IO redirection for an <a class="el" href="structcrinitIoRedir__t.html">crinitIoRedir_t</a> which contains a non-NULL <a class="el" href="structcrinitIoRedir__t.html#ab6638ba2f6d280944b88acee331c7dee">crinitIoRedir_t::path</a>, or a single redirection via dup2() if crinitIoRedir_t::oldfd is positive. If both cases are true, the <a class="el" href="structcrinitIoRedir__t.html#ab6638ba2f6d280944b88acee331c7dee">crinitIoRedir_t::path</a> takes precedence and crinitIoRedir_r::oldfd is ignored.</p>
-<p><a class="el" href="structcrinitIoRedir__t.html#ab013b6259dfef62cb92fbdb3c45a56b8">crinitIoRedir_t::oflags</a> is respected for files and <a class="el" href="structcrinitIoRedir__t.html#ae6426d763ea90c4f36137b9e2af9b1ff" title="The value to use as mode in the call to open if crinitIoRedir_t::path is used, for example 0644.">crinitIoRedir_t::mode</a> is respected for files that are overwritten or newly created.</p>
+<p>Adds an action to a posix_spawn_file_actions_t instance as defined by an crinitIoRedir_t instance.</p>
+<p>The file action will either be a call to open() including an IO redirection for an crinitIoRedir_t which contains a non-NULL <a class="el" href="structcrinitIoRedir.html#a3e3b9edf10d819da789b550134730ea9">crinitIoRedir_t::path</a>, or a single redirection via dup2() if crinitIoRedir_t::oldfd is positive. If both cases are true, the <a class="el" href="structcrinitIoRedir.html#a3e3b9edf10d819da789b550134730ea9">crinitIoRedir_t::path</a> takes precedence and crinitIoRedir_r::oldfd is ignored.</p>
+<p><a class="el" href="structcrinitIoRedir.html#a400f3a7fae0a28c862b581b1b0a63881">crinitIoRedir_t::oflags</a> is respected for files and <a class="el" href="structcrinitIoRedir.html#a434d6ee2648ce19ed92160c6b5f5ef85" title="The value to use as mode in the call to open if crinitIoRedir_t::path is used, for example 0644.">crinitIoRedir_t::mode</a> is respected for files that are overwritten or newly created.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">fileact</td><td>The posix_spawn_file_actions_t to be modified, must have been initialized. </td></tr>
-    <tr><td class="paramname">ior</td><td>The <a class="el" href="structcrinitIoRedir__t.html">crinitIoRedir_t</a> defining the file action to be added.</td></tr>
+    <tr><td class="paramname">ior</td><td>The crinitIoRedir_t defining the file action to be added.</td></tr>
   </table>
   </dd>
 </dl>
@@ -725,7 +746,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structcrinitIoRedir__t.html">crinitIoRedir_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="ioredir_8h.html#a9b01591d275c0d908c3e9b5582636343">crinitIoRedir_t</a> *&#160;</td>
           <td class="paramname"><em>redirs</em>, </td>
         </tr>
         <tr>
@@ -771,19 +792,19 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">int crinitProcDispatchSpawnFunc </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structcrinitTaskDB__t.html">crinitTaskDB_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="taskdb_8h.html#a870184f1437e454d8bf44d9976a9ea6c">crinitTaskDB_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="structcrinitTask__t.html">crinitTask_t</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="task_8h.html#a62fa2b7f0a54e7fb12d0b2dccf8e15e8">crinitTask_t</a> *&#160;</td>
           <td class="paramname"><em>t</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="taskdb_8h.html#aab695fef1dbffc6da1cc2c76c2680c63">crinitDispatchThreadMode_t</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="taskdb_8h.html#a247cdb105710b11295e33c1667c9c304">crinitDispatchThreadMode_t</a>&#160;</td>
           <td class="paramname"><em>mode</em>&#160;</td>
         </tr>
         <tr>
@@ -795,6 +816,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Process dispatcher function to spawn a task that is ready.</p>
 <p>Will create a new thread to handle process spawning of task <em>t</em> and status updates of <em>ctx</em>. The function will return successfully if the thread has been created without error. The thread is created in a detached state so no further management action is necessary.</p>
+<p>Modifies errno.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">ctx</td><td>Pointer to context </td></tr>
@@ -859,6 +881,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Turn waiting for child processes on or off.</p>
 <p>If <em>inh</em> is set to true, the process dispatch threads will block before waiting for a child process until waiting is reactivated, leaving terminated child processes as zombies for the time being.</p>
+<p>Modifies errno.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">inh</td><td>Set true to inhibit waiting or false to reactivate waiting.</td></tr>

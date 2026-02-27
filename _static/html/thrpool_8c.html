@@ -96,7 +96,7 @@ $(document).ready(function(){initNavTree('thrpool_8c.html',''); initResizable();
 </div><!--header-->
 <div class="contents">
 <h3 class="version">(/usr/bin/git
-2025-02-19, commit: 5f1bbfa)</h3>
+2025-02-19, commit: 5f1bbfa6)</h3>
 <p>Implementations of a generic worker thread pool. Used by the notification/service interface to handle socket communication.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="thrpool_8h_source.html">thrpool.h</a>&quot;</code><br />
@@ -140,15 +140,15 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a3af3deb337e5cb0f56c5a91901f8dc10" id="r_a3af3deb337e5cb0f56c5a91901f8dc10"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="thrpool_8c.html#a3af3deb337e5cb0f56c5a91901f8dc10">crinitThreadPoolGrow</a> (<a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a> *ctx, size_t newSize)</td></tr>
+<tr class="memitem:a3af3deb337e5cb0f56c5a91901f8dc10" id="r_a3af3deb337e5cb0f56c5a91901f8dc10"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="thrpool_8c.html#a3af3deb337e5cb0f56c5a91901f8dc10">crinitThreadPoolGrow</a> (<a class="el" href="thrpool_8h.html#a43fb0a310fa80caa3ccd36067e306d57">crinitThreadPool_t</a> *ctx, size_t newSize)</td></tr>
 <tr class="separator:a3af3deb337e5cb0f56c5a91901f8dc10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a44f1a05ea08ec63b4e5593365aa06795" id="r_a44f1a05ea08ec63b4e5593365aa06795"><td class="memItemLeft" align="right" valign="top">static void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="thrpool_8c.html#a44f1a05ea08ec63b4e5593365aa06795">crinitDryPoolWatchdog</a> (void *thrpool)</td></tr>
 <tr class="separator:a44f1a05ea08ec63b4e5593365aa06795"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaa446aa579c653413de2e5a5ce2084f2" id="r_aaa446aa579c653413de2e5a5ce2084f2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="thrpool_8c.html#aaa446aa579c653413de2e5a5ce2084f2">crinitThreadPoolInit</a> (<a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a> *ctx, size_t initialSize, void *(*threadFunc)(void *), const void *thrArgs, size_t thrArgsSize)</td></tr>
+<tr class="memitem:aaa446aa579c653413de2e5a5ce2084f2" id="r_aaa446aa579c653413de2e5a5ce2084f2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="thrpool_8c.html#aaa446aa579c653413de2e5a5ce2084f2">crinitThreadPoolInit</a> (<a class="el" href="thrpool_8h.html#a43fb0a310fa80caa3ccd36067e306d57">crinitThreadPool_t</a> *ctx, size_t initialSize, void *(*threadFunc)(void *), const void *thrArgs, size_t thrArgsSize)</td></tr>
 <tr class="separator:aaa446aa579c653413de2e5a5ce2084f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4fea0a1e12854f0bd741406731d91ee0" id="r_a4fea0a1e12854f0bd741406731d91ee0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="thrpool_8c.html#a4fea0a1e12854f0bd741406731d91ee0">crinitThreadPoolThreadBusyCallback</a> (<a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a> *ctx)</td></tr>
+<tr class="memitem:a4fea0a1e12854f0bd741406731d91ee0" id="r_a4fea0a1e12854f0bd741406731d91ee0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="thrpool_8c.html#a4fea0a1e12854f0bd741406731d91ee0">crinitThreadPoolThreadBusyCallback</a> (<a class="el" href="thrpool_8h.html#a43fb0a310fa80caa3ccd36067e306d57">crinitThreadPool_t</a> *ctx)</td></tr>
 <tr class="separator:a4fea0a1e12854f0bd741406731d91ee0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a06469c1419d25ad5b883bd2dcbfe9a22" id="r_a06469c1419d25ad5b883bd2dcbfe9a22"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="thrpool_8c.html#a06469c1419d25ad5b883bd2dcbfe9a22">crinitThreadPoolThreadAvailCallback</a> (<a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a> *ctx)</td></tr>
+<tr class="memitem:a06469c1419d25ad5b883bd2dcbfe9a22" id="r_a06469c1419d25ad5b883bd2dcbfe9a22"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="thrpool_8c.html#a06469c1419d25ad5b883bd2dcbfe9a22">crinitThreadPoolThreadAvailCallback</a> (<a class="el" href="thrpool_8h.html#a43fb0a310fa80caa3ccd36067e306d57">crinitThreadPool_t</a> *ctx)</td></tr>
 <tr class="separator:a06469c1419d25ad5b883bd2dcbfe9a22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -205,11 +205,11 @@ Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>Thread function to monitor the current load of the thread pool and grow its size if needed.</p>
-<p>To be started as a pthread running alongside the worker threads. Will monitor the given thread pool via <a class="el" href="structcrinitThreadPool__t.html#a9c60f1eb1380305902ae0a90c2fa02b0" title="Number of available worker threads.">crinitThreadPool_t::threadAvail</a> and <a class="el" href="structcrinitThreadPool__t.html#a05a7a0a73e16b88be40b4384921fd6f0" title="Condition variable signalled if crinitThreadPool_t::threadAvail is changed.">crinitThreadPool_t::threadAvailChanged</a>.</p>
+<p>To be started as a pthread running alongside the worker threads. Will monitor the given thread pool via <a class="el" href="structcrinitThreadPool.html#af870c450864bbd47d81a8c0099ba4833" title="Number of available worker threads.">crinitThreadPool_t::threadAvail</a> and <a class="el" href="structcrinitThreadPool.html#a284e2fb5992fcc84913f40cf332ef95c" title="Condition variable signalled if crinitThreadPool_t::threadAvail is changed.">crinitThreadPool_t::threadAvailChanged</a>.</p>
 <p>A "dry pool" condition is detected and the thread pool grown if 90% or more of the pool's worker threads are currently unavailable.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">thrpool</td><td>The <a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a> to monitor. </td></tr>
+    <tr><td class="paramname">thrpool</td><td>The crinitThreadPool_t to monitor. </td></tr>
   </table>
   </dd>
 </dl>
@@ -228,7 +228,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">static int crinitThreadPoolGrow </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="thrpool_8h.html#a43fb0a310fa80caa3ccd36067e306d57">crinitThreadPool_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
@@ -271,7 +271,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int crinitThreadPoolInit </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="thrpool_8h.html#a43fb0a310fa80caa3ccd36067e306d57">crinitThreadPool_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
@@ -305,10 +305,11 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Initialize an <a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a>.</p>
+<p>Initialize an crinitThreadPool_t.</p>
+<p>Modifies errno.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">ctx</td><td>The <a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a> to initialize. </td></tr>
+    <tr><td class="paramname">ctx</td><td>The crinitThreadPool_t to initialize. </td></tr>
     <tr><td class="paramname">initialSize</td><td>Initial size (in number of threads) of the pool. </td></tr>
     <tr><td class="paramname">threadFunc</td><td>Worker thread function to use. </td></tr>
     <tr><td class="paramname">thrArgs</td><td>Arguments to the worker thread function. Will be copied and saved in case more threads need to be started by dryPoolWatchdog. </td></tr>
@@ -329,16 +330,17 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int crinitThreadPoolThreadAvailCallback </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="thrpool_8h.html#a43fb0a310fa80caa3ccd36067e306d57">crinitThreadPool_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Callback to be used by the worker thread function signalling it is idle/available.</p>
+<p>Modifies errno.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">ctx</td><td>The <a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a> context.</td></tr>
+    <tr><td class="paramname">ctx</td><td>The crinitThreadPool_t context.</td></tr>
   </table>
   </dd>
 </dl>
@@ -355,16 +357,17 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int crinitThreadPoolThreadBusyCallback </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="thrpool_8h.html#a43fb0a310fa80caa3ccd36067e306d57">crinitThreadPool_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Callback to be used by the worker thread function signalling it is busy/unavailable.</p>
+<p>Modifies errno.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">ctx</td><td>The <a class="el" href="structcrinitThreadPool__t.html">crinitThreadPool_t</a> context.</td></tr>
+    <tr><td class="paramname">ctx</td><td>The crinitThreadPool_t context.</td></tr>
   </table>
   </dd>
 </dl>

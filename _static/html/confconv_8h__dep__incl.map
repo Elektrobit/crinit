@@ -1,19 +1,21 @@
 <map id="inc/confconv.h" name="inc/confconv.h">
-<area shape="rect" id="Node000001" title="Definitions related to conversion operations from configuration values to structured data." alt="" coords="471,5,585,31"/>
-<area shape="rect" id="Node000002" href="$confconv_8c.html" title="Implementations of conversion operations from configuration values to structured data." alt="" coords="5,86,120,111"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="458,30,308,50,133,81,102,89,101,83,131,76,307,45,457,25"/>
-<area shape="rect" id="Node000003" href="$confhdl_8c.html" title="Implementation of type&#45; and target&#45;specific handler functions for configuration parsing." alt="" coords="144,86,248,111"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="459,36,261,81,234,89,233,83,259,76,457,31"/>
-<area shape="rect" id="Node000004" href="$confparse_8c.html" title="Implementation of the Config Parser." alt="" coords="272,86,392,111"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="488,38,362,88,360,84,486,33"/>
-<area shape="rect" id="Node000005" href="$envset_8c.html" title="Implementation file related to working with environment variable sets." alt="" coords="417,86,517,111"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="513,43,478,87,474,84,509,40"/>
-<area shape="rect" id="Node000006" href="$ioredir_8c.html" title="Implementation of functions related to IO redirection." alt="" coords="541,86,638,111"/>
-<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="547,40,582,84,578,87,543,43"/>
-<area shape="rect" id="Node000007" href="$utest-confconv-envset_2case-null-input_8c.html" title="Unit test for crinitConfConvToEnvSetMember() with NULL inputs." alt="" coords="662,79,847,119"/>
-<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="575,33,701,76,699,81,573,38"/>
-<area shape="rect" id="Node000008" href="$utest-confconv-envset_2case-success_8c.html" title="Unit test for crinitConfConvToEnvSetMember(), successful execution." alt="" coords="871,79,1057,119"/>
-<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="599,29,860,76,871,78,871,83,860,81,598,35"/>
-<area shape="rect" id="Node000009" href="$case-wrong-input_8c.html" title="Unit test for crinitConfConvToEnvSetMember(), handling of invalid string input." alt="" coords="1081,79,1279,119"/>
-<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="599,23,810,44,1070,76,1081,78,1080,83,1069,81,809,50,599,28"/>
+<area shape="rect" id="Node000001" title="Definitions related to conversion operations from configuration values to structured data." alt="" coords="564,5,679,31"/>
+<area shape="rect" id="Node000002" href="$capabilities_8c.html" title="Implementation of functions related to process capability handling." alt="" coords="5,86,136,111"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="550,28,368,49,148,81,115,89,114,83,148,76,367,43,550,23"/>
+<area shape="rect" id="Node000003" href="$confconv_8c.html" title="Implementations of conversion operations from configuration values to structured data." alt="" coords="160,86,275,111"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="551,33,427,53,287,81,258,89,257,83,286,76,426,48,550,27"/>
+<area shape="rect" id="Node000004" href="$confhdl_8c.html" title="Implementation of type&#45; and target&#45;specific handler functions for configuration parsing." alt="" coords="299,86,403,111"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="569,37,415,81,390,89,389,83,414,76,568,32"/>
+<area shape="rect" id="Node000005" href="$confparse_8c.html" title="Implementation of the Config Parser." alt="" coords="427,86,547,111"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="591,40,508,88,505,83,588,35"/>
+<area shape="rect" id="Node000006" href="$envset_8c.html" title="Implementation file related to working with environment variable sets." alt="" coords="571,86,671,111"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="624,44,624,86,619,86,619,44"/>
+<area shape="rect" id="Node000007" href="$ioredir_8c.html" title="Implementation of functions related to IO redirection." alt="" coords="695,86,793,111"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="652,36,727,84,724,88,649,40"/>
+<area shape="rect" id="Node000008" href="$utest-confconv-envset_2case-null-input_8c.html" title="Unit test for crinitConfConvToEnvSetMember() with NULL inputs." alt="" coords="817,79,1002,119"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="677,32,841,76,839,81,676,37"/>
+<area shape="rect" id="Node000009" href="$utest-confconv-envset_2case-success_8c.html" title="Unit test for crinitConfConvToEnvSetMember(), successful execution." alt="" coords="1026,79,1211,119"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="693,27,1015,76,1026,78,1025,83,1014,81,692,32"/>
+<area shape="rect" id="Node000010" href="$utest-confconv-envset_2case-wrong-input_8c.html" title="Unit test for crinitConfConvToEnvSetMember(), handling of invalid string input." alt="" coords="1235,79,1434,119"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="693,22,929,43,1224,76,1236,78,1235,83,1224,81,928,48,692,27"/>
 </map>

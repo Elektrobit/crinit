@@ -1,10 +1,10 @@
 var notiserv_8c =
 [
-    [ "crinitConnThrArgs_t", "structcrinitConnThrArgs__t.html", "structcrinitConnThrArgs__t" ],
+    [ "crinitConnThrArgs", "structcrinitConnThrArgs.html", "structcrinitConnThrArgs" ],
     [ "_GNU_SOURCE", "notiserv_8c.html#a369266c24eacffb87046522897a570d5", null ],
     [ "crinitGettid", "notiserv_8c.html#a0f4c659e4251c43b8d3d96276fe205ae", null ],
     [ "MAX_CONN_BACKLOG", "notiserv_8c.html#ad6b5db0b24f59254f3bd1f863e14bb25", null ],
-    [ "crinitConnThrArgs_t", "notiserv_8c.html#a8345335d94b9f986b8ef36da83e49e25", null ],
+    [ "crinitConnThrArgs_t", "notiserv_8c.html#ac2d6b4829c1d10e909685e6517903490", null ],
     [ "crinitCheckPerm", "notiserv_8c.html#a08a3df416e35dc69014dff8c3ecb8a85", null ],
     [ "crinitCmsgHdrCheck", "notiserv_8c.html#a2e1b9420057f080ca0a605d72c98de74", null ],
     [ "crinitConnThread", "notiserv_8c.html#a3572fbed8de8a85af83ca6735aaeba0d", null ],

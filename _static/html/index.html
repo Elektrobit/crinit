@@ -117,6 +117,10 @@ Table of Contents</h1>
 </ul>
 </li>
 <li><a class="el" href="index.html#setting-environment-variables">Setting Environment Variables</a></li>
+<li><a class="el" href="index.html#defining-timers">Defining timers</a><ul>
+<li><a class="el" href="index.html#examples">Examples</a></li>
+</ul>
+</li>
 <li><a class="el" href="index.html#defining-elos-filters">Defining Elos Filters</a><ul>
 <li><a class="el" href="index.html#ruleset">Ruleset</a></li>
 </ul>
@@ -188,11 +192,9 @@ Features</h1>
 </li>
 <li>optional signature checking of Crinit's configuration files</li>
 <li>setting of UID and GID a task should be run as</li>
-</ul>
-<p>In the future we also plan to support:</p>
-<ul>
+<li>setting/clearing of specific capabilities that a task shall be (not) equipped with</li>
 <li>fine-grained restriction of processes started/managed by Crinit<ul>
-<li>capabilities, cgroups,...</li>
+<li>cgroups</li>
 </ul>
 </li>
 </ul>
@@ -246,6 +248,7 @@ Command-line options</h1>
 </li>
 <li><b>&ndash;child-subreaper/&ndash;no-child-subreaper</b> - Depending on the setting, Crinit will or will not provide a process with "child subreaper" process attribute (see <a href="https://man7.org/linux/man-pages/man2/PR_SET_CHILD_SUBREAPER.2const.html">PR_SET_CHILD_SUBREAPER manpage</a>). This is a relevant setting only if Crinit is not PID 1, i.e. started as a secondary init process. In that case, Crinit can use this setting to provide the "zombie reaper" function for its descendent processes. For example, this can be helpful in some containerization scenarios. If Crinit is PID 1, however, it will always provide a "zombie
     reaper" regardless of this setting. By default, Crinit will respect the attribute as it is set when Crinit is started and behave accordingly, i.e. if Crinit either is PID 1 or it has the CHILD_SUBREAPER process attribute, it will reap zombies of its descendants.</li>
+<li><b>&ndash;use-kmsg/&ndash;no-use-kmsg</b> - Depending on the setting, crinit will write its logs to kernel log where it can be read via e.g. dmesg. If opening /dev/kmsg fails, crinit will fall back to console output. If syslog usage is configured crinit will switch to syslog logging as soon as syslog is available.</li>
 </ul>
 <h1><a class="anchor" id="environment-variables"></a>
 Environment Variables</h1>
@@ -288,6 +291,13 @@ Example Global Configuration</h2>
 <div class="line">ENV_SET = FOO &quot;foo&quot;</div>
 <div class="line">ENV_SET = FOO_BAZ &quot;${FOO} baz&quot;</div>
 <div class="line">ENV_SET = GREETING &quot;Good morning!&quot;</div>
+<div class="line"> </div>
+<div class="line">CGROUP_ROOT_NAME = crinit.cg</div>
+<div class="line">CGROUP_ROOT_PARAMS = memory.max=500M</div>
+<div class="line"> </div>
+<div class="line">CGROUP_GLOBAL_NAME = mem_restricted cpu_restricted</div>
+<div class="line">CGROUP_GLOBAL_PARAMS = cpu_restricted:cpu.max=50000 100000</div>
+<div class="line">                       mem_restricted:memory.max=100M</div>
 </div><!-- fragment --> <h3><a class="anchor" id="explanation"></a>
 Explanation</h3>
 <ul>
@@ -307,6 +317,11 @@ Explanation</h3>
 <li><b>ELOS_EVENT_POLL_INTERVAL</b> &ndash; Interval in microseconds between polling requests for events from elos. This is a tradeoff between idle CPU use and latency of tasks depending on an elos event (see section <b>Defining Elos Filters</b> below). Default is 500000. Needs ELOS support included at build-time.</li>
 <li><b>ENV_SET</b> &ndash; See section <b>Setting Environment Variables</b> below. (<em>array-like</em>)</li>
 <li><b>FILTER_DEFINE</b> &ndash; See section <b>Defining Elos Filters</b> below. (<em>array-like</em>)</li>
+<li><b>DEFAULTCAPS</b> &ndash; Whitespace separated list of capability definitions <code>/linux/capability.h</code>) that each task shall be equipped with by default.</li>
+<li><b>CGROUP_ROOT_NAME</b> &ndash; Name of the containing cgroup that will contain all in crinit defined cgroups.</li>
+<li><b>CGROUP_ROOT_PARAMS</b> &ndash; Parameters for the root cgroup (if any). See CGROUP_PARAMS in the task configuration for details.</li>
+<li><b>CGROUP_GLOBAL_NAME</b> &ndash; List of global cgroup names available to all tasks.</li>
+<li><b>CGROUP_GLOBAL_PARAMS</b> &ndash; List of parameters for the global cgroups. One entry (see CGROUP_PARAMS in task configuration section for details) per line. Each line has to be prefixed with the name of the corresponding global cgroup and a colon (e.g. "mygroup:").</li>
 </ul>
 <h2><a class="anchor" id="example-task-configuration"></a>
 Example Task Configuration</h2>
@@ -329,12 +344,18 @@ Example Task Configuration</h2>
 <div class="line">USER = root</div>
 <div class="line">GROUP = root</div>
 <div class="line"> </div>
+<div class="line">CAPABILITY_SET = CAP_NET_RAW</div>
+<div class="line">CAPABILITY_CLEAR = CAP_SYS_ADMIN CAP_SYS_BOOT</div>
+<div class="line"> </div>
 <div class="line">DEPENDS = check_qemu:fail earlysetup:wait @provided:writable_var</div>
 <div class="line"> </div>
 <div class="line">PROVIDES = ipv4_dhcp:wait resolvconf:wait</div>
 <div class="line"> </div>
 <div class="line">RESPAWN = NO</div>
 <div class="line">RESPAWN_RETRIES = -1</div>
+<div class="line"> </div>
+<div class="line">CGROUP_NAME = dhcp</div>
+<div class="line">CGROUP_PARAMS = memory.max=100M</div>
 <div class="line"> </div>
 <div class="line">ENV_SET = FOO_BAR &quot;${FOO} bar&quot;</div>
 <div class="line">          ESCAPED_VAR &quot;Global variable name: \${FOO}&quot;</div>
@@ -350,12 +371,21 @@ Explanation</h3>
 <li><b>INCLUDE</b> &ndash; See section <b>Include files</b> below. (<em>array-like</em>)</li>
 <li><b>COMMAND</b> &ndash; The commands to be executed in series. Executable paths must be absolute. Execution will stop if one of them fails and the whole task will be considered failed. The whole task is considered finished (i.e. the <code>network-dhcp:wait</code> dependency is fulfilled) if the last command has successfully returned. If no <b>COMMAND</b> is given, the task is treated as a dependency group or "meta-task", see below. (<em>array-like</em>)</li>
 <li><b>STOP_COMMAND</b> &ndash; Optional. Given commands are executed on <code>crinit-ctl stop &lt;TASKNAME&gt;</code>, <code>crinit-ctl poweroff</code> or <code>crinit-ctl reboot</code> instead of sending the regular <code>SIGTERM</code>. Same rules as for <b>COMMAND</b> apply. Additionally the variable "TASK_PID" can be used and will be expanded with the stored PID of the task. Example: <code>STOP_COMMAND = /usr/bin/kill ${TASK_PID}</code>. Please note that TASK_PID will expand to "-1" if the task is no longer running or has forked itself without notifying Crinit. <b>ATTENTION:</b> Currently <code>STOP_COMMAND</code> does not support <code>IO_REDIRECT</code>! Its output will not be redirected!</li>
-<li><b>USER</b> &ndash; Name of the user used to run the commands specified in <b>COMMAND</b>. Either the username or the numeric user ID can be used. If <b>USER</b> is not set, "root" is assumed. <b>NOTE</b>: Changing user names, UIDs, group names or GIDs on the system while a task using them has already been loaded may result in undefined behaviour.</li>
-<li><b>GROUP</b> &ndash; Name of the group used to run the commands specified in <b>COMMAND</b>. Either the group name or the numeric group ID can be used. If <b>GROUP</b> is not set, "root" is assumed. Supplementary groups can be added after the main group, space separated. GROUP can be an array, too. Similar to <b>COMMAND</b>. <b>Also see note on USER command.</b> This applies here, too.</li>
+<li><b>USER</b> &ndash; Name of the user used to run the commands specified in <b>COMMAND</b>. Either the username or the numeric user ID can be used. If <b>USER</b> is not set, "root" is assumed. <b>NOTE</b>: Changing user names, UIDs, group names or GIDs on the system while a task using them has already been loaded may result in undefined behaviour. <b>NOTE</b>: Setting a user ID 0 will disable the capability configuration.</li>
+<li><b>GROUP</b> &ndash; Name of the group used to run the commands specified in <b>COMMAND</b>. Either the group name or the numeric group ID can be used. If <b>GROUP</b> is not set, "root" is assumed. Supplementary groups can be added after the main group, space separated. GROUP can be an array, too. Similar to <b>COMMAND</b>. <b>Also see note on USER command.</b> This applies here, too. <b>NOTE</b>: Setting a group ID 0 will disable the capability configuration.</li>
+<li><b>CAPABILITY_SET</b> &ndash; Whitespace separated list of capability definitions (as defined in <code>/linux/capability.h</code>) that a task shall be specifically equipped with.</li>
+<li><b>CAPABILITY_CLEAR</b> &ndash; Whitespace separated list of capability definitions <code>/linux/capability.h</code>) that a task shall be stripped from.</li>
 <li><b>DEPENDS</b> &ndash; A list of dependencies which need to be fulfilled before this task is considered "ready-to-start". Semantics are <code>&lt;taskname&gt;:{fail,wait,spawn}</code>, where <code>spawn</code> is fulfilled when (the first command of) a task has been started, <code>wait</code> if it has successfully completed, and <code>fail</code> if it has failed somewhere along the way. Here we can see this task is only run if and after the <code>earlysetup</code> (setup of system directories, etc.) has fully completed and the <code>check_qemu</code> task has determined we are <em>not</em> running inside the emulator and therefore exited with an error code. This may be left out or explicitly set to empty using <code>""</code> which is interpreted as "no dependencies". There is also the special <code>@provided:feature</code> syntax where we can define we want to depend on a specific feature another task may implement (see <b>PROVIDES</b>). In this case <code>@provided:writable_var</code> could mean that another task may have mounted a tmpfs or a writable partition there which we need for the first <code>mkdir</code>. That task would need to advertise the <code>writable_var</code> feature in its <code>PROVIDES</code> config value. (<em>array-like</em>) Additionally there is an optional feature that allows tasks to be started based on system events issued by elos. Tasks depending on an elos event can use the <code>@elos:&lt;filter_name&gt;</code> syntax to specify a task dependency that is fullfilled as soon as the specified elos filter triggers. The filters themself can be specified using the <b>FILTER_DEFINE</b> keyword.</li>
+<li><b>TRIGGER</b> &ndash; A list of dependencies which trigger the task if one of them is fulfilled. If both <b>DEPENDS</b> and <b>TRIGGER</b> are provided then the task starts as soon as all <b>DEPENDS</b> and at least one <b>TRIGGER</b> are fulfilled. The same semantics as with <b>DEPENDS</b> can be used. An empty trigger list is always considered fulfilled.</li>
 <li><b>PROVIDES</b> &ndash; As we have seen above, a task may depend on features and also provide them. In this case we advertise that after completion of this task (<code>wait</code>), the features <code>ipv4_dhcp</code> and <code>resolvconf</code> are provided. Another task may then depend e.g. on <code>@provided:resolvconf</code>. While the feature names chosen here reflect the functional intention, they can be chosen arbitrarily. (<em>array-like</em>)</li>
+<li><b>TRIGGER_REARM</b> &ndash; If set to <code>YES</code>, the task will revert its state to <code>loaded</code> after it has finished and thus can be triggered again. Default: <code>NO</code></li>
 <li><b>RESPAWN</b> &ndash; If set to <code>YES</code>, the task will be restarted on failure or completion. Useful for daemons like <code>getty</code>. Default: <code>NO</code></li>
 <li><b>RESPAWN_RETRIES</b> &ndash; Number of times a respawned task may fail <em>in a row</em> before it is not started again. The special value <code>-1</code> is interpreted as "unlimited". Default: -1</li>
+<li><b>CGROUP_NAME</b> &ndash; Name of a cgroup only used by this task. If this parameter is absent, the task won't be placed in a cgroup. If the name of a global cgroup (configured in the series file) is used here, the task is placed in that global cgroup. That is the preferred way to have multiple tasks in the same cgroup. It is possible to have more than one task with the same CGROUP_NAME which is not a global cgroup, but that is highly discouraged. In that case both tasks would be placed in the same cgroup but the later started task will alter the cgroup configuration done by the first task with the later started task's configuration. It is possible to create a cgroup outside of crinit (e.g. via an early started task) and use the name of that cgroup as value for CGROUP_NAME. Attention: That makes the configuration of the cgroup dependent on the task execution order.</li>
+<li><b>CGROUP_PARAMS</b> &ndash; Line-separated list of options that shall be set for the cgroup. Each parameter consists of the file name and the parameter value to set. Only one parameter pair per line. For example: <br  />
+ <div class="fragment"><div class="line">memory.max=100M</div>
+<div class="line">memory.min=5M</div>
+</div><!-- fragment --> See cgroup v2 documentation for more details: <a href="https://docs.kernel.org/admin-guide/cgroup-v2.html">https://docs.kernel.org/admin-guide/cgroup-v2.html</a></li>
 <li><b>ENV_SET</b> &ndash; See section <b>Setting Environment Variables</b> below. (<em>array-like</em>)</li>
 <li><b>FILTER_DEFINE</b> &ndash; See section <b>Defining Elos Filters</b> below. (<em>array-like</em>)</li>
 <li><b>IO_REDIRECT</b> &ndash; See section <b>IO Redirections</b> below. (<em>array-like</em>)</li>
@@ -369,6 +399,79 @@ Setting Environment Variables</h2>
 <div class="line">GREETING=Good evening!                     # Override of global variable.</div>
 <div class="line">ESCAPED_VAR=Global variable name: ${FOO}   # Avoid variable expansion through escaping.</div>
 <div class="line">VAR_WITH_ESC_SEQUENCES=hex  hex            # Support for escape sequences including hexadecimal bytes.</div>
+</div><!-- fragment --><h2><a class="anchor" id="defining-timers"></a>
+Defining timers</h2>
+<div class="fragment"><div class="line">Weekday-Year-Month-Day-Hour:Minute:Second+Timezone</div>
+</div><!-- fragment --><p>All parts can be either a single entry.</p>
+<p>Or a range separated by <code>&lt;start&gt;..&lt;end&gt;</code>, start and end of a range can be left blank (except for the weekday) and will default to the lowest or highest possible value (00:..04 -&gt; 00:00..04, 00:20.. -&gt; 00:20..59).</p>
+<p><code>*</code> can be used as a shorthand to specify the whole range.</p>
+<p>A range starting higher than the end wraps around, and includes all values from start to maximum and mimimum to the end (ie for month: 11..2 -&gt; Nov, Dec, Jan, Feb).</p>
+<p><b>Weekday:</b> is either the full weekday (Monday, Tuesday, ...) or the first 3 letters (Mon, Tue, ...) case insensitive.</p>
+<p><b>Year:</b> is a year between 0 and 65535 or a range. Default is the range 0..65535. <b>Month:</b> is a number between 1 and 12 or a range. Default is the range 1..12. <b>Day:</b> is a number between 1 and 31 or a range. Default is the range 1..31.</p>
+<p><b>Hour:</b> is in 24-hour format a number between 0 and 23 or a range. Default is midnight/00. <b>Minute:</b> is a minute between 0 and 59 or a range. Default is 00 the first minute of a matching hour. <b>Second:</b> is a second between 0 and 59 or a range. Default is 00 the first second of a matching minute. Can be left out when specifying the time. <b>Timezone:</b> is an offset of hours between -13 and +15 and minutes between 0 and 59. Default +0000. Can be left out when specifying the time.</p>
+<h3><a class="anchor" id="examples"></a>
+Examples</h3>
+<ul>
+<li><code>*</code> <code>daily</code> <code>midnight</code> <code>*-*-*-*-00:00:00</code> <code>Mon..Sun-0..65535-1..12-1..31-00:00:00</code><ul>
+<li>compared to crontab: <code>0 0 * * *</code></li>
+<li>compared to systemd onCalandar: <code>* *-*-* 00:00:00</code></li>
+</ul>
+</li>
+<li><code>Mon</code> <code>weekly</code> <code>Mon-*-*-*-00:00:00</code><ul>
+<li>compared to crontab: <code>0 0 * * 1</code></li>
+<li>compared to systemd onCalandar: <code>Mon *-*-* 00:00:00</code></li>
+</ul>
+</li>
+<li><code>Sat-23:45:00</code> <code>Sat-*-*-*-23:45:00</code><ul>
+<li>crontab: <code>45 23 * * 6</code></li>
+<li>systemd onCalandar: <code>Sat *-*-* 23:45:00</code></li>
+</ul>
+</li>
+<li><code>Mon..Fri-12..14:15..45:00</code> <code>Mon..Fri-*-*-*-12..14:15..45:00</code><ul>
+<li>compared to crontab: <code>15-45 12-14 * * 1-5</code></li>
+<li>compared to systemd onCalandar: <code>Mon..Fri *-*-* 12..14:15..45:00</code></li>
+</ul>
+</li>
+<li><code>*-2..11-12</code> <code>*-*-2..11-12-00:00:00</code> <code>Mon..Sun-0..65535-2..11-12-00:00:00</code><ul>
+<li>compared to crontab: <code>0 0 12 2-11 *</code></li>
+<li>compared to systemd onCalandar: <code>Mon..Fri *-2..11-12 00:00:00</code></li>
+</ul>
+</li>
+<li><code>Sat..Thu</code> <code>Sat..Thu-*-*-*-00:00:00:</code><ul>
+<li>compared to systemd onCalandar: <code>Mon..Thu,Sat,Sun *-*-* 00:00:00</code></li>
+</ul>
+</li>
+<li><code>minutely</code> <code>*-*-*-*-*:*:00</code><ul>
+<li>compared to crontab: <code>* * * * *</code></li>
+<li>compared to systemd onCalandar: <code>*-*-* *:00:00</code></li>
+</ul>
+</li>
+<li><code>hourly</code> <code>*-*-*-*-*:00:00</code><ul>
+<li>compared to crontab: <code>0 * * * *</code></li>
+<li>compared to systemd onCalandar: <code>*-*-* *:00:00</code></li>
+</ul>
+</li>
+<li><code>monthly</code> <code>*-*-*-01-00:00:00</code><ul>
+<li>compared to crontab: <code>0 0 1 * *</code></li>
+<li>compared to systemd onCalandar: <code>*-*-1 00:00:00</code></li>
+</ul>
+</li>
+<li><code>yearly</code> <code>annually</code> <code>*-01-01</code> <code>*-*-01-01-00:00:00</code><ul>
+<li>compared to crontab: <code>0 0 1 1 *</code></li>
+<li>compared to systemd onCalandar: <code>*-01-01 00:00:00</code></li>
+</ul>
+</li>
+<li><code>2030-*-30..01-12:2..58</code><ul>
+<li>compared to systemd onCalandar: <code>2030-*-01,30,31 01..12:01,02,58,59:00</code></li>
+</ul>
+</li>
+</ul>
+<div class="fragment"><div class="line">DEPENDS = @timer:Mon..Sun-0000..65535-01..12-01..31-00:00:00+0000</div>
+<div class="line">DEPENDS = @timer:Wednsday-2030-10-25-00..23:00..59:00</div>
+<div class="line">TRIGGER = @timer:Fri..Tue-12:30</div>
+<div class="line">TRIGGER = @timer:yearly</div>
+<div class="line">TRIGGER = @timer:anually</div>
+<div class="line">TRIGGER = @timer:daily</div>
 </div><!-- fragment --><h2><a class="anchor" id="defining-elos-filters"></a>
 Defining Elos Filters</h2>
 <p>Crinit supports an optional feature, which enables a task to depend on specific system events issued by the elos event logger. This needs ELOS support included at build-time.</p>
@@ -544,11 +647,21 @@ crinit-ctl Usage Info</h1>
 <div class="line">               represent the times the task was Created (loaded/parsed), last Started (became running), and</div>
 <div class="line">               last Ended (failed or is done). If the event has not occurred yet, the timestamp&#39;s value will</div>
 <div class="line">               be &#39;n/a&#39;.</div>
+<div class="line">               See &quot;list&quot; for a detailed description of different statuses.</div>
 <div class="line">      notify &lt;TASK_NAME&gt; &lt;&quot;SD_NOTIFY_STRING&quot;&gt;</div>
 <div class="line">             - Will send an sd_notify-style status report to Crinit. Only MAINPID and READY are</div>
 <div class="line">               implemented. See the sd_notify documentation for their meaning.</div>
 <div class="line">        list</div>
 <div class="line">             - Print the list of loaded tasks and their status.</div>
+<div class="line">               Following states can be reported:</div>
+<div class="line">               - loaded: the task was loaded but never ran</div>
+<div class="line">               - starting: the task currently spawns a new process</div>
+<div class="line">               - running: the task has spawned a process and is currently running</div>
+<div class="line">               - done: the task finished without an error</div>
+<div class="line">               - failed: the task has finished with an error code</div>
+<div class="line"> </div>
+<div class="line">               The states &quot;running&quot;, &quot;done&quot; and &quot;failed&quot; can appear with the suffix &quot;(notified)&quot;. That means that the information was transmitted</div>
+<div class="line">               to crinit via the sd_notify API.</div>
 <div class="line">      reboot</div>
 <div class="line">             - Will request Crinit to perform a graceful system reboot. crinit-ctl can be symlinked to</div>
 <div class="line">               reboot as a shortcut which will invoke this command automatically.</div>
@@ -574,7 +687,7 @@ Build Instructions</h1>
 <p>Executing </p><div class="fragment"><div class="line">ci/docker-run.sh</div>
 </div><!-- fragment --><p> will start a Docker container for the native host architecture with all necessary programs to build Crinit and its Doxygen documentation and to run the tests.</p>
 <p>It is possible to run the Docker container for a foreign architecture such as arm64 with the help of qemu-user-static and binfmt-support. Make sure these packages are installed on your host system if you want to use this functionality. All following commands to be run inside the container will be the same regardless of the architecture. </p><div class="fragment"><div class="line">ci/docker-run.sh arm64</div>
-</div><!-- fragment --><p>By default, <code>ci/docker-run.sh</code> will use a container based on Ubuntu Jammy. If another version is desired, it can be specified as a second parameter. For example, you can run a Lunar-based container using </p><div class="fragment"><div class="line">ci/docker-run.sh amd64 lunar</div>
+</div><!-- fragment --><p>By default, <code>ci/docker-run.sh</code> will use a container based on Ubuntu Noble (24.04). If another version is desired, it can be specified as a second parameter. For example, you can run a 22.04-Jammy-based container using </p><div class="fragment"><div class="line">ci/docker-run.sh amd64 jammy</div>
 </div><!-- fragment --><p>Inside the container, it is sufficient to run </p><div class="fragment"><div class="line">ci/build.sh</div>
 </div><!-- fragment --><p> which will compile the release configuration for <code>crinit</code>, the client library and crinit-ctl as well as a suite of RPMs. The doxygen documentation is built as well. The script will copy relevant build artifacts to <code>result/</code>.</p>
 <p>For debugging purposes, the debug configuration can be built with the following command. Optionally it is also possible to enable AddressSanitizer (ASAN) for additional runtime checks or static analysis using <code>-fanalyzer</code> at compile-time. </p><div class="fragment"><div class="line">ci/build.sh Debug --asan --analyzer</div>
@@ -600,6 +713,7 @@ Build Instructions</h1>
 <li>Crinit ELOS support using <code>-DENABLE_ELOS={On, Off}</code>. If set to on, crinit will have a dependency to <a href="https://github.com/elektrobit/safu">safu</a>. Default is <code>On</code>.</li>
 <li>Unit tests using <code>-DUNIT_TESTS={On, Off}</code>. If set to on, Crinit's unit tests will be built and installed to <code>UNIT_TEST_INSTALL_DIR</code>. This will cause a dependency to cmocka 1.1.5 or greater. Default is <code>On</code> with installation path <code>${CMAKE_INSTALL_LIBDIR}/test/crinit/utest</code>.</li>
 <li>Elos event polling time (see global configuration example) <code>-DDEFAULT_ELOS_EVENT_POLLING_TIME=&lt;usecs&gt;</code>. Default is 500000.</li>
+<li>Kernel logging can be activated at build time using <code>-DDEFAULT_USE_KMSG={On, Off}</code>. The behaviour can still be changed at runtime via the command line parameters.</li>
 <li>Build and install API documentation in doxygen HTML format using <code>-DAPI_DOC={On, Off}</code>. Needs doxygen. Default is <code>On</code>.</li>
 <li>Build and install an example generator for the machine id file (see above) using <code>-DMACHINE_ID_EXAMPLE={On, Off}</code>. Default is <code>Off</code>.</li>
 <li>Name and path for the machine id file: <code>-DDEFAULT_MACHINE_ID_FILE=&lt;FILEPATH&gt;</code>. Default is <code>$CMAKE_INSTALL_SYSCONFDIR/machine-id</code>.</li>
@@ -609,6 +723,7 @@ Build Instructions</h1>
 <li>Set the installation path for the symbolic links for <code>reboot</code> and <code>poweroff</code> using <code>PWR_SYMLINKS_PATH</code>. Default is <code>${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_SBINDIR}</code></li>
 <li>Install the bash completion script for crinit-ctl, using <code>-DINSTALL_BASH_COMPLETION={On, Off}</code>, to the <code>BASH_COMPLETION_DIR</code>. Default is <code>On</code> and default isntall path is <code>${CMAKE_INSTALL_DATADIR/bash-completion/completions</code>.</li>
 <li>Set the <code>SONAME</code> of libelos crinit will try to open at run-time. Default is auto-detection if elos is present in the build environment or <code>libelos.so.1</code> if it is not.</li>
+<li>Enable (<code>ON</code>) or disable (<code>OFF</code>) Linux capabilities support. If set to <code>ON</code> crinit will have a dependency to libcap. Default is <code>ON</code>.</li>
 </ul>
 <h1><a class="anchor" id="build-requirements"></a>
 Build Requirements</h1>
@@ -620,7 +735,8 @@ Build Requirements</h1>
 <li>optional, for ELOS support: <a href="https://github.com/elektrobit/safu">safu</a> &gt;= 0.58.2</li>
 <li>optional, for signature support: <a href="https://github.com/Mbed-TLS/mbedtls">MbedTLS</a> 2.28.x or 3.x</li>
 <li>optional, for unit tests: cmocka &gt;= 1.1.5</li>
-<li>optional, for HTML API documentation: Doxygen </li>
+<li>optional, for HTML API documentation: Doxygen</li>
+<li>optional, for capabilities support: libcap </li>
 </ul>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->

@@ -1,0 +1,13 @@
+<map id="inc/timerdb.h" name="inc/timerdb.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="246,5,354,31"/>
+<area shape="rect" id="Node000002" href="$confhdl_8c.html" title="Implementation of type&#45; and target&#45;specific handler functions for configuration parsing." alt="" coords="5,79,109,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="249,37,97,81,96,76,247,32"/>
+<area shape="rect" id="Node000003" href="$crinit_8c.html" title="Implementation of the Crinit main program." alt="" coords="134,79,223,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="270,40,200,81,197,76,267,35"/>
+<area shape="rect" id="Node000004" href="$procdip_8c.html" title="Implementation of the Process Dispatcher." alt="" coords="248,79,352,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="303,44,303,79,297,79,297,44"/>
+<area shape="rect" id="Node000005" href="$taskdb_8c.html" title="Implementation of the central Task Database and related functions." alt="" coords="377,79,477,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="334,35,407,76,405,81,331,40"/>
+<area shape="rect" id="Node000006" href="$timerdb_8c.html" title="Implementation of functions related managing the pool of all timers." alt="" coords="501,79,608,104"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="355,32,514,76,513,81,354,37"/>
+</map>

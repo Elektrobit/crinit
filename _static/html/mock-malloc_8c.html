@@ -90,12 +90,13 @@ $(document).ready(function(){initNavTree('mock-malloc_8c.html',''); initResizabl
 
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">mock-malloc.c File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <h3 class="version">(/usr/bin/git
-2023-11-27, commit: bad6102)</h3>
+2025-08-01, commit: e46fc091)</h3>
 <p>Implementation of a mock function for malloc().  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="mock-malloc_8h_source.html">mock-malloc.h</a>&quot;</code><br />
@@ -105,22 +106,24 @@ Include dependency graph for mock-malloc.c:</div>
 <div class="dyncontent">
 <div class="center"><img src="mock-malloc_8c__incl.png" border="0" usemap="#atest_2utest_2mocks_2mock-malloc_8c" alt=""/></div>
 <map name="atest_2utest_2mocks_2mock-malloc_8c" id="atest_2utest_2mocks_2mock-malloc_8c">
-<area shape="rect" title="Implementation of a mock function for malloc()." alt="" coords="57,5,228,45"/>
-<area shape="rect" href="mock-malloc_8h.html" title="Header declaring a mock function for malloc()." alt="" coords="19,93,138,119"/>
-<area shape="poly" title=" " alt="" coords="129,47,99,84,95,81,125,44"/>
-<area shape="rect" href="unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="181,93,272,119"/>
-<area shape="poly" title=" " alt="" coords="165,44,206,82,202,86,161,48"/>
-<area shape="rect" title=" " alt="" coords="5,167,80,192"/>
-<area shape="poly" title=" " alt="" coords="75,120,57,156,52,153,70,118"/>
-<area shape="poly" title=" " alt="" coords="198,121,87,164,85,159,196,116"/>
-<area shape="rect" title=" " alt="" coords="105,167,183,192"/>
-<area shape="poly" title=" " alt="" coords="215,121,170,160,166,155,212,117"/>
-<area shape="rect" title=" " alt="" coords="208,167,283,192"/>
-<area shape="poly" title=" " alt="" coords="232,118,241,153,236,154,227,120"/>
-<area shape="rect" title=" " alt="" coords="307,167,378,192"/>
-<area shape="poly" title=" " alt="" coords="247,116,313,157,311,162,244,121"/>
-<area shape="rect" title=" " alt="" coords="402,167,486,192"/>
-<area shape="poly" title=" " alt="" coords="262,116,397,160,395,165,261,121"/>
+<area shape="rect" title="Implementation of a mock function for malloc()." alt="" coords="128,5,299,45"/>
+<area shape="rect" href="mock-malloc_8h.html" title="Header declaring a mock function for malloc()." alt="" coords="90,93,209,119"/>
+<area shape="poly" title=" " alt="" coords="200,47,170,84,166,81,196,44"/>
+<area shape="rect" href="unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="269,93,360,119"/>
+<area shape="poly" title=" " alt="" coords="239,43,290,82,287,87,236,48"/>
+<area shape="rect" title=" " alt="" coords="5,167,88,192"/>
+<area shape="poly" title=" " alt="" coords="134,121,76,161,73,156,131,116"/>
+<area shape="rect" title=" " alt="" coords="112,167,187,192"/>
+<area shape="poly" title=" " alt="" coords="152,119,152,153,147,153,147,119"/>
+<area shape="poly" title=" " alt="" coords="289,121,190,164,188,159,287,116"/>
+<area shape="rect" title=" " alt="" coords="211,167,290,192"/>
+<area shape="poly" title=" " alt="" coords="306,121,272,158,268,155,302,117"/>
+<area shape="rect" title=" " alt="" coords="315,167,389,192"/>
+<area shape="poly" title=" " alt="" coords="323,118,342,153,337,156,318,120"/>
+<area shape="rect" title=" " alt="" coords="414,167,485,192"/>
+<area shape="poly" title=" " alt="" coords="338,116,416,158,414,162,335,121"/>
+<area shape="rect" title=" " alt="" coords="509,167,593,192"/>
+<area shape="poly" title=" " alt="" coords="353,116,500,160,499,165,352,121"/>
 </map>
 </div>
 </div><table class="memberdecls">
@@ -128,6 +131,11 @@ Include dependency graph for mock-malloc.c:</div>
 Functions</h2></td></tr>
 <tr class="memitem:a56504d42ec1333439118bc964147aaab" id="r_a56504d42ec1333439118bc964147aaab"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mock-malloc_8c.html#a56504d42ec1333439118bc964147aaab">__wrap_malloc</a> (size_t size)</td></tr>
 <tr class="separator:a56504d42ec1333439118bc964147aaab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a647aa11d2676b586db41261c0707dfa9" id="r_a647aa11d2676b586db41261c0707dfa9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mock-malloc_8c.html#a647aa11d2676b586db41261c0707dfa9">crinitMockMallocEnabled</a> = false</td></tr>
+<tr class="separator:a647aa11d2676b586db41261c0707dfa9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Implementation of a mock function for malloc(). </p>
@@ -148,7 +156,22 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Mock function for malloc().</p>
-<p>Checks that the right parameters are given and return a preset pointer. </p>
+<p>If crinitMockMallocEnabled is true then it checks that the right parameters are given and return a preset pointer. If crinitMockMallocEnabled is false then the call is forwarded to the genuine free method. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="a647aa11d2676b586db41261c0707dfa9" name="a647aa11d2676b586db41261c0707dfa9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a647aa11d2676b586db41261c0707dfa9">&#9670;&#160;</a></span>crinitMockMallocEnabled</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool crinitMockMallocEnabled = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>

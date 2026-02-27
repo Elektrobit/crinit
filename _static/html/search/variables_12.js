@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['uid_0',['uid',['../structcrinitTaskListEntry__t.html#a3b883f14afa699ee6ff2b1e34d21dae3',1,'crinitTaskListEntry_t']]],
-  ['useelos_1',['useElos',['../structcrinitGlobOptStore__t.html#abc277cd77fc6bae1f906281b549a3a7e',1,'crinitGlobOptStore_t']]],
-  ['user_2',['user',['../structcrinitTask__t.html#a277e93a70db574a9c2dfade182cea596',1,'crinitTask_t']]],
-  ['username_3',['username',['../structcrinitTaskListEntry__t.html#af945e64813cbc3f45064bd6a6bd307a9',1,'crinitTaskListEntry_t::username'],['../structcrinitTask__t.html#a56fc40cea8308fdc5e5c416d95a1c376',1,'crinitTask_t::username']]],
-  ['usesyslog_4',['useSyslog',['../structcrinitGlobOptStore__t.html#ae275fedccde894a6e6d9952ce47826ea',1,'crinitGlobOptStore_t']]]
+  ['uid_0',['uid',['../structcrinitTaskListEntry.html#aea6dfca91f7d941fd518d1d16b9f58c5',1,'crinitTaskListEntry']]],
+  ['useelos_1',['useElos',['../structcrinitGlobOptStore.html#a4d021ef0afce1537709a4de425b1f7c7',1,'crinitGlobOptStore']]],
+  ['user_2',['user',['../structcrinitTask.html#a04858abe84c25780eb9d38e1b0eb2999',1,'crinitTask']]],
+  ['username_3',['username',['../structcrinitTaskListEntry.html#ad2591ea68df5c966533b88b7342d2b54',1,'crinitTaskListEntry::username'],['../structcrinitTask.html#a949c9372bbc115090dacab71643c2601',1,'crinitTask::username']]],
+  ['usesyslog_4',['useSyslog',['../structcrinitGlobOptStore.html#aa1a55b35dc0bae90c098937cb44a9ea2',1,'crinitGlobOptStore']]]
 ];

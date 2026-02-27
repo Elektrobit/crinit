@@ -33,29 +33,29 @@ var elos_common_8h =
     [ "ELOS_ID_INVALID", "elos-common_8h.html#a79c894eb16442a58044d6f94dd765c63", null ],
     [ "LIBELOS_SO_FILENAME", "elos-common_8h.html#a54ea53b9d8e6a14eb2297b1f669ca303", null ],
     [ "crinitElosEvent_t", "elos-common_8h.html#a14f07b202659de70057eaab33a3d9608", null ],
-    [ "crinitElosEventMessageCodeE_t", "elos-common_8h.html#aa2da0eda69e05d834e1a3d925d7c4893", null ],
+    [ "crinitElosEventMessageCodeE_t", "elos-common_8h.html#a01c5f1f520ece0bd5564ae5dca948ba5", null ],
     [ "crinitElosEventQueueId_t", "elos-common_8h.html#ae38627978465a70d44671c91df0cc957", null ],
     [ "crinitElosEventSource_t", "elos-common_8h.html#a04e8db84dfd0f8975644ae981a576d5f", null ],
     [ "crinitElosEventVector_t", "elos-common_8h.html#af4a10ef69b3314a961c0249385092110", null ],
     [ "crinitElosSession_t", "elos-common_8h.html#a49ecf9418b0acd11077a34f0969b5753", null ],
-    [ "crinitElosSeverityE_t", "elos-common_8h.html#a1455f6d5063319597c96ee4a8b6c7639", null ],
+    [ "crinitElosSeverityE_t", "elos-common_8h.html#a9de239592c0fa9c713a6c33d98153d1f", null ],
     [ "crinitElosVirtualTable_t", "elos-common_8h.html#a27dbe20e05b6f90ee0d1a159a18819df", null ],
-    [ "crinitElosEventMessageCodeE_t", "elos-common_8h.html#a68b7f067a9a49a9b4430b047fe60e382", [
-      [ "ELOS_MSG_CODE_INFO_LOG", "elos-common_8h.html#a68b7f067a9a49a9b4430b047fe60e382a25ef615f4edd056166833b617a522a16", null ],
-      [ "ELOS_MSG_CODE_PROCESS_CREATED", "elos-common_8h.html#a68b7f067a9a49a9b4430b047fe60e382ae427533f7bcb230756b548a329c4efed", null ],
-      [ "ELOS_MSG_CODE_PROCESS_EXITED", "elos-common_8h.html#a68b7f067a9a49a9b4430b047fe60e382adb9cdcdbf26174eb4aa649f8d3b75bb4", null ],
-      [ "ELOS_MSG_CODE_FILE_OPENED", "elos-common_8h.html#a68b7f067a9a49a9b4430b047fe60e382a0f161160c898b45f29d09a429de3f81b", null ],
-      [ "ELOS_MSG_CODE_IPC_NOT_AUTHORIZED", "elos-common_8h.html#a68b7f067a9a49a9b4430b047fe60e382a06190cdf2cdc8da55a268c3e2391fe04", null ],
-      [ "ELOS_MSG_CODE_EXIT_FAILURE", "elos-common_8h.html#a68b7f067a9a49a9b4430b047fe60e382a89770bd42d23152d2461015b2389f823", null ]
+    [ "crinitElosEventMessageCodeE", "elos-common_8h.html#ad8bf60e0e5d5fb2537844575da4ebb55", [
+      [ "ELOS_MSG_CODE_INFO_LOG", "elos-common_8h.html#ad8bf60e0e5d5fb2537844575da4ebb55a25ef615f4edd056166833b617a522a16", null ],
+      [ "ELOS_MSG_CODE_PROCESS_CREATED", "elos-common_8h.html#ad8bf60e0e5d5fb2537844575da4ebb55ae427533f7bcb230756b548a329c4efed", null ],
+      [ "ELOS_MSG_CODE_PROCESS_EXITED", "elos-common_8h.html#ad8bf60e0e5d5fb2537844575da4ebb55adb9cdcdbf26174eb4aa649f8d3b75bb4", null ],
+      [ "ELOS_MSG_CODE_FILE_OPENED", "elos-common_8h.html#ad8bf60e0e5d5fb2537844575da4ebb55a0f161160c898b45f29d09a429de3f81b", null ],
+      [ "ELOS_MSG_CODE_IPC_NOT_AUTHORIZED", "elos-common_8h.html#ad8bf60e0e5d5fb2537844575da4ebb55a06190cdf2cdc8da55a268c3e2391fe04", null ],
+      [ "ELOS_MSG_CODE_EXIT_FAILURE", "elos-common_8h.html#ad8bf60e0e5d5fb2537844575da4ebb55a89770bd42d23152d2461015b2389f823", null ]
     ] ],
-    [ "crinitElosSeverityE_t", "elos-common_8h.html#ad7cf4ddf69fbd31c7161454ba2ee2865", [
-      [ "ELOS_SEVERITY_OFF", "elos-common_8h.html#ad7cf4ddf69fbd31c7161454ba2ee2865a5fc17c0320a8718b25e3198d95de5068", null ],
-      [ "ELOS_SEVERITY_FATAL", "elos-common_8h.html#ad7cf4ddf69fbd31c7161454ba2ee2865a1e757964b327520ef23683b5ea79abb3", null ],
-      [ "ELOS_SEVERITY_ERROR", "elos-common_8h.html#ad7cf4ddf69fbd31c7161454ba2ee2865a0859235db7a3a5e5a33df37fe4db2728", null ],
-      [ "ELOS_SEVERITY_WARN", "elos-common_8h.html#ad7cf4ddf69fbd31c7161454ba2ee2865a753758fc7560978f7edfb0436f02c4ab", null ],
-      [ "ELOS_SEVERITY_INFO", "elos-common_8h.html#ad7cf4ddf69fbd31c7161454ba2ee2865a0cc597cf879db2b525565995b60d9263", null ],
-      [ "ELOS_SEVERITY_DEBUG", "elos-common_8h.html#ad7cf4ddf69fbd31c7161454ba2ee2865afc7ecb0b01b995d4aa615fb121b1e7ce", null ],
-      [ "ELOS_SEVERITY_VERBOSE", "elos-common_8h.html#ad7cf4ddf69fbd31c7161454ba2ee2865a80c831b203917b2212428663d732fd04", null ]
+    [ "crinitElosSeverityE", "elos-common_8h.html#a8c96d6b304fae74bb1642893cc9780ce", [
+      [ "ELOS_SEVERITY_OFF", "elos-common_8h.html#a8c96d6b304fae74bb1642893cc9780cea5fc17c0320a8718b25e3198d95de5068", null ],
+      [ "ELOS_SEVERITY_FATAL", "elos-common_8h.html#a8c96d6b304fae74bb1642893cc9780cea1e757964b327520ef23683b5ea79abb3", null ],
+      [ "ELOS_SEVERITY_ERROR", "elos-common_8h.html#a8c96d6b304fae74bb1642893cc9780cea0859235db7a3a5e5a33df37fe4db2728", null ],
+      [ "ELOS_SEVERITY_WARN", "elos-common_8h.html#a8c96d6b304fae74bb1642893cc9780cea753758fc7560978f7edfb0436f02c4ab", null ],
+      [ "ELOS_SEVERITY_INFO", "elos-common_8h.html#a8c96d6b304fae74bb1642893cc9780cea0cc597cf879db2b525565995b60d9263", null ],
+      [ "ELOS_SEVERITY_DEBUG", "elos-common_8h.html#a8c96d6b304fae74bb1642893cc9780ceafc7ecb0b01b995d4aa615fb121b1e7ce", null ],
+      [ "ELOS_SEVERITY_VERBOSE", "elos-common_8h.html#a8c96d6b304fae74bb1642893cc9780cea80c831b203917b2212428663d732fd04", null ]
     ] ],
     [ "crinitElosDisconnect", "elos-common_8h.html#abc8cea368b306cf59e814361beea4293", null ],
     [ "crinitElosGetVTable", "elos-common_8h.html#aa4578bf7af7f7b781144ac3ff5223f25", null ],

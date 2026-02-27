@@ -19,6 +19,9 @@ var index =
         [ "Explanation", "index.html#explanation-1", null ]
       ] ],
       [ "Setting Environment Variables", "index.html#setting-environment-variables", null ],
+      [ "Defining timers", "index.html#defining-timers", [
+        [ "Examples", "index.html#examples", null ]
+      ] ],
       [ "Defining Elos Filters", "index.html#defining-elos-filters", [
         [ "Ruleset", "index.html#ruleset", null ]
       ] ],

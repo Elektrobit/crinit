@@ -1,32 +1,34 @@
 <map id="inc/taskdb.h" name="inc/taskdb.h">
-<area shape="rect" id="Node000001" title="Header defining the central Task Data Structure and related types/functions." alt="" coords="77,5,178,31"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,89,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="116,33,72,72,69,68,113,29"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="147,372,222,397"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="130,31,130,163,130,239,134,273,144,305,171,359,167,361,139,307,129,274,125,239,125,163,125,31"/>
-<area shape="rect" id="Node000004" href="$task_8h.html" title="Header defining the data structures belonging to a single task and related functions." alt="" coords="325,79,388,104"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="165,28,313,74,311,79,163,33"/>
-<area shape="rect" id="Node000005" title=" " alt="" coords="383,299,479,324"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="389,89,426,92,470,102,512,120,531,133,547,151,556,171,556,191,549,211,536,231,501,266,464,293,461,289,497,262,532,228,544,209,551,190,551,172,542,153,528,137,510,124,469,107,426,98,388,95"/>
-<area shape="rect" id="Node000006" title=" " alt="" coords="469,152,533,177"/>
-<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="381,102,466,143,464,148,379,106"/>
-<area shape="rect" id="Node000007" href="$confparse_8h.html" title="Header related to the Config Parser." alt="" coords="243,225,342,251"/>
-<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="346,106,327,127,310,153,300,183,296,212,291,211,295,182,305,151,323,123,342,102"/>
-<area shape="rect" id="Node000010" href="$crinit-sdefs_8h.html" title="Definitions shared between crinit&#39;s public and internal APIs." alt="" coords="378,225,485,251"/>
-<area shape="poly" id="edge12_Node000004_Node000010" title=" " alt="" coords="371,103,390,124,408,151,421,181,429,211,424,212,416,183,404,153,386,127,367,106"/>
-<area shape="rect" id="Node000011" href="$envset_8h.html" title="Header defining data types and functions to work with sets of environment variables." alt="" coords="165,152,244,177"/>
-<area shape="poly" id="edge14_Node000004_Node000011" title=" " alt="" coords="333,106,243,149,241,144,331,102"/>
-<area shape="rect" id="Node000012" href="$ioredir_8h.html" title="Header related to IO redirection types and functions." alt="" coords="319,152,394,177"/>
-<area shape="poly" id="edge17_Node000004_Node000012" title=" " alt="" coords="359,104,359,138,354,138,354,104"/>
-<area shape="poly" id="edge8_Node000007_Node000005" title=" " alt="" coords="316,248,398,290,395,295,314,253"/>
-<area shape="rect" id="Node000008" title=" " alt="" coords="271,372,354,397"/>
-<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="301,250,317,298,319,329,318,358,313,358,314,329,311,299,296,252"/>
-<area shape="rect" id="Node000009" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="223,299,301,324"/>
-<area shape="poly" id="edge9_Node000007_Node000009" title=" " alt="" coords="290,252,275,287,270,285,285,250"/>
-<area shape="poly" id="edge11_Node000009_Node000003" title=" " alt="" coords="251,326,209,364,206,361,248,322"/>
-<area shape="poly" id="edge10_Node000009_Node000008" title=" " alt="" coords="273,323,299,359,294,362,268,326"/>
-<area shape="poly" id="edge13_Node000010_Node000005" title=" " alt="" coords="434,251,434,285,429,285,429,251"/>
-<area shape="poly" id="edge15_Node000011_Node000003" title=" " alt="" coords="206,178,190,358,184,358,201,177"/>
-<area shape="poly" id="edge16_Node000011_Node000007" title=" " alt="" coords="220,175,269,214,266,219,217,179"/>
-<area shape="poly" id="edge18_Node000012_Node000007" title=" " alt="" coords="348,179,314,217,310,213,344,176"/>
+<area shape="rect" id="Node000001" title="Header defining the central Task Data Structure and related types/functions." alt="" coords="275,5,376,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="186,79,270,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="311,33,257,72,254,68,308,29"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="440,372,515,397"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="377,18,454,27,498,36,540,49,578,68,610,92,631,124,637,143,639,163,639,240,636,263,627,284,614,303,597,320,560,348,521,369,519,364,557,344,594,316,610,300,622,281,630,261,633,239,633,163,631,144,626,126,606,96,576,72,538,54,497,41,454,32,376,23"/>
+<area shape="rect" id="Node000004" href="$task_8h.html" title="Header defining the data structures belonging to a single task and related functions." alt="" coords="294,79,357,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="328,31,328,65,323,65,323,31"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="527,152,598,177"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="358,99,515,146,513,151,356,105"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="101,299,197,324"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="295,104,226,126,196,140,177,154,159,185,151,221,148,255,149,285,144,285,143,255,145,220,154,183,173,150,193,135,224,121,293,99"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="187,152,251,177"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="310,106,249,147,246,142,307,102"/>
+<area shape="rect" id="Node000008" href="$confparse_8h.html" title="Header related to the Config Parser." alt="" coords="300,225,399,251"/>
+<area shape="poly" id="edge7_Node000004_Node000008" title=" " alt="" coords="323,105,315,138,313,157,316,177,334,213,329,215,311,178,308,158,310,137,318,104"/>
+<area shape="rect" id="Node000011" href="$crinit-sdefs_8h.html" title="Definitions shared between crinit&#39;s public and internal APIs." alt="" coords="5,225,112,251"/>
+<area shape="poly" id="edge13_Node000004_Node000011" title=" " alt="" coords="295,104,199,131,132,154,99,183,75,215,71,212,95,180,129,150,197,126,293,99"/>
+<area shape="rect" id="Node000012" href="$envset_8h.html" title="Header defining data types and functions to work with sets of environment variables." alt="" coords="425,152,503,177"/>
+<area shape="poly" id="edge15_Node000004_Node000012" title=" " alt="" coords="349,102,430,143,428,148,346,106"/>
+<area shape="rect" id="Node000013" href="$ioredir_8h.html" title="Header related to IO redirection types and functions." alt="" coords="325,152,400,177"/>
+<area shape="poly" id="edge18_Node000004_Node000013" title=" " alt="" coords="334,103,353,139,348,141,329,106"/>
+<area shape="poly" id="edge9_Node000008_Node000006" title=" " alt="" coords="318,253,196,296,194,291,316,248"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="308,372,391,397"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="352,251,352,358,347,358,347,251"/>
+<area shape="rect" id="Node000010" href="$fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="361,299,439,324"/>
+<area shape="poly" id="edge10_Node000008_Node000010" title=" " alt="" coords="360,249,386,286,382,289,356,253"/>
+<area shape="poly" id="edge12_Node000010_Node000003" title=" " alt="" coords="414,322,456,361,453,364,411,326"/>
+<area shape="poly" id="edge11_Node000010_Node000009" title=" " alt="" coords="394,326,368,362,363,359,389,323"/>
+<area shape="poly" id="edge14_Node000011_Node000006" title=" " alt="" coords="75,249,125,288,122,292,72,253"/>
+<area shape="poly" id="edge16_Node000012_Node000003" title=" " alt="" coords="467,178,478,358,473,358,462,178"/>
+<area shape="poly" id="edge17_Node000012_Node000008" title=" " alt="" coords="447,180,381,220,378,216,444,175"/>
+<area shape="poly" id="edge19_Node000013_Node000008" title=" " alt="" coords="363,178,357,212,351,211,358,177"/>
 </map>

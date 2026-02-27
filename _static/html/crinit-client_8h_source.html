@@ -5,8 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Crinit -- Configurable Rootfs Init: inc/crinit-client.h (/usr/bin/git
-2025-03-14, commit: 3f3d877) Source File</title>
+<title>Crinit -- Configurable Rootfs Init: inc/crinit-client.h (/usr/bin/git) Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -108,7 +107,7 @@ $(document).ready(function(){initNavTree('crinit-client_8h_source.html',''); ini
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &quot;<a class="code" href="crinit-sdefs_8h.html">crinit-sdefs.h</a>&quot;</span></div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &quot;<a class="code" href="version_8h.html">version.h</a>&quot;</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &quot;<a class="code" href="crinit-version_8h.html">crinit-version.h</a>&quot;</span></div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#ifdef __cplusplus</span></div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
@@ -117,8 +116,8 @@ $(document).ready(function(){initNavTree('crinit-client_8h_source.html',''); ini
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="keywordtype">void</span> <a class="code hl_function" href="crinit-client_8h.html#a07a160d8a3f24217aee77ee1a977cace">crinitClientSetErrStream</a>(FILE *errStream);</div>
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="keywordtype">void</span> <a class="code hl_function" href="crinit-client_8h.html#ac1c5a8ae37cd47fe02b39843e23598d3">crinitClientSetInfoStream</a>(FILE *infoStream);</div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span> </div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="keywordtype">int</span> <a class="code hl_function" href="crinit-client_8h.html#a5005da7f0f0cca479993de59d2f99a96">crinitClientGetVersion</a>(<a class="code hl_struct" href="structcrinitVersion__t.html">crinitVersion_t</a> *v);</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><span class="keyword">const</span> <a class="code hl_struct" href="structcrinitVersion__t.html">crinitVersion_t</a> *<a class="code hl_function" href="crinit-client_8h.html#aba180b9a19aa1b7f6105ea9707de2b1f">crinitClientLibGetVersion</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="keywordtype">int</span> <a class="code hl_function" href="crinit-client_8h.html#a5005da7f0f0cca479993de59d2f99a96">crinitClientGetVersion</a>(<a class="code hl_struct" href="structcrinitVersion.html">crinitVersion_t</a> *v);</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><span class="keyword">const</span> <a class="code hl_struct" href="structcrinitVersion.html">crinitVersion_t</a> *<a class="code hl_function" href="crinit-client_8h.html#aba180b9a19aa1b7f6105ea9707de2b1f">crinitClientLibGetVersion</a>(<span class="keywordtype">void</span>);</div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
 <div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span><span class="keywordtype">void</span> <a class="code hl_function" href="crinit-client_8h.html#a99446d18e5a1cb1fac9075281d0e107b">crinitClientSetNotifyTaskName</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *taskName);</div>
 <div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span><span class="keywordtype">void</span> <a class="code hl_function" href="crinit-client_8h.html#a2a429c3194e39becd83d2b8271edcc7d">crinitClientSetSocketPath</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *sockFile);</div>
@@ -140,9 +139,9 @@ $(document).ready(function(){initNavTree('crinit-client_8h_source.html',''); ini
 <div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span><span class="keywordtype">int</span> <a class="code hl_function" href="crinit-client_8h.html#ac63ab0a7b48b7cfe401c6ac300a95726">crinitClientTaskGetStatus</a>(<a class="code hl_typedef" href="crinit-sdefs_8h.html#a96326334c512388a4528407927f1d770">crinitTaskState_t</a> *s, pid_t *pid, <span class="keyword">struct</span> timespec *ct, <span class="keyword">struct</span> timespec *st,</div>
 <div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>                              <span class="keyword">struct</span> timespec *et, gid_t *gid, uid_t *uid, <span class="keywordtype">char</span> **username, <span class="keywordtype">char</span> **groupname,</div>
 <div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>                              <span class="keyword">const</span> <span class="keywordtype">char</span> *taskName);</div>
-<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span><span class="keywordtype">int</span> <a class="code hl_function" href="crinit-client_8h.html#a8a3a4440c521fddba8574e4b8c051240">crinitClientGetTaskList</a>(<a class="code hl_struct" href="structcrinitTaskList__t.html">crinitTaskList_t</a> **tl);</div>
-<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span><span class="keywordtype">void</span> <a class="code hl_function" href="crinit-client_8h.html#a64df7c58a99a976d586f531bf15cd16b">crinitClientFreeTaskList</a>(<a class="code hl_struct" href="structcrinitTaskList__t.html">crinitTaskList_t</a> *tl);</div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span><span class="keywordtype">int</span> <a class="code hl_function" href="crinit-client_8h.html#adf24c20b8485328c3279154c35923d14">crinitClientShutdown</a>(<a class="code hl_enumeration" href="crinit-sdefs_8h.html#a06e6d55c070ebd32aabe402362e845be">crinitShutdownCmd_t</a> sCmd);</div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span><span class="keywordtype">int</span> <a class="code hl_function" href="crinit-client_8h.html#a8a3a4440c521fddba8574e4b8c051240">crinitClientGetTaskList</a>(<a class="code hl_struct" href="structcrinitTaskList.html">crinitTaskList_t</a> **tl);</div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span><span class="keywordtype">void</span> <a class="code hl_function" href="crinit-client_8h.html#a64df7c58a99a976d586f531bf15cd16b">crinitClientFreeTaskList</a>(<a class="code hl_struct" href="structcrinitTaskList.html">crinitTaskList_t</a> *tl);</div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span><span class="keywordtype">int</span> <a class="code hl_function" href="crinit-client_8h.html#adf24c20b8485328c3279154c35923d14">crinitClientShutdown</a>(<a class="code hl_typedef" href="crinit-sdefs_8h.html#adccfdeaaa46f387c5ae169e664b01e07">crinitShutdownCmd_t</a> sCmd);</div>
 <div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span> </div>
 <div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span><span class="preprocessor">#ifdef __cplusplus</span></div>
 <div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>}</div>
@@ -170,17 +169,17 @@ $(document).ready(function(){initNavTree('crinit-client_8h_source.html',''); ini
 <div class="ttc" id="acrinit-client_8h_html_ad2caf33cef7ee8fbc1646dcc9fa6c230"><div class="ttname"><a href="crinit-client_8h.html#ad2caf33cef7ee8fbc1646dcc9fa6c230">crinitClientTaskRestart</a></div><div class="ttdeci">int crinitClientTaskRestart(const char *taskName)</div><div class="ttdef"><b>Definition</b> crinit-client.c:318</div></div>
 <div class="ttc" id="acrinit-client_8h_html_adf24c20b8485328c3279154c35923d14"><div class="ttname"><a href="crinit-client_8h.html#adf24c20b8485328c3279154c35923d14">crinitClientShutdown</a></div><div class="ttdeci">int crinitClientShutdown(crinitShutdownCmd_t sCmd)</div><div class="ttdef"><b>Definition</b> crinit-client.c:579</div></div>
 <div class="ttc" id="acrinit-sdefs_8h_html"><div class="ttname"><a href="crinit-sdefs_8h.html">crinit-sdefs.h</a></div><div class="ttdoc">Definitions shared between crinit's public and internal APIs.</div></div>
-<div class="ttc" id="acrinit-sdefs_8h_html_a06e6d55c070ebd32aabe402362e845be"><div class="ttname"><a href="crinit-sdefs_8h.html#a06e6d55c070ebd32aabe402362e845be">crinitShutdownCmd_t</a></div><div class="ttdeci">crinitShutdownCmd_t</div><div class="ttdef"><b>Definition</b> crinit-sdefs.h:43</div></div>
-<div class="ttc" id="acrinit-sdefs_8h_html_a96326334c512388a4528407927f1d770"><div class="ttname"><a href="crinit-sdefs_8h.html#a96326334c512388a4528407927f1d770">crinitTaskState_t</a></div><div class="ttdeci">unsigned long crinitTaskState_t</div><div class="ttdoc">Type to store Task state bitmask.</div><div class="ttdef"><b>Definition</b> crinit-sdefs.h:14</div></div>
-<div class="ttc" id="astructcrinitTaskList__t_html"><div class="ttname"><a href="structcrinitTaskList__t.html">crinitTaskList_t</a></div><div class="ttdef"><b>Definition</b> crinit-sdefs.h:37</div></div>
-<div class="ttc" id="astructcrinitVersion__t_html"><div class="ttname"><a href="structcrinitVersion__t.html">crinitVersion_t</a></div><div class="ttdef"><b>Definition</b> version.h:19</div></div>
-<div class="ttc" id="aversion_8h_html"><div class="ttname"><a href="version_8h.html">version.h</a></div><div class="ttdoc">Header definitions related to component versioning.</div></div>
+<div class="ttc" id="acrinit-sdefs_8h_html_a96326334c512388a4528407927f1d770"><div class="ttname"><a href="crinit-sdefs_8h.html#a96326334c512388a4528407927f1d770">crinitTaskState_t</a></div><div class="ttdeci">unsigned long crinitTaskState_t</div><div class="ttdoc">Type to store Task state bitmask.</div><div class="ttdef"><b>Definition</b> crinit-sdefs.h:17</div></div>
+<div class="ttc" id="acrinit-sdefs_8h_html_adccfdeaaa46f387c5ae169e664b01e07"><div class="ttname"><a href="crinit-sdefs_8h.html#adccfdeaaa46f387c5ae169e664b01e07">crinitShutdownCmd_t</a></div><div class="ttdeci">enum crinitShutdownCmd crinitShutdownCmd_t</div></div>
+<div class="ttc" id="acrinit-version_8h_html"><div class="ttname"><a href="crinit-version_8h.html">crinit-version.h</a></div><div class="ttdoc">Header definitions related to component versioning.</div></div>
+<div class="ttc" id="astructcrinitTaskList_html"><div class="ttname"><a href="structcrinitTaskList.html">crinitTaskList</a></div><div class="ttdef"><b>Definition</b> crinit-sdefs.h:40</div></div>
+<div class="ttc" id="astructcrinitVersion_html"><div class="ttname"><a href="structcrinitVersion.html">crinitVersion</a></div><div class="ttdef"><b>Definition</b> crinit-version.h:19</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_bfccd401955b95cf8c75461437045ac0.html">inc</a></li><li class="navelem"><a class="el" href="crinit-client_8h.html">crinit-client.h</a></li>
+    <li class="navelem"><a class="el" href="dir_929990cc644a2057c712409e82a24c70.html">inc</a></li><li class="navelem"><a class="el" href="crinit-client_8h.html">crinit-client.h</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
