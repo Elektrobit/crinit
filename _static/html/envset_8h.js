@@ -1,9 +1,9 @@
 var envset_8h =
 [
-    [ "crinitEnvSet_t", "structcrinitEnvSet__t.html", "structcrinitEnvSet__t" ],
+    [ "crinitEnvSet", "structcrinitEnvSet.html", "structcrinitEnvSet" ],
     [ "CRINIT_ENVSET_INITIAL_SIZE", "envset_8h.html#a5a49127c725c29c1c99e9b1b0c09b4ff", null ],
     [ "CRINIT_ENVSET_SIZE_INCREMENT", "envset_8h.html#a92e7f7b83345d64acc2c371a3aafca3d", null ],
-    [ "crinitEnvSet_t", "envset_8h.html#aabbfc628322f9caf0479dcc17f371dd9", null ],
+    [ "crinitEnvSet_t", "envset_8h.html#a7aef24e5902b2edbc33e7e886f8c4be5", null ],
     [ "crinitEnvSetCreateFromConfKvList", "envset_8h.html#a545875a0e8f9399efa38df3b825177f7", null ],
     [ "crinitEnvSetDestroy", "envset_8h.html#ab7cc885c8c9df3fa24fefcc3222e2d0a", null ],
     [ "crinitEnvSetDup", "envset_8h.html#ababc0b6abd57d69633cf02eb1afbe26f", null ],

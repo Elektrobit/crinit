@@ -1,0 +1,9 @@
+<map id="test/utest/utest&#45;crinit&#45;cap&#45;get&#45;inheritable/utest&#45;crinit&#45;cap&#45;get&#45;inheritable.h" name="test/utest/utest&#45;crinit&#45;cap&#45;get&#45;inheritable/utest&#45;crinit&#45;cap&#45;get&#45;inheritable.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="223,5,424,60"/>
+<area shape="rect" id="Node000002" href="$case-invalid-capability-pointer_8c.html" title=" " alt="" coords="5,108,207,163"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="256,68,164,110,162,106,253,63"/>
+<area shape="rect" id="Node000003" href="$utest-crinit-cap-get-inheritable_2case-success_8c.html" title="Unit test for crinitCapGetInheritable(), successful execution." alt="" coords="231,108,416,163"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="326,74,326,108,321,108,321,74"/>
+<area shape="rect" id="Node000004" href="$utest-crinit-cap-get-inheritable_8c.html" title="Implementation of the crinitCapGetInheritable() unit test group." alt="" coords="441,108,641,163"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="393,63,485,106,483,110,391,68"/>
+</map>

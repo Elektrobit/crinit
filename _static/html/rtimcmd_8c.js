@@ -1,9 +1,9 @@
 var rtimcmd_8c =
 [
-    [ "crinitShdnThrArgs_t", "structcrinitShdnThrArgs__t.html", "structcrinitShdnThrArgs__t" ],
-    [ "crinitUnMountList_t", "structcrinitUnMountList__t.html", "structcrinitUnMountList__t" ],
-    [ "crinitShdnThrArgs_t", "rtimcmd_8c.html#ad61740793561262c87f11e99b76dac2d", null ],
-    [ "crinitUnMountList_t", "rtimcmd_8c.html#a69bfe02c6b761ad6b46875aa203c95da", null ],
+    [ "crinitShdnThrArgs", "structcrinitShdnThrArgs.html", "structcrinitShdnThrArgs" ],
+    [ "crinitUnMountList", "structcrinitUnMountList.html", "structcrinitUnMountList" ],
+    [ "crinitShdnThrArgs_t", "rtimcmd_8c.html#a3bd02e7342e6bbd3f0536a28da2d3b83", null ],
+    [ "crinitUnMountList_t", "rtimcmd_8c.html#a81a04d23de75a1355a4427329a99de64", null ],
     [ "crinitBuildRtimCmd", "rtimcmd_8c.html#a2fbd65878d185b01079ab657d1342ef8", null ],
     [ "crinitBuildRtimCmdArray", "rtimcmd_8c.html#ade5eaaf358b36b73fd59c746d8f80454", null ],
     [ "crinitDestroyRtimCmd", "rtimcmd_8c.html#a71f0cd4fad66acbaa8e33b9e3853d891", null ],

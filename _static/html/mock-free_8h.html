@@ -90,22 +90,40 @@ $(document).ready(function(){initNavTree('mock-free_8h.html',''); initResizable(
 
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">mock-free.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <h3 class="version">(/usr/bin/git
-2023-11-27, commit: bad6102)</h3>
+2025-08-01, commit: e46fc091)</h3>
 <p>Header declaring a mock function for free().  
 <a href="#details">More...</a></p>
-<div class="textblock"><div class="dynheader">
+<div class="textblock"><code>#include &lt;stdbool.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for mock-free.h:</div>
+<div class="dyncontent">
+<div class="center"><img src="mock-free_8h__incl.png" border="0" usemap="#atest_2utest_2mocks_2mock-free_8h" alt=""/></div>
+<map name="atest_2utest_2mocks_2mock-free_8h" id="atest_2utest_2mocks_2mock-free_8h">
+<area shape="rect" title="Header declaring a mock function for free()." alt="" coords="5,5,176,45"/>
+<area shape="rect" title=" " alt="" coords="49,93,132,119"/>
+<area shape="poly" title=" " alt="" coords="93,46,93,79,88,79,88,46"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
 This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="mock-free_8h__dep__incl.png" border="0" usemap="#atest_2utest_2mocks_2mock-free_8hdep" alt=""/></div>
 <map name="atest_2utest_2mocks_2mock-free_8hdep" id="atest_2utest_2mocks_2mock-free_8hdep">
-<area shape="rect" title="Header declaring a mock function for free()." alt="" coords="5,5,176,45"/>
-<area shape="rect" href="mock-free_8c.html" title="Implementation of a mock function for free()." alt="" coords="5,93,176,133"/>
-<area shape="poly" title=" " alt="" coords="93,59,93,93,88,93,88,59"/>
+<area shape="rect" title="Header declaring a mock function for free()." alt="" coords="315,5,485,45"/>
+<area shape="rect" href="mock-free_8c.html" title="Implementation of a mock function for free()." alt="" coords="5,101,176,141"/>
+<area shape="poly" title=" " alt="" coords="325,52,154,103,152,98,324,47"/>
+<area shape="rect" href="utest-destroy-file-series_2case-success_8c.html" title="Unit test for crinitDestroyFileSeries(), successful execution." alt="" coords="200,101,392,141"/>
+<area shape="poly" title=" " alt="" coords="370,57,319,103,315,99,367,53"/>
+<area shape="rect" href="utest-envset-destroy_2case-success_8c.html" title="Unit test for crinitEnvSetDestroy(), successful execution." alt="" coords="417,101,594,141"/>
+<area shape="poly" title=" " alt="" coords="433,52,486,99,482,103,430,56"/>
+<area shape="rect" href="utest-file-series-free-scandir-list_2case-success_8c.html" title="Unit test for crinitFreeScandirList(), successful execution." alt="" coords="619,93,768,148"/>
+<area shape="poly" title=" " alt="" coords="473,47,619,93,618,98,471,52"/>
 </map>
 </div>
 </div>
@@ -115,10 +133,35 @@ This graph shows which files directly or indirectly include this file:</div>
 Functions</h2></td></tr>
 <tr class="memitem:ad81079124eeb23ae75a56eba434043f0" id="r_ad81079124eeb23ae75a56eba434043f0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mock-free_8h.html#ad81079124eeb23ae75a56eba434043f0">__wrap_free</a> (void *ptr)</td></tr>
 <tr class="separator:ad81079124eeb23ae75a56eba434043f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4495a047a5759ce80b1c48e6734167cf" id="r_a4495a047a5759ce80b1c48e6734167cf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mock-free_8h.html#a4495a047a5759ce80b1c48e6734167cf">__real_free</a> (void *ptr)</td></tr>
+<tr class="separator:a4495a047a5759ce80b1c48e6734167cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:aa84e26f213e82d99c7386380f5e8f4ef" id="r_aa84e26f213e82d99c7386380f5e8f4ef"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mock-free_8h.html#aa84e26f213e82d99c7386380f5e8f4ef">crinitMockFreeEnabled</a></td></tr>
+<tr class="separator:aa84e26f213e82d99c7386380f5e8f4ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Header declaring a mock function for free(). </p>
 </div><h2 class="groupheader">Function Documentation</h2>
+<a id="a4495a047a5759ce80b1c48e6734167cf" name="a4495a047a5759ce80b1c48e6734167cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4495a047a5759ce80b1c48e6734167cf">&#9670;&#160;</a></span>__real_free()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void __real_free </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>ptr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ad81079124eeb23ae75a56eba434043f0" name="ad81079124eeb23ae75a56eba434043f0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad81079124eeb23ae75a56eba434043f0">&#9670;&#160;</a></span>__wrap_free()</h2>
 
@@ -135,7 +178,30 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Mock function for free().</p>
-<p>Checks that the right parameters are given and return a preset pointer. </p>
+<p>If crinitMockFreeEnabled is true then it checks that the right parameters are given. If crinitMockFreeEnabled is false then the call is forwarded to the genuine free method. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="aa84e26f213e82d99c7386380f5e8f4ef" name="aa84e26f213e82d99c7386380f5e8f4ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa84e26f213e82d99c7386380f5e8f4ef">&#9670;&#160;</a></span>crinitMockFreeEnabled</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool crinitMockFreeEnabled</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>

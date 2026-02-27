@@ -5,8 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Crinit -- Configurable Rootfs Init: inc/elosdep.h (/usr/bin/git
-2023-11-27, commit: f65bd36) Source File</title>
+<title>Crinit -- Configurable Rootfs Init: inc/elosdep.h (/usr/bin/git) Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -104,26 +103,26 @@ $(document).ready(function(){initNavTree('elosdep_8h_source.html',''); initResiz
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="keyword">struct </span><a class="code hl_struct" href="structcrinitTask__t.html">crinitTask_t</a>;</div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">struct </span><a class="code hl_struct" href="structcrinitTaskDB__t.html">crinitTaskDB_t</a>;</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="keyword">struct </span><a class="code hl_struct" href="structcrinitTask.html">crinitTask</a>;</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">struct </span><a class="code hl_struct" href="structcrinitTaskDB.html">crinitTaskDB</a>;</div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno"><a class="line" href="elosdep_8h.html#a0e6217c3468977ac78abb3aed15b44c1">   14</a></span><span class="preprocessor">#define CRINIT_ELOSDEP_FEATURE_NAME &quot;elos&quot;</span></div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="keywordtype">int</span> <a class="code hl_function" href="elosdep_8h.html#add6946cf0f35bd596c7ef7a45a46eeac">crinitElosdepTaskAdded</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structcrinitTask__t.html">crinitTask_t</a> *task);</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="keywordtype">int</span> <a class="code hl_function" href="elosdep_8h.html#aed9dbf03ae9073cd751ce84405706067">crinitElosdepActivate</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structcrinitTaskDB__t.html">crinitTaskDB_t</a> *taskDb, <span class="keywordtype">bool</span> e);</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span> </div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="preprocessor">#endif </span><span class="comment">/* __ELOSDEP_H__ */</span><span class="preprocessor"></span></div>
-<div class="ttc" id="aelosdep_8h_html_add6946cf0f35bd596c7ef7a45a46eeac"><div class="ttname"><a href="elosdep_8h.html#add6946cf0f35bd596c7ef7a45a46eeac">crinitElosdepTaskAdded</a></div><div class="ttdeci">int crinitElosdepTaskAdded(struct crinitTask_t *task)</div><div class="ttdef"><b>Definition</b> elosdep.c:345</div></div>
-<div class="ttc" id="aelosdep_8h_html_aed9dbf03ae9073cd751ce84405706067"><div class="ttname"><a href="elosdep_8h.html#aed9dbf03ae9073cd751ce84405706067">crinitElosdepActivate</a></div><div class="ttdeci">int crinitElosdepActivate(struct crinitTaskDB_t *taskDb, bool e)</div><div class="ttdef"><b>Definition</b> elosdep.c:546</div></div>
-<div class="ttc" id="astructcrinitTaskDB__t_html"><div class="ttname"><a href="structcrinitTaskDB__t.html">crinitTaskDB_t</a></div><div class="ttdef"><b>Definition</b> taskdb.h:29</div></div>
-<div class="ttc" id="astructcrinitTask__t_html"><div class="ttname"><a href="structcrinitTask__t.html">crinitTask_t</a></div><div class="ttdef"><b>Definition</b> task.h:77</div></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="keywordtype">int</span> <a class="code hl_function" href="elosdep_8h.html#adf774e69cd0351eaba01d3333e992b5d">crinitElosdepTaskAdded</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structcrinitTask.html">crinitTask</a> *task);</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="keywordtype">int</span> <a class="code hl_function" href="elosdep_8h.html#a1a03885a58b5fe0b4535d637be0212db">crinitElosdepActivate</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structcrinitTaskDB.html">crinitTaskDB</a> *taskDb, <span class="keywordtype">bool</span> e);</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="preprocessor">#endif </span><span class="comment">/* __ELOSDEP_H__ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="aelosdep_8h_html_a1a03885a58b5fe0b4535d637be0212db"><div class="ttname"><a href="elosdep_8h.html#a1a03885a58b5fe0b4535d637be0212db">crinitElosdepActivate</a></div><div class="ttdeci">int crinitElosdepActivate(struct crinitTaskDB *taskDb, bool e)</div><div class="ttdef"><b>Definition</b> elosdep.c:582</div></div>
+<div class="ttc" id="aelosdep_8h_html_adf774e69cd0351eaba01d3333e992b5d"><div class="ttname"><a href="elosdep_8h.html#adf774e69cd0351eaba01d3333e992b5d">crinitElosdepTaskAdded</a></div><div class="ttdeci">int crinitElosdepTaskAdded(struct crinitTask *task)</div><div class="ttdef"><b>Definition</b> elosdep.c:424</div></div>
+<div class="ttc" id="astructcrinitTaskDB_html"><div class="ttname"><a href="structcrinitTaskDB.html">crinitTaskDB</a></div><div class="ttdef"><b>Definition</b> taskdb.h:29</div></div>
+<div class="ttc" id="astructcrinitTask_html"><div class="ttname"><a href="structcrinitTask.html">crinitTask</a></div><div class="ttdef"><b>Definition</b> task.h:86</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_bfccd401955b95cf8c75461437045ac0.html">inc</a></li><li class="navelem"><a class="el" href="elosdep_8h.html">elosdep.h</a></li>
+    <li class="navelem"><a class="el" href="dir_929990cc644a2057c712409e82a24c70.html">inc</a></li><li class="navelem"><a class="el" href="elosdep_8h.html">elosdep.h</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>

@@ -10,6 +10,7 @@ var logio_8h =
     [ "crinitErrnoPrintFFL", "logio_8h.html#a6de6a1de846fdca132714edfb2180baf", null ],
     [ "crinitErrPrintFFL", "logio_8h.html#a53719a4b92d02bbf39b7a2f6bc690126", null ],
     [ "crinitInfoPrint", "logio_8h.html#a5b1641e2adf417c1385f846316b17490", null ],
+    [ "crinitInitKmsgLogging", "logio_8h.html#a94c48554b731e5b1d4823771e32dcaf9", null ],
     [ "crinitSetErrStream", "logio_8h.html#a28d1cbd92f84473944532bd78ef6512e", null ],
     [ "crinitSetInfoStream", "logio_8h.html#a0c597f0d61fa985953b58060da94154a", null ],
     [ "crinitSetPrintPrefix", "logio_8h.html#a52360eef423f826af3417a0eec44c6e4", null ],

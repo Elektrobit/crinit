@@ -1,17 +1,21 @@
 <map id="test/utest/mocks/mock&#45;free.c" name="test/utest/mocks/mock&#45;free.c">
-<area shape="rect" id="Node000001" title="Implementation of a mock function for free()." alt="" coords="99,5,270,45"/>
-<area shape="rect" id="Node000002" href="$mock-free_8h.html" title="Header declaring a mock function for free()." alt="" coords="74,93,175,119"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="172,47,144,84,140,81,168,44"/>
-<area shape="rect" id="Node000003" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="199,93,290,119"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="201,44,230,81,225,84,197,47"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="5,167,84,192"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="213,121,91,164,90,159,212,116"/>
-<area shape="rect" id="Node000005" title=" " alt="" coords="109,167,183,192"/>
-<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="230,121,175,161,172,156,227,117"/>
-<area shape="rect" id="Node000006" title=" " alt="" coords="207,167,282,192"/>
-<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="247,119,247,153,242,153,242,119"/>
-<area shape="rect" id="Node000007" title=" " alt="" coords="307,167,377,192"/>
-<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="262,117,316,156,313,160,259,121"/>
-<area shape="rect" id="Node000008" title=" " alt="" coords="401,167,485,192"/>
-<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="277,116,399,159,397,164,276,121"/>
+<area shape="rect" id="Node000001" title="Implementation of a mock function for free()." alt="" coords="139,5,309,45"/>
+<area shape="rect" id="Node000002" href="$mock-free_8h.html" title="Header declaring a mock function for free()." alt="" coords="40,93,141,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="193,48,123,89,121,84,191,43"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="189,93,259,119"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="227,46,227,79,221,79,221,46"/>
+<area shape="rect" id="Node000005" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="295,93,385,119"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="254,43,313,83,310,88,251,48"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,167,88,192"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="86,120,63,156,59,154,81,118"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="113,167,191,192"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="311,121,196,164,195,159,309,116"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="216,167,291,192"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="328,121,280,160,276,156,324,117"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="315,167,389,192"/>
+<area shape="poly" id="edge7_Node000005_Node000008" title=" " alt="" coords="345,119,350,153,345,154,339,119"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="414,167,485,192"/>
+<area shape="poly" id="edge8_Node000005_Node000009" title=" " alt="" coords="359,116,421,157,418,161,356,121"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="509,167,593,192"/>
+<area shape="poly" id="edge9_Node000005_Node000010" title=" " alt="" coords="375,116,505,160,503,165,373,121"/>
 </map>

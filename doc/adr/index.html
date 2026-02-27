@@ -12,8 +12,8 @@
     <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -65,6 +65,8 @@ point.</p>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="ADR_template.html">ADR Template</a></li>
+<li class="toctree-l1"><a class="reference internal" href="adr-capability-library.html">Design Decisions - Choice of helper library to impelement the capability feature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="adr-capability-setting.html">Design Decisions - Choice of how crinit’s default capabilities are merged into a task’s capability set</a></li>
 <li class="toctree-l1"><a class="reference internal" href="adr-crypt-lib.html">Architecture Design Record - Choice of cryptographic library for config signatures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="adr-pipe-redirection.html">Architecture Design Record - Management of named pipes for IO redirection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="adr-pubkey-storage.html">Architecture Design Record - Storage scheme for public keys</a></li>
@@ -73,6 +75,12 @@ point.</p>
 <li class="toctree-l1"><a class="reference internal" href="adr-signature-conf-interface.html">Architecture Design Record - Configuration interface for signature handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="adr-signature-storage.html">Architecture Design Record - Storage scheme for file signatures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="adr-task-include-strategy.html">Architecture Design Record - INCLUDE file options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="adr-cgroups-hierachic-cgroups.html">Design Decisions - Do we want to support hierarchical cgroups?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="adr-cgroups-invalid-configuration.html">Design Decisions - How to handle an invalid cgroup configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="adr-cgroups-management.html">Design Decisions - Cgroup management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="adr-cgroups-where-to-define-cgroups.html">Design Decisions - Where to define cgroups?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="adr-cgroups-common-cgroup-for-unconfigured-tasks.html">Design Decisions - One cgroup per unconfigured task or a common cgroup for all unconfigured tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="adr-cgroups-own-cgroup-for-crinit-process.html">Design Decisions - Should the crinit process itself be placed in a cgroup on its own?</a></li>
 </ul>
 </div>
 </section>
@@ -117,6 +125,7 @@ point.</p>
 <li class="toctree-l2"><a class="reference internal" href="#list-of-adrs">List of ADRs</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../src/index.html">Developers</a></li>
 </ul>
 
 <div class="relations">
@@ -144,7 +153,7 @@ point.</p>
       &#169;2023, emlix GmbH/Elektrobit Automotive GmbH.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |

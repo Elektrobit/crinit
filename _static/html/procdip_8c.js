@@ -1,8 +1,8 @@
 var procdip_8c =
 [
-    [ "crinitDispThrArgs_t", "structcrinitDispThrArgs__t.html", "structcrinitDispThrArgs__t" ],
+    [ "crinitDispThrArgs", "structcrinitDispThrArgs.html", "structcrinitDispThrArgs" ],
     [ "crinitGettid", "procdip_8c.html#a0f4c659e4251c43b8d3d96276fe205ae", null ],
-    [ "crinitDispThrArgs_t", "procdip_8c.html#a46be8635d52e8cbd7f37e545a3a96a67", null ],
+    [ "crinitDispThrArgs_t", "procdip_8c.html#a26cbee5ddf25ded3f54df4abc9917209", null ],
     [ "crinitBlockOnWaitInhibit", "procdip_8c.html#acf6228099fdcd841bdca607417386db3", null ],
     [ "crinitCalculateVariableGroupParamLength", "procdip_8c.html#a065363cd4fd4202ea289d23257f26873", null ],
     [ "crinitCreateLauncherParameters", "procdip_8c.html#ac6e0ead4979b999295a3aa4b1b3b5701", null ],

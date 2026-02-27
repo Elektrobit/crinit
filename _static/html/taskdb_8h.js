@@ -1,23 +1,23 @@
 var taskdb_8h =
 [
-    [ "crinitTaskDB_t", "structcrinitTaskDB__t.html", "structcrinitTaskDB__t" ],
+    [ "crinitTaskDB", "structcrinitTaskDB.html", "structcrinitTaskDB" ],
     [ "CRINIT_MONITOR_DEP_NAME", "taskdb_8h.html#a26a36d61fd046e527b39d162a79bb05f", null ],
     [ "CRINIT_PROVIDE_DEP_NAME", "taskdb_8h.html#aac73ab1178220ecc71c2e895abafd6f7", null ],
     [ "CRINIT_TASKDB_INITIAL_SIZE", "taskdb_8h.html#af11a36821fb8aee4e48b2cd502888695", null ],
     [ "crinitTaskDbForEach", "taskdb_8h.html#af41d3f1776411539c549a8d232fe69ac", null ],
     [ "crinitTaskDBInit", "taskdb_8h.html#a1a3304f4503181f9ce19c0fe28b344c2", null ],
     [ "crinitTaskDBUpdate", "taskdb_8h.html#a8acdc3022e7d1aad6c0841c8bf75bac6", null ],
-    [ "crinitDispatchThreadMode_t", "taskdb_8h.html#a23e6226124263609a48284015d0588f3", null ],
-    [ "crinitTaskDB_t", "taskdb_8h.html#a1ef4ba0e54f9b158cfb1113c8ae7c522", null ],
-    [ "crinitDispatchThreadMode_t", "taskdb_8h.html#aab695fef1dbffc6da1cc2c76c2680c63", [
-      [ "CRINIT_DISPATCH_THREAD_MODE_START", "taskdb_8h.html#aab695fef1dbffc6da1cc2c76c2680c63a608d4af0ca1e4f3c29fc1fe8915f22a3", null ],
-      [ "CRINIT_DISPATCH_THREAD_MODE_STOP", "taskdb_8h.html#aab695fef1dbffc6da1cc2c76c2680c63afd04009147faafca418e9b069afca2c1", null ]
+    [ "crinitDispatchThreadMode_t", "taskdb_8h.html#a247cdb105710b11295e33c1667c9c304", null ],
+    [ "crinitTaskDB_t", "taskdb_8h.html#a870184f1437e454d8bf44d9976a9ea6c", null ],
+    [ "crinitDispatchThreadMode", "taskdb_8h.html#a93e23d26909cb4b1aa605c1acdbcf8f6", [
+      [ "CRINIT_DISPATCH_THREAD_MODE_START", "taskdb_8h.html#a93e23d26909cb4b1aa605c1acdbcf8f6a608d4af0ca1e4f3c29fc1fe8915f22a3", null ],
+      [ "CRINIT_DISPATCH_THREAD_MODE_STOP", "taskdb_8h.html#a93e23d26909cb4b1aa605c1acdbcf8f6afd04009147faafca418e9b069afca2c1", null ]
     ] ],
     [ "crinitTaskDBAddDepToTask", "taskdb_8h.html#a48b9b0c43103c8709df03307db7b980d", null ],
     [ "crinitTaskDBBorrowTask", "taskdb_8h.html#ae8e55186a939d5293ad877c394ec3604", null ],
     [ "crinitTaskDBDestroy", "taskdb_8h.html#a0513aea87118637628ac26c83cd07e00", null ],
     [ "crinitTaskDBExportTaskNamesToArray", "taskdb_8h.html#a39e62e613d875c26844a0b47b468026b", null ],
-    [ "crinitTaskDBFulfillDep", "taskdb_8h.html#ad4e226b3c756bf1fdb2a45076413927f", null ],
+    [ "crinitTaskDBFulfillDep", "taskdb_8h.html#a93b91863e2c28bea45b07e15b30dad1a", null ],
     [ "crinitTaskDBGetTaskByName", "taskdb_8h.html#aa29ec9a7f217dce78844b8e7dc4c837d", null ],
     [ "crinitTaskDBGetTaskPID", "taskdb_8h.html#a785eeee1d24013e61aadd00ced97cbac", null ],
     [ "crinitTaskDBGetTaskState", "taskdb_8h.html#a23e15de21b6b9c5a274eb13285d00f00", null ],
@@ -30,6 +30,8 @@ var taskdb_8h =
     [ "crinitTaskDBRemoveDepFromTask", "taskdb_8h.html#aa92d56059fed60ab94db38fed8ddf509", null ],
     [ "crinitTaskDBSetSpawnInhibit", "taskdb_8h.html#a8e24830d7fdb34c95c8662e0452f697a", null ],
     [ "crinitTaskDBSetTaskPID", "taskdb_8h.html#a3eef35669a9e906da28cf30e3e8e2317", null ],
+    [ "crinitTaskDBSetTaskRespawnInhibit", "taskdb_8h.html#ac3053349fc1ad016b1a6f657469c834f", null ],
     [ "crinitTaskDBSetTaskState", "taskdb_8h.html#a86c7df5aac6ce38969ed52874a887f01", null ],
-    [ "crinitTaskDBSpawnReady", "taskdb_8h.html#a5763338d1e6271fd37e1ab4303c0b2e1", null ]
+    [ "crinitTaskDBSpawnReady", "taskdb_8h.html#a5763338d1e6271fd37e1ab4303c0b2e1", null ],
+    [ "crinitTaskRearmTrigger", "taskdb_8h.html#a7d0426ca08d228e1decd297b624cdc3f", null ]
 ];

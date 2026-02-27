@@ -1,0 +1,21 @@
+<map id="test/utest/mocks/mock&#45;prctl.c" name="test/utest/mocks/mock&#45;prctl.c">
+<area shape="rect" id="Node000001" title=" " alt="" coords="93,5,264,45"/>
+<area shape="rect" id="Node000002" href="$mock-prctl_8h.html" title="Header declaring a mock function for prctl()." alt="" coords="5,93,109,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="151,48,88,88,85,84,148,43"/>
+<area shape="rect" id="Node000003" href="$common_8h.html" title="Header for common definitions/functions not related to other specific features." alt="" coords="133,93,224,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="181,46,181,79,176,79,176,46"/>
+<area shape="rect" id="Node000006" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="248,93,339,119"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="208,43,267,83,264,88,205,48"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="155,167,229,192"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="183,119,190,153,185,154,178,119"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="59,167,130,192"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="167,121,121,160,117,155,163,117"/>
+<area shape="poly" id="edge8_Node000006_Node000004" title=" " alt="" coords="279,121,221,161,218,156,276,116"/>
+<area shape="poly" id="edge9_Node000006_Node000005" title=" " alt="" coords="262,121,141,164,139,159,261,116"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="254,167,333,192"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="296,119,296,153,291,153,291,119"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="357,167,432,192"/>
+<area shape="poly" id="edge7_Node000006_Node000008" title=" " alt="" coords="311,116,368,156,365,161,308,121"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="457,167,541,192"/>
+<area shape="poly" id="edge10_Node000006_Node000009" title=" " alt="" coords="327,116,453,160,452,165,325,121"/>
+</map>

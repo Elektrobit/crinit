@@ -1,0 +1,11 @@
+<map id="inc/capabilities.h" name="inc/capabilities.h">
+<area shape="rect" id="Node000001" title="Header defining functions to modify capabilities." alt="" coords="142,5,274,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,88,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="183,33,87,75,84,71,181,28"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="113,79,183,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="200,33,169,70,164,66,196,29"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="208,79,331,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="220,29,252,66,248,70,216,33"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="355,79,461,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="241,28,363,71,361,76,239,33"/>
+</map>

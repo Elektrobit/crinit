@@ -96,7 +96,7 @@ $(document).ready(function(){initNavTree('crinit-ctl_8c.html',''); initResizable
 </div><!--header-->
 <div class="contents">
 <h3 class="version">(/usr/bin/git
-2025-02-19, commit: 5f1bbfa)</h3>
+2025-06-05, commit: 974f6c1b)</h3>
 <p>Implementation of the crinit-ctl service program using the crinit-client library.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;getopt.h&gt;</code><br />
@@ -107,8 +107,8 @@ $(document).ready(function(){initNavTree('crinit-ctl_8c.html',''); initResizable
 <code>#include &lt;unistd.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="common_8h_source.html">common.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="crinit-client_8h_source.html">crinit-client.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="crinit-version_8h_source.html">crinit-version.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="logio_8h_source.html">logio.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="version_8h_source.html">version.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for crinit-ctl.c:</div>
 <div class="dyncontent">
@@ -123,42 +123,42 @@ Include dependency graph for crinit-ctl.c:</div>
 <area shape="poly" title=" " alt="" coords="470,33,305,79,304,73,468,28"/>
 <area shape="rect" title=" " alt="" coords="316,79,387,104"/>
 <area shape="poly" title=" " alt="" coords="486,33,391,75,389,71,483,28"/>
-<area shape="rect" title=" " alt="" coords="1187,152,1257,177"/>
-<area shape="poly" title=" " alt="" coords="566,27,824,77,1174,149,1173,155,823,82,565,32"/>
+<area shape="rect" title=" " alt="" coords="1205,152,1276,177"/>
+<area shape="poly" title=" " alt="" coords="566,27,832,76,1192,149,1191,155,831,82,565,32"/>
 <area shape="rect" title=" " alt="" coords="526,79,601,104"/>
 <area shape="poly" title=" " alt="" coords="521,29,549,66,544,69,517,33"/>
 <area shape="rect" href="common_8h.html" title="Header for common definitions/functions not related to other specific features." alt="" coords="411,79,502,104"/>
 <area shape="poly" title=" " alt="" coords="503,33,476,69,471,66,499,29"/>
-<area shape="rect" href="crinit-client_8h.html" title="Public definitions/declarations for using the crinit&#45;client shared library." alt="" coords="679,79,787,104"/>
-<area shape="poly" title=" " alt="" coords="547,28,685,72,683,77,545,33"/>
-<area shape="rect" href="version_8h.html" title="Header definitions related to component versioning." alt="" coords="493,152,575,177"/>
+<area shape="rect" href="crinit-client_8h.html" title="Public definitions/declarations for using the crinit&#45;client shared library." alt="" coords="697,79,805,104"/>
+<area shape="poly" title=" " alt="" coords="550,28,700,72,698,77,548,33"/>
+<area shape="rect" href="crinit-version_8h.html" title="Header definitions related to component versioning." alt="" coords="475,152,593,177"/>
 <area shape="poly" title=" " alt="" coords="550,28,586,47,602,61,615,78,619,98,610,117,592,134,572,148,569,143,589,130,605,114,614,98,610,80,598,64,583,51,548,33"/>
-<area shape="rect" href="logio_8h.html" title="Header related to debug/log output." alt="" coords="1189,79,1255,104"/>
-<area shape="poly" title=" " alt="" coords="566,22,1175,83,1175,88,566,28"/>
-<area shape="rect" title=" " alt="" coords="343,152,418,177"/>
-<area shape="poly" title=" " alt="" coords="446,106,405,144,401,141,443,102"/>
-<area shape="rect" title=" " alt="" coords="460,225,531,251"/>
-<area shape="poly" title=" " alt="" coords="462,104,491,211,486,213,457,105"/>
-<area shape="rect" title=" " alt="" coords="925,152,1055,177"/>
-<area shape="poly" title=" " alt="" coords="775,101,936,146,935,151,773,107"/>
-<area shape="rect" title=" " alt="" coords="599,152,671,177"/>
-<area shape="poly" title=" " alt="" coords="719,106,664,146,661,141,715,102"/>
-<area shape="rect" title=" " alt="" coords="695,152,770,177"/>
-<area shape="poly" title=" " alt="" coords="735,104,735,138,730,138,730,104"/>
-<area shape="rect" title=" " alt="" coords="1079,152,1162,177"/>
-<area shape="poly" title=" " alt="" coords="787,99,1066,149,1065,154,786,104"/>
-<area shape="rect" href="crinit-sdefs_8h.html" title="Definitions shared between crinit&#39;s public and internal APIs." alt="" coords="794,152,901,177"/>
-<area shape="poly" title=" " alt="" coords="752,102,818,142,816,147,750,106"/>
-<area shape="poly" title=" " alt="" coords="702,107,580,150,579,145,700,102"/>
-<area shape="rect" title=" " alt="" coords="799,225,895,251"/>
-<area shape="poly" title=" " alt="" coords="850,178,850,212,845,212,845,178"/>
-<area shape="poly" title=" " alt="" coords="530,179,510,215,506,212,525,176"/>
-<area shape="poly" title=" " alt="" coords="1225,104,1225,138,1219,138,1219,104"/>
-<area shape="poly" title=" " alt="" coords="1207,106,1150,146,1147,142,1204,102"/>
-<area shape="rect" title=" " alt="" coords="1373,152,1441,177"/>
-<area shape="poly" title=" " alt="" coords="1253,102,1365,145,1364,149,1251,107"/>
-<area shape="rect" title=" " alt="" coords="1282,152,1349,177"/>
-<area shape="poly" title=" " alt="" coords="1239,102,1291,141,1288,146,1235,106"/>
+<area shape="rect" href="logio_8h.html" title="Header related to debug/log output." alt="" coords="1207,79,1274,104"/>
+<area shape="poly" title=" " alt="" coords="566,22,1194,83,1194,88,565,27"/>
+<area shape="rect" title=" " alt="" coords="325,152,399,177"/>
+<area shape="poly" title=" " alt="" coords="443,106,390,146,387,141,440,102"/>
+<area shape="rect" title=" " alt="" coords="451,225,521,251"/>
+<area shape="poly" title=" " alt="" coords="459,104,460,137,466,177,478,212,473,214,461,178,455,138,454,104"/>
+<area shape="rect" title=" " alt="" coords="944,152,1073,177"/>
+<area shape="poly" title=" " alt="" coords="793,101,955,146,953,151,792,107"/>
+<area shape="rect" title=" " alt="" coords="618,152,690,177"/>
+<area shape="poly" title=" " alt="" coords="737,106,683,146,680,141,734,102"/>
+<area shape="rect" title=" " alt="" coords="714,152,789,177"/>
+<area shape="poly" title=" " alt="" coords="754,104,754,138,749,138,749,104"/>
+<area shape="rect" title=" " alt="" coords="1098,152,1181,177"/>
+<area shape="poly" title=" " alt="" coords="806,99,1084,149,1083,154,805,104"/>
+<area shape="rect" href="crinit-sdefs_8h.html" title="Definitions shared between crinit&#39;s public and internal APIs." alt="" coords="813,152,919,177"/>
+<area shape="poly" title=" " alt="" coords="771,102,837,142,834,147,768,106"/>
+<area shape="poly" title=" " alt="" coords="717,107,583,150,581,145,716,101"/>
+<area shape="rect" title=" " alt="" coords="818,225,914,251"/>
+<area shape="poly" title=" " alt="" coords="869,178,869,212,863,212,863,178"/>
+<area shape="poly" title=" " alt="" coords="528,179,504,216,499,213,524,176"/>
+<area shape="poly" title=" " alt="" coords="1243,104,1243,138,1238,138,1238,104"/>
+<area shape="poly" title=" " alt="" coords="1226,106,1169,146,1166,142,1223,102"/>
+<area shape="rect" title=" " alt="" coords="1392,152,1460,177"/>
+<area shape="poly" title=" " alt="" coords="1271,102,1384,145,1382,149,1269,107"/>
+<area shape="rect" title=" " alt="" coords="1301,152,1367,177"/>
+<area shape="poly" title=" " alt="" coords="1257,102,1310,141,1306,146,1254,106"/>
 </map>
 </div>
 </div><table class="memberdecls">
@@ -221,9 +221,9 @@ Functions</h2></td></tr>
 <div class="line">             implemented. See the <a class="code hl_function" href="crinit-client_8c.html#a4fefeba7a71824e0b7058c4f59b56dbc">sd_notify</a> documentation for their meaning.</div>
 <div class="line">      list</div>
 <div class="line">           - Print the list of loaded tasks and their status.</div>
-<div class="line">    reboot</div>
-<div class="line">           - Will request Crinit to perform a graceful system reboot. crinit-ctl can be symlinked to</div>
-<div class="line">             reboot as a shortcut which will invoke this command automatically.</div>
+<div class="line">    <a class="code hl_function" href="itest-stop-cmd-overrides_8c.html#a2a43e66e19d7c8238b5956c6f7727bfe">reboot</a></div>
+<div class="line">           - Will request Crinit to perform a graceful system <a class="code hl_function" href="itest-stop-cmd-overrides_8c.html#a2a43e66e19d7c8238b5956c6f7727bfe">reboot</a>. crinit-ctl can be symlinked to</div>
+<div class="line">             <a class="code hl_function" href="itest-stop-cmd-overrides_8c.html#a2a43e66e19d7c8238b5956c6f7727bfe">reboot</a> as a shortcut which will invoke this command automatically.</div>
 <div class="line">  poweroff</div>
 <div class="line">           - Will request Crinit to perform a graceful system shutdown. crinit-ctl can be symlinked to</div>
 <div class="line">             poweroff as a shortcut which will invoke this command automatically.</div>
@@ -233,6 +233,7 @@ Functions</h2></td></tr>
 <div class="line">      --version/-V - Print version information about crinit-ctl, the crinit-client library,</div>
 <div class="line">                     and -- if connection is successful -- the crinit daemon.</div>
 <div class="ttc" id="acrinit-client_8c_html_a4fefeba7a71824e0b7058c4f59b56dbc"><div class="ttname"><a href="crinit-client_8c.html#a4fefeba7a71824e0b7058c4f59b56dbc">sd_notify</a></div><div class="ttdeci">CRINIT_LIB_EXPORTED int sd_notify(int unset_environment, const char *state)</div><div class="ttdef"><b>Definition</b> crinit-client.c:107</div></div>
+<div class="ttc" id="aitest-stop-cmd-overrides_8c_html_a2a43e66e19d7c8238b5956c6f7727bfe"><div class="ttname"><a href="itest-stop-cmd-overrides_8c.html#a2a43e66e19d7c8238b5956c6f7727bfe">reboot</a></div><div class="ttdeci">int reboot(int op)</div><div class="ttdef"><b>Definition</b> itest-stop-cmd-overrides.c:13</div></div>
 </div><!-- fragment --><p>In a production system, the implementation is customer-defined to offer flexibility. The general requirement for this program is to write a system-unique identifier (in any format, i.e. unique arbitrary data) to /etc/machine-id. The identifier shall not have a random component as it may not be persisted to disk (in order to support read-only file- systems).</p>
 <p>Program usage info:</p>
 <div class="fragment"><div class="line">This program shall be called without additional arguments through a Crinit task. It will generate an appropriate</div>

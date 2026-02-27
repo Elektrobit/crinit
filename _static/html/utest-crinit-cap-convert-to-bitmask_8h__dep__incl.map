@@ -1,0 +1,9 @@
+<map id="test/utest/utest&#45;crinit&#45;cap&#45;convert&#45;to&#45;bitmask/utest&#45;crinit&#45;cap&#45;convert&#45;to&#45;bitmask.h" name="test/utest/utest&#45;crinit&#45;cap&#45;convert&#45;to&#45;bitmask/utest&#45;crinit&#45;cap&#45;convert&#45;to&#45;bitmask.h">
+<area shape="rect" id="Node000001" title="Header declaring the unit tests for crinitCapConvertToBitmask()." alt="" coords="257,5,437,75"/>
+<area shape="rect" id="Node000002" href="$case-invalid-capability-name_8c.html" title=" " alt="" coords="5,130,232,185"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="269,83,172,132,169,128,267,79"/>
+<area shape="rect" id="Node000003" href="$utest-crinit-cap-convert-to-bitmask_2case-success_8c.html" title="Unit test for crinitCapConvertToBitmask(), handling of invalid capability names." alt="" coords="257,130,437,185"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="349,89,349,130,344,130,344,89"/>
+<area shape="rect" id="Node000004" href="$utest-crinit-cap-convert-to-bitmask_8c.html" title="Implementation of the crinitCapConvertToBitmask() unit test group." alt="" coords="461,123,641,192"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="420,79,492,120,490,125,417,84"/>
+</map>

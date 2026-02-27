@@ -1,11 +1,19 @@
 <map id="crinitElosEventThread" name="crinitElosEventThread">
-<area shape="rect" id="node1" title=" " alt="" coords="347,288,511,315"/>
-<area shape="rect" id="node2" href="$structcrinitTaskDB__t.html" title=" " alt="" coords="298,199,413,225"/>
-<area shape="rect" id="node3" href="$structcrinitTask__t.html" title=" " alt="" coords="307,109,403,136"/>
-<area shape="rect" id="node4" href="$structcrinitIoRedir__t.html" title=" " alt="" coords="5,5,119,32"/>
-<area shape="rect" id="node5" href="$structcrinitTaskCmd__t.html" title=" " alt="" coords="143,5,269,32"/>
-<area shape="rect" id="node6" href="$structcrinitTaskDep__t.html" title=" " alt="" coords="294,5,417,32"/>
-<area shape="rect" id="node7" href="$structcrinitEnvSet__t.html" title=" " alt="" coords="441,5,553,32"/>
-<area shape="rect" id="node8" href="$structcrinitTaskPrv__t.html" title=" " alt="" coords="577,5,694,32"/>
-<area shape="rect" id="node9" href="$structcrinitElosSession.html" title=" " alt="" coords="437,199,569,225"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="313,284,477,309"/>
+<area shape="rect" id="Node000002" href="$structcrinitTaskDB.html" title=" " alt="" coords="273,196,375,221"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="344,230,387,282,383,285,340,234"/>
+<area shape="rect" id="Node000003" href="$structcrinitTask.html" title=" " alt="" coords="282,108,366,133"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="327,147,327,195,321,195,321,147"/>
+<area shape="rect" id="Node000004" href="$structcrinitTaskCmd.html" title=" " alt="" coords="5,5,120,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="86,38,115,61,149,82,183,94,218,103,282,114,281,119,217,109,181,99,147,86,112,66,83,42"/>
+<area shape="rect" id="Node000005" href="$structcrinitEnvSet.html" title=" " alt="" coords="145,5,245,31"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="211,40,228,62,248,82,291,106,289,110,245,86,224,66,207,44"/>
+<area shape="rect" id="Node000006" href="$structcrinitTaskDep.html" title=" " alt="" coords="269,5,379,31"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="327,45,327,108,321,108,321,45"/>
+<area shape="rect" id="Node000007" href="$structcrinitTaskPrv.html" title=" " alt="" coords="403,5,509,31"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="432,41,341,110,337,106,429,37"/>
+<area shape="rect" id="Node000008" href="$structcrinitIoRedir.html" title=" " alt="" coords="533,5,635,31"/>
+<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="549,39,437,86,365,110,363,105,435,82,546,34"/>
+<area shape="rect" id="Node000009" href="$structcrinitElosSession.html" title=" " alt="" coords="399,196,531,221"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="449,234,407,285,402,282,445,230"/>
 </map>

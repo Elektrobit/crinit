@@ -90,23 +90,27 @@ $(document).ready(function(){initNavTree('mock-strlen_8h.html',''); initResizabl
 
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">mock-strlen.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <h3 class="version">(/usr/bin/git
-2023-11-27, commit: bad6102)</h3>
+2025-08-01, commit: e46fc091)</h3>
 <p>Header declaring a mock function for strlen().  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;string.h&gt;</code><br />
+<div class="textblock"><code>#include &lt;stdbool.h&gt;</code><br />
+<code>#include &lt;string.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for mock-strlen.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="mock-strlen_8h__incl.png" border="0" usemap="#atest_2utest_2mocks_2mock-strlen_8h" alt=""/></div>
 <map name="atest_2utest_2mocks_2mock-strlen_8h" id="atest_2utest_2mocks_2mock-strlen_8h">
-<area shape="rect" title="Header declaring a mock function for strlen()." alt="" coords="5,5,176,45"/>
-<area shape="rect" title=" " alt="" coords="55,93,126,119"/>
-<area shape="poly" title=" " alt="" coords="93,46,93,79,88,79,88,46"/>
+<area shape="rect" title="Header declaring a mock function for strlen()." alt="" coords="12,5,183,45"/>
+<area shape="rect" title=" " alt="" coords="5,93,88,119"/>
+<area shape="poly" title=" " alt="" coords="87,47,64,83,59,80,83,44"/>
+<area shape="rect" title=" " alt="" coords="113,93,183,119"/>
+<area shape="poly" title=" " alt="" coords="112,44,135,80,131,83,107,47"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -114,9 +118,13 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="mock-strlen_8h__dep__incl.png" border="0" usemap="#atest_2utest_2mocks_2mock-strlen_8hdep" alt=""/></div>
 <map name="atest_2utest_2mocks_2mock-strlen_8hdep" id="atest_2utest_2mocks_2mock-strlen_8hdep">
-<area shape="rect" title="Header declaring a mock function for strlen()." alt="" coords="5,5,176,45"/>
-<area shape="rect" href="mock-strlen_8c.html" title="Implementation of a mock function for strlen()." alt="" coords="5,93,176,133"/>
-<area shape="poly" title=" " alt="" coords="93,59,93,93,88,93,88,59"/>
+<area shape="rect" title="Header declaring a mock function for strlen()." alt="" coords="195,5,365,45"/>
+<area shape="rect" href="mock-strlen_8c.html" title="Implementation of a mock function for strlen()." alt="" coords="5,101,176,141"/>
+<area shape="poly" title=" " alt="" coords="231,54,130,103,128,98,228,49"/>
+<area shape="rect" href="utest-file-series-from-dir_2case-no-mem-error_8c.html" title="Unit test for crinitFileSeriesFromDir(), given malloc fails." alt="" coords="201,93,359,148"/>
+<area shape="poly" title=" " alt="" coords="283,59,283,93,277,93,277,59"/>
+<area shape="rect" href="utest-file-series-from-dir_2case-success_8c.html" title="Unit test for crinitFileSeriesFromDir(), successful execution." alt="" coords="383,93,542,148"/>
+<area shape="poly" title=" " alt="" coords="330,49,412,91,410,96,328,54"/>
 </map>
 </div>
 </div>
@@ -126,10 +134,35 @@ This graph shows which files directly or indirectly include this file:</div>
 Functions</h2></td></tr>
 <tr class="memitem:a1b8ff417a3770126a827612922c8cf8c" id="r_a1b8ff417a3770126a827612922c8cf8c"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mock-strlen_8h.html#a1b8ff417a3770126a827612922c8cf8c">__wrap_strlen</a> (const char *s)</td></tr>
 <tr class="separator:a1b8ff417a3770126a827612922c8cf8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9cac5fffafd5e8f8e38a94269f3d44a2" id="r_a9cac5fffafd5e8f8e38a94269f3d44a2"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mock-strlen_8h.html#a9cac5fffafd5e8f8e38a94269f3d44a2">__real_strlen</a> (const char *s)</td></tr>
+<tr class="separator:a9cac5fffafd5e8f8e38a94269f3d44a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:aedfcc49c7e97628c22603fadf7d14596" id="r_aedfcc49c7e97628c22603fadf7d14596"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mock-strlen_8h.html#aedfcc49c7e97628c22603fadf7d14596">crinitMockStrlenEnabled</a></td></tr>
+<tr class="separator:aedfcc49c7e97628c22603fadf7d14596"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Header declaring a mock function for strlen(). </p>
 </div><h2 class="groupheader">Function Documentation</h2>
+<a id="a9cac5fffafd5e8f8e38a94269f3d44a2" name="a9cac5fffafd5e8f8e38a94269f3d44a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9cac5fffafd5e8f8e38a94269f3d44a2">&#9670;&#160;</a></span>__real_strlen()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t __real_strlen </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a1b8ff417a3770126a827612922c8cf8c" name="a1b8ff417a3770126a827612922c8cf8c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1b8ff417a3770126a827612922c8cf8c">&#9670;&#160;</a></span>__wrap_strlen()</h2>
 
@@ -146,7 +179,30 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Mock function for strlen().</p>
-<p>Checks that the right parameter is given and returns a preset value. </p>
+<p>If crinitMockStrlenEnabled is true then it checks that the right parameters are given and returns a preset value. If crinitMockStrlenEnabled is false then the call is forwarded to the genuine strlen method. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="aedfcc49c7e97628c22603fadf7d14596" name="aedfcc49c7e97628c22603fadf7d14596"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aedfcc49c7e97628c22603fadf7d14596">&#9670;&#160;</a></span>crinitMockStrlenEnabled</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool crinitMockStrlenEnabled</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>

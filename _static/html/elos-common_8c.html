@@ -96,7 +96,7 @@ $(document).ready(function(){initNavTree('elos-common_8c.html',''); initResizabl
 </div><!--header-->
 <div class="contents">
 <h3 class="version">(/usr/bin/git
-2025-01-08, commit: bb3c890)</h3><div class="textblock"><code>#include &quot;<a class="el" href="elos-common_8h_source.html">elos-common.h</a>&quot;</code><br />
+2025-01-08, commit: bb3c8908)</h3><div class="textblock"><code>#include &quot;<a class="el" href="elos-common_8h_source.html">elos-common.h</a>&quot;</code><br />
 <code>#include &lt;dlfcn.h&gt;</code><br />
 <code>#include &lt;errno.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="confparse_8h_source.html">confparse.h</a>&quot;</code><br />
@@ -258,6 +258,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Disconnect from elos daemon.</p>
+<p>Modifies errno.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">session</td><td>Session to disconnect. </td></tr>
@@ -304,6 +305,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Initializes the elos vtable.</p>
+<p>Modifies errno.</p>
 <dl class="section return"><dt>Returns</dt><dd>Returns 0 on success, -1 otherwise. </dd></dl>
 
 </div>

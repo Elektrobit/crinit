@@ -1,0 +1,9 @@
+<map id="test/integration/libraries/ld&#45;preload/itest&#45;stop&#45;cmd&#45;overrides.c" name="test/integration/libraries/ld&#45;preload/itest&#45;stop&#45;cmd&#45;overrides.c">
+<area shape="rect" id="Node000001" title="Implementation of LD_PRELOAD overrides for the STOP_COMMAND robot test." alt="" coords="85,5,276,60"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,108,108,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="144,62,87,102,84,98,141,58"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="133,108,229,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="183,60,183,94,178,94,178,60"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="253,108,319,133"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="215,58,263,97,259,101,211,62"/>
+</map>

@@ -1,0 +1,21 @@
+<map id="test/utest/mocks/mock&#45;mkdirat.c" name="test/utest/mocks/mock&#45;mkdirat.c">
+<area shape="rect" id="Node000001" title="Implementation of a mock function for mkdirat()." alt="" coords="145,5,316,45"/>
+<area shape="rect" id="Node000002" href="$mock-mkdirat_8h.html" title="Header declaring a mock function for mkdirat()." alt="" coords="27,93,154,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="198,48,125,89,122,84,196,43"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="199,93,262,119"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="233,46,233,79,228,79,228,46"/>
+<area shape="rect" id="Node000005" href="$unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="297,93,388,119"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="259,43,316,83,313,87,256,48"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,167,91,192"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="86,120,64,156,60,154,81,118"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="115,167,194,192"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="313,121,199,164,197,159,312,116"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="219,167,293,192"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="330,121,282,160,279,156,327,117"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="317,167,392,192"/>
+<area shape="poly" id="edge7_Node000005_Node000008" title=" " alt="" coords="347,119,353,153,348,154,342,119"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="417,167,487,192"/>
+<area shape="poly" id="edge8_Node000005_Node000009" title=" " alt="" coords="362,116,424,157,421,161,359,121"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="511,167,595,192"/>
+<area shape="poly" id="edge9_Node000005_Node000010" title=" " alt="" coords="377,116,507,160,506,165,376,121"/>
+</map>

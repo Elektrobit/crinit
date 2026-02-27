@@ -1,6 +1,6 @@
 var eloslog_8c =
 [
-    [ "crinitElosEventThread_t", "structcrinitElosEventThread__t.html", "structcrinitElosEventThread__t" ],
+    [ "crinitElosEventThread", "structcrinitElosEventThread.html", "structcrinitElosEventThread" ],
     [ "CRINIT_MACHINE_ID_FORMAT", "eloslog_8c.html#a80c9f72a47ad31d32fbf706a1eff4bbf", null ],
     [ "CRINIT_MACHINE_ID_LENGTH", "eloslog_8c.html#a98f9da2274f23d27c601199a47fafcc4", null ],
     [ "STR", "eloslog_8c.html#a18d295a837ac71add5578860b55e5502", null ],
@@ -18,5 +18,5 @@ var eloslog_8c =
     [ "crinitEloslogTransmitCondition", "eloslog_8c.html#a54b3dc116c72ccdd6d664ea00539c233", null ],
     [ "crinitEloslogTransmitCounter", "eloslog_8c.html#a88537857596ea7aa93a8a3a821ea5b9c", null ],
     [ "crinitEloslogTrCondLock", "eloslog_8c.html#ad17dcf9ce61c72ba84a4e4ea63bc4bf7", null ],
-    [ "crinitTinfo", "eloslog_8c.html#aa4e6919dc284417ea59342d18161f62f", null ]
+    [ "crinitTinfo", "eloslog_8c.html#a0f839cca1fd1ec015c266960a956abdd", null ]
 ];

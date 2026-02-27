@@ -5,8 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Crinit -- Configurable Rootfs Init: inc/logio.h (/usr/bin/git
-2025-02-19, commit: 5f1bbfa) Source File</title>
+<title>Crinit -- Configurable Rootfs Init: inc/logio.h (/usr/bin/git) Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -135,7 +134,9 @@ $(document).ready(function(){initNavTree('logio_8h_source.html',''); initResizab
 <div class="line"><a id="l00149" name="l00149"></a><span class="lineno"><a class="line" href="logio_8h.html#a6de6a1de846fdca132714edfb2180baf">  149</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="logio_8h.html#a6de6a1de846fdca132714edfb2180baf">crinitErrnoPrintFFL</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *file, <span class="keyword">const</span> <span class="keywordtype">char</span> *func, <span class="keywordtype">int</span> line, <span class="keyword">const</span> <span class="keywordtype">char</span> *format, ...)</div>
 <div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>    <a class="code hl_function" href="globopt_8h.html#ae2f56eddaae92fcd90a2b689709bf421">__attribute__</a>((format(printf, 4, 5)));</div>
 <div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span> </div>
-<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span><span class="preprocessor">#endif </span><span class="comment">/* __LOGIO_H__ */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span><span class="keywordtype">void</span> <a class="code hl_function" href="logio_8h.html#a94c48554b731e5b1d4823771e32dcaf9">crinitInitKmsgLogging</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span> </div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span><span class="preprocessor">#endif </span><span class="comment">/* __LOGIO_H__ */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="aglobopt_8h_html_ae2f56eddaae92fcd90a2b689709bf421"><div class="ttname"><a href="globopt_8h.html#ae2f56eddaae92fcd90a2b689709bf421">__attribute__</a></div><div class="ttdeci">static crinitGlobOptStore_t crinitGenericGlobOptHelper __attribute__((unused))</div></div>
 <div class="ttc" id="alogio_8h_html_a0c597f0d61fa985953b58060da94154a"><div class="ttname"><a href="logio_8h.html#a0c597f0d61fa985953b58060da94154a">crinitSetInfoStream</a></div><div class="ttdeci">void crinitSetInfoStream(FILE *stream)</div><div class="ttdef"><b>Definition</b> logio.c:49</div></div>
 <div class="ttc" id="alogio_8h_html_a28d1cbd92f84473944532bd78ef6512e"><div class="ttname"><a href="logio_8h.html#a28d1cbd92f84473944532bd78ef6512e">crinitSetErrStream</a></div><div class="ttdeci">void crinitSetErrStream(FILE *stream)</div><div class="ttdef"><b>Definition</b> logio.c:55</div></div>
@@ -144,13 +145,14 @@ $(document).ready(function(){initNavTree('logio_8h_source.html',''); initResizab
 <div class="ttc" id="alogio_8h_html_a5b1641e2adf417c1385f846316b17490"><div class="ttname"><a href="logio_8h.html#a5b1641e2adf417c1385f846316b17490">crinitInfoPrint</a></div><div class="ttdeci">void crinitInfoPrint(const char *format,...) __attribute__((format(printf</div></div>
 <div class="ttc" id="alogio_8h_html_a6de6a1de846fdca132714edfb2180baf"><div class="ttname"><a href="logio_8h.html#a6de6a1de846fdca132714edfb2180baf">crinitErrnoPrintFFL</a></div><div class="ttdeci">void crinitErrnoPrintFFL(const char *file, const char *func, int line, const char *format,...) __attribute__((format(printf</div></div>
 <div class="ttc" id="alogio_8h_html_a943546b90001bbde4ee50dfa8d1164f1"><div class="ttname"><a href="logio_8h.html#a943546b90001bbde4ee50dfa8d1164f1">crinitSetUseSyslog</a></div><div class="ttdeci">void crinitSetUseSyslog(bool sl)</div><div class="ttdef"><b>Definition</b> logio.c:61</div></div>
+<div class="ttc" id="alogio_8h_html_a94c48554b731e5b1d4823771e32dcaf9"><div class="ttname"><a href="logio_8h.html#a94c48554b731e5b1d4823771e32dcaf9">crinitInitKmsgLogging</a></div><div class="ttdeci">void void crinitInitKmsgLogging(void)</div><div class="ttdoc">Opens /dev/kmsg and set it as logging target for the logging functions.</div><div class="ttdef"><b>Definition</b> logio.c:179</div></div>
 <div class="ttc" id="alogio_8h_html_aae5802e2a52649cc0c05740cb00ba903"><div class="ttname"><a href="logio_8h.html#aae5802e2a52649cc0c05740cb00ba903">crinitDbgInfoPrint</a></div><div class="ttdeci">void void crinitDbgInfoPrint(const char *format,...) __attribute__((format(printf</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_bfccd401955b95cf8c75461437045ac0.html">inc</a></li><li class="navelem"><a class="el" href="logio_8h.html">logio.h</a></li>
+    <li class="navelem"><a class="el" href="dir_929990cc644a2057c712409e82a24c70.html">inc</a></li><li class="navelem"><a class="el" href="logio_8h.html">logio.h</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>

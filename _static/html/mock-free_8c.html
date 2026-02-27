@@ -90,36 +90,42 @@ $(document).ready(function(){initNavTree('mock-free_8c.html',''); initResizable(
 
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">mock-free.c File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <h3 class="version">(/usr/bin/git
-2023-11-27, commit: bad6102)</h3>
+2025-08-01, commit: e46fc091)</h3>
 <p>Implementation of a mock function for free().  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="mock-free_8h_source.html">mock-free.h</a>&quot;</code><br />
+<code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="unit__test_8h_source.html">unit_test.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for mock-free.c:</div>
 <div class="dyncontent">
 <div class="center"><img src="mock-free_8c__incl.png" border="0" usemap="#atest_2utest_2mocks_2mock-free_8c" alt=""/></div>
 <map name="atest_2utest_2mocks_2mock-free_8c" id="atest_2utest_2mocks_2mock-free_8c">
-<area shape="rect" title="Implementation of a mock function for free()." alt="" coords="99,5,270,45"/>
-<area shape="rect" href="mock-free_8h.html" title="Header declaring a mock function for free()." alt="" coords="74,93,175,119"/>
-<area shape="poly" title=" " alt="" coords="172,47,144,84,140,81,168,44"/>
-<area shape="rect" href="unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="199,93,290,119"/>
-<area shape="poly" title=" " alt="" coords="201,44,230,81,225,84,197,47"/>
-<area shape="rect" title=" " alt="" coords="5,167,84,192"/>
-<area shape="poly" title=" " alt="" coords="213,121,91,164,90,159,212,116"/>
-<area shape="rect" title=" " alt="" coords="109,167,183,192"/>
-<area shape="poly" title=" " alt="" coords="230,121,175,161,172,156,227,117"/>
-<area shape="rect" title=" " alt="" coords="207,167,282,192"/>
-<area shape="poly" title=" " alt="" coords="247,119,247,153,242,153,242,119"/>
-<area shape="rect" title=" " alt="" coords="307,167,377,192"/>
-<area shape="poly" title=" " alt="" coords="262,117,316,156,313,160,259,121"/>
-<area shape="rect" title=" " alt="" coords="401,167,485,192"/>
-<area shape="poly" title=" " alt="" coords="277,116,399,159,397,164,276,121"/>
+<area shape="rect" title="Implementation of a mock function for free()." alt="" coords="139,5,309,45"/>
+<area shape="rect" href="mock-free_8h.html" title="Header declaring a mock function for free()." alt="" coords="40,93,141,119"/>
+<area shape="poly" title=" " alt="" coords="193,48,123,89,121,84,191,43"/>
+<area shape="rect" title=" " alt="" coords="189,93,259,119"/>
+<area shape="poly" title=" " alt="" coords="227,46,227,79,221,79,221,46"/>
+<area shape="rect" href="unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="295,93,385,119"/>
+<area shape="poly" title=" " alt="" coords="254,43,313,83,310,88,251,48"/>
+<area shape="rect" title=" " alt="" coords="5,167,88,192"/>
+<area shape="poly" title=" " alt="" coords="86,120,63,156,59,154,81,118"/>
+<area shape="rect" title=" " alt="" coords="113,167,191,192"/>
+<area shape="poly" title=" " alt="" coords="311,121,196,164,195,159,309,116"/>
+<area shape="rect" title=" " alt="" coords="216,167,291,192"/>
+<area shape="poly" title=" " alt="" coords="328,121,280,160,276,156,324,117"/>
+<area shape="rect" title=" " alt="" coords="315,167,389,192"/>
+<area shape="poly" title=" " alt="" coords="345,119,350,153,345,154,339,119"/>
+<area shape="rect" title=" " alt="" coords="414,167,485,192"/>
+<area shape="poly" title=" " alt="" coords="359,116,421,157,418,161,356,121"/>
+<area shape="rect" title=" " alt="" coords="509,167,593,192"/>
+<area shape="poly" title=" " alt="" coords="375,116,505,160,503,165,373,121"/>
 </map>
 </div>
 </div><table class="memberdecls">
@@ -127,6 +133,11 @@ Include dependency graph for mock-free.c:</div>
 Functions</h2></td></tr>
 <tr class="memitem:ad81079124eeb23ae75a56eba434043f0" id="r_ad81079124eeb23ae75a56eba434043f0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mock-free_8c.html#ad81079124eeb23ae75a56eba434043f0">__wrap_free</a> (void *ptr)</td></tr>
 <tr class="separator:ad81079124eeb23ae75a56eba434043f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:aa84e26f213e82d99c7386380f5e8f4ef" id="r_aa84e26f213e82d99c7386380f5e8f4ef"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mock-free_8c.html#aa84e26f213e82d99c7386380f5e8f4ef">crinitMockFreeEnabled</a> = false</td></tr>
+<tr class="separator:aa84e26f213e82d99c7386380f5e8f4ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Implementation of a mock function for free(). </p>
@@ -147,7 +158,22 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Mock function for free().</p>
-<p>Checks that the right parameters are given and return a preset pointer. </p>
+<p>If crinitMockFreeEnabled is true then it checks that the right parameters are given. If crinitMockFreeEnabled is false then the call is forwarded to the genuine free method. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="aa84e26f213e82d99c7386380f5e8f4ef" name="aa84e26f213e82d99c7386380f5e8f4ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa84e26f213e82d99c7386380f5e8f4ef">&#9670;&#160;</a></span>crinitMockFreeEnabled</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool crinitMockFreeEnabled = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>

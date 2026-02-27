@@ -95,12 +95,13 @@ $(document).ready(function(){initNavTree('utest-destroy-file-series_2case-succes
 </div><!--header-->
 <div class="contents">
 <h3 class="version">(/usr/bin/git
-2023-11-27, commit: bad6102)</h3>
+2025-08-01, commit: e46fc091)</h3>
 <p>Unit test for <a class="el" href="fseries_8c.html#a7bf19bdfec60bbe5ec9d523576f510b3">crinitDestroyFileSeries()</a>, successful execution.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;stdio.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="common_8h_source.html">common.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="fseries_8h_source.html">fseries.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="mock-free_8h_source.html">mock-free.h</a>&quot;</code><br />
 <code>#include &quot;string.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="unit__test_8h_source.html">unit_test.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
@@ -108,32 +109,35 @@ Include dependency graph for case-success.c:</div>
 <div class="dyncontent">
 <div class="center"><img src="utest-destroy-file-series_2case-success_8c__incl.png" border="0" usemap="#atest_2utest_2utest-destroy-file-series_2case-success_8c" alt=""/></div>
 <map name="atest_2utest_2utest-destroy-file-series_2case-success_8c" id="atest_2utest_2utest-destroy-file-series_2case-success_8c">
-<area shape="rect" title="Unit test for crinitDestroyFileSeries(), successful execution." alt="" coords="149,5,341,45"/>
+<area shape="rect" title="Unit test for crinitDestroyFileSeries(), successful execution." alt="" coords="220,5,412,45"/>
 <area shape="rect" title=" " alt="" coords="5,93,72,119"/>
-<area shape="poly" title=" " alt="" coords="197,48,83,91,81,86,195,43"/>
-<area shape="rect" href="common_8h.html" title="Header for common definitions/functions not related to other specific features." alt="" coords="200,93,291,119"/>
-<area shape="poly" title=" " alt="" coords="248,46,248,79,243,79,243,46"/>
-<area shape="rect" href="fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="97,93,175,119"/>
-<area shape="poly" title=" " alt="" coords="220,48,165,87,162,83,217,43"/>
-<area shape="rect" title=" " alt="" coords="430,93,501,119"/>
-<area shape="poly" title=" " alt="" coords="299,43,421,86,419,91,297,48"/>
-<area shape="rect" href="unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="315,93,405,119"/>
-<area shape="poly" title=" " alt="" coords="275,43,333,83,330,88,272,48"/>
-<area shape="rect" title=" " alt="" coords="127,167,201,192"/>
-<area shape="poly" title=" " alt="" coords="234,121,189,160,186,156,231,117"/>
-<area shape="rect" title=" " alt="" coords="226,167,297,192"/>
-<area shape="poly" title=" " alt="" coords="251,118,258,153,253,154,245,120"/>
-<area shape="poly" title=" " alt="" coords="143,118,157,153,152,155,138,120"/>
-<area shape="rect" title=" " alt="" coords="20,167,103,192"/>
-<area shape="poly" title=" " alt="" coords="126,121,85,159,82,155,122,117"/>
-<area shape="poly" title=" " alt="" coords="329,121,210,164,208,159,328,116"/>
-<area shape="poly" title=" " alt="" coords="346,121,290,161,287,156,343,117"/>
-<area shape="rect" title=" " alt="" coords="321,167,399,192"/>
-<area shape="poly" title=" " alt="" coords="363,119,363,153,357,153,357,119"/>
-<area shape="rect" title=" " alt="" coords="424,167,499,192"/>
-<area shape="poly" title=" " alt="" coords="378,116,435,156,432,161,375,121"/>
-<area shape="rect" title=" " alt="" coords="523,167,607,192"/>
-<area shape="poly" title=" " alt="" coords="394,116,520,160,518,165,392,121"/>
+<area shape="poly" title=" " alt="" coords="250,48,86,94,85,89,249,43"/>
+<area shape="rect" href="common_8h.html" title="Header for common definitions/functions not related to other specific features." alt="" coords="325,93,416,119"/>
+<area shape="poly" title=" " alt="" coords="331,44,357,80,353,84,327,47"/>
+<area shape="rect" href="fseries_8h.html" title="Header defining functions related to the handling of a series of filenames within a directory." alt="" coords="222,93,301,119"/>
+<area shape="poly" title=" " alt="" coords="305,47,279,84,275,80,301,44"/>
+<area shape="rect" href="mock-free_8h.html" title="Header declaring a mock function for free()." alt="" coords="96,93,197,119"/>
+<area shape="poly" title=" " alt="" coords="277,48,185,90,183,85,274,43"/>
+<area shape="rect" title=" " alt="" coords="555,93,626,119"/>
+<area shape="poly" title=" " alt="" coords="383,43,543,88,541,93,381,48"/>
+<area shape="rect" href="unit__test_8h.html" title="Header for common definitions/includes specifically for cmocka unit tests." alt="" coords="440,93,531,119"/>
+<area shape="poly" title=" " alt="" coords="358,43,449,85,447,90,355,48"/>
+<area shape="rect" title=" " alt="" coords="244,167,319,192"/>
+<area shape="poly" title=" " alt="" coords="358,121,308,160,305,156,355,117"/>
+<area shape="rect" title=" " alt="" coords="343,167,414,192"/>
+<area shape="poly" title=" " alt="" coords="375,119,379,153,373,153,369,119"/>
+<area shape="poly" title=" " alt="" coords="267,118,277,153,272,154,262,120"/>
+<area shape="rect" title=" " alt="" coords="125,167,208,192"/>
+<area shape="poly" title=" " alt="" coords="248,121,195,160,192,156,245,117"/>
+<area shape="poly" title=" " alt="" coords="153,118,162,153,157,154,147,120"/>
+<area shape="poly" title=" " alt="" coords="453,121,328,165,326,160,452,116"/>
+<area shape="poly" title=" " alt="" coords="470,121,409,161,406,157,467,116"/>
+<area shape="rect" title=" " alt="" coords="438,167,517,192"/>
+<area shape="poly" title=" " alt="" coords="487,119,483,153,477,153,481,119"/>
+<area shape="rect" title=" " alt="" coords="541,167,616,192"/>
+<area shape="poly" title=" " alt="" coords="502,117,554,156,551,160,499,121"/>
+<area shape="rect" title=" " alt="" coords="641,167,725,192"/>
+<area shape="poly" title=" " alt="" coords="518,116,638,159,637,164,516,121"/>
 </map>
 </div>
 </div><table class="memberdecls">

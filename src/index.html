@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="../_static/favicon_16x16.png" sizes="16x16" rel="icon" type="image/png">
+    <link href="../_static/favicon_32x32.png" sizes="32x32" rel="icon" type="image/png">
+    <title>Crinit Source &#8212; crinit  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Design Decisions - Should the crinit process itself be placed in a cgroup on its own?" href="../doc/adr/adr-cgroups-own-cgroup-for-crinit-process.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="crinit-source">
+<h1>Crinit Source<a class="headerlink" href="#crinit-source" title="Link to this heading">¶</a></h1>
+<section id="setting-capabilities-on-crinit-tasks">
+<h2>Setting capabilities on crinit tasks<a class="headerlink" href="#setting-capabilities-on-crinit-tasks" title="Link to this heading">¶</a></h2>
+<p>Crinit tasks can be configured to be equipped with a specific set of capabilities. Technically, this is enforced by the helper program <cite>crinit-launch</cite>. As <cite>crinit-launch</cite> is executed only if a crinit task is configured to be run as a non-privileged user, capabilities are configured only in that case consequently.</p>
+<p>Below diagram shall depict the steps (amongst other that are conveniently not shown) that are taken by <cite>crinit-launch</cite> in order to apply configured capabilities on a task.</p>
+<figure class="align-default">
+<img alt="../_images/capability_activity.png" src="../_images/capability_activity.png" />
+</figure>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/crinit_logo_blk.svg" alt="Logo of crinit"/>
+            </a></p>
+<h1 class="logo"><a href="../index.html">crinit</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">README manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API-Doc.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/README.html">Helper Scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ci/index.html">CI/CD Tooling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/adr/index.html">ADRs</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Developers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#setting-capabilities-on-crinit-tasks">Setting capabilities on crinit tasks</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../doc/adr/adr-cgroups-own-cgroup-for-crinit-process.html" title="previous chapter">Design Decisions - Should the crinit process itself be placed in a cgroup on its own?</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2023, emlix GmbH/Elektrobit Automotive GmbH.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/src/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
